@@ -7,6 +7,7 @@ const xassetUrl = assetUrl;
 import { ref, onMounted, onUnmounted } from 'vue';
 import iconArrowLeft from '@/Components/vristo/icon/icon-arrow-left.vue';
 
+
 defineProps({
     dataHome: {
         type: Object,
