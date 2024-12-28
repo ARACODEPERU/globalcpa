@@ -127,7 +127,7 @@ img {
 /*========== NAV ==========*/
 .nav {
   position: fixed;
-  top: 0;
+  top: 82px;
   left: -100%;
   height: 100vh;
   padding: 1rem 1rem 0;
@@ -265,14 +265,11 @@ img {
 }
 
 @media screen and (min-width: 768px) {
-  body {
+  /* body {
     padding: 1rem 3rem 0 6rem;
-  }
-  .header {
-    padding: 0 3rem 0 6rem;
-  }
+  } */
   .header__container {
-    height: calc(var(--header-height) + .5rem);
+    height: calc(var(--header-height) + .7rem);
   }
   .header__search {
     width: 300px;
@@ -290,15 +287,16 @@ img {
     order: 1;
   }
   .nav {
+    top: 100px;
     left: 0;
     padding: 1.2rem 1.5rem 0;
-    width: 68px; /* Reduced navbar */
+    width: 75px; /* Reduced navbar */
   }
   .nav__items {
     row-gap: 1.7rem;
   }
   .nav__icon {
-    font-size: 1.3rem;
+    font-size: 1.5rem;
   }
 
   /* Element opacity */

@@ -21,7 +21,6 @@
         <!--=============== REMIXICONS ===============-->
     </head>
     <body>
-        
         <x-header />
         <x-navbar />
         @yield('content')

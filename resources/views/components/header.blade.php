@@ -1,10 +1,11 @@
 
 <!--========== HEADER ==========-->
 <header class="header">
+    <img src="{{ asset('themes/webpage/bannerTop.webp') }}" alt="" style="width: 100%; background-size: cover;">
     <div class="header__container">
-        <img src="assets/img/perfil.jpg" alt="" class="header__img">
+        <img src="{{ asset('themes/webpage/slidebar/img/perfil.jpg') }}" alt="" class="header__img">
 
-        <a href="#" class="header__logo">Bedimcode</a>
+        <a href="#" class="header__logo"></a>
     
         <div class="header__search">
             <input type="search" placeholder="Search" class="header__input">
