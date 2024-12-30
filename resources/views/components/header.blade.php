@@ -1,7 +1,7 @@
 
+
 <!--========== HEADER ==========-->
 <header class="header">
-    <img src="{{ asset('themes/webpage/bannerTop.webp') }}" alt="" style="width: 100%; background-size: cover;">
     <div class="header__container">
         <img src="{{ asset('themes/webpage/slidebar/img/perfil.jpg') }}" alt="" class="header__img">
 
