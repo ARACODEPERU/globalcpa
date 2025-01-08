@@ -23,27 +23,25 @@
                 </div>
         </section>
         <br>
-        <div class="grid grid-cols-1 gap-4 sm:gap-5 lg:gap-6">
-              <!-- Rounded Avatar -->
-              <div class="card px-4 pb-4 sm:px-5">
-                <div class="my-3 flex h-8 items-center justify-between">
-                  <h2 class="font-medium tracking-wide text-slate-700 line-clamp-1 dark:text-navy-100 lg:text-base">
-                    Rounded Avatar
-                  </h2>
-                  <label class="flex items-center space-x-2">
-                    <span class="text-xs text-slate-400 dark:text-navy-300">Code</span>
-                    <input @change="helpers.toggleCode" class="form-switch h-5 w-10 rounded-full bg-slate-300 before:rounded-full before:bg-slate-50 checked:bg-primary checked:before:bg-white dark:bg-navy-900 dark:before:bg-navy-300 dark:checked:bg-accent dark:checked:before:bg-white" type="checkbox">
-                  </label>
+
+        <div class="grid grid-cols-1 gap-4 sm:gap-5 lg:gap-6 py-20">
+            
+            <div class="grid grid-cols-6 gap-4 sm:gap-5 lg:gap-6">
+                <div class="card px-4 pb-4 sm:px-5">
+                    <div class="my-3 flex h-8 items-center justify-between">
+                        <h1 class="font-medium tracking-wide text-slate-700 line-clamp-1 dark:text-navy-100 lg:text-base text-[150px]">
+                            CIERRE CONTABLE TRIBUTARIO
+                        </h1>
+                    </div>
+                    <div class="max-w-2xl">
+                        <p>
+                        The Avatar component creates a scalable, colorable element that
+                        can have text, icon or image within its shape. Check out code
+                        for detail of usage.
+                        </p>
+                    </div>
                 </div>
-                <div class="max-w-2xl">
-                  <p>
-                    The Avatar component creates a scalable, colorable element that
-                    can have text, icon or image within its shape. Check out code
-                    for detail of usage.
-                  </p>
-                </div>
-              </div>
-    
+            </div>
         </div>
     </main>
     
