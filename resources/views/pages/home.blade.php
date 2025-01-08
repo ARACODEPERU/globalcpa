@@ -3,39 +3,49 @@
 @section('content')
 
 
-    
-        <!-- Sidebar -->
-        <x-slidebar />
 
-        <!-- App Header Wrapper-->
-        <x-nav />
-    
 
-        <!--========== CONTENTS ==========-->
-            <section>
-                <div id="carouselExampleInterval" class="carousel slide" data-bs-ride="carousel">
-                    <div class="carousel-inner">
-                        <div class="carousel-item active" data-bs-interval="2000">
-                            <img src="https://netzun.com/_nuxt/img/banner_desktop.1656de5.webp" class="d-block w-100" alt="...">
+    <main class="main-content w-full px-[var(--margin-x)] pb-8">
+
+        <section class="bg-gray-100 flex items-center justify-center h-screen w-full">
+                <div class="slider w-full rounded-lg shadow-lg">
+                    <div class="slides">
+                        <div class="slide">
+                            <img src="https://netzun.com/_nuxt/img/banner_desktop.1656de5.webp" alt="Imagen 1" class="w-full">
                         </div>
-                        <div class="carousel-item" data-bs-interval="2000">
-                            <img src="https://netzun.com/_nuxt/img/home-new-first.6aa270a.jpg" class="d-block w-100" alt="...">
+                        <div class="slide">
+                            <img src="https://netzun.com/_nuxt/img/home-new-first.6aa270a.jpg" alt="Imagen 2" class="w-full">
                         </div>
-                        <div class="carousel-item" data-bs-interval="2000">
-                            <img src="https://netzun.com/_nuxt/img/banner_desktop.1656de5.webp" class="d-block w-100" alt="...">
+                        <div class="slide">
+                            <img src="https://netzun.com/_nuxt/img/banner_desktop.1656de5.webp" alt="Imagen 3" class="w-full">
                         </div>
                     </div>
-                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="prev">
-                      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                      <span class="visually-hidden">Previous</span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="next">
-                      <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                      <span class="visually-hidden">Next</span>
-                    </button>
                 </div>
-            </section>
-
+        </section>
+        <br>
+        <div class="grid grid-cols-1 gap-4 sm:gap-5 lg:gap-6">
+              <!-- Rounded Avatar -->
+              <div class="card px-4 pb-4 sm:px-5">
+                <div class="my-3 flex h-8 items-center justify-between">
+                  <h2 class="font-medium tracking-wide text-slate-700 line-clamp-1 dark:text-navy-100 lg:text-base">
+                    Rounded Avatar
+                  </h2>
+                  <label class="flex items-center space-x-2">
+                    <span class="text-xs text-slate-400 dark:text-navy-300">Code</span>
+                    <input @change="helpers.toggleCode" class="form-switch h-5 w-10 rounded-full bg-slate-300 before:rounded-full before:bg-slate-50 checked:bg-primary checked:before:bg-white dark:bg-navy-900 dark:before:bg-navy-300 dark:checked:bg-accent dark:checked:before:bg-white" type="checkbox">
+                  </label>
+                </div>
+                <div class="max-w-2xl">
+                  <p>
+                    The Avatar component creates a scalable, colorable element that
+                    can have text, icon or image within its shape. Check out code
+                    for detail of usage.
+                  </p>
+                </div>
+              </div>
+    
+        </div>
+    </main>
     
     
     <div id="whatsapp">
@@ -98,9 +108,36 @@
             }
         }
 
+
+
+        .slider {
+            position: relative;
+            overflow: hidden;
+        }
+        .slides {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+        .slide {
+            min-width: 100%;
+        }
+
     </style>
+
     <script>
-        const carousel = new bootstrap.Carousel('#myCarousel')
+
+        let currentIndex = 0;
+        const slides = document.querySelector('.slides');
+        const totalSlides = document.querySelectorAll('.slide').length;
+
+        function showNextSlide() {
+            currentIndex = (currentIndex + 1) % totalSlides;
+            const offset = -currentIndex * 100;
+            slides.style.transform = `translateX(${offset}%)`;
+        }
+
+        setInterval(showNextSlide, 3000); // Cambia cada 3 segundos
+
     </script>
 
 @stop

@@ -12,8 +12,9 @@
 
     <title>Lineone - Banking v2 Dashboard</title>
     <link rel="icon" type="image/png" href="themes/webpage/images/favicon.png" />
+{{--     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-        
+         --}}
 
     <!-- CSS Assets -->
     <link rel="stylesheet" href="themes/webpage/css/app.css" />
@@ -46,8 +47,6 @@
       <div class="app-preloader-inner relative inline-block size-48"></div>
     </div>
 
-    @yield('content')
-    
 
     <!-- Page Wrapper -->
     <div
@@ -55,6 +54,14 @@
       class="min-h-100vh flex grow bg-slate-50 dark:bg-navy-900"
       x-cloak
     >
+    
+        <!-- App Header Wrapper-->
+        <x-nav />
+    
+        <!-- Sidebar -->
+        <x-slidebar />
+    
+        @yield('content')
     
 
         <!-- Mobile Searchbar -->
@@ -2319,9 +2326,9 @@
       window.addEventListener("DOMContentLoaded", () => Alpine.start());
     </script>
 
+{{-- 
 
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script> --}}
 
   </body>
 </html>

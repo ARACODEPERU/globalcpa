@@ -1,6 +1,6 @@
 <div class="sidebar print:hidden">
     <!-- Main Sidebar -->
-    <div class="main-sidebar"  style="top: 110px;">
+    <div class="main-sidebar">
         <div class="flex h-full w-full flex-col items-center border-r border-slate-150 bg-white dark:border-navy-700 dark:bg-navy-800">
             <!-- Application Logo -->
             <div class="flex pt-4">

@@ -1,7 +1,6 @@
 
-<img src="{{ asset('themes/webpage/bannerTop.jpg') }}" alt="" style="width: 100%; top:0pc;">
 
-<nav class="header before:bg-white dark:before:bg-navy-750 print:hidden" style="top: 100px;">
+<nav class="header before:bg-white dark:before:bg-navy-750 print:hidden">
             
     <!-- App Header  -->
     <div class="header-container relative flex w-full bg-white dark:bg-navy-750 print:hidden">
