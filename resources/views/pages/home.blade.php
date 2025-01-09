@@ -22,14 +22,21 @@
                     </div>
                 </div>
         </section>
+
         <br>
 
-        <div class="grid grid-cols-1 gap-4 sm:gap-5 lg:gap-6 py-20">
+        <div class="grid" style="background: #25D366;">
+            <h1>
+                CIERRE CONTABLE TRIBUTARIO
+            </h1>
+        </div>
+
+        <div class="grid grid-cols-1 gap-4">
             
             <div class="grid grid-cols-6 gap-4 sm:gap-5 lg:gap-6">
                 <div class="card px-4 pb-4 sm:px-5">
                     <div class="my-3 flex h-8 items-center justify-between">
-                        <h1 class="font-medium tracking-wide text-slate-700 line-clamp-1 dark:text-navy-100 lg:text-base text-[150px]">
+                        <h1 class="" style="font-size: 50px;">
                             CIERRE CONTABLE TRIBUTARIO
                         </h1>
                     </div>
