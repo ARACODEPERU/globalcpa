@@ -24,34 +24,66 @@
         </section>
 
         <section style="padding: 40px;">
-            <div class="grid grid-cols-1 gap-4">
+            <div class="grid grid-cols-1">
                 <div class="card" style="padding: 40px 20px;">
                     <h1 style="font-size: 50px; text-align:center;">
-                        CURSO ESPECIALIZADO
+                        CURSO TALLER
                     </h1>
                 </div>
             </div>
         </section>
-        
 
-        <div class="grid grid-cols-2" style="padding: 80px 40px;">
-            <div style="padding: 0px 20px;">
-                <img src="{{ asset('themes/webpage/images/cc.jpeg') }}" alt="">
+        <section style="padding: 80px 60px;">
+            <div class="grid grid-cols-2">
+                <div style="padding: 0px 20px;">
+                    <img src="{{ asset('themes/webpage/images/cc.jpeg') }}" alt="">
+                </div>
+                <div style="padding: 0px 20px; display: grid; place-items: center;">
+                    <p style="font-size: 25px; line-height: 1.5;">
+                        Este curso está diseñado para capacitarte y
+                        actualizarte en los requerimientos establecidos en las
+                        Normas Internacionales de Información Financiera
+                        (NIIF) para un adecuado cierre de los estados
+                        financieros del año 2024. Asimismo, se abordará lo
+                        relacionado a la determinación del impuesto a la
+                        renta, considerando los criterios clave para la óptima
+                        deducción de los gastos, y de esa manera minimizar
+                        riesgos fiscales.
+                    </p>
+                </div>
             </div>
-            <div style="padding: 0px 20px; display: grid; place-items: center;">
-                <p style="font-size: 25px; line-height: 1.5;">
-                    Este curso está diseñado para capacitarte y
-                    actualizarte en los requerimientos establecidos en las
-                    Normas Internacionales de Información Financiera
-                    (NIIF) para un adecuado cierre de los estados
-                    financieros del año 2024. Asimismo, se abordará lo
-                    relacionado a la determinación del impuesto a la
-                    renta, considerando los criterios clave para la óptima
-                    deducción de los gastos, y de esa manera minimizar
-                    riesgos fiscales.
-                </p>
+        </section>
+        <section style="padding: 20px 60px;">
+            <div class="mx-auto mt-8 grid w-full grid-cols-1 gap-4 sm:grid-cols-3 sm:gap-5 lg:gap-6">
+                <div class="card p-4 sm:p-5" style="place-items: center;">
+                    <img style="width: 80px;" src="{{ asset ('themes/webpage/images/icons/calendario.png') }}" alt="">
+                    <h2 class="mt-5 text-base font-medium tracking-wide text-slate-700 line-clamp-1 dark:text-navy-100">
+                        DURACIÓN
+                    </h2>
+                    <p class="mt-1">
+                        03 Sesiones: 21, 22 y 23 Enero
+                    </p>
+                </div>
+                <div class="card p-4 sm:p-5" style="place-items: center;">
+                    <img style="width: 80px;" src="{{ asset ('themes/webpage/images/icons/horario-de-trabajo.png') }}" alt="">
+                    <h2 class="mt-5 text-base font-medium tracking-wide text-slate-700 line-clamp-1 dark:text-navy-100">
+                      HORARIO
+                    </h2>
+                    <p class="mt-1">
+                      De 07:00 pm a 10:00 pm
+                    </p>
+                </div>
+                <div class="card p-4 sm:p-5" style="place-items: center;">
+                    <img style="width: 80px;" src="{{ asset ('themes/webpage/images/icons/educacion-a-distancia.png') }}" alt="">
+                    <h2 class="mt-5 text-base font-medium tracking-wide text-slate-700 line-clamp-1 dark:text-navy-100">
+                      MODALIDAD
+                    </h2>
+                    <p class="mt-1">
+                        Virtual (online) con casuísticas reales.
+                    </p>
+                </div>
             </div>
-        </div>
+        </section>
 
     </main>
     
