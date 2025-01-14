@@ -44,7 +44,7 @@
                             CIERRE CONTABLE Y TRIBUTARIO
                         </h1>
                         <span style="font-size: 24px; line-height: 1.1; font-weight: 600;">
-                            Ejecicio 2024
+                            Ejercicio 2024
                         </span>
                         <p class="mt-8" style="font-size: 20px; line-height: 1.5;">
                             Este curso está diseñado para capacitarte y
@@ -120,71 +120,102 @@
             </div>
         </section>
         
-        <section style="padding: 20px 40px;">
-            <div class="mx-auto mt-8 grid w-full grid-cols-1 gap-4 sm:grid-cols-1 sm:gap-5 lg:gap-6">
-                <div class="card p-4 sm:p-5" style="place-items: center;">
-                    <h2  style="font-size: 35px; line-height: 1.5; font-weight: 700;">
-                        FACILITADORES ED FACILITADORES
-                    </h2>
-                    <div class="mx-auto mt-8 grid w-full grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:gap-6">
-                        <div class="p-4 sm:p-5">
-                            <span style="font-size: 20px; line-height: 1.1; font-weight: 600;">
-                                Director Académico de Global CPA Business School
-                            </span>
-                            <br><br>
-                            <p style="font-size: 20px; line-height: 1.5;">
-                                Destacado profesional con amplia experiencia en auditoría y asesoría
-                                contable, habiendo sido Exgerente Senior en KPMG Perú y con
-                                experiencia en Deloitte en Perú y España. Actualmente, es docente en
-                                ESANL, la PUCP, la Universidad de Lima, e instructor en el IPAI.
-                                Autor del influyente libro “El Amauta De Las NIIF”, representa al
-                                Consejo Normativo de Contabilidad en el GLENIF y es miembro de
-                                varios comités técnicos de la Junta de Decanos de Colegios de
-                                Contadores Públicos del Perú y la AIC. Reconocido conferencista, ha
-                                participado en convenciones de contabilidad y auditoría en varios
-                                países de América Latina. Su experiencia y liderazgo lo posicionan
-                                como una figura clave en el ámbito contable y financiero.
-                            </p>
-                            <br>
-                            <span style="font-size: 20px; line-height: 1.1; font-weight: 600;">
-                                21 y 23 de enero | CIERRE CONTABLE BAJO NIIF
-                            </span>
+        <section style="padding: 30px 0px;">
+            <div class="container card" style="padding: 20px 40px;">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h2 style="font-size: 35px; line-height: 1.5; font-weight: 700; text-align: center; margin-top: 10px; margin-bottom: 60px;">
+                            FACILITADORES
+                        </h2>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6" style="padding: 10px;">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <img style="width: 100%;" src="{{ asset('themes/webpage/images/alex-cuzcano.jpg') }}" alt="">
+                            </div>
+                            <div class="col-md-10">
+                                <h2 style="font-size: 26px; line-height: 1.5; font-weight: 700;">
+                                    MAG. ALEX CUZCANO
+                                </h2>
+                                <span style="font-size: 20px; line-height: 1.1; font-weight: 600;">
+                                    Director Académico de Global CPA Business School
+                                </span>
+                            </div>
                         </div>
-                        <div class="p-4 sm:p-5">
-                            <span style="font-size: 20px; line-height: 1.1; font-weight: 600;">
-                                Subdirector de la revista especializada Actualidad Empresarial
-                            </span>
-                            <br><br>
-                            <p style="font-size: 20px; line-height: 1.5;">
-                                Abogado por la Pontificia Universidad Católica del Perú y Magíster
-                                en Contabilidad con mención en Política y Administración Tributaria
-                                por la Universidad Nacional Mayor de San Marcos. Como asociado
-                                activo del Instituto Peruano de Derecho Tributario (IPDT) y
-                                exmiembro del Consejo Directivo del SAT de Lima (2019-2022).
-                                Actualmente, es profesor en la PUCP y ESAN, donde imparte
-                                cursos especializados en tributación y derecho corporativo. Ha
-                                coescrito y escrito numerosos libros y artículos que son referencia
-                                en el campo tributario, destacando títulos como “Análisis para la
-                                aplicación del Crédito Fiscal” y “Evasión Tributaria”. Su experiencia
-                                y conocimientos lo posicionan como un líder en el sector, siempre a
-                                la vanguardia de las mejores prácticas tributarias.
-                            </p>
-                            <br>
-                            <span style="font-size: 20px; line-height: 1.1; font-weight: 600;">
-                                22 de enero | CIERRE TRIBUTARIO 2024
-                            </span>
+                        <br>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p style="font-size: 20px; line-height: 1.5;">
+                                    Destacado profesional con amplia experiencia en auditoría y asesoría
+                                    contable, habiendo sido Exgerente Senior en KPMG Perú y con
+                                    experiencia en Deloitte en Perú y España. Actualmente, es docente en
+                                    ESANL, la PUCP, la Universidad de Lima, e instructor en el IPAI.
+                                    Autor del influyente libro “El Amauta De Las NIIF”, representa al
+                                    Consejo Normativo de Contabilidad en el GLENIF y es miembro de
+                                    varios comités técnicos de la Junta de Decanos de Colegios de
+                                    Contadores Públicos del Perú y la AIC. Reconocido conferencista, ha
+                                    participado en convenciones de contabilidad y auditoría en varios
+                                    países de América Latina. Su experiencia y liderazgo lo posicionan
+                                    como una figura clave en el ámbito contable y financiero.
+                                </p>
+                                <br>
+                                <span style="font-size: 20px; line-height: 1.1; font-weight: 600;">
+                                    21 y 23 de enero | CIERRE CONTABLE BAJO NIIF
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6" style="padding: 10px;">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <img style="width: 100%;" src="{{ asset('themes/webpage/images/mario-alva.jpg') }}" alt="">
+                            </div>
+                            <div class="col-md-10">
+                                <h2 style="font-size: 26px; line-height: 1.5; font-weight: 700;">
+                                    MAG. MARIO ALVA
+                                </h2>
+                                <span style="font-size: 20px; line-height: 1.1; font-weight: 600;">
+                                    Subdirector de la revista especializada Actualidad Empresarial
+                                </span>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p style="font-size: 20px; line-height: 1.5;">
+                                    Abogado por la Pontificia Universidad Católica del Perú y Magíster
+                                    en Contabilidad con mención en Política y Administración Tributaria
+                                    por la Universidad Nacional Mayor de San Marcos. Como asociado
+                                    activo del Instituto Peruano de Derecho Tributario (IPDT) y
+                                    exmiembro del Consejo Directivo del SAT de Lima (2019-2022).
+                                    Actualmente, es profesor en la PUCP y ESAN, donde imparte
+                                    cursos especializados en tributación y derecho corporativo. Ha
+                                    coescrito y escrito numerosos libros y artículos que son referencia
+                                    en el campo tributario, destacando títulos como “Análisis para la
+                                    aplicación del Crédito Fiscal” y “Evasión Tributaria”. Su experiencia
+                                    y conocimientos lo posicionan como un líder en el sector, siempre a
+                                    la vanguardia de las mejores prácticas tributarias.
+                                </p>
+                                <br>
+                                <span style="font-size: 20px; line-height: 1.1; font-weight: 600;">
+                                    22 de enero | CIERRE TRIBUTARIO 2024
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
+
     </main>
     
     
     <div id="whatsapp">
         <a href="" class="wtsapp" data-bs-toggle="modal" data-bs-target="#exampleModal">
-            <i class="fab fa-whatsapp"></i>
+            <i class="fa fa-whatsapp"></i>
         </a>
     </div>
 
