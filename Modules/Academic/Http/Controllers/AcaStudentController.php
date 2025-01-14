@@ -22,6 +22,8 @@ use Modules\Academic\Entities\AcaCourse;
 use Modules\Academic\Entities\AcaModule;
 use Illuminate\Http\RedirectResponse;
 use Modules\Academic\Entities\AcaStudentSubscription;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use Illuminate\Support\Facades\Cache;
 
 class AcaStudentController extends Controller
 {
@@ -517,5 +519,71 @@ class AcaStudentController extends Controller
         } else {
             return to_route('profile.edit');
         }
+    }
+
+
+    public function import(Request $request)
+    {
+        // Validar el archivo
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls',
+        ]);
+
+        // Obtener el archivo subido
+        $file = $request->file('file');
+
+        // Generar un identificador único para el progreso
+        $importKey = 'import_progress_' . uniqid();
+        Cache::put($importKey, 0, now()->addMinutes(10));
+
+        // Leer el archivo usando PhpSpreadsheet
+        $spreadsheet = IOFactory::load($file->getRealPath());
+        $sheet = $spreadsheet->getActiveSheet();
+        $rows = $sheet->toArray();
+
+        // Contar el total de filas (sin contar la fila de encabezado)
+        $totalRows = count($rows) - 1;
+        $processedRows = 0;
+
+        // Procesar las filas
+        foreach ($rows as $index => $row) {
+            // Saltar la fila de encabezado
+            if ($index === 0) {
+                continue;
+            }
+
+            // Registrar la fila en la base de datos
+            Person::create([
+                'full_name' => $row[0] ?? null,
+                'number' => $row[1] ?? null,
+                'telephone' => $row[2] ?? null,
+                'email' => $row[3] ?? null,
+                'birthdate' => $row[4] ?? null,
+                'names' => $row[5] ?? null,
+                'father_lastname' => $row[6] ?? null,
+                'mother_lastname' => $row[7] ?? null,
+                'ocupacion' => $row[8] ?? null,
+                'presentacion' => $row[9] ?? null,
+                'gender' => $row[10] ?? null,
+                'person_id' => $row[11] ?? null,
+                'industry' => $row[12] ?? null,
+                'profession' => $row[13] ?? null,
+            ]);
+
+            // Actualizar el progreso
+            $processedRows++;
+            $progress = intval(($processedRows / $totalRows) * 100);
+            Cache::put($importKey, $progress);
+        }
+
+        return response()->json(['importKey' => $importKey]);
+    }
+
+    public function getProgress($importKey)
+    {
+        // Obtener el progreso desde la caché
+        $progress = Cache::get($importKey, 0);
+
+        return response()->json(['progress' => $progress]);
     }
 }

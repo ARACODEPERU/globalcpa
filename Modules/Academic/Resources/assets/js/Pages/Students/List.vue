@@ -45,6 +45,54 @@
     const closeModalImport = () => {
         displayModalImport.value = false;
     }
+
+
+    const file = ref(null);
+    const loading = ref(false);
+    const progress = ref(null); // Estado del progreso
+    const importKey = ref(null); // Clave única para la importación
+
+    const handleFileUpload = (event) => {
+        file.value = event.target.files[0];
+    };
+
+    const startImport = async () => {
+        loading.value = true;
+
+        // Crear FormData y enviar el archivo al backend
+        const formData = new FormData();
+        formData.append("file", file.value);
+
+        try {
+            const response = await axios.post(route('aca_student_import_file_excel'), formData);
+            importKey.value = response.data.importKey;
+
+            // Iniciar la actualización del progreso
+            trackProgress();
+        } catch (error) {
+            console.error(error);
+            alert("Ocurrió un error al importar el archivo.");
+        } finally {
+            loading.value = false;
+        }
+    };
+
+    const trackProgress = () => {
+        const interval = setInterval(async () => {
+            try {
+            const response = await axios.get(route('aca_student_import_progress',importKey.value));
+                progress.value = response.data.progress;
+
+                if (progress.value >= 100) {
+                    clearInterval(interval);
+                    alert("Importación completada.");
+                }
+            } catch (error) {
+                console.error(error);
+                clearInterval(interval);
+            }
+        }, 1000); // Actualizar cada segundo
+    };
 </script>
 
 <template>
@@ -68,7 +116,7 @@
                                 Nuevo
                             </Link>
                         </div>
-                        <div>
+                        <div v-can="'aca_estudiante_importar_excel'">
                             <button v-on:click="showModalImport()" type="button" class="btn btn-success">
                                 <icon-excel class="ltr:mr-2 rtl:ml-2 w-4 h-4" />
                                 Importar
@@ -183,16 +231,44 @@
             <template #message>Puedes registrar datos de forma rápida y sencilla utilizando un archivo Excel. Asegúrate de seguir el formato especificado para garantizar un proceso sin errores.</template>
             <template #content>
                 <img src="/img/aca_formato_estudiantes.png" />
-                <form class="mt-8">
+                <form enctype="multipart/form-data" class="mt-8">
                     <label for="small-file-input" class="sr-only">Seleccione archivo</label>
-                    <input type="file" name="small-file-input" id="small-file-input" class="block w-full border border-gray-200 shadow-sm rounded-lg text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400
+                    <input type="file" name="small-file-input" 
+                    id="small-file-input" 
+                    class="block w-full border border-gray-200 shadow-sm rounded-lg text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400
                     file:bg-gray-50 file:border-0
                     file:me-4
                     file:py-2 file:px-4
-                    dark:file:bg-neutral-700 dark:file:text-neutral-400">
+                    dark:file:bg-neutral-700 dark:file:text-neutral-400"
+
+                    @change="handleFileUpload"
+                    accept=".xlsx, .xls"
+                    >
                 </form>
+
+                <div v-if="progress !== null" class="mt-4 mb-4">
+                    <div class="relative pt-1">
+                        <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-gray-200">
+                            <div
+                            :style="{ width: `${progress}%` }"
+                            class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-500"
+                            ></div>
+                        </div>
+                        <p class="text-sm text-gray-700">
+                            Progreso: {{ progress }}%
+                        </p>
+                    </div>
+                </div>
             </template>
-            
+            <template #buttons>
+                <button
+                    :disabled="!file || loading"
+                    @click="startImport"
+                    class="btn btn-primary"
+                    >
+                    {{ loading ? "Cargando..." : "Importar Archivo" }}
+                </button>
+            </template>
         </ModalLarge>
     </AppLayout>
 </template>
