@@ -62,36 +62,45 @@
             </div>
         </section>
 
-        <section style="padding: 20px 40px;">
-            <div class="mx-auto mt-8 grid w-full grid-cols-1 gap-4 sm:grid-cols-3 sm:gap-5 lg:gap-6">
-                <div class="card p-4 sm:p-5" style="place-items: center;">
-                    <img style="width: 80px;" src="{{ asset ('themes/webpage/images/icons/calendario.png') }}" alt="">
-                    <h2 class="mt-5 text-base font-medium tracking-wide text-slate-700 line-clamp-1 dark:text-navy-100">
-                        DURACIÓN
-                    </h2>
-                    <p class="mt-1">
-                        03 Sesiones: 21, 22 y 23 Enero
-                    </p>
-                </div>
-                <div class="card p-4 sm:p-5" style="place-items: center;">
-                    <img style="width: 80px;" src="{{ asset ('themes/webpage/images/icons/horario-de-trabajo.png') }}" alt="">
-                    <h2 class="mt-5 text-base font-medium tracking-wide text-slate-700 line-clamp-1 dark:text-navy-100">
-                      HORARIO
-                    </h2>
-                    <p class="mt-1">
-                      De 07:00 pm a 10:00 pm
-                    </p>
-                </div>
-                <div class="card p-4 sm:p-5" style="place-items: center;">
-                    <img style="width: 80px;" src="{{ asset ('themes/webpage/images/icons/educacion-a-distancia.png') }}" alt="">
-                    <h2 class="mt-5 text-base font-medium tracking-wide text-slate-700 line-clamp-1 dark:text-navy-100">
-                      MODALIDAD
-                    </h2>
-                    <p class="mt-1">
-                        Virtual (online) con casuísticas reales.
-                    </p>
+        <section style="padding: 30px 0px;">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card" style="place-items: center; padding: 40px 0px;">
+                            <img style="width: 80px;" src="{{ asset ('themes/webpage/images/icons/calendario.png') }}" alt="">
+                            <h2>
+                                DURACIÓN
+                            </h2>
+                            <p>
+                                03 Sesiones: 21, 22 y 23 Enero
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card" style="place-items: center; padding: 40px 0px;">
+                            <img style="width: 80px;" src="{{ asset ('themes/webpage/images/icons/horario-de-trabajo.png') }}" alt="">
+                            <h2>
+                              HORARIO
+                            </h2>
+                            <p>
+                              De 07:00 pm a 10:00 pm
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card" style="place-items: center; padding: 40px 0px;">
+                            <img style="width: 80px;" src="{{ asset ('themes/webpage/images/icons/educacion-a-distancia.png') }}" alt="">
+                            <h2>
+                              MODALIDAD
+                            </h2>
+                            <p>
+                                Virtual (online) con casuísticas reales.
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </div>
+
         </section>
         
         <section style="padding: 30px 0px;">
