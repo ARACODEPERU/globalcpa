@@ -94,27 +94,27 @@
             </div>
         </section>
         
-        <section style="padding: 20px 40px;">
-            <div class="mx-auto mt-8 grid w-full grid-cols-1 gap-4 sm:grid-cols-1 sm:gap-5 lg:gap-6">
-                <div class="card p-4 sm:p-5" style="place-items: center;">
-                    <h2  style="font-size: 35px; line-height: 1.5; font-weight: 700;">
-                        ¿A QUIÉNES ESTÁ DIRIGIDO?
-                    </h2>
-                    <div class="mx-auto mt-8 grid w-full grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:gap-6">
-                        <div class="p-4 sm:p-5" style="place-items: center;">
-                            <p style="font-size: 20px; line-height: 1.5;">
-                                Está dirigido a contadores, auditores, consultores
-                                contables y tributarios, así como a
-                                ejecutivos que toman decisiones
-                                financieras.
-                            </p>
-                        </div>
-                        <div class="p-4 sm:p-5" style="place-items: center;">
-                            <p style="font-size: 20px; line-height: 1.5;">
-                                También a quienes desean consolidar sus habilidades en la aplicación de normas contables y tributarias, asegurando un cierre 2024 eficiente, estratégico y libre de contingencias contables,
-                                financieras y fiscales.
-                            </p>
-                        </div>
+        <section style="padding: 30px 0px;">
+            <div class="container card" style="padding: 20px 40px;">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h2 style="font-size: 35px; line-height: 1.5; font-weight: 700; text-align: center; margin-top: 10px; margin-bottom: 60px;">
+                            ¿A QUIÉNES ESTÁ DIRIGIDO?
+                        </h2>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6" style="padding: 10px;">
+                        <p style="font-size: 20px; line-height: 1.5;">
+                            Está dirigido a contadores, auditores, consultores contables y tributarios, así como a ejecutivos que toman decisiones
+                            financieras.
+                        </p>
+                    </div>
+                    <div class="col-md-6" style="padding: 10px;">
+                        <p style="font-size: 20px; line-height: 1.5;">
+                            También a quienes desean consolidar sus habilidades en la aplicación de normas contables y tributarias, asegurando un cierre 2024 eficiente, estratégico y libre de contingencias contables,
+                            financieras y fiscales.
+                        </p>
                     </div>
                 </div>
             </div>
