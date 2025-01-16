@@ -43,7 +43,7 @@
                 </button>
 
                 <!-- Main Searchbar -->
-                <template x-if="$store.breakpoints.smAndUp">
+                {{-- <template x-if="$store.breakpoints.smAndUp">
                     <div
                     class="flex"
                     x-data="usePopper({placement:'bottom-end',offset:12})"
@@ -615,7 +615,7 @@
                         </div>
                     </div>
                     </div>
-                </template>
+                </template> --}}
 
                 <!-- Dark Mode Toggle -->
                 <button
@@ -654,17 +654,17 @@
                 </button>
 
                 <!-- Monochrome Mode Toggle -->
-                <button
+                {{-- <button
                     @click="$store.global.isMonochromeModeEnabled = !$store.global.isMonochromeModeEnabled"
                     class="btn size-8 rounded-full p-0 hover:bg-slate-300/20 focus:bg-slate-300/20 active:bg-slate-300/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25"
                 >
                     <i
                     class="fa-solid fa-palette bg-gradient-to-r from-sky-400 to-blue-600 bg-clip-text text-lg font-semibold text-transparent"
                     ></i>
-                </button>
+                </button> --}}
 
             <!-- Notification-->
-            <div
+            {{-- <div
                 x-effect="if($store.global.isSearchbarActive) isShowPopper = false"
                 x-data="usePopper({placement:'bottom-end',offset:12})"
                 @click.outside="isShowPopper && (isShowPopper = false)"
@@ -1336,10 +1336,10 @@
                     </div>
                 </div>
                 </div>
-            </div>
+            </div> --}}
 
             <!-- Right Sidebar Toggle -->
-            <button
+            {{-- <button
                 @click="$store.global.isRightSidebarExpanded = true"
                 class="btn size-8 rounded-full p-0 hover:bg-slate-300/20 focus:bg-slate-300/20 active:bg-slate-300/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25"
             >
@@ -1357,7 +1357,8 @@
                     d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
                 />
                 </svg>
-            </button>
+            </button> --}}
+            
             </div>
         </div>
     </div>

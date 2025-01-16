@@ -10,7 +10,7 @@
       content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
     />
 
-    <title>CPA - Business School</title>
+    <title>Global CPA - Business School</title>
     <link rel="icon" type="image/png" href="themes/webpage/images/favicon.png" />
     
 
