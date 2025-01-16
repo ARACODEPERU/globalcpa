@@ -683,6 +683,42 @@
 
         </section>
 
+        {{-- CERTIFICADO --}}
+        <section style="padding: 30px 0px;">
+            <div class="container  card">
+                {{-- <div class="row">
+                    <div class="col-md-12">
+                        <h2 class="title_aracode" style="font-size: 35px; line-height: 1.5; font-weight: 700; text-align: center; margin-top: 10px; margin-bottom: 30px;">
+                            ¡Comparte tus logros con un certificado!
+                        </h2>
+                    </div>
+                </div> --}}
+                <div class="row">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-4">
+                        <div style="padding: 40px 20px;">
+                            <h2 class="title_aracode" style="font-size: 30px; line-height: 1.5; font-weight: 700; margin-top: 10px; margin-bottom: 10px;">
+                                ¡Comparte tus logros con un certificado!
+                            </h2>
+                            <p style="font-size: 17px; line-height: 1.3; margin-top: 10px;">
+                                Cuando termines el curso tendrás acceso al certificado digital para compartirlo con tu familia, amigos, empleadores y la comunidad.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div style="place-items: center; padding: 40px 20px;">
+                            <img style="width: 100%;" src="https://netzun.com/_nuxt/img/certificado-netzun-siu.01abb78.jpg" alt="">
+                            <p style="font-size: 17px; line-height: 1.3; margin-top: 10px;">
+                                <b>* IMAGEN REFERENCIAL</b>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-2"></div>
+                </div>
+            </div>
+
+        </section>
+
 
     </main>
     
