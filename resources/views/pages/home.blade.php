@@ -64,12 +64,12 @@
                         </h2>
                         <br><br>
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-6" style="padding: 10px 0px;">
                                 <a href="https://wa.link/54k2g9">
                                     <button class="boton-degradado-primary"><b>! Comprar Ahora ¡</b></button>
                                 </a>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-6" style="padding: 10px 0px;">
                                 <a href="">
                                     <button class="boton-degradado-secundary"><b>Descargar Brochure</b></button>
                                 </a>
@@ -739,12 +739,12 @@
         <section class="padding: 30px 0px;">
             <div class="container">
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-6" style="padding: 10px 0px;">
                         <a href="https://wa.link/54k2g9">
                             <button class="boton-degradado-primary"><b>! Comprar Ahora ¡</b></button>
                         </a>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-6" style="padding: 10px 0px;">
                         <a href="">
                             <button class="boton-degradado-secundary"><b>Descargar Brochure</b></button>
                         </a>

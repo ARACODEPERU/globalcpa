@@ -663,7 +663,7 @@
 
                 
                 <a href="{{ route('login') }}">
-                    <button class="boton-degradado-primary"><b>Campus Virtual</b></button>
+                    <button class="boton-degradado-campus">Campus Virtual</button>
                 </a>
 
                 <!-- Monochrome Mode Toggle -->
