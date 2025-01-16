@@ -617,6 +617,8 @@
                     </div>
                 </template> --}}
 
+                
+
                 <!-- Dark Mode Toggle -->
                 <button
                     @click="$store.global.isDarkModeEnabled = !$store.global.isDarkModeEnabled"
@@ -652,6 +654,11 @@
                     />
                     </svg>
                 </button>
+
+                
+                <a href="{{ route('login') }}">
+                    <button class="boton-degradado-primary"><b>Campus Virtual</b></button>
+                </a>
 
                 <!-- Monochrome Mode Toggle -->
                 {{-- <button

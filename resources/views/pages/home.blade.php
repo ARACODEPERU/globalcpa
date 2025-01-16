@@ -26,7 +26,7 @@
         <section style="padding: 20px 10px;">
             <div class="mx-auto grid w-full grid-cols-1 gap-4 sm:grid-cols-1 sm:gap-5 lg:gap-6">
                 <div class="card" style="place-items: center; padding: 20px 0px;">
-                    <h1 style="font-size: 60px; line-height: 1.1; font-weight: 900; text-align:center; ">
+                    <h1 class="title_aracode" style="font-size: 60px; line-height: 1.1; font-weight: 900; text-align:center; ">
                         CURSO TALLER
                     </h1>
                 </div>
@@ -40,6 +40,7 @@
                         <img src="{{ asset('themes/webpage/images/cc.jpg') }}" alt="">
                     </div>
                     <div class="p-4 sm:p-5">
+                        <br>
                         <h1 class="title_aracode" style="font-size: 45px; line-height: 1.1; font-weight: 700;">
                             CIERRE CONTABLE Y TRIBUTARIO
                         </h1>
@@ -57,6 +58,23 @@
                             deducción de los gastos, y de esa manera minimizar
                             riesgos fiscales.
                         </p>
+                        <br>
+                        <h2 style="font-size: 35px; line-height: 1.1; font-weight: 500;">
+                            S/ 395.00
+                        </h2>
+                        <br><br>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <a href="">
+                                    <button class="boton-degradado-primary"><b>! Comprar Ahora ¡</b></button>
+                                </a>
+                            </div>
+                            <div class="col-md-6">
+                                <a href="">
+                                    <button class="boton-degradado-secundary"><b>Descargar Brochure</b></button>
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
