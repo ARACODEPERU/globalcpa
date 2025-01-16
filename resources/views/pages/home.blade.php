@@ -235,7 +235,7 @@
                                     <span class="accordion-icon-aracode">►</span>
                                     INVENTARIOS: NIC 8 Y NIC 2
                                 </div>
-                                <div class="accordion-content-aracode" aria-hidden="false" style="max-height: 100%; padding: 15px;">
+                                <div class="accordion-content-aracode" aria-hidden="false" style="max-height: 120px; padding: 15px;">
                                     <div class="list-item-aracode">
                                         <span class="list-icon-aracode">•</span>
                                         Determinación del valor neto de realización.
