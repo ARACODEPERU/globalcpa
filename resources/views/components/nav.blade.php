@@ -19,6 +19,12 @@
                 </button>
             </div>
 
+            <div>
+                <a href="">
+                    <img style="width: 90px;" src="{{ asset('themes/webpage/images/Logo_cpa.png') }}" alt="">
+                </a>
+            </div>
+
             <!-- Right: Header buttons -->
             <div class="-mr-1.5 flex items-center space-x-2">
                 <!-- Mobile Search Toggle -->

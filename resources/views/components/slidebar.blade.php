@@ -7,7 +7,8 @@
                 <a href="/">
                     <img
                     class="size-11 transition-transform duration-500 ease-in-out hover:rotate-[360deg]"
-                    src="themes/webpage/images/app-logo.svg"
+                    {{-- src="themes/webpage/images/app-logo.svg" --}}
+                    src="{{ asset('themes/webpage/images/Logo_isotipo.png') }}"
                     alt="logo"
                     />
                 </a>

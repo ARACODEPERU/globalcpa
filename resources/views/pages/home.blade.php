@@ -65,7 +65,7 @@
                         <br><br>
                         <div class="row">
                             <div class="col-md-6">
-                                <a href="">
+                                <a href="https://wa.link/54k2g9">
                                     <button class="boton-degradado-primary"><b>! Comprar Ahora ¡</b></button>
                                 </a>
                             </div>
@@ -740,7 +740,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-6">
-                        <a href="">
+                        <a href="https://wa.link/54k2g9">
                             <button class="boton-degradado-primary"><b>! Comprar Ahora ¡</b></button>
                         </a>
                     </div>
@@ -761,7 +761,7 @@
 
     
     <div id="whatsapp">
-        <a href="" class="wtsapp" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        <a href="https://wa.link/54k2g9" class="wtsapp" data-bs-toggle="modal" data-bs-target="#exampleModal">
             <i class="fa fa-whatsapp"></i>
         </a>
     </div>
