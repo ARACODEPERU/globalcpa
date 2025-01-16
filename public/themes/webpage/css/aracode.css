@@ -1,6 +1,78 @@
+.title_aracode{
+  color: #3c4a99;
+}
+
+.title_aracode:is(.dark *) {
+  color: #a3adc2;
+}
+/* -------------ACORDEON-------------- */
+.accordion-aracode {
+  /* background-color: #fff; */
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  margin-bottom: 20px;
+  transition: box-shadow 0.3s;
+}
+.accordion-aracode:hover {
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+.accordion-item-aracode {
+  border-bottom: 1px solid #ddd;
+}
+.accordion-item-aracode:last-child {
+  border-bottom: none;
+}
+.accordion-header-aracode {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  cursor: pointer;
+  /* background-color: #007BFF; */
+  /* background-color: #3c4a99; */
+  background-color: #3c4a99;
+  color: #fff;
+  font-size: 18px;
+  transition: background-color 0.3s;
+  position: relative;
+}
+.accordion-header-aracode:is(.dark *) {
+  background-color: #1d273a; 
+}
+.accordion-header-aracode:hover {
+  background-color: #4f46e5;
+}
+.accordion-content-aracode {
+  padding: 0 15px;
+  max-height: 0;
+  overflow: hidden;
+  /* background-color: #f9f9f9; */
+  transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+}
+.accordion-content-aracode p {
+  margin: 15px 0;
+}
+.accordion-icon-aracode {
+  margin-right: 10px;
+  transition: transform 0.3s;
+}
+.accordion-header-aracode.active .accordion-icon-aracode {
+  transform: rotate(90deg); /* Rota el icono cuando está activo */
+}
+.list-item-aracode {
+  display: flex;
+  align-items: center;
+  padding: 5px;
+}
+.list-icon-aracode {
+  margin-right: 10px;
+  color: #007BFF;
+}
 
 @media (min-width: 1700px) {
     .container-xxl, .container-xl, .container-lg, .container-md, .container-sm, .container {
       max-width: 1680px;
     }
+    
   }
+
