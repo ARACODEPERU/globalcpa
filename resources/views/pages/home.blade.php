@@ -46,7 +46,7 @@
                         <span style="font-size: 22px; line-height: 1.1; font-weight: 600;">
                             Ejercicio 2024
                         </span>
-                        <p class="mt-8" style="font-size: 18px; line-height: 1.5;">
+                        <p class="mt-8" style="font-size: 17px; line-height: 1.3;">
                             Este curso está diseñado para capacitarte y
                             actualizarte en los requerimientos establecidos en las
                             Normas Internacionales de Información Financiera
@@ -62,6 +62,7 @@
             </div>
         </section>
 
+        {{-- DURACION --}}
         <section style="padding: 30px 0px;">
             <div class="container">
                 <div class="row">
@@ -71,7 +72,7 @@
                             <h2 class="title_aracode" style="font-size: 20px; line-height: 1.1; font-weight: 600; margin-top: 10px;">
                                 DURACIÓN
                             </h2>
-                            <p style="font-size: 18px; line-height: 1.5;">
+                            <p style="font-size: 17px; line-height: 1.5;">
                                 03 Sesiones: 21, 22 y 23 Enero
                             </p>
                         </div>
@@ -82,7 +83,7 @@
                             <h2 class="title_aracode" style="font-size: 20px; line-height: 1.1; font-weight: 600; margin-top: 10px;">
                               HORARIO
                             </h2>
-                            <p style="font-size: 18px; line-height: 1.5;">
+                            <p style="font-size: 17px; line-height: 1.5;">
                               De 07:00 pm a 10:00 pm
                             </p>
                         </div>
@@ -93,7 +94,7 @@
                             <h2 class="title_aracode" style="font-size: 20px; line-height: 1.1; font-weight: 600; margin-top: 10px;">
                               MODALIDAD
                             </h2>
-                            <p style="font-size: 18px; line-height: 1.5;">
+                            <p style="font-size: 17px; line-height: 1.5;">
                                 Virtual (online) con casuísticas reales.
                             </p>
                         </div>
@@ -103,24 +104,25 @@
 
         </section>
         
+        {{-- DIRIGIDO --}}
         <section style="padding: 30px 0px;">
             <div class="container card" style="padding: 20px 40px;">
                 <div class="row">
                     <div class="col-md-12">
-                        <h2 class="title_aracode" style="font-size: 35px; line-height: 1.5; font-weight: 700; text-align: center; margin-top: 10px; margin-bottom: 60px;">
+                        <h2 class="title_aracode" style="font-size: 35px; line-height: 1.5; font-weight: 700; text-align: center; margin-top: 10px; margin-bottom: 30px;">
                             ¿A QUIÉNES ESTÁ DIRIGIDO?
                         </h2>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-6" style="padding: 10px;">
-                        <p style="font-size: 18px; line-height: 1.5;">
+                        <p style="font-size: 17px; line-height: 1.3;">
                             Está dirigido a contadores, auditores, consultores contables y tributarios, así como a ejecutivos que toman decisiones
                             financieras.
                         </p>
                     </div>
                     <div class="col-md-6" style="padding: 10px;">
-                        <p style="font-size: 18px; line-height: 1.5;">
+                        <p style="font-size: 17px; line-height: 1.3;">
                             También a quienes desean consolidar sus habilidades en la aplicación de normas contables y tributarias, asegurando un cierre 2024 eficiente, estratégico y libre de contingencias contables,
                             financieras y fiscales.
                         </p>
@@ -129,11 +131,12 @@
             </div>
         </section>
         
+        {{-- FACILITADORES --}}
         <section style="padding: 30px 0px;">
             <div class="container card" style="padding: 20px 40px;">
                 <div class="row">
                     <div class="col-md-12">
-                        <h2 class="title_aracode"  style="font-size: 35px; line-height: 1.5; font-weight: 700; text-align: center; margin-top: 10px; margin-bottom: 60px;">
+                        <h2 class="title_aracode"  style="font-size: 35px; line-height: 1.5; font-weight: 700; text-align: center; margin-top: 10px; margin-bottom: 30px;">
                             FACILITADORES
                         </h2>
                     </div>
@@ -148,7 +151,7 @@
                                 <h2 style="font-size: 26px; line-height: 1.5; font-weight: 700;">
                                     MAG. ALEX CUZCANO
                                 </h2>
-                                <span style="font-size: 18px; line-height: 1.1; font-weight: 600;">
+                                <span style="font-size: 17px; line-height: 1.1; font-weight: 600;">
                                     Director Académico de Global CPA Business School
                                 </span>
                             </div>
@@ -156,7 +159,7 @@
                         <br>
                         <div class="row">
                             <div class="col-md-12">
-                                <p style="font-size: 18px; line-height: 1.5;">
+                                <p style="font-size: 17px; line-height: 1.3;">
                                     Destacado profesional con amplia experiencia en auditoría y asesoría
                                     contable, habiendo sido Exgerente Senior en KPMG Perú y con
                                     experiencia en Deloitte en Perú y España. Actualmente, es docente en
@@ -170,7 +173,7 @@
                                     como una figura clave en el ámbito contable y financiero.
                                 </p>
                                 <br>
-                                <span style="font-size: 20px; line-height: 1.1; font-weight: 600;">
+                                <span style="font-size: 17px; line-height: 1.1; font-weight: 600;">
                                     21 y 23 de enero | CIERRE CONTABLE BAJO NIIF
                                 </span>
                             </div>
@@ -185,7 +188,7 @@
                                 <h2 style="font-size: 26px; line-height: 1.5; font-weight: 700;">
                                     MAG. MARIO ALVA
                                 </h2>
-                                <span style="font-size: 18px; line-height: 1.1; font-weight: 600;">
+                                <span style="font-size: 17px; line-height: 1.1; font-weight: 600;">
                                     Subdirector de la revista especializada Actualidad Empresarial
                                 </span>
                             </div>
@@ -193,7 +196,7 @@
                         <br>
                         <div class="row">
                             <div class="col-md-12">
-                                <p style="font-size: 18px; line-height: 1.5;">
+                                <p style="font-size: 17px; line-height: 1.3;">
                                     Abogado por la Pontificia Universidad Católica del Perú y Magíster
                                     en Contabilidad con mención en Política y Administración Tributaria
                                     por la Universidad Nacional Mayor de San Marcos. Como asociado
@@ -208,7 +211,7 @@
                                     la vanguardia de las mejores prácticas tributarias.
                                 </p>
                                 <br>
-                                <span style="font-size: 20px; line-height: 1.1; font-weight: 600;">
+                                <span style="font-size: 17px; line-height: 1.1; font-weight: 600;">
                                     22 de enero | CIERRE TRIBUTARIO 2024
                                 </span>
                             </div>
@@ -218,11 +221,12 @@
             </div>
         </section>
 
+        {{-- PLAN CURRICULA --}}
         <section style="padding: 30px 0px;">
             <div class="container">
                 <div class="row">
                     <div class="col-md-12">
-                        <h2 class="title_aracode" style="font-size: 35px; line-height: 1.5; font-weight: 700; text-align: center; margin-top: 10px; margin-bottom: 60px;">
+                        <h2 class="title_aracode" style="font-size: 35px; line-height: 1.5; font-weight: 700; text-align: center; margin-top: 10px; margin-bottom: 30px;">
                             ¿A QUIÉNES ESTÁ DIRIGIDO?
                         </h2>
                     </div>
@@ -235,17 +239,17 @@
                                     <span class="accordion-icon-aracode">►</span>
                                     INVENTARIOS: NIC 8 Y NIC 2
                                 </div>
-                                <div class="accordion-content-aracode" aria-hidden="false" style="max-height: 120px; padding: 15px;">
-                                    <div class="list-item-aracode">
+                                <div class="accordion-content-aracode" aria-hidden="false" style="max-height: 100%; padding: 15px;">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Determinación del valor neto de realización.
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Como sustentar el precio estimado de venta y los costos estimados para
                                         llevar a cabo la venta.
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Registro de la desvalorización de inventarios.
                                     </div>
@@ -258,24 +262,24 @@
                                     PROPIEDAD, PLANTA Y EQUIPOS: NIC 8, NIC 16, NIC 36, NIC 23 Y NIIF 13
                                 </div>
                                 <div class="accordion-content-aracode" aria-hidden="true">
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Medición de las partidas de propiedad, planta y equipos bajo el método del
                                         costo o revaluación.
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Tratamiento de las revaluaciones y el impacto en los impuestos diferidos.
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Activación de los costos de financiamiento para activos aptos.
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Activos totalmente depreciados.
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Participación del Auditor externo.
                                     </div>
@@ -288,44 +292,44 @@
                                     DETERIORO DEL VALOR DE LOS ACTIVOS DE LARGA DURACIÓN: NIC 16, NIC 38 Y NIC 36
                                 </div>
                                 <div class="accordion-content-aracode" aria-hidden="true">
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Analizando los eventos y fenómenos ocurridos al cierre de 2024
                                         (Coyuntura política, económica, conflictos en el medio oriente).
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Activos que se encuentran bajo el alcance de la norma.
                                         Como identificar si los activos se encuentran deteriorados.
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Deterioro del valor de los activos en forma individual o de la unidad
                                         generadora de efectivo.
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Consideraciones específicas cuando la Compañía mantiene activos
                                         intangibles de vida útil indefinida y plusvalía mercantil (Goodwill).
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Registro contable de las pérdidas por deterioro.
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Calculando el valor en uso de los activos: Metodología de flujos de caja
                                         descontados.
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         La estimación de la tasa de descuento WACC.
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Reversión de pérdidas por deterioro.
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Participación del Auditor externo.
                                     </div>
@@ -338,12 +342,12 @@
                                     CUESTIONES GENERALES PARA EL CIERRE TRIBUTARIO 2024
                                 </div>
                                 <div class="accordion-content-aracode" aria-hidden="true">
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Medición de las partidas de propiedad, planta y equipos bajo el método del
                                         costo o revaluación.
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Tratamiento de las revaluaciones y el impacto en los impuestos diferidos.
                                     </div>
@@ -356,79 +360,79 @@
                                     GASTOS DEDUCIBLES 2024
                                 </div>
                                 <div class="accordion-content-aracode" aria-hidden="true">
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Intereses por préstamos.
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Tributos: Impuestos, tasas y contribuciones.
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Primas de seguro.
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Pérdidas extraordinarias.
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Depreciaciones de los bienes del activo fijo (desgasto u obsolescencia), mermas y desmedro de existencias.
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Estimaciones y castigos de deudas incobrables.
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Beneficios sociales.
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Aguinaldos, bonificaciones, gratificaciones y retribuciones que se acuerden al personal.
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Gastos y contribuciones destinados a prestar al personal servicios de salud, recreativos, culturales y educativos.
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Dietas al directorio – Utilidad comercial.
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Remuneración a accionistas y parientes.
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Regalías.
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Gastos de representación.
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Gastos de viaje (al interior y al exterior del país).
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Arrendamientos.
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Pagos por rentas de segunda, cuarta y quinta categoría para su perceptor.
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Gastos de vehículos automotores.
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Donaciones.
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Gasto de movilidad.
                                     </div>
@@ -441,31 +445,31 @@
                                     GASTOS PROHIBIDOS
                                 </div>
                                 <div class="accordion-content-aracode" aria-hidden="true">
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Gastos personales.
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Impuesto a la Renta.
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Multas, recargos e intereses moratorios.
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Las donaciones y actos de liberalidad.
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         IGV, el IPM y el ISC que graven el retiro de bienes.
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Revaluaciones voluntarias de los activos.
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Gastos provenientes de paraísos fiscales.
                                     </div>
@@ -478,20 +482,20 @@
                                     VALOR RAZONABLE: NIIF 13
                                 </div>
                                 <div class="accordion-content-aracode" aria-hidden="true">
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Cómo se determinan los valores razonables de diferentes activos financieros y 
                                         no financieros.
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Técnicas de valoración estandarizadas.
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Como soportar los valores razonables.
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Participación del Auditor externo.
                                     </div>
@@ -504,20 +508,20 @@
                                     HECHOS POSTERIORES: NIC 8 Y NIC 10
                                 </div>
                                 <div class="accordion-content-aracode" aria-hidden="true">
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Identificando la fecha en que los estados financieros son autorizados para su 
                                         emisión por la gerencia.
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Hechos que requieren ajustes y/o revelación en los estados financieros.
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Hechos que resultan de eventos externos (mercado).
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Participación del Auditor externo.
                                     </div>
@@ -530,26 +534,26 @@
                                     INSTRUMENTOS FINANCIEROS E INVERSIONES EN ACCIONES: NIC 27, NIC 28, NIIF 9, NIIF 7 Y NIIF 13
                                 </div>
                                 <div class="accordion-content-aracode" aria-hidden="true">
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         NIIF relacionadas a los instrumentos financieros e inversiones en acciones.
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Medición posterior de los activos financieros: aplicación del método del costo amortizado y del valor razonable.
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Como medir activos financieros que se cotizan en la BVL. ¿Qué hacer cuando 
                                         los valores no se cotizan en bolsa?
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         El método de participación patrimonial para la medición posterior de las
                                         Inversiones en Asociadas, Negocios Conjuntos e Inversiones en Subsidiarias en
                                         los Estados Financieros Separados.
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Participación del Auditor externo.
                                     </div>
@@ -562,32 +566,33 @@
                                     IMPUESTOS DIFERIDOS: NIC 12 Y CINIIF 23
                                 </div>
                                 <div class="accordion-content-aracode" aria-hidden="true">
-                                    <div class="list-item-aracode">
+                                    
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         La lógica de los impuestos diferidos.
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Determinación del impuesto a las ganancias diferidos.
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Cálculo de la línea del impuesto a las ganancias que se reporta en el Estado de 
                                         Resultados.
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Determinación de la tasa efectiva del impuesto a las ganancias.
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Presentación del movimiento del impuesto a las ganancias diferidos.
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Aplicación de la CINIIF 23.
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Participación del Auditor externo.
                                     </div>
@@ -600,24 +605,24 @@
                                     PROVISIONES, PASIVOS Y ACTIVOS CONTINGENTES: NIC 37 Y NIC 8
                                 </div>
                                 <div class="accordion-content-aracode" aria-hidden="true">
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         ¿Cuándo y cómo se registran las provisiones, los pasivos y activos contingentes?
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Planeamiento financiero relacionado a las provisiones y pasivos contingentes.
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Presentación de las acotaciones tributarias, multas e intereses de períodos 
                                         anteriores en los estados financieros.
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Reconocimiento de las provisiones por desmantelamiento y/o retiro de activos.
                                     </div>
-                                    <div class="list-item-aracode">
+                                    <div class="list-item-aracode" style="font-size: 17px;">
                                         <span class="list-icon-aracode">•</span>
                                         Participación del Auditor externo.
                                     </div>
@@ -628,6 +633,54 @@
                     </div>
                 </div>
             </div>
+        </section>
+
+        {{-- INCLUYE --}}
+        <section style="padding: 30px 0px;">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h2 class="title_aracode" style="font-size: 35px; line-height: 1.5; font-weight: 700; text-align: center; margin-top: 10px; margin-bottom: 30px;">
+                            INCLUYE
+                        </h2>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="card" style="place-items: center; padding: 40px 10px;">
+                            <img style="width: 80px;" src="{{ asset ('themes/webpage/images/icons/chat-en-vivo.png') }}" alt="">
+                            <p style="font-size: 17px; line-height: 1.3; text-align:center; margin-top: 10px;">
+                                Formación práctica en vivo con atención a tus consultas.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card" style="place-items: center; padding: 40px 10px;">
+                            <img style="width: 80px;" src="{{ asset ('themes/webpage/images/icons/grabacion.png') }}" alt="">
+                            <p style="font-size: 17px; line-height: 1.3; text-align:center; margin-top: 10px;">
+                                Acceso permanente a las grabaciones de las sesiones desde nuestra plataforma.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card" style="place-items: center; padding: 40px 10px;">
+                            <img style="width: 80px;" src="{{ asset ('themes/webpage/images/icons/descarga-de-archivos.png') }}" alt="">
+                            <p style="font-size: 17px; line-height: 1.3; text-align:center; margin-top: 10px;">
+                                Materiales disponibles para descarga inmediata.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card" style="place-items: center; padding: 40px 10px;">
+                            <img style="width: 80px;" src="{{ asset ('themes/webpage/images/icons/ganador.png') }}" alt="">
+                            <p style="font-size: 17px; line-height: 1.3; text-align:center; margin-top: 10px;">
+                                Certificado de participación por 12 horas académicas.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </section>
 
 
