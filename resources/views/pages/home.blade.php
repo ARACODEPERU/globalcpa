@@ -716,12 +716,31 @@
                     <div class="col-md-2"></div>
                 </div>
             </div>
-
         </section>
 
-
+        <section class="padding: 30px 0px;">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <a href="">
+                            <button class="boton-degradado-primary"><b>! Comprar Ahora ¡</b></button>
+                        </a>
+                    </div>
+                    <div class="col-md-6">
+                        <a href="">
+                            <button class="boton-degradado-secundary"><b>Descargar Brochure</b></button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
     
+    <br>
+    <br>
+    <br>
+
+
     
     <div id="whatsapp">
         <a href="" class="wtsapp" data-bs-toggle="modal" data-bs-target="#exampleModal">
