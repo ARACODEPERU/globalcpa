@@ -245,7 +245,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <h2 class="title_aracode" style="font-size: 35px; line-height: 1.5; font-weight: 700; text-align: center; margin-top: 10px; margin-bottom: 30px;">
-                            ¿A QUIÉNES ESTÁ DIRIGIDO?
+                            RUTA DE APRENDIZAJE
                         </h2>
                     </div>
                 </div>
