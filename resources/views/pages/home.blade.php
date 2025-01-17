@@ -133,14 +133,14 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-6" style="padding: 10px;">
-                        <p style="font-size: 17px; line-height: 1.3;">
+                    <div class="col-md-6" style="padding: 10px 30px;">
+                        <p style="font-size: 17px; line-height: 1.3; text-align:justify;">
                             Está dirigido a contadores, auditores, consultores contables y tributarios, así como a ejecutivos que toman decisiones
                             financieras.
                         </p>
                     </div>
-                    <div class="col-md-6" style="padding: 10px;">
-                        <p style="font-size: 17px; line-height: 1.3;">
+                    <div class="col-md-6" style="padding: 10px 30px;">
+                        <p style="font-size: 17px; line-height: 1.3; text-align:justify;">
                             También a quienes desean consolidar sus habilidades en la aplicación de normas contables y tributarias, asegurando un cierre 2024 eficiente, estratégico y libre de contingencias contables,
                             financieras y fiscales.
                         </p>
@@ -160,12 +160,13 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-6" style="padding: 10px;">
+                    <div class="col-md-6" style="padding: 10px 30px;">
                         <div class="row">
                             <div class="col-md-2">
                                 <img style="width: 100%;" src="{{ asset('themes/webpage/images/alex-cuzcano.jpg') }}" alt="">
                             </div>
                             <div class="col-md-10">
+                                <br><br>
                                 <h2 style="font-size: 26px; line-height: 1.5; font-weight: 700;">
                                     MAG. ALEX CUZCANO
                                 </h2>
@@ -177,7 +178,7 @@
                         <br>
                         <div class="row">
                             <div class="col-md-12">
-                                <p style="font-size: 17px; line-height: 1.3;">
+                                <p style="font-size: 17px; line-height: 1.3; text-align:justify;">
                                     Destacado profesional con amplia experiencia en auditoría y asesoría
                                     contable, habiendo sido Exgerente Senior en KPMG Perú y con
                                     experiencia en Deloitte en Perú y España. Actualmente, es docente en
@@ -197,12 +198,13 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6" style="padding: 10px;">
+                    <div class="col-md-6" style="padding: 10px 30px;">
                         <div class="row">
                             <div class="col-md-2">
                                 <img style="width: 100%;" src="{{ asset('themes/webpage/images/mario-alva.jpg') }}" alt="">
                             </div>
                             <div class="col-md-10">
+                                <br><br>
                                 <h2 style="font-size: 26px; line-height: 1.5; font-weight: 700;">
                                     MAG. MARIO ALVA
                                 </h2>
@@ -214,7 +216,7 @@
                         <br>
                         <div class="row">
                             <div class="col-md-12">
-                                <p style="font-size: 17px; line-height: 1.3;">
+                                <p style="font-size: 17px; line-height: 1.3; text-align:justify;">
                                     Abogado por la Pontificia Universidad Católica del Perú y Magíster
                                     en Contabilidad con mención en Política y Administración Tributaria
                                     por la Universidad Nacional Mayor de San Marcos. Como asociado
