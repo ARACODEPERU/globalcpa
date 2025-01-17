@@ -11,7 +11,7 @@
     />
 
     <title>Global CPA - Business School</title>
-    <link rel="icon" type="image/png" href="themes/webpage/images/favicon.png" />
+    <link rel="icon" type="image/png" href="themes/webpage/images/Logo_isotipo.png" />
     
 
     <!-- CSS Assets -->
