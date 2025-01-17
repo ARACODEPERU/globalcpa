@@ -725,7 +725,7 @@
                     </div>
                     <div class="col-md-4">
                         <div style="place-items: center; padding: 40px 20px;">
-                            <img style="width: 100%;" src="https://netzun.com/_nuxt/img/certificado-netzun-siu.01abb78.jpg" alt="">
+                            <img style="width: 100%;" src="{{ asset('themes/webpage/images/certificado.jpeg') }}" alt="">
                             <p style="font-size: 17px; line-height: 1.3; margin-top: 10px;">
                                 <b>* IMAGEN REFERENCIAL</b>
                             </p>
@@ -854,35 +854,6 @@
 
 
     <script>
-        // const headers = document.querySelectorAll('.accordion-header-aracode');
-        // headers.forEach(header => {
-        //     header.addEventListener('click', function() {
-        //         const content = this.nextElementSibling;
-        //         const isVisible = content.style.maxHeight;
-    
-        //         // Ocultar todos los contenidos y resetear iconos
-        //         document.querySelectorAll('.accordion-content-aracode').forEach(item => {
-        //             item.style.maxHeight = null;
-        //             item.style.padding = '0';
-        //             item.setAttribute('aria-hidden', 'true');
-        //         });
-        //         headers.forEach(h => {
-        //             h.classList.remove('active');
-        //             h.querySelector('.accordion-icon-aracode').textContent = '►'; // Restablecer icono
-        //             h.setAttribute('aria-expanded', 'false');
-        //         });
-    
-        //         // Mostrar el contenido del header clicado
-        //         if (!isVisible) {
-        //             content.style.maxHeight = content.scrollHeight + "px";
-        //             content.style.padding = '15px';
-        //             this.classList.add('active'); // Añadir clase activa al encabezado clicado
-        //             this.querySelector('.accordion-icon-aracode').textContent = '▼'; // Cambiar icono al expandido
-        //             this.setAttribute('aria-expanded', 'true');
-        //             content.setAttribute('aria-hidden', 'false');
-        //         }
-        //     });
-        // });
 
     const headers = document.querySelectorAll('.accordion-header-aracode');
     headers.forEach(header => {
