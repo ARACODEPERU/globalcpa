@@ -21,7 +21,7 @@
 
             <div>
                 <a href="">
-                    <img style="height: 60px;" src="{{ asset('themes/webpage/images/Logo_cpa_modificado.png') }}" alt="">
+                    <img style="width: 70%;" src="{{ asset('themes/webpage/images/Logo_cpa_modificado.png') }}" alt="">
                 </a>
             </div>
 
