@@ -68,6 +68,7 @@
 
             // Mostrar errores al usuario
             if (response.data.errors && response.data.errors.length > 0) {
+                loading.value = false;
                 response.data.errors.forEach((error) => showAlert(error, 'error'));
             }
             
@@ -96,7 +97,7 @@
                     showAlert("Importación completada.", 'success');
                 }
             } catch (error) {
-                console.error(error);
+                //console.error(error);
                 clearInterval(interval);
             }  finally {
                 loading.value = false;
@@ -155,6 +156,7 @@
                                 Importar
                             </button>
                         </div>
+                        
                     </div>
 
                     <div class="relative">
