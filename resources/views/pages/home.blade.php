@@ -764,7 +764,7 @@
     
     <div id="whatsapp">
         <a href="https://wa.link/54k2g9" class="wtsapp" data-bs-toggle="modal" data-bs-target="#exampleModal">
-            <i class="fa fa-whatsapp"></i>
+            <i class="fa fa-whatsapp" aria-hidden="true"></i>
         </a>
     </div>
 

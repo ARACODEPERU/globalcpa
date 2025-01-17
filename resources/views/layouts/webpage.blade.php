@@ -12,6 +12,7 @@
 
     <title>Global CPA - Business School</title>
     <link rel="icon" type="image/png" href="themes/webpage/images/Logo_isotipo.png" />
+
     
 
     <!-- CSS Assets -->
@@ -32,6 +33,9 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
       rel="stylesheet"
     />
+
+    
+    <link rel="stylesheet" href="{{ asset('themes/webpage/font-awesome-4.7.0/css/font-awesome.min.css') }}">
     <script>
       /**
        * THIS SCRIPT REQUIRED FOR PREVENT FLICKERING IN SOME BROWSERS
