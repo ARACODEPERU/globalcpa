@@ -198,7 +198,7 @@ Route::middleware(['auth', 'verified', 'invalid_updated_information'])->prefix('
         ->name('aca_student_import_file_excel');
 
     Route::middleware(['middleware' => 'permission:aca_estudiante_importar_excel'])
-        ->post('student/import/{importKey}/progress', 'AcaStudentController@getProgress')
+        ->get('student/import/{importKey}/progress', 'AcaStudentController@getProgress')
         ->name('aca_student_import_progress');
 
 
