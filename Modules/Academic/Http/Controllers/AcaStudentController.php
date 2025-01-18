@@ -516,6 +516,7 @@ class AcaStudentController extends Controller
                 ],
                 [
                     'student_code'  => $per->number,
+                    'new_student' => false
                 ]
             );
             return to_route('dashboard');
