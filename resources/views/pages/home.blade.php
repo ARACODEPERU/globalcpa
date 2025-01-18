@@ -716,6 +716,7 @@
                 <div class="row">
                     <div class="col-md-2"></div>
                     <div class="col-md-4">
+                        <br>
                         <div style="padding: 40px 20px;">
                             <h2 class="title_aracode" style="font-size: 30px; line-height: 1.5; font-weight: 700; margin-top: 10px; margin-bottom: 10px;">
                                 ¡Comparte tus logros con un certificado!
