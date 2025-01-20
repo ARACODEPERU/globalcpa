@@ -211,12 +211,12 @@
                                     </li>
                                 </ul>
                             </div>
-                            <div class="text-center dark:text-white">
+                            <!-- <div class="text-center dark:text-white">
                                 ¿No tienes una cuenta?
                                 <Link :href="route('register')" class="uppercase text-primary underline transition hover:text-black dark:hover:text-white">
                                     REGISTRATE
                                 </Link>
-                            </div>
+                            </div> -->
                         </div>
                         <p class="absolute bottom-6 w-full text-center dark:text-white">© {{ new Date().getFullYear() }}.ARACODE All Rights Reserved.</p>
                     </div>
