@@ -169,7 +169,7 @@
 
                             <div class="relative my-7 text-center md:mb-9">
                                 <span class="absolute inset-x-0 top-1/2 h-px w-full -translate-y-1/2 bg-white-light dark:bg-white-dark"></span>
-                                <span class="relative bg-white px-2 font-bold uppercase text-white-dark dark:bg-dark dark:text-white-light">or</span>
+                                <span class="relative bg-white px-2 font-bold uppercase text-white-dark dark:bg-dark dark:text-white-light">Siguenos en:</span>
                             </div>
                             <div class="mb-10 md:mb-[60px]">
                                 <ul class="flex justify-center gap-3.5 text-white">
