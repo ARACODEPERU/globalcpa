@@ -262,19 +262,19 @@ const selectTheme = (data) => {
                                                 <template #overlay>
                                                 <Menu>
                                                     <MenuItem>
-                                                        <Link :href="route('aca_courses_edit',course.id)" class="dark:text-gray-200 dark:hover:text-white">Editar</Link>
+                                                        <Link :href="route('aca_courses_edit',course.id)" >Editar</Link>
                                                     </MenuItem>
                                                     <MenuItem>
-                                                        <Link :href="route('aca_courses_information',course.id)" class="dark:text-gray-200 dark:hover:text-white">Información</Link>
+                                                        <Link :href="route('aca_courses_information',course.id)" >Información</Link>
                                                     </MenuItem>
                                                     <MenuItem>
-                                                        <a @click="openModalAgreements(course)" href="#" class="dark:text-gray-200 dark:hover:text-white">Convenios</a>
+                                                        <a @click="openModalAgreements(course)" href="#" >Convenios</a>
                                                     </MenuItem>
                                                     <MenuItem>
-                                                        <Link :href="route('aca_courses_module_panel',course.id)" class="dark:text-gray-200 dark:hover:text-white">Módulos</Link>
+                                                        <Link :href="route('aca_courses_module_panel',course.id)" >Módulos</Link>
                                                     </MenuItem>
                                                     <MenuItem>
-                                                        <a @click="destroyCourse(course.id)" href="#" class="text-red-700 dark:text-gray-200 dark:hover:text-white">Eliminar</a>
+                                                        <a @click="destroyCourse(course.id)" href="#" >Eliminar</a>
                                                     </MenuItem>
                                                 </Menu>
                                                 </template>
