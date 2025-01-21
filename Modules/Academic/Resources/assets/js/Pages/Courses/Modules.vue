@@ -194,6 +194,8 @@
                 }
             }
             btnContentLoading.value = false;
+        }).finally(() => {
+            btnContentLoading.value = false;
         });
     }
 
@@ -469,16 +471,22 @@
     }
 
     const handleFileChangeContent = (event) => {
-      const file = event.target.files[0];
-      if (file && file.type === 'application/pdf') {
-        contentForm.content = file;
-        contentForm.clearErrors();
-      } else {
-        contentForm.setError({
-            content: 'Solo se permiten archivos PDF.',
-        });
-        event.target.value = null; // Resetea el campo de entrada si el archivo no es válido
-      }
+        const file = event.target.files[0];
+        const allowedTypes = [
+            'application/pdf',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'application/vnd.ms-excel'
+        ];
+
+        if (file && allowedTypes.includes(file.type)) {
+            contentForm.content = file;
+            contentForm.clearErrors();
+        } else {
+            contentForm.setError({
+                content: 'Solo se permiten archivos PDF o Excel.',
+            });
+            event.target.value = null; // Resetea el campo de entrada si el archivo no es válido
+        }
     }
 </script>
 

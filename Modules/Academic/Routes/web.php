@@ -14,6 +14,7 @@
 use App\Http\Controllers\LandingController;
 use Illuminate\Support\Facades\Route;
 use Modules\Academic\Http\Controllers\AcaAuthController;
+use Modules\Academic\Http\Controllers\AcaContentController;
 use Modules\Academic\Http\Controllers\AcaModuleController;
 use Modules\Academic\Http\Controllers\AcaStudentController;
 use Modules\Academic\Http\Controllers\MercadopagoController;
@@ -141,7 +142,7 @@ Route::middleware(['auth', 'verified', 'invalid_updated_information'])->prefix('
     Route::put('courses/modules/themes/update/{id}', 'AcaThemeController@update')->name('aca_courses_module_themes_update');
     Route::delete('courses/modules/themes/destroy/{id}', 'AcaThemeController@destroy')->name('aca_courses_module_themes_destroy');
     Route::put('courses/modules/themes/content/update/{id}', 'AcaContentController@update')->name('aca_courses_module_themes_content_update');
-    Route::post('courses/modules/themes/content/store', 'AcaContentController@store')->name('aca_courses_module_themes_content_store');
+    Route::post('courses/modules/themes/content/store', [AcaContentController::class, 'store'])->name('aca_courses_module_themes_content_store');
     Route::delete('courses/modules/themes/content/destroy/{id}', 'AcaContentController@destroy')->name('aca_courses_module_themes_content_destroy');
 
 

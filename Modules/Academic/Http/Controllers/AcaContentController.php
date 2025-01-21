@@ -34,18 +34,20 @@ class AcaContentController extends Controller
         ]);
 
         $success = true;
-        $errorPdf = null;
+        $errorFile = null;
 
         if ($request->get('is_file') == 2) {
-            $pdfFile = $request->file('content');
-            if ($pdfFile && $pdfFile->extension() == 'pdf') {
+            $file = $request->file('content');
+            $allowedExtensions = ['pdf', 'xlsx', 'xls'];
+
+            if ($file && in_array($file->extension(), $allowedExtensions)) {
                 $destination = 'uploads/courses/content';
-                $filename = time() . '.' . $pdfFile->extension();
-                $path = Storage::disk('public')->putFileAs($destination, $pdfFile, $filename);
+                $filename = time() . '.' . $file->extension();
+                $path = Storage::disk('public')->putFileAs($destination, $file, $filename);
                 $content->content = $path;
                 $content->save();
             } else {
-                $errorPdf = 'Solo se permiten archivos PDF.';
+                $errorFile = 'Solo se permiten archivos PDF o Excel.';
                 $success = false;
             }
         } else {
@@ -55,7 +57,7 @@ class AcaContentController extends Controller
 
 
 
-        return response()->json(['success' => $success, 'content' => $content, 'errorPdf' => $errorPdf]);
+        return response()->json(['success' => $success, 'content' => $content, 'errorPdf' => $errorFile]);
     }
 
 
