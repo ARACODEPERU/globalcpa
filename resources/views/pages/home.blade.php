@@ -19,6 +19,9 @@
                         <div class="slide">
                             <img src="{{ asset('themes//webpage/images/programas.jpg') }}" alt="Imagen 3" class="w-full">
                         </div>
+                        <div class="slide">
+                            <img src="{{ asset('themes//webpage/images/in_house.jpg') }}" alt="Imagen 3" class="w-full">
+                        </div>
                     </div>
                 </div>
         </section>
