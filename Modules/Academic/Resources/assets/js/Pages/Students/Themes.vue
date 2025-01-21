@@ -336,7 +336,7 @@
                                             </h6>
                                             <div class="flex justify-end">
                                                 <a 
-                                                    :href="getPath(content.content)" 
+                                                    :href="content.content" 
                                                     target="_blank" 
                                                     type="button" 
                                                     class="btn btn-success btn-sm flex uppercase inline-block"

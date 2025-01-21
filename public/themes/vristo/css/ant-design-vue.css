@@ -59,3 +59,6 @@
     background-color: #0f1d33 !important;
     color: #bfc5db !important;
 }
+.dark .ant-dropdown-menu-title-content {
+    color: #bfc5db !important;
+}
