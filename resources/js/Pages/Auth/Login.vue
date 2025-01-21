@@ -132,11 +132,11 @@
                                 <h1 class="text-3xl font-extrabold uppercase !leading-snug text-primary md:text-4xl">Iniciar sesión</h1>
                                 <p class="text-base font-bold leading-normal text-white-dark">Ingrese su correo electrónico y contraseña para iniciar sesión</p>
                             </div>
-                            <form class="space-y-5 dark:text-white" @submit.prevent="submit">
+                            <form class="space-y-5 dark:text-white" @submit.prevent="submit" novalidate>
                                 <div>
                                     <label for="Email">Correo Electrónico</label>
                                     <div class="relative text-white-dark">
-                                        <input v-model="form.email" id="Email" type="email" placeholder="Ingrese correo electrónico" class="form-input ps-10 placeholder:text-white-dark" tabindex="1" />
+                                        <input v-model="form.email" id="Email" type="text" placeholder="Ingrese correo electrónico" class="form-input ps-10 placeholder:text-white-dark" tabindex="1" />
                                         <span class="absolute start-4 top-1/2 -translate-y-1/2">
                                             <icon-mail :fill="true" />
                                         </span>
@@ -169,7 +169,7 @@
 
                             <div class="relative my-7 text-center md:mb-9">
                                 <span class="absolute inset-x-0 top-1/2 h-px w-full -translate-y-1/2 bg-white-light dark:bg-white-dark"></span>
-                                <span class="relative bg-white px-2 font-bold uppercase text-white-dark dark:bg-dark dark:text-white-light">Siguenos en:</span>
+                                <span class="relative bg-white px-2 font-bold uppercase text-white-dark dark:bg-dark dark:text-white-light">or</span>
                             </div>
                             <div class="mb-10 md:mb-[60px]">
                                 <ul class="flex justify-center gap-3.5 text-white">
@@ -211,12 +211,12 @@
                                     </li>
                                 </ul>
                             </div>
-                            <!-- <div class="text-center dark:text-white">
+                            <div class="text-center dark:text-white">
                                 ¿No tienes una cuenta?
                                 <Link :href="route('register')" class="uppercase text-primary underline transition hover:text-black dark:hover:text-white">
                                     REGISTRATE
                                 </Link>
-                            </div> -->
+                            </div>
                         </div>
                         <p class="absolute bottom-6 w-full text-center dark:text-white">© {{ new Date().getFullYear() }}.ARACODE All Rights Reserved.</p>
                     </div>
