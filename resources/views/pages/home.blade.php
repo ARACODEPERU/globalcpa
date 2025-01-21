@@ -11,13 +11,13 @@
                 <div class="slider w-full rounded-lg shadow-lg">
                     <div class="slides">
                         <div class="slide">
-                            <img src="https://netzun.com/_nuxt/img/banner_desktop.1656de5.webp" alt="Imagen 1" class="w-full">
+                            <img src="{{ asset('themes//webpage/images/cursos_especializados.jpg') }}" alt="Imagen 1" class="w-full">
                         </div>
                         <div class="slide">
-                            <img src="https://netzun.com/_nuxt/img/home-new-first.6aa270a.jpg" alt="Imagen 2" class="w-full">
+                            <img src="{{ asset('themes//webpage/images/cursos_especializados.jpg') }}" alt="Imagen 2" class="w-full">
                         </div>
                         <div class="slide">
-                            <img src="https://netzun.com/_nuxt/img/banner_desktop.1656de5.webp" alt="Imagen 3" class="w-full">
+                            <img src="{{ asset('themes//webpage/images/cursos_especializados.jpg') }}" alt="Imagen 3" class="w-full">
                         </div>
                     </div>
                 </div>
