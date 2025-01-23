@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Modules\Blog\Http\Controllers\BlogController;
 use Modules\Sales\Http\Controllers\SalesController;
+use App\Http\Controllers\WebController;
 
 // Rutas en Blade
 Route::get('/home', [WebPageController::class, 'index'])->name('index_main');
@@ -198,5 +199,9 @@ Route::middleware('auth')->group(function () {
 
     Route::post('meta/whatsapp/message/send', [MetaController::class, 'sendMessageWhatsapp'])->name('meta_whatsapp_message_send');
 });
+
+
+//CERTIFICADOS AUTOMATIZACIÓN Y PRUEBAS
+Route::get('/test-image/{student_id}/{certificate_id}/{fecha?}', [WebController::class, 'testimage'])->name('test-image');
 
 require __DIR__ . '/auth.php';
