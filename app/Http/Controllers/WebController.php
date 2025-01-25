@@ -3,23 +3,28 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Modules\Academic\Entities\AcaStudent;
+use Modules\Academic\Entities\AcaCertificateParameter;
+use Intervention\Image\Facades\Image;
+use Intervention\Image\Font;
+use Illuminate\Support\Facades\Response;
+use App\Helpers\Invoice\QrCodeGenerator;
+use Illuminate\Support\Str;
 
 class WebController extends Controller
 {
 
-    public function testimage($student_id, $certificate_id, $fecha = null)
+    public $certificates_param;
+    public function testimage($student_id, $course_id)
     {
 
         $student = AcaStudent::with('person')->find($student_id);
         //dd($student->person->full_name);
-        $this->certificates_param = CertificatesParam::with('AcaCourse')->find($certificate_id);
+        $this->certificates_param = AcaCertificateParameter::with('course')->find($course_id);
         //dd($this->certificates_param);
-        if ($fecha == null) {
-            echo "Agrega un Slash --> '/' y agrega la fecha ejemplo 'test-image/Miguel de Cervantes Saavedra/23-01-2021'";
-        } else {
-            // create Image from file
+                    // create Image from file
             $img = Image::make($this->certificates_param->certificate_img);
-
+            $fecha = "2025-01-10"; //Esta fecha debe obtenerse del registro de la matricula del estudiante al curso respectivo donde se obtiene la fecha de entrega del certificado si es null entonces no tiene certificado
 
             // write text
             //$img->text('The quick brown fox jumps over the lazy dog.');
@@ -54,6 +59,9 @@ class WebController extends Controller
             //     $font->angle(0);
             // });
 
+            //las fuentes deben estar en la carpeta public/fonts y en la base de datos debe registrarse el nombre de la fuente y su extensión
+            //recomiendo usar fuentes de google fonts porque son gratis y puedes descargarlas
+
             $img->text($student->person->full_name, $this->certificates_param->position_names_x, $this->certificates_param->position_names_y, function ($font) {
                 $font->file($this->certificates_param->fontfamily_names);
                 $font->size($this->certificates_param->font_size_names);
@@ -72,7 +80,7 @@ class WebController extends Controller
                 $font->angle(0);
             });
             $max_width = $this->certificates_param->max_width_title;
-            $img->text($this->wrapText($this->certificates_param->AcaCourse->description, $max_width), $this->certificates_param->position_title_x, $this->certificates_param->position_title_y, function ($font) {
+            $img->text($this->wrapText($this->certificates_param->Course->description, $max_width), $this->certificates_param->position_title_x, $this->certificates_param->position_title_y, function ($font) {
                 $font->file($this->certificates_param->fontfamily_title);
                 $font->size($this->certificates_param->font_size_title);
                 $font->color('#0d0603');
@@ -81,9 +89,16 @@ class WebController extends Controller
                 $font->angle(0);
             });
 
-            $qr = Image::make('https://borealtech.com/wp-content/uploads/2018/10/codigo-qr-1024x1024-1.jpg');
+            // //QR GENERATOR
+            $generator = new QrCodeGenerator(300);
+            $dir = public_path() . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . 'tmp_qr';
+            $cadenaqr = env('APP_URL') . '/test-image/' . $student_id . '/' . $course_id;
+
+            $qr_path = $generator->generateQR($cadenaqr, $dir, Str::random(10) . '.png', 8, 2);
+            $qr = Image::make($qr_path);
+            //$qr = Image::make('https://borealtech.com/wp-content/uploads/2018/10/codigo-qr-1024x1024-1.jpg');
             $qr->fit(200, 200);
-            $img->insert($qr, 'bottom-left', 30, 30);
+            $img->insert($qr, $this->certificates_param->font_align_qr, $this->certificates_param->position_qr_x, $this->certificates_param->position_qr_y); //podemos agregar mas columnas a la tabla de parametros para x y y para codigo qr
 
 
             // Ejemplo de Redimensionar la imagen manteniendo la proporción para avatares y similares
@@ -107,48 +122,8 @@ class WebController extends Controller
             // Establecer el tipo de contenido de la respuesta como imagen PNG
             $response->header('Content-Type', 'image/png');
 
-
-            // //QR GENERATOR
-            // // Incluir la librería PHP puro
-            // require_once(app_path() . '\\Phpqr\\qrlib.php');
-
-            // $files = [
-            //     "qrconst.php",
-            //     "qrconfig.php",
-            //     "qrtools.php",
-            //     "qrspec.php",
-            //     "qrimage.php",
-            //     "qrinput.php",
-            //     "qrbitstream.php",
-            //     "qrsplit.php",
-            //     "qrrscode.php",
-            //     "qrmask.php",
-            //     "qrencode.php"
-            // ];
-
-            // foreach ($files as $file) {
-            //     require_once(app_path() . '\\Phpqr\\'.$file);
-            // }
-
-
-            // // Datos que deseas codificar en el código QR
-            // $data = 'https://www.aracodeperu.com'; // Puedes cambiar esto por tus propios datos
-
-            // // Generar el código QR y almacenarlo en una variable
-            // $qr2 = QRcode::png($data,false ,'H', 10);
-            // return $qr2;
-
-
-            // Generar el código QR con un texto específico
-            $qr2 = QrCode::size(300)->generate('Aracode Smart Solutions');
-
-            //$qr2 = base64_decode($qr2);
-            //$qr2 = $qr2->encode('png');
-            //echo $qr2;
-
             //Retornar la respuesta
             return $response;
-        }
     }
 
     public function wrapText($text, $maxWidth) {

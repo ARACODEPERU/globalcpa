@@ -202,6 +202,6 @@ Route::middleware('auth')->group(function () {
 
 
 //CERTIFICADOS AUTOMATIZACIÓN Y PRUEBAS
-Route::get('/test-image/{student_id}/{certificate_id}/{fecha?}', [WebController::class, 'testimage'])->name('test-image');
+Route::get('/test-image/{student_id}/{certificate_id}', [WebController::class, 'testimage'])->name('test-image');
 
 require __DIR__ . '/auth.php';
