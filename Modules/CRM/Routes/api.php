@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Modules\CRM\Http\Controllers\CrmContactsController;
 
 /*
     |--------------------------------------------------------------------------
@@ -14,6 +15,8 @@ use Illuminate\Support\Facades\Route;
     |
 */
 
-Route::middleware(['auth:sanctum'])->prefix('v1')->name('api.')->group(function () {
-    Route::get('crm', fn (Request $request) => $request->user())->name('crm');
-});
+// Route::middleware(['auth:sanctum'])->prefix('v1')->name('api.')->group(function () {
+//     Route::get('crm', fn (Request $request) => $request->user())->name('crm');
+// });
+Route::post('contacts/mass/mailing/post', [CrmContactsController::class, 'sendMassMessage'])
+    ->name('crm_contacts_send_mail_post');

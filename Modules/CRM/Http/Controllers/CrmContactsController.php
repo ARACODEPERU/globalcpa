@@ -12,6 +12,8 @@ use DataTables;
 use Inertia\Inertia;
 use Modules\Academic\Entities\AcaCourse;
 use Modules\Academic\Entities\AcaStudent;
+use Illuminate\Support\Facades\Mail;
+use Modules\CRM\Emails\MailwithUserAccount;
 
 class CrmContactsController extends Controller
 {
@@ -78,8 +80,19 @@ class CrmContactsController extends Controller
         if ($this->P000009 == '1' || $this->P000009 == '99') {
             $model = $model->join('aca_students', 'aca_students.person_id', 'people.id');
 
-            if ($search['type']) {
-                $model = $model->where('aca_students.new_student', true);
+            if (is_array($search['type'])) {
+                $ty = $search['type'][0];
+
+                if ($ty == 'new') {
+                    $model = $model->where('aca_students.new_student', true);
+                } elseif ($ty == 'cur') {
+
+                    $cu = $search['type'][1];
+
+                    $model = $model->join('aca_cap_registrations', 'aca_students.id', 'aca_cap_registrations.student_id');
+
+                    $model = $model->where('aca_cap_registrations.course_id', $cu);
+                }
             }
 
 
@@ -90,5 +103,44 @@ class CrmContactsController extends Controller
         $model = $model->where('people.id', '<>', 1);
 
         return $model->paginate(10);
+    }
+
+    public function sendMassMessage(Request $request)
+    {
+        $correo = $request->get('correo');
+
+        $P000013 = Parameter::where('parameter_code', 'P000013')->value('value_default');
+
+        $type = $correo['type'];
+
+        $correosEnviados = 0;
+        $correosFallidos = [];
+
+        $data = [
+            'from_mail' => $P000013 ?? env('MAIL_FROM_ADDRESS'),
+            'from_name' => env('MAIL_FROM_NAME'),
+            'title' => $correo['title'],
+            'contact' => $correo['contact']
+        ];
+
+        //dd($correo);
+
+        try {
+            Mail::to($correo['contact']['email'])->send(new MailwithUserAccount($data));
+            $correosEnviados = 1;
+        } catch (\Exception $e) {
+
+            $correosFallidos = [
+                'email' => $correo['contact']['email'],
+                'error' => $e->getMessage() // Guarda el mensaje de error
+            ];
+        }
+
+        // Devuelve la respuesta con totales y detalles de errores
+        return response()->json([
+            'success' => count($correosFallidos) === 0,
+            'enviados' => $correosEnviados,
+            'fallidos' => $correosFallidos
+        ]);
     }
 }

@@ -85,5 +85,5 @@ Route::middleware(['auth', 'verified'])->prefix('crm')->group(function () {
 
     Route::middleware(['middleware' => 'permission:crm_contactos_listado'])
         ->post('contacts/list/pagination', [CrmContactsController::class, 'getContactsPagination'])
-        ->name('crm_contacts_list_data');
+        ->name('crm_contacts_list_pagination');
 });
