@@ -14,8 +14,7 @@ class AcaCapRegistration extends Model
         'student_id',
         'course_id',
         'status',
-        'modality_id',
-        'certificate_date',
+        'modality_id'
     ];
 
     protected static function newFactory()
