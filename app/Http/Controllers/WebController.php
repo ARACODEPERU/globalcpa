@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Modules\Academic\Entities\AcaStudent;
 use Modules\Academic\Entities\AcaCertificateParameter;
 use Modules\Academic\Entities\AcaCapRegistration;
+use Modules\Academic\Entities\AcaCourse;
 use Intervention\Image\Facades\Image;
 use Intervention\Image\Font;
 use Illuminate\Support\Facades\Response;
@@ -26,16 +27,11 @@ class WebController extends Controller
 
                 $student = AcaStudent::with('person')->find($student_id);
                 //dd($student->person->full_name);
-                $this->certificates_param = AcaCertificateParameter::with('course')->find($course_id);
+                $this->certificates_param = AcaCertificateParameter::where('course_id' , $course_id)->first();
 
                 // Verificar si se obtuvieron resultados en la consulta si no se obtiene se crea certificado por defecto con ID 1
-                if ($this->certificates_param) {
-
-                } else {
-                    $this->certificates_param = AcaCertificateParameter::find(1);
-                }
-
-
+                if (!$this->certificates_param)$this->certificates_param = AcaCertificateParameter::find(1);
+                $this->certificates_param->Course = AcaCourse::find($course_id);
 
 
                 //dd($this->certificates_param);
