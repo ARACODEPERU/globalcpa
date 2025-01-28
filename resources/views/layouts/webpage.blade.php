@@ -11,19 +11,19 @@
     />
 
     <title>Global CPA - Business School</title>
-    <link rel="icon" type="image/png" href="themes/webpage/images/Logo_isotipo.png" />
+    <link rel="icon" type="image/png" href="{{ asset('themes/webpage/images/Logo_isotipo.png') }}" />
 
     
 
     <!-- CSS Assets -->
-    <link rel="stylesheet" href="themes/webpage/css/app.css" />
+    <link rel="stylesheet" href="{{ asset('themes/webpage/css/app.css') }}" />
 
     
-    <link rel="stylesheet" href="themes/webpage/bootstrap-5.3.3/css/bootstrap-grid.css" />
-    <link rel="stylesheet" href="themes/webpage/css/aracode.css" />
+    <link rel="stylesheet" href="{{ asset('themes/webpage/bootstrap-5.3.3/css/bootstrap-grid.css') }}" />
+    <link rel="stylesheet" href="{{ asset('themes/webpage/css/aracode.css') }}" />
     
     <!-- Javascript Assets -->
-    <script src="themes/webpage/js/app.js" defer></script>
+    <script src="{{ asset('themes/webpage/js/app.js') }}" defer></script>
 
 
     <!-- Fonts -->

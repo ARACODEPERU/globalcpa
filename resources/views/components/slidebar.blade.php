@@ -18,7 +18,7 @@
             <div class="is-scrollbar-hidden flex grow flex-col space-y-4 overflow-y-auto pt-6">
                 <!-- Dashobards -->
                 <a
-                    href=""
+                    href="{{ route('index_main') }}"
                     class="flex size-11 items-center justify-center rounded-lg bg-primary/10 text-primary outline-none transition-colors duration-200 hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25 dark:bg-navy-600 dark:text-accent-light dark:hover:bg-navy-450 dark:focus:bg-navy-450 dark:active:bg-navy-450/90"
                     x-tooltip.placement.right="'Home'"
                 >
@@ -50,7 +50,7 @@
 
                 <!-- Apps -->
                 <a
-                    href="apps-list.html"
+                    href="{{ route('web_courses') }}"
                     class="flex size-11 items-center justify-center rounded-lg outline-none transition-colors duration-200 hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25"
                     x-tooltip.placement.right="'Cursos'"
                 >
@@ -546,61 +546,61 @@
                 <div class="my-3 mx-4 h-px bg-slate-200 dark:bg-navy-500"></div>
                 <ul class="flex flex-1 flex-col px-4 font-inter">
                     <li x-data="accordionItem('menu-item-1')">
-                    <a
-                        :class="expanded ? 'text-slate-800 font-semibold dark:text-navy-50' : 'text-slate-600 dark:text-navy-200  hover:text-slate-800  dark:hover:text-navy-50'"
-                        @click="expanded = !expanded"
-                        class="flex items-center justify-between py-2 text-xs+ tracking-wide outline-none transition-[color,padding-left] duration-300 ease-in-out"
-                        href="javascript:void(0);"
-                    >
-                        <span>Cursos</span>
-                        <svg
-                        :class="expanded && 'rotate-90'"
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="size-4 text-slate-400 transition-transform ease-in-out"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
+                        <a
+                            :class="expanded ? 'text-slate-800 font-semibold dark:text-navy-50' : 'text-slate-600 dark:text-navy-200  hover:text-slate-800  dark:hover:text-navy-50'"
+                            @click="expanded = !expanded"
+                            class="flex items-center justify-between py-2 text-xs+ tracking-wide outline-none transition-[color,padding-left] duration-300 ease-in-out"
+                            href="javascript:void(0);"
                         >
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M9 5l7 7-7 7"
-                        />
-                        </svg>
-                    </a>
-                    <ul x-collapse x-show="expanded">
-                        <li>
-                            <a
-                                x-data="navLink"
-                                href="dashboards-crypto-1.html"
-                                :class="isActive ? 'font-medium text-primary dark:text-accent-light' : 'text-slate-600 hover:text-slate-900 dark:text-navy-200 dark:hover:text-navy-50'"
-                                class="flex items-center justify-between p-2 text-xs+ tracking-wide outline-none transition-[color,padding-left] duration-300 ease-in-out hover:pl-4"
+                            <span>Cursos</span>
+                            <svg
+                            :class="expanded && 'rotate-90'"
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="size-4 text-slate-400 transition-transform ease-in-out"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
                             >
-                                <div class="flex items-center space-x-2">
-                                <div
-                                    class="size-1.5 rounded-full border border-current opacity-40"
-                                ></div>
-                                <span>Cierre Contable y Tributario - Ejercicio 2024</span>
-                                </div>
-                            </a>
-                        </li>
-                        {{-- <li>
-                            <a
-                                x-data="navLink"
-                                href="dashboards-crypto-2.html"
-                                :class="isActive ? 'font-medium text-primary dark:text-accent-light' : 'text-slate-600 hover:text-slate-900 dark:text-navy-200 dark:hover:text-navy-50'"
-                                class="flex items-center justify-between p-2 text-xs+ tracking-wide outline-none transition-[color,padding-left] duration-300 ease-in-out hover:pl-4"
-                            >
-                                <div class="flex items-center space-x-2">
-                                <div
-                                    class="size-1.5 rounded-full border border-current opacity-40"
-                                ></div>
-                                <span>Cryptocurrency v2</span>
-                                </div>
-                            </a>
-                        </li> --}}
-                    </ul>
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M9 5l7 7-7 7"
+                            />
+                            </svg>
+                        </a>
+                        <ul x-collapse x-show="expanded">
+                            @foreach ($courses as $item )
+                            <li>
+                                <a
+                                    x-data="navLink"
+                                    href="{{ route('web_course_description', $item->course->id) }}"
+                                    class="flex items-center justify-between p-1 text-xs+ tracking-wide transition-[color,padding-left] duration-300 ease-in-out hover:pl-4"
+                                >
+                                    <div class="flex items-center space-x-2">
+                                    <div class="size-0.5 opacity-60"</div>
+                                    <span>{{ $item->name }}</span>
+                                    </div>
+                                </a>
+                            </li>
+                                
+                            @endforeach 
+                            {{-- <li>
+                                <a
+                                    x-data="navLink"
+                                    href="dashboards-crypto-2.html"
+                                    :class="isActive ? 'font-medium text-primary dark:text-accent-light' : 'text-slate-600 hover:text-slate-900 dark:text-navy-200 dark:hover:text-navy-50'"
+                                    class="flex items-center justify-between p-2 text-xs+ tracking-wide outline-none transition-[color,padding-left] duration-300 ease-in-out hover:pl-4"
+                                >
+                                    <div class="flex items-center space-x-2">
+                                    <div
+                                        class="size-1.5 rounded-full border border-current opacity-40"
+                                    ></div>
+                                    <span>Cryptocurrency v2</span>
+                                    </div>
+                                </a>
+                            </li> --}}
+                        </ul>
                     </li>
                     {{-- <li x-data="accordionItem('menu-item-2')">
                         <a

@@ -28,7 +28,7 @@
             <!-- Right: Header buttons -->
             <div class="-mr-1.5 flex items-center space-x-2">
                 <!-- Mobile Search Toggle -->
-                <button
+                {{-- <button
                     @click="$store.global.isSearchbarActive = !$store.global.isSearchbarActive"
                     class="btn size-8 rounded-full p-0 hover:bg-slate-300/20 focus:bg-slate-300/20 active:bg-slate-300/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25 sm:hidden"
                 >
@@ -46,7 +46,7 @@
                         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                     />
                     </svg>
-                </button>
+                </button> --}}
 
                 <!-- Main Searchbar -->
                 {{-- <template x-if="$store.breakpoints.smAndUp">
@@ -623,7 +623,6 @@
                     </div>
                 </template> --}}
 
-                
 
                 <!-- Dark Mode Toggle -->
                 <button
@@ -661,11 +660,12 @@
                     </svg>
                 </button>
 
+                <!-- Shop-Cart -->
+                <button class="btn size-8 rounded-full p-0 hover:bg-slate-300/20 focus:bg-slate-300/20 
+                    active:bg-slate-300/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25">
+                    <i class="fa fa-cart-plus" aria-hidden="true" style="font-size: 20px;"></i>
+                </button>
                 
-                <a href="{{ route('login') }}">
-                    <button class="boton-degradado-campus">Campus Virtual</button>
-                </a>
-
                 <!-- Monochrome Mode Toggle -->
                 {{-- <button
                     @click="$store.global.isMonochromeModeEnabled = !$store.global.isMonochromeModeEnabled"
@@ -675,6 +675,11 @@
                     class="fa-solid fa-palette bg-gradient-to-r from-sky-400 to-blue-600 bg-clip-text text-lg font-semibold text-transparent"
                     ></i>
                 </button> --}}
+                
+                <a href="{{ route('login') }}">
+                    <button class="boton-degradado-campus">Campus Virtual</button>
+                </a>
+
 
             <!-- Notification-->
             {{-- <div

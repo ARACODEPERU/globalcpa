@@ -1,8 +1,5 @@
 <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6">
-                        
     @foreach ($courses as $item )
-
-    
     <div class="card group p-3">
         <div class="flex items-center justify-between space-x-2 px-1">
             <div class="flex items-center space-x-2">
@@ -11,7 +8,7 @@
                 </div>
                 <div>
                     <a href="#" class="font-medium text-slate-600 line-clamp-1 dark:text-navy-100">
-                        {{ $item->course->teacher->person->father_lastname .' ' .$item->course->teacher->person->names  }}
+                        {{ $item->course->teacher->person->names .' ' .$item->course->teacher->person->father_lastname   }}
                     </a>
                     <a href="">
                         <p class="text-xs text-primary dark:text-accent-light">
@@ -31,7 +28,7 @@
             <img class="h-56 w-full rounded-lg object-cover object-center" src="{{ asset('storage/'.$item->course->image) }}" alt="image">
             <div class="absolute top-0 h-full w-full rounded-lg bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
             <div class="absolute top-0 flex h-full w-full items-center justify-center opacity-0 group-hover:opacity-100">
-                <a href="">
+                <a href="{{ route('web_course_description', $item->course->id) }}">
                     <button class="btn min-w-[7rem] border border-white/10 bg-white/20 text-white backdrop-blur hover:bg-white/30 focus:bg-white/30">
                         Más Información
                     </button>
@@ -40,16 +37,16 @@
         </div>
         <div class="mt-3 px-1">
             <p class="text-xs text-primary dark:text-accent-light">
-                {{ $item->course->additional }}
+                {{ $item->additional }}
             </p>
-            <a href="#" class="text-base font-medium text-slate-700 line-clamp-1 hover:text-primary focus:text-primary dark:text-navy-100 dark:hover:text-accent-light dark:focus:text-accent-light">
-                {{ $item->course->name }}
+            <a href="{{ route('web_course_description', $item->course->id) }}" class="text-base font-medium text-slate-700 line-clamp-1 hover:text-primary focus:text-primary dark:text-navy-100 dark:hover:text-accent-light dark:focus:text-accent-light">
+                {{ $item->name }}
             </a>
-            <p>{{ $item->course->category_description }}</p>
+            <p>{{ $item->category_description }}</p>
             <div class="my-3 h-px bg-slate-200 dark:bg-navy-500"></div>
             <div class="flex justify-between">
                 <div>
-                    <a href="">
+                    <a href="{{ route('web_course_description', $item->course->id) }}">
                         <button class="boton-degradado-info"><b>Más Información</b></button>
                     </a>
                 </div>

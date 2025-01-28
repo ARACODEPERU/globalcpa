@@ -245,7 +245,7 @@
             </div>
           </div>
         
-        <section style="padding: 20px;">
+        {{-- <section style="padding: 20px;">
             <div class="mx-auto mt-8 grid w-full grid-cols-1 gap-4 sm:grid-cols-1 sm:gap-5 lg:gap-6">
                 <div class="mx-auto mt-8 grid w-full grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:gap-6">
                     <div style="place-items: center;">
@@ -290,10 +290,10 @@
                     </div>
                 </div>
             </div>
-        </section>
+        </section> --}}
 
         {{-- DURACION --}}
-        <section style="padding: 30px 0px;">
+        {{-- <section style="padding: 30px 0px;">
             <div class="container">
                 <div class="row">
                     <div class="col-md-4">
@@ -332,10 +332,10 @@
                 </div>
             </div>
 
-        </section>
+        </section> --}}
         
         {{-- DIRIGIDO --}}
-        <section style="padding: 30px 0px;">
+        {{-- <section style="padding: 30px 0px;">
             <div class="container card" style="padding: 20px 40px;">
                 <div class="row">
                     <div class="col-md-12">
@@ -359,10 +359,10 @@
                     </div>
                 </div>
             </div>
-        </section>
+        </section> --}}
         
         {{-- FACILITADORES --}}
-        <section style="padding: 30px 0px;">
+        {{-- <section style="padding: 30px 0px;">
             <div class="container card" style="padding: 20px 40px;">
                 <div class="row">
                     <div class="col-md-12">
@@ -451,10 +451,10 @@
                     </div>
                 </div>
             </div>
-        </section>
+        </section> --}}
 
         {{-- PLAN CURRICULA --}}
-        <section style="padding: 30px 0px;">
+        {{-- <section style="padding: 30px 0px;">
             <div class="container">
                 <div class="row">
                     <div class="col-md-12">
@@ -865,10 +865,10 @@
                     </div>
                 </div>
             </div>
-        </section>
+        </section> --}}
 
         {{-- INCLUYE --}}
-        <section style="padding: 30px 0px;">
+        {{-- <section style="padding: 30px 0px;">
             <div class="container">
                 <div class="row">
                     <div class="col-md-12">
@@ -913,18 +913,11 @@
                 </div>
             </div>
 
-        </section>
+        </section> --}}
 
         {{-- CERTIFICADO --}}
-        <section style="padding: 30px 0px;">
+        {{-- <section style="padding: 30px 0px;">
             <div class="container  card">
-                {{-- <div class="row">
-                    <div class="col-md-12">
-                        <h2 class="title_aracode" style="font-size: 35px; line-height: 1.5; font-weight: 700; text-align: center; margin-top: 10px; margin-bottom: 30px;">
-                            ¡Comparte tus logros con un certificado!
-                        </h2>
-                    </div>
-                </div> --}}
                 <div class="row">
                     <div class="col-md-2"></div>
                     <div class="col-md-4">
@@ -949,9 +942,9 @@
                     <div class="col-md-2"></div>
                 </div>
             </div>
-        </section>
+        </section> --}}
 
-        <section class="padding: 30px 0px;">
+        {{-- <section class="padding: 30px 0px;">
             <div class="container">
                 <div class="row">
                     <div class="col-md-6" style="padding: 10px 0px;">
@@ -966,7 +959,8 @@
                     </div>
                 </div>
             </div>
-        </section>
+        </section> --}}
+        
     </main>
     
     <br>
