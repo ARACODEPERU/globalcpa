@@ -26,7 +26,7 @@
                 </div>
         </section>
 
-        <section style="padding: 20px 10px;">
+        {{-- <section style="padding: 20px 10px;">
             <div class="mx-auto grid w-full grid-cols-1 gap-4 sm:grid-cols-1 sm:gap-5 lg:gap-6">
                 <div class="card" style="place-items: center; padding: 20px 0px;">
                     <h1 class="title_aracode" style="font-size: 60px; line-height: 1.1; font-weight: 900; text-align:center; ">
@@ -34,7 +34,216 @@
                     </h1>
                 </div>
             </div>
-        </section>
+        </section> --}}
+
+        <div class="mt-5 grid grid-cols-12 gap-4 sm:gap-5 lg:gap-6">
+            <div class="col-span-12 space-y-4 sm:space-y-5 lg:col-span-8 lg:space-y-6 xl:col-span-9">
+                <div>
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-xl font-medium text-slate-800 dark:text-navy-50">
+                            Global CDP Business School | Formación:
+                        </h3>
+                        <div class="hidden w-full max-w-xs justify-between space-x-4 text-slate-700 dark:text-navy-100 sm:flex" x-data="{activeTab:'tabAll'}">
+                            <button @click="activeTab = 'tabAll'" class="font-medium tracking-wide text-primary dark:text-accent-light" :class="activeTab === 'tabAll' &amp;&amp; 'text-primary dark:text-accent-light' ">
+                            Todos
+                            </button>
+                            <button @click="activeTab = 'tabArt'" class="font-medium tracking-wide" :class="activeTab === 'tabArt' &amp;&amp; 'text-primary dark:text-accent-light' ">
+                            Cursos
+                            </button>
+                            <button @click="activeTab = 'tabSport'" class="font-medium tracking-wide" :class="activeTab === 'tabSport' &amp;&amp; 'text-primary dark:text-accent-light' ">
+                            Programas
+                            </button>
+                        </div>
+                    </div>
+                    <!--Courses One Start-->
+                    <x-courses.list-card /> 
+                    <!--Courses One End-->
+              </div>
+            </div>
+            <div class="col-span-12 space-y-4 sm:space-y-5 lg:col-span-4 lg:space-y-6 xl:col-span-3">
+              <div class="card bg-gradient-to-br from-info to-info-focus p-4">
+                <div class="mt-10">
+                  <div class="flex justify-between">
+                    <p class="text-2xl font-semibold text-white">Banner promocion</p>
+                    <br>
+                    <br>
+                    <br>
+                  </div>
+                </div>
+              </div>
+                  
+              {{-- <div class="card p-3">
+                <img class="h-56 w-full rounded-lg object-cover object-center" src="images/object/object-18.jpg" alt="image">
+                <div class="mt-3 p-1">
+                  <div class="flex items-center justify-between space-x-1">
+                    <a href="#" class="text-base font-medium text-slate-700 line-clamp-1 hover:text-primary focus:text-primary dark:text-navy-100 dark:hover:text-accent-light dark:focus:text-accent-light">
+                      The Runner #033
+                    </a>
+                    <button x-data="{isLiked:true}" @click="isLiked = !isLiked" class="btn size-7 rounded-full bg-slate-150 p-0 text-slate-800 hover:bg-slate-200 focus:bg-slate-200 active:bg-slate-200/80 dark:bg-navy-500 dark:text-navy-50 dark:hover:bg-navy-450 dark:focus:bg-navy-450 dark:active:bg-navy-450/90">
+                      <i x-show="!isLiked" class="fa-regular fa-heart" style="display: none;"></i>
+                      <i x-show="isLiked" class="fa-solid fa-heart text-error"></i>
+                    </button>
+                  </div>
+                  <p class="mt-2 text-xs+">
+                    Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                    Perferendis optio laudantium
+                  </p>
+                  <div class="mt-5 flex items-center justify-between space-x-2">
+                    <div class="flex items-center space-x-2">
+                      <div class="avatar size-10">
+                        <img class="rounded-full" src="images/avatar/avatar-20.jpg" alt="avatar">
+                      </div>
+                      <div>
+                        <a href="#" class="font-medium text-slate-600 line-clamp-1 dark:text-navy-100">Travis Fuller</a>
+                        <p class="text-xs text-slate-400 dark:text-navy-300">
+                          952 items
+                        </p>
+                      </div>
+                    </div>
+                    <button class="btn h-7 rounded-full bg-primary/10 px-2.5 text-xs font-medium text-primary hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25 dark:bg-accent-light/10 dark:text-accent-light dark:hover:bg-accent-light/20 dark:focus:bg-accent-light/20 dark:active:bg-accent-light/25">
+                      Follow
+                    </button>
+                  </div>
+                  <p class="mt-6 font-medium">Action End in</p>
+                  <div class="mt-3 grid grid-cols-3 gap-3 text-center font-inter text-4xl font-semibold text-primary dark:text-accent-light">
+                    <div class="grid grid-cols-2 gap-1">
+                      <div class="rounded-lg bg-primary/10 py-3 dark:bg-accent-light/10">
+                        1
+                      </div>
+                      <div class="rounded-lg bg-primary/10 py-3 dark:bg-accent-light/10">
+                        4
+                      </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-1">
+                      <div class="rounded-lg bg-primary/10 py-3 dark:bg-accent-light/10">
+                        3
+                      </div>
+                      <div class="rounded-lg bg-primary/10 py-3 dark:bg-accent-light/10">
+                        5
+                      </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-1">
+                      <div class="rounded-lg bg-primary/10 py-3 dark:bg-accent-light/10">
+                        4
+                      </div>
+                      <div class="rounded-lg bg-primary/10 py-3 dark:bg-accent-light/10">
+                        5
+                      </div>
+                    </div>
+                  </div>
+                  <div class="mt-2 grid grid-cols-3 gap-3 text-center text-xs+">
+                    <p>hours</p>
+                    <p>minutes</p>
+                    <p>seconds</p>
+                  </div>
+                  <div class="my-5 h-px bg-slate-200 dark:bg-navy-500"></div>
+                  <div class="flex items-center justify-between">
+                    <p class="text-lg font-medium text-slate-700 dark:text-navy-100">
+                      156 ETH
+                    </p>
+                    <button class="btn h-9 min-w-[7rem] rounded-full bg-primary font-medium text-white hover:bg-primary-focus focus:bg-primary-focus active:bg-primary-focus/90 dark:bg-accent dark:hover:bg-accent-focus dark:focus:bg-accent-focus dark:active:bg-accent/90">
+                      Place a Bid
+                    </button>
+                  </div>
+                </div>
+              </div>  --}}
+  
+              <div class="card px-4 pb-4">
+                <div class="my-3 flex h-8 items-center justify-between">
+                    <h2 class="text-sm+ font-medium tracking-wide text-slate-700 dark:text-navy-100">
+                        Articulos Recientes
+                    </h2>
+                    <a href="#" class="border-b border-dotted border-current pb-0.5 text-xs+ font-medium text-primary 
+                                outline-none transition-colors duration-300 hover:text-primary/70 focus:text-primary/70 dark:text-accent-light 
+                                dark:hover:text-accent-light/70 dark:focus:text-accent-light/70">
+                                Ver todos
+                    </a>
+                </div>
+  
+                <div class="space-y-4">
+                  <a href="">
+                    <div class="flex items-center justify-between space-x-2">
+                        <div class="flex items-center space-x-2">
+                          <div class="avatar size-10">
+                            <img class="mask is-hexagon" src="{{ asset('themes/webpage/images/avatar/avatar-18.jpg') }}" alt="avatar">
+                          </div>
+                          <div>
+                            <p class="font-medium text-slate-600 line-clamp-1 dark:text-navy-100">
+                              Títlo del articulo
+                            </p>
+                            <p></p>
+                            <p class="text-xs text-slate-400 dark:text-navy-300">
+                              Categoria
+                            </p>
+                          </div>
+                        </div>
+                        <p class="text-xs">Just Now</p>
+                    </div>
+                  </a>
+                  <br>
+                  <a href="">
+                    <div class="flex items-center justify-between space-x-2">
+                        <div class="flex items-center space-x-2">
+                          <div class="avatar size-10">
+                            <img class="mask is-hexagon" src="{{ asset('themes/webpage/images/avatar/avatar-18.jpg') }}" alt="avatar">
+                          </div>
+                          <div>
+                            <p class="font-medium text-slate-600 line-clamp-1 dark:text-navy-100">
+                              Títlo del articulo
+                            </p>
+                            <p></p>
+                            <p class="text-xs text-slate-400 dark:text-navy-300">
+                              Categoria
+                            </p>
+                          </div>
+                        </div>
+                        <p class="text-xs">2 horas</p>
+                      </div>
+                  </a>
+                  <br>
+                  <a href="">
+                    <div class="flex items-center justify-between space-x-2">
+                        <div class="flex items-center space-x-2">
+                          <div class="avatar size-10">
+                            <img class="mask is-hexagon" src="{{ asset('themes/webpage/images/avatar/avatar-18.jpg') }}" alt="avatar">
+                          </div>
+                          <div>
+                            <p class="font-medium text-slate-600 line-clamp-1 dark:text-navy-100">
+                              Títlo del articulo
+                            </p>
+                            <p></p>
+                            <p class="text-xs text-slate-400 dark:text-navy-300">
+                              Categoria
+                            </p>
+                          </div>
+                        </div>
+                        <p class="text-xs">2 horas</p>
+                      </div>
+                  </a>
+                  <br>
+                  <a href="">
+                    <div class="flex items-center justify-between space-x-2">
+                        <div class="flex items-center space-x-2">
+                          <div class="avatar size-10">
+                            <img class="mask is-hexagon" src="{{ asset('themes/webpage/images/avatar/avatar-18.jpg') }}" alt="avatar">
+                          </div>
+                          <div>
+                            <p class="font-medium text-slate-600 line-clamp-1 dark:text-navy-100">
+                              Títlo del articulo
+                            </p>
+                            <p></p>
+                            <p class="text-xs text-slate-400 dark:text-navy-300">
+                              Categoria
+                            </p>
+                          </div>
+                        </div>
+                        <p class="text-xs">2 horas</p>
+                      </div>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
         
         <section style="padding: 20px;">
             <div class="mx-auto mt-8 grid w-full grid-cols-1 gap-4 sm:grid-cols-1 sm:gap-5 lg:gap-6">
