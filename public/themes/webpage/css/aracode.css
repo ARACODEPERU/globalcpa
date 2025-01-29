@@ -171,6 +171,25 @@
   background: linear-gradient(45deg, #e9eef5, #d1d5dc);
 }
 
+
+.boton-degradado-trash {
+  width: 50%;
+  padding: 12px 15px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(45deg, #3c4a99, #4f46e5);
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  transition: transform 0.2s, background 0.3s;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.boton-degradado-trash:hover {
+  transform: translateY(-3px);
+  background: linear-gradient(45deg, #4f46e5, #3c4a99);
+}
+
 @media (min-width: 1700px) {
     .container-xxl, .container-xl, .container-lg, .container-md, .container-sm, .container {
       max-width: 1680px;

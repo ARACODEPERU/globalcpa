@@ -37,7 +37,7 @@
                         <div class="row">
                             @if ($course->price)
                                 <div class="col-md-6" style="padding: 10px 0px;">
-                                    <a href="">
+                                    <a  onclick="agregarAlCarrito({ id: {{ $item->id }}, nombre: '{{ $item->name }}', precio: {{ $item->price }} })">
                                         <button class="boton-degradado-courses">
                                             <b>
                                                 <i class="fa fa-cart-plus" aria-hidden="true" style="font-size: 16px;"></i>

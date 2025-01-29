@@ -33,6 +33,7 @@ Route::get('/home', [WebPageController::class, 'index'])->name('index_main');
 Route::get('/', [WebPageController::class, 'index'])->name('index_main');
 Route::get('/cursos', [WebPageController::class, 'courses'])->name('web_courses');
 Route::get('/curso-descripcion/{id}', [WebPageController::class, 'coursedescription'])->name('web_course_description');
+Route::get('/carrito', [WebPageController::class, 'shopcart'])->name('web_carrito');
 
 //////mensajes de whatsapp///////
 Route::get('/ask/product/{id}', [LandingController::class, 'redirectToWhatsApp'])->name('whatsapp_send');

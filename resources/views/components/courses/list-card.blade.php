@@ -51,8 +51,8 @@
                     </a>
                 </div>
                 <div class="text-right">
-                    <a href="">
-                        <button class="boton-degradado-courses">
+                    <a onclick="agregarAlCarrito({ id: {{ $item->id }}, nombre: '{{ $item->name }}', precio: {{ $item->price }} })">
+                        <button class="boton-degradado-courses" >
                             <b>
                                 <i class="fa fa-cart-plus" aria-hidden="true" style="font-size: 16px;"></i>
                                 &nbsp; Añadir al Carrito

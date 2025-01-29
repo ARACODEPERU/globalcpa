@@ -231,9 +231,7 @@ const removeSpecifications= (key) => {
                         <InputLabel for="category_description" value="Sector" />                       
                         <select id="category_description" v-model="form.category_description" class="form-select text-white-dark">
                             <option selected value="">Seleccionar Sector</option>
-                            <option value="Derecho">Derecho</option>
-                            <option value="Empresarial">Empresarial</option>
-                            <option value="Publico">Público</option>
+                            <option value="Contabilidad">Contabilidad</option>
                             <!-- Agrega más opciones según tus necesidades -->
                         </select>
                         <InputError :message="form.errors.category_description" class="mt-2" />
@@ -271,6 +269,7 @@ const removeSpecifications= (key) => {
                         <InputLabel for="additional" :value="titles.additional+'*'" />
                         <select id="additional" v-model="form.additional" class="form-select text-white-dark">
                             <option value="">Seleccionar tipo</option>
+                            <option value="Webinars gratuitos">Webinars gratuitos</option>
                             <option value="Curso">Curso</option>
                             <option value="Diplomado">Diplomado</option>
                         </select>

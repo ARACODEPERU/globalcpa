@@ -153,6 +153,12 @@ class WebPageController extends Controller
         ]);
     }
 
+    
+    public function shopcart()
+    {
+        return view('pages.shop-cart');
+    }
+
     public function servicios()
     {
 
