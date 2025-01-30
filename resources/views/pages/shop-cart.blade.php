@@ -24,7 +24,7 @@
                                     @click="activeTab = 'tabRecent'"
                                     :class="activeTab === 'tabRecent' ? 'bg-white shadow dark:bg-navy-500 dark:text-navy-100' : 'hover:text-slate-800 focus:text-slate-800 dark:hover:text-navy-100 dark:focus:text-navy-100'"
                                     class="btn shrink-0 px-3 py-1 text-xs+ font-medium">
-                                    0 productos en el carrito
+                                    <span id = "total_productos">0 programas en el carrito.</span>
                                 </button>
                             </div>
                         </div>
@@ -56,7 +56,7 @@
                                         </th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody id="cart">
                                     <tr
                                         class="border-y border-transparent border-b-slate-200 dark:border-b-navy-500"
                                     >
@@ -83,75 +83,7 @@
                                         <td
                                         class="whitespace-nowrap px-4 py-3 font-medium text-slate-700 dark:text-navy-100 sm:px-5"
                                         >
-                                        S/ 390.00
-                                        </td>
-                                        <td class="whitespace-nowrap px-4 py-3 text-slate-700 dark:text-navy-100 sm:px-5">
-                                            <button class="boton-degradado-trash">
-                                                    <i class="fa fa-trash" aria-hidden="true" style="font-size: 16px;"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <tr
-                                        class="border-y border-transparent border-b-slate-200 dark:border-b-navy-500"
-                                    >
-                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                            <div class="flex items-center space-x-4">
-                                                <div class="avatar">
-                                                <img
-                                                    class="rounded-full"
-                                                    src="{{ asset('themes/webpage/images/object/object-15.jpg') }}"
-                                                    alt="avatar"
-                                                />
-                                                </div>
-
-                                                <span class="font-medium text-slate-700 dark:text-navy-100">
-                                                    Título del curso
-                                                </span>
-                                            </div>
-                                        </td>
-                                        <td
-                                        class="whitespace-nowrap px-4 py-3 font-medium text-slate-700 dark:text-navy-100 sm:px-5"
-                                        >
-                                        Programas de Especialización
-                                        </td>
-                                        <td
-                                        class="whitespace-nowrap px-4 py-3 font-medium text-slate-700 dark:text-navy-100 sm:px-5"
-                                        >
-                                        S/ 390.00
-                                        </td>
-                                        <td class="whitespace-nowrap px-4 py-3 text-slate-700 dark:text-navy-100 sm:px-5">
-                                            <button class="boton-degradado-trash">
-                                                    <i class="fa fa-trash" aria-hidden="true" style="font-size: 16px;"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <tr
-                                        class="border-y border-transparent border-b-slate-200 dark:border-b-navy-500"
-                                    >
-                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                        <div class="flex items-center space-x-4">
-                                            <div class="avatar">
-                                            <img
-                                                class="rounded-full"
-                                                src="{{ asset('themes/webpage/images/object/object-15.jpg') }}"
-                                                alt="avatar"
-                                            />
-                                            </div>
-
-                                            <span class="font-medium text-slate-700 dark:text-navy-100">
-                                                Título del curso
-                                            </span>
-                                        </div>
-                                        </td>
-                                        <td
-                                        class="whitespace-nowrap px-4 py-3 font-medium text-slate-700 dark:text-navy-100 sm:px-5"
-                                        >
-                                        Programas de Especialización
-                                        </td>
-                                        <td
-                                        class="whitespace-nowrap px-4 py-3 font-medium text-slate-700 dark:text-navy-100 sm:px-5"
-                                        >
-                                        S/ 390.00
+                                        S/ 590.00
                                         </td>
                                         <td class="whitespace-nowrap px-4 py-3 text-slate-700 dark:text-navy-100 sm:px-5">
                                             <button class="boton-degradado-trash">
@@ -165,7 +97,7 @@
                         
                         <button class="btn mt-1 h-11 justify-between bg-primary font-medium text-white hover:bg-primary-focus focus:bg-primary-focus active:bg-primary-focus/90 dark:bg-accent dark:hover:bg-accent-focus dark:focus:bg-accent-focus dark:active:bg-accent/90">
                             <span>TOTAL:</span>
-                            <span><i class="fa fa-heart" aria-hidden="true"></i>&nbsp; S/. 188.00</span>
+                            <span><i class="fa fa-heart" aria-hidden="true"></i>&nbsp; <div id="totalid">S/ 0.00</div></span>
                         </button>
                     
                     </div>
@@ -184,6 +116,8 @@
                             </h2>
                         </div>
                         <form class="form" method="POST" action="{{ route('onlineshop_client_account_store') }}" id ="CartForm">
+                            <meta name="csrf-token" content="{{ csrf_token() }}">
+                           <div id="divCartHidden" style="display: none">
                             <div class="row">
                                 <div class="pt-4 col-md-6">
                                     <p class="text-xs+">Nombres</p>
@@ -232,7 +166,11 @@
                                     </div>
                                 </div>
                             </div>
-                            <button class="mt-8 boton-degradado-courses">
+                            <button class="mt-8 boton-degradado-courses" id="btn-crear-cuenta"
+                            data-sitekey="reCAPTCHA_site_key"
+                            data-callback='onSubmit'
+                            data-action='submit'
+                            disabled>
                                     <b>CREAR CUENTA PARA PAGAR</b>
                             </button>
                         </form>
@@ -326,17 +264,17 @@
 
     <script>
 
-        let currentIndex = 0;
-        const slides = document.querySelector('.slides');
-        const totalSlides = document.querySelectorAll('.slide').length;
+        // let currentIndex = 0;
+        // const slides = document.querySelector('.slides');
+        // const totalSlides = document.querySelectorAll('.slide').length;
 
-        function showNextSlide() {
-            currentIndex = (currentIndex + 1) % totalSlides;
-            const offset = -currentIndex * 100;
-            slides.style.transform = `translateX(${offset}%)`;
-        }
+        // function showNextSlide() {
+        //     currentIndex = (currentIndex + 1) % totalSlides;
+        //     const offset = -currentIndex * 100;
+        //     slides.style.transform = `translateX(${offset}%)`;
+        // }
 
-        setInterval(showNextSlide, 3000); // Cambia cada 3 segundos
+        // setInterval(showNextSlide, 3000); // Cambia cada 3 segundos
 
     </script>
 
@@ -373,5 +311,210 @@
         });
     });
     </script>
-    
+    {{-- codigo de recapcha --}}
+ <script type="text/javascript">
+    function callbackThen(response) {
+
+        // read HTTP status
+
+        console.log(response.status);
+
+        // read Promise object
+
+        response.json().then(function(data) {
+
+            console.log(data);
+
+        });
+
+    }
+
+    function callbackCatch(error) {
+
+        console.error('Error:', error)
+
+    }
+</script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    cargarItemsCarritoBD();
+
+    function cargarItemsCarritoBD() {
+        document.getElementById('cart').innerHTML =
+            ""; // BORRAR contenido de la vista, antes de cargar de la base de datos
+        let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+        myIds = [];
+        carrito.forEach(function(item) {
+            // Hacer algo con cada elemento del carrito
+
+            myIds.push(parseInt(item.id));
+        });
+
+        btnCrear = document.getElementById("btn-crear-cuenta");
+                    btnCrear.setAttribute("disabled", "disabled");
+        realizarConsulta(myIds);
+    }
+
+    function realizarConsulta(ids) {
+        // Realizar la petición Ajax
+        var csrfToken = "{{ csrf_token() }}";
+
+
+        $.ajax({
+            url: "{{ route('onlineshop_get_item_carrito') }}",
+            type: 'POST',
+            data: {
+                ids: ids
+            },
+            dataType: 'json',
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            success: function(respuesta) {
+                // Obtén una referencia al elemento div por su ID
+                var divCartHidden = document.getElementById("divCartHidden");
+
+                respuesta.items.forEach(function(item) {
+                    // Accede a las propiedades del objeto
+                    renderProducto(item);
+                    // Crea un elemento input oculto
+                    let inputHidden = document.createElement("input");
+                    // Establece los atributos del input
+                    inputHidden.type = "hidden";
+                    inputHidden.name = "item_id[]"; // Asigna el nombre que desees
+                    inputHidden.value = item.id; // Asigna el valor que desees
+                    // Agrega el input al div
+                    divCartHidden.appendChild(inputHidden);
+                });
+
+                btnCrear = document.getElementById("btn-crear-cuenta");
+                    btnCrear.removeAttribute("disabled");
+
+            },
+            error: function(xhr) {
+                // Ocurrió un error al realizar la consulta
+                console.log(xhr.responseText);
+                // Aquí puedes manejar el error de alguna manera
+            }
+        });
+
+    }
+
+    function renderProducto(respuesta) {
+
+        var cart = document.getElementById('cart');
+        if (cart != null) {
+            var id = respuesta.id;
+            var teacher = respuesta.teacher;
+            var teacher_id = respuesta.teacher_id;
+            var avatar = respuesta.avatar;
+            var image = respuesta.image;
+            var name = respuesta.name;
+            var price = respuesta.price;
+            var modalidad = respuesta.additional;
+            var url_campus = "";
+            var url_descripcion_programa = "/descripcion-programa/"+id; // esta ruta deberá corregirse si se cambia el el get de la RUTA :S
+
+            /*
+           <tr class="border-y border-transparent border-b-slate-200 dark:border-b-navy-500" id="` + id + `_pc">
+                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">
+                                            <div class="flex items-center space-x-4">
+                                                <div class="avatar">
+                                                <img
+                                                    class="rounded-full"
+                                                    src="` + image + `"
+                                                    alt="avatar"
+                                                />
+                                                </div>
+
+                                                <span class="font-medium text-slate-700 dark:text-navy-100">
+                                                    <a href="`+url_descripcion_programa+`" target="_blank">` + name + `</a>
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td
+                                        class="whitespace-nowrap px-4 py-3 font-medium text-slate-700 dark:text-navy-100 sm:px-5">
+                                        <b>` + modalidad + `</b>
+                                        </td>
+                                        <td
+                                        class="whitespace-nowrap px-4 py-3 font-medium text-slate-700 dark:text-navy-100 sm:px-5">
+                                        <b>S/ ` + price + `</b>
+                                        </td>
+                                        <td class="whitespace-nowrap px-4 py-3 text-slate-700 dark:text-navy-100 sm:px-5">
+                                            <button class="boton-degradado-trash">
+                                                    <i class="fa fa-trash" aria-hidden="true" style="font-size: 16px;">
+                                                        <a title="Eliminar este Curso" class="remove" onclick="eliminarproducto({ id: ` + id + `, nombre: '` +
+                              name + `', precio: ` + price + ` });">X</a>
+                              </i>
+                                            </button>
+                                        </td>
+                                    </tr>
+            */
+
+            cart.innerHTML += `
+        <tr class="border-y border-transparent border-b-slate-200 dark:border-b-navy-500" id="` + id + `_pc">
+                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">
+                                            <div class="flex items-center space-x-4">
+                                                <div class="avatar">
+                                                <img
+                                                    class="rounded-full"
+                                                    src="` + image + `"
+                                                    alt="avatar"
+                                                />
+                                                </div>
+
+                                                <span class="font-medium text-slate-700 dark:text-navy-100">
+                                                    <a href="`+url_descripcion_programa+`" target="_blank">` + name + `</a>
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td
+                                        class="whitespace-nowrap px-4 py-3 font-medium text-slate-700 dark:text-navy-100 sm:px-5">
+                                        <b>` + modalidad + `</b>
+                                        </td>
+                                        <td
+                                        class="whitespace-nowrap px-4 py-3 font-medium text-slate-700 dark:text-navy-100 sm:px-5">
+                                        <b>S/ ` + price + `</b>
+                                        </td>
+                                        <td class="whitespace-nowrap px-4 py-3 text-slate-700 dark:text-navy-100 sm:px-5">
+                                            <button class="boton-degradado-trash" onclick="eliminarproducto({ id: ` + id + `, nombre: '` +
+                              name + `', precio: ` + price + ` });">
+                                                    <i class="fa fa-trash" aria-hidden="true" style="font-size: 16px;">
+                                                        <a title="Eliminar este Curso" class="remove"></a>
+                              </i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                    `;
+        }
+    }
+</script>
+
+<script>
+function confirmSubmit(event) {
+event.preventDefault(); // Evita que el formulario se envíe automáticamente
+carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+console.log(carrito);
+if(carrito.length>0){
+console.log(event);
+event.target.form.submit();
+}else
+alert("No has elegido ningún curso");
+
+}
+</script>
+
+
+<script>
+function onSubmit(token) {
+  document.getElementById("CartForm").submit();
+}
+</script>
+{!! htmlScriptTagJsApi([
+  'callback_then' => 'callbackThen',
+
+  'callback_catch' => 'callbackCatch',
+]) !!}
+
 @stop

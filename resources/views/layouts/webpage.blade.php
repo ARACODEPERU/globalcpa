@@ -3,6 +3,7 @@
 <html lang="es">
   <head>
     <!-- Meta tags  -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta
@@ -12,7 +13,7 @@
 
     <title>Global CPA - Business School</title>
     <link rel="icon" type="image/png" href="{{ asset('themes/webpage/images/Logo_isotipo.png') }}" />
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     
 
     <!-- CSS Assets -->
@@ -23,6 +24,8 @@
     <link rel="stylesheet" href="{{ asset('themes/webpage/css/aracode.css') }}" />
     
     <!-- Javascript Assets -->
+    <!-- Carrito JS -->
+    <script src="{{ asset('themes/globalcpa/carrito.js') }}"></script>
     <script src="{{ asset('themes/webpage/js/app.js') }}" defer></script>
 
 
