@@ -13,19 +13,21 @@
             <div class="col-md-4"></div>
             <div class="col-md-4">
                 <div class="card p-5">
-                    <h2>Estimado</h2>
-                    <h1 style="font-size: 18px;"><b>Nombre del alumo.</b></h1>
+                    <h1 style="font-size: 18px;"><b>¡Felicidades Nombre del alumo!</b> 🎉</h1>
                     <p class="mt-2">
-                        A nombre de toda la familia de <b>{{ env('APP_NAME') }}</b> te damos la bienvenida a nuestra
-                        plataforma de
-                        estudio, al mismo tiempo te hacemos recordar que cualquier duda puedes comunicarte con
-                        nuestro equipo de asesores.
+                        Bienvenido a <b>Global CPA</b>. Has invertido en tu futuro profesional, y estamos felices de acompañarte.
                     </p>
                     <p class="mt-2">
-                        Los accesos al campus virtual han sido enviados a tu correo: <b>alumo@gmail.com</b>
-                        por favor revisa tu bandeja de entrada, en caso de no visualizar el correo buscalo en la bandeja
-                        correos no deseados.
-                    </p><br>
+                        📩 Tus accesos al campus virtual han sido enviados a <b>[alumno@gmail.com]</b>. 
+                        Revisa tu bandeja de entrada y, si no los ves, busca en correos no deseados.
+                    </p>
+                    <p class="mt-2">
+                        Si necesitas ayuda, nuestro equipo está aquí para apoyarte.
+                    </p>
+                    <p class="mt-2">
+                        🚀 ¡Nos vemos en el campus!
+                    </h2>
+                    <br>
                     
                     <div class="is-scrollbar-hidden min-w-full overflow-x-auto">
                         <table class="is-hoverable w-full text-left">
