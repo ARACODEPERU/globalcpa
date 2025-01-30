@@ -112,12 +112,12 @@
                     <div class="px-4 sm:px-5">
                         <div class="flex items-center justify-between">
                             <h2 class="font-medium tracking-wide text-slate-700 dark:text-navy-100">
-                                Datos del comprador
+                                Datos del comprador 
                             </h2>
                         </div>
                         <form class="form" method="POST" action="{{ route('onlineshop_client_account_store') }}" id ="CartForm">
                             <meta name="csrf-token" content="{{ csrf_token() }}">
-                           <div id="divCartHidden" style="display: none">
+                           <div id="divCartHidden">
                             <div class="row">
                                 <div class="pt-4 col-md-6">
                                     <p class="text-xs+">Nombres</p>
