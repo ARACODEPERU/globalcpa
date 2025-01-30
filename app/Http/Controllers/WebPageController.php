@@ -368,6 +368,12 @@ class WebPageController extends Controller
         return view('pages.carrito');
     }
 
+    
+    public function pay()
+    {
+        return view('pages.pay');
+    }
+
     public function pagar(Request $request)
     {
         $validator = Validator::make($request->all(), [
