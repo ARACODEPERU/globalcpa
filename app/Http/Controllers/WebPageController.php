@@ -518,9 +518,9 @@ class WebPageController extends Controller
 
     }
 
-    public function gracias()
+    public function thanks()
     {
-        return view('pages.gracias');
+        return view('pages.thanks');
     }
 
 
