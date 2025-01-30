@@ -12,13 +12,95 @@
         <div class="row mt-4">
             <div class="col-md-4"></div>
             <div class="col-md-4">
-                <div class="card space-y-4 p-5">
-                    <h1>Aqui el formulario de mercado pago</h1>
+                <div class="card p-5">
+                    <h2>Estimado</h2>
+                    <h1 style="font-size: 18px;"><b>Nombre del alumo.</b></h1>
+                    <p class="mt-2">
+                        A nombre de toda la familia de <b>{{ env('APP_NAME') }}</b> te damos la bienvenida a nuestra
+                        plataforma de
+                        estudio, al mismo tiempo te hacemos recordar que cualquier duda puedes comunicarte con
+                        nuestro equipo de asesores.
+                    </p>
+                    <p class="mt-2">
+                        Los accesos al campus virtual han sido enviados a tu correo: <b>alumo@gmail.com</b>
+                        por favor revisa tu bandeja de entrada, en caso de no visualizar el correo buscalo en la bandeja
+                        correos no deseados.
+                    </p><br>
+                    
+                    <div class="is-scrollbar-hidden min-w-full overflow-x-auto">
+                        <table class="is-hoverable w-full text-left">
+                            <thead>
+                                <tr>
+                                    <th
+                                    class="whitespace-nowrap rounded-tl-lg bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5"
+                                    >
+                                    Producto
+                                    </th>
+                                    <th
+                                    class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5"
+                                    >
+                                    Precio
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-y border-transparent border-b-slate-200 dark:border-b-navy-500">
+                                    <td class="whitespace-nowrap px-4 py-3 sm:px-5">
+                                        <div class="flex items-center space-x-4">
+                                            <div class="avatar">
+                                            <img
+                                                class="rounded-full"
+                                                src="{{ asset('themes/webpage/images/object/object-15.jpg') }}"
+                                                alt="avatar"
+                                            />
+                                            </div>
+
+                                            <span class="font-medium text-slate-700 dark:text-navy-100">
+                                                Título del curso
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td class="whitespace-nowrap px-4 py-3 font-medium text-slate-700 dark:text-navy-100 sm:px-5">
+                                        S/ 590.00
+                                    </td>
+                                </tr>
+                                <tr class="border-y border-transparent border-b-slate-200 dark:border-b-navy-500">
+                                    <td class="whitespace-nowrap px-4 py-3 sm:px-5">
+                                        <div class="flex items-center space-x-4">
+                                            <div class="avatar">
+                                            <img
+                                                class="rounded-full"
+                                                src="{{ asset('themes/webpage/images/object/object-15.jpg') }}"
+                                                alt="avatar"
+                                            />
+                                            </div>
+
+                                            <span class="font-medium text-slate-700 dark:text-navy-100">
+                                                Título del curso
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td class="whitespace-nowrap px-4 py-3 font-medium text-slate-700 dark:text-navy-100 sm:px-5">
+                                        S/ 590.00
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <button class="btn mt-1 h-11 justify-between bg-primary font-medium text-white hover:bg-primary-focus focus:bg-primary-focus active:bg-primary-focus/90 dark:bg-accent dark:hover:bg-accent-focus dark:focus:bg-accent-focus dark:active:bg-accent/90">
+                        <span>TOTAL:</span>
+                        <span><i class="fa fa-heart" aria-hidden="true"></i>&nbsp; <div id="totalid">S/ 0.00</div></span>
+                    </button>
+                    <br>
+                    
+                    <a href="{{ route('login') }}">
+                        <button class="boton-degradado-campus">Campus Virtual</button>
+                    </a>
+
                 </div>
             </div>
             <div class="col-md-4"></div>
         </div>
-  
     </main>
     
     <br>

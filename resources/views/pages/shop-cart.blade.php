@@ -112,7 +112,7 @@
                     <div class="px-4 sm:px-5">
                         <div class="flex items-center justify-between">
                             <h2 class="font-medium tracking-wide text-slate-700 dark:text-navy-100">
-                                Datos del comprador 
+                                Datos del alumno
                             </h2>
                         </div>
                         <form class="form" method="POST" action="{{ route('onlineshop_client_account_store') }}" id ="CartForm">
@@ -171,6 +171,44 @@
                             data-callback='onSubmit'
                             data-action='submit'
                             disabled>
+                                    <b>CREAR CUENTA PARA PAGAR</b>
+                            </button>
+                            <button class="mt-8 boton-degradado-info">
+                                    <b>INGRESAR CUENTA</b>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card pb-4">
+                    <br>
+                    <div class="px-4 sm:px-5">
+                        <div class="flex items-center justify-between">
+                            <h2 class="font-medium tracking-wide text-slate-700 dark:text-navy-100">
+                                Datos del alumno
+                            </h2>
+                        </div>
+                        <form class="form" method="POST" action="{{ route('onlineshop_client_account_store') }}" id ="CartForm">
+                            <meta name="csrf-token" content="{{ csrf_token() }}">
+                            <div id="divCartHidden" style="display: none"></div>
+                            <div class="row">
+                                <div class="pt-4 col-md-6">
+                                    <p class="text-xs+">Correo Electrónico</p>
+                                    <div class="mt-1 flex justify-between space-x-2 rounded-2xl bg-slate-150 p-1.5 dark:bg-navy-800">
+                                        <input class=" h-8 form-input w-full bg-transparent px-2 text-left placeholder:text-slate-400/70" placeholder="" type="text">
+                                    </div>
+                                </div>
+                                <div class="pt-4 col-md-6">
+                                    <p class="text-xs+">Contraseña</p>
+                                    <div class="mt-1 flex justify-between space-x-2 rounded-2xl bg-slate-150 p-1.5 dark:bg-navy-800">
+                                        <input class=" h-8 form-input w-full bg-transparent px-2 text-left placeholder:text-slate-400/70" placeholder="" type="text">
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="mt-8 boton-degradado-courses">
+                                    <b>INGRESAR CUENTA</b>
+                            </button>
+                            <button class="mt-8 boton-degradado-info">
                                     <b>CREAR CUENTA PARA PAGAR</b>
                             </button>
                         </form>
