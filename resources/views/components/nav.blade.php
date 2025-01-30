@@ -666,7 +666,7 @@
                     active:bg-slate-300/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25">
                     <i class="fa fa-cart-plus" aria-hidden="true" style="font-size: 20px;">
                         <span class="cart-count contador" id="contadorCarritoWeb">0</span><!-- REvisar no aparece este agregado -->
-                        <span id="contadorCarritoMovil" hidden style="color: white;"></span></i>
+                        <span id="contadorCarritoMovil" hidden style="color: white; display: none;"></span></i>
                 </button>
                 </a>
                 
