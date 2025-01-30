@@ -117,7 +117,7 @@
                         </div>
                         <form class="form" method="POST" action="{{ route('onlineshop_client_account_store') }}" id ="CartForm">
                             <meta name="csrf-token" content="{{ csrf_token() }}">
-                           <div id="divCartHidden">
+                            <div id="divCartHidden" style="display: none"></div>
                             <div class="row">
                                 <div class="pt-4 col-md-6">
                                     <p class="text-xs+">Nombres</p>
