@@ -69,6 +69,17 @@ class WebController extends Controller
                     $font->angle(0);
                 });
 
+                //descripcion del certificado 
+                $max_width = $this->certificates_param->max_width_description;
+                $img->text($this->wrapText($this->certificates_param->Course->certificate_description, $max_width), $this->certificates_param->position_description_x, $this->certificates_param->position_description_y, function ($font) {
+                    $font->file($this->certificates_param->fontfamily_description);
+                    $font->size($this->certificates_param->font_size_description);
+                    $font->color('#0d0603');
+                    $font->align($this->certificates_param->font_align_description);
+                    $font->valign($this->certificates_param->font_vertical_align_description);
+                    $font->angle(0);
+                });
+
                 // //QR GENERATOR
                 $generator = new QrCodeGenerator(300);
                 $dir = public_path() . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . 'tmp_qr';
