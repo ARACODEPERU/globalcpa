@@ -8,7 +8,7 @@
             <div class="mx-auto mt-8 grid w-full grid-cols-1 gap-4 sm:grid-cols-1 sm:gap-5 lg:gap-6">
                 <div class="mx-auto mt-8 grid w-full grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:gap-6">
                     <div style="place-items: center;">
-                        <img src="{{ asset('storage/'.$item->image) }}" alt="">
+                        <img src="{{ asset('storage/'.$item->course->image) }}" alt="">
                     </div>
                     <div class="p-4 sm:p-5">
                         <br>
