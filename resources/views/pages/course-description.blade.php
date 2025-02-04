@@ -308,7 +308,7 @@
                                     <br>
                                 </div>
                             </div>
-                            <div class="accordion-item-aracode">
+                            {{-- <div class="accordion-item-aracode">
                                 <div class="accordion-header-aracode" aria-expanded="false">
                                     <span class="accordion-icon-aracode">►</span>
                                     PREGUNTAS FRECUENTES
@@ -319,7 +319,7 @@
                                     @endif
                                     <br>
                                 </div>
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
                 </div>
