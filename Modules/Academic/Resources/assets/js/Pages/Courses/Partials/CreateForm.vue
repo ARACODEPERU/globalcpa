@@ -156,6 +156,17 @@ const handleImageCompressed = (file) => {
                 />
                 <InputError :message="form.errors.course_date" class="mt-2" />
             </div>
+            <div class="col-span-6 sm:col-span-3 ">
+                <InputLabel for="course_date" value="Fecha Inicio *" />
+                <TextInput
+                    id="course_date"
+                    v-model="form.course_date"
+                    type="date"
+                    class="block w-full mt-1"
+                    
+                />
+                <InputError :message="form.errors.course_date" class="mt-2" />
+            </div>
             <div class="col-span-6 sm:col-span-3">
                 <div class="flex items-center">
                     <input v-model="form.status" id="link-checkbox" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
