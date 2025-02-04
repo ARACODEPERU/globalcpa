@@ -263,18 +263,20 @@
                                     <br>
                                 </div>
                             </div>
-                            {{-- <div class="accordion-item-aracode">
+                            <div class="accordion-item-aracode">
                                 <div class="accordion-header-aracode" aria-expanded="false">
                                     <span class="accordion-icon-aracode">►</span>
                                     RUTA DE APRENDIZAJE
                                 </div>
                                 <div class="accordion-content-aracode" aria-hidden="true">
+                                    @if ($course->brochure)
                                     <p class="mt-1" style="font-size: 17px; line-height: 1.3;">
-                                        Aqui tiene que haber un Tiny para crear la ruta de aprendizaje detallada
+                                        {!! $course->brochure->curriculum_plan !!}
                                     </p>
+                                    @endif
                                     <br>
                                 </div>
-                            </div> --}}
+                            </div>
                             <div class="accordion-item-aracode">
                                 <div class="accordion-header-aracode" aria-expanded="false">
                                     <span class="accordion-icon-aracode">►</span>
