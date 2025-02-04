@@ -15,6 +15,7 @@ use Modules\Academic\Entities\AcaCapRegistration;
 use Modules\Academic\Entities\AcaCertificate;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Modules\Academic\Entities\AcaCertificateParameter;
 
 class AcaCertificateController extends Controller
 {
@@ -22,14 +23,62 @@ class AcaCertificateController extends Controller
 
     public function index()
     {
-        return view('academic::index');
+        $certificates = AcaCertificateParameter::paginate(10);
+        return Inertia::render('Academic::Certificates/List', [
+            'certificates' => $certificates
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     * @return Renderable
-     */
-    public function create($id)
+    public function create()
+    {
+        $courses = AcaCourse::where('status', true)->get();
+        return Inertia::render('Academic::Certificates/Create', [
+            'courses' => $courses
+        ]);
+    }
+
+    public function store(Request $request)
+    {
+        $this->validate(
+            $request,
+            [
+                'name_certificate' => 'required',
+                'certificate_img' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
+            ]
+        );
+
+
+
+        $destination = 'uploads/certificate';
+        $file = $request->file('certificate_img');
+        $path = null;
+
+        if ($file) {
+            $original_name = date('YmdHis');
+            $extension = $file->getClientOriginalExtension();
+            $file_name = $original_name . '.' . $extension;
+            $path = $file->storeAs($destination, $file_name, 'public');
+        }
+
+        $certificate = AcaCertificateParameter::create([
+            'course_id' => $request->get('course_id') ?? null,
+            'certificate_img' => $path,
+            'name_certificate' => $request->get('name_certificate'),
+            'state' => true
+        ]);
+
+        return redirect()->route('aca_certificate_edit', $certificate->id);
+    }
+
+    public function edit($id)
+    {
+        $certificate = AcaCertificateParameter::find($id);
+        return Inertia::render('Academic::Certificates/Edit', [
+            'certificate' => $certificate
+        ]);
+    }
+
+    public function studentCreate($id)
     {
         $student = AcaStudent::with('person')->where('id', $id)->first();
 
@@ -41,19 +90,15 @@ class AcaCertificateController extends Controller
             ->where('student_id', $id)->get();
 
 
-        return Inertia::render('Academic::Certificates/Create', [
+        return Inertia::render('Academic::Certificates/StudentCreate', [
             'student'   => $student,
             'courses'   => $courses,
             'certificates' => $certificates
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     * @param Request $request
-     * @return Renderable
-     */
-    public function store(Request $request)
+
+    public function studentStore(Request $request)
     {
         $student_id = $request->get('student_id');
         $course_id = $request->get('course_id');
@@ -115,17 +160,7 @@ class AcaCertificateController extends Controller
     }
 
 
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     * @param int $id
-     * @return Renderable
-     */
-    public function destroy($id)
+    public function studentDestroy($id)
     {
         $message = null;
         $success = false;
