@@ -260,28 +260,18 @@
                                     <br>
                                 </div>
                             </div>
-                            <div class="accordion-item-aracode">
+                            {{-- <div class="accordion-item-aracode">
                                 <div class="accordion-header-aracode" aria-expanded="false">
                                     <span class="accordion-icon-aracode">►</span>
                                     RUTA DE APRENDIZAJE
                                 </div>
                                 <div class="accordion-content-aracode" aria-hidden="true">
-                                    {{-- @php
-                                        $modules = $course->modules;
-                                        $c = 1;
-                                    @endphp
-                                    @foreach ($modules as $k => $module)
-                                        <p style="padding: 5px 15px;"><b>{{ $c . '. ' . $module->description }}</b></p>
-                                        @php
-                                            $c++;
-                                        @endphp
-                                    @endforeach --}}
                                     <p class="mt-1" style="font-size: 17px; line-height: 1.3;">
                                         Aqui tiene que haber un Tiny para crear la ruta de aprendizaje detallada
                                     </p>
                                     <br>
                                 </div>
-                            </div>
+                            </div> --}}
                             <div class="accordion-item-aracode">
                                 <div class="accordion-header-aracode" aria-expanded="false">
                                     <span class="accordion-icon-aracode">►</span>
