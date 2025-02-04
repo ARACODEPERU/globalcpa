@@ -63,13 +63,16 @@
                                         </a>
                                     </div>
                                     <div class="text-right">
-                                        <a  onclick="agregarAlCarrito({ id: {{ $item->id }}, nombre: '{{ $item->name }}', precio: {{ $item->price }} })">
+                                        {{-- <a  onclick="agregarAlCarrito({ id: {{ $item->id }}, nombre: '{{ $item->name }}', precio: {{ $item->price }} })">
                                             <button class="boton-degradado-courses">
                                                 <b>
                                                     <i class="fa fa-cart-plus" aria-hidden="true" style="font-size: 16px;"></i>
                                                     &nbsp; Añadir al Carrito
                                                 </b>
                                             </button>
+                                        </a> --}}
+                                        <a href="https://wa.link/54k2g9">
+                                            <button class="boton-degradado-courses"><b>! Comprar Ahora¡</b></button>
                                         </a>
                                     </div>
                                 </div>
