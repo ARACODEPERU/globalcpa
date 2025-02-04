@@ -153,7 +153,34 @@ class WebPageController extends Controller
         ]);
     }
 
-    
+    public function cursodescripcion($id)
+    {
+        $item = OnliItem::find($id);
+
+        $course = AcaCourse::with('category')
+            ->with('modality')
+            ->with('modules')
+            ->with('teachers.teacher.person.resumes')
+            ->with('brochure')
+            ->with('agreements')
+            ->where('id', $item->item_id)
+            ->first();
+
+        $latest_courses = OnliItem::with('course')
+            ->orderBy('id', 'desc')
+            ->where('id', '!=', $id)
+            ->take(10)
+            ->get()
+            ->shuffle()
+            ->take(3);
+
+        return view('pages.curso-descripcion', [
+            'course' => $course,
+            'item' => $item,
+            'latest_courses' => $latest_courses
+        ]);
+    }
+
     public function shopcart()
     {
         return view('pages.shop-cart');
@@ -368,7 +395,7 @@ class WebPageController extends Controller
         return view('pages.carrito');
     }
 
-    
+
     public function pay()
     {
         return view('pages.pay');
