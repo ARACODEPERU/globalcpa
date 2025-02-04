@@ -288,7 +288,7 @@
                                             <div class="row" style="margin-bottom: 20px;">
                                                 <div class="col-md-2">
                                                     <a href="">
-                                                        <img style="width: 90px; margin-bottom: 10px; margin-left: 10px;"
+                                                        <img style="width: 150px; margin-bottom: 10px; margin-left: 10px;"
                                                             src="{{ asset('storage/'. $teach->teacher->person->image) }}" alt="img">
                                                     </a>
                                                 </div>
