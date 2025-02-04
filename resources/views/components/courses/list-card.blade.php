@@ -42,7 +42,7 @@
             <a href="{{ route('web_course_description', $item->course->id) }}" class="text-base font-medium text-slate-700 line-clamp-1 hover:text-primary focus:text-primary dark:text-navy-100 dark:hover:text-accent-light dark:focus:text-accent-light">
                 {{ $item->name }}
             </a>
-            <p>{{ $item->category_description }}</p>
+            {{-- <p>{{ $item->category_description }}</p> --}}
             <div class="my-3 h-px bg-slate-200 dark:bg-navy-500"></div>
             <div class="flex justify-between">
                 <div>
