@@ -12,17 +12,15 @@
                     </div>
                     <div class="p-4 sm:p-5">
                         <br>
-                        <span style="font-size: 22px; line-height: 1.1; font-weight: 600;">
+                        {{-- <span style="font-size: 22px; line-height: 1.1; font-weight: 600;">
                             {{ $item->category_description }}
-                        </span>
+                        </span> --}}
                         <h1 class="title_aracode" style="font-size: 45px; line-height: 1.1; font-weight: 700;">
                             {{ $item->name }}
                         </h1>
-                        @if ($course->brochure)
                             <p class="mt-6" style="font-size: 19px; line-height: 1.3;">
-                                {!! $course->brochure->presentation !!}
+                                {{ $item->description }}
                             </p>
-                        @endif
                         <br>
                         @if ($course->price)
                             <h2 style="font-size: 35px; line-height: 1.1; font-weight: 500;">
