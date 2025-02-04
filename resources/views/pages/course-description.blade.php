@@ -8,7 +8,7 @@
             <div class="mx-auto mt-8 grid w-full grid-cols-1 gap-4 sm:grid-cols-1 sm:gap-5 lg:gap-6">
                 <div class="mx-auto mt-8 grid w-full grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:gap-6">
                     <div style="place-items: center;">
-                        <img src="{{ asset('storage/'.$item->image) }}" alt="">
+                        <img src="{{ asset('storage/'.$item->course->image) }}" alt="">
                     </div>
                     <div class="p-4 sm:p-5">
                         <br>
@@ -260,28 +260,18 @@
                                     <br>
                                 </div>
                             </div>
-                            <div class="accordion-item-aracode">
+                            {{-- <div class="accordion-item-aracode">
                                 <div class="accordion-header-aracode" aria-expanded="false">
                                     <span class="accordion-icon-aracode">►</span>
                                     RUTA DE APRENDIZAJE
                                 </div>
                                 <div class="accordion-content-aracode" aria-hidden="true">
-                                    {{-- @php
-                                        $modules = $course->modules;
-                                        $c = 1;
-                                    @endphp
-                                    @foreach ($modules as $k => $module)
-                                        <p style="padding: 5px 15px;"><b>{{ $c . '. ' . $module->description }}</b></p>
-                                        @php
-                                            $c++;
-                                        @endphp
-                                    @endforeach --}}
                                     <p class="mt-1" style="font-size: 17px; line-height: 1.3;">
                                         Aqui tiene que haber un Tiny para crear la ruta de aprendizaje detallada
                                     </p>
                                     <br>
                                 </div>
-                            </div>
+                            </div> --}}
                             <div class="accordion-item-aracode">
                                 <div class="accordion-header-aracode" aria-expanded="false">
                                     <span class="accordion-icon-aracode">►</span>
@@ -318,7 +308,7 @@
                                     <br>
                                 </div>
                             </div>
-                            <div class="accordion-item-aracode">
+                            {{-- <div class="accordion-item-aracode">
                                 <div class="accordion-header-aracode" aria-expanded="false">
                                     <span class="accordion-icon-aracode">►</span>
                                     PREGUNTAS FRECUENTES
@@ -329,7 +319,7 @@
                                     @endif
                                     <br>
                                 </div>
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
                 </div>
