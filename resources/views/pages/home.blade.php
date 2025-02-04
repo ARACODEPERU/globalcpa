@@ -61,7 +61,7 @@
               </div>
             </div>
             <div class="col-span-12 space-y-4 sm:space-y-5 lg:col-span-4 lg:space-y-6 xl:col-span-3">
-              <div class="card bg-gradient-to-br from-info to-info-focus p-4">
+              {{-- <div class="card bg-gradient-to-br from-info to-info-focus p-4">
                 <div class="mt-10">
                   <div class="flex justify-between">
                     <p class="text-2xl font-semibold text-white">Banner promocion</p>
@@ -70,7 +70,7 @@
                     <br>
                   </div>
                 </div>
-              </div>
+              </div> --}}
                   
               {{-- <div class="card p-3">
                 <img class="h-56 w-full rounded-lg object-cover object-center" src="images/object/object-18.jpg" alt="image">
