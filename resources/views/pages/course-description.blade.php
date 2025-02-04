@@ -22,9 +22,9 @@
                                 {{ $item->description }}
                             </p>
                         <br>
-                        @if ($course->price)
+                        @if ($item->price)
                             <h2 style="font-size: 35px; line-height: 1.1; font-weight: 500;">
-                                S/ {{ $course->price }}
+                                S/ {{ $item->price }}
                             </h2>
                             @else
                             <h2 style="font-size: 35px; line-height: 1.1; font-weight: 500;">
@@ -33,7 +33,7 @@
                         @endif
                         <br>
                         <div class="row">
-                            @if ($course->price)
+                            @if ($item->price)
                                 <div class="col-md-6" style="padding: 10px 0px;">
                                     <a  onclick="agregarAlCarrito({ id: {{ $item->id }}, nombre: '{{ $item->name }}', precio: {{ $item->price }} })">
                                         <button class="boton-degradado-courses">
