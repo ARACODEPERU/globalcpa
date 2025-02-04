@@ -36,6 +36,7 @@ Route::get('/curso-descripcion/{id}', [WebPageController::class, 'coursedescript
 Route::get('/carrito', [WebPageController::class, 'shopcart'])->name('web_carrito');
 Route::get('/pagar', [WebPageController::class, 'pay'])->name('web_pay');
 Route::get('/gracias', [WebPageController::class, 'thanks'])->name('web_thanks');
+Route::get('/curso-descripcion/{id}', [WebPageController::class, 'cursodescripcion'])->name('web_curso_descripcion');
 
 //////mensajes de whatsapp///////
 Route::get('/ask/product/{id}', [LandingController::class, 'redirectToWhatsApp'])->name('whatsapp_send');
