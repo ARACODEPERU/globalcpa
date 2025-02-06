@@ -13,6 +13,13 @@ use Illuminate\Support\Facades\Response;
 use App\Helpers\Invoice\QrCodeGenerator;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
+use MercadoPago\MercadoPagoConfig;
+use MercadoPago\Client\Preference\PreferenceClient;
+use MercadoPago\Client\Payment\PaymentClient;
+use Modules\Onlineshop\Entities\OnliSale;
+use App\Mail\ConfirmPurchaseMail;
+use Illuminate\Support\Facades\Mail;
+use Carbon\Carbon;
 
 
 class WebController extends Controller
@@ -71,8 +78,8 @@ class WebController extends Controller
                     $font->valign($this->certificates_param->font_vertical_align_title);
                     $font->angle(0);
                 });
-                
-                //descripcion del certificado 
+
+                //descripcion del certificado
                 $max_width = $this->certificates_param->max_width_description;
                 $img->text($this->wrapText($this->certificates_param->Course->certificate_description, $max_width, $this->certificates_param->interspace_description), $this->certificates_param->position_description_x, $this->certificates_param->position_description_y, function ($font) {
                     $font->file($this->certificates_param->fontfamily_description);
@@ -133,24 +140,127 @@ class WebController extends Controller
     public function wrapText($text, $maxWidth, $lineSpacing = 2.3) {
         // Envolver el texto
         $wrappedText = wordwrap($text, $maxWidth, PHP_EOL, true);
-    
+
         // Dividir el texto envuelto en líneas
         $lines = explode(PHP_EOL, $wrappedText);
-    
+
         // Calcular la longitud máxima de las líneas envueltas
         $maxLineLength = max(array_map('strlen', $lines));
-    
+
         // Centrar horizontalmente las líneas
         $centeredLines = array_map(function($line) use ($maxLineLength) {
             $spacesToAdd = max(0, ($maxLineLength - strlen($line)) / 2);
             $centeredLine = str_repeat(' ', $spacesToAdd) . $line;
             return $centeredLine;
         }, $lines);
-    
+
         // Agregar espacio entre líneas
         $spacing = str_repeat(PHP_EOL, $lineSpacing); // Crear el espacio entre líneas
         $centeredText = implode($spacing, $centeredLines); // Unir las líneas con el espacio
-    
+
         return $centeredText;
+    }
+
+    public function processPayment(Request $request, $id)
+    {
+        MercadoPagoConfig::setAccessToken(env('MERCADOPAGO_TOKEN'));
+
+        $client = new PaymentClient();
+        $sale = OnliSale::find($id);
+
+        if ($sale->response_status == 'approved') {
+            return response()->json(['error' => 'el pedido ya fue procesado, ya no puede volver a pagar'], 412);
+        } else {
+            try {
+
+                $payment = $client->create([
+                    "token" => $request->get('token'),
+                    "issuer_id" => $request->get('issuer_id'),
+                    "payment_method_id" => $request->get('payment_method_id'),
+                    "transaction_amount" => (float) $request->get('transaction_amount'),
+                    "installments" => $request->get('installments'),
+                    "payer" => $request->get('payer')
+                ]);
+
+
+
+                if ($payment->status == 'approved') {
+
+                    $sale->email = $request->get('payer')['email'];
+                    $sale->total = $request->get('transaction_amount');
+                    $sale->identification_type = $request->get('payer')['identification']['type'];
+                    $sale->identification_number = $request->get('payer')['identification']['number'];
+                    $sale->response_status = $payment->status;
+                    $sale->response_id = $request->get('collection_id');
+                    $sale->response_date_approved = Carbon::now()->format('Y-m-d');
+                    $sale->response_payer = json_encode($request->all());
+                    $sale->response_payment_method_id = $request->get('payment_type');
+                    $sale->mercado_payment_id = $payment->id;
+                    $sale->mercado_payment = json_encode($payment);
+
+                    $products = $request->get('products');
+                    foreach ($products as $product) {
+                        $this->matricular_curso($product, $request->get('student_id'));
+                    }
+
+                    ///enviar correo
+                    Mail::to($sale->email)
+                        ->send(new ConfirmPurchaseMail(OnliSale::with('details.item')->where('id', $id)->first()));
+
+                    $sale->save();
+
+                    return response()->json([
+                        'status' => $payment->status,
+                        'message' => $payment->status_detail,
+                        'url' => route('web_gracias_por_comprar_tu_entrada', $sale->id)
+                    ]);
+                } else {
+
+                    return response()->json([
+                        'status' => $payment->status,
+                        'message' => $payment->status_detail,
+                        'url' => route('web_pagar')
+                    ]);
+
+                    $sale->delete();
+                }
+            } catch (\MercadoPago\Exceptions\MPApiException $e) {
+                // Manejar la excepción
+                $response = $e->getApiResponse();
+                $content  = $response->getContent();
+
+                $message = $content['message'];
+                return response()->json(['error' => 'Error al procesar el pago: ' . $message], 412);
+            }
+        }
+    }
+
+    public function graciasCompra($id)
+    {
+        $products[0] = null;
+        $sale = OnliSale::where('id', $id)->with('details.item')->first();
+        return view('pages/gracias-compra', [
+            'products' => $products,
+            'sale' => $sale
+        ]);
+    }
+
+    public function errorCompra($id)
+    {
+        dd($id);
+    }
+
+    private function matricular_curso($producto, $student_id)
+    {
+
+        $course_id = $producto->item_id;
+
+        $registration = AcaCapRegistration::create([
+            'student_id' => $student_id,
+            'course_id' => $course_id,
+            'status' => true,
+            'modality_id' => 3,
+            'unlimited' => true
+        ]);
     }
 }

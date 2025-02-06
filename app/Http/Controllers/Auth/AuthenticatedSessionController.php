@@ -50,4 +50,24 @@ class AuthenticatedSessionController extends Controller
 
         return redirect('/login');
     }
+    public function create_shop(): Response
+    {
+        return Inertia::render('Auth/Login_shop', [
+            'canResetPassword' => Route::has('password.request'),
+            'status' => session('status'),
+        ]);
+    }
+
+    /**
+     * Handle an incoming authentication request.
+     */
+    public function store_shop(LoginRequest $request): RedirectResponse
+    {
+        $request->authenticate();
+
+        $request->session()->regenerate();
+
+        return to_route('web_carrito');
+    }
+
 }

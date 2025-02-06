@@ -3,7 +3,7 @@
 <html lang="es">
   <head>
     <!-- Meta tags  -->
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    {{-- <meta name="csrf-token" content="{{ csrf_token() }}"> --}}
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta
@@ -14,15 +14,15 @@
     <title>Global CPA - Business School</title>
     <link rel="icon" type="image/png" href="{{ asset('themes/webpage/images/Logo_isotipo.png') }}" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-    
+
 
     <!-- CSS Assets -->
     <link rel="stylesheet" href="{{ asset('themes/webpage/css/app.css') }}" />
 
-    
+
     <link rel="stylesheet" href="{{ asset('themes/webpage/bootstrap-5.3.3/css/bootstrap-grid.css') }}" />
     <link rel="stylesheet" href="{{ asset('themes/webpage/css/aracode.css') }}" />
-    
+
     <!-- Javascript Assets -->
     <!-- Carrito JS -->
     <script src="{{ asset('themes/globalcpa/carrito.js') }}"></script>
@@ -37,7 +37,7 @@
       rel="stylesheet"
     />
 
-    
+
     <link rel="stylesheet" href="{{ asset('themes/webpage/font-awesome-4.7.0/css/font-awesome.min.css') }}">
     <script>
       /**
@@ -62,15 +62,15 @@
       class="min-h-100vh flex grow bg-slate-50 dark:bg-navy-900"
       x-cloak
     >
-    
+
         <!-- App Header Wrapper-->
         <x-nav />
-    
+
         <!-- Sidebar -->
         <x-slidebar />
-    
+
         @yield('content')
-    
+
 
         <!-- Mobile Searchbar -->
         <div
@@ -2322,11 +2322,11 @@
             </div>
         </div>
 
-      
+
 
     </div>
-    <!-- 
-        This is a place for Alpine.js Teleport feature 
+    <!--
+        This is a place for Alpine.js Teleport feature
         @see https://alpinejs.dev/directives/teleport
     -->
     <div id="x-teleport-target"></div>
@@ -2334,7 +2334,7 @@
       window.addEventListener("DOMContentLoaded", () => Alpine.start());
     </script>
 
-{{-- 
+{{--
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script> --}}
 

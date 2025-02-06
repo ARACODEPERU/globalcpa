@@ -14,10 +14,10 @@
                 <div class="mt-4 sm:mt-5 lg:mt-6" x-data="{activeTab:'tabRecent'}">
                     <div class="flex items-center justify-between space-x-2">
                         <h2 class="text-base font-medium tracking-wide text-slate-700 dark:text-navy-100">
-                            
+
                         </h2>
 
-                        <div class="is-scrollbar-hidden overflow-x-auto rounded-lg bg-slate-200 text-slate-600 
+                        <div class="is-scrollbar-hidden overflow-x-auto rounded-lg bg-slate-200 text-slate-600
                             dark:bg-navy-800 dark:text-navy-200">
                             <div class="tabs-list flex p-1">
                                 <button
@@ -94,12 +94,12 @@
                                 </tbody>
                             </table>
                         </div>
-                        
+
                         <button class="btn mt-1 h-11 justify-between bg-primary font-medium text-white hover:bg-primary-focus focus:bg-primary-focus active:bg-primary-focus/90 dark:bg-accent dark:hover:bg-accent-focus dark:focus:bg-accent-focus dark:active:bg-accent/90">
                             <span>TOTAL:</span>
                             <span><i class="fa fa-heart" aria-hidden="true"></i>&nbsp; <div id="totalid">S/ 0.00</div></span>
                         </button>
-                    
+
                     </div>
 
 
@@ -112,118 +112,141 @@
                     <div class="px-4 sm:px-5">
                         <div class="flex items-center justify-between">
                             <h2 class="font-medium tracking-wide text-slate-700 dark:text-navy-100">
-                                Datos del alumno
+                                Registrando a nuevo Alumno, Bienvenido a GlobalCpa Perú.
                             </h2>
                         </div>
-                        <form class="form" method="POST" action="{{ route('onlineshop_client_account_store') }}" id ="CartForm">
-                            <meta name="csrf-token" content="{{ csrf_token() }}">
-                            <div id="divCartHidden" style="display: none"></div>
-                            <div class="row">
-                                <div class="pt-4 col-md-6">
-                                    <p class="text-xs+">Nombres</p>
-                                    <div class="mt-1 flex justify-between space-x-2 rounded-2xl bg-slate-150 p-1.5 dark:bg-navy-800">
-                                        <input class=" h-8 form-input w-full bg-transparent px-2 text-left placeholder:text-slate-400/70" placeholder="" type="text">
-                                    </div>
+
+                        {{-- Formularios según estado de login --}}
+
+                        @auth
+                        <div class="card pb-4">
+                            <br>
+                            <div class="px-4 sm:px-5">
+                                <div class="flex items-center justify-between">
+                                    <h2 class="font-medium tracking-wide text-slate-700 dark:text-navy-100">
+                                        Hola {{ Auth::user()->name }} estas por acceder a la compra de tus cursos, verifica que los cursos que elegiste sean los correctos y procede a hacer el pago haciendo click en "Pagar"
+                                    </h2>
                                 </div>
-                                <div class="pt-4 col-md-6">
-                                    <p class="text-xs+">Apellido Paterno</p>
-                                    <div class="mt-1 flex justify-between space-x-2 rounded-2xl bg-slate-150 p-1.5 dark:bg-navy-800">
-                                        <input class=" h-8 form-input w-full bg-transparent px-2 text-left placeholder:text-slate-400/70" placeholder="" type="text">
-                                    </div>
-                                </div>
-                                <div class="pt-4 col-md-6">
-                                    <p class="text-xs+">Apellido Materno</p>
-                                    <div class="mt-1 flex justify-between space-x-2 rounded-2xl bg-slate-150 p-1.5 dark:bg-navy-800">
-                                        <input class=" h-8 form-input w-full bg-transparent px-2 text-left placeholder:text-slate-400/70" placeholder="" type="text">
-                                    </div>
-                                </div>
-                                <div class="pt-4 col-md-6">
-                                    <p class="text-xs+">Tipo de documento</p>
-                                    <div class="mt-1 flex justify-between space-x-2 rounded-2xl bg-slate-150 p-1.5 dark:bg-navy-800">
-                                        <select class="w-full form-select h-8 rounded-2xl border border-transparent bg-white px-4 py-0 pr-9 text-xs+ hover:border-slate-400 focus:border-primary dark:bg-navy-700 dark:hover:border-navy-400 dark:focus:border-accent">
-                                            <option>DNI</option>
-                                            <option>RUC</option>
-                                            <option>Doc.trib.no.dom.sin.ruc</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="pt-4 col-md-6">
-                                    <p class="text-xs+">N° Documento</p>
-                                    <div class="mt-1 flex justify-between space-x-2 rounded-2xl bg-slate-150 p-1.5 dark:bg-navy-800">
-                                        <input class=" h-8 form-input w-full bg-transparent px-2 text-left placeholder:text-slate-400/70" placeholder="" type="text">
-                                    </div>
-                                </div>
-                                <div class="pt-4 col-md-6">
-                                    <p class="text-xs+">Teléfono</p>
-                                    <div class="mt-1 flex justify-between space-x-2 rounded-2xl bg-slate-150 p-1.5 dark:bg-navy-800">
-                                        <input class=" h-8 form-input w-full bg-transparent px-2 text-left placeholder:text-slate-400/70" placeholder="" type="text">
-                                    </div>
-                                </div>
-                                <div class="pt-4 col-md-12">
-                                    <p class="text-xs+">Correo Electrónico</p>
-                                    <div class="mt-1 flex justify-between space-x-2 rounded-2xl bg-slate-150 p-1.5 dark:bg-navy-800">
-                                        <input class=" h-8 form-input w-full bg-transparent px-2 text-left placeholder:text-slate-400/70" placeholder="" type="text">
-                                    </div>
-                                </div>
+
                             </div>
-                            <button class="mt-8 boton-degradado-courses" id="btn-crear-cuenta"
-                            data-sitekey="reCAPTCHA_site_key"
-                            data-callback='onSubmit'
-                            data-action='submit'
-                            disabled>
-                                    <b>CREAR CUENTA PARA PAGAR</b>
-                            </button>
-                            <button class="mt-8 boton-degradado-info">
-                                    <b>INGRESAR CUENTA</b>
-                            </button>
-                        </form>
+                        </div>
+                            <form class="form" method="POST" action="{{ route('onlineshop_client_account_store') }}" id ="CartForm">
+                                @csrf
+                                <meta name="csrf-token" content="{{ csrf_token() }}">
+                                <input type="hidden" name="recaptcha_token" id="recaptcha_token">
+                                <div id="divCartHidden" style="display: none"></div>
+                                <div class="row">
+                                    <div class="pt-8 col-md-12">
+                                        <p class="text-xs+">Correo Electrónico</p>
+                                        <div class="mt-1 flex justify-between space-x-2 rounded-2xl bg-slate-150 p-1.5 dark:bg-navy-800">
+                                            <input class=" h-8 form-input w-full bg-transparent px-2 text-left placeholder:text-slate-400/70" value="{{ Auth::user()->email }}" placeholder="" type="text" disabled>
+                                        </div>
+                                    </div>
+                                    {{-- <div class="pt-4 col-md-6">
+                                        <p class="text-xs+">Contraseña</p>
+                                        <div class="mt-1 flex justify-between space-x-2 rounded-2xl bg-slate-150 p-1.5 dark:bg-navy-800">
+                                            <input class=" h-8 form-input w-full bg-transparent px-2 text-left placeholder:text-slate-400/70" placeholder="" type="text" disabled>
+                                        </div>
+                                    </div> --}}
+                                </div>
+                                <button class="mt-8 boton-degradado-courses" id="btn-crear-cuenta">
+                                        <b>Pagar</b>
+                                </button>
+                            </form>
+                        @else
+                                <form class="form" method="POST" action="{{ route('paying') }}" id ="CartForm">
+                                    @csrf
+                                    <meta name="csrf-token" content="{{ csrf_token() }}">
+                                    <input type="hidden" name="recaptcha_token" id="recaptcha_token">
+                                    <div id="divCartHidden" style="display: none"></div>
+                                    <div class="row">
+                                        <div class="pt-4 col-md-6">
+                                            <p class="text-xs+">Nombres</p>
+                                            <div class="mt-1 flex justify-between space-x-2 rounded-2xl bg-slate-150 p-1.5 dark:bg-navy-800">
+                                                <input class=" h-8 form-input w-full bg-transparent px-2 text-left placeholder:text-slate-400/70" name="names" placeholder="" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="pt-4 col-md-6">
+                                            <p class="text-xs+">Apellido Paterno</p>
+                                            <div class="mt-1 flex justify-between space-x-2 rounded-2xl bg-slate-150 p-1.5 dark:bg-navy-800">
+                                                <input class=" h-8 form-input w-full bg-transparent px-2 text-left placeholder:text-slate-400/70" name="app" placeholder="" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="pt-4 col-md-6">
+                                            <p class="text-xs+">Apellido Materno</p>
+                                            <div class="mt-1 flex justify-between space-x-2 rounded-2xl bg-slate-150 p-1.5 dark:bg-navy-800">
+                                                <input class=" h-8 form-input w-full bg-transparent px-2 text-left placeholder:text-slate-400/70" name="apm" placeholder="" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="pt-4 col-md-6">
+                                            <p class="text-xs+">Tipo de documento</p>
+                                            <div class="mt-1 flex justify-between space-x-2 rounded-2xl bg-slate-150 p-1.5 dark:bg-navy-800">
+                                                <select class="w-full form-select h-8 rounded-2xl border border-transparent bg-white px-4 py-0 pr-9 text-xs+ hover:border-slate-400 focus:border-primary dark:bg-navy-700 dark:hover:border-navy-400 dark:focus:border-accent"
+                                                name="type">
+                                                    <option>DNI</option>
+                                                    <option>RUC</option>
+                                                    <option>Doc.trib.no.dom.sin.ruc</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="pt-4 col-md-6">
+                                            <p class="text-xs+">N° Documento</p>
+                                            <div class="mt-1 flex justify-between space-x-2 rounded-2xl bg-slate-150 p-1.5 dark:bg-navy-800">
+                                                <input class=" h-8 form-input w-full bg-transparent px-2 text-left placeholder:text-slate-400/70" name="dni" placeholder="" type="number" min="10000000" max="99999999999">
+                                            </div>
+                                        </div>
+                                        <div class="pt-4 col-md-6">
+                                            <p class="text-xs+">Teléfono</p>
+                                            <div class="mt-1 flex justify-between space-x-2 rounded-2xl bg-slate-150 p-1.5 dark:bg-navy-800">
+                                                <input class=" h-8 form-input w-full bg-transparent px-2 text-left placeholder:text-slate-400/70" name="phone" placeholder="" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="pt-4 col-md-12">
+                                            <p class="text-xs+">Correo Electrónico</p>
+                                            <div class="mt-1 flex justify-between space-x-2 rounded-2xl bg-slate-150 p-1.5 dark:bg-navy-800">
+                                                <input class=" h-8 form-input w-full bg-transparent px-2 text-left placeholder:text-slate-400/70" name="email" placeholder="" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="pt-4 col-md-12">
+                                            <p class="text-xs+">Contraseña:</p>
+                                            <div class="mt-1 flex justify-between space-x-2 rounded-2xl bg-slate-150 p-1.5 dark:bg-navy-800">
+                                                <input class=" h-8 form-input w-full bg-transparent px-2 text-left placeholder:text-slate-400/70" name="password" placeholder="" type="password" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="mt-8 boton-degradado-courses" id="btn-crear-cuenta">
+                                            <b>CREAR CUENTA PARA PAGAR</b>
+                                    </button>
+                                    <button class="mt-8 boton-degradado-info" id="btn-login" onclick="window.location.href='{{ route('login_shop') }}';">
+                                        <b>YA TENGO UNA CUENTA</b>
+                                    </button>
+                                </form>
+                        @endauth
+                        <div id="loginModal" class="modal">
+                            <div class="modal-content">
+                                <!-- Aquí se incrustará la vista de la página de inicio de sesión -->
+                                <!-- Puedes cargarla utilizando AJAX -->
+                            </div>
+                        </div>
+                        <script>
+                            document.getElementById("btn-login").addEventListener("click", function(event) {
+                            event.preventDefault(); // Evita la acción predeterminada del botón
+                            // Aquí puedes agregar el código para abrir el modal u realizar otras acciones
+                        });
+                        </script>
                     </div>
                 </div>
 
-                <div class="card pb-4">
-                    <br>
-                    <div class="px-4 sm:px-5">
-                        <div class="flex items-center justify-between">
-                            <h2 class="font-medium tracking-wide text-slate-700 dark:text-navy-100">
-                                Datos del alumno
-                            </h2>
-                        </div>
-                        <form class="form" method="POST" action="{{ route('onlineshop_client_account_store') }}" id ="CartForm">
-                            <meta name="csrf-token" content="{{ csrf_token() }}">
-                            <div id="divCartHidden" style="display: none"></div>
-                            <div class="row">
-                                <div class="pt-4 col-md-6">
-                                    <p class="text-xs+">Correo Electrónico</p>
-                                    <div class="mt-1 flex justify-between space-x-2 rounded-2xl bg-slate-150 p-1.5 dark:bg-navy-800">
-                                        <input class=" h-8 form-input w-full bg-transparent px-2 text-left placeholder:text-slate-400/70" placeholder="" type="text">
-                                    </div>
-                                </div>
-                                <div class="pt-4 col-md-6">
-                                    <p class="text-xs+">Contraseña</p>
-                                    <div class="mt-1 flex justify-between space-x-2 rounded-2xl bg-slate-150 p-1.5 dark:bg-navy-800">
-                                        <input class=" h-8 form-input w-full bg-transparent px-2 text-left placeholder:text-slate-400/70" placeholder="" type="text">
-                                    </div>
-                                </div>
-                            </div>
-                            <button class="mt-8 boton-degradado-courses">
-                                    <b>INGRESAR CUENTA</b>
-                            </button>
-                            <button class="mt-8 boton-degradado-info">
-                                    <b>CREAR CUENTA PARA PAGAR</b>
-                            </button>
-                        </form>
-                    </div>
-                </div>
             </div>
         </div>
     </main>
-    
+
     <br>
     <br>
     <br>
 
 
-    
+
     <div id="whatsapp">
         <a href="https://wa.link/54k2g9" class="wtsapp" data-bs-toggle="modal" data-bs-target="#exampleModal">
             <i class="fa fa-whatsapp" aria-hidden="true"></i>
@@ -349,30 +372,7 @@
         });
     });
     </script>
-    {{-- codigo de recapcha --}}
- <script type="text/javascript">
-    function callbackThen(response) {
 
-        // read HTTP status
-
-        console.log(response.status);
-
-        // read Promise object
-
-        response.json().then(function(data) {
-
-            console.log(data);
-
-        });
-
-    }
-
-    function callbackCatch(error) {
-
-        console.error('Error:', error)
-
-    }
-</script>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
@@ -396,8 +396,7 @@
 
     function realizarConsulta(ids) {
         // Realizar la petición Ajax
-        var csrfToken = "{{ csrf_token() }}";
-
+        var token_csrf = $('meta[name="csrf-token"]').attr('content');
 
         $.ajax({
             url: "{{ route('onlineshop_get_item_carrito') }}",
@@ -407,7 +406,7 @@
             },
             dataType: 'json',
             headers: {
-                'X-CSRF-TOKEN': csrfToken
+                'X-CSRF-TOKEN': token_csrf
             },
             success: function(respuesta) {
                 // Obtén una referencia al elemento div por su ID
@@ -452,7 +451,7 @@
             var price = respuesta.price;
             var modalidad = respuesta.additional;
             var url_campus = "";
-            var url_descripcion_programa = "/descripcion-programa/"+id; // esta ruta deberá corregirse si se cambia el el get de la RUTA :S
+            var url_descripcion_programa = "/curso-descripcion/"+id; // esta ruta deberá corregirse si se cambia el el get de la RUTA :S
 
             /*
            <tr class="border-y border-transparent border-b-slate-200 dark:border-b-navy-500" id="` + id + `_pc">
@@ -549,10 +548,18 @@ function onSubmit(token) {
   document.getElementById("CartForm").submit();
 }
 </script>
-{!! htmlScriptTagJsApi([
-  'callback_then' => 'callbackThen',
 
-  'callback_catch' => 'callbackCatch',
-]) !!}
+<script src="https://www.google.com/recaptcha/api.js?render=<?php echo config('services.recaptcha.site_key'); ?>"></script>
+<script>
+    document.getElementById('CartForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        grecaptcha.ready(function() {
+            grecaptcha.execute('<?php echo config('services.recaptcha.site_key'); ?>', {action: 'submit'}).then(function(token) {
+                document.getElementById('recaptcha_token').value = token;
+                document.getElementById('CartForm').submit();
+            });
+        });
+    });
+</script>
 
 @stop

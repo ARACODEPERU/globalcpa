@@ -1,32 +1,164 @@
 @extends('layouts.webpage')
 
 @section('content')
-
+<script src="https://sdk.mercadopago.com/js/v2"></script>
 
 
 
     <!-- Main Content Wrapper -->
     <main class="main-content w-full px-[var(--margin-x)] pb-8">
 
-  
+        <div class="card space-y-4 p-5">
+        <table class="spacing-table text-center">
+            <thead>
+                <tr>
+                    <th class="col-md-2"> - </th>
+                    <th class="col-md-4">Producto</th>
+                    <th class="col-md-2">Precio</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (count($products) > 0)
+                    @foreach ($products as $product)
+                    <tr>
+                        <td class="td-img text-left">
+                            <div style="display: flex; align-items: center;">
+                                <a href="#" style="margin-right: 10px;">
+                                    <img style="width: 100px;" src="{{ $product['image'] }}" alt="course_img" />
+                                </a>
+
+                            </div>
+                        </td>
+                        <td>
+                            <div>
+                                <p>
+                                    <a href="#">{{ $product['name'] }}</a><br>
+                                </p>
+                            </div>
+                        </td>
+                        <td>
+                            S/ {{ $product['total'] }}
+                        </td>
+                    </tr>
+                    @endforeach
+                @endif
+            </tbody>
+        </table>
+    </div>
+
+    <div class="row mt-4">
+        <div style="padding: 20px; background: #f8f8f8;">
+            <h3>Registra tu pago</h3>
+            <p>Agradecemos su preferencia por nuestros cursos. Por favor, proceda a registrar los datos del pagador para
+                confirmar la compra.</p>
+            <br>
+            <h4>Total:</h4>
+            <p style="color: orange; font-size: 16px;"><b>S/ {{ $total }}</b></p>
+        </div>
+        <div id="cardPaymentBrick_container"></div>
+    </div>
+
         <div class="row mt-4">
             <div class="col-md-4"></div>
             <div class="col-md-4">
                 <div class="card space-y-4 p-5">
-                    <h1>Aqui el formulario de mercado pago</h1>
+                    <h1><!-- cart page content section end -->
+                        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+                        @if ($preference)
+                            <script>
+                                const mp = new MercadoPago("{{ env('MERCADOPAGO_KEY') }}", {
+                                    locale: 'es-PE'
+                                });
+                                const bricksBuilder = mp.bricks();
+                                const renderCardPaymentBrick = async (bricksBuilder) => {
+                                    const settings = {
+                                        initialization: {
+                                            preferenceId: "{{ $preference }}",
+                                            amount: {{ $total }},
+                                        },
+                                        customization: {
+                                            visual: {
+                                                style: {
+                                                    customVariables: {
+                                                        theme: 'bootstrap',
+                                                    }
+                                                }
+                                            },
+                                            paymentMethods: {
+                                                maxInstallments: 1,
+                                            }
+                                        },
+                                        callbacks: {
+                                            onReady: () => {
+                                                // callback llamado cuando Brick esté listo
+                                            },
+                                            onSubmit: (cardFormData) => {
+                                                //  callback llamado cuando el usuario haga clic en el botón enviar los datos
+                                                //  ejemplo de envío de los datos recolectados por el Brick a su servidor
+                                                let products = @json($products);
+                                                return new Promise((resolve, reject) => {
+                                                    fetch("{{ route('web_process_payment', [$sale_id, $student_id]) }}", {
+                                                            method: "PUT",
+                                                            headers: {
+                                                                "Content-Type": "application/json",
+                                                                "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                                                            },
+                                                            body: JSON.stringify(products)
+                                                        }).then((response) => {
+                                                            if (!response.ok) {
+                                                                return response.json().then(error => {
+                                                                    throw new Error(error.error);
+                                                                });
+                                                            }
+                                                            return response.json();
+
+                                                        })
+                                                        .then((data) => {
+                                                            if (data.status == 'approved') {
+                                                                window.location.href = data.url;
+                                                            } else {
+                                                                alert('No se pudo continuar el proceso');
+                                                                window.location.href = data.url;
+                                                            }
+                                                        })
+                                                        .catch((error) => {
+                                                            if (error instanceof SyntaxError) {
+                                                                // Si hay un error de sintaxis al analizar la respuesta JSON
+                                                                alert('Error al procesar el pago.');
+                                                            } else {
+                                                                // Mostrar la alerta con el mensaje de error devuelto por el backend
+                                                                alert(error.message);
+                                                            }
+                                                        })
+                                                });
+                                            },
+                                            onError: (error) => {
+                                                console.log(error)
+                                            },
+                                        },
+                                    };
+                                    window.cardPaymentBrickController = await bricksBuilder.create('cardPayment',
+                                        'cardPaymentBrick_container', settings);
+                                };
+                                renderCardPaymentBrick(bricksBuilder);
+                            </script>
+                        @endif
+                        <br><br></h1>
                 </div>
             </div>
             <div class="col-md-4"></div>
         </div>
-  
+
+
     </main>
-    
+
     <br>
     <br>
     <br>
 
 
-    
+
     <div id="whatsapp">
         <a href="https://wa.link/54k2g9" class="wtsapp" data-bs-toggle="modal" data-bs-target="#exampleModal">
             <i class="fa fa-whatsapp" aria-hidden="true"></i>

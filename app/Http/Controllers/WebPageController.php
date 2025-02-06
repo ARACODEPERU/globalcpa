@@ -117,7 +117,7 @@ class WebPageController extends Controller
             ->orderBy('cms_section_items.position')
             ->get();
 
-        return view('pages.courses', [
+        return view('', [
             'courses' => $courses,
             'categories' => $categories,
             // 'banner' => $banner,
@@ -408,9 +408,10 @@ class WebPageController extends Controller
             'app' => 'required|string|max:255',
             'apm' => 'required|string|max:255',
             'type' => 'required|string|max:255',
-            'dni' => 'required|numeric|unique:people,number',
+            'dni' => 'required|numeric',
             'phone' => 'required|string|max:255',
             'email' => 'required|unique:people,email',
+            'password' => 'required|string|min:8',
         ]);
 
         if ($validator->fails()) {
@@ -419,6 +420,9 @@ class WebPageController extends Controller
                 ->withInput();
         }
 
+
+
+
         $productids = $request->get('item_id');
 
         $comprador_nombre = $request->get('names');
@@ -426,6 +430,7 @@ class WebPageController extends Controller
         $comprador_email = $request->get('email');
 
         $preference_id = null;
+
         try {
             DB::beginTransaction();
             MercadoPagoConfig::setAccessToken(env('MERCADOPAGO_TOKEN'));
@@ -462,7 +467,7 @@ class WebPageController extends Controller
                 $user = User::create([
                     'name' => $person->names,
                     'email' => $person->email,
-                    'password' => Hash::make($person->number),
+                    'password' => Hash::make($request->get('password')),
                     'person_id' => $person->id
                 ]);
                 Auth::login($user);
@@ -493,7 +498,7 @@ class WebPageController extends Controller
 
                 $product = OnliItem::find($id);
 
-                $this->matricular_curso($product, $student);
+                //$this->matricular_curso($product, $student); //poner esto al final de pagar!!!!! revisar
 
                 array_push($items, [
                     'id' => $id,
@@ -534,14 +539,23 @@ class WebPageController extends Controller
             // );
 
             $preference_id =  $preference->id;
+            ///dd($preference);
             DB::commit();
         } catch (\MercadoPago\Exceptions\MPApiException $e) {
             // Manejar la excepción
+            Auth::logout();
             DB::rollback();
             $response = $e->getApiResponse();
-            //dd($response); // Mostrar la respuesta para obtener más detalles
+            dd($response); // Mostrar la respuesta para obtener más detalles
         }
-        //route('web_gracias_por_comprar_tu_entrada', $sale->id);
+
+        return view('pages/pagar', [
+            'preference' => $preference_id,
+            'products' => $products,
+            'total' => $total,
+            'sale_id' => $sale->id,
+            'student_id' => $student->id
+        ]);
 
     }
 
@@ -716,4 +730,5 @@ class WebPageController extends Controller
             'unlimited' => true
         ]);
     }
+
 }

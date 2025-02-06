@@ -1,7 +1,7 @@
 
 
 <nav class="header before:bg-white dark:before:bg-navy-750 print:hidden">
-            
+
     <!-- App Header  -->
     <div class="header-container relative flex w-full bg-white dark:bg-navy-750 print:hidden">
         <!-- Header Items -->
@@ -661,15 +661,15 @@
                 </button>
 
                 <!-- Shop-Cart -->
-                {{-- <a href="{{route('web_carrito')}}" class="cart-icon">
-                    <button class="btn size-8 rounded-full p-0 hover:bg-slate-300/20 focus:bg-slate-300/20 
+                <a href="{{route('web_carrito')}}" class="cart-icon">
+                    <button class="btn size-8 rounded-full p-0 hover:bg-slate-300/20 focus:bg-slate-300/20
                         active:bg-slate-300/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25">
                         <i class="fa fa-cart-plus" aria-hidden="true" style="font-size: 20px;">
                             <span class="cart-count contador" id="contadorCarritoWeb">0</span><!-- REvisar no aparece este agregado -->
                             <span id="contadorCarritoMovil" hidden style="color: white; display: none;"></span></i>
                     </button>
-                </a> --}}
-                
+                </a>
+
                 <!-- Monochrome Mode Toggle -->
                 {{-- <button
                     @click="$store.global.isMonochromeModeEnabled = !$store.global.isMonochromeModeEnabled"
@@ -679,7 +679,7 @@
                     class="fa-solid fa-palette bg-gradient-to-r from-sky-400 to-blue-600 bg-clip-text text-lg font-semibold text-transparent"
                     ></i>
                 </button> --}}
-                
+
                 <a href="{{ route('login') }}">
                     <button class="boton-degradado-campus">Campus Virtual</button>
                 </a>
@@ -1380,7 +1380,7 @@
                 />
                 </svg>
             </button> --}}
-            
+
             </div>
         </div>
     </div>

@@ -35,14 +35,14 @@
                         <div class="row">
                             @if ($item->price)
                                 <div class="col-md-6" style="padding: 10px 0px;">
-                                    {{-- <a  onclick="agregarAlCarrito({ id: {{ $item->id }}, nombre: '{{ $item->name }}', precio: {{ $item->price }} })">
+                                    <a  onclick="agregarAlCarrito({ id: {{ $item->id }}, nombre: '{{ $item->name }}', precio: {{ $item->price }} })">
                                         <button class="boton-degradado-courses">
                                             <b>
                                                 <i class="fa fa-cart-plus" aria-hidden="true" style="font-size: 16px;"></i>
                                                 &nbsp; Añadir al Carrito
                                             </b>
                                         </button>
-                                    </a> --}}
+                                    </a>
                                     <a href="https://wa.link/54k2g9">
                                         <button class="boton-degradado-courses"><b>! Comprar Ahora¡</b></button>
                                     </a>
@@ -410,7 +410,7 @@
 
         <section class="padding: 30px 0px;">
             <div class="container">
-                
+
                 <div class="row">
                     @if ($course->price)
                         <div class="col-md-6" style="padding: 10px 0px;">

@@ -35,6 +35,7 @@ Route::get('/cursos', [WebPageController::class, 'courses'])->name('web_courses'
 Route::get('/curso-descripcion/{id}', [WebPageController::class, 'coursedescription'])->name('web_course_description');
 Route::get('/carrito', [WebPageController::class, 'shopcart'])->name('web_carrito');
 Route::get('/pagar', [WebPageController::class, 'pay'])->name('web_pay');
+Route::post('/safe_pay', [WebPageController::class, 'pagar'])->name('paying');
 Route::get('/gracias', [WebPageController::class, 'thanks'])->name('web_thanks');
 Route::get('/curso-descripcion-x/{id}', [WebPageController::class, 'cursodescripcion'])->name('web_curso_descripcion');
 
@@ -54,6 +55,7 @@ Route::post('/find/invoice', [SalesController::class, 'clientSearchDocument'])->
 Route::get('/stories/article/{url}', [BlogController::class, 'storiesArticle'])->name('blog_stories_article_by_url');
 Route::get('/stories/policies', [BlogController::class, 'storiesPolicies'])->name('blog_stories_policies');
 Route::get('/stories/contact-us', [BlogController::class, 'storiesContactUs'])->name('blog_stories_contact_us');
+Route::put('/process_payment/{id}/{student_id}', [WebController::class, 'processPayment'])->name('web_process_payment');
 
 
 Route::get('/mipais', function () {

@@ -30,7 +30,7 @@
                                     </div>
                                 </div>
                                 <a href="">
-                                    <button class="btn size-9 bg-slate-150 p-0 text-slate-800 hover:bg-slate-200 focus:bg-slate-200 
+                                    <button class="btn size-9 bg-slate-150 p-0 text-slate-800 hover:bg-slate-200 focus:bg-slate-200
                                         active:bg-slate-200/80 dark:bg-navy-500 dark:text-navy-50 dark:hover:bg-navy-450 dark:focus:bg-navy-450 dark:active:bg-navy-450/90">
                                         <i class="fa fa-user" aria-hidden="true" style="font-size: 16px;"></i>
                                     </button>
@@ -52,7 +52,7 @@
                                     {{ $item->additional }}
                                 </p>
                                 <a href="{{ route('web_course_description', $item->course->id) }}" class="text-base font-medium text-slate-700 line-clamp-1 hover:text-primary focus:text-primary dark:text-navy-100 dark:hover:text-accent-light dark:focus:text-accent-light">
-                                    {{ $item->name }} 
+                                    {{ $item->name }}
                                 </a>
                                 {{-- <p>{{ $item->category_description }}</p> --}}
                                 <div class="my-3 h-px bg-slate-200 dark:bg-navy-500"></div>
@@ -63,14 +63,14 @@
                                         </a>
                                     </div>
                                     <div class="text-right">
-                                        {{-- <a  onclick="agregarAlCarrito({ id: {{ $item->id }}, nombre: '{{ $item->name }}', precio: {{ $item->price }} })">
+                                        <a  onclick="agregarAlCarrito({ id: {{ $item->id }}, nombre: '{{ $item->name }}', precio: {{ $item->price }} })">
                                             <button class="boton-degradado-courses">
                                                 <b>
                                                     <i class="fa fa-cart-plus" aria-hidden="true" style="font-size: 16px;"></i>
                                                     &nbsp; Añadir al Carrito
                                                 </b>
                                             </button>
-                                        </a> --}}
+                                        </a>
                                         <a href="https://wa.link/54k2g9">
                                             <button class="boton-degradado-courses"><b>! Comprar Ahora¡</b></button>
                                         </a>
@@ -79,7 +79,7 @@
                             </div>
                         </div>
                         @endforeach
-                    
+
                         {{-- <div class="card group p-3">
                             <div class="flex items-center justify-between space-x-2 px-1">
                                 <div class="flex items-center space-x-2">
@@ -159,7 +159,7 @@
                                 </button>
                             </div>
                             </div>
-                    
+
                             <div class="mt-3 px-1">
                             <a href="#" class="text-base font-medium text-slate-700 line-clamp-1 hover:text-primary focus:text-primary dark:text-navy-100 dark:hover:text-accent-light dark:focus:text-accent-light">
                                 Cube Store #015
@@ -212,7 +212,7 @@
                                 </button>
                             </div>
                             </div>
-                    
+
                             <div class="mt-3 px-1">
                             <a href="#" class="text-base font-medium text-slate-700 line-clamp-1 hover:text-primary focus:text-primary dark:text-navy-100 dark:hover:text-accent-light dark:focus:text-accent-light">
                                 Abstraktio #699
@@ -348,15 +348,15 @@
                 </div>
             </div>
         </div>
-        
+
     </main>
-    
+
     <br>
     <br>
     <br>
 
 
-    
+
     <div id="whatsapp">
         <a href="https://wa.link/54k2g9" class="wtsapp" data-bs-toggle="modal" data-bs-target="#exampleModal">
             <i class="fa fa-whatsapp" aria-hidden="true"></i>
@@ -482,5 +482,5 @@
         });
     });
     </script>
-    
+
 @stop
