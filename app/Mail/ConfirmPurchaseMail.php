@@ -29,7 +29,7 @@ class ConfirmPurchaseMail extends Mailable
     {
         return new Envelope(
             from: new Address(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME')),
-            subject: 'Gracias por tu compra en '.env('APP_NAME'),
+            subject: 'Gracias por estar con nosotros - '.env('APP_NAME'),
         );
     }
 
