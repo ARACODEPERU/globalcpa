@@ -556,7 +556,6 @@ class WebPageController extends Controller
             'sale_id' => $sale->id,
             'student_id' => $student->id
         ]);
-
     }
 
     public function thanks()
@@ -594,7 +593,7 @@ class WebPageController extends Controller
 
         $client = new PaymentClient();
         $sale = OnliSale::find($id);
-
+        // dd($request->get('transaction_amount'));
         if ($sale->response_status == 'approved') {
             return response()->json(['error' => 'el pedido ya fue procesado, ya no puede volver a pagar'], 412);
         } else {
@@ -730,5 +729,4 @@ class WebPageController extends Controller
             'unlimited' => true
         ]);
     }
-
 }
