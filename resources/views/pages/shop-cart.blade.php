@@ -111,11 +111,12 @@
                     <br>
                     <div class="px-4 sm:px-5">
                         <div class="flex items-center justify-between">
-                            <h2 class="font-medium tracking-wide text-slate-700 dark:text-navy-100">
-                                Registrando a nuevo Alumno, Bienvenido a GlobalCpa Perú.
+                            <h2 class="font-medium tracking-wide text-slate-700 dark:text-navy-100 mt-4">
+                                Excelente estás a punto de aprender con nosotros, Bienvenido a GlobalCpa Perú.
                             </h2>
                         </div>
-
+                    </div>
+                        <br>
                         {{-- Formularios según estado de login --}}
 
                         @auth
@@ -123,23 +124,24 @@
                             <br>
                             <div class="px-4 sm:px-5">
                                 <div class="flex items-center justify-between">
-                                    <h2 class="font-medium tracking-wide text-slate-700 dark:text-navy-100">
+                                    <h2 class="font-medium tracking-wide text-slate-700 dark:text-navy-100 mt-6">
                                         Hola {{ Auth::user()->name }} estas por acceder a la compra de tus cursos, verifica que los cursos que elegiste sean los correctos y procede a hacer el pago haciendo click en "Pagar"
                                     </h2>
                                 </div>
 
                             </div>
                         </div>
-                            <form class="form" method="POST" action="{{ route('onlineshop_client_account_store') }}" id ="CartForm">
+                            <form class="form" method="POST" action="{{ route('paying_auth') }}" id ="CartForm">
                                 @csrf
                                 <meta name="csrf-token" content="{{ csrf_token() }}">
                                 <input type="hidden" name="recaptcha_token" id="recaptcha_token">
+                                <input type="text" name="names" value="{{ Auth::user()->name }}" style="display: none">
                                 <div id="divCartHidden" style="display: none"></div>
                                 <div class="row">
                                     <div class="pt-8 col-md-12">
                                         <p class="text-xs+">Correo Electrónico</p>
                                         <div class="mt-1 flex justify-between space-x-2 rounded-2xl bg-slate-150 p-1.5 dark:bg-navy-800">
-                                            <input class=" h-8 form-input w-full bg-transparent px-2 text-left placeholder:text-slate-400/70" value="{{ Auth::user()->email }}" placeholder="" type="text" disabled>
+                                            <input class=" h-8 form-input w-full bg-transparent px-2 text-left placeholder:text-slate-400/70" name="email" value="{{ Auth::user()->email }}" placeholder="" type="text" disabled>
                                         </div>
                                     </div>
                                     {{-- <div class="pt-4 col-md-6">

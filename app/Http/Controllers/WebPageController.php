@@ -401,6 +401,99 @@ class WebPageController extends Controller
         return view('pages.pay');
     }
 
+    public function pagar_auth(Request $request){ //pago cuando es usuario autenticado
+        $productids = $request->get('item_id');
+        $person = Person::where('id', Auth::user()->person_id)->first();
+        $comprador_nombre = $person->full_name;
+        $comprador_telefono = $person->telephone;
+        $comprador_email = $request->get('email');
+
+        $preference_id = null;
+
+        try {
+            DB::beginTransaction();
+            MercadoPagoConfig::setAccessToken(env('MERCADOPAGO_TOKEN'));
+            $client = new PreferenceClient();
+            $items = [];
+            $products = [];
+            $total = 0;
+            $type_doc = "";
+            if(Auth::user()->document_type_id == 1) $type_doc = "DNI";
+            if(Auth::user()->document_type_id == 2) $type_doc = "RUC";
+            if(Auth::user()->document_type_id == 3) $type_doc = "PASAPORTE";
+            if(Auth::user()->document_type_id == 4) $type_doc = "CARNET DE EXTRANJERIA";
+
+            $user = Auth::user();
+            $person = Person::where('id', $user->person_id)->first();
+
+            $sale = OnliSale::create([
+                'module_name'                   => 'Onlineshop',
+                'person_id'                     => $person->id,
+                'clie_full_name'                => $comprador_nombre,
+                'phone'                         => $comprador_telefono,
+                'email'                         => $comprador_email,
+                'response_status'               => 'pendiente',
+            ]);
+
+            $productquantity = 1;
+
+            foreach ($productids as $key => $id) {
+
+                $product = OnliItem::find($id);
+
+                //$this->matricular_curso($product, $student); //poner esto al final de pagar!!!!! revisar
+
+                array_push($items, [
+                    'id' => $id,
+                    'title' => $product->name,
+                    'quantity'      => floatval($productquantity),
+                    'currency_id'   => 'PEN',
+                    'unit_price'    => floatval($product->price)
+                ]);
+
+                array_push($products, [
+                    'image' => $product->image,
+                    'name' => $product->name,
+                    'price' => floatval($product->price),
+                    'quantity'      => floatval($productquantity),
+                    'total' => (floatval($productquantity) * floatval($product->price))
+                ]);
+
+                $total = $total + (floatval($productquantity) * floatval($product->price));
+
+                OnliSaleDetail::create([
+                    'sale_id'       => $sale->id,
+                    'item_id'       => $product->item_id,
+                    'entitie'       => $product->entitie,
+                    'price'         => $product->price,
+                    'quantity'      => floatval($productquantity),
+                    'onli_item_id'  => $id
+                ]);
+            }
+
+            $preference = $client->create([
+                "items" => $items,
+            ]);
+
+            $preference_id =  $preference->id;
+            ///dd($preference);
+            DB::commit();
+        } catch (\MercadoPago\Exceptions\MPApiException $e) {
+            // Manejar la excepción
+            DB::rollback();
+            $response = $e->getApiResponse();
+            dd($response); // Mostrar la respuesta para obtener más detalles
+        }
+
+        return view('pages/pagar', [
+            'preference' => $preference_id,
+            'products' => $products,
+            'total' => $total,
+            'sale_id' => $sale->id,
+            'student_id' => $student->id
+        ]);
+    }
+
     public function pagar(Request $request)
     {
         $validator = Validator::make($request->all(), [
