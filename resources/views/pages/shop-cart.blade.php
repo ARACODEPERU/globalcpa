@@ -118,7 +118,11 @@
                     </div>
                         <br>
                         {{-- Formularios según estado de login --}}
-
+                        <style>
+                            .form > * {
+                                margin: 1rem;
+                            }
+                        </style>
                         @auth
                         <div class="card pb-4">
                             <br>
@@ -156,73 +160,126 @@
                                 </button>
                             </form>
                         @else
-                                <form class="form" method="POST" action="{{ route('paying') }}" id ="CartForm">
-                                    @csrf
-                                    <meta name="csrf-token" content="{{ csrf_token() }}">
-                                    <input type="hidden" name="recaptcha_token" id="recaptcha_token">
-                                    <div id="divCartHidden" style="display: none"></div>
-                                    <div class="row">
-                                        <div class="pt-4 col-md-6">
-                                            <p class="text-xs+">Nombres</p>
-                                            <div class="mt-1 flex justify-between space-x-2 rounded-2xl bg-slate-150 p-1.5 dark:bg-navy-800">
-                                                <input class=" h-8 form-input w-full bg-transparent px-2 text-left placeholder:text-slate-400/70" name="names" placeholder="" type="text">
-                                            </div>
-                                        </div>
-                                        <div class="pt-4 col-md-6">
-                                            <p class="text-xs+">Apellido Paterno</p>
-                                            <div class="mt-1 flex justify-between space-x-2 rounded-2xl bg-slate-150 p-1.5 dark:bg-navy-800">
-                                                <input class=" h-8 form-input w-full bg-transparent px-2 text-left placeholder:text-slate-400/70" name="app" placeholder="" type="text">
-                                            </div>
-                                        </div>
-                                        <div class="pt-4 col-md-6">
-                                            <p class="text-xs+">Apellido Materno</p>
-                                            <div class="mt-1 flex justify-between space-x-2 rounded-2xl bg-slate-150 p-1.5 dark:bg-navy-800">
-                                                <input class=" h-8 form-input w-full bg-transparent px-2 text-left placeholder:text-slate-400/70" name="apm" placeholder="" type="text">
-                                            </div>
-                                        </div>
-                                        <div class="pt-4 col-md-6">
-                                            <p class="text-xs+">Tipo de documento</p>
-                                            <div class="mt-1 flex justify-between space-x-2 rounded-2xl bg-slate-150 p-1.5 dark:bg-navy-800">
-                                                <select class="w-full form-select h-8 rounded-2xl border border-transparent bg-white px-4 py-0 pr-9 text-xs+ hover:border-slate-400 focus:border-primary dark:bg-navy-700 dark:hover:border-navy-400 dark:focus:border-accent"
-                                                name="type">
-                                                    <option>DNI</option>
-                                                    <option>RUC</option>
-                                                    <option>Doc.trib.no.dom.sin.ruc</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="pt-4 col-md-6">
-                                            <p class="text-xs+">N° Documento</p>
-                                            <div class="mt-1 flex justify-between space-x-2 rounded-2xl bg-slate-150 p-1.5 dark:bg-navy-800">
-                                                <input class=" h-8 form-input w-full bg-transparent px-2 text-left placeholder:text-slate-400/70" name="dni" placeholder="" type="number" min="10000000" max="99999999999">
-                                            </div>
-                                        </div>
-                                        <div class="pt-4 col-md-6">
-                                            <p class="text-xs+">Teléfono</p>
-                                            <div class="mt-1 flex justify-between space-x-2 rounded-2xl bg-slate-150 p-1.5 dark:bg-navy-800">
-                                                <input class=" h-8 form-input w-full bg-transparent px-2 text-left placeholder:text-slate-400/70" name="phone" placeholder="" type="text">
-                                            </div>
-                                        </div>
-                                        <div class="pt-4 col-md-12">
-                                            <p class="text-xs+">Correo Electrónico</p>
-                                            <div class="mt-1 flex justify-between space-x-2 rounded-2xl bg-slate-150 p-1.5 dark:bg-navy-800">
-                                                <input class=" h-8 form-input w-full bg-transparent px-2 text-left placeholder:text-slate-400/70" name="email" placeholder="" type="text">
-                                            </div>
-                                        </div>
-                                        <div class="pt-4 col-md-12">
-                                            <p class="text-xs+">Contraseña:</p>
-                                            <div class="mt-1 flex justify-between space-x-2 rounded-2xl bg-slate-150 p-1.5 dark:bg-navy-800">
-                                                <input class=" h-8 form-input w-full bg-transparent px-2 text-left placeholder:text-slate-400/70" name="password" placeholder="" type="password" required>
-                                            </div>
-                                        </div>
+                        <form class="form" method="POST" action="{{ route('paying') }}" id="CartForm">
+                            @csrf
+                            <meta name="csrf-token" content="{{ csrf_token() }}">
+                            <input type="hidden" name="recaptcha_token" id="recaptcha_token">
+                            <div id="divCartHidden" style="display: none"></div>
+                            <div class="row">
+                                <!-- Campo Nombres -->
+                                <div class="pt-4 col-md-6">
+                                    <p class="text-xs+">Nombres</p>
+                                    <div class="mt-1 flex justify-between space-x-2 rounded-2xl bg-slate-150 p-1.5 dark:bg-navy-800">
+                                        <input class="h-8 form-input w-full bg-transparent px-2 text-left placeholder:text-slate-400/70" name="names" placeholder="" type="text" value="{{ old('names') }}">
                                     </div>
-                                    <button type="submit" class="mt-8 boton-degradado-courses" id="btn-crear-cuenta">
-                                            <b>CREAR CUENTA PARA PAGAR</b>
-                                    </button>
-                                    <button class="mt-8 boton-degradado-info" id="btn-login" onclick="window.location.href='{{ route('login_shop') }}';">
-                                        <b>YA TENGO UNA CUENTA</b>
-                                    </button>
-                                </form>
+                                    @error('names')
+                                        <span class="text-sm text-red-500">{{ $message }}</span>
+                                    @enderror
+                                </div>
+
+                                <!-- Campo Apellido Paterno -->
+                                <div class="pt-4 col-md-6">
+                                    <p class="text-xs+">Apellido Paterno</p>
+                                    <div class="mt-1 flex justify-between space-x-2 rounded-2xl bg-slate-150 p-1.5 dark:bg-navy-800">
+                                        <input class="h-8 form-input w-full bg-transparent px-2 text-left placeholder:text-slate-400/70" name="app" placeholder="" type="text" value="{{ old('app') }}">
+                                    </div>
+                                    @error('app')
+                                        <span class="text-sm text-red-500">{{ $message }}</span>
+                                    @enderror
+                                </div>
+
+                                <!-- Campo Apellido Materno -->
+                                <div class="pt-4 col-md-6">
+                                    <p class="text-xs+">Apellido Materno</p>
+                                    <div class="mt-1 flex justify-between space-x-2 rounded-2xl bg-slate-150 p-1.5 dark:bg-navy-800">
+                                        <input class="h-8 form-input w-full bg-transparent px-2 text-left placeholder:text-slate-400/70" name="apm" placeholder="" type="text" value="{{ old('apm') }}">
+                                    </div>
+                                    @error('apm')
+                                        <span class="text-sm text-red-500">{{ $message }}</span>
+                                    @enderror
+                                </div>
+
+                                <!-- Campo Tipo de documento -->
+                                <div class="pt-4 col-md-6">
+                                    <p class="text-xs+">Tipo de documento</p>
+                                    <div class="mt-1 flex justify-between space-x-2 rounded-2xl bg-slate-150 p-1.5 dark:bg-navy-800">
+                                        <select class="w-full form-select h-8 rounded-2xl border border-transparent bg-white px-4 py-0 pr-9 text-xs+ hover:border-slate-400 focus:border-primary dark:bg-navy-700 dark:hover:border-navy-400 dark:focus:border-accent" name="type">
+                                            <option value="DNI" {{ old('type') == 'DNI' ? 'selected' : '' }}>DNI</option>
+                                            <option value="RUC" {{ old('type') == 'RUC' ? 'selected' : '' }}>RUC</option>
+                                            <option value="Doc.trib.no.dom.sin.ruc" {{ old('type') == 'Doc.trib.no.dom.sin.ruc' ? 'selected' : '' }}>Doc.trib.no.dom.sin.ruc</option>
+                                        </select>
+                                    </div>
+                                    @error('type')
+                                        <span class="text-sm text-red-500">{{ $message }}</span>
+                                    @enderror
+                                </div>
+
+                                <!-- Campo N° Documento -->
+                                <div class="pt-4 col-md-6">
+                                    <p class="text-xs+">N° Documento</p>
+                                    <div class="mt-1 flex justify-between space-x-2 rounded-2xl bg-slate-150 p-1.5 dark:bg-navy-800">
+                                        <input class="h-8 form-input w-full bg-transparent px-2 text-left placeholder:text-slate-400/70" name="dni" placeholder="" type="number" min="10000000" max="99999999999" value="{{ old('dni') }}">
+                                    </div>
+                                    @error('dni')
+                                        <span class="text-sm text-red-500">{{ $message }}</span>
+                                    @enderror
+                                </div>
+
+                                <!-- Campo Teléfono -->
+                                <div class="pt-4 col-md-6">
+                                    <p class="text-xs+">Teléfono</p>
+                                    <div class="mt-1 flex justify-between space-x-2 rounded-2xl bg-slate-150 p-1.5 dark:bg-navy-800">
+                                        <input class="h-8 form-input w-full bg-transparent px-2 text-left placeholder:text-slate-400/70" name="phone" placeholder="" type="text" value="{{ old('phone') }}">
+                                    </div>
+                                    @error('phone')
+                                        <span class="text-sm text-red-500">{{ $message }}</span>
+                                    @enderror
+                                </div>
+
+                                <!-- Campo Correo Electrónico -->
+                                <div class="pt-4 col-md-12">
+                                    <p class="text-xs+">Correo Electrónico</p>
+                                    <div class="mt-1 flex justify-between space-x-2 rounded-2xl bg-slate-150 p-1.5 dark:bg-navy-800">
+                                        <input class="h-8 form-input w-full bg-transparent px-2 text-left placeholder:text-slate-400/70" name="email" placeholder="" type="email" value="{{ old('email') }}">
+                                    </div>
+                                    @error('email')
+                                        <span class="text-sm text-red-500">{{ $message }}</span>
+                                    @enderror
+                                </div>
+
+                                <!-- Campo Contraseña -->
+                                <div class="pt-4 col-md-12">
+                                    <p class="text-xs+">Contraseña:</p>
+                                    <div class="mt-1 flex justify-between space-x-2 rounded-2xl bg-slate-150 p-1.5 dark:bg-navy-800">
+                                        <input class="h-8 form-input w-full bg-transparent px-2 text-left placeholder:text-slate-400/70" name="password" placeholder="" type="password" required>
+                                    </div>
+                                    @error('password')
+                                        <span class="text-sm text-red-500">{{ $message }}</span>
+                                    @enderror
+                                </div>
+
+                                <!-- Campo Repetir Contraseña -->
+                                <div class="pt-4 col-md-12">
+                                    <p class="text-xs+">Repetir Contraseña:</p>
+                                    <div class="mt-1 flex justify-between space-x-2 rounded-2xl bg-slate-150 p-1.5 dark:bg-navy-800">
+                                        <input class="h-8 form-input w-full bg-transparent px-2 text-left placeholder:text-slate-400/70" name="password2" placeholder="" type="password" required>
+                                    </div>
+                                    @error('password2')
+                                        <span class="text-sm text-red-500">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <!-- Botones -->
+                            <div>
+                                <button type="submit" class="mt-8 boton-degradado-courses" id="btn-crear-cuenta">
+                                    <b>CREAR CUENTA PARA PAGAR</b>
+                                </button>
+                                <button class="mt-8 boton-degradado-info" id="btn-login" onclick="window.location.href='{{ route('login_shop') }}';">
+                                    <b>YA TENGO UNA CUENTA</b>
+                                </button>
+                            </div>
+                        </form>
                         @endauth
                         <div id="loginModal" class="modal">
                             <div class="modal-content">

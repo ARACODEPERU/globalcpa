@@ -485,6 +485,7 @@ class WebPageController extends Controller
             dd($response); // Mostrar la respuesta para obtener más detalles
         }
 
+        $student = AcaStudent::where('person_id', $person->id)->first();
         return view('pages/pagar', [
             'preference' => $preference_id,
             'products' => $products,
@@ -505,6 +506,13 @@ class WebPageController extends Controller
             'phone' => 'required|string|max:255',
             'email' => 'required|unique:people,email',
             'password' => 'required|string|min:8',
+            'password2' => 'required|string|min:8|same:password',
+        ], [
+            // Mensajes personalizados
+            'password.required' => 'El campo contraseña es obligatorio.',
+            'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
+            'password2.required' => 'El campo repetir contraseña es obligatorio.',
+            'password2.same' => 'Las contraseñas no coinciden.',
         ]);
 
         if ($validator->fails()) {
