@@ -68,7 +68,7 @@ class AcaCertificateController extends Controller
         $destination = $this->directory;
         $file = $request->file('certificate_img');
         $path = null;
-
+        dd($file->storeAs($destination, $file_name, 'public'));
         if ($file) {
             $original_name = date('YmdHis');
             $extension = $file->getClientOriginalExtension();
@@ -77,13 +77,19 @@ class AcaCertificateController extends Controller
         }
 
         if ($request->get('course_id')) {
-            AcaCertificateParameter::where('course_id', $request->get('course_id'))->update([
-                'state' => false
-            ]);
+            $ce = AcaCertificateParameter::where('course_id', $request->get('course_id'));
+            if ($ce) {
+                $ce->update([
+                    'state' => false
+                ]);
+            }
         } else {
-            AcaCertificateParameter::whereNull('course_id')->update([
-                'state' => false
-            ]);
+            $ce = AcaCertificateParameter::whereNull('course_id');
+            if ($ce) {
+                $ce->update([
+                    'state' => false
+                ]);
+            }
         }
 
         $certificate = AcaCertificateParameter::create([
@@ -368,6 +374,7 @@ class AcaCertificateController extends Controller
                 $acaCertificate->position_description_y = $request->get('position_description_y');
                 $acaCertificate->font_size_description = $request->get('font_size_description');
                 $acaCertificate->max_width_description = $request->get('max_width_description');
+                $acaCertificate->interspace_description = $request->get('interspace_description') ?? null;
                 break;
             default:
                 if ($request->get('state')) {
