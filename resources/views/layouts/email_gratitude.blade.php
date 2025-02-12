@@ -10,211 +10,102 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
     <style>
-        * {
+        body {
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
+            background-color: #f4f4f4;
         }
-
-        *:after,
-        *:before {
-            box-sizing: border-box;
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
         }
-
-        .bienvenida {
-            padding: 50px 10px 0px 10px;
-        }
-
-        /* Establece el ancho al 100% y la altura a 250px */
-        .banner {
-            width: 100%;
-            background-color: #3498db;
-            /* Cambia el color de fondo según tus preferencias */
-            /* Puedes agregar más estilos según tus necesidades */
-        }
-
-
-        img {
-            max-width: 100%;
-            display: block;
-        }
-
-        .card-list {
-            width: 90%;
-            max-width: 400px;
-        }
-
-        .card {
-            background-color: #fff;
-            box-shadow: 0 0 0 1px rgba(#000, 0.05), 0 20px 50px 0 rgba(#000, 0.1);
-            border-radius: 15px;
-            overflow: hidden;
-            padding: 1.25rem;
-            position: relative;
-            transition: 0.15s ease-in;
-        }
-
-        .card:hover {
-            box-shadow: 0 0 0 2px #16c79a, 0 10px 60px 0 rgba(#000, 0.1);
-            transform: translatey(-5px);
-        }
-
-        .card:focus-within {
-            box-shadow: 0 0 0 2px #16c79a, 0 10px 60px 0 rgba(#000, 0.1);
-            transform: translatey(-5px);
-        }
-
-        .card-image {
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .card-header {
-            margin-top: 1.5rem;
+        h1 {
+            text-align: center;
+            color: #333;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-
-            a {
-                font-weight: 600;
-                font-size: 1.375rem;
-                line-height: 1.25;
-                padding-right: 1rem;
-                text-decoration: none;
-                color: inherit;
-                will-change: transform;
-
-                &:after {
-                    content: "";
-                    position: absolute;
-                    left: 0;
-                    top: 0;
-                    right: 0;
-                    bottom: 0;
-                }
-            }
-        }
-
-        .icon-button {
-            border: 0;
-            background-color: #fff;
-            border-radius: 50%;
-            width: 2.5rem;
-            height: 2.5rem;
-            display: flex;
             justify-content: center;
-            align-items: center;
-            flex-shrink: 0;
-            font-size: 1.25rem;
-            transition: 0.25s ease;
-            box-shadow: 0 0 0 1px rgba(#000, 0.05), 0 3px 8px 0 rgba(#000, 0.15);
-            z-index: 1;
+        }
+        h1 i {
+            margin-right: 10px;
+        }
+
+        p{
+            line-height: 22px;
+            text-align: justify;
+        }
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+        .card {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin: 10px;
+            padding: 20px;
+            flex: 1 1 calc(33% - 40px); /* Tres tarjetas por fila en pantallas grandes */
+            box-sizing: border-box;
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .card h4 {
+            margin-top: 0;
+            color: #333;
+        }
+        .card p {
+            color: #555;
+        }
+        .card button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
             cursor: pointer;
-            color: #565656;
-
-            svg {
-                width: 1em;
-                height: 1em;
-            }
-
-            &:hover,
-            &:focus {
-                background-color: #ec4646;
-                color: #fff;
-            }
+        }
+        .card button:hover {
+            background-color: #0056b3;
         }
 
-        .card-footer {
-            margin-top: 1.25rem;
-            border-top: 1px solid #ddd;
-            padding-top: 1.25rem;
-            display: flex;
-            align-items: center;
-            flex-wrap: wrap;
+
+        .boton-degradado-campus {
+            width: 100%;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(45deg, #3c4a99, #4f46e5);
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
-        .card-meta {
-            display: flex;
-            align-items: center;
-            color: #787878;
+        .boton-degradado-campus:hover {
+            transform: translateY(-3px);
+            background: linear-gradient(45deg, #4f46e5, #3c4a99);
+        }
 
-            &:first-child:after {
-                display: block;
-                content: "";
-                width: 4px;
-                height: 4px;
-                border-radius: 50%;
-                background-color: currentcolor;
-                margin-left: 0.75rem;
-                margin-right: 0.75rem;
-            }
 
-            svg {
-                flex-shrink: 0;
-                width: 1em;
-                height: 1em;
-                margin-right: 0.25em;
+        @media (max-width: 768px) {
+            .card {
+                flex: 1 1 calc(50% - 40px); /* Dos tarjetas por fila en pantallas medianas */
             }
         }
-
-
-
-
-
-
-
-
-        .subTitle {
-            text-align: center;
-            font-size: 25px;
-            color: #808080;
-        }
-
-        .title {
-            margin-bottom: -5px;
-            text-align: center;
-            font-size: 50px;
-            font-weight: 700;
-            color: #0c161f;
-        }
-
-        /* Estilos para la línea */
-        .linea {
-            border: 2px solid #ff8607;
-            /* Cambia el grosor y el color de la línea según tus preferencias */
-            margin: 20px auto;
-            /* Centra la línea horizontalmente y agrega espacio vertical */
-            width: 5%;
-            /* Establece el ancho de la línea al 50% de la página */
-        }
-
-
-        /* Estilos para la línea */
-        .lineaCurso {
-            border: 2px solid #ff8607;
-            /* Cambia el grosor y el color de la línea según tus preferencias */
-            width: 8%;
-            /* Establece el ancho de la línea al 50% de la página */
-        }
-
-        .contenedor {
-            place-items: center;
-            /* Esto centra tanto horizontal como verticalmente */
-            margin: 0px auto;
-            width: 50%;
-            display: flex;
-            flex-wrap: wrap;
-        }
-
-        .contenedor-texto {
-            margin: 0px auto;
-            width: 50%;
-        }
-
-        .columna {
-            flex: 1;
-            padding: 10px;
-            border: 1px solid #ccc;
-            text-align: center;
+        @media (max-width: 480px) {
+            .card {
+                flex: 1 1 100%; /* Una tarjeta por fila en pantallas pequeñas */
+            }
         }
 
         .btn {
@@ -234,7 +125,7 @@
         }
 
         footer {
-            padding: 15px;
+            padding: 2px 15px;
             text-align: center;
             background: #000;
             color: #fff;
@@ -250,41 +141,89 @@
             color: orange;
         }
 
-        /* Estilos adicionales para hacerlo adaptable y estilizado */
-        @media (max-width: 768px) {
-            .contenedor {
-                flex-direction: column;
-                margin: 0px auto;
-                width: 95%;
-            }
-
-            .columna {
-                flex: 1;
-                margin: 5px;
-            }
-        }
     </style>
 </head>
 
 <body>
-    <section>
-        <img class="banner" src="{{ asset('img/banner-email.jpg') }}" alt="">
-    </section>
 
-    <section class="bienvenida">
-        <div class="contenedor-texto">
-            {{-- <h6 class="subTitle">Hola {{ $data->clie_full_name }}, <br>
-                ¡Muchas gracias por tu reciente compra en nuestra tienda online!
-                Nos complace
-                informarte que tu pedido ha sido recibido y está siendo
-                procesado.
-            </h6> --}}
-            <!--
-                <h1 class="title">Centro de Actualización Profesional CAP PERU</h1>
-            -->
-            <hr class="linea">
+    <br>
+
+
+    <div class="container">
+        <img style="width: 100%;" src="{{ asset('img/banner-email.jpg') }}" alt="Encabezado">
+        <br>
+        <h1>
+            <img style="width: 25px;" data-emoji="🎉" class="an1" alt="🎉" aria-label="🎉" draggable="false" 
+                src="https://fonts.gstatic.com/s/e/notoemoji/16.0/1f389/32.png" loading="lazy"> 
+                ¡Bienvenido(a) a Global CPA Business School!
+            <img style="width: 25px;" data-emoji="🎉" class="an1" alt="🎉" aria-label="🎉" draggable="false" 
+                src="https://fonts.gstatic.com/s/e/notoemoji/16.0/1f389/32.png" loading="lazy"> 
+        </h1>
+        <p>
+            Has tomado una decisión valiosa al invertir en tu crecimiento profesional, y estamos aquí para acompañarte en este 
+            camino de aprendizaje y desarrollo.  ¡Felicidades por dar este importante paso hacia tus metas! 
+        </p>
+        <p>
+            Para comenzar, aquí tienes tus datos de acceso a nuestra plataforma
+        </p>
+        <div class="card-container">
+            <div class="card">
+                <img width="100%" src="{{ asset('img/curso.jpeg') }}" alt="product" />
+                <h4 style="margin-top: 5px;">Título del curso y/o programa educativo</h4>
+                <p style="color: #4f46e5; font-size: 16px; font-weight: 700; margin-top: -10px;">
+                    S/. 395.00
+                </p>
+            </div>
+            <div class="card">
+                <img width="100%" src="{{ asset('img/curso.jpeg') }}" alt="product" />
+                <h4 style="margin-top: 5px;">Título del curso y/o programa educativo</h4>
+                <p style="color: #4f46e5; font-size: 16px; font-weight: 700; margin-top: -10px;">
+                    S/. 395.00
+                </p>
+            </div>
+            <div class="card">
+                <img width="100%" src="{{ asset('img/curso.jpeg') }}" alt="product" />
+                <h4 style="margin-top: 5px;">Título del curso y/o programa educativo</h4>
+                <p style="color: #4f46e5; font-size: 16px; font-weight: 700; margin-top: -10px;">
+                    S/. 395.00
+                </p>
+            </div>
         </div>
-    </section>
+        <div class="card-container">
+            <p>
+                👤 Usuario:  ⁠⁠gerencia@thayneinternacional.com
+                <br>
+                🔑 Contraseña: ⁠⁠09957587
+            </p>
+            <a href="https://academy.globalcpaperu.com/login" style="margin-top: 20px;">
+                <button class="boton-degradado-campus">Ingresar a la plataforma</button>
+            </a>
+        </div>
+        <br>
+        <p>
+            En nuestra plataforma encontrarás todo lo necesario para aprovechar al máximo esta experiencia: material de estudio, 
+            foros de interacción y acceso directo a nuestros instructores. Te invitamos a iniciar sesión cuanto antes y 
+            familiarizarte con las herramientas que hemos preparado para ti.
+        </p>
+        <p style="line-height: 22px;">
+            Estamos seguros de que este será un paso transformador para tu desarrollo. <br>
+            <b>¡Te deseamos mucho éxito en esta nueva etapa con nosotros!</b>
+        </p>
+        <p>
+            <b>Atentamente,</b><br>
+            Equipo de GLOBAL CPA BUSINESS SCHOOL
+        </p>
+        <p style="text-align: center; font-size: 14px;">
+            GLOBAL CPA BUSINESS SCHOOL, Jirón Pedro Conde Nro. 514, Oficina 203., Distrito de Lince, Provincia de Lima, Perú, +51 967052506
+        </p>
+        <br>
+        <footer>
+            <p style="text-align: center; font-size: 15px;">
+                &copy; Derechos Reservados {{ env('APP_NAME') }} | Desarrollado por <a href="https://aracodeperu.com/"
+                    style="">Aracode Smart Solutions</a>
+            </p>
+        </footer>
+    </div>
 
     {{-- <section style="padding: 15px;">
         <div class="contenedor">
@@ -313,12 +252,6 @@
             </div>
         </div>
     </section> --}}
-    <footer>
-        <p>
-            &copy; Derechos Reservados {{ env('APP_NAME') }} | Desarrollado por <a href="https://aracodeperu.com/"
-                style="">Aracode Smart Solutions</a>
-        </p>
-    </footer>
 </body>
 
 </html>
