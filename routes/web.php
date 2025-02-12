@@ -40,6 +40,9 @@ Route::post('/user_safe_pay', [WebPageController::class, 'pagar_auth'])->name('p
 Route::get('/gracias', [WebPageController::class, 'thanks'])->name('web_thanks');
 Route::get('/curso-descripcion-x/{id}', [WebPageController::class, 'cursodescripcion'])->name('web_curso_descripcion');
 
+
+Route::get('/email', [WebPageController::class, 'email'])->name('web_email');
+
 //////mensajes de whatsapp///////
 Route::get('/ask/product/{id}', [LandingController::class, 'redirectToWhatsApp'])->name('whatsapp_send');
 

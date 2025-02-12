@@ -13,7 +13,7 @@
             <div class="col-md-4"></div>
             <div class="col-md-4">
                 <div class="card p-5">
-                    <h1 style="font-size: 18px;"><b>¡Felicidades Nombre del alumo!</b> 🎉</h1>
+                    <h1 style="font-size: 18px;"><b>¡Felicidades Nombre del alumno!</b> 🎉</h1>
                     <p class="mt-2">
                         Bienvenido a <b>Global CPA</b>. Has invertido en tu futuro profesional, y estamos felices de acompañarte.
                     </p>
