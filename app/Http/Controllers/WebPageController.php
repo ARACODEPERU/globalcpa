@@ -407,6 +407,7 @@ class WebPageController extends Controller
         $comprador_nombre = $person->full_name;
         $comprador_telefono = $person->telephone;
         $comprador_email = $request->get('email');
+        $student = AcaStudent::where('person_id', $person->id)->first();
 
         $preference_id = null;
 
@@ -454,6 +455,8 @@ class WebPageController extends Controller
                 array_push($products, [
                     'image' => $product->image,
                     'name' => $product->name,
+                    'item_id' => $product->item_id,
+                    'student_id' => $student->id,
                     'price' => floatval($product->price),
                     'quantity'      => floatval($productquantity),
                     'total' => (floatval($productquantity) * floatval($product->price))
@@ -485,7 +488,7 @@ class WebPageController extends Controller
             dd($response); // Mostrar la respuesta para obtener más detalles
         }
 
-        $student = AcaStudent::where('person_id', $person->id)->first();
+
         return view('pages/pagar', [
             'preference' => $preference_id,
             'products' => $products,

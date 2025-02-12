@@ -168,6 +168,7 @@ class WebController extends Controller
         $client = new PaymentClient();
         $sale = OnliSale::find($id);
 
+
         if ($sale->response_status == 'approved') {
             return response()->json(['error' => 'el pedido ya fue procesado, ya no puede volver a pagar'], 412);
         } else {
@@ -200,7 +201,7 @@ class WebController extends Controller
 
                     $products = $request->get('products');
                     foreach ($products as $product) {
-                        $this->matricular_curso($product, $request->get('student_id'));
+                        $this->matricular_curso($product, $product['student_id']);
                     }
 
                     ///enviar correo
@@ -219,7 +220,7 @@ class WebController extends Controller
                     return response()->json([
                         'status' => $payment->status,
                         'message' => $payment->status_detail,
-                        'url' => route('web_pagar')
+                        'url' => route('web_carrito')
                     ]);
 
                     $sale->delete();
@@ -252,8 +253,7 @@ class WebController extends Controller
 
     private function matricular_curso($producto, $student_id)
     {
-
-        $course_id = $producto->item_id;
+        $course_id = $producto['item_id'];
 
         $registration = AcaCapRegistration::create([
             'student_id' => $student_id,
