@@ -203,7 +203,7 @@ class WebController extends Controller
                     foreach ($products as $product) {
                         $this->matricular_curso($product, $product['student_id']);
                     }
-
+                    dd(OnliSale::with('details.item')->where('id', $id)->first());
                     ///enviar correo
                     Mail::to($sale->email)
                         ->send(new ConfirmPurchaseMail(OnliSale::with('details.item')->where('id', $id)->first()));

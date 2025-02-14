@@ -167,7 +167,16 @@
             Para comenzar, aquí tienes tus datos de acceso a nuestra plataforma
         </p>
         <div class="card-container">
+            @foreach ($data->details as $product)
             <div class="card">
+                <img width="100%" src="{{ $product->item->image }}" alt="product" />
+                <h4 style="margin-top: 5px;">{{ $product->item->name }}</h4>
+                <p style="color: #4f46e5; font-size: 16px; font-weight: 700; margin-top: -10px;">
+                    S/. {{ $product->item->price }}
+                </p>
+            </div>
+            @endforeach
+            {{-- <div class="card">
                 <img width="100%" src="{{ asset('img/curso.jpeg') }}" alt="product" />
                 <h4 style="margin-top: 5px;">Título del curso y/o programa educativo</h4>
                 <p style="color: #4f46e5; font-size: 16px; font-weight: 700; margin-top: -10px;">
@@ -180,14 +189,7 @@
                 <p style="color: #4f46e5; font-size: 16px; font-weight: 700; margin-top: -10px;">
                     S/. 395.00
                 </p>
-            </div>
-            <div class="card">
-                <img width="100%" src="{{ asset('img/curso.jpeg') }}" alt="product" />
-                <h4 style="margin-top: 5px;">Título del curso y/o programa educativo</h4>
-                <p style="color: #4f46e5; font-size: 16px; font-weight: 700; margin-top: -10px;">
-                    S/. 395.00
-                </p>
-            </div>
+            </div> --}}
         </div>
         <div class="card-container">
             <p>
