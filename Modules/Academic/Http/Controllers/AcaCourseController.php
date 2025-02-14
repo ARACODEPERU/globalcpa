@@ -318,7 +318,13 @@ class AcaCourseController extends Controller
     {
         $course = AcaCourse::find($id);
 
-        $students = AcaCapRegistration::with('student.person')->where('course_id', $id)->get();
+        $students = AcaCapRegistration::with('student.person')
+            ->where('course_id', $id)
+            ->get()
+            ->map(function ($student) {
+                $student->checkbox = false;
+                return $student;
+            });
 
         return Inertia::render('Academic::Courses/EnrolledStudents', [
             'course' => $course,
