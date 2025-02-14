@@ -159,7 +159,7 @@
             <img style="width: 25px;" data-emoji="🎉" class="an1" alt="🎉" aria-label="🎉" draggable="false"
                 src="https://fonts.gstatic.com/s/e/notoemoji/16.0/1f389/32.png" loading="lazy">
         </h1>
-        <p>
+        <p>{{ $data->clie_full_name }},
             Has tomado una decisión valiosa al invertir en tu crecimiento profesional, y estamos aquí para acompañarte en este
             camino de aprendizaje y desarrollo.  ¡Felicidades por dar este importante paso hacia tus metas!
         </p>
@@ -193,9 +193,9 @@
         </div>
         <div class="card-container">
             <p>
-                👤 Usuario:  ⁠⁠gerencia@thayneinternacional.com
+                👤 Usuario:  {{ $data->email}}
                 <br>
-                🔑 Contraseña: ⁠⁠09957587
+                🔑
             </p>
             <a href="https://academy.globalcpaperu.com/login" style="margin-top: 20px;">
                 <button class="boton-degradado-campus">Ingresar a la plataforma</button>
