@@ -616,6 +616,8 @@ class WebPageController extends Controller
                     'image' => $product->image,
                     'name' => $product->name,
                     'price' => floatval($product->price),
+                    'student_id' => $student->id,
+                    'item_id'       => $product->item_id,
                     'quantity'      => floatval($productquantity),
                     'total' => (floatval($productquantity) * floatval($product->price))
                 ]);
@@ -662,9 +664,27 @@ class WebPageController extends Controller
         ]);
     }
 
-    public function thanks()
+    public function thanks($id)
     {
-        return view('pages.thanks');
+
+
+            $sale = OnliSale::with('details.item')->where('id', $id)->first();
+
+            if ($sale) {
+                // Obtener los onli_item_id de los detalles de la venta
+                $itemIds = $sale->details->pluck('onli_item_id')->toArray();
+
+                // Obtener los cursos (OnliItem) que coincidan con los onli_item_id
+                $courses = OnliItem::whereIn('id', $itemIds)->get();
+            } else {
+                // Si no se encuentra la venta, inicializar cursos como una colección vacía
+                $courses = collect();
+            }
+
+            return view('pages.thanks', [
+                'sale' => $sale,
+                'courses' => $courses,
+            ]);
     }
 
     public function email()

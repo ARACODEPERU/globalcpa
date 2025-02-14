@@ -153,15 +153,15 @@
         <img style="width: 100%;" src="{{ asset('img/banner-email.jpg') }}" alt="Encabezado">
         <br>
         <h1>
-            <img style="width: 25px;" data-emoji="🎉" class="an1" alt="🎉" aria-label="🎉" draggable="false" 
-                src="https://fonts.gstatic.com/s/e/notoemoji/16.0/1f389/32.png" loading="lazy"> 
+            <img style="width: 25px;" data-emoji="🎉" class="an1" alt="🎉" aria-label="🎉" draggable="false"
+                src="https://fonts.gstatic.com/s/e/notoemoji/16.0/1f389/32.png" loading="lazy">
                 &nbsp; ¡Bienvenido(a) a Global CPA Business School! &nbsp;
-            <img style="width: 25px;" data-emoji="🎉" class="an1" alt="🎉" aria-label="🎉" draggable="false" 
-                src="https://fonts.gstatic.com/s/e/notoemoji/16.0/1f389/32.png" loading="lazy"> 
+            <img style="width: 25px;" data-emoji="🎉" class="an1" alt="🎉" aria-label="🎉" draggable="false"
+                src="https://fonts.gstatic.com/s/e/notoemoji/16.0/1f389/32.png" loading="lazy">
         </h1>
         <p>
-            Has tomado una decisión valiosa al invertir en tu crecimiento profesional, y estamos aquí para acompañarte en este 
-            camino de aprendizaje y desarrollo.  ¡Felicidades por dar este importante paso hacia tus metas! 
+            Has tomado una decisión valiosa al invertir en tu crecimiento profesional, y estamos aquí para acompañarte en este
+            camino de aprendizaje y desarrollo.  ¡Felicidades por dar este importante paso hacia tus metas!
         </p>
         <p>
             Para comenzar, aquí tienes tus datos de acceso a nuestra plataforma
@@ -203,8 +203,8 @@
         </div>
         <br>
         <p>
-            En nuestra plataforma encontrarás todo lo necesario para aprovechar al máximo esta experiencia: material de estudio, 
-            foros de interacción y acceso directo a nuestros instructores. Te invitamos a iniciar sesión cuanto antes y 
+            En nuestra plataforma encontrarás todo lo necesario para aprovechar al máximo esta experiencia: material de estudio,
+            foros de interacción y acceso directo a nuestros instructores. Te invitamos a iniciar sesión cuanto antes y
             familiarizarte con las herramientas que hemos preparado para ti.
         </p>
         <p style="line-height: 22px;">

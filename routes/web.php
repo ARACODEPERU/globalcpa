@@ -37,7 +37,7 @@ Route::get('/carrito', [WebPageController::class, 'shopcart'])->name('web_carrit
 Route::get('/pagar', [WebPageController::class, 'pay'])->name('web_pay');
 Route::post('/safe_pay', [WebPageController::class, 'pagar'])->name('paying');
 Route::post('/user_safe_pay', [WebPageController::class, 'pagar_auth'])->name('paying_auth');
-Route::get('/gracias', [WebPageController::class, 'thanks'])->name('web_thanks');
+Route::get('/gracias/{id}', [WebPageController::class, 'thanks'])->name('web_thanks');
 Route::get('/curso-descripcion-x/{id}', [WebPageController::class, 'cursodescripcion'])->name('web_curso_descripcion');
 
 

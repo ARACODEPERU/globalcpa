@@ -8,17 +8,17 @@
     <!-- Main Content Wrapper -->
     <main class="main-content w-full px-[var(--margin-x)] pb-8">
 
-  
+
         <div class="row mt-4">
             <div class="col-md-4"></div>
             <div class="col-md-4">
                 <div class="card p-5">
-                    <h1 style="font-size: 18px;"><b>¡Felicidades Nombre del alumno!</b> 🎉</h1>
+                    <h1 style="font-size: 18px;"><b>¡Felicidades {{ $sale->clie_full_name }}!</b> 🎉</h1>
                     <p class="mt-2">
                         Bienvenido a <b>Global CPA</b>. Has invertido en tu futuro profesional, y estamos felices de acompañarte.
                     </p>
                     <p class="mt-2">
-                        📩 Tus accesos al campus virtual han sido enviados a <b>[alumno@gmail.com]</b>. 
+                        📩 Tus accesos al campus virtual han sido enviados a <b>{{ $sale->email }}</b>.
                         Revisa tu bandeja de entrada y, si no los ves, busca en correos no deseados.
                     </p>
                     <p class="mt-2">
@@ -28,7 +28,7 @@
                         🚀 ¡Nos vemos en el campus!
                     </h2>
                     <br>
-                    
+
                     <div class="is-scrollbar-hidden min-w-full overflow-x-auto">
                         <table class="is-hoverable w-full text-left">
                             <thead>
@@ -46,6 +46,8 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                @foreach ($courses as $course)
+
                                 <tr class="border-y border-transparent border-b-slate-200 dark:border-b-navy-500">
                                     <td class="whitespace-nowrap px-4 py-3 sm:px-5">
                                         <div class="flex items-center space-x-4">
@@ -58,59 +60,43 @@
                                             </div>
 
                                             <span class="font-medium text-slate-700 dark:text-navy-100">
-                                                Título del curso
+                                                {{ $course->name }}
                                             </span>
                                         </div>
                                     </td>
                                     <td class="whitespace-nowrap px-4 py-3 font-medium text-slate-700 dark:text-navy-100 sm:px-5">
-                                        S/ 590.00
+                                        S/ {{ $course->price }}
                                     </td>
                                 </tr>
-                                <tr class="border-y border-transparent border-b-slate-200 dark:border-b-navy-500">
-                                    <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                        <div class="flex items-center space-x-4">
-                                            <div class="avatar">
-                                            <img
-                                                class="rounded-full"
-                                                src="{{ asset('themes/webpage/images/object/object-15.jpg') }}"
-                                                alt="avatar"
-                                            />
-                                            </div>
+                                @endforeach
 
-                                            <span class="font-medium text-slate-700 dark:text-navy-100">
-                                                Título del curso
-                                            </span>
-                                        </div>
-                                    </td>
-                                    <td class="whitespace-nowrap px-4 py-3 font-medium text-slate-700 dark:text-navy-100 sm:px-5">
-                                        S/ 590.00
-                                    </td>
-                                </tr>
                             </tbody>
                         </table>
                     </div>
                     <button class="btn mt-1 h-11 justify-between bg-primary font-medium text-white hover:bg-primary-focus focus:bg-primary-focus active:bg-primary-focus/90 dark:bg-accent dark:hover:bg-accent-focus dark:focus:bg-accent-focus dark:active:bg-accent/90">
                         <span>TOTAL:</span>
-                        <span><i class="fa fa-heart" aria-hidden="true"></i>&nbsp; <div id="totalid">S/ 0.00</div></span>
+                        <span><i class="fa fa-heart" aria-hidden="true"></i>&nbsp; <div id="totalid">S/ {{ $sale->total }}</div></span>
                     </button>
                     <br>
-                    
-                    <a href="{{ route('login') }}">
-                        <button class="boton-degradado-campus">Campus Virtual</button>
-                    </a>
+
+                    <div class="mt-4 mb-4 ml-4 mr-4">
+                        <a href="{{ route('login') }}">
+                            <button class="boton-degradado-campus">Campus Virtual</button>
+                        </a>
+                    </div>
 
                 </div>
             </div>
             <div class="col-md-4"></div>
         </div>
     </main>
-    
+
     <br>
     <br>
     <br>
 
 
-    
+
     <div id="whatsapp">
         <a href="https://wa.link/54k2g9" class="wtsapp" data-bs-toggle="modal" data-bs-target="#exampleModal">
             <i class="fa fa-whatsapp" aria-hidden="true"></i>
