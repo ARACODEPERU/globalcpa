@@ -49,10 +49,10 @@ class StudentSubscription
 
 
 
-                $img->text("Entregado el: " . $fecha, $this->certificates_param->position_date_x, $this->certificates_param->position_date_y, function ($font) {
+                $img->text("Lima, " . $fecha, $this->certificates_param->position_date_x, $this->certificates_param->position_date_y, function ($font) {
                     $font->file($this->certificates_param->fontfamily_date);
                     $font->size($this->certificates_param->font_size_date);
-                    $font->color('#0d0603');
+                    $font->color('#FFFFFF');
                     $font->align($this->certificates_param->font_align_date);
                     $font->valign($this->certificates_param->font_vertical_align_date);
                     $font->angle(0);
