@@ -41,7 +41,7 @@
                 <div>
                     <div class="flex items-center justify-between">
                         <h3 class="text-xl font-medium text-slate-800 dark:text-navy-50">
-                            Global CDP Business School | Formación:
+                            Global CPA Business School | Formación:
                         </h3>
                         <div class="hidden w-full max-w-xs justify-between space-x-4 text-slate-700 dark:text-navy-100 sm:flex" x-data="{activeTab:'tabAll'}">
                             <button @click="activeTab = 'tabAll'" class="font-medium tracking-wide text-primary dark:text-accent-light" :class="activeTab === 'tabAll' &amp;&amp; 'text-primary dark:text-accent-light' ">
