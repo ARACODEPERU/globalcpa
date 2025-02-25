@@ -272,7 +272,7 @@ Route::middleware(['auth', 'verified', 'invalid_updated_information'])->prefix('
 });
 
 /////////no nesesita aver iniciado session//////////
-Route::get('certificate/image/{id}/download', [AcaCertificateController::class, 'generateCertificateStudent'])->name('aca_image_download');
+Route::get('academic/certificate/image/{id}/download', [AcaCertificateController::class, 'generateCertificateStudent'])->name('aca_image_download');
 Route::get('create/payment/{id}/account', [LandingController::class, 'academiCreatePayment'])->name('academic_step_account');
 
 Route::put('create/payment/{id}/login', [AcaAuthController::class, 'login'])
