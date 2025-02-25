@@ -9,6 +9,7 @@ use Modules\Academic\Entities\AcaStudent;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Response;
 use App\Helpers\Invoice\QrCodeGenerator;
+use Carbon\Carbon;
 
 class StudentSubscription
 {
@@ -34,6 +35,12 @@ class StudentSubscription
                 // create Image from file
                 $img = Image::make($this->certificates_param->certificate_img);
                 $fecha = $register->certificate_date; //Esta fecha debe obtenerse del registro de la matricula del estudiante al curso respectivo donde se obtiene la fecha de entrega del certificado si es null entonces no tiene certificado
+
+                if ($register->certificate_date) {
+                    $fecha = Carbon::parse($register->certificate_date)->format('d-m-Y');
+                } else {
+                    $fecha = 'Sin certificado';
+                }
 
                 //las fuentes deben estar en la carpeta public/fonts y en la base de datos debe registrarse el nombre de la fuente y su extensión
                 //recomiendo usar fuentes de google fonts porque son gratis y puedes descargarlas

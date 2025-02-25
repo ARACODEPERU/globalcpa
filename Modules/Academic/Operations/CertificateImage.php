@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Response;
 use App\Helpers\Invoice\QrCodeGenerator;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
+use Carbon\Carbon;
 
 class CertificateImage
 {
@@ -183,6 +184,11 @@ class CertificateImage
 
                     $fecha = $register->certificate_date; //Esta fecha debe obtenerse del registro de la matricula del estudiante al curso respectivo donde se obtiene la fecha de entrega del certificado si es null entonces no tiene certificado
 
+                    if ($register->certificate_date) {
+                        $fecha = Carbon::parse($register->certificate_date)->format('d-m-Y');
+                    } else {
+                        $fecha = 'Sin certificado';
+                    }
                     //las fuentes deben estar en la carpeta public/fonts y en la base de datos debe registrarse el nombre de la fuente y su extensión
                     //recomiendo usar fuentes de google fonts porque son gratis y puedes descargarlas
                     //dd(public_path('fonts' . DIRECTORY_SEPARATOR . $this->certificates_param->fontfamily_date));
