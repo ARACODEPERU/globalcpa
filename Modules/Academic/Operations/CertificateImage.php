@@ -4,6 +4,7 @@ namespace Modules\Academic\Operations;
 
 use Modules\Academic\Entities\AcaCapRegistration;
 use Modules\Academic\Entities\AcaCertificateParameter;
+use Modules\Academic\Entities\AcaCertificate;
 use Modules\Academic\Entities\AcaCourse;
 use Modules\Academic\Entities\AcaStudent;
 use Intervention\Image\Facades\Image;
@@ -116,10 +117,14 @@ class CertificateImage
                 }
             }
             // //QR GENERATOR
-            $certificate_route = "test-image"; //cambiar por la ruta que se creará en el Web ROutes
+            $certificate = AcaCertificate::where('course_id', $course_id)
+                ->where('student_id', $student_id)
+                ->first();
+
+            $certificate_id = $certificate ? $certificate->id : "1"; // Si $certificate es null, asigna 1 por defecto
             $generator = new QrCodeGenerator(300);
             $dir = public_path() . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . 'tmp_qr';
-            $cadenaqr = env('APP_URL') . DIRECTORY_SEPARATOR . $certificate_route . DIRECTORY_SEPARATOR . '1' . DIRECTORY_SEPARATOR . '1';
+            $cadenaqr = route('aca_image_download', ['id' => $certificate_id]);
 
             $qr_path = $generator->generateQR($cadenaqr, $dir, Str::random(10) . '.png', 8, 2);
 
@@ -262,9 +267,14 @@ class CertificateImage
                         }
                     }
                     // //QR GENERATOR
+                    $certificate = AcaCertificate::where('course_id', $course_id)
+                        ->where('student_id', $student_id)
+                        ->first();
+
+                    $certificate_id = $certificate ? $certificate->id : "1"; // Si $certificate es null, asigna 1 por defecto
                     $generator = new QrCodeGenerator(300);
                     $dir = public_path() . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . 'tmp_qr';
-                    $cadenaqr = env('APP_URL') . DIRECTORY_SEPARATOR . 'test-image' . DIRECTORY_SEPARATOR . $student_id . DIRECTORY_SEPARATOR . $course_id;
+                    $cadenaqr = route('aca_image_download', ['id' => $certificate_id]);cadenaqr = env('APP_URL') . DIRECTORY_SEPARATOR . 'test-image' . DIRECTORY_SEPARATOR . $student_id . DIRECTORY_SEPARATOR . $course_id;
 
                     $qr_path = $generator->generateQR($cadenaqr, $dir, Str::random(10) . '.png', 8, 2);
 

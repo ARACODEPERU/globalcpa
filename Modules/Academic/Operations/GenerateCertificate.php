@@ -41,7 +41,7 @@ class StudentSubscription
                 $img->text($student->person->full_name, $this->certificates_param->position_names_x, $this->certificates_param->position_names_y, function ($font) {
                     $font->file($this->certificates_param->fontfamily_names);
                     $font->size($this->certificates_param->font_size_names);
-                    $font->color('#0d0603');
+                    $font->color($this->certificates_param->color_names);
                     $font->align($this->certificates_param->font_align_names);
                     $font->valign($this->certificates_param->font_vertical_align_names);
                     $font->angle(0);
@@ -52,7 +52,7 @@ class StudentSubscription
                 $img->text("Lima, " . $fecha, $this->certificates_param->position_date_x, $this->certificates_param->position_date_y, function ($font) {
                     $font->file($this->certificates_param->fontfamily_date);
                     $font->size($this->certificates_param->font_size_date);
-                    $font->color('#FFFFFF');
+                    $font->color($this->certificates_param->color_date);
                     $font->align($this->certificates_param->font_align_date);
                     $font->valign($this->certificates_param->font_vertical_align_date);
                     $font->angle(0);
@@ -62,18 +62,18 @@ class StudentSubscription
                 $img->text($this->wrapText($this->certificates_param->Course->description, $max_width), $this->certificates_param->position_title_x, $this->certificates_param->position_title_y, function ($font) {
                     $font->file($this->certificates_param->fontfamily_title);
                     $font->size($this->certificates_param->font_size_title);
-                    $font->color('#0d0603');
+                    $font->color($this->certificates_param->color_title);
                     $font->align($this->certificates_param->font_align_title);
                     $font->valign($this->certificates_param->font_vertical_align_title);
                     $font->angle(0);
                 });
 
-                //descripcion del certificado 
+                //descripcion del certificado
                 $max_width = $this->certificates_param->max_width_description;
                 $img->text($this->wrapText($this->certificates_param->Course->certificate_description, $max_width, $this->certificates_param->interspace_description), $this->certificates_param->position_description_x, $this->certificates_param->position_description_y, function ($font) {
                     $font->file($this->certificates_param->fontfamily_description);
                     $font->size($this->certificates_param->font_size_description);
-                    $font->color('#0d0603');
+                    $font->color($this->certificates_param->color_description);
                     $font->align($this->certificates_param->font_align_description);
                     $font->valign($this->certificates_param->font_vertical_align_description);
                     $font->angle(0);
