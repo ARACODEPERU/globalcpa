@@ -274,7 +274,8 @@ class CertificateImage
                     $certificate_id = $certificate ? $certificate->id : "1"; // Si $certificate es null, asigna 1 por defecto
                     $generator = new QrCodeGenerator(300);
                     $dir = public_path() . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . 'tmp_qr';
-                    $cadenaqr = route('aca_image_download', ['id' => $certificate_id]);cadenaqr = env('APP_URL') . DIRECTORY_SEPARATOR . 'test-image' . DIRECTORY_SEPARATOR . $student_id . DIRECTORY_SEPARATOR . $course_id;
+                    $cadenaqr = route('aca_image_download', ['id' => $certificate_id]);
+
 
                     $qr_path = $generator->generateQR($cadenaqr, $dir, Str::random(10) . '.png', 8, 2);
 
