@@ -117,7 +117,7 @@ class WebPageController extends Controller
             ->orderBy('cms_section_items.position')
             ->get();
 
-        return view('', [
+        return view('pages.courses', [
             'courses' => $courses,
             'categories' => $categories,
             // 'banner' => $banner,
