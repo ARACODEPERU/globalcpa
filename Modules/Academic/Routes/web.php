@@ -265,7 +265,6 @@ Route::middleware(['auth', 'verified', 'invalid_updated_information'])->prefix('
     Route::put('certificate/massive/{id}/store', [AcaCertificateController::class, 'storeMassive'])
         ->name('aca_certificate_massive_store');
 
-
     ////////////////verificar datos///////////////////////////
     Route::post('buy/course/mercadopago', [MercadopagoController::class, 'createPreference'])->name('academic_create_preference_course');
     Route::post('buy/course/items/mercadopago', [MercadopagoController::class, 'createItemsPreference'])->name('academic_create_items_preference_course');
