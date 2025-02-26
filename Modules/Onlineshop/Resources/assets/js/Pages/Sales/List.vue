@@ -4,12 +4,13 @@
     import Pagination from '@/Components/Pagination.vue';
     import ModalLarge from '@/Components/ModalLarge.vue';
     import Swal from "sweetalert2";
-    import { useForm, Link, usePage } from '@inertiajs/vue3';
+    import { useForm, Link, usePage, router } from '@inertiajs/vue3';
     import { faMagnifyingGlass, faRotate } from "@fortawesome/free-solid-svg-icons";
-    import { ref, watch } from "vue";
+    import { ref, watch, onMounted, nextTick } from "vue";
     import Navigation from '@/Components/vristo/layout/Navigation.vue';
     import { TransitionRoot, TransitionChild, Dialog, DialogPanel, DialogOverlay } from '@headlessui/vue';
-    
+    import textWriting from '@/Components/loader/text-writing.vue';
+
     const props = defineProps({
         sales: {
             type: Object,
@@ -18,7 +19,7 @@
         filters: {
             type: Object,
             default: () => ({}),
-        },
+        }
     });
 
     const form = useForm({
@@ -34,23 +35,29 @@
         displayModalDetails.value = false;
     }
 
+    const contador = 0.5;
+
     const appCodeUnique = import.meta.env.VITE_APP_CODE ?? 'ARACODE';
-    const channelListen = "onli-email-status-" + appCodeUnique + '-' + usePage().props.auth.user.id;
+    const channelListenOnli = "onli-email-status-" + appCodeUnique + '-' + usePage().props.auth.user.id;
 
     const emailStatus = ref([])
     const porsentaje = ref(0);
     const progressSend = ref(0);
     const loadingSend = ref(false);
     const displayModalSendDetails = ref(false);
+    const scrollContainer = ref(null);
+    
     const emailForm = useForm({
         csrfToken: null,
-        urlBacken: route('onli_create_send_tickets'),
-        channelListen: channelListen,
+        apiBackenStepOne: route('aca_create_students_tickets'),
+        apiBackenStepTwo: route('aca_send_email_student_boleta'),
+        channelListen: channelListenOnli,
         documenttypeId: 2,
         serie: null,
         enline: true,
         local: 1,
-        ventas: []
+        ventas: [],
+        userId: usePage().props.auth.user.id
     });
 
     
@@ -73,14 +80,27 @@
 
         const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         emailForm.csrfToken = csrfToken;
-        porsentaje.value = (1 / parseInt(emailstotal)) * 100;
+        porsentaje.value = (contador / parseInt(emailstotal)) * 100;
 
          axios.post(url,emailForm,{
             headers: {
                 'Content-Type': 'application/json'
             },
             timeout: 0,
-        }).finally(()=>{
+        }).then(() => {
+            router.visit(route('onlineshop_sales'), {
+                method: 'get',
+                replace: false,
+                preserveState: true,
+                preserveScroll: false,
+            });
+
+            emailForm.csrfToken = null;
+
+            emailForm.ventas = [];
+
+        })
+        .finally(()=>{
             loadingSend.value = false;
         });
 
@@ -105,7 +125,6 @@
             // Si el item no está seleccionado, lo agregamos
             emailForm.ventas.push(item);
         }
-        console.log(emailForm.ventas)
     };
 
     // Función para seleccionar o deseleccionar todos los items
@@ -113,7 +132,6 @@
         if (selectAll.value) {
             // Agregar todos los items al array
             emailForm.ventas = [...props.sales.data];
-            console.log(emailForm.ventas)
         } else {
             // Limpiar el array
             emailForm.ventas = [];
@@ -144,6 +162,21 @@
             padding: '10px 20px',
         });
     };
+    
+    const loadingStep = ref(1);
+
+    onMounted(() => { 
+        window.socketIo.on(channelListenOnli, (status) => {
+            emailStatus.value.push(status);
+            loadingStep.value = status.step;
+            progressSend.value = parseFloat(progressSend.value) + parseFloat(porsentaje.value)
+            nextTick(() => {
+                if (scrollContainer.value) {
+                    scrollContainer.value.scrollTop = scrollContainer.value.scrollHeight;
+                }
+            });
+        });
+    });
 </script>
 
 <template>
@@ -186,7 +219,7 @@
                         </div>
                     </div>
                     <div class="table-responsive">
-                        <table class="w-full table-auto">
+                        <table>
                             <thead >
                                 <tr >
                                     <th >
@@ -207,8 +240,8 @@
                                     <th >
                                         Fecha
                                     </th>
-                                    <th class="text-center justify-center">
-                                        Boleta enviada por email
+                                    <th class=" ">
+                                        Boleta Electronica
                                         <label class="w-12 h-6 relative">
                                             <input type="checkbox" v-model="selectAll" @change="toggleSelectAll" class="ventas_all absolute w-full h-full opacity-0 z-10 cursor-pointer peer" id="custom_switch_all" />
                                             <span for="ventas_all" class="outline_checkbox bg-icon border-2 border-[#bcc8e0] dark:border-white-dark block h-full rounded-full before:absolute before:left-1 before:bg-[#ebedf2] dark:before:bg-white-dark before:bottom-1 before:w-4 before:h-4 before:rounded-full before:bg-[url(/themes/vristo/images/close.svg)] before:bg-no-repeat before:bg-center peer-checked:before:left-7 peer-checked:before:bg-[url(/themes/vristo/images/checked.svg)] peer-checked:border-primary peer-checked:before:bg-primary before:transition-all before:duration-300"></span>
@@ -245,8 +278,8 @@
                                         <td >
                                             {{ item.created_at }}
                                         </td>
-                                        <td class="text-center justify-center">
-                                            <label class="w-12 h-6 relative">
+                                        <td class="">
+                                            <label v-if="!item.email_sent" class="w-12 h-6 relative">
                                                 <input
                                                     :checked="isSelected(item)"
                                                     @change="toggleItem(item)"
@@ -254,6 +287,7 @@
                                                     class="custom_switch absolute w-full h-full opacity-0 z-10 cursor-pointer peer" :id="`venta${index}`" />
                                                 <span :for="`venta${index}`" class="outline_checkbox bg-icon border-2 border-[#bcc8e0] dark:border-white-dark block h-full rounded-full before:absolute before:left-1 before:bg-[#ebedf2] dark:before:bg-white-dark before:bottom-1 before:w-4 before:h-4 before:rounded-full before:bg-[url(/themes/vristo/images/close.svg)] before:bg-no-repeat before:bg-center peer-checked:before:left-7 peer-checked:before:bg-[url(/themes/vristo/images/checked.svg)] peer-checked:border-primary peer-checked:before:bg-primary before:transition-all before:duration-300"></span>
                                             </label>
+                                            <span v-else class="bg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-blue-400 border border-blue-400">Boleta enviada</span>
                                         </td>
                                         <td class="text-center">
                                            <span v-if="item.response_status == 'pendiente'"  class="bg-red-100 text-red-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-red-400 border border-red-400">No completó el pago</span>
@@ -326,7 +360,7 @@
                         leave-to="opacity-0 scale-95"
                     >
                         <DialogPanel class="relative overflow-hidden w-full max-w-3xl py-8">
-                            <button @click="closeModalDetails" type="button" class="absolute top-4 ltr:right-4 rtl:left-4 text-gray-400 hover:text-gray-800 dark:hover:text-gray-600 outline-none" >
+                            <button @click="closeModalSendDetails" type="button" class="absolute top-4 ltr:right-4 rtl:left-4 text-gray-400 hover:text-gray-800 dark:hover:text-gray-600 outline-none" >
                                 <svg width="24" height="24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
                                     <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/>
                                 </svg>
@@ -346,20 +380,35 @@
                                     </div>
                                     <template v-if="emailStatus.length > 0">
                                         <div ref="scrollContainer" class="scroll-box-result">
-                                            <template v-for="(resEmail, co) in emailStatus">
+                                            <div>
+                                                <template v-for="(resEmail, co) in emailStatus">
                                                 
-                                                <div v-if="resEmail.result.success">
-                                                    <code style="color: #60a5fa;">
-                                                        <span>{{ resEmail.email }} <span style="color: #a9cdf7;">{{ resEmail.status }}</span></span>
-                                                    </code>
-                                                </div>
+                                                    <template v-if="resEmail.status && resEmail.step == 1">
+                                                        <div v-if="resEmail.status">
+                                                            <code style="color: #60a5fa;">
+                                                                <span>BOLETA ELECTRONICA: <strong>{{ resEmail.data.document.invoice_serie }}-{{ resEmail.data.document.invoice_correlative }}</strong> CLIENTE:  <strong>{{ resEmail.data.document.client_rzn_social }}</strong>&nbsp;</span>
+                                                                <span style="color: #a9cdf7;">Creado correctamente</span>
+                                                            </code>
+                                                        </div>
 
-                                                <div v-if="!resEmail.result.success">
-                                                    <code style="color: #ef4444;">
-                                                        {{ resEmail.email ?? 'Nulo o vacio' }} {{ resEmail.status }} {{ resEmail.result.fallidos.error }}
-                                                    </code>
-                                                </div>
-                                            
+                                                        <div v-if="!resEmail.status" >
+                                                            <code style="color: #ef4444;">
+                                                                {{ resEmail.status }} {{ resEmail.message }}
+                                                            </code>
+                                                        </div>
+                                                    </template>
+                                                    
+                                                    <template v-if="resEmail.status && resEmail.step == 2">
+                                                        <div v-if="resEmail.status" style="border-bottom: 1px dotted #a9cdf7;">
+                                                            <code style="color: #60a5fa;">
+                                                                <span>DESTINO: <strong>{{ resEmail.data.email }}</strong> ESTADO: <span style="color: #a9cdf7;">{{ resEmail.data.message }}</span> </span>
+                                                            </code>
+                                                        </div>
+                                                    </template>
+                                                </template>
+                                            </div>
+                                            <template v-if="loadingStep == 1">
+                                                <text-writing :texto="'...............'" />  
                                             </template>
                                         </div>
                                     </template>
