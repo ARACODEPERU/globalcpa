@@ -471,9 +471,8 @@ class AcaCertificateController extends Controller
     public function generateCertificateStudent($id)
     {
         $xcer = AcaCertificate::find($id);
-        $student = AcaStudent::find($xcer->student_id);
-        //para obtener certificado con qr debe obtenerse datos del alumno asi no este logueado
-        //$student = AcaStudent::where('person_id', Auth::user()->person_id)->first();
+
+        $student = AcaStudent::where('person_id', Auth::user()->person_id)->first();
 
         $student_id = $student->id;
         $course_id = $xcer->course_id;
