@@ -43,9 +43,9 @@
                                             </b>
                                         </button>
                                     </a>
-                                    <a href="https://wa.link/54k2g9">
+                                    {{-- <a href="https://wa.link/54k2g9">
                                         <button class="boton-degradado-courses"><b>! Comprar Ahora¡</b></button>
-                                    </a>
+                                    </a> --}}
                                 </div>
                                 @else
                                 <div class="col-md-6" style="padding: 10px 0px;">
