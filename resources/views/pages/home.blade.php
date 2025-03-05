@@ -37,7 +37,7 @@
         </section> --}}
 
         <div class="mt-5 grid grid-cols-12 gap-4 sm:gap-5 lg:gap-6">
-            <div class="col-span-12 space-y-4 sm:space-y-5 lg:col-span-8 lg:space-y-6 xl:col-span-9">
+            <div class="col-span-12 space-y-4 sm:space-y-5 lg:col-span-12 lg:space-y-6 xl:col-span-9">
                 <div>
                     <div class="flex items-center justify-between">
                         <h3 class="text-xl font-medium text-slate-800 dark:text-navy-50">
@@ -148,9 +148,9 @@
                 </div>
               </div>  --}}
   
-              <div class="card px-4 pb-4">
-                {{-- <x-blog.presentation /> --}}
-              </div>
+              {{-- <div class="card px-4 pb-4">
+                <x-blog.presentation /> 
+              </div> --}}
             </div>
           </div>
         
