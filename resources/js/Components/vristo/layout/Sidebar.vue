@@ -8,7 +8,7 @@
 
     import IconCaretDown from '@/Components/vristo/icon/icon-caret-down.vue';
 
-    
+
     import { Link } from '@inertiajs/vue3';
     import menuData from './MenuData.js'
 
@@ -87,7 +87,7 @@
                                         <div class="flex items-center">
                                             <font-awesome-icon :icon="item.icom" class="group-hover:!text-primary shrink-0" />
                                             <span class="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">
-                                                {{ item.text }} 
+                                                {{ item.text }}
                                             </span>
                                         </div>
                                         <div :class="{ 'rtl:rotate-90 -rotate-90': activeDropdown !== item.text }">
@@ -104,12 +104,12 @@
                                         </template>
                                     </HeightTransition>
                                 </li>
-                                
+
                             </template>
                             <template v-else-if="item.route == 'module'">
                                 <h2 v-can="item.permissions" class="py-3 px-7 flex items-center uppercase font-extrabold bg-white-light/30 dark:bg-dark dark:bg-opacity-[0.08] -mx-4 mb-1">
                                     <icon-minus class="w-4 h-5 flex-none hidden" />
-                                    <span>{{ item.text }}</span> 
+                                    <span>{{ item.text }}</span>
                                 </h2>
                                 <template v-if="item.items && item.items.length > 0" >
                                     <template v-for="(subItem, subIndex) in item.items" :key="subIndex">
@@ -144,7 +144,7 @@
                                         </template>
                                         <template v-else>
                                             <li v-can="subItem.permissions" class="menu nav-item">
-                                                <Link 
+                                                <Link
                                                     v-bind="{ id: subItem.id }"
                                                     :href="subItem.route" class="nav-link group" @click="toggleMobileMenu">
                                                     <div class="flex items-center">
@@ -173,16 +173,16 @@
                                     </Link>
                                 </li>
                             </template>
-                            
+
                         </template>
                     </ul>
-                    
+
                 </perfect-scrollbar>
-                <h1>HOLA ACA</h1>
+
             </div>
-            
+
         </nav>
-        
+
     </div>
 </template>
 
