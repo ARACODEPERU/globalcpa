@@ -1,4 +1,4 @@
-<div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6">
+<div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4 lg:gap-6">
     @foreach ($courses as $item )
     <div class="card group p-3">
         <div class="flex items-center justify-between space-x-2 px-1">
@@ -39,7 +39,10 @@
             <p class="text-xs text-primary dark:text-accent-light">
                 {{ $item->additional }}
             </p>
-            <a href="{{ route('web_course_description', $item->course->id) }}" class="text-base font-medium text-slate-700 line-clamp-1 hover:text-primary focus:text-primary dark:text-navy-100 dark:hover:text-accent-light dark:focus:text-accent-light">
+            <a href="{{ route('web_course_description', $item->course->id) }}" 
+                class="text-base font-medium text-slate-700 line-clamp-1 hover:text-primary 
+                focus:text-primary dark:text-navy-100 dark:hover:text-accent-light 
+                dark:focus:text-accent-light">
                 {{ $item->name }}
             </a>
             {{-- <p>{{ $item->category_description }}</p> --}}
