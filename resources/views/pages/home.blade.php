@@ -37,7 +37,7 @@
         </section> --}}
 
         <div class="mt-5 grid grid-cols-12 gap-4 sm:gap-5 lg:gap-6">
-            <div class="col-span-12 space-y-4 sm:space-y-5 lg:col-span-8 lg:space-y-6 xl:col-span-9">
+            <div class="col-span-12 space-y-4 sm:space-y-5 lg:col-span-12 lg:space-y-6 xl:col-span-12">
                 <div>
                     <div class="flex items-center justify-between">
                         <h3 class="text-xl font-medium text-slate-800 dark:text-navy-50">
@@ -60,8 +60,8 @@
                     <!--Courses One End-->
               </div>
             </div>
-            <div class="col-span-12 space-y-4 sm:space-y-5 lg:col-span-4 lg:space-y-6 xl:col-span-3">
-              {{-- <div class="card bg-gradient-to-br from-info to-info-focus p-4">
+            {{-- <div class="col-span-12 space-y-4 sm:space-y-5 lg:col-span-4 lg:space-y-6 xl:col-span-3">
+              <div class="card bg-gradient-to-br from-info to-info-focus p-4">
                 <div class="mt-10">
                   <div class="flex justify-between">
                     <p class="text-2xl font-semibold text-white">Banner promocion</p>
@@ -70,9 +70,9 @@
                     <br>
                   </div>
                 </div>
-              </div> --}}
+              </div>
                   
-              {{-- <div class="card p-3">
+              <div class="card p-3">
                 <img class="h-56 w-full rounded-lg object-cover object-center" src="images/object/object-18.jpg" alt="image">
                 <div class="mt-3 p-1">
                   <div class="flex items-center justify-between space-x-1">
@@ -146,13 +146,13 @@
                     </button>
                   </div>
                 </div>
-              </div>  --}}
+              </div>  
   
               <div class="card px-4 pb-4">
-                {{-- <x-blog.presentation /> --}}
-              </div>
-            </div>
-          </div>
+                <x-blog.presentation /> 
+              </div> 
+            </div> --}}
+        </div>
         
         {{-- <section style="padding: 20px;">
             <div class="mx-auto mt-8 grid w-full grid-cols-1 gap-4 sm:grid-cols-1 sm:gap-5 lg:gap-6">
