@@ -6,8 +6,8 @@
 
 
     <main class="main-content w-full px-[var(--margin-x)] pb-8">
-
-        <section class="bg-gray-100 flex items-center justify-center h-screen w-full">
+    <br>
+        <section class="bg-gray-100 flex items-center justify-center  w-full">
                 <div class="slider w-full rounded-lg shadow-lg">
                     <div class="slides">
                         <div class="slide">
@@ -36,7 +36,7 @@
             </div>
         </section> --}}
 
-        <div class="mt-5 grid grid-cols-12 gap-4 sm:gap-5 lg:gap-6">
+        <div class="mt-3 grid grid-cols-12 gap-4 sm:gap-5 lg:gap-6">
             <div class="col-span-12 space-y-4 sm:space-y-5 lg:col-span-12 lg:space-y-6 xl:col-span-12">
                 <div>
                     <div class="flex items-center justify-between">
