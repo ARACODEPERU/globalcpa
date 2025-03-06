@@ -665,9 +665,16 @@
                 <a href="{{route('web_carrito')}}" class="cart-icon">
                     <button class="btn size-8 rounded-full p-0 hover:bg-slate-300/20 focus:bg-slate-300/20
                         active:bg-slate-300/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25">
-                        <i class="fa fa-cart-plus" aria-hidden="true" style="font-size: 20px;">
+                        <i x-show="!$store.global.isDarkModeEnabled"
+                            class="fa fa-cart-plus" aria-hidden="true" style="font-size: 20px;">
                             <span class="cart-count contador" id="contadorCarritoWeb">0</span><!-- REvisar no aparece este agregado -->
                             <span id="contadorCarritoMovil" hidden style="color: white; display: none;"></span></i>
+
+                        <i x-show="$store.global.isDarkModeEnabled"
+                        class="fa fa-cart-plus" aria-hidden="true" style="font-size: 20px; color: white;">
+                                <span class="cart-count contador" id="contadorCarritoWeb">0</span>
+                                <span id="contadorCarritoMovil" hidden style="color: white; display: none;"></span>
+                            </i>
                     </button>
                 </a>
 
