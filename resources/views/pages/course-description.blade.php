@@ -370,7 +370,7 @@
                         <div class="card" style="place-items: center; padding: 40px 10px;">
                             <img style="width: 80px;" src="{{ asset ('themes/webpage/images/icons/ganador.png') }}" alt="">
                             <p style="font-size: 17px; line-height: 1.3; text-align:center; margin-top: 10px;">
-                                Certificado de participación.
+                                Certificado de <br>participación.
                             </p>
                         </div>
                     </div>
