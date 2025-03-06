@@ -21,7 +21,8 @@
 
             <div>
                 <a href="">
-                    <img style="width: 70%;" src="{{ asset('themes/webpage/images/Logo_cpa_modificado.png') }}" alt="">
+                    <img x-show="!$store.global.isDarkModeEnabled" style="width: 70%;" src="{{ asset('themes/webpage/images/Logo_cpa_modificado.png') }}" alt="">
+                    <img x-show="$store.global.isDarkModeEnabled" style="width: 70%;" src="{{ asset('themes/webpage/images/Logo_cpa_blanco.png') }}" alt="">
                 </a>
             </div>
 
