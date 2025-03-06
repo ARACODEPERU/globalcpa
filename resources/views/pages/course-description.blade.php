@@ -60,7 +60,7 @@
                                 </div>
                             @endif
                             <div class="col-md-6" style="padding: 10px 0px;">
-                                <a href="{{ route('web_course_description', $item->course->id) }}">
+                                <a href="{{ route('web_course_description', $item->id) }}">
                                     <button class="boton-degradado-info">
                                         <b>
                                             <i class="fa fa-edit" aria-hidden="true" style="font-size: 16px;"></i>
@@ -436,7 +436,7 @@
                         </div>
                     @endif
                     <div class="col-md-6" style="padding: 10px 0px;">
-                        <a href="{{ route('web_course_description', $item->course->id) }}">
+                        <a href="{{ route('web_course_description', $item->id) }}">
                             <button class="boton-degradado-info">
                                 <b>
                                     <i class="fa fa-edit" aria-hidden="true" style="font-size: 16px;"></i>

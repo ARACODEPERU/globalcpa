@@ -40,7 +40,7 @@
                                 <img class="h-56 w-full rounded-lg object-cover object-center" src="{{ asset('storage/'.$item->course->image) }}" alt="image">
                                 <div class="absolute top-0 h-full w-full rounded-lg bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
                                 <div class="absolute top-0 flex h-full w-full items-center justify-center opacity-0 group-hover:opacity-100">
-                                    <a href="{{ route('web_course_description', $item->course->id) }}">
+                                    <a href="{{ route('web_course_description', $item->id) }}">
                                         <button class="btn min-w-[7rem] border border-white/10 bg-white/20 text-white backdrop-blur hover:bg-white/30 focus:bg-white/30">
                                             Más Información
                                         </button>
@@ -51,14 +51,14 @@
                                 <p class="text-xs text-primary dark:text-accent-light">
                                     {{ $item->additional }}
                                 </p>
-                                <a href="{{ route('web_course_description', $item->course->id) }}" class="text-base font-medium text-slate-700 line-clamp-1 hover:text-primary focus:text-primary dark:text-navy-100 dark:hover:text-accent-light dark:focus:text-accent-light">
+                                <a href="{{ route('web_course_description', $item->id) }}" class="text-base font-medium text-slate-700 line-clamp-1 hover:text-primary focus:text-primary dark:text-navy-100 dark:hover:text-accent-light dark:focus:text-accent-light">
                                     {{ $item->name }}
                                 </a>
                                 {{-- <p>{{ $item->category_description }}</p> --}}
                                 <div class="my-3 h-px bg-slate-200 dark:bg-navy-500"></div>
                                 <div class="flex justify-between">
                                     <div>
-                                        <a href="{{ route('web_course_description', $item->course->id) }}">
+                                        <a href="{{ route('web_course_description', $item->id) }}">
                                             <button class="boton-degradado-info"><b>Más Información</b></button>
                                         </a>
                                     </div>

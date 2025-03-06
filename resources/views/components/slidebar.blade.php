@@ -574,7 +574,7 @@
                             <li>
                                 <a
                                     x-data="navLink"
-                                    href="{{ route('web_course_description', $item->course->id) }}"
+                                    href="{{ route('web_course_description', $item->id) }}"
                                     class="flex items-center justify-between p-1 text-xs+ tracking-wide transition-[color,padding-left] duration-300 ease-in-out hover:pl-4"
                                 >
                                     <div class="flex items-center space-x-2">
@@ -583,8 +583,8 @@
                                     </div>
                                 </a>
                             </li>
-                                
-                            @endforeach 
+
+                            @endforeach
                             {{-- <li>
                                 <a
                                     x-data="navLink"
