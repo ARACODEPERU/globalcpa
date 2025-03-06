@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Response;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
+use Illuminate\Support\Facades\Auth;
 use Modules\Academic\Entities\AcaSubscriptionType;
 use Modules\CMS\Entities\CmsSection;
 use Modules\CMS\Entities\CmsSectionItem;
@@ -118,26 +119,14 @@ class LandingController extends Controller
 
     public function academiCreatePayment($id)
     {
-        MercadoPagoConfig::setAccessToken(env('MERCADOPAGO_TOKEN'));
-        $client = new PreferenceClient();
-        $items = [];
+        if (Auth::check()) {
+            // Si el usuario está autenticado, lo redirige a la ruta `academic_step_verification`
+            return redirect()->route('academic_step_verification', $id);
+        }
 
-        array_push($items, [
-            'id' => '2',
-            'title' => 'PRIMIUN',
-            'quantity'      => floatval(1),
-            'currency_id'   => 'PEN',
-            'unit_price'    => floatval(240)
-        ]);
-
-        $preference = $client->create([
-            "items" => $items,
-        ]);
-
-        $preference_id =  $preference->id;
-
-        return Inertia::render('Landing/Academic/MercadoPagoForm', [
-            'preference' => $preference_id
+        // Si no está autenticado, muestra la vista actual con la suscripción
+        return Inertia::render('Landing/Academic/StepsPayLogin', [
+            'subscription' => AcaSubscriptionType::find($id)
         ]);
     }
 }
