@@ -25,7 +25,7 @@
             </a>
         </div>
         <div class="relative mt-4">
-            <img class="h-56 w-full rounded-lg object-cover object-center" src="{{ asset('storage/'.$item->course->image) }}" alt="image">
+            <img class="rounded-lg object-cover object-center" src="{{ asset('storage/'.$item->course->image) }}" alt="image">
             <div class="absolute top-0 h-full w-full rounded-lg bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
             <div class="absolute top-0 flex h-full w-full items-center justify-center opacity-0 group-hover:opacity-100">
                 <a href="{{ route('web_course_description', $item->id) }}">
