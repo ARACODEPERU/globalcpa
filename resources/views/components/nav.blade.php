@@ -9,13 +9,14 @@
             <!-- Left: Sidebar Toggle Button -->
             <div class="size-7">
                 <button
-                    class="menu-toggle ml-0.5 flex size-7 flex-col justify-center space-y-1.5 text-primary outline-none focus:outline-none dark:text-accent-light/80"
+                    class="menu-toggle ml-0.5 flex size-7 flex-col justify-center space-y-1.5 outline-none focus:outline-none dark:text-accent-light/80"
+                    x-bind:class="{ 'text-primary': !$store.global.isDarkModeEnabled, 'text-white': $store.global.isDarkModeEnabled}"
                     :class="$store.global.isSidebarExpanded && 'active'"
                     @click="$store.global.isSidebarExpanded = !$store.global.isSidebarExpanded"
                 >
-                    <span></span>
-                    <span></span>
-                    <span></span>
+                    <span x-bind:class="{ 'text-primary': !$store.global.isDarkModeEnabled, 'text-white': $store.global.isDarkModeEnabled}"></span>
+                    <span x-bind:class="{ 'text-primary': !$store.global.isDarkModeEnabled, 'text-white': $store.global.isDarkModeEnabled}"></span>
+                    <span x-bind:class="{ 'text-primary': !$store.global.isDarkModeEnabled, 'text-white': $store.global.isDarkModeEnabled}"></span>
                 </button>
             </div>
 
