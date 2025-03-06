@@ -5,10 +5,16 @@
             <!-- Application Logo -->
             <div class="flex pt-4">
                 <a href="/">
-                    <img
+                    <img x-show="!$store.global.isDarkModeEnabled"
                     class="size-11 transition-transform duration-500 ease-in-out hover:rotate-[360deg]"
                     {{-- src="themes/webpage/images/app-logo.svg" --}}
                     src="{{ asset('themes/webpage/images/Logo_isotipo.png') }}"
+                    alt="logo"
+                    />
+                    <img x-show="$store.global.isDarkModeEnabled"
+                    class="size-11 transition-transform duration-500 ease-in-out hover:rotate-[360deg]"
+                    {{-- src="themes/webpage/images/app-logo.svg" --}}
+                    src="{{ asset('themes/webpage/images/Logo_isotipo_negativo.png') }}"
                     alt="logo"
                     />
                 </a>
