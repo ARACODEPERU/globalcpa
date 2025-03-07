@@ -344,7 +344,14 @@
                 <div class="row">
                     <div class="col-md-3">
                         <div class="card" style="place-items: center; padding: 40px 10px;">
-                            <img style="width: 80px;" src="{{ asset ('themes/webpage/images/icons/chat-en-vivo.png') }}" alt="">
+                            <img x-show="!$store.global.isDarkModeEnabled" style="width: 80px;" 
+                                    src="{{ asset ('themes/webpage/images/icons/chat-en-vivo.png') }}" 
+                                    alt=""
+                            >
+                            <img x-show="$store.global.isDarkModeEnabled" style="width: 80px;" 
+                                    src="{{ asset ('themes/webpage/images/icons/chat-en-vivo-blanco.png') }}" 
+                                    alt=""
+                            >
                             <p style="font-size: 17px; line-height: 1.3; text-align:center; margin-top: 10px;">
                                 Formación práctica en vivo con atención a tus consultas.
                             </p>
@@ -352,7 +359,14 @@
                     </div>
                     <div class="col-md-3">
                         <div class="card" style="place-items: center; padding: 40px 10px;">
-                            <img style="width: 80px;" src="{{ asset ('themes/webpage/images/icons/grabacion.png') }}" alt="">
+                            <img x-show="!$store.global.isDarkModeEnabled" style="width: 80px;" 
+                                    src="{{ asset ('themes/webpage/images/icons/grabacion.png') }}" 
+                                    alt=""
+                            >
+                            <img x-show="$store.global.isDarkModeEnabled" style="width: 80px;" 
+                                    src="{{ asset ('themes/webpage/images/icons/grabacion-blanco.png') }}" 
+                                    alt=""
+                            >
                             <p style="font-size: 17px; line-height: 1.3; text-align:center; margin-top: 10px;">
                                 Acceso permanente a las grabaciones de las sesiones desde nuestra plataforma.
                             </p>
@@ -360,7 +374,14 @@
                     </div>
                     <div class="col-md-3">
                         <div class="card" style="place-items: center; padding: 40px 10px;">
-                            <img style="width: 80px;" src="{{ asset ('themes/webpage/images/icons/descarga-de-archivos.png') }}" alt="">
+                            <img x-show="!$store.global.isDarkModeEnabled" style="width: 80px;" 
+                                    src="{{ asset ('themes/webpage/images/icons/descarga-de-archivos.png') }}" 
+                                    alt=""
+                            >
+                            <img x-show="$store.global.isDarkModeEnabled" style="width: 80px;" 
+                                    src="{{ asset ('themes/webpage/images/icons/descarga-de-archivos-blanco.png') }}" 
+                                    alt=""
+                            >
                             <p style="font-size: 17px; line-height: 1.3; text-align:center; margin-top: 10px;">
                                 Materiales disponibles para descarga inmediata.
                             </p>
@@ -368,7 +389,14 @@
                     </div>
                     <div class="col-md-3">
                         <div class="card" style="place-items: center; padding: 40px 10px;">
-                            <img style="width: 80px;" src="{{ asset ('themes/webpage/images/icons/ganador.png') }}" alt="">
+                            <img x-show="!$store.global.isDarkModeEnabled" style="width: 80px;" 
+                                    src="{{ asset ('themes/webpage/images/icons/ganador.png') }}" 
+                                    alt=""
+                            >
+                            <img x-show="$store.global.isDarkModeEnabled" style="width: 80px;" 
+                                    src="{{ asset ('themes/webpage/images/icons/ganador-blanco.png') }}" 
+                                    alt=""
+                            >
                             <p style="font-size: 17px; line-height: 1.3; text-align:center; margin-top: 10px;">
                                 Certificado de <br>participación.
                             </p>
