@@ -11,16 +11,19 @@
                 <div class="slider w-full rounded-lg shadow-lg">
                     <div class="slides">
                         <div class="slide">
-                            <img src="{{ asset('themes//webpage/images/cursos_especializados.jpg') }}" alt="Imagen 1" class="w-full">
+                            <img src="{{ asset('themes/webpage/images/slider_01.jpeg') }}" alt="Imagen 1" class="w-full">
                         </div>
                         <div class="slide">
-                            <img src="{{ asset('themes//webpage/images/suscripcion.jpg') }}" alt="Imagen 2" class="w-full">
+                            <img src="{{ asset('themes/webpage/images/slider_02.jpeg') }}" alt="Imagen 2" class="w-full">
                         </div>
                         <div class="slide">
-                            <img src="{{ asset('themes//webpage/images/programas.jpg') }}" alt="Imagen 3" class="w-full">
+                            <img src="{{ asset('themes/webpage/images/slider_03.jpeg') }}" alt="Imagen 3" class="w-full">
                         </div>
                         <div class="slide">
-                            <img src="{{ asset('themes//webpage/images/in_house.jpg') }}" alt="Imagen 3" class="w-full">
+                            <img src="{{ asset('themes/webpage/images/slider_04.jpeg') }}" alt="Imagen 3" class="w-full">
+                        </div>
+                        <div class="slide">
+                            <img src="{{ asset('themes/webpage/images/slider_05.jpeg') }}" alt="Imagen 3" class="w-full">
                         </div>
                     </div>
                 </div>
