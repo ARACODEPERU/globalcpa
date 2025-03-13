@@ -191,37 +191,37 @@
 
 
     <script>
+        const headers = document.querySelectorAll('.accordion-header-aracode');
+        headers.forEach(header => {
+            header.addEventListener('click', function() {
+                const content = this.nextElementSibling;
+                const isVisible = content.style.maxHeight;
 
-    const headers = document.querySelectorAll('.accordion-header-aracode');
-    headers.forEach(header => {
-        header.addEventListener('click', function() {
-            const content = this.nextElementSibling;
-            const isVisible = content.style.maxHeight;
+                // Ocultar todos los contenidos y resetear iconos
+                document.querySelectorAll('.accordion-content-aracode').forEach(item => {
+                    item.style.maxHeight = null;
+                    item.style.padding = '0';
+                    item.setAttribute('aria-hidden', 'true');
+                });
+                headers.forEach(h => {
+                    h.classList.remove('active');
+                    h.querySelector('.accordion-icon-aracode').textContent = '►'; // Restablecer icono
+                    h.setAttribute('aria-expanded', 'false');
+                });
 
-            // Ocultar todos los contenidos y resetear iconos
-            document.querySelectorAll('.accordion-content-aracode').forEach(item => {
-                item.style.maxHeight = null;
-                item.style.padding = '0';
-                item.setAttribute('aria-hidden', 'true');
+                // Mostrar el contenido del header clicado
+                if (!isVisible) {
+                    content.style.maxHeight = content.scrollHeight + "px";
+                    content.style.padding = '15px';
+                    this.classList.add('active'); // Añadir clase activa al encabezado clicado
+                    this.querySelector('.accordion-icon-aracode').textContent = '▼'; // Cambiar icono al expandido
+                    this.setAttribute('aria-expanded', 'true');
+                    content.setAttribute('aria-hidden', 'false');
+                }
             });
-            headers.forEach(h => {
-                h.classList.remove('active');
-                h.querySelector('.accordion-icon-aracode').textContent = '►'; // Restablecer icono
-                h.setAttribute('aria-expanded', 'false');
-            });
-
-            // Mostrar el contenido del header clicado
-            if (!isVisible) {
-                content.style.maxHeight = content.scrollHeight + "px";
-                content.style.padding = '15px';
-                this.classList.add('active'); // Añadir clase activa al encabezado clicado
-                this.querySelector('.accordion-icon-aracode').textContent = '▼'; // Cambiar icono al expandido
-                this.setAttribute('aria-expanded', 'true');
-                content.setAttribute('aria-hidden', 'false');
-            }
         });
-    });
     </script>
+
     {{-- codigo de recapcha --}}
  <script type="text/javascript">
     function callbackThen(response) {
