@@ -388,7 +388,7 @@ class AcaStudentController extends Controller
                 ->map(function ($course) use ($studentSubscribed, $student_id) {
                     // Verificar si el curso es gratuito
                     $isFree = is_null($course->price);
-
+                    $isProgram = $course->type_description == 'Programas de especialización' ? false : true;
                     // Verificar si el alumno está registrado en este curso
                     $isRegistered = $course->registrations->contains('student_id', $student_id);
 
@@ -396,7 +396,7 @@ class AcaStudentController extends Controller
                     $hasActiveSubscription = $studentSubscribed !== null;
 
                     // Lógica para determinar si puede ver
-                    if ($hasActiveSubscription || $isRegistered || $isFree) {
+                    if ($hasActiveSubscription || $isRegistered || $isFree || $isProgram) {
                         $course->can_view = true; // Campo adicional
                     } else {
                         $course->can_view = false; // Campo adicional
@@ -818,5 +818,30 @@ class AcaStudentController extends Controller
                 'message' => $e->getMessage(),
             ], 200);
         }
+    }
+
+    public function getCertificates()
+    {
+
+        // Verificar si el usuario tiene el rol de "Alumno"
+        if (!Auth::user()->hasRole('Alumno')) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No tienes permiso para ver estos datos.'
+            ], 403);
+        }
+
+        // Obtener el student_id del usuario autenticado
+        $student_id = AcaStudent::where('person_id', Auth::user()->person_id)->value('id');
+
+        // Obtener los certificados del estudiante
+        $certificates = AcaCertificate::with('course')
+            ->where('student_id', $student_id)
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'certificates' => $certificates,
+        ], 200);
     }
 }
