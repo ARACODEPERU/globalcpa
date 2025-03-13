@@ -9,7 +9,7 @@
     import IconCaretDown from '@/Components/vristo/icon/icon-caret-down.vue';
 
 
-    import { Link } from '@inertiajs/vue3';
+    import { Link, usePage } from '@inertiajs/vue3';
     import menuData from './MenuData.js'
 
     const store = useAppStore();
@@ -30,6 +30,9 @@
                 }
             }
         }
+
+        getStudentCertificates();
+
     });
 
     const toggleMobileMenu = () => {
@@ -38,6 +41,32 @@
         }
     };
 
+    const studentSCertificates = ref([]);
+
+    const getStudentCertificates = () =>{
+        const roles = usePage().props.auth.roles;
+
+        // Verifica si el usuario tiene el rol "Alumno"
+        if (roles.includes('Alumno')) {
+            axios({
+                method: 'post',
+                url: route('aca_certificate_by_student')
+            }).then((response) => {
+                studentSCertificates.value = response.data.certificates
+                console.log(studentSCertificates.value)
+            });
+        }
+
+    }
+
+    const getFormatDate = (dateString) => {
+        const date = new Date(dateString.replace(' ', 'T')); // Convierte a formato válido
+        return new Intl.DateTimeFormat('es-ES', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        }).format(date);
+    };
 
     const xasset = assetUrl;
 </script>
@@ -46,10 +75,7 @@
         <nav class="sidebar fixed min-h-screen h-full top-0 bottom-0 w-[260px] shadow-[5px_0_25px_0_rgba(94,92,154,0.1)] z-50 transition-all duration-300">
             <div class="bg-white dark:bg-[#0e1726] h-full">
                 <div class="flex justify-between items-center px-4 py-3">
-                    <Link :href="route('dashboard')"
-                        :preserve-state="true"
-                        :preserve-scroll="true"
-                        class="main-logo flex items-center shrink-0">
+                    <Link :href="route('dashboard')" class="main-logo flex items-center shrink-0">
                         <template v-if="store.theme === 'light'">
                             <img v-if="$page.props.company.isotipo == '/img/isotipo.png'" class="w-8 ml-[5px] flex-none" :src="xasset+$page.props.company.isotipo" alt="" />
                             <img v-else class="w-8 ml-[5px] flex-none" :src="xasset+'storage/'+$page.props.company.isotipo" alt="" />
@@ -101,14 +127,7 @@
                                         <template v-if="item.items && item.items.length > 0" >
                                             <ul class="sub-menu text-gray-500">
                                                 <li v-for="(subItem, subIndex) in item.items" :key="subIndex">
-                                                    <Link
-                                                        :preserve-state="true"
-                                                        :preserve-scroll="true"
-                                                        :href="subItem.route"
-                                                        @click="toggleMobileMenu"
-                                                    >
-                                                        {{ subItem.text }}
-                                                    </Link>
+                                                    <Link :href="subItem.route" @click="toggleMobileMenu">{{ subItem.text }}</Link>
                                                 </li>
                                             </ul>
                                         </template>
@@ -145,15 +164,7 @@
                                                     <ul v-if="subItem.items && subItem.items.length > 0" class="sub-menu text-gray-500">
                                                         <template v-for="(subSubItem, subSubIndex) in subItem.items" :key="subSubIndex">
                                                             <li v-can="subSubItem.permissions">
-                                                                <Link
-                                                                    :preserve-state="true"
-                                                                    :preserve-scroll="true"
-                                                                    v-bind="{ id: subSubItem.id }"
-                                                                    :href="subSubItem.route"
-                                                                    @click="toggleMobileMenu"
-                                                                >
-                                                                    {{ subSubItem.text }}
-                                                                </Link>
+                                                                <Link v-bind="{ id: subSubItem.id }"  :href="subSubItem.route" @click="toggleMobileMenu">{{ subSubItem.text }}</Link>
                                                             </li>
                                                         </template>
                                                     </ul>
@@ -164,8 +175,6 @@
                                             <li v-can="subItem.permissions" class="menu nav-item">
                                                 <Link
                                                     v-bind="{ id: subItem.id }"
-                                                    :preserve-state="true"
-                                                    :preserve-scroll="true"
                                                     :href="subItem.route" class="nav-link group" @click="toggleMobileMenu">
                                                     <div class="flex items-center">
                                                         <font-awesome-icon :icon="subItem.icom" class="group-hover:!text-primary shrink-0" />
@@ -182,10 +191,7 @@
                             </template>
                             <template v-else>
                                 <li v-can="item.permissions" class="menu nav-item">
-                                    <Link
-                                        :preserve-state="true"
-                                        :preserve-scroll="true"
-                                        :href="item.route" class="nav-link group" @click="toggleMobileMenu">
+                                    <Link :href="item.route" class="nav-link group" @click="toggleMobileMenu">
                                         <div class="flex items-center">
                                             <!-- <icon-menu-font-icons class="group-hover:!text-primary shrink-0" /> -->
                                             <font-awesome-icon :icon="item.icom" class="group-hover:!text-primary shrink-0" />
@@ -197,6 +203,42 @@
                                 </li>
                             </template>
 
+                        </template>
+                        <template v-if="studentSCertificates.length > 0">
+                            <li class="menu nav-item">
+                                <button
+                                    type="button"
+                                    class="nav-link group w-full"
+                                    :class="{ active: activeDropdown === 'logros' }"
+                                    @click="activeDropdown === 'logros' ? (activeDropdown = null) : (activeDropdown = 'logros')"
+                                >
+                                    <div class="flex items-center">
+                                        <svg class="group-hover:!text-primary shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
+                                            <path fill="currentColor" d="M372.2 52c0 20.9-12.4 39-30.2 47.2L448 192l104.4-20.9c-5.3-7.7-8.4-17.1-8.4-27.1c0-26.5 21.5-48 48-48s48 21.5 48 48c0 26-20.6 47.1-46.4 48L481 442.3c-10.3 23-33.2 37.7-58.4 37.7l-205.2 0c-25.2 0-48-14.8-58.4-37.7L46.4 192C20.6 191.1 0 170 0 144c0-26.5 21.5-48 48-48s48 21.5 48 48c0 10.1-3.1 19.4-8.4 27.1L192 192 298.1 99.1c-17.7-8.3-30-26.3-30-47.1c0-28.7 23.3-52 52-52s52 23.3 52 52z"/>
+                                        </svg>
+                                        <span class="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">
+                                            Logros
+                                        </span>
+                                    </div>
+                                    <div :class="{ 'rtl:rotate-90 -rotate-90': activeDropdown !== 'logros' }">
+                                        <icon-caret-down />
+                                    </div>
+                                </button>
+                                <HeightTransition v-show="activeDropdown === 'logros'">
+                                    <ul class="sub-menu text-gray-500">
+                                        <li v-for="(scd, sck) in studentSCertificates" :key="sck">
+                                            <a :href="route('aca_image_download', scd.id)" target="_blank">
+                                                <div>
+                                                    <p class="text-primary">
+                                                        {{ scd.course.description }}
+                                                    </p>
+                                                    <span class="text-xs">Otorgado {{ getFormatDate(scd.created_at) }}</span>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </HeightTransition>
+                            </li>
                         </template>
                     </ul>
 
