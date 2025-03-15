@@ -396,8 +396,12 @@ class AcaStudentController extends Controller
                     $hasActiveSubscription = $studentSubscribed !== null;
 
                     // Lógica para determinar si puede ver
-                    if ($hasActiveSubscription || $isRegistered || $isFree || $isProgram) {
-                        $course->can_view = true; // Campo adicional
+                    if ($hasActiveSubscription || $isRegistered || $isFree) {
+                        if ($isProgram) {
+                            $course->can_view = true; // Campo adicional
+                        } else {
+                            $course->can_view = false; // Campo adicional
+                        }
                     } else {
                         $course->can_view = false; // Campo adicional
                     }
