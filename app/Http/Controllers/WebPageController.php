@@ -186,6 +186,11 @@ class WebPageController extends Controller
         return view('pages.shop-cart');
     }
 
+    public function accounts()
+    {
+        return view('pages.accounts');
+    }
+
     public function servicios()
     {
 

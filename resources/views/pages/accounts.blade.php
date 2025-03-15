@@ -7,152 +7,130 @@
 
     <!-- Main Content Wrapper -->
     <main class="main-content w-full px-[var(--margin-x)] pb-8">
+        <br>
+        <div class="grid grid-cols-12 gap-4 sm:gap-5 lg:gap-6">
+            <div class="col-span-12 lg:col-span-8">
+                <div class="mt-4 sm:mt-5 lg:mt-6" x-data="{activeTab:'tabRecent'}">
+                    <div class="flex items-center justify-between space-x-2">
+                        <h2 class="text-base font-medium tracking-wide text-slate-700 dark:text-navy-100">
 
-        <div class="card space-y-4 p-5">
-            <table class="spacing-table text-center">
-                <thead>
-                    <tr>
-                        <th class="col-md-2"> - </th>
-                        <th class="col-md-4">Producto</th>
-                        <th class="col-md-2">Precio</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (count($products) > 0)
-                        @foreach ($products as $product)
-                            <tr>
-                                <td class="td-img text-left">
-                                    <div style="display: flex; align-items: center;">
-                                        <a href="#" style="margin-right: 10px;">
-                                            <img style="width: 100px;" src="{{ $product['image'] }}" alt="course_img" />
-                                        </a>
+                        </h2>
 
-                                    </div>
-                                </td>
-                                <td>
-                                    <div>
-                                        <p>
-                                            <a href="#">{{ $product['name'] }}</a><br>
-                                        </p>
-                                    </div>
-                                </td>
-                                <td>
-                                    S/ {{ $product['total'] }}
-                                </td>
-                            </tr>
-                        @endforeach
-                    @endif
-                </tbody>
-            </table>
-        </div>
+                        <div class="is-scrollbar-hidden overflow-x-auto rounded-lg bg-slate-200 text-slate-600
+                            dark:bg-navy-800 dark:text-navy-200">
+                            <div class="tabs-list flex p-1">
+                                <button
+                                    @click="activeTab = 'tabRecent'"
+                                    :class="activeTab === 'tabRecent' ? 'bg-white shadow dark:bg-navy-500 dark:text-navy-100' : 'hover:text-slate-800 focus:text-slate-800 dark:hover:text-navy-100 dark:focus:text-navy-100'"
+                                    class="btn shrink-0 px-3 py-1 text-xs+ font-medium">
+                                    <span id = "total_productos">0 programas en el carrito.</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card mt-4">
+                        <div class="is-scrollbar-hidden min-w-full overflow-x-auto">
+                            <table class="is-hoverable w-full text-left">
+                                <thead>
+                                    <tr>
+                                        <th
+                                        class="whitespace-nowrap rounded-tl-lg bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5"
+                                        >
+                                        Producto
+                                        </th>
+                                        <th
+                                        class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5"
+                                        >
+                                        Tipo
+                                        </th>
+                                        <th
+                                        class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5"
+                                        >
+                                        Precio
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="cart">
+                                    <tr
+                                        class="border-y border-transparent border-b-slate-200 dark:border-b-navy-500"
+                                    >
+                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">
+                                            <div class="flex items-center space-x-4">
+                                                <div class="avatar">
+                                                <img
+                                                    class="rounded-full"
+                                                    src="{{ asset('themes/webpage/images/object/object-15.jpg') }}"
+                                                    alt="avatar"
+                                                />
+                                                </div>
 
-        <div class="row mt-4">
-            <div style="padding: 20px; background: #f8f8f8;">
-                <h3>Registra tu pago</h3>
-                <p>Agradecemos su preferencia por nuestros cursos. Por favor, proceda a registrar los datos del pagador para
-                    confirmar la compra.</p>
-                <br>
-                <h4>Total:</h4>
-                <p style="color: orange; font-size: 16px;"><b>S/ {{ $total }}</b></p>
-            </div>
-            <div id="cardPaymentBrick_container"></div>
-        </div>
+                                                <span class="font-medium text-slate-700 dark:text-navy-100">
+                                                    Título del curso
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td
+                                        class="whitespace-nowrap px-4 py-3 font-medium text-slate-700 dark:text-navy-100 sm:px-5"
+                                        >
+                                        Cursos Taller
+                                        </td>
+                                        <td
+                                        class="whitespace-nowrap px-4 py-3 font-medium text-slate-700 dark:text-navy-100 sm:px-5"
+                                        >
+                                        S/ 0.00
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
 
-        <div class="row mt-4">
-            <div class="col-md-4"></div>
-            <div class="col-md-4">
-                <div class="card space-y-4 p-5">
-                    <h1><!-- cart page content section end -->
-                        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-                        @if ($preference)
-                            <script>
-                                const mp = new MercadoPago("{{ env('MERCADOPAGO_KEY') }}", {
-                                    locale: 'es-PE'
-                                });
-                                const bricksBuilder = mp.bricks();
-                                const renderCardPaymentBrick = async (bricksBuilder) => {
-                                    const settings = {
-                                        initialization: {
-                                            preferenceId: "{{ $preference }}",
-                                            amount: {{ $total }},
-                                        },
-                                        customization: {
-                                            visual: {
-                                                style: {
-                                                    customVariables: {
-                                                        theme: 'bootstrap',
-                                                    }
-                                                }
-                                            },
-                                            paymentMethods: {
-                                                maxInstallments: 1,
-                                            }
-                                        },
-                                        callbacks: {
-                                            onReady: () => {
-                                                // callback llamado cuando Brick esté listo
-                                            },
-                                            onSubmit: (cardFormData) => {
-                                                //  callback llamado cuando el usuario haga clic en el botón enviar los datos
-                                                //  ejemplo de envío de los datos recolectados por el Brick a su servidor
-                                                let products = @json($products);
-                                                return new Promise((resolve, reject) => {
-                                                    cardFormData.products = products;
-                                                    fetch("{{ route('web_process_payment', [$sale_id, $student_id]) }}", {
-                                                            method: "PUT",
-                                                            headers: {
-                                                                "Content-Type": "application/json",
-                                                                "X-CSRF-TOKEN": "{{ csrf_token() }}"
-                                                            },
-                                                            body: JSON.stringify(cardFormData)
-                                                        }).then((response) => {
-                                                            if (!response.ok) {
-                                                                return response.json().then(error => {
-                                                                    throw new Error(error.error);
-                                                                });
-                                                            }
-                                                            return response.json();
-
-                                                        })
-                                                        .then((data) => {
-                                                            if (data.status == 'approved') {
-                                                                window.location.href = data.url;
-                                                            } else {
-                                                                alert('No se pudo continuar el proceso');
-                                                                window.location.href = data.url;
-                                                            }
-                                                        })
-                                                        .catch((error) => {
-                                                            if (error instanceof SyntaxError) {
-                                                                // Si hay un error de sintaxis al analizar la respuesta JSON
-                                                                alert('Error al procesar el pago.');
-                                                            } else {
-                                                                // Mostrar la alerta con el mensaje de error devuelto por el backend
-                                                                alert(error.message);
-                                                            }
-                                                        })
-                                                });
-                                            },
-                                            onError: (error) => {
-                                                console.log(error)
-                                            },
-                                        },
-                                    };
-                                    window.cardPaymentBrickController = await bricksBuilder.create('cardPayment',
-                                        'cardPaymentBrick_container', settings);
-                                };
-                                renderCardPaymentBrick(bricksBuilder);
-                            </script>
-                        @endif
-                        <br><br>
-                    </h1>
+                        <button class="btn mt-1 h-11 justify-between bg-primary font-medium text-white hover:bg-primary-focus focus:bg-primary-focus active:bg-primary-focus/90 dark:bg-accent dark:hover:bg-accent-focus dark:focus:bg-accent-focus dark:active:bg-accent/90">
+                            <span>TOTAL:</span>
+                            <span><i class="fa fa-heart" aria-hidden="true"></i>&nbsp; <div id="totalid">S/ 0.00</div></span>
+                        </button>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-4"></div>
+
+            <div class="col-span-12 grid grid-cols-1 gap-4 sm:gap-5 lg:col-span-4 lg:gap-6">
+                <div class="card pb-4">
+                    <br>
+                    <div class="px-4 sm:px-5">
+                        <h1 class="tracking-wide text-slate-700 dark:text-navy-100 mt-4"
+                            style="font-size: 20px;"
+                        >
+                            Excelente estás a punto de aprender con nosotros, Bienvenido a GlobalCpa Perú.
+                        </h1>
+                        <br>
+                        <p style="font-size: 18px;">
+                            Puede realizar el pago a traves de nuestros
+                            medios digitales:
+                        </p>
+                        <br>
+                        <h2 style="font-size: 18px;">
+                            <b>Banco de Credito del Perú</b>
+                        </h2>
+                        <ul style="font-size: 16px;">
+                            <li>cta. 111-1111111-1</li>
+                            <li>cci. 111-1111111-1</li>
+                        </ul>
+                        <br>
+                        <h2 style="font-size: 18px;">
+                            <b>Yape ó Plin</b>
+                        </h2>
+                        <ul style="font-size: 16px;">
+                            <li>N°. 977627207</li>
+                        </ul>
+                        <br>
+                        <a href="https://wa.link/4bu45u">
+                            <button class="mt-8 boton-degradado-transferencia">
+                                <b>TRANSFERENCIA | YAPE ó PLIN</b>
+                            </button>
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
-
-
     </main>
 
     <br>

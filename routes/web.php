@@ -35,6 +35,7 @@ Route::get('/nosotros', [WebPageController::class, 'about'])->name('web_about');
 Route::get('/cursos', [WebPageController::class, 'courses'])->name('web_courses');
 Route::get('/curso-descripcion/{id}', [WebPageController::class, 'coursedescription'])->name('web_course_description');
 Route::get('/carrito', [WebPageController::class, 'shopcart'])->name('web_carrito');
+Route::get('/metodos-de-pago', [WebPageController::class, 'accounts'])->name('web_accounts');
 Route::get('/pagar', [WebPageController::class, 'pay'])->name('web_pay');
 Route::post('/safe_pay', [WebPageController::class, 'pagar'])->name('paying');
 Route::post('/user_safe_pay', [WebPageController::class, 'pagar_auth'])->name('paying_auth');
