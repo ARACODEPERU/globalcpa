@@ -39,14 +39,14 @@
             </div>
         </section> --}}
 
-        <div class="mt-3 grid grid-cols-12 gap-4 sm:gap-5 lg:gap-6">
+        <div class="mt-4 px-[var(--margin-x)] transition-all duration-[.25s] sm:mt-5 lg:mt-6">
             <div class="col-span-12 space-y-4 sm:space-y-5 lg:col-span-12 lg:space-y-6 xl:col-span-12">
                 <div>
                     <div class="flex items-center justify-between">
                         <h3 class="text-xl font-medium text-slate-800 dark:text-navy-50">
                             Global CPA Business School | Formación:
                         </h3>
-                        <div class="hidden w-full max-w-xs justify-between space-x-4 text-slate-700 dark:text-navy-100 sm:flex" x-data="{activeTab:'tabAll'}">
+                        {{-- <div class="hidden w-full max-w-xs justify-between space-x-4 text-slate-700 dark:text-navy-100 sm:flex" x-data="{activeTab:'tabAll'}">
                             <button @click="activeTab = 'tabAll'" class="font-medium tracking-wide text-primary dark:text-accent-light" :class="activeTab === 'tabAll' &amp;&amp; 'text-primary dark:text-accent-light' ">
                             Todos
                             </button>
@@ -56,7 +56,7 @@
                             <button @click="activeTab = 'tabSport'" class="font-medium tracking-wide" :class="activeTab === 'tabSport' &amp;&amp; 'text-primary dark:text-accent-light' ">
                             Programas
                             </button>
-                        </div>
+                        </div> --}}
                     </div>
                     <!--Courses One Start-->
                     <x-courses.list-card /> 
@@ -156,6 +156,58 @@
               </div> 
             </div> --}}
         </div>
+
+        <br><br>
+
+        <div class="mt-4 px-[var(--margin-x)] transition-all duration-[.25s] sm:mt-5 lg:mt-6">
+            <div style="text-align:center;">
+                <h1 class="title_aracode" style="font-size: 45px; line-height: 1.1; font-weight: 700;">
+                    NUESTRAS SUSCRIPCIONES
+                </h1>
+            </div>
+            <div class="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6 xl:grid-cols-4">
+              <div class="flex flex-col">
+                <img class="h-44 w-full rounded-2xl object-cover object-center" 
+                        src="{{ asset('themes/webpage/images/object/object-2.jpg') }}" 
+                        alt="image"
+                >
+                <div class="card -mt-8 grow rounded-2xl p-4">
+                    <a href="#" class="text-sm+ font-medium text-slate-700 line-clamp-1 
+                                hover:text-primary focus:text-primary dark:text-navy-100 
+                                dark:hover:text-accent-light dark:focus:text-accent-light">
+                                <h3 style="font-size: 20px;">Título del plan</h3>
+                    </a>
+                    <p class="mt-2 grow line-clamp-3">
+                        <ul>
+                            <li><i class="fa fa-circle"></i> items 01</li>
+                            <li><i class="fa fa-circle"></i> items 02</li>
+                            <li><i class="fa fa-circle"></i> items 03</li>
+                            <li><i class="fa fa-circle"></i> items 04</li>
+                        </ul>
+                    </p>
+                    <br>
+                    <p>
+                        Mensual: S/ 250.00
+                    </p>
+                    <P>
+                        Anual: S/ 180.00
+                    </P>
+                    <div class="mt-4">
+                        <a>
+                            <button class="boton-degradado-courses">
+                                <b style="font-size: 18px;">
+                                    <i class="fa fa-key" aria-hidden="true"></i>
+                                    &nbsp; Suscribirme
+                                </b>
+                            </button>
+                        </a>
+                    </div>
+                </div>
+              </div>
+            </div>
+        </div>
+
+
         
         {{-- <section style="padding: 20px;">
             <div class="mx-auto mt-8 grid w-full grid-cols-1 gap-4 sm:grid-cols-1 sm:gap-5 lg:gap-6">
@@ -879,83 +931,6 @@
     <br>
     <br>
 
-
-    
-    <div id="whatsapp">
-        <a href="https://wa.link/4bu45u" class="wtsapp" data-bs-toggle="modal" data-bs-target="#exampleModal">
-            <i class="fa fa-whatsapp" aria-hidden="true"></i>
-        </a>
-    </div>
-
-    <style type="text/css">
-        #whatsapp .wtsapp{
-            position: fixed;
-            transform: all .5s ease;
-            background-color: #25D366;
-            display: block;
-            text-align: center;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
-            border-radius: 50px;
-            border-right: none;
-            color: #fff;
-            font-weight: 700;
-            font-size: 30px;
-            bottom: 40px;
-            right: 20px;
-            border: 0;
-            z-index: 9999;
-            width: 50px;
-            height: 50px;
-            line-height: 50px;
-        }
-
-        #whatsapp .wtsapp:before{
-            content: "";
-            position: absolute;
-            z-index: -1;
-            left: 50%;
-            top: 50%;
-            transform: translateX(-50%) translateY(-50%);
-            display: block;
-            width: 60px;
-            height: 60px;
-            background-color: #25D366;
-            border-radius: 50%;
-            -webkit-animation: pulse-border 1500ms ease-out infinite;
-            animation: pulse-border 1500ms ease-out infinite;
-        }
-
-        #whatsapp .wtsapp:focus{
-            border: none;
-            outline: none;
-        }
-
-        @keyframes pulse-border{
-            0%{
-                transform: translateX(-50%) translateY(-50%) translateZ(0) scale(1);
-                opacity: 1;
-            }
-            100%{
-                transform: translateX(-50%) translateY(-50%) translateZ(0) scale(1.5);
-                opacity: 0;
-            }
-        }
-
-
-
-        .slider {
-            position: relative;
-            overflow: hidden;
-        }
-        .slides {
-            display: flex;
-            transition: transform 0.5s ease-in-out;
-        }
-        .slide {
-            min-width: 100%;
-        }
-
-    </style>
 
     <script>
 

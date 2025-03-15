@@ -71,6 +71,9 @@
 
         @yield('content')
 
+        <!--Whatsapp Start-->
+        <x-whatsapp /> 
+        <!--Whatsapp End-->
 
         <!-- Mobile Searchbar -->
         <div

@@ -1,5 +1,6 @@
 .title_aracode{
   color: #3c4a99;
+  text-align: center;
 }
 
 .title_aracode:is(.dark *) {
