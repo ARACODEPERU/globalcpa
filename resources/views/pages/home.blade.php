@@ -216,13 +216,13 @@
                             </p>
                             <br>
                             <p>
-                                Mensual: S/ 250.00
+                                S/ 250.00
                             </p>
                             <div class="mt-4">
                                 <a>
                                     <button class="boton-degradado-courses">
                                         <b style="font-size: 18px;">
-                                            <i class="fa fa-key" aria-hidden="true"></i>
+                                            <i class="fa fa-edit" aria-hidden="true" style="font-size: 20px;"></i>
                                             &nbsp; Suscribirme
                                         </b>
                                     </button>
@@ -260,16 +260,13 @@
                             </p>
                             <br>
                             <p>
-                                Mensual: S/ 250.00
+                                S/ 180.00
                             </p>
-                            <P>
-                                Anual: S/ 180.00
-                            </P>
                             <div class="mt-4">
                                 <a>
                                     <button class="boton-degradado-courses">
                                         <b style="font-size: 18px;">
-                                            <i class="fa fa-key" aria-hidden="true"></i>
+                                            <i class="fa fa-edit" aria-hidden="true" style="font-size: 20px;"></i>
                                             &nbsp; Suscribirme
                                         </b>
                                     </button>
