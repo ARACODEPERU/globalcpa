@@ -28,7 +28,8 @@
                     class="flex size-11 items-center justify-center rounded-lg bg-primary/10 text-primary outline-none transition-colors duration-200 hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25 dark:bg-navy-600 dark:text-accent-light dark:hover:bg-navy-450 dark:focus:bg-navy-450 dark:active:bg-navy-450/90"
                     x-tooltip.placement.right="'Home'"
                 >
-                    <svg
+                    <i class="fa fa-home" aria-hidden="true" style="font-size: 23px;"></i>
+                    {{-- <svg
                     class="size-7"
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -51,7 +52,7 @@
                             x-bind:fill="$store.global.isDarkModeEnabled ? 'white' : 'currentColor'"
                             d="M17.5 5h-1a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5Z"
                         />
-                    </svg>
+                    </svg> --}}
                 </a>
 
                 <!-- Apps -->
@@ -60,6 +61,8 @@
                     class="flex size-11 items-center justify-center rounded-lg outline-none transition-colors duration-200 hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25"
                     x-tooltip.placement.right="'Cursos'"
                 >
+                <i class="fa fa-graduation-cap" aria-hidden="true" style="font-size: 23px;"></i>
+                    {{--
                     <svg
                     class="size-7"
                     viewBox="0 0 24 24"
@@ -94,7 +97,7 @@
                             x-bind:stroke="$store.global.isDarkModeEnabled ? 'white' : 'currentColor'"
                             stroke-linecap="round"
                         />
-                    </svg>
+                    </svg> --}}
                 </a>
 
                 <!-- Pages And Layouts -->
@@ -103,7 +106,8 @@
                     class="flex size-11 items-center justify-center rounded-lg outline-none transition-colors duration-200 hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25"
                     x-tooltip.placement.right="'Programas'"
                 >
-                    <svg
+                    <i class="fa fa-rocket" aria-hidden="true" style="font-size: 23px;"></i>
+                    {{-- <svg
                     class="size-7"
                     viewBox="0 0 24 24"
                     fill="none"
@@ -128,7 +132,7 @@
                             x-bind:fill="$store.global.isDarkModeEnabled ? 'white' : 'currentColor'"
                             fill-opacity="0.3"
                         />
-                    </svg>
+                    </svg> --}}
                 </a>
 
                 <!-- Forms -->
