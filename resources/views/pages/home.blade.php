@@ -159,7 +159,7 @@
 
         <br><br>
         
-        <div class="mt-4 px-[var(--margin-x)] transition-all duration-[.25s] sm:mt-5 lg:mt-6">
+        {{-- <div class="mt-4 px-[var(--margin-x)] transition-all duration-[.25s] sm:mt-5 lg:mt-6">
             <div style="text-align:center;">
                 <h1 class="title_aracode" style="font-size: 45px; line-height: 1.1; font-weight: 700;">
                     NUESTRAS SUSCRIPCIONES
@@ -281,7 +281,7 @@
 
 
             
-        </div>
+        </div> --}}
 
 
         
