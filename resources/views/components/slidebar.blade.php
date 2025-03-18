@@ -102,7 +102,7 @@
 
                 <!-- Pages And Layouts -->
                 <a
-                    href="pages-card-user-1.html"
+                    href="#pages-card-user-1"
                     class="flex size-11 items-center justify-center rounded-lg outline-none transition-colors duration-200 hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25"
                     x-tooltip.placement.right="'Programas'"
                 >
@@ -525,7 +525,7 @@
                     <li>
                         <a
                             x-data="navLink"
-                            href="dashboards-crm-analytics.html"
+                            href="{{ route('index_main') }}"
                             :class="isActive ? 'font-medium text-primary dark:text-accent-light' : 'text-slate-600 hover:text-slate-900 dark:text-navy-200 dark:hover:text-navy-50'"
                             class="flex py-2 text-xs+ tracking-wide outline-none transition-colors duration-300 ease-in-out"
                         >
@@ -535,7 +535,7 @@
                     <li>
                         <a
                             x-data="navLink"
-                            href="dashboards-orders.html"
+                            href="#dashboards"
                             :class="isActive ? 'font-medium text-primary dark:text-accent-light' : 'text-slate-600 hover:text-slate-900 dark:text-navy-200 dark:hover:text-navy-50'"
                             class="flex py-2 text-xs+ tracking-wide outline-none transition-colors duration-300 ease-in-out"
                         >
@@ -545,7 +545,7 @@
                     <li>
                         <a
                             x-data="navLink"
-                            href="dashboards-orders.html"
+                            href="#dashboards"
                             :class="isActive ? 'font-medium text-primary dark:text-accent-light' : 'text-slate-600 hover:text-slate-900 dark:text-navy-200 dark:hover:text-navy-50'"
                             class="flex py-2 text-xs+ tracking-wide outline-none transition-colors duration-300 ease-in-out"
                         >
