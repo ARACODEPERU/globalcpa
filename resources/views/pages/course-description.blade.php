@@ -59,8 +59,9 @@
                                     </a>
                                 </div>
                             @endif
+                            @if ($course->brochure->path_file)
                             <div class="col-md-6" style="padding: 10px 0px;">
-                                <a href="{{ route('web_course_description', $item->id) }}">
+                                <a href="{{ $course->brochure->path_file }}">
                                     <button class="boton-degradado-info">
                                         <b>
                                             <i class="fa fa-edit" aria-hidden="true" style="font-size: 16px;"></i>
@@ -69,6 +70,7 @@
                                     </button>
                                 </a>
                             </div>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -344,12 +346,12 @@
                 <div class="row">
                     <div class="col-md-3">
                         <div class="card" style="place-items: center; padding: 40px 10px;">
-                            <img x-show="!$store.global.isDarkModeEnabled" style="width: 80px;" 
-                                    src="{{ asset ('themes/webpage/images/icons/chat-en-vivo.png') }}" 
+                            <img x-show="!$store.global.isDarkModeEnabled" style="width: 80px;"
+                                    src="{{ asset ('themes/webpage/images/icons/chat-en-vivo.png') }}"
                                     alt=""
                             >
-                            <img x-show="$store.global.isDarkModeEnabled" style="width: 80px;" 
-                                    src="{{ asset ('themes/webpage/images/icons/chat-en-vivo-blanco.png') }}" 
+                            <img x-show="$store.global.isDarkModeEnabled" style="width: 80px;"
+                                    src="{{ asset ('themes/webpage/images/icons/chat-en-vivo-blanco.png') }}"
                                     alt=""
                             >
                             <p style="font-size: 17px; line-height: 1.3; text-align:center; margin-top: 10px;">
@@ -359,12 +361,12 @@
                     </div>
                     <div class="col-md-3">
                         <div class="card" style="place-items: center; padding: 40px 10px;">
-                            <img x-show="!$store.global.isDarkModeEnabled" style="width: 80px;" 
-                                    src="{{ asset ('themes/webpage/images/icons/grabacion.png') }}" 
+                            <img x-show="!$store.global.isDarkModeEnabled" style="width: 80px;"
+                                    src="{{ asset ('themes/webpage/images/icons/grabacion.png') }}"
                                     alt=""
                             >
-                            <img x-show="$store.global.isDarkModeEnabled" style="width: 80px;" 
-                                    src="{{ asset ('themes/webpage/images/icons/grabacion-blanco.png') }}" 
+                            <img x-show="$store.global.isDarkModeEnabled" style="width: 80px;"
+                                    src="{{ asset ('themes/webpage/images/icons/grabacion-blanco.png') }}"
                                     alt=""
                             >
                             <p style="font-size: 17px; line-height: 1.3; text-align:center; margin-top: 10px;">
@@ -374,12 +376,12 @@
                     </div>
                     <div class="col-md-3">
                         <div class="card" style="place-items: center; padding: 40px 10px;">
-                            <img x-show="!$store.global.isDarkModeEnabled" style="width: 80px;" 
-                                    src="{{ asset ('themes/webpage/images/icons/descarga-de-archivos.png') }}" 
+                            <img x-show="!$store.global.isDarkModeEnabled" style="width: 80px;"
+                                    src="{{ asset ('themes/webpage/images/icons/descarga-de-archivos.png') }}"
                                     alt=""
                             >
-                            <img x-show="$store.global.isDarkModeEnabled" style="width: 80px;" 
-                                    src="{{ asset ('themes/webpage/images/icons/descarga-de-archivos-blanco.png') }}" 
+                            <img x-show="$store.global.isDarkModeEnabled" style="width: 80px;"
+                                    src="{{ asset ('themes/webpage/images/icons/descarga-de-archivos-blanco.png') }}"
                                     alt=""
                             >
                             <p style="font-size: 17px; line-height: 1.3; text-align:center; margin-top: 10px;">
@@ -389,12 +391,12 @@
                     </div>
                     <div class="col-md-3">
                         <div class="card" style="place-items: center; padding: 40px 10px;">
-                            <img x-show="!$store.global.isDarkModeEnabled" style="width: 80px;" 
-                                    src="{{ asset ('themes/webpage/images/icons/ganador.png') }}" 
+                            <img x-show="!$store.global.isDarkModeEnabled" style="width: 80px;"
+                                    src="{{ asset ('themes/webpage/images/icons/ganador.png') }}"
                                     alt=""
                             >
-                            <img x-show="$store.global.isDarkModeEnabled" style="width: 80px;" 
-                                    src="{{ asset ('themes/webpage/images/icons/ganador-blanco.png') }}" 
+                            <img x-show="$store.global.isDarkModeEnabled" style="width: 80px;"
+                                    src="{{ asset ('themes/webpage/images/icons/ganador-blanco.png') }}"
                                     alt=""
                             >
                             <p style="font-size: 17px; line-height: 1.3; text-align:center; margin-top: 10px;">
@@ -463,8 +465,9 @@
                             </a>
                         </div>
                     @endif
+                    @if ($course->brochure->path_file)
                     <div class="col-md-6" style="padding: 10px 0px;">
-                        <a href="{{ route('web_course_description', $item->id) }}">
+                        <a href="{{ $course->brochure->path_file }}">
                             <button class="boton-degradado-info">
                                 <b>
                                     <i class="fa fa-edit" aria-hidden="true" style="font-size: 16px;"></i>
@@ -473,6 +476,8 @@
                             </button>
                         </a>
                     </div>
+                    @endif
+
                 </div>
             </div>
         </section>

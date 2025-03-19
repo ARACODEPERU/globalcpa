@@ -146,6 +146,7 @@ class WebPageController extends Controller
             ->shuffle()
             ->take(3);
 
+
         return view('pages.course-description', [
             'course' => $course,
             'item' => $item,
