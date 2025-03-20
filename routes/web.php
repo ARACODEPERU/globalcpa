@@ -43,7 +43,12 @@ Route::get('/gracias/{id}', [WebPageController::class, 'thanks'])->name('web_tha
 Route::get('/curso-descripcion-x/{id}', [WebPageController::class, 'cursodescripcion'])->name('web_curso_descripcion');
 Route::get('/prices/academic', [LandingController::class, 'academicPrices'])->name('academic_prices');
 
+
+Route::get('/libro-de-reclamaciones',  [WebPageController::class, 'claims'])->name('web_claims');
+
+// E-MAIL //
 Route::get('/email', [WebPageController::class, 'email'])->name('web_email');
+Route::get('/e-libro-de-reclamaciones', [WebPageController::class, 'eclaims'])->name('web_e_claims');
 
 //////mensajes de whatsapp///////
 Route::get('/ask/product/{id}', [LandingController::class, 'redirectToWhatsApp'])->name('whatsapp_send');

@@ -717,6 +717,18 @@ class WebPageController extends Controller
         ]);
     }
 
+    public function claims()
+    {
+
+        return view('pages/complaints_book');
+    }
+
+    public function eclaims()
+    {
+
+        return view('emails/e_complaints_book');
+    }
+
     public function construction()
     {
         return view('pages.construction');
