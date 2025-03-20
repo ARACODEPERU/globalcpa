@@ -165,41 +165,138 @@
                     x-transition:enter-start="opacity-0 [transform:translate3d(1rem,0,0)]"
                     x-transition:enter-end="opacity-100 [transform:translate3d(0,0,0)]"
                   >
-                    <div class="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6 xl:grid-cols-4">
-                        <div class="flex flex-col">
-                        <img class="h-44 w-full rounded-2xl object-cover object-center" 
-                                src="{{ asset('themes/webpage/images/object/object-2.jpg') }}" 
-                                alt="image"
-                        >
-                        <div class="card -mt-8 grow rounded-2xl p-4">
-                            <a href="#" class="text-sm+ font-medium text-slate-700 line-clamp-1 
-                                        hover:text-primary focus:text-primary dark:text-navy-100 
-                                        dark:hover:text-accent-light dark:focus:text-accent-light">
-                                        <h3 style="font-size: 20px;">Título del plan</h3>
-                            </a>
-                            <p class="mt-2 grow line-clamp-3">
-                                <ul>
-                                    <li><i class="fa fa-circle"></i> items 01</li>
-                                    <li><i class="fa fa-circle"></i> items 02</li>
-                                    <li><i class="fa fa-circle"></i> items 03</li>
-                                    <li><i class="fa fa-circle"></i> items 04</li>
-                                </ul>
-                            </p>
-                            <br>
-                            <p>
-                                S/ 180.00
-                            </p>
-                            <div class="mt-4">
-                                <a>
+                    <div class="col-span-12 sm:col-span-8">
+                        <div class="card p-4 sm:p-5">
+                            <div class="mt-4 space-y-4">
+                                <p class="text-base font-medium text-slate-700 dark:text-navy-100">
+                                1. INFORMACIÓN DEL CONSUMIDOR RECLAMANTE
+                                </p>
+                                <div class="grid grid-cols-1 gap-4 sm:grid-cols-12">
+                                    <label class="block sm:col-span-4">
+                                        <span>Razón Social *</span>
+                                        <span class="relative mt-1.5 flex">
+                                        <input class="form-input peer w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 
+                                                    pl-9 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 
+                                                    dark:hover:border-navy-400 dark:focus:border-accent" 
+                                                    placeholder="" type="text">
+                                        </span>
+                                    </label>
+                                    <label class="block sm:col-span-4">
+                                        <span>R.U.C *</span>
+                                        <span class="relative mt-1.5 flex">
+                                        <input class="form-input peer w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 
+                                                    pl-9 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 
+                                                    dark:hover:border-navy-400 dark:focus:border-accent" 
+                                                    placeholder="" type="text">
+                                        </span>
+                                    </label>
+                                    <label class="block sm:col-span-4">
+                                        <span>Tu Nombre *</span>
+                                        <span class="relative mt-1.5 flex">
+                                        <input class="form-input peer w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 
+                                                    pl-9 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 
+                                                    dark:hover:border-navy-400 dark:focus:border-accent" 
+                                                    placeholder="" type="text">
+                                        </span>
+                                    </label>
+                                    <label class="block sm:col-span-4">
+                                        <span>Tus Apellidos *</span>
+                                        <span class="relative mt-1.5 flex">
+                                        <input class="form-input peer w-full rounded-lg border border-slate-300 bg-transparent px-3 
+                                                    py-2 pl-9 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary 
+                                                    dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent" 
+                                                    placeholder="" type="text">
+                                        </span>
+                                    </label>
+                                    <label class="block sm:col-span-4">
+                                        <span>Tipo de Documento *</span>
+                                        <span class="relative mt-1.5 flex">
+                                        <input class="form-input peer w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 
+                                                    pl-9 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary 
+                                                    dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent" 
+                                                    placeholder="" type="text">
+                                        </span>
+                                    </label>
+                                    <label class="block sm:col-span-4">
+                                        <span>Número de Documento *</span>
+                                        <span class="relative mt-1.5 flex">
+                                        <input class="form-input peer w-full rounded-lg border border-slate-300 bg-transparent px-3 
+                                                    py-2 pl-9 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary 
+                                                    dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent" 
+                                                    placeholder="" type="text">
+                                        </span>
+                                    </label>
+                                    <label class="block sm:col-span-4">
+                                        <span>Tu Teléfono *</span>
+                                        <span class="relative mt-1.5 flex">
+                                        <input class="form-input peer w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 pl-9 
+                                                    placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 
+                                                    dark:hover:border-navy-400 dark:focus:border-accent" placeholder="" type="text">
+                                        </span>
+                                    </label>
+                                    <label class="block sm:col-span-4">
+                                        <span>Tu Correo Electrónico *</span>
+                                        <span class="relative mt-1.5 flex">
+                                        <input class="form-input peer w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 pl-9 
+                                                    placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 
+                                                    dark:focus:border-accent" placeholder="" type="text">
+                                        </span>
+                                    </label>
+                                </div>
+                                <p class="text-base font-medium text-slate-700 dark:text-navy-100">
+                                    2. IDENTIFICACIÓN DEL BIEN CONTRATADO
+                                </p>
+                                <div class="grid grid-cols-1 gap-4 sm:grid-cols-12">
+                                    <label class="block sm:col-span-4">
+                                        <span>Tipo del Producto *</span>
+                                        <span class="relative mt-1.5 flex">
+                                        <input class="form-input peer w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 pl-9 
+                                                    placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary 
+                                                    dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent" 
+                                                    placeholder="" type="text">
+                                        </span>
+                                    </label>
+                                    <label class="block sm:col-span-4">
+                                        <span>Nombre del Producto *</span>
+                                        <span class="relative mt-1.5 flex">
+                                            <input class="form-input peer w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 pl-9 
+                                                placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 
+                                                dark:hover:border-navy-400 dark:focus:border-accent" placeholder="" type="text">
+                                        </span>
+                                    </label>
+                                    <label class="block sm:col-span-4">
+                                        <span>Monto Reclamado *</span>
+                                        <span class="relative mt-1.5 flex">
+                                        <input class="form-input peer w-full rounded-lg border border-slate-300 
+                                                    bg-transparent px-3 py-2 pl-9 placeholder:text-slate-400/70 hover:border-slate-400 
+                                                    focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent" 
+                                                        placeholder="" type="text">
+                                        </span>
+                                    </label>
+                                </div>
+                                <label class="block">
+                                <span>Detalle de la Reclamación *</span>
+                                <textarea rows="4" placeholder="" class="form-textarea mt-1.5 w-full rounded-lg border border-slate-300 bg-transparent p-2.5 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"></textarea>
+                                </label>
+                                <div x-data="{sameBillingAddress:true}">
+                                    <div class="flex-wrap items-start space-y-2 pt-2 sm:flex sm:space-y-0 sm:space-x-5">
+                                        <label class="inline-flex items-center space-x-2">
+                                            <input x-model="sameBillingAddress" class="form-checkbox is-basic size-5 rounded border-slate-400/70 
+                                                checked:border-primary checked:bg-primary hover:border-primary focus:border-primary dark:border-navy-400 
+                                                dark:checked:border-accent dark:checked:bg-accent dark:hover:border-accent dark:focus:border-accent" type="checkbox">
+                                            <span>Declaro ser el usuario del servicio o producto y acepto el contenido del presente formulario manifestando bajo Declaración Jurada la veracidad de los hechos descritos</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="flex justify-end space-x-2">
                                     <button class="boton-degradado-courses">
-                                        <b style="font-size: 18px;">
-                                            <i class="fa fa-edit" aria-hidden="true" style="font-size: 20px;"></i>
-                                            &nbsp; Suscribirme
+                                        <b>
+                                            <i class="fa fa-paper-plane" aria-hidden="true" style="font-size: 16px;"></i>
+                                            &nbsp; Enviar
                                         </b>
                                     </button>
-                                </a>
+                                </div>
                             </div>
-                        </div>
                         </div>
                     </div>
                   </div>
