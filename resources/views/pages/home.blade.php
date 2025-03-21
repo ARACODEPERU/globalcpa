@@ -6,28 +6,8 @@
 
 
     <main class="main-content w-full px-[var(--margin-x)] pb-8">
-    <br>
-        <section class="bg-gray-100 flex items-center justify-center  w-full">
-                <div class="slider w-full rounded-lg shadow-lg">
-                    <div class="slides">
-                        <div class="slide">
-                            <img src="{{ asset('themes/webpage/images/slider_01.jpeg') }}" alt="Imagen 1" class="w-full">
-                        </div>
-                        <div class="slide">
-                            <img src="{{ asset('themes/webpage/images/slider_02.jpeg') }}" alt="Imagen 2" class="w-full">
-                        </div>
-                        <div class="slide">
-                            <img src="{{ asset('themes/webpage/images/slider_03.jpeg') }}" alt="Imagen 3" class="w-full">
-                        </div>
-                        <div class="slide">
-                            <img src="{{ asset('themes/webpage/images/slider_04.jpeg') }}" alt="Imagen 3" class="w-full">
-                        </div>
-                        <div class="slide">
-                            <img src="{{ asset('themes/webpage/images/slider_05.jpeg') }}" alt="Imagen 3" class="w-full">
-                        </div>
-                    </div>
-                </div>
-        </section>
+        <br>
+        <x-slider /> 
 
         {{-- <section style="padding: 20px 10px;">
             <div class="mx-auto grid w-full grid-cols-1 gap-4 sm:grid-cols-1 sm:gap-5 lg:gap-6">
