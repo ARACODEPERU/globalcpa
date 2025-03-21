@@ -689,10 +689,13 @@
                     ></i>
                 </button> --}}
 
-                <a href="{{ route('login') }}">
+                <a href="{{ route('login') }}" class="view-pc">
                     <button class="boton-degradado-campus">Campus Virtual</button>
-                </a>
+                </a> 
 
+                <a href="{{ route('login') }}" class="view-movile">
+                    <button class="boton-degradado-campus">Campus</button>
+                </a> 
 
             <!-- Notification-->
             {{-- <div

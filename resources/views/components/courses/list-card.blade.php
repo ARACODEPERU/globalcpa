@@ -49,16 +49,29 @@
             <div class="my-3 h-px bg-slate-200 dark:bg-navy-500"></div>
             <div class="flex justify-between">
                 <div>
-                    <a href="{{ route('web_course_description', $item->id) }}">
+                    <a class="view-pc" href="{{ route('web_course_description', $item->id) }}">
                         <button class="boton-degradado-info"><b>Más Información</b></button>
+                    </a>
+                    <a class="view-movile" href="{{ route('web_course_description', $item->id) }}">
+                        <button class="boton-degradado-info">
+                            <b> Leer más </b>
+                        </button>
                     </a>
                 </div>
                 <div class="text-right">
-                    <a  onclick="agregarAlCarrito({ id: {{ $item->id }}, nombre: '{{ $item->name }}', precio: {{ $item->price }} })">
+                    <a class="view-pc" onclick="agregarAlCarrito({ id: {{ $item->id }}, nombre: '{{ $item->name }}', precio: {{ $item->price }} })">
                         <button class="boton-degradado-courses">
                             <b>
-                                <i class="fa fa-cart-plus" aria-hidden="true" style="font-size: 16px;"></i>
+                                <i class="fa fa-cart-plus" aria-hidden="true" style="font-size: 18px;"></i>
                                 &nbsp; Añadir al Carrito
+                            </b>
+                        </button>
+                    </a>
+                    <a class="view-movile" onclick="agregarAlCarrito({ id: {{ $item->id }}, nombre: '{{ $item->name }}', precio: {{ $item->price }} })">
+                        <button class="boton-degradado-courses">
+                            <b>
+                                <i class="fa fa-cart-plus" aria-hidden="true" style="font-size: 18px;"></i>
+                                &nbsp; Comprar
                             </b>
                         </button>
                     </a>
