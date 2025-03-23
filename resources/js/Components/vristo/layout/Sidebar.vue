@@ -204,7 +204,7 @@
                             </template>
 
                         </template>
-                        <template v-if="studentSCertificates.length > 0">
+                        <!-- <template v-if="studentSCertificates.length > 0">
                             <li class="menu nav-item">
                                 <button
                                     type="button"
@@ -239,7 +239,7 @@
                                     </ul>
                                 </HeightTransition>
                             </li>
-                        </template>
+                        </template> -->
                     </ul>
 
                 </perfect-scrollbar>
