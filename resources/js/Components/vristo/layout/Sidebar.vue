@@ -30,7 +30,7 @@
                 }
             }
         }
-
+        console.log('aca esta llegando')
         //getStudentCertificates();
 
     });
