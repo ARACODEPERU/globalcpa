@@ -842,7 +842,7 @@ class AcaStudentController extends Controller
         $certificates = AcaCertificate::with('course')
             ->where('student_id', $student_id)
             ->get();
-
+        dd($certificates);
         return response()->json([
             'success' => true,
             'certificates' => $certificates,
