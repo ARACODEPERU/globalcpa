@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Password;
 
+//class User extends Authenticatable implements MustVerifyEmail
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
