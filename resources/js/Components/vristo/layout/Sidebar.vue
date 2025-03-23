@@ -45,7 +45,7 @@
 
     const getStudentCertificates = () =>{
         const roles = usePage().props.auth.roles;
-
+        console.log('roles', roles);
         // Verifica si el usuario tiene el rol "Alumno"
         if (roles.includes('Alumno')) {
             axios({
