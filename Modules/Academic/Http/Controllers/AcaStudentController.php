@@ -826,7 +826,7 @@ class AcaStudentController extends Controller
 
     public function getCertificates()
     {
-
+        dd('aca tiene que llegar');
         // Verificar si el usuario tiene el rol de "Alumno"
         if (!Auth::user()->hasRole('Alumno')) {
             return response()->json([
