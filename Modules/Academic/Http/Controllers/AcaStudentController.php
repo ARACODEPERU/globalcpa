@@ -826,7 +826,7 @@ class AcaStudentController extends Controller
 
     public function getCertificates()
     {
-        dd('aca tiene que llegar');
+
         // Verificar si el usuario tiene el rol de "Alumno"
         if (!Auth::user()->hasRole('Alumno')) {
             return response()->json([
@@ -842,10 +842,15 @@ class AcaStudentController extends Controller
         $certificates = AcaCertificate::with('course')
             ->where('student_id', $student_id)
             ->get();
-        dd($certificates);
+
+        $items = [];
+        if ($certificates) {
+            $items = $certificates;
+        }
+
         return response()->json([
             'success' => true,
-            'certificates' => $certificates,
+            'certificates' => $items,
         ], 200);
     }
 }

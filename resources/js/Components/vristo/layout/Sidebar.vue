@@ -30,8 +30,8 @@
                 }
             }
         }
-        console.log('aca esta llegando')
-        //getStudentCertificates();
+
+        getStudentCertificates();
 
     });
 
@@ -45,15 +45,17 @@
 
     const getStudentCertificates = () =>{
         const roles = usePage().props.auth.roles;
-        console.log('roles', roles);
+
         // Verifica si el usuario tiene el rol "Alumno"
         if (roles.includes('Alumno')) {
+            //console.log('aca llega');
             axios({
                 method: 'post',
                 url: route('aca_certificate_by_student')
             }).then((response) => {
+                console.log('resouesta',response)
                 studentSCertificates.value = response.data.certificates
-                console.log(studentSCertificates.value)
+                console.log('ser ',studentSCertificates.value)
             });
         }
 
@@ -204,7 +206,7 @@
                             </template>
 
                         </template>
-                        <!-- <template v-if="studentSCertificates.length > 0">
+                        <template v-if="studentSCertificates && studentSCertificates.length > 0">
                             <li class="menu nav-item">
                                 <button
                                     type="button"
@@ -239,7 +241,7 @@
                                     </ul>
                                 </HeightTransition>
                             </li>
-                        </template> -->
+                        </template>
                     </ul>
 
                 </perfect-scrollbar>
