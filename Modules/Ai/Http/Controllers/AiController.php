@@ -14,6 +14,7 @@ class AiController extends Controller
     /**
      * Display a listing of the resource.
      */
+    public $test=true;
     public function index()
     {
         $opciones = [
@@ -89,7 +90,10 @@ class AiController extends Controller
      */
     public function send_prompt($user_id, $message, $archivo = null)
     {
-        $port = env('AI__PORT', 5000);
+        if($this->test){
+            return 'Este es un mensaje de prueba porque el servidor de AI no está disponible';
+        }else{
+        $port = env('AI_PORT', 5000);
         // URL del servidor Flask
         $url = 'http://127.0.0.1:'.$port.'/assistant_ai';
 
@@ -129,5 +133,6 @@ class AiController extends Controller
 
         // Si todos los reintentos fallan, devolver la respuesta de la última solicitud
         return $response;
+    }
     }
 }
