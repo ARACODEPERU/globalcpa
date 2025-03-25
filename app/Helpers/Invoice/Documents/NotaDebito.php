@@ -8,6 +8,7 @@ use App\Models\Company as MyCompany;
 use App\Models\User;
 use App\Helpers\Invoice\Util;
 use App\Models\LocalSale;
+use App\Models\SaleDocument;
 use App\Models\SaleDocumentItem;
 use Greenter\Model\Sale\Note;
 use Greenter\Model\Company\Address;

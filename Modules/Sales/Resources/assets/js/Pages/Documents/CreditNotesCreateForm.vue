@@ -213,7 +213,9 @@
                 if(formNote.note_type == 3){
                     okey = true;
                 }else if(formNote.note_type == 4){
-                    if(formNote.note_overall_total > formNote.document_overall_total){
+                    console.log('nota',formNote.note_overall_total)
+                    console.log('factura',formNote.document_mto_total)
+                    if(parseFloat(formNote.note_overall_total) > parseFloat(formNote.document_mto_total)){
                         okey = true;
                     }else{
                         okey = false;
@@ -227,33 +229,47 @@
                         url: route('sale_all_notes_store'),
                         data: formNote
                     }).then((response) => {
-                        let iconMessage = 'success';
+                        console.log('resp',response)
+                        console.log('data',response.data)
+                        if(response.data){
+                            let iconMessage = 'success';
 
-                        if (response.data.original.success) {
-                            iconMessage = 'success';
-                        }else{
-                            iconMessage = 'error';
-                        }
-
-                        var cadena = "";
-                        if(response.data.original.notes){
-                            let array = JSON.parse(response.data.original.notes);
-                            for (var i = 0; i < array.length; i++) {
-                                cadena += array[i] + "<br>";
+                            if (response.data.success) {
+                                iconMessage = 'success';
+                            }else{
+                                iconMessage = 'error';
                             }
-                        }
 
-                        Swal.fire({
-                            title: `${response.data.original.message}`,
-                            html: `${cadena}`,
-                            icon: iconMessage,
-                            padding: '2em',
-                            customClass: 'sweet-alerts',
-                        }).then(() => {
-                            router.visit(route('sale_credit_notes_list'),{
-                                method: 'get'
+                            var cadena = "";
+                            if(response.data.notes){
+                                let array = JSON.parse(response.data.notes);
+                                for (var i = 0; i < array.length; i++) {
+                                    cadena += array[i] + "<br>";
+                                }
+                            }
+
+                            Swal.fire({
+                                title: `${response.data.message}`,
+                                html: `${cadena}`,
+                                icon: iconMessage,
+                                padding: '2em',
+                                customClass: 'sweet-alerts',
+                            }).then(() => {
+                                router.visit(route('sale_credit_notes_list'),{
+                                    method: 'get'
+                                });
                             });
-                        });
+                        }
+                    }).catch((error) => {
+                        console.log(error)
+                        // let validationErrors = error.response.data.errors;
+                        // console.log(validationErrors)
+                        // if (validationErrors && validationErrors.payments) {
+                        //     const paymentsErrors = validationErrors.payments;
+                        //     for (let i = 0; i < paymentsErrors.length; i++) {
+                        //         form.setError('payments.'+index+'.amount', paymentsErrors[i]);
+                        //     }
+                        // }
                     }).finally(() => {
                         formNote.processing = false;
                     });
@@ -288,8 +304,8 @@
     const calculateTotals = (key) => {
         let c = parseFloat(formNote.document_items[key].quantity) ?? 0;
         let p = parseFloat(formNote.document_items[key].price_sale) ?? 0;
-        let d = parseFloat(formNote.document_items[key].mto_discount) ?? 0;
-        console.log(taxes.value)
+        let d = parseFloat(formNote.document_items[key].descuento) ?? 0;
+
         let vu = p / taxes.value.nfactorIGV; //valor unitario
         let fa = ((d * 100) / p) / 100; //factor del descuento
         let md = fa * vu * c; //monto del descuento
@@ -308,8 +324,8 @@
             vs = 0;
         }
 
-        formNote.document_items[key].mto_total = mi.toFixed(2);
-        formNote.document_items[key].total = st.toFixed(2);
+        formNote.document_items[key].igv = mi.toFixed(2);
+        formNote.document_items[key].mto_total = st.toFixed(2);
         formNote.document_items[key].mto_value_unit = vs.toFixed(2);
 
         // Calcular la suma de los totales de todos los items
@@ -317,7 +333,7 @@
         formNote.note_discount_total = formNote.document_items.reduce((acc, item) => acc + (parseFloat(item.mto_discount)*c), 0).toFixed(2);
         formNote.note_mto_taxed = formNote.document_items.reduce((acc, item) => acc + parseFloat(item.mto_value_unit), 0).toFixed(2);
         formNote.note_total_igv = formNote.document_items.reduce((acc, item) => acc + parseFloat(item.igv), 0).toFixed(2);
-        console.log(formNote);
+
     }
 </script>
 <template>
@@ -459,9 +475,13 @@
                                                     <p v-else>{{ item.price_sale }}</p>
                                                 </td>
                                                 <td class="text-right">
-                                                    <template v-if="item.mto_discount > 0">
-                                                        {{ JSON.parse(item.json_discounts)[0]['value'] }}
-                                                    </template>
+                                                    <input
+                                                        v-if="item.editar"
+                                                        v-model="item.descuento"
+                                                        class="form-input form-input-sm"
+                                                        @input="calculateTotals(key)"
+                                                    />
+                                                    <p v-else>{{ item.descuento }}</p>
                                                 </td>
                                                 <td class="text-right">
                                                     {{ item.mto_total }}

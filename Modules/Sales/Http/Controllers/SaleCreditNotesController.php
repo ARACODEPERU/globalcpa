@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use DataTables;
+use Exception;
 use Greenter\Model\Sale\Note;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 
@@ -102,7 +103,7 @@ class SaleCreditNotesController extends Controller
             })
             ->with('documents.items')
             ->orderBy('sales.id', 'DESC');
-
+        //dd($sales);
         return DataTables::of($sales)->toJson();
     }
     /**
@@ -133,12 +134,21 @@ class SaleCreditNotesController extends Controller
 
     public function searchInvoice(Request $request)
     {
-        $document = SaleDocument::with(['items' => function ($query) {
-            $query->select('*', DB::raw('false AS editar'));
-        }])
+        $document = SaleDocument::with('items')
             ->where('serie_id', $request->get('serie'))
             ->where('invoice_correlative', $request->get('number'))
             ->first();
+        if ($document) {
+            $document->items = $document->items->map(function ($item) {
+                $descuento = 0;
+                if (json_decode($item->json_discounts, true)) {
+                    $descuento = json_decode($item->json_discounts, true)[0]['value'];
+                }
+                $item->editar = false;
+                $item->descuento = $descuento;
+                return $item;
+            });
+        }
 
         if ($document) {
             return response()->json([
@@ -171,14 +181,22 @@ class SaleCreditNotesController extends Controller
             ]
         );
 
-        if ($request->get('note_type') == 3) {
-            $this->store($request);
-        } elseif ($request->get('note_type') == 4) {
-            if ($request->get('note_overall_total') > $request->get('document_overall_total')) {
+        try {
+            if ($request->get('note_type') == 3) {
                 $this->store($request);
+            } elseif ($request->get('note_type') == 4) {
+                if ($request->get('note_overall_total') > $request->get('document_mto_total')) {
+                    $result = $this->store($request);
+                    return response()->json($result);
+                } else {
+                    throw new Exception("El monto total de la nota de débito debe ser mayor al de la factura referenciada.");
+                }
             }
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()]);
         }
     }
+
     public function store($request)
     {
 
@@ -371,9 +389,12 @@ class SaleCreditNotesController extends Controller
                 return $document;
             });
             $noteResponse = $this->sendSunatDocument($res);
-            return response()->json($noteResponse);
+            return $noteResponse;
         } catch (\Exception $e) {
-            return response()->json(['message' => $e->getMessage()]);
+            return [
+                'success' => false,
+                'message' => $e->getMessage()
+            ];
             // Devuelve una respuesta de error
         }
     }
@@ -399,12 +420,12 @@ class SaleCreditNotesController extends Controller
         }
 
 
-        return response()->json([
+        return [
             'success' => $result['success'],
             'code'  => $result['code'],
             'message'   => $result['message'],
             'notes'   => $result['notes']
-        ]);
+        ];
     }
 
     /**

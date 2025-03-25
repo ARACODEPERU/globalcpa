@@ -362,7 +362,7 @@ const columns = [
 const options = {
     responsive: true,
     language: es_PE,
-    order: [[2, "desc"]],
+    order: [[3, "desc"]],
 };
 
 const documentTable = ref(null);
