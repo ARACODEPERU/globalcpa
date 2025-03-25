@@ -561,6 +561,7 @@ class SaleDocumentController extends Controller
                 break;
             case '03':
                 $boleta = new Boleta();
+                //dd($boleta);
                 $result = $boleta->create($id);
                 break;
             case 2:
