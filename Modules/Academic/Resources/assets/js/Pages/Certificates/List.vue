@@ -88,12 +88,14 @@
                                                     <icon-edit class="w-4 h-4" />
                                                 </Link>
                                             </div>
+
                                         </td>
                                         <td class="whitespace-nowrap">
                                             {{ certificate.name_certificate }}
                                         </td>
                                         <td class="whitespace-nowrap">
                                             {{ certificate.formatted_date }}
+
                                         </td>
                                         <td class="whitespace-nowrap">
                                             <span v-if="certificate.state" class="bg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-blue-400 border border-blue-400">Activo</span>
@@ -106,7 +108,7 @@
                         <Pagination :data="certificates" />
                     </ConfigProvider>
                 </div>
-                    
+
             </div>
         </div>
     </AppLayout>

@@ -118,7 +118,9 @@
         emailForm.para = [];
     };
 
+
     onMounted(() => {
+
         getContactsPagination();
         window.socketIo.on(channelListen, (status) => {
             emailStatus.value.push(status);

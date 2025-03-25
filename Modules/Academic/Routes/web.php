@@ -78,7 +78,9 @@ Route::middleware(['auth', 'verified', 'invalid_updated_information'])->prefix('
         ->get('students/certificates/{id}', 'AcaCertificateController@studentCreate')
         ->name('aca_students_certificates_create');
 
+
     Route::post('students/certificates_store', [AcaCertificateController::class, 'studentStore'])
+
         ->name('aca_students_certificates_store');
 
     Route::delete('students/certificates_destroy/{id}', 'AcaCertificateController@studentDestroy')
