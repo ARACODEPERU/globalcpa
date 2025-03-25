@@ -41,6 +41,7 @@ const getBasePath = (path) => {
 };
 
 const form = useForm({
+    id: props.company.id,
     ruc: props.company.ruc,
     name: props.company.name,
     business_name: props.company.business_name,
@@ -243,7 +244,7 @@ const openSwal2Certificate = () => {
         allowOutsideClick: () => !Swal.isLoading()
     }).then((result) => {
         if (result.isConfirmed) {
-            form.certificate_sunat = res.data.certificate.file_name;
+            form.certificate_sunat = result.data.certificate.file_name;
             showMessage('El archivo .pem se genero correctamente');
         }
     });
