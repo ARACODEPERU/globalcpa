@@ -18,12 +18,48 @@ class CrmIaController extends Controller
         return Inertia::render('CRM::IA/ClientPrompt');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function send_prompt($user_id, $message, $archivo = null)
     {
-        return view('crm::create');
+        $port = env('AI__PORT', 5000);
+        // URL del servidor Flask
+        $url = 'http://127.0.0.1:' . $port . '/assistant_ai';
+
+        $retryCount = 5; // Número de reintentos
+        $retryDelay = 300; // Retardo entre reintentos en milisegundos
+
+        for ($i = 0; $i < $retryCount; $i++) {
+            try {
+                // Enviar la solicitud POST
+                $response = Http::asForm()->timeout(30)->post($url, [
+                    'user_id' => $user_id,
+                    'message' => $message,
+                    'archivo' => $archivo,
+                ]);
+
+                // Verificar si la solicitud fue exitosa
+                if ($response->successful()) {
+                    // Devolver la respuesta del servidor Flask
+                    $data = response()->json($response->json())->original; // Accede al contenido
+                    return $data['response']; // Accede al campo 'response'
+                } else {
+                    // Manejar el error
+                    return response()->json([
+                        'error' => 'Error al comunicarse con el servidor de AI',
+                        'details' => $response->body(),
+                    ], $response->status());
+                }
+            } catch (\Exception $e) {
+                // Capturar excepciones de tiempo de espera agotado y realizar un nuevo intento
+                if ($i < $retryCount - 1 && $e instanceof \Illuminate\Http\Client\RequestException && $e->getCode() === 28) {
+                    usleep($retryDelay * 1000); // Retardo en microsegundos
+                } else {
+                    throw $e; // Lanzar la excepción si no es un error de tiempo de espera agotado o se ha excedido el número de reintentos
+                }
+            }
+        }
+
+        // Si todos los reintentos fallan, devolver la respuesta de la última solicitud
+        return $response;
     }
 
     /**

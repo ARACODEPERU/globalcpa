@@ -101,8 +101,8 @@ const destroyCertificate = (id) => {
                 padding: '2em',
                 customClass: 'sweet-alerts',
             });
-            router.visit(route('aca_students_certificates_create',props.student.id), {
-                replace: false,
+            router.visit(route('aca_students_certificates_create',props.student.id), { 
+                replace: false, 
                 method: 'get',
                 preserveState: true,
                 preserveScroll: true,
@@ -133,7 +133,7 @@ const getImage = (path) => {
                         <Image :src="getImage(certificate.image)" :width="100" class="rounded-md object-cover" />
                         <div class="flex-1 font-medium dark:text-white">
                             <div>{{ certificate.course.description }}</div>
-
+                            
                         </div>
                         <button
                             @click="destroyCertificate(certificate.id)"
@@ -148,13 +148,13 @@ const getImage = (path) => {
             </div>
             <div class="col-span-6 sm:col-span-3">
                 <div class="p-2 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-                    <form @submit.prevent="saveCertificate">
+                    <form @submit.prevent="saveCertificate"> 
                         <div class="space-y-6 mb-4">
                             <div class="mb-2">
                                 <InputLabel for="course_date" value="Curso *" />
-                                <Select
+                                <Select 
                                     show-search
-                                    v-model:value="form.course_id"
+                                    v-model:value="form.course_id" 
                                     class="w-full mb-2"
                                     placeholder="Seleccionar"
                                     :options="dataCourses"
@@ -165,9 +165,9 @@ const getImage = (path) => {
                             </div>
                             <!-- <div>
                                 <InputLabel for="image" value="Imagen *" />
-                                <FileInput
+                                <FileInput 
                                     id="image"
-                                    v-model="form.image"
+                                    v-model="form.image" 
                                     label="Subir archivo"
                                     dropzone
                                 />
@@ -188,7 +188,7 @@ const getImage = (path) => {
                                     </figure>
                                 </div>
                                 <!-- <input @input="form.image = $event.target.files[0]" accept=".svg, .png, .jpg, .jpeg, .gif" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" aria-describedby="file_input_help" id="file_input" type="file"> -->
-                                <ImageCompressorjs :onImageCompressed="handleImageCompressed" />
+                                <ImageCompressorjs :onImageCompressed="handleImageCompressed" /> 
                                 <InputError :message="form.errors.image" class="mt-2" />
                             </div>
                         </div>
@@ -205,11 +205,11 @@ const getImage = (path) => {
                                 <Link :href="route('aca_students_list')"  class="ml-2 inline-block px-6 py-2.5 bg-green-500 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-green-600 hover:shadow-lg focus:bg-green-600 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-700 active:shadow-lg transition duration-150 ease-in-out">Ir al Listado</Link>
                             </template>
                         </Keypad>
-
+                        
                     </form>
                 </div>
             </div>
-
+            
         </div>
     </ConfigProvider>
 </template>

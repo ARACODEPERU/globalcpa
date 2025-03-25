@@ -161,7 +161,6 @@ class StudentSubscription
                 'physical' => 1
             ]);
 
-
             $sale->nota_sale_id = $sale_note->id;
 
             $sale->save();

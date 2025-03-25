@@ -7,7 +7,6 @@ import {
     faRocket,
     faCertificate,
     faPlay
-
 } from "@fortawesome/free-solid-svg-icons";
 
 const menuAcademic = {

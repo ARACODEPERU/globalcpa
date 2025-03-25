@@ -30,7 +30,6 @@ class AcaCertificateController extends Controller
 
     public function __construct()
     {
-
         $this->directory = 'academic' . DIRECTORY_SEPARATOR . 'certificates';
     }
 
@@ -48,7 +47,6 @@ class AcaCertificateController extends Controller
             'certificates' => $certificates
         ]);
     }
-
 
     public function create()
     {
@@ -68,10 +66,7 @@ class AcaCertificateController extends Controller
             ]
         );
 
-
         $destination = $this->directory;
-
-
         $file = $request->file('certificate_img');
         $path = null;
 
@@ -81,7 +76,6 @@ class AcaCertificateController extends Controller
             $file_name = $original_name . '.' . $extension;
             $path = $file->storeAs($destination, $file_name, 'public');
         }
-
 
         if ($request->get('course_id')) {
             $ce = AcaCertificateParameter::where('course_id', $request->get('course_id'));

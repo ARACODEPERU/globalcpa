@@ -43,7 +43,6 @@ class AcaCertificateParameter extends Model
         'size_qr',
         'font_align_qr',
         'visible_image_qr',
-
         'fontfamily_description',
         'font_align_description',
         'font_vertical_align_description',
