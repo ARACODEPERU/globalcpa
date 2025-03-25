@@ -152,7 +152,7 @@ class SaleSummaryController extends Controller
     {
         try {
             $summary = SaleSummary::find($id);
-            $documents = SaleDocument::join('sale_summary_details', 'document_id', 'sale_documents.id')
+            $documents = SaleDocument::join('sale_summary_details', 'sale_summary_details.document_id', 'sale_documents.id')
                 ->select('sale_documents.*')
                 ->where('summary_id', $summary->id)
                 ->get();
