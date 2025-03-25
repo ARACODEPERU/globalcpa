@@ -224,8 +224,10 @@ class Factura
         try {
             $document = SaleDocument::find($id);
             $invoice = $this->setDocument($document);
+
             $generator = new QrCodeGenerator(300);
             $dir = public_path() . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . 'tmp_qr';
+
             $cadenaqr = $this->stringQr($document);
 
             $qr_path = $generator->generateQR($cadenaqr, $dir, $invoice->getName() . '.png', 8, 2);

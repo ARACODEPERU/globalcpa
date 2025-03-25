@@ -195,6 +195,7 @@ class Boleta
 
 
             $seller = User::find($document->user_id);
+
             $pdf = $this->util->generatePdf($invoice, $seller, $qr_path, $format, $document->status);
             $document->invoice_pdf = $pdf;
             $document->save();
