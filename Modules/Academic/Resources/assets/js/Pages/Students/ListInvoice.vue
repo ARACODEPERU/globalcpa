@@ -38,6 +38,10 @@
         unitTypes:{
             type: Object,
             default: () => ({}),
+        },
+        student:{
+            type: Object,
+            default: () => ({}),
         }
     });
 
@@ -222,6 +226,7 @@
                 icon: 'success',
                 padding: '2em',
                 customClass: 'sweet-alerts',
+                backdrop: true
             });
             formHead.processing = false;
             formHead.reset();
@@ -230,99 +235,101 @@
         });
     }
 
-const formatDate = (dateString) => {
-    const date = new Date(dateString)
-    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`
-}
+    const formatDate = (dateString) => {
+        const date = new Date(dateString)
+        return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`
+    }
 
-const createFormReason = () => {
+    const createFormReason = () => {
 
-    let formHTML = document.createElement('form');
-    formHTML.classList.add('max-w-sm', 'mx-auto');
+        let formHTML = document.createElement('form');
+        formHTML.classList.add('max-w-sm', 'mx-auto');
 
 
-    let rLabel = document.createElement('label');
-    rLabel.setAttribute('for', 'ctnTextareaReason');
-    rLabel.classList.add('text-left','text-sm','mt-4');
-    rLabel.textContent = 'Ingresar motivo de anulacion';
+        let rLabel = document.createElement('label');
+        rLabel.setAttribute('for', 'ctnTextareaReason');
+        rLabel.classList.add('text-left','text-sm','mt-4');
+        rLabel.textContent = 'Ingresar motivo de anulacion';
 
-    let rInput = document.createElement('textarea');
-    rInput.id = 'ctnTextareaReason';
-    rInput.classList.add(
-        'form-textarea'
-    );
+        let rInput = document.createElement('textarea');
+        rInput.id = 'ctnTextareaReason';
+        rInput.classList.add(
+            'form-textarea'
+        );
 
-    rInput.required = true;
-    rInput.rows = 3;
+        rInput.required = true;
+        rInput.rows = 3;
 
-    formHTML.appendChild(rLabel);
-    formHTML.appendChild(rInput);
+        formHTML.appendChild(rLabel);
+        formHTML.appendChild(rInput);
 
-    return formHTML;
+        return formHTML;
 
-}
+    }
 
-const cancelDocument = (index, item) => {
-    Swal.fire({
-        icon: 'question',
-        title: '¿Estas seguro?',
-        text: "¡No podrás revertir esto!",
-        showCancelButton: true,
-        confirmButtonText: '¡Sí, Anularlo!',
-        cancelButtonText: '¡No, cancelar!',
-        padding: '2em',
-        customClass: 'sweet-alerts',
-    }).then((result) => {
-        if (result.value) {
-            Swal.fire({
-                html: createFormReason(),
-                showCloseButton: true,
-                showCancelButton: true,
-                focusConfirm: false,
-                confirmButtonText: 'Aceptar',
-                cancelButtonText: 'Cancelar',
-                padding: '2em',
-                customClass: 'sweet-alerts',
-                showLoaderOnConfirm: true,
-                allowOutsideClick: false,
-                allowEscapeKey: false,
-                preConfirm: async (input) => {
-                    let textarea = document.getElementById("ctnTextareaReason").value;
-                    let resp = null;
-                    if(textarea){
-                        resp = axios.post(route('saledocuments_cancel_document'), {
-                            reason: textarea,
-                            id: item.document_id,
-                            type: item.invoice_type_doc
-                        }).then((res) => {
-                            if (!res.data.success) {
-                                Swal.showValidationMessage(res.data.alert)
-                            }
-                            return res
-                        });
-                    }else{
-                        Swal.showValidationMessage('El motivo es obligatorio')
+    const cancelDocument = (index, item) => {
+        Swal.fire({
+            icon: 'question',
+            title: '¿Estas seguro?',
+            text: "¡No podrás revertir esto!",
+            showCancelButton: true,
+            confirmButtonText: '¡Sí, Anularlo!',
+            cancelButtonText: '¡No, cancelar!',
+            padding: '2em',
+            customClass: 'sweet-alerts',
+            backdrop: true
+        }).then((result) => {
+            if (result.value) {
+                Swal.fire({
+                    html: createFormReason(),
+                    showCloseButton: true,
+                    showCancelButton: true,
+                    focusConfirm: false,
+                    confirmButtonText: 'Aceptar',
+                    cancelButtonText: 'Cancelar',
+                    padding: '2em',
+                    customClass: 'sweet-alerts',
+                    showLoaderOnConfirm: true,
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    backdrop: true,
+                    preConfirm: async (input) => {
+                        let textarea = document.getElementById("ctnTextareaReason").value;
+                        let resp = null;
+                        if(textarea){
+                            resp = axios.post(route('saledocuments_cancel_document'), {
+                                reason: textarea,
+                                id: item.document_id,
+                                type: item.invoice_type_doc
+                            }).then((res) => {
+                                if (!res.data.success) {
+                                    Swal.showValidationMessage(res.data.alert)
+                                }
+                                return res
+                            });
+                        }else{
+                            Swal.showValidationMessage('El motivo es obligatorio')
+                        }
+                        return resp;
+                    },
+                    allowOutsideClick: () => !Swal.isLoading()
+                }).then((res) => {
+                    if (res.isConfirmed) {
+                        showMessage('El documento fue anulado correctamente');
+                        //refreshTable();
                     }
-                    return resp;
-                },
-                allowOutsideClick: () => !Swal.isLoading()
-            }).then((res) => {
-                if (res.isConfirmed) {
-                    showMessage('El documento fue anulado correctamente');
-                    //refreshTable();
-                }
-                refreshTable();
-            });
-        }
-    });
-}
+                    refreshTable();
+                });
+            }
+        });
+    }
 
     const showMessage = (msg = '', type = 'success') => {
         const toast = Swal.mixin({
             toast: true,
             position: 'top',
             showConfirmButton: false,
-            timer: 3000,
+            timer: 5000,
             customClass: { container: 'toast' },
         });
         toast.fire({
@@ -363,35 +370,114 @@ const cancelDocument = (index, item) => {
         }
     };
 
+    const sendEmailDocument = (sale) => {
+        Swal.fire({
+            icon: 'question',
+            title: '¿Estas seguro?',
+            html: createFormSendEmail(sale),
+            showCloseButton: true,
+            showCancelButton: true,
+            focusConfirm: false,
+            confirmButtonText: 'Aceptar',
+            cancelButtonText: 'Cancelar',
+            padding: '2em',
+            customClass: 'sweet-alerts',
+            showLoaderOnConfirm: true,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            backdrop: true,
+            preConfirm: async (input) => {
+                let inputEmailSend = document.getElementById("ctnTextSendEmailDocument").value;
+                let resp = null;
+                if(inputEmailSend){
+                    resp = axios.post(route('aca_send_email_student_document'), {
+                        person_email: inputEmailSend,
+                        person_name: sale.client_rzn_social,
+                        document_id: sale.document_id,
+                        onlisaleId: null
+                    },
+                    {
+                        timeout: 0,
+                    }).then((res) => {
+                        if (!res.data.success) {
+                            Swal.showValidationMessage(res.data.alert)
+                        }
+                        return res
+                    });
+                }else{
+                    Swal.showValidationMessage('El correo electrónico es obligatorio.')
+                }
+                return resp;
+            },
+            allowOutsideClick: () => !Swal.isLoading()
+        }).then((res) => {
+            console.log();
+            if (res.isConfirmed) {
+                showMessage('El mensaje se envió correctamente.');
+            }
+            refreshTable();
+        });
 
+    }
+
+    const createFormSendEmail = (sale) => {
+
+        let formHTML = document.createElement('form');
+        formHTML.classList.add('max-w-sm', 'mx-auto');
+
+        let rParrafo = document.createElement('p');
+        rParrafo.classList.add('text-center','text-lg','mt-4');
+        rParrafo.innerHTML = 'Se enviará un mensaje con el documento de venta <b>' + sale.serie + '-' + sale.invoice_correlative +'</b> adjunto';
+
+        let rLabel = document.createElement('label');
+        rLabel.setAttribute('for', 'ctnTextSendEmailDocument');
+        rLabel.classList.add('text-left','text-sm','mt-4');
+        rLabel.textContent = 'Correo Electronico';
+
+        let rInput = document.createElement('input');
+        rInput.id = 'ctnTextSendEmailDocument';
+        rInput.value = sale.client_email;
+        rInput.classList.add(
+            'form-input'
+        );
+        rInput.required = true;
+        formHTML.appendChild(rParrafo);
+        formHTML.appendChild(rLabel);
+        formHTML.appendChild(rInput);
+
+        return formHTML;
+
+    }
 </script>
 
 <template>
     <AppLayout title="Documentos">
-        <Navigation :routeModule="route('sales_dashboard')" :titleModule="'Facturación Electrónica'">
+        <Navigation :routeModule="route('crm_dashboard')" :titleModule="'Academico'">
+            <li class="before:content-['/'] ltr:before:mr-1 rtl:before:ml-1">
+                <Link :href="route('aca_students_list')" class="text-primary hover:underline">Estudiantes</Link>
+            </li>
+            <li class="before:content-['/'] ltr:before:mr-1 rtl:before:ml-1">
+                <Link :href="route('aca_students_edit', student.id)"  class="text-primary hover:underline">{{ student.person.full_name }}</Link>
+            </li>
             <li class="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
-                <span>Lista de Documentos </span>
+                <span>Lista de Comprobantes</span>
             </li>
         </Navigation>
         <div class="mt-5">
             <div class="flex items-center justify-between flex-wrap gap-4">
-                <h2 class="text-xl">Lista de Documentos </h2>
+                <h2 class="text-xl">Lista de Comprobantes</h2>
                 <div class="flex sm:flex-row flex-col sm:items-center sm:gap-3 gap-4 w-full sm:w-auto">
                     <div class="flex gap-3">
-                        <Keypad>
-                            <template #botones>
-                                <div v-can="'invo_documento_nuevo'">
-                                    <Link :href="route('saledocuments_create')" class="inline-block px-6 py-2.5 bg-blue-900 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out">Nuevo</Link>
-                                </div>
-                            </template>
-                        </Keypad>
+                        <div v-can="'aca_estudiante_listado'">
+                            <Link :href="route('aca_students_list')" class="ml-2 inline-block px-6 py-2.5 bg-green-500 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-green-600 hover:shadow-lg focus:bg-green-600 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-700 active:shadow-lg transition duration-150 ease-in-out">Ir al Listado</Link>
+                        </div>
 
                     </div>
                 </div>
             </div>
             <div class="panel pb-1.5 mt-6">
 
-                <DataTable ref="documentTable" :options="options" :ajax="route('saledocuments_table_document')" :columns="columns">
+                <DataTable ref="documentTable" :options="options" :ajax="route('aca_student_invoice_list_table',student.person.id)" :columns="columns">
                     <template #action="props">
                         <div class="flex gap-4 items-center justify-center">
                             <div class="dropdown">
@@ -424,6 +510,9 @@ const cancelDocument = (index, item) => {
                                         </li>
                                         <li v-if="props.rowData.invoice_status === 'Aceptada'">
                                             <a @click="downloadDocument(props.rowData.document_id,props.rowData.invoice_type_doc,'CDR')" href="javascript:;">Descargar CDR</a>
+                                        </li>
+                                        <li class="bg-[#7cd130]">
+                                            <a @click="sendEmailDocument(props.rowData)" href="javascript:;" class="bg-[#7cd130] hover:text-[#2e0646] dark:text-[#000] dark:hover:text-[#2e0646]">Enviar Documento</a>
                                         </li>
                                     </ul>
                                     </template>

@@ -74,6 +74,10 @@ Route::middleware(['auth', 'verified'])->prefix('crm')->group(function () {
         ->post('conversations/messages/upload/file', [CrmMessagesController::class, 'uploadMessagesFile'])
         ->name('crm_upload_message_file');
 
+    Route::middleware(['middleware' => 'permission:crm_clientes_preguntas_ia'])
+        ->post('contacts/docents/chat', [CrmContactsController::class, 'contactsDocentsChat'])
+        ->name('crm_contacts_docents_chat');
+
     Route::get('download-file/{message_id}', [CrmMessagesController::class, 'downloadMessageFile'])->name('crm_download_message_file');
 
     Route::middleware(['middleware' => 'permission:crm_mailbox_dashboard'])
@@ -129,6 +133,14 @@ Route::middleware(['auth', 'verified'])->prefix('crm')->group(function () {
         ->name('crm_companies_employees_add');
 
     Route::middleware(['middleware' => 'permission:crm_clientes_preguntas_ia'])
-        ->get('application-ai-prompt', [CrmIaController::class, 'clientPromptIA'])
+        ->get('application-ai-prompt', [CrmIaController::class, 'clientDashboard'])
         ->name('crm_application_ai_prompt');
+
+    Route::middleware(['middleware' => 'permission:crm_clientes_preguntas_ia'])
+        ->post('application-ai-prompt/send/messages/geminiai', [CrmIaController::class, 'sendMessage'])
+        ->name('crm_application_ai_prompt_send_message');
+
+    Route::middleware(['middleware' => 'permission:crm_clientes_preguntas_ia'])
+        ->post('application-ai-prompt/send/messages/openai', [CrmIaController::class, 'sendPromptOpenAI'])
+        ->name('crm_application_ai_prompt_send_message_openai');
 });
