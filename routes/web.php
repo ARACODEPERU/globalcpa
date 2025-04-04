@@ -214,6 +214,11 @@ Route::middleware('auth')->group(function () {
 
     Route::get('calendar/index', [CalendarController::class, 'index'])->name('calendar');
 
+	Route::post(
+        'person/birthdays',
+        [PersonController::class, 'getBirthdays']
+    )->name('person-birthdays');
+	
     ///////////////META FACEBOOK WHATSAPP/////////////////
 
     Route::post('meta/whatsapp/message/send', [MetaController::class, 'sendMessageWhatsapp'])->name('meta_whatsapp_message_send');
