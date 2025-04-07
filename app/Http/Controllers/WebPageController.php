@@ -91,6 +91,11 @@ class WebPageController extends Controller
         ]);
     }
 
+    public function bookamauta()
+    {
+        return view('pages/book-description');
+    }
+
     public function courses()
     {
         $courses = OnliItem::with('course')->get();

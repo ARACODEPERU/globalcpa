@@ -9,17 +9,8 @@
         <br>
         <x-slider /> 
 
-        {{-- <section style="padding: 20px 10px;">
-            <div class="mx-auto grid w-full grid-cols-1 gap-4 sm:grid-cols-1 sm:gap-5 lg:gap-6">
-                <div class="card" style="place-items: center; padding: 20px 0px;">
-                    <h1 class="title_aracode" style="font-size: 60px; line-height: 1.1; font-weight: 900; text-align:center; ">
-                        CURSO TALLER
-                    </h1>
-                </div>
-            </div>
-        </section> --}}
-
         <div class="mt-4 px-[var(--margin-x)] transition-all duration-[.25s] sm:mt-5 lg:mt-6">
+
             <div class="col-span-12 space-y-4 sm:space-y-5 lg:col-span-12 lg:space-y-6 xl:col-span-12">
                 <div>
                     <div class="flex items-center justify-between">
@@ -43,6 +34,7 @@
                     <!--Courses One End-->
               </div>
             </div>
+
             {{-- <div class="col-span-12 space-y-4 sm:space-y-5 lg:col-span-4 lg:space-y-6 xl:col-span-3">
               <div class="card bg-gradient-to-br from-info to-info-focus p-4">
                 <div class="mt-10">
@@ -137,9 +129,8 @@
             </div> --}}
         </div>
 
-        <br><br>
-        
-        {{-- <div class="mt-4 px-[var(--margin-x)] transition-all duration-[.25s] sm:mt-5 lg:mt-6">
+        {{-- <br>
+        <div class="mt-4 px-[var(--margin-x)] transition-all duration-[.25s] sm:mt-5 lg:mt-6">
             <div style="text-align:center;">
                 <h1 class="title_aracode" style="font-size: 45px; line-height: 1.1; font-weight: 700;">
                     NUESTRAS SUSCRIPCIONES
@@ -258,10 +249,28 @@
                   </div>
                 </div>
             </div>
-
-
-            
         </div> --}}
+
+        <br>
+        <div class="mt-4 px-[var(--margin-x)] transition-all duration-[.25s] sm:mt-5 lg:mt-6">
+            <x-social-networks /> 
+        </div>
+
+        <br><br>
+        
+        
+        {{-- <section style="padding: 20px 10px;">
+            <div class="mx-auto grid w-full grid-cols-1 gap-4 sm:grid-cols-1 sm:gap-5 lg:gap-6">
+                <div class="card" style="place-items: center; padding: 20px 0px;">
+                    <h1 class="title_aracode" style="font-size: 60px; line-height: 1.1; font-weight: 900; text-align:center; ">
+                        CURSO TALLER
+                    </h1>
+                </div>
+            </div>
+        </section> --}}
+
+
+
 
 
         
@@ -1007,35 +1016,36 @@
 
     <script>
 
-    const headers = document.querySelectorAll('.accordion-header-aracode');
-    headers.forEach(header => {
-        header.addEventListener('click', function() {
-            const content = this.nextElementSibling;
-            const isVisible = content.style.maxHeight;
+        const headers = document.querySelectorAll('.accordion-header-aracode');
+        headers.forEach(header => {
+            header.addEventListener('click', function() {
+                const content = this.nextElementSibling;
+                const isVisible = content.style.maxHeight;
 
-            // Ocultar todos los contenidos y resetear iconos
-            document.querySelectorAll('.accordion-content-aracode').forEach(item => {
-                item.style.maxHeight = null;
-                item.style.padding = '0';
-                item.setAttribute('aria-hidden', 'true');
-            });
-            headers.forEach(h => {
-                h.classList.remove('active');
-                h.querySelector('.accordion-icon-aracode').textContent = '►'; // Restablecer icono
-                h.setAttribute('aria-expanded', 'false');
-            });
+                // Ocultar todos los contenidos y resetear iconos
+                document.querySelectorAll('.accordion-content-aracode').forEach(item => {
+                    item.style.maxHeight = null;
+                    item.style.padding = '0';
+                    item.setAttribute('aria-hidden', 'true');
+                });
+                headers.forEach(h => {
+                    h.classList.remove('active');
+                    h.querySelector('.accordion-icon-aracode').textContent = '►'; // Restablecer icono
+                    h.setAttribute('aria-expanded', 'false');
+                });
 
-            // Mostrar el contenido del header clicado
-            if (!isVisible) {
-                content.style.maxHeight = content.scrollHeight + "px";
-                content.style.padding = '15px';
-                this.classList.add('active'); // Añadir clase activa al encabezado clicado
-                this.querySelector('.accordion-icon-aracode').textContent = '▼'; // Cambiar icono al expandido
-                this.setAttribute('aria-expanded', 'true');
-                content.setAttribute('aria-hidden', 'false');
-            }
+                // Mostrar el contenido del header clicado
+                if (!isVisible) {
+                    content.style.maxHeight = content.scrollHeight + "px";
+                    content.style.padding = '15px';
+                    this.classList.add('active'); // Añadir clase activa al encabezado clicado
+                    this.querySelector('.accordion-icon-aracode').textContent = '▼'; // Cambiar icono al expandido
+                    this.setAttribute('aria-expanded', 'true');
+                    content.setAttribute('aria-hidden', 'false');
+                }
+            });
         });
-    });
+
     </script>
     
 @stop
