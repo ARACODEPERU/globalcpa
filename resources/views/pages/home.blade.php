@@ -9,7 +9,7 @@
         <br>
         <x-slider /> 
 
-        <div class="mt-4 px-[var(--margin-x)] transition-all duration-[.25s] sm:mt-5 lg:mt-6">
+        <div class=" mt-4 w-full transition-all duration-[.25s] sm:mt-5 lg:mt-6">
 
             <div class="col-span-12 space-y-4 sm:space-y-5 lg:col-span-12 lg:space-y-6 xl:col-span-12">
                 <div>
@@ -252,7 +252,7 @@
         </div> --}}
 
         <br>
-        <div class="mt-4 px-[var(--margin-x)] transition-all duration-[.25s] sm:mt-5 lg:mt-6">
+        <div class="mt-4 w-full transition-all duration-[.25s] sm:mt-5 lg:mt-6">
             <x-social-networks /> 
         </div>
 
