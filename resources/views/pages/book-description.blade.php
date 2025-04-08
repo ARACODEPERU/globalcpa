@@ -28,9 +28,9 @@
                     <div class="items-center space-y-4 border-b border-slate-200 
                             p-4 dark:border-navy-500 sm:flex-row sm:justify-between sm:space-y-0 sm:px-5">
                         <h2 class="text-lg font-medium tracking-wide text-slate-700 dark:text-navy-100">
-                            Account Setting
+                            EL AMAUTA DE LAS NIIF
                         </h2>
-                        <p class="text-xs+ text-slate-400 dark:text-navy-300">
+                        <p class="text-xs+ text-slate-800 dark:text-navy-200">
                             Dirigida a los contadores públicos, auditores,
                             consultores, directivos y gerentes financieros de
                             grandes empresas obligadas a aplicar las NIIF
@@ -57,7 +57,7 @@
                                             </div>
                                             <div>
                                                 <p class="text-slate-700 line-clamp-1 dark:text-navy-100">
-                                                    Simon Tods
+                                                    ¿QUÉ HACE A ESTA OBRA ÚNICA Y ÚTIL?
                                                 </p>
                                                 <p class="text-xs text-slate-500 dark:text-navy-300">
                                                     Web Developer
