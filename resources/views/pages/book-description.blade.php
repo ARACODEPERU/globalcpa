@@ -30,7 +30,7 @@
                         <h2 class="text-lg font-medium tracking-wide text-slate-700 dark:text-navy-100">
                             EL AMAUTA DE LAS NIIF
                         </h2>
-                        <p class="text-xs+ text-slate-800 dark:text-navy-200">
+                        <p>
                             Dirigida a los contadores públicos, auditores,
                             consultores, directivos y gerentes financieros de
                             grandes empresas obligadas a aplicar las NIIF
@@ -43,231 +43,173 @@
                     </div>
                     <div class="p-4 sm:p-5">
 
-                        <div class="grid grid-cols-1 gap-4  w-full">
-                            <div x-data="{ expandedItem: null }" class="flex flex-col space-y-4 sm:space-y-5 lg:space-y-6">
-                                <div x-data="accordionItem('item-1')"
-                                    class="overflow-hidden rounded-lg border border-slate-150 dark:border-navy-500">
-                                    <div
-                                        class="flex items-center justify-between bg-slate-150 px-4 py-4 dark:bg-navy-500 sm:px-5">
-                                        <div
-                                            class="flex items-center space-x-3.5 tracking-wide outline-none transition-all ">
-                                            <div class="avatar size-10">
-                                                <img class="rounded-full" src="images/avatar/avatar-10.jpg"
-                                                    alt="avatar" />
-                                            </div>
-                                            <div>
-                                                <p class="text-slate-700 line-clamp-1 dark:text-navy-100">
-                                                    ¿QUÉ HACE A ESTA OBRA ÚNICA Y ÚTIL?
-                                                </p>
-                                                <p class="text-xs text-slate-500 dark:text-navy-300">
-                                                    Web Developer
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <button @click="expanded = !expanded"
-                                            class="btn -mr-1.5 size-8 rounded-full p-0 hover:bg-slate-300/20 focus:bg-slate-300/20 active:bg-slate-300/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25">
-                                            <i :class="expanded && '-rotate-180'"
-                                                class="fas fa-chevron-down text-sm transition-transform"></i>
-                                        </button>
-                                    </div>
-                                    <div x-collapse x-show="expanded">
-                                        <div class="px-4 py-4 sm:px-5">
-                                            <p>
-                                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Commodi
-                                                earum magni officiis possimus repellendus. Accusantium adipisci
-                                                aliquid praesentium quaerat voluptate.
-                                            </p>
-                                            <div class="mt-4 flex justify-between">
-                                                <div class="flex flex-wrap -space-x-2">
-                                                    <div class="avatar size-7 hover:z-10">
-                                                        <img class="rounded-full ring ring-white dark:ring-navy-700"
-                                                            src="images/avatar/avatar-16.jpg" alt="avatar" />
-                                                    </div>
-
-                                                    <div class="avatar size-7 hover:z-10">
-                                                        <div
-                                                            class="is-initial rounded-full bg-info text-xs+ uppercase text-white ring ring-white dark:ring-navy-700">
-                                                            jd
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="avatar size-7 hover:z-10">
-                                                        <img class="rounded-full ring ring-white dark:ring-navy-700"
-                                                            src="images/avatar/avatar-20.jpg" alt="avatar" />
-                                                    </div>
-
-                                                    <div class="avatar size-7 hover:z-10">
-                                                        <img class="rounded-full ring ring-white dark:ring-navy-700"
-                                                            src="images/avatar/avatar-8.jpg" alt="avatar" />
-                                                    </div>
-
-                                                    <div class="avatar size-7 hover:z-10">
-                                                        <img class="rounded-full ring ring-white dark:ring-navy-700"
-                                                            src="images/avatar/avatar-5.jpg" alt="avatar" />
-                                                    </div>
-                                                </div>
-                                                <button
-                                                    class="btn size-7 rounded-full bg-slate-150 p-0 font-medium text-slate-800 hover:bg-slate-200 focus:bg-slate-200 active:bg-slate-200/80 dark:bg-navy-500 dark:text-navy-50 dark:hover:bg-navy-450 dark:focus:bg-navy-450 dark:active:bg-navy-450/90">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="size-5 rotate-45"
-                                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12" />
-                                                    </svg>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div x-data="accordionItem('item-2')"
-                                    class="overflow-hidden rounded-lg border border-slate-150 dark:border-navy-500">
-                                    <div
-                                        class="flex items-center justify-between bg-slate-150 px-4 py-4 dark:bg-navy-500 sm:px-5">
-                                        <div
-                                            class="flex items-center space-x-3.5 tracking-wide outline-none transition-all">
-                                            <div class="avatar size-10">
-                                                <div class="is-initial rounded-full bg-warning uppercase text-white">
-                                                    KG
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <p class="text-slate-700 line-clamp-1 dark:text-navy-100">
-                                                    Konnor Guzman
-                                                </p>
-                                                <p class="text-xs text-slate-500 dark:text-navy-300">
-                                                    Frontend Developer
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <button @click="expanded = !expanded"
-                                            class="btn -mr-1.5 size-8 rounded-full p-0 hover:bg-slate-300/20 focus:bg-slate-300/20 active:bg-slate-300/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25">
-                                            <i :class="expanded && '-rotate-180'"
-                                                class="fas fa-chevron-down text-sm transition-transform"></i>
-                                        </button>
-                                    </div>
-                                    <div x-collapse x-show="expanded">
-                                        <div class="px-4 py-4 sm:px-5">
-                                            <p>
-                                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Commodi
-                                                earum magni officiis possimus repellendus. Accusantium adipisci
-                                                aliquid praesentium quaerat voluptate.
-                                            </p>
-                                            <div class="mt-4 flex justify-between">
-                                                <div class="flex flex-wrap -space-x-2">
-                                                    <div class="avatar size-7 hover:z-10">
-                                                        <img class="rounded-full ring ring-white dark:ring-navy-700"
-                                                            src="images/avatar/avatar-16.jpg" alt="avatar" />
-                                                    </div>
-
-                                                    <div class="avatar size-7 hover:z-10">
-                                                        <div
-                                                            class="is-initial rounded-full bg-info text-xs+ uppercase text-white ring ring-white dark:ring-navy-700">
-                                                            jd
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="avatar size-7 hover:z-10">
-                                                        <img class="rounded-full ring ring-white dark:ring-navy-700"
-                                                            src="images/avatar/avatar-20.jpg" alt="avatar" />
-                                                    </div>
-
-                                                    <div class="avatar size-7 hover:z-10">
-                                                        <img class="rounded-full ring ring-white dark:ring-navy-700"
-                                                            src="images/avatar/avatar-8.jpg" alt="avatar" />
-                                                    </div>
-
-                                                    <div class="avatar size-7 hover:z-10">
-                                                        <img class="rounded-full ring ring-white dark:ring-navy-700"
-                                                            src="images/avatar/avatar-5.jpg" alt="avatar" />
-                                                    </div>
-                                                </div>
-                                                <button
-                                                    class="btn size-7 rounded-full bg-slate-150 p-0 font-medium text-slate-800 hover:bg-slate-200 focus:bg-slate-200 active:bg-slate-200/80 dark:bg-navy-500 dark:text-navy-50 dark:hover:bg-navy-450 dark:focus:bg-navy-450 dark:active:bg-navy-450/90">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="size-5 rotate-45"
-                                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12" />
-                                                    </svg>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div x-data="accordionItem('item-3')"
-                                    class="overflow-hidden rounded-lg border border-slate-150 dark:border-navy-500">
-                                    <div
-                                        class="flex items-center justify-between bg-slate-150 px-4 py-4 dark:bg-navy-500 sm:px-5">
-                                        <div
-                                            class="flex items-center space-x-3.5 tracking-wide outline-none transition-all">
-                                            <div class="avatar size-10">
-                                                <img class="rounded-full" src="images/avatar/avatar-19.jpg"
-                                                    alt="avatar" />
-                                            </div>
-                                            <div>
-                                                <p class="text-slate-700 line-clamp-1 dark:text-navy-100">
-                                                    Derrick Simmons
-                                                </p>
-                                                <p class="text-xs text-slate-500 dark:text-navy-300">
-                                                    UI/UX Designer
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <button @click="expanded = !expanded"
-                                            class="btn -mr-1.5 size-8 rounded-full p-0 hover:bg-slate-300/20 focus:bg-slate-300/20 active:bg-slate-300/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25">
-                                            <i :class="expanded && '-rotate-180'"
-                                                class="fas fa-chevron-down text-sm transition-transform"></i>
-                                        </button>
-                                    </div>
-                                    <div x-collapse x-show="expanded">
-                                        <div class="px-4 py-4 sm:px-5">
-                                            <p>
-                                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Commodi
-                                                earum magni officiis possimus repellendus. Accusantium adipisci
-                                                aliquid praesentium quaerat voluptate.
-                                            </p>
-                                            <div class="mt-4 flex justify-between">
-                                                <div class="flex flex-wrap -space-x-2">
-                                                    <div class="avatar size-7 hover:z-10">
-                                                        <img class="rounded-full ring ring-white dark:ring-navy-700"
-                                                            src="images/avatar/avatar-16.jpg" alt="avatar" />
-                                                    </div>
-
-                                                    <div class="avatar size-7 hover:z-10">
-                                                        <div
-                                                            class="is-initial rounded-full bg-info text-xs+ uppercase text-white ring ring-white dark:ring-navy-700">
-                                                            jd
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="avatar size-7 hover:z-10">
-                                                        <img class="rounded-full ring ring-white dark:ring-navy-700"
-                                                            src="images/avatar/avatar-20.jpg" alt="avatar" />
-                                                    </div>
-
-                                                    <div class="avatar size-7 hover:z-10">
-                                                        <img class="rounded-full ring ring-white dark:ring-navy-700"
-                                                            src="images/avatar/avatar-8.jpg" alt="avatar" />
-                                                    </div>
-
-                                                    <div class="avatar size-7 hover:z-10">
-                                                        <img class="rounded-full ring ring-white dark:ring-navy-700"
-                                                            src="images/avatar/avatar-5.jpg" alt="avatar" />
-                                                    </div>
-                                                </div>
-                                                <button
-                                                    class="btn size-7 rounded-full bg-slate-150 p-0 font-medium text-slate-800 hover:bg-slate-200 focus:bg-slate-200 active:bg-slate-200/80 dark:bg-navy-500 dark:text-navy-50 dark:hover:bg-navy-450 dark:focus:bg-navy-450 dark:active:bg-navy-450/90">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="size-5 rotate-45"
-                                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12" />
-                                                    </svg>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                        <div x-data="{activeTab:'tabHome'}" class="tabs flex flex-col">
+                            <div
+                              class="is-scrollbar-hidden overflow-x-auto rounded-lg bg-slate-200 text-slate-600 dark:bg-navy-800 dark:text-navy-200"
+                            >
+                              <div class="tabs-list flex px-1.5 py-1">
+                                <button
+                                  @click="activeTab = 'tabHome'"
+                                  :class="activeTab === 'tabHome' ? 'bg-white shadow dark:bg-navy-500 dark:text-navy-100' : 'hover:text-slate-800 focus:text-slate-800 dark:hover:text-navy-100 dark:focus:text-navy-100'"
+                                  class="btn shrink-0 px-3 py-1.5 font-medium"
+                                >
+                                    Obligación
+                                </button>
+                                <button
+                                  @click="activeTab = 'tabProfile'"
+                                  :class="activeTab === 'tabProfile' ? 'bg-white shadow dark:bg-navy-500 dark:text-navy-100' : 'hover:text-slate-800 focus:text-slate-800 dark:hover:text-navy-100 dark:focus:text-navy-100'"
+                                  class="btn shrink-0 px-3 py-1.5 font-medium"
+                                >
+                                  Profile
+                                </button>
+                                <button
+                                  @click="activeTab = 'tabMessages'"
+                                  :class="activeTab === 'tabMessages' ? 'bg-white shadow dark:bg-navy-500 dark:text-navy-100' : 'hover:text-slate-800 focus:text-slate-800 dark:hover:text-navy-100 dark:focus:text-navy-100'"
+                                  class="btn shrink-0 px-3 py-1.5 font-medium"
+                                >
+                                  Messages
+                                </button>
+                                <button
+                                  @click="activeTab = 'tabSettings'"
+                                  :class="activeTab === 'tabSettings' ? 'bg-white shadow dark:bg-navy-500 dark:text-navy-100' : 'hover:text-slate-800 focus:text-slate-800 dark:hover:text-navy-100 dark:focus:text-navy-100'"
+                                  class="btn shrink-0 px-3 py-1.5 font-medium"
+                                >
+                                  Settings
+                                </button>
+                              </div>
                             </div>
-                        </div>
-
+                            <div class="tab-content pt-4">
+                              <div
+                                x-show="activeTab === 'tabHome'"
+                                x-transition:enter="transition-all duration-500 easy-in-out"
+                                x-transition:enter-start="opacity-0 [transform:translate3d(1rem,0,0)]"
+                                x-transition:enter-end="opacity-100 [transform:translate3d(0,0,0)]"
+                              >
+                                <div>
+                                    <h2 class="text-lg font-medium tracking-wide text-slate-700 dark:text-navy-100">
+                                        "Piensa en NIIF y existirás contablemente"
+                                    </h2>
+                                    <p>
+                                        La adopción de las NIIF en el Perú de modo
+                                        obligatorio, con el objetivo de estandarizar la
+                                        información financiera y mejorar la comparabilidad
+                                        y transparencia de los estados financieros a nivel
+                                        nacional e internacional, ha sido un proceso
+                                        gradual, con diferentes fechas de implementación
+                                        según el tipo y tamaño de las empresas.
+                                    </p>
+                                    <br>
+                                    <p>
+                                        Si se discutiera la obligatoriedad de la aplicación
+                                        de las NIIF Plenas o para las PYMES y de las NICSP,
+                                        el Decreto Legislativo N° 1525 (18/02/2022), en
+                                        su artículo 4 referido al Sistema Nacional de
+                                        Contabilidad, pone punto final a tal controversia.
+                                    </p>
+                                </div>
+                              </div>
+                              <div
+                                x-show="activeTab === 'tabProfile'"
+                                x-transition:enter="transition-all duration-500 easy-in-out"
+                                x-transition:enter-start="opacity-0 [transform:translate3d(1rem,0,0)]"
+                                x-transition:enter-end="opacity-100 [transform:translate3d(0,0,0)]"
+                              >
+                                <div>
+                                  <p>
+                                    Pellentesque pulvinar, sapien eget fermentum sodales, felis lacus
+                                    viverra magna, id pulvinar odio metus non enim. Ut id augue
+                                    interdum, ultrices felis eu, tincidunt libero.
+                                  </p>
+                                  <div class="flex space-x-2 pt-3">
+                                    <a
+                                      href="#"
+                                      class="tag rounded-full border border-primary text-primary dark:border-accent-light dark:text-accent-light"
+                                    >
+                                      Tag 1
+                                    </a>
+                                    <a
+                                      href="#"
+                                      class="tag rounded-full border border-primary text-primary dark:border-accent-light dark:text-accent-light"
+                                    >
+                                      Tag 2
+                                    </a>
+                                  </div>
+                        
+                                  <p class="pt-3 text-xs text-slate-400 dark:text-navy-300">
+                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore
+                                    dolore non atque?
+                                  </p>
+                                </div>
+                              </div>
+                              <div
+                                x-show="activeTab === 'tabMessages'"
+                                x-transition:enter="transition-all duration-500 easy-in-out"
+                                x-transition:enter-start="opacity-0 [transform:translate3d(1rem,0,0)]"
+                                x-transition:enter-end="opacity-100 [transform:translate3d(0,0,0)]"
+                              >
+                                <div>
+                                  <p>
+                                    Cras iaculis ipsum quis lectus faucibus, in mattis nulla molestie.
+                                    Vestibulum vel tristique libero. Morbi vulputate odio at viverra
+                                    sodales. Curabitur accumsan justo eu libero porta ultrices vitae eu
+                                    leo.
+                                  </p>
+                                  <div class="flex space-x-2 pt-3">
+                                    <a
+                                      href="#"
+                                      class="tag rounded-full border border-primary text-primary dark:border-accent-light dark:text-accent-light"
+                                    >
+                                      Tag 1
+                                    </a>
+                                    <a
+                                      href="#"
+                                      class="tag rounded-full border border-primary text-primary dark:border-accent-light dark:text-accent-light"
+                                    >
+                                      Tag 2
+                                    </a>
+                                  </div>
+                        
+                                  <p class="pt-3 text-xs text-slate-400 dark:text-navy-300">
+                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore
+                                    dolore non atque?
+                                  </p>
+                                </div>
+                              </div>
+                              <div
+                                x-show="activeTab === 'tabSettings'"
+                                x-transition:enter="transition-all duration-500 easy-in-out"
+                                x-transition:enter-start="opacity-0 [transform:translate3d(1rem,0,0)]"
+                                x-transition:enter-end="opacity-100 [transform:translate3d(0,0,0)]"
+                              >
+                                <div>
+                                  <p>
+                                    Etiam nec ante eget lacus vulputate egestas non iaculis tellus.
+                                    Suspendisse tempus ex in tortor venenatis malesuada. Aenean
+                                    consequat dui vitae nibh lobortis condimentum. Duis vel risus est.
+                                  </p>
+                                  <div class="flex space-x-2 pt-3">
+                                    <a
+                                      href="#"
+                                      class="tag rounded-full border border-primary text-primary dark:border-accent-light dark:text-accent-light"
+                                    >
+                                      Tag 1
+                                    </a>
+                                    <a
+                                      href="#"
+                                      class="tag rounded-full border border-primary text-primary dark:border-accent-light dark:text-accent-light"
+                                    >
+                                      Tag 2
+                                    </a>
+                                  </div>
+                        
+                                  <p class="pt-3 text-xs text-slate-400 dark:text-navy-300">
+                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore
+                                    dolore non atque?
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
                         <div class="my-7 h-px bg-slate-200 dark:bg-navy-500"></div>
 
                         <div class="flex items-center justify-between pt-4">
