@@ -6,8 +6,18 @@
 
 
     <main class="main-content w-full px-[var(--margin-x)] pb-8">
+        
+        <div class="mt-5 w-full transition-all duration-[.25s] sm:mt-5 lg:mt-6">
 
-        <div class="mt-5 grid lg:grid-cols-12 gap-4 sm:gap-5 lg:gap-6">
+            <div style="text-align:center;">
+                <h1 class="title_aracode" style="font-size: 45px; line-height: 1.1; font-weight: 700;">
+                    NUESTROS CURSOS
+                </h1>
+            </div>
+
+        </div>
+
+        <div class="mt-1 grid lg:grid-cols-12 gap-4 sm:gap-5 lg:gap-6">
             <div class="col-span-12 space-y-4 sm:space-y-5 lg:col-span-8 lg:space-y-6 xl:col-span-9">
                 <div>
                     <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4 lg:gap-6">
@@ -349,9 +359,14 @@
             </div>
         </div>
 
+        
+        <br>
+        <div class="mt-4 w-full transition-all duration-[.25s] sm:mt-5 lg:mt-6">
+            <x-social-networks /> 
+        </div>
+
     </main>
 
-    <br>
     <br>
     <br>
 
