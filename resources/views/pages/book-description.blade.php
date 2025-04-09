@@ -60,7 +60,7 @@
                                   :class="activeTab === 'tabProfile' ? 'bg-white shadow dark:bg-navy-500 dark:text-navy-100' : 'hover:text-slate-800 focus:text-slate-800 dark:hover:text-navy-100 dark:focus:text-navy-100'"
                                   class="btn shrink-0 px-3 py-1.5 font-medium"
                                 >
-                                  Profile
+                                  ¿Qué hace a esta obra única y útil?
                                 </button>
                                 <button
                                   @click="activeTab = 'tabMessages'"
@@ -89,6 +89,7 @@
                                     <h2 class="text-lg font-medium tracking-wide text-slate-700 dark:text-navy-100">
                                         "Piensa en NIIF y existirás contablemente"
                                     </h2>
+                                    <br>
                                     <p>
                                         La adopción de las NIIF en el Perú de modo
                                         obligatorio, con el objetivo de estandarizar la
@@ -106,6 +107,80 @@
                                         su artículo 4 referido al Sistema Nacional de
                                         Contabilidad, pone punto final a tal controversia.
                                     </p>
+                                    <br>
+                                    <h2 class="text-lg font-medium tracking-wide text-slate-700 dark:text-navy-100">
+                                        Obligación de las grandes empresas y PYMES de aplicar las NIIF
+                                    </h2>
+                                    <br>
+                                    <h3>
+                                        <b>Sector privado.</b>
+                                    </h3>
+                                    <br>
+                                    <p>
+                                        Según resolución del Consejo Normativo de
+                                        Contabilidad (CNC), las empresas con ingresos
+                                        anuales mayores a 2,300 UIT deben aplicar las
+                                        NIIF Plenas. Y las empresas con ingresos anuales
+                                        mayores a 150 e inferiores a 2,300 UIT deben
+                                        aplicar las NIIF para PYMES en la preparación e
+                                        informe de sus estados financieros.
+                                    </p>
+                                    <br>
+                                    <p>
+                                        Las NIIF son reconocidas y exigidas por los
+                                        diversos organismos supervisores, tales como
+                                        el Consejo Normativo de Contabilidad (CNC), la
+                                        Superintendencia del Mercado de Valores (SMV),
+                                        la Dirección General de Contabilidad Pública del
+                                        MEF (DGCP), la Superintendencia Nacional de
+                                        Aduanas y Administración Tributaria (SUNAT)
+                                    </p>
+                                    <br>
+                                    <h3>
+                                        <b>Sector público.</b>
+                                    </h3>
+                                    <br>
+                                    <p>
+                                        Las empresas del sector público deben aplicar las
+                                        normas y regulaciones emitidas por la DGCP para
+                                        la preparación y presentación de su información
+                                        financiera (EEFF y estados presupuestarios). La
+                                        Directiva n.º 002-2013-EF/51.01, numeral 7, establece
+                                        lo siguiente:
+                                    </p>
+                                    <br>
+                                    <ul>
+                                      <li>
+                                          A.- Los estados financieros de las empresas no
+                                          financieras del Estado deben ser preparados
+                                          y presentados de acuerdo a las NIIF y demás
+                                          disposiciones legales sobre la materia. En
+                                          el caso de las empresas financieras del
+                                          Estado, las normas para la preparación y
+                                          presentación de información financiera
+                                          deben estar armonizadas a las NIIF con
+                                          los diferimientos y excepciones según lo
+                                          dispuesto por la SBS.
+                                      </li>
+                                      <br>
+                                      <li>
+                                          B.- Los estados financieros de las entidades
+                                          de carácter empresarial de los gobiernos
+                                          nacional, regional y locales comprendidos
+                                          en la citada directiva, deben ser preparados
+                                          y presentados con sujeción a las Normas
+                                          Internacionales de Contabilidad del Sector
+                                          Público (NICSP).
+                                      </li>
+                                    </ul>
+                                    <p>
+                                        Las NICSP están en camino a ser adoptadas
+                                        plenamente. La DGCP inició en 2021 el plan de
+                                        implementación de estos estándares; las entidades
+                                        del estado han presentado sus primeros estados
+                                        financieros bajo NICSP Plenas al 31 de diciembre
+                                        de 2024.
+                                    </p>
                                 </div>
                               </div>
                               <div
@@ -115,29 +190,78 @@
                                 x-transition:enter-end="opacity-100 [transform:translate3d(0,0,0)]"
                               >
                                 <div>
+                                  <h2 class="text-lg font-medium tracking-wide text-slate-700 dark:text-navy-100">
+                                    1.- Su enfoque analítico y explicativo
+                                  </h2>
+                                  <br>
                                   <p>
-                                    Pellentesque pulvinar, sapien eget fermentum sodales, felis lacus
-                                    viverra magna, id pulvinar odio metus non enim. Ut id augue
-                                    interdum, ultrices felis eu, tincidunt libero.
+                                    El Amauta de las NIIF refleja una aspiración:
+                                    traducir lo complejo en simple. Su objetivo es
+                                    explicar cada norma con precisión, revelando
+                                    su lógica funcional subyacente y ofreciendo
+                                    una metodología práctica para su aplicación.
                                   </p>
-                                  <div class="flex space-x-2 pt-3">
-                                    <a
-                                      href="#"
-                                      class="tag rounded-full border border-primary text-primary dark:border-accent-light dark:text-accent-light"
-                                    >
-                                      Tag 1
-                                    </a>
-                                    <a
-                                      href="#"
-                                      class="tag rounded-full border border-primary text-primary dark:border-accent-light dark:text-accent-light"
-                                    >
-                                      Tag 2
-                                    </a>
-                                  </div>
-                        
-                                  <p class="pt-3 text-xs text-slate-400 dark:text-navy-300">
-                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore
-                                    dolore non atque?
+                                  <br>
+                                  <p>
+                                    <b>LOS ANÁLISIS Y COMENTARIOS EXHAUSTIVOS: </b><br>
+                                    Que explican la lógica, el sentido y alcance
+                                    de cada norma NIIF (la filosofía contable de
+                                    las NIIF).
+                                  </p>
+                                  <br>
+                                  <p>
+                                    <b>SUS HERRAMIENTAS VISUALES:</b><br>
+                                    Innumerables cuadros sinópticos que facilitan
+                                    la comprensión y retención de la información.
+                                  </p>
+                                  <br>
+                                  <p>
+                                    <b>SU ENFOQUE DIDÁCTICO Y PRÁCTICO:</b><br>
+                                    La incorporación de 300 casos que le dan al
+                                    libro un carácter práctico, utilitario y enfáticamente
+                                    pedagógico.
+                                  </p>
+                                  <br>
+                                  <h2 class="text-lg font-medium tracking-wide text-slate-700 dark:text-navy-100">
+                                    2.- Su autor
+                                  </h2>
+                                  <br>
+                                  <p>
+                                    <b>Alex Cuzcano</b> es uno de los mayores expertos
+                                    en las NIIF en el Perú.
+                                  </p>
+                                  <p>
+                                    La vasta experiencia profesional del autor en
+                                    materia de NIIF, ocupando cargos directivos
+                                    clave en consultoras e instituciones de gran
+                                    prestigio internacional, hace que el libro sea
+                                    un referente de consulta confiable entre los
+                                    operadores de las normas.
+                                  </p>
+                                  <br>
+                                  <h2 class="text-lg font-medium tracking-wide text-slate-700 dark:text-navy-100">
+                                    3.- Su metodología
+                                  </h2>
+                                  <br>
+                                  <p>
+                                    <b>Profesionales de la Contabilidad.</b><br>
+                                    Que requieren aplicar sin errores las NIIF en función
+                                    a las situaciones reales de las organizaciones
+                                    empresariales, lo que exige un conocimiento
+                                    profundo no solo de la contabilidad sino también
+                                    de las finanzas.
+                                  </p>
+                                  <br>
+                                  <p>
+                                    <b>Directivos y Gerentes
+                                      Financieros.</b> <br>
+                                    Existe una necesidad de comprender las NIIF por
+                                    parte del personal directivo de las empresas; que
+                                    pueden tener un perfil financiero, pero que no han
+                                    profundizado en el aspecto contable-financiero de
+                                    este tipo de normas, y que requieren conocerlas
+                                    para el cumplimiento de la presentación de estados
+                                    financieros.
                                   </p>
                                 </div>
                               </div>
