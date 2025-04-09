@@ -74,7 +74,7 @@
                                   :class="activeTab === 'tabSettings' ? 'bg-white shadow dark:bg-navy-500 dark:text-navy-100' : 'hover:text-slate-800 focus:text-slate-800 dark:hover:text-navy-100 dark:focus:text-navy-100'"
                                   class="btn shrink-0 px-3 py-1.5 font-medium"
                                 >
-                                  Settings
+                                  Estructura de la obra
                                 </button>
                               </div>
                             </div>
@@ -418,30 +418,38 @@
                                 x-transition:enter-end="opacity-100 [transform:translate3d(0,0,0)]"
                               >
                                 <div>
-                                  <p>
-                                    Etiam nec ante eget lacus vulputate egestas non iaculis tellus.
-                                    Suspendisse tempus ex in tortor venenatis malesuada. Aenean
-                                    consequat dui vitae nibh lobortis condimentum. Duis vel risus est.
-                                  </p>
-                                  <div class="flex space-x-2 pt-3">
-                                    <a
-                                      href="#"
-                                      class="tag rounded-full border border-primary text-primary dark:border-accent-light dark:text-accent-light"
-                                    >
-                                      Tag 1
-                                    </a>
-                                    <a
-                                      href="#"
-                                      class="tag rounded-full border border-primary text-primary dark:border-accent-light dark:text-accent-light"
-                                    >
-                                      Tag 2
-                                    </a>
-                                  </div>
-                        
-                                  <p class="pt-3 text-xs text-slate-400 dark:text-navy-300">
-                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore
-                                    dolore non atque?
-                                  </p>
+                                  <h2 class="text-lg font-medium tracking-wide text-slate-700 dark:text-navy-100">
+                                    I. INFORMACIÓN FINANCIERA DE CALIDAD
+                                  </h2>
+                                  <br>
+                                  <h2 class="text-lg font-medium tracking-wide text-slate-700 dark:text-navy-100">
+                                    II. EL MARCO CONCEPTUAL COMO BASE
+                                    PARA EL APRENDIZAJE DE LAS NIIF
+                                  </h2>
+                                  <br>
+                                  <h2 class="text-lg font-medium tracking-wide text-slate-700 dark:text-navy-100">
+                                    III.- FINANZAS PARA DOMINAR LAS NIIF
+                                  </h2>
+                                  <br>
+                                  <h2 class="text-lg font-medium tracking-wide text-slate-700 dark:text-navy-100">
+                                    IV.- NIIF 13 “DETERMINACIÓN DEL VALOR
+                                    RAZONABLE”
+                                  </h2>
+                                  <br>
+                                  <h2 class="text-lg font-medium tracking-wide text-slate-700 dark:text-navy-100">
+                                    V.- NIIF RELACIONADAS A LOS ACTIVOS NO
+                                    FINANCIEROS
+                                  </h2>
+                                  <br>
+                                  <h2 class="text-lg font-medium tracking-wide text-slate-700 dark:text-navy-100">
+                                    VI.- NIIF RELACIONADA A LOS PASIVOS NO
+                                    FINANCIEROS
+                                  </h2>
+                                  <br>
+                                  <h2 class="text-lg font-medium tracking-wide text-slate-700 dark:text-navy-100">
+                                    VII.- NIIF RELACIONADAS A LA PRESENTACIÓN
+                                    DE ESTADOS FINANCIEROS
+                                  </h2>
                                 </div>
                               </div>
                             </div>
