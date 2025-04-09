@@ -67,7 +67,7 @@
                                   :class="activeTab === 'tabMessages' ? 'bg-white shadow dark:bg-navy-500 dark:text-navy-100' : 'hover:text-slate-800 focus:text-slate-800 dark:hover:text-navy-100 dark:focus:text-navy-100'"
                                   class="btn shrink-0 px-3 py-1.5 font-medium"
                                 >
-                                  Messages
+                                  Sobre su autor
                                 </button>
                                 <button
                                   @click="activeTab = 'tabSettings'"
@@ -325,30 +325,89 @@
                                 x-transition:enter-end="opacity-100 [transform:translate3d(0,0,0)]"
                               >
                                 <div>
+                                  <h2 class="text-lg font-medium tracking-wide text-slate-700 dark:text-navy-100">
+                                    ALEX CUZCANO
+                                  </h2>
+                                  <br>
                                   <p>
-                                    Cras iaculis ipsum quis lectus faucibus, in mattis nulla molestie.
-                                    Vestibulum vel tristique libero. Morbi vulputate odio at viverra
-                                    sodales. Curabitur accumsan justo eu libero porta ultrices vitae eu
-                                    leo.
+                                    La trayectoria profesional de Alex Cuzcano como
+                                    Contador Público es impresionante. Con Maestría
+                                    en Finanzas por EADA Business School (Barcelona,
+                                    España); Maestría en Dirección de Finanzas
+                                    Corporativas y Riesgo Financiero por la Pontificia
+                                    Universidad Católica del Perú (PUCP); Maestría en
+                                    Auditoría por la Universidad del Pacífico; Posgrado
+                                    en Normas Internacionales de Información
+                                    Financiera (NIIF) por la Universidad de Lima.
                                   </p>
-                                  <div class="flex space-x-2 pt-3">
-                                    <a
-                                      href="#"
-                                      class="tag rounded-full border border-primary text-primary dark:border-accent-light dark:text-accent-light"
-                                    >
-                                      Tag 1
-                                    </a>
-                                    <a
-                                      href="#"
-                                      class="tag rounded-full border border-primary text-primary dark:border-accent-light dark:text-accent-light"
-                                    >
-                                      Tag 2
-                                    </a>
-                                  </div>
-                        
-                                  <p class="pt-3 text-xs text-slate-400 dark:text-navy-300">
-                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore
-                                    dolore non atque?
+                                  <br>
+                                  <p>
+                                    Actualmente es Socio de Auditoría y Consultoría
+                                    Contable en Global CPA. Y anteriormente se desempeñó
+                                    en los siguientes cargos: Consultor del
+                                    Banco Interamericano de Desarrollo (BID) para
+                                    el MEF sobre proceso de implementación de
+                                    las NICSP; Gerente Senior en el área de AAS (Accounting
+                                    Advisory Services) para KPMG en Perú,
+                                    siendo responsable de los servicios de consultoría
+                                    contable, principalmente relacionados a NIIF,
+                                    luego de su paso como Gerente de Auditoría;
+                                    Gerente de Auditoría en Deloitte Perú y auditor
+                                    externo en Deloitte España (Barcelona); Gerente
+                                    de Contabilidad y Control de Gestión en el Banco
+                                    BCI Perú.
+                                  </p>
+                                  <br>
+                                  <p>
+                                    Es experto en supervisión de auditorías financieras
+                                    y presupuestales realizadas de conformidad
+                                    con el Manual de Auditoría Financiera Gubernamental
+                                    aplicable a empresas supervisadas por la
+                                    Contraloría General de la República del Perú.
+                                  </p>
+                                  <br>
+                                  <p>
+                                    Ha realizado el acompañamiento a cooperativas
+                                    de ahorro y crédito en la implementación del
+                                    Manual de Contabilidad (SBS) y reexpresión de
+                                    estados financieros y a las entidades financieras
+                                    en su proceso de implementación del Nuevo
+                                    Manual de Contabilidad (SBS) y reexpresión de
+                                    estados financieros, durante sus procesos.
+                                  </p>
+                                  <br>
+                                  <p>
+                                    En el campo gremial contable, es Representante
+                                    del Consejo Normativo de Contabilidad en el GLENIF;
+                                    Miembro del Comité Técnico Permanente de
+                                    la JDCCPP (2022-2024); Coordinador General de
+                                    las DOM ante la IFAC (2023-2026); Miembro de la
+                                    Comisión Técnica de Control de Calidad ante la
+                                    Asociación Interamericana de Contabilidad (AIC)
+                                    (2020–2023); y fue Miembro del Comité Técnico
+                                    de Auditoría de la Junta de Decanos de Colegio
+                                    de Contadores Públicos del Perú (2018–2020).
+                                  </p>
+                                  <br>
+                                  <p>
+                                    Docente de pregrado y posgrado en la Pontificia
+                                    Universidad Católica del Perú (PUCP) y en la
+                                    Universidad ESAN. Fue docente de pregrado y
+                                    posgrado en la Universidad de Lima y de la División
+                                    Ejecutiva de la Universidad del Pacífico. Fue
+                                    instructor en el Instituto Peruano de Auditores
+                                    Independientes (IPAI). Participa como docente
+                                    invitado en universidades y escuelas de posgrado
+                                    del interior del Perú y en los colegios de contadores
+                                    públicos del país.
+                                  </p>
+                                  <br>
+                                  <p>
+                                    Colabora como conferencista en eventos de Contabilidad
+                                    y Auditoría a nivel nacional (CONANIIF,
+                                    Audita, Congreso Nacional de Contadores) e internacional,
+                                    participando en los países de México,
+                                    Chile, Colombia, Ecuador, Bolivia y Guatemala.
                                   </p>
                                 </div>
                               </div>
