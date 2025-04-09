@@ -463,6 +463,19 @@
                                 Descargar Brochure
                             </button>
                           </a>
+                          <a href="">
+                            <button
+                                class="btn h-8 rounded-full border border-slate-200 px-3 text-xs+ font-medium text-primary hover:bg-slate-150 focus:bg-slate-150 active:bg-slate-150/80 dark:border-navy-500 dark:text-accent-light dark:hover:bg-navy-500 dark:focus:bg-navy-500 dark:active:bg-navy-500/90">
+                                Contacta a un asesor
+                            </button>
+                          </a>
+                          <a href="https://www.amazon.com/-/es/dp/B0DVTBXPCF?binding=kindle_edition&ref=dbs_dp_rwt_sb_pc_tkin">
+                            <button
+                                class="btn h-8 rounded-full border border-slate-200 px-3 text-xs+ font-medium text-primary hover:bg-slate-150 focus:bg-slate-150 active:bg-slate-150/80 dark:border-navy-500 dark:text-accent-light dark:hover:bg-navy-500 dark:focus:bg-navy-500 dark:active:bg-navy-500/90">
+                                
+                              Compra online
+                            </button>
+                          </a>
                         </div>
                     </div>
                 </div>
