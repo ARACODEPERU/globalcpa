@@ -263,6 +263,59 @@
                                     para el cumplimiento de la presentación de estados
                                     financieros.
                                   </p>
+                                  <br>
+                                  <p>
+                                    <b>Pequeñas y Medianas Empresas
+                                      (PYMEs).</b><br>
+                                    Es imperativo que las pequeñas y medianas
+                                    empresas con ingresos anuales mayores a 150
+                                    UIT y menores a 2,300 UIT sepan cómo adaptar
+                                    la información de sus estados financieros bajo
+                                    los parámetros normativos de las NIIF.
+                                  </p>
+                                  <br>
+                                  <p>
+                                    <b>Contadores y funcionarios de la
+                                      alta dirección de entidades del
+                                      sector público.</b><br>
+                                    A.- Es obligatorio que los estados financieros
+                                    de las empresas no financieras del Estado
+                                    sean preparados y presentados de acuerdo
+                                    a las NIIF y otras disposiciones legales sobre
+                                    la materia.
+                                    <br>
+                                    B.- En el caso de las empresas financieras del
+                                    Estado, la presentación de información
+                                    financiera debe estar armonizada a las NIIF
+                                    con los diferimientos y excepciones según
+                                    lo dispuesto por la Superintendencia de
+                                    Banca, Seguros y AFP.
+                                    <br>
+                                    C.- Los estados financieros de las empresas del
+                                    Estado –del gobierno nacional, gobiernos
+                                    regionales y locales– deben ser preparados
+                                    y presentados con sujeción a las Normas
+                                    Internacionales de Contabilidad del Sector
+                                    Público (NICSP).
+                                  </p>
+                                  <br>
+                                  <p>
+                                    <b>Auditores y Consultores.</b><br>
+                                    Estos profesionales requieren tener fuentes de
+                                    consultas confiables que afinen sus criterios
+                                    en la evaluación y auditoría con respecto a la
+                                    aplicación adecuada de los estados financieros
+                                    conforme a las NIIF.
+                                  </p>
+                                  <br>
+                                  <p>
+                                    <b>Estudiantes universitarios de
+                                      Contabilidad.</b><br>
+                                    La obra les permitirá a los estudiantes de pregrado
+                                    a orientar su aprendizaje hacia un conocimiento
+                                    más especializado en las NIIF que les abrirá las
+                                    puertas de las empresas de mayor nivel.
+                                  </p>
                                 </div>
                               </div>
                               <div
