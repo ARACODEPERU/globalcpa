@@ -457,10 +457,12 @@
                         <div class="my-7 h-px bg-slate-200 dark:bg-navy-500"></div>
 
                         <div class="flex items-center justify-between pt-4">
+                          <a href="{{ asset('themes/webpage/El_Amauta_de_las_NIIF.pdf') }}" download="El_Amauta_de_las_NIIF">
                             <button
                                 class="btn h-8 rounded-full border border-slate-200 px-3 text-xs+ font-medium text-primary hover:bg-slate-150 focus:bg-slate-150 active:bg-slate-150/80 dark:border-navy-500 dark:text-accent-light dark:hover:bg-navy-500 dark:focus:bg-navy-500 dark:active:bg-navy-500/90">
                                 Descargar Brochure
                             </button>
+                          </a>
                         </div>
                     </div>
                 </div>
