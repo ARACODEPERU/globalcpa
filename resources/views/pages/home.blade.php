@@ -250,14 +250,9 @@
                 </div>
             </div>
         </div> --}}
+            
+        <x-social-networks /> 
 
-        <br>
-        <div class="mt-4 w-full transition-all duration-[.25s] sm:mt-5 lg:mt-6">
-            <x-social-networks /> 
-        </div>
-
-        <br><br>
-        
         
         {{-- <section style="padding: 20px 10px;">
             <div class="mx-auto grid w-full grid-cols-1 gap-4 sm:grid-cols-1 sm:gap-5 lg:gap-6">
