@@ -28,7 +28,7 @@
                     <div class="items-center space-y-4 border-b border-slate-200 
                             p-4 dark:border-navy-500 sm:flex-row sm:justify-between sm:space-y-0 sm:px-5">
                         <h2 class="text-lg font-medium tracking-wide text-slate-700 dark:text-navy-100">
-                            EL AMAUTA DE LAS NIIF
+                            EL AMAUTA DE LAS NIIF | Edición 2025
                         </h2>
                         <p>
                             Dirigida a los contadores públicos, auditores,
@@ -240,7 +240,7 @@
                                   </p>
                                   <br>
                                   <h2 class="text-lg font-medium tracking-wide text-slate-700 dark:text-navy-100">
-                                    3.- Su metodología
+                                    3.- A quiénes está dirigido:
                                   </h2>
                                   <br>
                                   <p>
@@ -463,7 +463,7 @@
                                 Descargar Brochure
                             </button>
                           </a>
-                          <a href="">
+                          <a href="https://wa.link/yibjj7">
                             <button
                                 class="btn h-8 rounded-full border border-slate-200 px-3 text-xs+ font-medium text-primary hover:bg-slate-150 focus:bg-slate-150 active:bg-slate-150/80 dark:border-navy-500 dark:text-accent-light dark:hover:bg-navy-500 dark:focus:bg-navy-500 dark:active:bg-navy-500/90">
                                 Contacta a un asesor
