@@ -27,6 +27,31 @@
         </div>
         <div class="scrollbar-sm mt-1 flex space-x-4 overflow-x-auto px-4 sm:px-5 lg:mt-0 lg:pl-0">
             <div class="flex w-36 shrink-0 flex-col items-center">
+                <a href="https://whatsapp.com/channel/0029VasF8Tl84Om6bo0ZdA2o" class="z-10">
+                    <img  style="width: 50px;" src="{{ asset('themes/webpage/images/logos/whatsapp.png') }}" alt="flag">
+                </a>
+                <div class="card -mt-5 w-full rounded-2xl px-3 py-3 text-center">
+                    <a href="https://whatsapp.com/channel/0029VasF8Tl84Om6bo0ZdA2o">
+                        <p class="mt-3 text-base font-medium text-slate-700 dark:text-navy-100">
+                            whatsapp
+                        </p>
+                    </a>
+                    <a href="https://whatsapp.com/channel/0029VasF8Tl84Om6bo0ZdA2o"
+                        class="mt-1 font-inter text-xs+ tracking-wide text-slate-400 hover:text-primary 
+                        focus:text-primary dark:hover:text-accent-light dark:focus:text-accent-light">
+                        @globalcpaperu
+                    </a>
+                    {{-- <div class="mt-6 flex justify-center space-x-1 font-inter">
+                        <p class="text-4xl font-medium text-slate-700 dark:text-navy-100">
+                            +3
+                        </p>
+                        <p class="mt-1 font-medium text-slate-700 dark:text-navy-100">
+                            %
+                        </p>
+                    </div> --}}
+                </div>
+            </div>
+            <div class="flex w-36 shrink-0 flex-col items-center">
                 <a href="https://www.facebook.com/globalcpaperu" class="z-10">
                     <img  style="width: 50px;" src="{{ asset('themes/webpage/images/logos/facebook-round.svg') }}" alt="flag">
                 </a>

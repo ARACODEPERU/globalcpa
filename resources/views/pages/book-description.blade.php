@@ -446,25 +446,28 @@
                         <div class="my-7 h-px bg-slate-200 dark:bg-navy-500"></div>
 
                         <div class="flex items-center justify-between pt-4">
-                            <a href="{{ asset('themes/webpage/El_Amauta_de_las_NIIF.pdf') }}"
-                                download="El_Amauta_de_las_NIIF">
-                                <button
-                                    class="btn h-8 rounded-full border border-slate-200 px-3 text-xs+ font-medium text-primary hover:bg-slate-150 focus:bg-slate-150 active:bg-slate-150/80 dark:border-navy-500 dark:text-accent-light dark:hover:bg-navy-500 dark:focus:bg-navy-500 dark:active:bg-navy-500/90">
-                                    Descargar Brochure
+                            <a href="{{ asset('themes/webpage/El_Amauta_de_las_NIIF.pdf') }}" download="El_Amauta_de_las_NIIF">
+                                <button style="width: 100%;"
+                                    class="btn space-x-2 bg-primary font-medium text-white hover:bg-primary-focus 
+                                    focus:bg-primary-focus active:bg-primary-focus/90 dark:bg-accent dark:hover:bg-accent-focus 
+                                    dark:focus:bg-accent-focus dark:active:bg-accent/90">
+                                    <span>Descargar Brochure</span>
                                 </button>
                             </a>
                             <a href="https://wa.link/yibjj7">
-                                <button
-                                    class="btn h-8 rounded-full border border-slate-200 px-3 text-xs+ font-medium text-primary hover:bg-slate-150 focus:bg-slate-150 active:bg-slate-150/80 dark:border-navy-500 dark:text-accent-light dark:hover:bg-navy-500 dark:focus:bg-navy-500 dark:active:bg-navy-500/90">
-                                    Contacta a un asesor
+                                <button style="width: 100%;"
+                                    class="btn space-x-2 bg-primary font-medium text-white hover:bg-primary-focus 
+                                    focus:bg-primary-focus active:bg-primary-focus/90 dark:bg-accent dark:hover:bg-accent-focus 
+                                    dark:focus:bg-accent-focus dark:active:bg-accent/90">
+                                    <span>Comprar versión impresa</span>
                                 </button>
                             </a>
-                            <a
-                                href="https://www.amazon.com/-/es/dp/B0DVTBXPCF?binding=kindle_edition&ref=dbs_dp_rwt_sb_pc_tkin">
-                                <button
-                                    class="btn h-8 rounded-full border border-slate-200 px-3 text-xs+ font-medium text-primary hover:bg-slate-150 focus:bg-slate-150 active:bg-slate-150/80 dark:border-navy-500 dark:text-accent-light dark:hover:bg-navy-500 dark:focus:bg-navy-500 dark:active:bg-navy-500/90">
-
-                                    Compra online
+                            <a href="https://www.amazon.com/-/es/dp/B0DVTBXPCF?binding=kindle_edition&ref=dbs_dp_rwt_sb_pc_tkin">
+                                <button style="width: 100%;"
+                                    class="btn space-x-2 bg-primary font-medium text-white hover:bg-primary-focus 
+                                    focus:bg-primary-focus active:bg-primary-focus/90 dark:bg-accent dark:hover:bg-accent-focus 
+                                    dark:focus:bg-accent-focus dark:active:bg-accent/90">
+                                    <span>Comprar ebook</span>
                                 </button>
                             </a>
                         </div>
@@ -479,7 +482,7 @@
         <div class="mt-4 w-full transition-all duration-[.25s] sm:mt-5 lg:mt-6">
             <div style="text-align:center;">
                 <h1 class="title_aracode" style="font-size: 45px; line-height: 1.1; font-weight: 700;">
-                    NUESTRAS EDICIONES
+                    EDICIONES ANTERIORES
                 </h1>
             </div>
         </div>
@@ -497,7 +500,7 @@
                     <div class="mt-6 grid w-full grid-cols-1 gap-1">
                       <a href="https://isbn.bnp.gob.pe/catalogo.php?mode=busqueda_menu&id_autor=64814&pagina=2">
                         <button style="width: 100%;"
-                            class="btn space-x-2 bg-primary px-0 font-medium text-white hover:bg-primary-focus 
+                            class="btn space-x-2 bg-primary font-medium text-white hover:bg-primary-focus 
                             focus:bg-primary-focus active:bg-primary-focus/90 dark:bg-accent dark:hover:bg-accent-focus 
                             dark:focus:bg-accent-focus dark:active:bg-accent/90">
                             <span>Información</span>
@@ -516,7 +519,7 @@
                   <div class="mt-6 grid w-full grid-cols-1 gap-1">
                     <a href="https://isbn.bnp.gob.pe/catalogo.php?mode=detalle&nt=122583">
                       <button style="width: 100%;"
-                          class="btn space-x-2 bg-primary px-0 font-medium text-white hover:bg-primary-focus 
+                          class="btn space-x-2 bg-primary font-medium text-white hover:bg-primary-focus 
                           focus:bg-primary-focus active:bg-primary-focus/90 dark:bg-accent dark:hover:bg-accent-focus 
                           dark:focus:bg-accent-focus dark:active:bg-accent/90">
                           <span>Información</span>
@@ -535,7 +538,7 @@
                   <div class="mt-6 grid w-full grid-cols-1 gap-1">
                     <a href="https://isbn.bnp.gob.pe/catalogo.php?mode=detalle&nt=131181">
                       <button style="width: 100%;"
-                          class="btn space-x-2 bg-primary px-0 font-medium text-white hover:bg-primary-focus 
+                          class="btn space-x-2 bg-primary font-medium text-white hover:bg-primary-focus 
                           focus:bg-primary-focus active:bg-primary-focus/90 dark:bg-accent dark:hover:bg-accent-focus 
                           dark:focus:bg-accent-focus dark:active:bg-accent/90">
                           <span>Información</span>
@@ -554,7 +557,7 @@
                   <div class="mt-6 grid w-full grid-cols-1 gap-1">
                     <a href="https://isbn.bnp.gob.pe/catalogo.php?mode=detalle&nt=149323">
                       <button style="width: 100%;"
-                          class="btn space-x-2 bg-primary px-0 font-medium text-white hover:bg-primary-focus 
+                          class="btn space-x-2 bg-primary font-medium text-white hover:bg-primary-focus 
                           focus:bg-primary-focus active:bg-primary-focus/90 dark:bg-accent dark:hover:bg-accent-focus 
                           dark:focus:bg-accent-focus dark:active:bg-accent/90">
                           <span>Información</span>
