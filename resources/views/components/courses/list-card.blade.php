@@ -4,7 +4,7 @@
         <div class="flex items-center justify-between space-x-2 px-1">
             <div class="flex items-center space-x-2">
                 <div class="avatar size-9">
-                    <img class="rounded-full" src="{{ asset('storage/'.$item->course->teacher->person->image) }}" alt="avatar">
+                    <img class="rounded-full" src="{{ isset($item->course->teacher->person->image) ? asset('storage/'.$item->course->teacher->person->image) : '' }}" alt="avatar">
                 </div>
                 <div>
                     <a href="#" class="font-medium text-slate-600 line-clamp-1 dark:text-navy-100">

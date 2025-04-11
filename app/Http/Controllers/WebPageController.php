@@ -91,6 +91,11 @@ class WebPageController extends Controller
         ]);
     }
 
+    public function bookamauta()
+    {
+        return view('pages/book-description');
+    }
+
     public function courses()
     {
         $courses = OnliItem::with('course')->get();
@@ -511,13 +516,16 @@ class WebPageController extends Controller
             'app' => 'required|string|max:255',
             'apm' => 'required|string|max:255',
             'type' => 'required|string|max:255',
-            'dni' => 'required|numeric',
+            'dni' => 'required|numeric|unique:people,number',
             'phone' => 'required|string|max:255',
             'email' => 'required|unique:people,email',
             'password' => 'required|string|min:8',
             'password2' => 'required|string|min:8|same:password',
         ], [
             // Mensajes personalizados
+            'dni.required' => 'El campo DNI es obligatorio.',
+            'dni.numeric' => 'El campo DNI debe ser un número.',
+            'dni.unique' => 'El DNI ingresado ya está registrado.',
             'password.required' => 'El campo contraseña es obligatorio.',
             'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
             'password2.required' => 'El campo repetir contraseña es obligatorio.',
