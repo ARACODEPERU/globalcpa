@@ -264,7 +264,6 @@
                                 class="bg-blue-500 text-white rounded-lg rounded-br-none py-2 px-4 inline-block"
                                 v-html="message.text"
                             >
-
                             </div>
                             <p v-if="message.type == 'audio'" class="bg-blue-500 text-white rounded-lg rounded-br-none py-2 px-4 inline-block">
                                 <AudioPlayer :audioSrc="message.text" :position="'right'" />
