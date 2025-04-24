@@ -17,7 +17,7 @@ class SocketIoBroadcaster
     {
         $this->client = new Client();
 
-        $this->url = env('SOCKET_IO_SERVER', 'https://localhost:3000');
+        $this->url = env('VITE_SOCKET_IO_SERVER', 'https://localhost:3000');
     }
 
     public function broadcast(array $channels, $event, array $payload = [])
