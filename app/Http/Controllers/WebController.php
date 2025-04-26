@@ -20,6 +20,9 @@ use Modules\Onlineshop\Entities\OnliSale;
 use App\Mail\ConfirmPurchaseMail;
 use Illuminate\Support\Facades\Mail;
 use Carbon\Carbon;
+use App\Models\Sale;
+use App\Models\SaleProduct;
+use Illuminate\Support\Facades\Auth;
 
 
 class WebController extends Controller
@@ -199,9 +202,38 @@ class WebController extends Controller
                     $sale->mercado_payment_id = $payment->id;
                     $sale->mercado_payment = json_encode($payment);
 
+                    // creando nota de venta
+                    $payments = [array("type" => 6, "reference" => null, "amount" => $sale->total)];
+                    $sale_note = Sale::create([
+                        'sale_date' => Carbon::now()->format('Y-m-d'),
+                        'user_id' => Auth::id(),
+                        'client_id' => Auth::user()->person_id,
+                        'local_id' => 1,
+                        'total' => $request->get('transaction_amount'),
+                        'advancement' => $request->get('transaction_amount'),
+                        'total_discount' => 0,
+                        'payments' => json_encode($payments),
+                        'petty_cash_id' => null,
+                        'physical' => 1
+                    ]);
+
+
                     $products = $request->get('products');
                     foreach ($products as $product) {
                         $this->matricular_curso($product, $product['student_id']);
+                        //llenando los detalles de la nota de venta
+                        $xpro = AcaCourse::find($product['item_id']);
+                        SaleProduct::create([
+                            'sale_id' => $sale_note->id,
+                            'product_id' => $product['id'],
+                            'product' => json_encode($xpro),
+                            'saleProduct' => json_encode($product),
+                            'price' => $product['price'],
+                            'discount' => 0,
+                            'quantity' => 1,
+                            'total' => round($product['price'], 2),
+                            'entity_name_product' => AcaCourse::class
+                        ]);
                     }
 
                     ///enviar correo
