@@ -217,7 +217,7 @@ class WebController extends Controller
                         'physical' => 1
                     ]);
 
-
+                    dd($request->get('products'));
                     $products = $request->get('products');
                     foreach ($products as $product) {
                         $this->matricular_curso($product, $product['student_id']);
@@ -225,7 +225,7 @@ class WebController extends Controller
                         $xpro = AcaCourse::find($product['item_id']);
                         SaleProduct::create([
                             'sale_id' => $sale_note->id,
-                            'product_id' => $product['id'],
+                            'product_id' => $xpro->id,
                             'product' => json_encode($xpro),
                             'saleProduct' => json_encode($product),
                             'price' => $product['price'],
