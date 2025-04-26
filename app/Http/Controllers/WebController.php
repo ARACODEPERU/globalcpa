@@ -217,7 +217,7 @@ class WebController extends Controller
                         'physical' => 1
                     ]);
 
-                    dd($request->get('products'));
+
                     $products = $request->get('products');
                     foreach ($products as $product) {
                         $this->matricular_curso($product, $product['student_id']);
