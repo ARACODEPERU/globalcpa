@@ -151,15 +151,17 @@ class AcaSaleDocumentController extends Controller
                         ////fin de actualizacion a la matricula
 
                     } else if ($product->entity_name_product == AcaSubscriptionType::class) {
-                        $curPro  = AcaSubscriptionType::where('id', $product->product_id)
-                            ->first();
+                        $curPro  = AcaSubscriptionType::where('id', $product->product_id)->first();
                         $origin = 'ACA';
                         $des =  $curPro->title . ' - ' . $curPro->description;
-                    } else {
-                        $curPro  = Product::where('id', $product->product_id)
-                            ->first();
+                    } else if ($product->entity_name_product == Product::class) {
+                        $curPro  = Product::where('id', $product->product_id)->first();
                         $origin = 'PRO';
-                        $des = $product->description;
+                        $des = $curPro->description;
+                    } else if ($product->entity_name_product == AcaCourse::class) {
+                        $curPro  = AcaCourse::where('id', $product->product_id)->first();
+                        $origin = 'ACA';
+                        $des = $curPro->description;
                     }
 
 
@@ -328,7 +330,7 @@ class AcaSaleDocumentController extends Controller
         $dataFile = $this->generateBoletaPDF($document_id);
 
         $data = [
-            'from_mail' => $P000013 ?? env('MAIL_FROM_ADDRESS'),
+            'from_mail' => env('MAIL_FROM_ADDRESS'),
             'from_name' => env('MAIL_FROM_NAME'),
             'title' => 'Hola! Llegó tu comprobante electrónico',
             'for_mail' => $person_email,
