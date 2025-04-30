@@ -231,3 +231,4 @@ Route::middleware('auth')->group(function () {
 Route::get('/test-image/{student_id}/{certificate_id}', [WebController::class, 'testimage'])->name('test-image');
 
 require __DIR__ . '/auth.php';
+require __DIR__ . '/system.php';

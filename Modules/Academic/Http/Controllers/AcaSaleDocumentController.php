@@ -189,7 +189,7 @@ class AcaSaleDocumentController extends Controller
                         //se tiene que quitar el igv porque el sistema trabaja con los precios
                         // Asegurar que los valores clave no sean nulos
                         $pdiscount = $pdiscount ?? 0;
-                        $price_sale = $price_sale ?: 0.01; // Evita división por cero si por alguna razón viene 0
+                        //$price_sale = $price_sale ?: 0.01; // Evita división por cero si por alguna razón viene 0
 
                         // Precio unitario sin IGV
                         $value_unit = round($price_sale / $nfactorIGV, 2);
