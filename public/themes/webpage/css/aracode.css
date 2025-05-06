@@ -225,7 +225,7 @@
     
 }
 
-@media (max-width: 767px) {
+@media (max-width: 1360px) {
     /* Boxed */
     .view-pc{
       display: none;

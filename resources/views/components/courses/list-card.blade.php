@@ -70,7 +70,7 @@
                     <a class="view-movile" onclick="agregarAlCarrito({ id: {{ $item->id }}, nombre: '{{ $item->name }}', precio: {{ $item->price }} })">
                         <button class="boton-degradado-courses">
                                 <i class="fa fa-cart-plus" aria-hidden="true" style="font-size: 18px;"></i>
-                                &nbsp; Comprar
+                                &nbsp; Adquirir
                         </button>
                     </a>
                     {{-- <a href="https://wa.link/54k2g9">
