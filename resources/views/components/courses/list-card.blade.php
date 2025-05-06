@@ -1,4 +1,4 @@
-<div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4 lg:gap-6">
+<div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6">
     @foreach ($courses as $item )
     <div class="card group p-3">
         <div class="flex items-center justify-between space-x-2 px-1">
@@ -61,16 +61,10 @@
                     </a>
                 </div>
                 <div class="text-right">
-                    <a class="view-pc" onclick="agregarAlCarrito({ id: {{ $item->id }}, nombre: '{{ $item->name }}', precio: {{ $item->price }} })">
+                    <a onclick="agregarAlCarrito({ id: {{ $item->id }}, nombre: '{{ $item->name }}', precio: {{ $item->price }} })">
                         <button class="boton-degradado-courses">
                                 <i class="fa fa-cart-plus" aria-hidden="true" style="font-size: 18px;"></i>
                                 &nbsp; Añadir al Carrito
-                        </button>
-                    </a>
-                    <a class="view-movile" onclick="agregarAlCarrito({ id: {{ $item->id }}, nombre: '{{ $item->name }}', precio: {{ $item->price }} })">
-                        <button class="boton-degradado-courses">
-                                <i class="fa fa-cart-plus" aria-hidden="true" style="font-size: 18px;"></i>
-                                &nbsp; Añadir
                         </button>
                     </a>
                     {{-- <a href="https://wa.link/54k2g9">
