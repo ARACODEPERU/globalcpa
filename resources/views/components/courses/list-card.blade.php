@@ -67,6 +67,7 @@
                                 &nbsp; Añadir al Carrito
                         </button>
                     </a>
+                    
                     {{-- <a href="https://wa.link/54k2g9">
                         <button class="boton-degradado-courses"><b>! Comprar Ahora¡</b></button>
                     </a> --}}
