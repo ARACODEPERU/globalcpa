@@ -11,7 +11,7 @@
 
             <div style="text-align:center;">
                 <h1 class="title_aracode" style="font-size: 45px; line-height: 1.1; font-weight: 700;">
-                    NUESTROS CURSOS
+                    NUESTRA FORMACIÓN ACADÉMICA
                 </h1>
             </div>
 

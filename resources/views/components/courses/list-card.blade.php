@@ -50,7 +50,9 @@
             <div class="flex justify-between">
                 <div>
                     <a class="view-pc" href="{{ route('web_course_description', $item->id) }}">
-                        <button class="boton-degradado-info"><b>Más Información</b></button>
+                        <button class="boton-degradado-info">
+                            <b>Más Información</b>
+                        </button>
                     </a>
                     <a class="view-movile" href="{{ route('web_course_description', $item->id) }}">
                         <button class="boton-degradado-info">
@@ -61,18 +63,14 @@
                 <div class="text-right">
                     <a class="view-pc" onclick="agregarAlCarrito({ id: {{ $item->id }}, nombre: '{{ $item->name }}', precio: {{ $item->price }} })">
                         <button class="boton-degradado-courses">
-                            <b>
                                 <i class="fa fa-cart-plus" aria-hidden="true" style="font-size: 18px;"></i>
                                 &nbsp; Añadir al Carrito
-                            </b>
                         </button>
                     </a>
                     <a class="view-movile" onclick="agregarAlCarrito({ id: {{ $item->id }}, nombre: '{{ $item->name }}', precio: {{ $item->price }} })">
                         <button class="boton-degradado-courses">
-                            <b>
                                 <i class="fa fa-cart-plus" aria-hidden="true" style="font-size: 18px;"></i>
                                 &nbsp; Comprar
-                            </b>
                         </button>
                     </a>
                     {{-- <a href="https://wa.link/54k2g9">

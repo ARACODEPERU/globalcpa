@@ -10,14 +10,12 @@
         <x-slider /> 
 
         <div class=" mt-4 w-full transition-all duration-[.25s] sm:mt-5 lg:mt-6">
-
             <div class="col-span-12 space-y-4 sm:space-y-5 lg:col-span-12 lg:space-y-6 xl:col-span-12">
-                <div>
-                    <div class="flex items-center justify-between">
-                        <h3 class="text-xl font-medium text-slate-800 dark:text-navy-50">
-                            Global CPA Business School | Formación:
-                        </h3>
-                        {{-- <div class="hidden w-full max-w-xs justify-between space-x-4 text-slate-700 dark:text-navy-100 sm:flex" x-data="{activeTab:'tabAll'}">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-xl font-medium text-slate-800 dark:text-navy-50">
+                        Global CPA Business School | Formación:
+                    </h3>
+                    {{-- <div class="hidden w-full max-w-xs justify-between space-x-4 text-slate-700 dark:text-navy-100 sm:flex" x-data="{activeTab:'tabAll'}">
                             <button @click="activeTab = 'tabAll'" class="font-medium tracking-wide text-primary dark:text-accent-light" :class="activeTab === 'tabAll' &amp;&amp; 'text-primary dark:text-accent-light' ">
                             Todos
                             </button>
@@ -27,14 +25,21 @@
                             <button @click="activeTab = 'tabSport'" class="font-medium tracking-wide" :class="activeTab === 'tabSport' &amp;&amp; 'text-primary dark:text-accent-light' ">
                             Programas
                             </button>
-                        </div> --}}
-                    </div>
-                    <!--Courses One Start-->
-                    <x-courses.list-card /> 
-                    <!--Courses One End-->
-              </div>
+                    </div> --}}
+                </div>
+                <!--Courses One Start-->
+                <x-courses.list-card /> 
+                <!--Courses One End-->
+                <br>
+                <a href="{{ route('web_courses') }}">
+                    <button class="boton-degradado-courses">
+                        <b>
+                            <i class="fa fa-graduation-cap" aria-hidden="true" style="font-size: 18px;"></i>
+                            &nbsp; Webinar / Cursos Taller / Programas de Especialización
+                        </b>
+                    </button>
+                </a>
             </div>
-
         </div>
 
 
