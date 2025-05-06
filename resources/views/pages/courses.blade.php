@@ -20,7 +20,7 @@
         <div class="mt-1 grid lg:grid-cols-12 gap-4 sm:gap-5 lg:gap-6">
             <div class="col-span-12 space-y-4 sm:space-y-5 lg:col-span-8 lg:space-y-6 xl:col-span-9">
                 <div>
-                    <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4 lg:gap-6">
+                    <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6">
                         @foreach ($courses as $item )
                         <div class="card group p-3">
                             <div class="flex items-center justify-between space-x-2 px-1">
