@@ -216,6 +216,7 @@ class WebController extends Controller
                         'petty_cash_id' => null,
                         'physical' => 1
                     ]);
+                    $sale->nota_sale_id = $sale_note->id;
 
 
                     $products = $request->get('products');

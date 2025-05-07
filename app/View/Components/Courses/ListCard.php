@@ -27,7 +27,7 @@ class ListCard extends Component
         //     ->orderBy('cms_section_items.position')
         //     ->get();
 
-        $this->courses = OnliItem::with('course.teacher.person')->limit(8)->orderBy('id','desc')->get();
+        $this->courses = OnliItem::with('course.teacher.person')->limit(12)->orderBy('id','desc')->get();
             
     }
 
