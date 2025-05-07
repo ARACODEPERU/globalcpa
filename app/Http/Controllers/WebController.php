@@ -202,6 +202,7 @@ class WebController extends Controller
                     $sale->mercado_payment_id = $payment->id;
                     $sale->mercado_payment = json_encode($payment);
 
+
                     // creando nota de venta
                     $payments = [array("type" => 6, "reference" => null, "amount" => $sale->total)];
                     $sale_note = Sale::create([
@@ -217,7 +218,6 @@ class WebController extends Controller
                         'physical' => 1
                     ]);
                     $sale->nota_sale_id = $sale_note->id;
-
 
                     $products = $request->get('products');
                     foreach ($products as $product) {
@@ -236,12 +236,12 @@ class WebController extends Controller
                             'entity_name_product' => AcaCourse::class
                         ]);
                     }
+                    $sale->save();
 
                     ///enviar correo
                     Mail::to($sale->email)
                         ->send(new ConfirmPurchaseMail(OnliSale::with('details.item')->where('id', $id)->first()));
 
-                    $sale->save();
 
                     return response()->json([
                         'status' => $payment->status,
