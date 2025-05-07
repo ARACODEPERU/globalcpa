@@ -1,4 +1,4 @@
-
+<div>
     <section class="bg-gray-100 flex items-center justify-center  w-full">
         <div class="slider w-full rounded-lg shadow-lg">
             <div class="slides">
@@ -24,3 +24,4 @@
             </div>
         </div>
     </section>
+</div>
