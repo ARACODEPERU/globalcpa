@@ -183,7 +183,8 @@ class SaleCreditNotesController extends Controller
 
         try {
             if ($request->get('note_type') == 3) {
-                $this->store($request);
+                $result = $this->store($request);
+                return response()->json($result);
             } elseif ($request->get('note_type') == 4) {
                 if ($request->get('note_overall_total') > $request->get('document_mto_total')) {
                     $result = $this->store($request);
@@ -227,7 +228,7 @@ class SaleCreditNotesController extends Controller
                     'client_rzn_social'             => $request->get('document_client'),
                     'client_address'                => $request->get('document_client_address'),
                     'client_email'                  => $request->get('document_client_email'),
-                    'invoice_ubl_version'           => '2.0', ///para notas de credito
+                    'invoice_ubl_version'           => $this->ubl, ///para notas de credito
                     'note_type_operation_id'        => $request->get('note_operation_type'),
                     'invoice_type_doc'              => $tido->sunat_id,
                     'invoice_serie'                 => $serie->description,
