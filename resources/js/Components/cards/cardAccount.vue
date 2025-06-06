@@ -1,5 +1,5 @@
 <script setup>
-    import useClipboard from 'vue-clipboard3';
+    import { useClipboard } from 'vue-clipboard3';
     import iconHorizontalDots from '@/Components/vristo/icon/icon-horizontal-dots.vue';
     import Swal from "sweetalert2";
     import { router } from '@inertiajs/vue3'
