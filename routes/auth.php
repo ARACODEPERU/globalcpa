@@ -22,8 +22,8 @@ Route::middleware('guest')->group(function () {
 
     Route::post('login', [AuthenticatedSessionController::class, 'store']);
 
-    Route::get('login_shop', [AuthenticatedSessionController::class, 'create_shop'])
-        ->name('login_shop');
+    Route::get('login_shop', [AuthenticatedSessionController::class, 'create'])
+        ->name('login_shop'); //luego crear un login para la tienda
 
     Route::post('login_shop', [AuthenticatedSessionController::class, 'store_shop']);
 

@@ -77,7 +77,7 @@
                                             <button class="boton-degradado-courses">
                                                 <b>
                                                     <i class="fa fa-cart-plus" aria-hidden="true" style="font-size: 16px;"></i>
-                                                    &nbsp; Añadir al Carrito
+                                                    &nbsp; S/ {{ $item->price }}
                                                 </b>
                                             </button>
                                         </a>

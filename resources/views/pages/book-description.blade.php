@@ -549,7 +549,7 @@
                   </div>
               </div>
             </div>
-            <div class="card">
+            {{-- <div class="card">
               <div class="flex grow flex-col items-center px-4 pb-4 sm:px-5">
                   <img style="width: 100%; margin-top: 20px;" src="{{ asset('themes/webpage/images/amauta_2024.jpg') }}" alt="">
                   <h3 class="pt-3 text-lg font-medium text-slate-700 dark:text-navy-100">
@@ -567,7 +567,7 @@
                     </a>
                   </div>
               </div>
-            </div>
+            </div> --}}
         </div>
 
         <x-social-networks />
