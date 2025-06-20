@@ -69,11 +69,6 @@
       x-cloak
     >
 
-        <!-- App Header Wrapper-->
-        <x-nav />
-
-        <!-- Sidebar -->
-        <x-slidebar />
 
         @yield('content')
 

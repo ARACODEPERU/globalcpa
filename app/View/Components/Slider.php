@@ -12,6 +12,7 @@ class Slider extends Component
     /**
      * Create a new component instance.
      */
+    
     protected $sliders;
 
     public function __construct()

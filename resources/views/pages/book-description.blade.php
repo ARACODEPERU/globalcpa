@@ -2,6 +2,13 @@
 
 @section('content')
 
+
+    <!-- App Header Wrapper-->
+    <x-nav />
+
+    <!-- Sidebar -->
+    <x-slidebar />
+
     <main class="main-content w-full px-[var(--margin-x)] pb-8">
       <br>
         <div class="mt-4 w-full transition-all duration-[.25s] sm:mt-5 lg:mt-6">
