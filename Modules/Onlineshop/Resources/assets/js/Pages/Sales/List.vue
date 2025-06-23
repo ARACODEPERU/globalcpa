@@ -339,7 +339,7 @@
             </template>
             <template #content>
                 <div class="border rounded-lg py-4 px-4 dark:border-gray-700 mb-6">
-                    <h4 class="mb-4">Información del comprador</h4>
+                    <h4 class="mb-4">Información para la Boleta o Factura</h4>
                     <div class="space-y-3">
                         <dl class="flex flex-col sm:flex-row gap-1">
                             <dt class="min-w-40">
