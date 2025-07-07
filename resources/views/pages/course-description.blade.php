@@ -14,7 +14,7 @@
             <div class="mx-auto mt-8 grid w-full grid-cols-1 gap-4 sm:grid-cols-1 sm:gap-5 lg:gap-6">
                 <div class="mx-auto mt-8 grid w-full grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:gap-6">
                     <div style="place-items: center;">
-                        <img src="{{ asset('storage/'.$item->course->image) }}" alt="">
+                        <img src="{{ asset('storage/' . $item->course->image) }}" alt="">
                     </div>
                     <div class="p-4 sm:p-5">
                         <br>
@@ -24,15 +24,15 @@
                         <h1 class="title_aracode" style="font-size: 45px; line-height: 1.1; font-weight: 700;">
                             {{ $item->name }}
                         </h1>
-                            <p class="mt-6" style="font-size: 19px; line-height: 1.3;">
-                                {{ $item->description }}
-                            </p>
+                        <p class="mt-6" style="font-size: 19px; line-height: 1.3;">
+                            {{ $item->description }}
+                        </p>
                         <br>
                         @if ($item->price)
                             <h2 style="font-size: 35px; line-height: 1.1; font-weight: 500;">
                                 S/ {{ $item->price }}
                             </h2>
-                            @else
+                        @else
                             <h2 style="font-size: 35px; line-height: 1.1; font-weight: 500;">
                                 Free
                             </h2>
@@ -41,7 +41,8 @@
                         <div class="row">
                             @if ($item->price)
                                 <div class="col-md-6" style="padding: 10px 0px;">
-                                    <a  onclick="agregarAlCarrito({ id: {{ $item->id }}, nombre: '{{ $item->name }}', precio: {{ $item->price }} })">
+                                    <a
+                                        onclick="agregarAlCarrito({ id: {{ $item->id }}, nombre: '{{ $item->name }}', precio: {{ $item->price }} })">
                                         <button class="boton-degradado-courses">
                                             <b>
                                                 <i class="fa fa-cart-plus" aria-hidden="true" style="font-size: 16px;"></i>
@@ -53,7 +54,7 @@
                                         <button class="boton-degradado-courses"><b>! Comprar Ahora¡</b></button>
                                     </a> --}}
                                 </div>
-                                @else
+                            @else
                                 <div class="col-md-6" style="padding: 10px 0px;">
                                     <a href="">
                                         <button class="boton-degradado-courses">
@@ -66,22 +67,59 @@
                                 </div>
                             @endif
                             @if ($course->brochure->path_file)
-                            <div class="col-md-6" style="padding: 10px 0px;">
-                                <a href="{{ $course->brochure->path_file }}">
+                                <div class="col-md-6" style="padding: 10px 0px;">
+                                    {{-- <a href="{{ $course->brochure->path_file }}">
                                     <button class="boton-degradado-info">
                                         <b>
                                             <i class="fa fa-edit" aria-hidden="true" style="font-size: 16px;"></i>
                                             &nbsp; Descargar Brochure
                                         </b>
                                     </button>
-                                </a>
-                            </div>
+                                    </a> --}}
+                                    <button class="boton-degradado-info" data-bs-target="#exampleModalToggle"
+                                        data-bs-toggle="modal">
+                                        <b>
+                                            <i class="fa fa-edit" aria-hidden="true" style="font-size: 16px;"></i>
+                                            &nbsp; Descargar Brochure
+                                        </b>
+                                    </button>
+                                </div>
                             @endif
                         </div>
                     </div>
                 </div>
             </div>
         </section>
+
+        <div class="modal fade" id="exampleModalToggle" aria-hidden="true" aria-labelledby="exampleModalToggleLabel"
+            tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalToggleLabel">Aqui que carga el titulo del
+                            curso/diplomado/etc</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="mb-3">
+                                <label for="exampleInputName" class="form-label">Nombre Completo</label>
+                                <input type="text" class="form-control" id="exampleInputName">
+                            </div>
+                            <div class="mb-3">
+                                <label for="exampleInputPhone" class="form-label">Teléfono</label>
+                                <input type="text" class="form-control" id="exampleInputPhone">
+                            </div>
+                            <div class="mb-3">
+                                <label for="exampleInputEmail1" class="form-label">Correo Electrónico</label>
+                                <input type="email" class="form-control" id="exampleInputEmail1">
+                            </div>
+                            <button type="submit" class="boton-degradado-courses">Descargar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         {{-- DURACION --}}
         {{-- <section style="padding: 30px 0px;">
@@ -262,11 +300,12 @@
                                     <span class="accordion-icon-aracode">►</span>
                                     PRESENTACIÓN
                                 </div>
-                                <div class="accordion-content-aracode" aria-hidden="false" style="max-height: 100%; padding: 25px 20px;">
+                                <div class="accordion-content-aracode" aria-hidden="false"
+                                    style="max-height: 100%; padding: 25px 20px;">
                                     @if ($course->brochure)
-                                    <p class="mt-1" style="font-size: 17px; line-height: 1.3;">
-                                        {!! $course->brochure->presentation !!}
-                                    </p>
+                                        <p class="mt-1" style="font-size: 17px; line-height: 1.3;">
+                                            {!! $course->brochure->presentation !!}
+                                        </p>
                                     @endif
                                     <br>
                                 </div>
@@ -278,9 +317,9 @@
                                 </div>
                                 <div class="accordion-content-aracode" aria-hidden="true">
                                     @if ($course->brochure)
-                                    <p class="mt-1" style="font-size: 17px; line-height: 1.3;">
-                                        {!! $course->brochure->curriculum_plan !!}
-                                    </p>
+                                        <p class="mt-1" style="font-size: 17px; line-height: 1.3;">
+                                            {!! $course->brochure->curriculum_plan !!}
+                                        </p>
                                     @endif
                                     <br>
                                 </div>
@@ -297,7 +336,8 @@
                                                 <div class="col-md-2">
                                                     <a href="">
                                                         <img style="width: 150px; margin-bottom: 10px; margin-left: 10px;"
-                                                            src="{{ asset('storage/'. $teach->teacher->person->image) }}" alt="img">
+                                                            src="{{ asset('storage/' . $teach->teacher->person->image) }}"
+                                                            alt="img">
                                                     </a>
                                                 </div>
                                                 <div class="col-md-10">
@@ -308,10 +348,10 @@
                                                     </h2>
                                                     @if (count($teach->teacher->person->resumes))
                                                         @foreach ($teach->teacher->person->resumes as $resume)
-                                                        <div class="list-item-aracode" style="font-size: 17px;">
-                                                            <span class="list-icon-aracode">•</span>
-                                                            {{ $resume->description }}
-                                                        </div>
+                                                            <div class="list-item-aracode" style="font-size: 17px;">
+                                                                <span class="list-icon-aracode">•</span>
+                                                                {{ $resume->description }}
+                                                            </div>
                                                         @endforeach
                                                     @endif
                                                 </div>
@@ -344,7 +384,8 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-12">
-                        <h2 class="title_aracode" style="font-size: 35px; line-height: 1.5; font-weight: 700; text-align: center; margin-top: 10px; margin-bottom: 30px;">
+                        <h2 class="title_aracode"
+                            style="font-size: 35px; line-height: 1.5; font-weight: 700; text-align: center; margin-top: 10px; margin-bottom: 30px;">
                             INCLUYE
                         </h2>
                     </div>
@@ -353,13 +394,9 @@
                     <div class="col-md-3">
                         <div class="card" style="place-items: center; padding: 40px 10px;">
                             <img x-show="!$store.global.isDarkModeEnabled" style="width: 80px;"
-                                    src="{{ asset ('themes/webpage/images/icons/chat-en-vivo.png') }}"
-                                    alt=""
-                            >
+                                src="{{ asset('themes/webpage/images/icons/chat-en-vivo.png') }}" alt="">
                             <img x-show="$store.global.isDarkModeEnabled" style="width: 80px;"
-                                    src="{{ asset ('themes/webpage/images/icons/chat-en-vivo-blanco.png') }}"
-                                    alt=""
-                            >
+                                src="{{ asset('themes/webpage/images/icons/chat-en-vivo-blanco.png') }}" alt="">
                             <p style="font-size: 17px; line-height: 1.3; text-align:center; margin-top: 10px;">
                                 Formación práctica en vivo con atención a tus consultas.
                             </p>
@@ -368,13 +405,9 @@
                     <div class="col-md-3">
                         <div class="card" style="place-items: center; padding: 40px 10px;">
                             <img x-show="!$store.global.isDarkModeEnabled" style="width: 80px;"
-                                    src="{{ asset ('themes/webpage/images/icons/grabacion.png') }}"
-                                    alt=""
-                            >
+                                src="{{ asset('themes/webpage/images/icons/grabacion.png') }}" alt="">
                             <img x-show="$store.global.isDarkModeEnabled" style="width: 80px;"
-                                    src="{{ asset ('themes/webpage/images/icons/grabacion-blanco.png') }}"
-                                    alt=""
-                            >
+                                src="{{ asset('themes/webpage/images/icons/grabacion-blanco.png') }}" alt="">
                             <p style="font-size: 17px; line-height: 1.3; text-align:center; margin-top: 10px;">
                                 Acceso permanente a las grabaciones de las sesiones desde nuestra plataforma.
                             </p>
@@ -383,13 +416,10 @@
                     <div class="col-md-3">
                         <div class="card" style="place-items: center; padding: 40px 10px;">
                             <img x-show="!$store.global.isDarkModeEnabled" style="width: 80px;"
-                                    src="{{ asset ('themes/webpage/images/icons/descarga-de-archivos.png') }}"
-                                    alt=""
-                            >
+                                src="{{ asset('themes/webpage/images/icons/descarga-de-archivos.png') }}" alt="">
                             <img x-show="$store.global.isDarkModeEnabled" style="width: 80px;"
-                                    src="{{ asset ('themes/webpage/images/icons/descarga-de-archivos-blanco.png') }}"
-                                    alt=""
-                            >
+                                src="{{ asset('themes/webpage/images/icons/descarga-de-archivos-blanco.png') }}"
+                                alt="">
                             <p style="font-size: 17px; line-height: 1.3; text-align:center; margin-top: 10px;">
                                 Materiales disponibles para descarga inmediata.
                             </p>
@@ -398,13 +428,9 @@
                     <div class="col-md-3">
                         <div class="card" style="place-items: center; padding: 40px 10px;">
                             <img x-show="!$store.global.isDarkModeEnabled" style="width: 80px;"
-                                    src="{{ asset ('themes/webpage/images/icons/ganador.png') }}"
-                                    alt=""
-                            >
+                                src="{{ asset('themes/webpage/images/icons/ganador.png') }}" alt="">
                             <img x-show="$store.global.isDarkModeEnabled" style="width: 80px;"
-                                    src="{{ asset ('themes/webpage/images/icons/ganador-blanco.png') }}"
-                                    alt=""
-                            >
+                                src="{{ asset('themes/webpage/images/icons/ganador-blanco.png') }}" alt="">
                             <p style="font-size: 17px; line-height: 1.3; text-align:center; margin-top: 10px;">
                                 Certificado de <br>participación.
                             </p>
@@ -423,17 +449,20 @@
                     <div class="col-md-4">
                         <br>
                         <div style="padding: 40px 20px;">
-                            <h2 class="title_aracode" style="font-size: 30px; line-height: 1.5; font-weight: 700; margin-top: 10px; margin-bottom: 10px;">
+                            <h2 class="title_aracode"
+                                style="font-size: 30px; line-height: 1.5; font-weight: 700; margin-top: 10px; margin-bottom: 10px;">
                                 ¡Comparte tus logros con un certificado!
                             </h2>
                             <p style="font-size: 17px; line-height: 1.3; margin-top: 10px;">
-                                Cuando termines el curso tendrás acceso al certificado digital para compartirlo con tu familia, amigos, empleadores y la comunidad.
+                                Cuando termines el curso tendrás acceso al certificado digital para compartirlo con tu
+                                familia, amigos, empleadores y la comunidad.
                             </p>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div style="place-items: center; padding: 40px 20px;">
-                            <img style="width: 100%;" src="{{ asset('themes/webpage/images/certificado.jpeg') }}" alt="">
+                            <img style="width: 100%;" src="{{ asset('themes/webpage/images/certificado.jpeg') }}"
+                                alt="">
                             <p style="font-size: 17px; line-height: 1.3; margin-top: 10px;">
                                 <b>* IMAGEN REFERENCIAL</b>
                             </p>
@@ -450,7 +479,8 @@
                 <div class="row">
                     @if ($course->price)
                         <div class="col-md-6" style="padding: 10px 0px;">
-                            <a  onclick="agregarAlCarrito({ id: {{ $item->id }}, nombre: '{{ $item->name }}', precio: {{ $item->price }} })">
+                            <a
+                                onclick="agregarAlCarrito({ id: {{ $item->id }}, nombre: '{{ $item->name }}', precio: {{ $item->price }} })">
                                 <button class="boton-degradado-courses">
                                     <b>
                                         <i class="fa fa-cart-plus" aria-hidden="true" style="font-size: 16px;"></i>
@@ -459,7 +489,7 @@
                                 </button>
                             </a>
                         </div>
-                        @else
+                    @else
                         <div class="col-md-6" style="padding: 10px 0px;">
                             <a href="">
                                 <button class="boton-degradado-courses">
@@ -472,16 +502,22 @@
                         </div>
                     @endif
                     @if ($course->brochure->path_file)
-                    <div class="col-md-6" style="padding: 10px 0px;">
-                        <a href="{{ $course->brochure->path_file }}">
-                            <button class="boton-degradado-info">
+                        <div class="col-md-6" style="padding: 10px 0px;">
+                            {{-- <a href="{{ $course->brochure->path_file }}">
+                                <button class="boton-degradado-info">
+                                    <b>
+                                        <i class="fa fa-edit" aria-hidden="true" style="font-size: 16px;"></i>
+                                        &nbsp; Descargar Brochure
+                                    </b>
+                                </button>
+                            </a> --}}
+                            <button class="boton-degradado-info" data-bs-target="#exampleModalToggle" data-bs-toggle="modal">
                                 <b>
                                     <i class="fa fa-edit" aria-hidden="true" style="font-size: 16px;"></i>
                                     &nbsp; Descargar Brochure
                                 </b>
                             </button>
-                        </a>
-                    </div>
+                        </div>
                     @endif
 
                 </div>
@@ -495,7 +531,6 @@
 
 
     <script>
-
         let currentIndex = 0;
         const slides = document.querySelector('.slides');
         const totalSlides = document.querySelectorAll('.slide').length;
@@ -507,41 +542,51 @@
         }
 
         setInterval(showNextSlide, 3000); // Cambia cada 3 segundos
-
     </script>
 
 
     <script>
+        const headers = document.querySelectorAll('.accordion-header-aracode');
+        headers.forEach(header => {
+            header.addEventListener('click', function() {
+                const content = this.nextElementSibling;
+                const isVisible = content.style.maxHeight;
 
-    const headers = document.querySelectorAll('.accordion-header-aracode');
-    headers.forEach(header => {
-        header.addEventListener('click', function() {
-            const content = this.nextElementSibling;
-            const isVisible = content.style.maxHeight;
+                // Ocultar todos los contenidos y resetear iconos
+                document.querySelectorAll('.accordion-content-aracode').forEach(item => {
+                    item.style.maxHeight = null;
+                    item.style.padding = '0';
+                    item.setAttribute('aria-hidden', 'true');
+                });
+                headers.forEach(h => {
+                    h.classList.remove('active');
+                    h.querySelector('.accordion-icon-aracode').textContent =
+                        '►'; // Restablecer icono
+                    h.setAttribute('aria-expanded', 'false');
+                });
 
-            // Ocultar todos los contenidos y resetear iconos
-            document.querySelectorAll('.accordion-content-aracode').forEach(item => {
-                item.style.maxHeight = null;
-                item.style.padding = '0';
-                item.setAttribute('aria-hidden', 'true');
+                // Mostrar el contenido del header clicado
+                if (!isVisible) {
+                    content.style.maxHeight = content.scrollHeight + "px";
+                    content.style.padding = '15px';
+                    this.classList.add('active'); // Añadir clase activa al encabezado clicado
+                    this.querySelector('.accordion-icon-aracode').textContent =
+                        '▼'; // Cambiar icono al expandido
+                    this.setAttribute('aria-expanded', 'true');
+                    content.setAttribute('aria-hidden', 'false');
+                }
             });
-            headers.forEach(h => {
-                h.classList.remove('active');
-                h.querySelector('.accordion-icon-aracode').textContent = '►'; // Restablecer icono
-                h.setAttribute('aria-expanded', 'false');
-            });
-
-            // Mostrar el contenido del header clicado
-            if (!isVisible) {
-                content.style.maxHeight = content.scrollHeight + "px";
-                content.style.padding = '15px';
-                this.classList.add('active'); // Añadir clase activa al encabezado clicado
-                this.querySelector('.accordion-icon-aracode').textContent = '▼'; // Cambiar icono al expandido
-                this.setAttribute('aria-expanded', 'true');
-                content.setAttribute('aria-hidden', 'false');
-            }
         });
-    });
+    </script>
+
+
+    <script>
+        const myModal = document.getElementById('myModal')
+        const myInput = document.getElementById('myInput')
+
+        myModal.addEventListener('shown.bs.modal', () => {
+            myInput.focus()
+        })
     </script>
 
 @stop
