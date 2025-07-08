@@ -95,6 +95,11 @@ class WebPageController extends Controller
     {
         return view('pages/book-description');
     }
+    
+    public function privacypolicies()
+    {
+        return view('pages/privacy-policies');
+    }
 
     public function courses()
     {
