@@ -96,25 +96,26 @@
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalToggleLabel">Aqui que carga el titulo del
-                            curso/diplomado/etc</h1>
+                        <h1 class="modal-title fs-5" id="exampleModalToggleLabel">{{ $item->name }}</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form>
+                        <form id="pageContactForm">
                             <div class="mb-3">
                                 <label for="exampleInputName" class="form-label">Nombre Completo</label>
-                                <input type="text" class="form-control" id="exampleInputName">
+                                <input type="text" class="form-control" id="exampleInputName" name="fullname">
                             </div>
                             <div class="mb-3">
                                 <label for="exampleInputPhone" class="form-label">Teléfono</label>
-                                <input type="text" class="form-control" id="exampleInputPhone">
+                                <input type="text" class="form-control" id="exampleInputPhone" name="phone">
                             </div>
                             <div class="mb-3">
                                 <label for="exampleInputEmail1" class="form-label">Correo Electrónico</label>
-                                <input type="email" class="form-control" id="exampleInputEmail1">
+                                <input type="email" class="form-control" id="exampleInputEmail1" name="email">
                             </div>
-                            <button type="submit" class="boton-degradado-courses">Descargar</button>
+                            <input type="hidden" name="subject" value="{{ $item->name }}">
+                            <input type="hidden" name="message" value="Descargué el Brochure">
+                            <button type="submit" class="boton-degradado-courses" id="submitPageContactButton">Descargar Brochure</button>
                         </form>
                     </div>
                 </div>
@@ -588,5 +589,65 @@
             myInput.focus()
         })
     </script>
+
+<script>
+    let form = document.getElementById('pageContactForm');
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        var formulario = document.getElementById('pageContactForm');
+        var formData = new FormData(formulario);
+
+        // Deshabilitar el botón
+        var submitButton = document.getElementById('submitPageContactButton');
+        submitButton.disabled = true;
+        submitButton.style.opacity = 0.25;
+
+        // Crear una nueva solicitud XMLHttpRequest
+        var xhr = new XMLHttpRequest();
+
+        // Configurar la solicitud POST al servidor
+        xhr.open('POST', "{{ route('apisubscriber') }}", true);
+
+        // Configurar la función de callback para manejar la respuesta
+        xhr.onload = function() {
+            // Habilitar nuevamente el botón
+            submitButton.disabled = false;
+            submitButton.style.opacity = 1;
+            if (xhr.status === 200) {
+                var response = JSON.parse(xhr.responseText);
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Enhorabuena',
+                    text: response.message,
+                    customClass: {
+                        container: 'sweet-modal-zindex' // Clase personalizada para controlar el z-index
+                    }
+                });
+                formulario.reset();
+            } else if (xhr.status === 422) {
+                var errorResponse = JSON.parse(xhr.responseText);
+                // Maneja los errores de validación aquí, por ejemplo, mostrando los mensajes de error en algún lugar de tu página.
+                var errorMessages = errorResponse.errors;
+                var errorMessageContainer = document.getElementById('messagePageContact');
+                errorMessageContainer.innerHTML = 'Errores de validación:<br>';
+                for (var field in errorMessages) {
+                    if (errorMessages.hasOwnProperty(field)) {
+                        errorMessageContainer.innerHTML += field + ': ' + errorMessages[field].join(', ') +
+                            '<br>';
+                    }
+                }
+            } else {
+                console.error('Error en la solicitud: ' + xhr.status);
+            }
+            const downloadUrl = "{{ $course->brochure->path_file }}";
+            window.open(downloadUrl, '_blank'); // '_blank' abre en nueva pestaña
+
+        };
+
+        // Enviar la solicitud al servidor
+        xhr.send(formData);
+    });
+</script>
 
 @stop
