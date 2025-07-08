@@ -16,11 +16,12 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
 
+    {{-- <link rel="stylesheet" href="{{ asset('themes/webpage/bootstrap-5.3.3/css/bootstrap-grid.css') }}" /> --}}
+    <link rel="stylesheet" href="{{ asset('themes/webpage/bootstrap-5.3.3/css/bootstrap.css') }}" />
     <!-- CSS Assets -->
     <link rel="stylesheet" href="{{ asset('themes/webpage/css/app.css') }}" />
 
 
-    <link rel="stylesheet" href="{{ asset('themes/webpage/bootstrap-5.3.3/css/bootstrap-grid.css') }}" />
     <link rel="stylesheet" href="{{ asset('themes/webpage/css/aracode.css') }}" />
 
     <!-- Javascript Assets -->
@@ -2338,9 +2339,12 @@
       window.addEventListener("DOMContentLoaded", () => Alpine.start());
     </script>
 
+
     {{--
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script> --}}
+
+    <script src="{{ asset('themes/webpage/bootstrap-5.3.3/js/bootstrap.js') }}"></script>
 
   </body>
 </html>
