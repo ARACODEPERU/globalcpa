@@ -25,7 +25,7 @@
 
     <!-- Javascript Assets -->
     <!-- Carrito JS -->
-    <script src="{{ asset('themes/globalcpa/carrito.js') }}"></script>
+    <script src="{{ asset('themes/globalcpa/carrito.js') }}" defer></script>
     <script src="{{ asset('themes/webpage/js/app.js') }}" defer></script>
 
 
@@ -73,7 +73,7 @@
         @yield('content')
 
         <!--Whatsapp Start-->
-        <x-whatsapp /> 
+        <x-whatsapp />
         <!--Whatsapp End-->
 
         <!-- Mobile Searchbar -->

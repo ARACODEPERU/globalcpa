@@ -103,13 +103,17 @@
                                                 let products = @json($products);
                                                 return new Promise((resolve, reject) => {
                                                     cardFormData.products = products;
+                                                    const personInvoice = @json($personInvoice ?? null);
                                                     fetch("{{ route('web_process_payment', [$sale_id, $student_id]) }}", {
                                                             method: "PUT",
                                                             headers: {
                                                                 "Content-Type": "application/json",
                                                                 "X-CSRF-TOKEN": "{{ csrf_token() }}"
                                                             },
-                                                            body: JSON.stringify(cardFormData)
+                                                            body: JSON.stringify({ // Envía un único objeto con ambos datos
+                                                                                    cardFormData: cardFormData,
+                                                                                    personInvoice: personInvoice
+                                                                                })
                                                         }).then((response) => {
                                                             if (!response.ok) {
                                                                 return response.json().then(error => {
@@ -416,7 +420,7 @@
     </script>
     {!! htmlScriptTagJsApi([
         'callback_then' => 'callbackThen',
-    
+
         'callback_catch' => 'callbackCatch',
     ]) !!}
 

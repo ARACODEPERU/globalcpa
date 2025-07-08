@@ -161,3 +161,119 @@ function actualizarContador(valor) {
         console.log("Error al actualizar el contador del carrito: " + error);
     }
 }
+
+
+
+function actualizarCamposOcultos(tipo){
+    document.getElementById("nombreCompleto-d").value = document.getElementById('nombre').value;
+    document.getElementById("dni-d").value = document.getElementById('dni').value;
+    if(tipo==1){ //1 es RUC!°!!!
+        document.getElementById("email-d").value = document.getElementById('email-ruc').value;
+    }else{
+        document.getElementById("email-d").value = document.getElementById('email-dni').value;
+    }
+    document.getElementById("ruc-d").value = document.getElementById('ruc').value
+    document.getElementById("razon-social-d").value = document.getElementById('razon-social').value;
+    document.getElementById("statusRuc-d").value = document.getElementById('statusRuc').checked;
+    document.getElementById("conditionRuc-d").value = document.getElementById('conditionRuc').checked;
+}
+
+function document_type(tipo){
+    document.getElementById("document_type-d").value = tipo;
+    if(tipo==2){ //2 es dni q es RUC
+        document.getElementById("ruc-d").value = null;
+        document.getElementById("razon-social-d").value = null;
+        document.getElementById('razon-social').value = null;
+        document.getElementById("email-ruc").value=null;
+    }else{
+        document.getElementById("email-dni").value=null;
+        document.getElementById('nombre').value = null;
+    }
+}
+
+
+function searchPerson(documentType, number) {
+    // Validación básica de parámetros
+    if (!documentType || !number) {
+        console.error('Faltan parámetros requeridos');
+        alert('Tipo de documento y número son requeridos');
+        return;
+    }
+
+    // Mostrar carga/espera
+    const searchButton = document.querySelector('#search-button');
+    const originalButtonHTML = searchButton ? searchButton.innerHTML : '';
+
+    if (searchButton) {
+        searchButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Buscando...';
+        searchButton.disabled = true;
+    }
+
+    // Configurar la petición AJAX
+    $.ajax({
+        url: window.searchPersonRoute || '{{ route("sales_search_person_apies") }}', // Mejor práctica para rutas
+        type: 'POST',
+        dataType: 'json',
+        data: {
+            document_type: documentType,
+            number: number
+        },
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(response) {
+            if (!response) {
+                console.error('Respuesta vacía del servidor');
+                return;
+            }
+
+            // Actualizar campos con la respuesta
+            if (response.person) {
+                // Razón Social/Nombre
+                if (response.person.razonSocial) {
+                    $('#razon-social').val(response.person.razonSocial).trigger('change');
+                }
+
+                // Estado (Activo)
+                updateCheckboxStatus('#activo', response.person.estado, 'text-green-600', 'text-red-600');
+
+                // Condición (Habido)
+                updateCheckboxStatus('#habido', response.person.condicion, 'text-green-600', 'text-red-600');
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Error en la búsqueda:', error, xhr.responseText);
+            showErrorAlert('No se pudo obtener la información. Por favor intente nuevamente.');
+        },
+        complete: function() {
+            // Restaurar botón a estado original
+            if (searchButton) {
+                searchButton.innerHTML = originalButtonHTML;
+                searchButton.disabled = false;
+            }
+        }
+    });
+}
+
+// Función auxiliar para actualizar checkboxes
+function updateCheckboxStatus(selector, value, successClass, errorClass) {
+    const checkbox = $(selector);
+    const isChecked = value === true || value === 'true';
+
+    checkbox.prop('checked', isChecked);
+
+    const label = checkbox.next('label');
+    label.removeClass('text-gray-700');
+
+    if (isChecked) {
+        label.addClass(successClass).removeClass(errorClass);
+    } else {
+        label.addClass(errorClass).removeClass(successClass);
+    }
+}
+
+// Función auxiliar para mostrar errores
+function showErrorAlert(message) {
+    // Puedes reemplazar esto con tu sistema de notificaciones preferido
+    alert(message);
+}

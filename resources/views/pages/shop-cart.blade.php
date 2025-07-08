@@ -105,6 +105,134 @@
 
                     </div>
 
+                    <!-- Inicio FActura o Boleta -->
+
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+                    <div class="max-w mx-auto bg-white rounded-lg shadow-md overflow-hidden">
+                        <!-- Tabs -->
+                        <div class="flex border-b">
+                            <button onclick="document_type(2)"
+                            id="boleta-tab" class="tab-button active py-4 px-6 font-medium text-sm focus:outline-none bg-blue-50 text-blue-600 border-b-2 border-blue-600">
+                                <i class="fas fa-receipt mr-2"></i>Boleta
+                            </button>
+                            <button onclick="document_type(1)"
+                            id="factura-tab" class="tab-button py-4 px-6 font-medium text-sm focus:outline-none text-gray-500 hover:text-gray-700 hover:bg-gray-50">
+                                <i class="fas fa-file-invoice mr-2"></i>Factura
+                            </button>
+                        </div>
+
+                        <!-- Boleta Form -->
+                        <div id="boleta-form" class="tab-content p-6">
+                            <div class="space-y-4">
+                                <div>
+                                    <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre completo</label>
+                                    <input
+                                    oninput="actualizarCamposOcultos(2)"
+                                    type="text" id="nombre" name="nombre"
+                                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                </div>
+
+                                <div>
+                                    <label for="dni" class="block text-sm font-medium text-gray-700">DNI</label>
+                                    <input
+                                    oninput="actualizarCamposOcultos(2)"
+                                    type="text" id="dni" name="dni"
+                                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                </div>
+
+                                <div>
+                                    <label for="email-boleta" class="block text-sm font-medium text-gray-700">Email</label>
+                                    <input
+                                    oninput="actualizarCamposOcultos(2)"
+                                    type="email" id="email-dni" name="email-boleta"
+                                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Factura Form -->
+                        <div id="factura-form" class="tab-content p-6 hidden">
+                            <div class="space-y-4">
+                                <div>
+                                    <label for="ruc" class="block text-sm font-medium text-gray-700">RUC</label>
+                                    <div class="flex mt-1">
+                                        <input
+                                        oninput="actualizarCamposOcultos(1)"
+                                        type="text" id="ruc" name="ruc"
+                                        class="block w-full border border-gray-300 rounded-l-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                        <button onclick="searchPerson(7, document.getElementById('ruc').value)" id="search-button" type="button" class="inline-flex items-center px-4 py-2 border border-l-0 border-gray-300 rounded-r-md bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                           <span style="color: black;">Buscar</span>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label for="razon-social" class="block text-sm font-medium text-gray-700">Razón Social/Nombre</label>
+                                    <input
+                                    oninput="actualizarCamposOcultos(1)"
+                                    type="text" id="razon-social" name="razon-social"
+                                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                </div>
+
+                                <div>
+                                    <label for="email-factura" class="block text-sm font-medium text-gray-700">Email</label>
+                                    <input
+                                    oninput="actualizarCamposOcultos(1)"
+                                    type="email" id="email-ruc" name="email-factura"
+                                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                </div>
+
+                                <!-- Estados -->
+                                <div class="p-6 border-t bg-gray-50">
+                                    <div class="flex space-x-6">
+                                        <div class="flex items-center">
+                                            <input oninput="actualizarCamposOcultos(1)"
+                                            disabled type="checkbox" id="statusRuc" name="habido"
+                                                   class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded disabled:opacity-100 disabled:cursor-not-allowed appearance-none checked:bg-blue-600 checked:border-blue-600">
+                                            <label for="habido" class="ml-2 block text-sm text-gray-700">Habido</label>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <input oninput="actualizarCamposOcultos(1)"
+                                            disabled type="checkbox" id="conditionRuc" name="activo"
+                                                   class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded disabled:opacity-100 disabled:cursor-not-allowed appearance-none checked:bg-blue-600 checked:border-blue-600">
+                                            <label for="activo" class="ml-2 block text-sm text-gray-700">Activo</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <script>
+
+
+
+                    </script>
+                    <script>
+                        // Tab functionality
+                        document.querySelectorAll('.tab-button').forEach(button => {
+                            button.addEventListener('click', () => {
+                                // Remove active class from all buttons and hide all forms
+                                document.querySelectorAll('.tab-button').forEach(btn => {
+                                    btn.classList.remove('active', 'bg-blue-50', 'text-blue-600', 'border-b-2', 'border-blue-600');
+                                    btn.classList.add('text-gray-500', 'hover:text-gray-700', 'hover:bg-gray-50');
+                                });
+
+                                document.querySelectorAll('.tab-content').forEach(content => {
+                                    content.classList.add('hidden');
+                                });
+
+                                // Add active class to clicked button and show corresponding form
+                                button.classList.add('active', 'bg-blue-50', 'text-blue-600', 'border-b-2', 'border-blue-600');
+                                button.classList.remove('text-gray-500', 'hover:text-gray-700', 'hover:bg-gray-50');
+
+                                const formId = button.id.replace('-tab', '-form');
+                                document.getElementById(formId).classList.remove('hidden');
+                            });
+                        });
+                    </script>
+
+                    <!-- Fin FActura o Boleta -->
 
                 </div>
             </div>
@@ -144,6 +272,15 @@
                                 <input type="hidden" name="recaptcha_token" id="recaptcha_token">
                                 <input type="text" name="names" value="{{ Auth::user()->name }}" style="display: none">
                                 <div id="divCartHidden" style="display: none"></div>
+                                <input type="hidden" name="ruc" id="ruc-d" value="" >
+                                <input type="hidden" name="dni" id="dni-d" value="">
+                                <input type="hidden" name="nombreCompleto" id="nombreCompleto-d" value="">
+                                <input type="hidden" name="document_type" id="document_type-d" value="1">
+                                <input type="hidden" name="razonSocial" id="razon-social-d" value="">
+                                <input type="hidden" name="email" id="email-d" value="">
+                                <input type="hidden" name="statusRuc" id="statusRuc-d" value="0">
+                                <input type="hidden" name="conditionRuc" id="conditionRuc-d" value="0">
+
                                 <div class="row">
                                     <div class="pt-8 col-md-12">
                                         <p class="text-xs+">Correo Electrónico</p>

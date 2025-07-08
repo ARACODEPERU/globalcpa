@@ -164,9 +164,13 @@ class WebController extends Controller
         return $centeredText;
     }
 
-    public function processPayment(Request $request, $id)
+    public function processPayment(Request $request, $id, $student_id)
     {
+        $data = $request->input('cardFormData');
         MercadoPagoConfig::setAccessToken(env('MERCADOPAGO_TOKEN'));
+        $products = $data['products'];
+        $data = (array)$data;
+
 
         $client = new PaymentClient();
         $sale = OnliSale::find($id);
@@ -178,48 +182,57 @@ class WebController extends Controller
             try {
 
                 $payment = $client->create([
-                    "token" => $request->get('token'),
-                    "issuer_id" => $request->get('issuer_id'),
-                    "payment_method_id" => $request->get('payment_method_id'),
-                    "transaction_amount" => (float) $request->get('transaction_amount'),
-                    "installments" => $request->get('installments'),
-                    "payer" => $request->get('payer')
+                    "token" => $data['token'],
+                    "issuer_id" => $data['issuer_id'],
+                    "payment_method_id" => $data['payment_method_id'],
+                    "transaction_amount" => (float) $data['transaction_amount'],
+                    "installments" => $data['installments'],
+                    "payer" => $data['payer'],
                 ]);
 
 
 
                 if ($payment->status == 'approved') {
 
-                    $sale->email = $request->get('payer')['email'];
-                    $sale->total = $request->get('transaction_amount');
-                    $sale->identification_type = $request->get('payer')['identification']['type'];
-                    $sale->identification_number = $request->get('payer')['identification']['number'];
+                    $sale->email = $data['payer']['email'];
+                    $sale->total = $data['transaction_amount'];
+                    $sale->identification_type = $data['payer']['identification']['type'];
+                    $sale->identification_number = $data['payer']['identification']['number'];
                     $sale->response_status = $payment->status;
-                    $sale->response_id = $request->get('collection_id');
+                    $sale->response_id = null; //$data['collection_id']; de donde sale collection_id???
                     $sale->response_date_approved = Carbon::now()->format('Y-m-d');
                     $sale->response_payer = json_encode($request->all());
-                    $sale->response_payment_method_id = $request->get('payment_type');
+                    $sale->response_payment_method_id = null; //$data['payment_type'];
                     $sale->mercado_payment_id = $payment->id;
                     $sale->mercado_payment = json_encode($payment);
 
 
                     // creando nota de venta
+
+                    $personInvoice = $request->input('personInvoice');
+                    $personInvoice = json_decode($personInvoice);
                     $payments = [array("type" => 6, "reference" => null, "amount" => $sale->total)];
                     $sale_note = Sale::create([
                         'sale_date' => Carbon::now()->format('Y-m-d'),
                         'user_id' => Auth::id(),
                         'client_id' => Auth::user()->person_id,
                         'local_id' => 1,
-                        'total' => $request->get('transaction_amount'),
-                        'advancement' => $request->get('transaction_amount'),
+                        'total' => $data['transaction_amount'],
+                        'advancement' => $data['transaction_amount'],
                         'total_discount' => 0,
                         'payments' => json_encode($payments),
                         'petty_cash_id' => null,
-                        'physical' => 1
+                        'physical' => 1,
+                        'invoice_razon_social' => $personInvoice ? $personInvoice->razonSocial : null,
+                        'invoice_ruc' => $personInvoice ? $personInvoice->ruc : null,
+                        'invoice_direccion' => null,
+                        'invoice_ubigeo' => null,
+                        'invoice_type' => $personInvoice ? $personInvoice->document_type : null
                     ]);
+
                     $sale->nota_sale_id = $sale_note->id;
 
-                    $products = $request->get('products');
+
                     foreach ($products as $product) {
                         $this->matricular_curso($product, $product['student_id']);
                         //llenando los detalles de la nota de venta
