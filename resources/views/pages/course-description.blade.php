@@ -100,7 +100,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form id="pageContactForm">
+                        <form action="{{ route('apisubscriber') }}" method="post" id="pageContactForm">
                             <div class="mb-3">
                                 <label for="exampleInputName" class="form-label">Nombre Completo</label>
                                 <input type="text" class="form-control" id="exampleInputName" name="fullname">
