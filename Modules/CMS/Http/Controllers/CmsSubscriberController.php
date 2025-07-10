@@ -45,7 +45,7 @@ class CmsSubscriberController extends Controller
                 'email' => 'required|email|unique:cms_subscribers,email|max:255',
             ],
             [
-                'email.unique' => 'El correo electrónico ya existe',
+                //'email.unique' => 'El correo electrónico ya existe',
                 'email.required' => 'El correo electrónico es obligatorio',
                 'email.email' => 'Por favor, ingrese una dirección de correo electrónico válida.',
                 'email.max' => 'Limita la longitud máxima del campo de correo electrónico a 255 caracteres',
@@ -58,7 +58,7 @@ class CmsSubscriberController extends Controller
         }
 
         CmsSubscriber::create([
-            'full_name'     => $request->get('full_name') ?? null,
+            'full_name'     => $request->get('fullname') ?? null,
             'email'         => $request->get('email'),
             'phone'         => $request->get('phone') ?? null,
             'client_ip'     => $request->ip(),
