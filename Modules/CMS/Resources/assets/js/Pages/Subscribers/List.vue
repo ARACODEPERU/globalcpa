@@ -37,11 +37,11 @@
         { width: 25 }, // Columna "B" Nombres
         {width:25}, // Columna "C" Correos
         { width: 15 }, // Columna "D" Teléfonos
+        { width: 55 }, // Curso/Tema
         {width: 40}, //Mensajes
         {width:9}, // Columna "F"
         {width:9}, // Columna "G"
         {width:9}, // Columna "H"
-        {width:9}, // Columna "I"
     ];
 
     XLSX.utils.book_append_sheet(workbook, worksheet, form.start+'-'+form.end);
