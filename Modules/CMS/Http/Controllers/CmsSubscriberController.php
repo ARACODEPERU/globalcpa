@@ -8,8 +8,6 @@ use Illuminate\Routing\Controller;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Support\Facades\Validator;
 use Modules\CMS\Entities\CmsSubscriber;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\NotificacionDescarga_brochure;
 use Inertia\Inertia;
 
 class CmsSubscriberController extends Controller
@@ -44,10 +42,10 @@ class CmsSubscriberController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                'email' => 'required|email|max:255',
+                'email' => 'required|email|unique:cms_subscribers,email|max:255',
             ],
             [
-                //'email.unique' => 'El correo electrónico ya existe',
+                'email.unique' => 'El correo electrónico ya existe',
                 'email.required' => 'El correo electrónico es obligatorio',
                 'email.email' => 'Por favor, ingrese una dirección de correo electrónico válida.',
                 'email.max' => 'Limita la longitud máxima del campo de correo electrónico a 255 caracteres',
@@ -59,8 +57,8 @@ class CmsSubscriberController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $Subscriber = CmsSubscriber::create([
-            'full_name'     => $request->get('fullname') ?? null,
+        CmsSubscriber::create([
+            'full_name'     => $request->get('full_name') ?? null,
             'email'         => $request->get('email'),
             'phone'         => $request->get('phone') ?? null,
             'client_ip'     => $request->ip(),
@@ -68,10 +66,6 @@ class CmsSubscriberController extends Controller
             'subject'       => $request->get('subject') ?? null,
             'message'       => $request->get('message') ?? null,
         ]);
-
-        //Correo a Ronald
-        Mail::to("jsuclupe@globalcpaperu.com")
-        ->send(new NotificacionDescarga_brochure($Subscriber));
 
         return response()->json([
             'success' => true,

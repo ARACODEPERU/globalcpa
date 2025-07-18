@@ -97,7 +97,7 @@ class MercadopagoController extends Controller
             } else {
                 $createRequest = [
                     "issuer_id" => $request->get('issuer_id'),
-                    "description" => 'suscripcion' . $sus->name,
+                    "description" => 'suscripcion ' . $sus->name,
                     "installments" => $request->get('installments'),
                     "payer" => $request->get('payer'),
                     "payment_method_id" => $request->get('payment_method_id'),

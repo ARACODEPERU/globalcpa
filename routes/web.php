@@ -176,6 +176,11 @@ Route::middleware('auth')->group(function () {
         'company/upload/images',
         [CompanyController::class, 'uploadImages']
     )->name('company_upload_images');
+	
+	Route::post(
+        'user/persom/info/store',
+        [PersonController::class, 'updateInfoPersonByUser']
+    )->name('user_persom_info_store');
 
     Route::get('parameters/list', [ParametersController::class, 'index'])->name('parameters');
     Route::get('parameters/create', [ParametersController::class, 'create'])->name('parameters_create');
