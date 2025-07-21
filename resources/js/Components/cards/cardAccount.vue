@@ -173,6 +173,9 @@
             <p>{{ accountData.bank.full_name }}</p>
             <small>{{ accountData.description  }} / {{ bankAccount.number }}</small>
         </template>
+        <template #content>
+
+        </template>
     </ModalSmall>
 </template>
 

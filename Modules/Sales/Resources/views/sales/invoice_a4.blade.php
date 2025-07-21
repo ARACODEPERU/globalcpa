@@ -794,7 +794,8 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
                                     {{ $document->getCompany()->getRazonSocial() }}
                                 </p>
                                 <p class="whitespace-nowrap text-slate-400" style="font-size: 12px ">
-                                    {{ $document->getCompany()->getAddress()->getDireccion() }}
+                                    {{ $document->getCompany()->getAddress()->getDireccion() }} <br />
+                                    {{ $document->getCompany()->getAddress()->getDepartamento() }}-{{ $document->getCompany()->getAddress()->getProvincia() }}-{{ $document->getCompany()->getAddress()->getDistrito() }}
                                 </p>
                             </td>
 
@@ -864,18 +865,31 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
                         </tr>
                         <tr>
                             <td class="w-1/2 align-top">
-                                <div class="text-neutral-600 text-xs">
-                                    <p>Razón Social: {{ $document->getClient()->getRznSocial() }}</p>
-                                    <p>
-                                        @if ($document->getTipoDoc() == '01')
-                                            <strong>RUC:</strong>
-                                        @elseif($document->getTipoDoc() == '03')
-                                            <strong>N/D:</strong>
-                                        @endif
-                                        {{ $document->getClient()->getNumDoc() }}
-                                    </p>
-                                    <p>Dirección: {{ $document->getClient()->getAddress() }}</p>
-                                </div>
+                                <table class="text-neutral-600 text-xs">
+                                    <tr>
+                                        <td>Razón Social:</td> <td>{{ $document->getClient()->getRznSocial() }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            @if ($document->getTipoDoc() == '01')
+                                                <strong>RUC:</strong>
+                                            @elseif($document->getTipoDoc() == '03')
+                                                <strong>N/D:</strong>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            {{ $document->getClient()->getNumDoc() }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Dirección: </td>
+                                        <td>{{ $document->getClient()->getAddress()->getDireccion() }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td>{{ $document->getClient()->getAddress()->getDepartamento() }}-{{ $document->getClient()->getAddress()->getProvincia() }}-{{ $document->getClient()->getAddress()->getDistrito() }}</td>
+                                    </tr>
+                                </table>
                             </td>
                             <td class="w-1/2 align-top text-right">
                                 <div class="text-xs text-neutral-600">
