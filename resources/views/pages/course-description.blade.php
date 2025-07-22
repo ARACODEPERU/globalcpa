@@ -516,7 +516,7 @@
                             <button class="boton-degradado-info" data-bs-target="#exampleModalToggle" data-bs-toggle="modal">
                                 <b>
                                     <i class="fa fa-edit" aria-hidden="true" style="font-size: 16px;"></i>
-                                    &nbsp; Descargar Brochure
+                                    &nbsp; Descargar brochure
                                 </b>
                             </button>
                         </div>
