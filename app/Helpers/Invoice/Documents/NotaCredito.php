@@ -19,6 +19,7 @@ use Greenter\Model\Sale\Charge;
 use Greenter\Model\Sale\Legend;
 use Greenter\Model\Sale\SaleDetail;
 use App\Helpers\Invoice\QrCodeGenerator;
+use App\Models\District;
 use Illuminate\Support\Facades\DB;
 
 class NotaCredito
@@ -98,11 +99,26 @@ class NotaCredito
         $setDesMotivo = DB::table('sunat_note_credit_types')->where('id',$document->note_type_operation_id)->value('description');
 
         $department = $province->department;
+
+
+        $clientCity = District::with('province.department')->where('id',$document->client_ubigeo_code)->first();
+
         $client = (new Client())
             ->setTipoDoc($document->client_type_doc)
             ->setNumDoc($document->client_number)
             ->setRznSocial($document->client_rzn_social);
 
+        if($clientCity ){
+            $clientAddress = (new Address())
+                ->setUbigueo($document->client_ubigeo_code)
+                ->setDepartamento($clientCity->province->department->name)
+                ->setProvincia($clientCity->province->name)
+                ->setDistrito($clientCity->name)
+                ->setUrbanizacion('-')
+                ->setDireccion($document->client_address);
+
+            $client->setAddress($clientAddress);
+        }
 
         // Emisor
         $address = (new Address())
