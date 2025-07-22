@@ -502,10 +502,7 @@ const refreshTable = () => {
                                 :class="props.rowData.status == 3 ? 'line-through' : ''">
                                 {{ props.rowData.serie }}-{{ props.rowData.invoice_correlative }}
                             </h6>
-                            <span
-                                v-if="props.rowData.invoice_status == 'Rechazada' || props.rowData.invoice_status === 'Aceptada' || props.rowData.invoice_status === 'Anulada'"
-                                class="block text-xs"
-                            >
+                            <span v-if="props.rowData.invoice_response_description" class="block text-xs"></span>
                                 <code v-if=" props.rowData.invoice_response_code != 0 " >
                                     Código: {{ props.rowData.invoice_response_code }}
                                 </code>
