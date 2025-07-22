@@ -502,7 +502,7 @@ const refreshTable = () => {
                                 :class="props.rowData.status == 3 ? 'line-through' : ''">
                                 {{ props.rowData.serie }}-{{ props.rowData.invoice_correlative }}
                             </h6>
-                            <span v-if="props.rowData.invoice_response_description" class="block text-xs"></span>
+                            <span v-if="props.rowData.invoice_response_description" class="block text-xs">
                                 <code v-if=" props.rowData.invoice_response_code != 0 " >
                                     Código: {{ props.rowData.invoice_response_code }}
                                 </code>
