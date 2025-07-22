@@ -477,18 +477,18 @@ const refreshTable = () => {
                                                     PDF 80x250
                                                 </a>
                                             </li> -->
-                                            <!-- <li v-if="props.rowData.invoice_status === 'Aceptada'">
+                                            <li v-if="props.rowData.invoice_status === 'Aceptada'">
                                                 <a @click="downloadDocument(props.rowData.document_id,props.rowData.invoice_type_doc,'XML')"
                                                     href="javascript:;">
                                                     Descargar XML
                                                 </a>
-                                            </li> -->
-                                            <!-- <li v-if="props.rowData.invoice_status ==='Aceptada'">
+                                            </li>
+                                            <li v-if="props.rowData.invoice_status ==='Aceptada'">
                                                 <a @click="downloadDocument(props.rowData.document_id,props.rowData.invoice_type_doc,'CDR')"
                                                     href="javascript:;"
                                                     >Descargar CDR
                                                 </a>
-                                            </li> -->
+                                            </li>
                                         </ul>
                                     </template>
                                 </Popper>

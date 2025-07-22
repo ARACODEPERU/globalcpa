@@ -20,6 +20,7 @@ use Greenter\Model\Sale\Legend;
 use Greenter\Model\Sale\SaleDetail;
 use App\Helpers\Invoice\QrCodeGenerator;
 use App\Models\District;
+use App\Models\Sale;
 use Illuminate\Support\Facades\DB;
 
 class NotaCredito
@@ -64,6 +65,11 @@ class NotaCredito
                     $invoice->status = 3;
                     $invoice->invoice_status = 'Por anular';
                     $invoice->save();
+
+                    Sale::find($invoice->sale_id)->update([
+                        'status' => 0
+                    ]);
+
                 } elseif ($cdr->getCode() == 2325) {
                     $status = 'Pendiente';
                 }

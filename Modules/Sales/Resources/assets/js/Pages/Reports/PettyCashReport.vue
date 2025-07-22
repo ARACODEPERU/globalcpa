@@ -6,7 +6,7 @@ import { ref, onMounted } from 'vue';
 import Keypad from '@/Components/Keypad.vue';
 import * as XLSX from 'xlsx/dist/xlsx.full.min';
 import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';  
+import autoTable from 'jspdf-autotable';
 import Navigation from '@/Components/vristo/layout/Navigation.vue';
 
 const props = defineProps({
@@ -15,14 +15,6 @@ const props = defineProps({
         default: () => ({}),
     },
     tickets: {
-        type: Object,
-        default: () => ({}),
-    },
-    physicals: {
-        type: Object,
-        default: () => ({}),
-    },
-    documents: {
         type: Object,
         default: () => ({}),
     },
@@ -66,7 +58,7 @@ const  getLocal = (id = null) => {
     } else{
         local_name.value = "TODOS LOS LOCALES"
     }
-    
+
 }
 const getTotalQuantities = () => {
     let quantities=0;
@@ -124,7 +116,7 @@ const downloadPdf = () => {
     pdf.text(titulo, 200, 20); //X e Y
 
     titulo="Día: "+ props.petty_cash.state == 0 ? props.petty_cash.date_opening : 'Caja abierta';
-    
+
     pdf.text(titulo, 200, 40);
         // Genera la tabla PDF utilizando jsPDF
         pdf.autoTable({
@@ -176,7 +168,7 @@ onMounted(()=>{
                             <div class="col-span-3 sm:col-span-2">
                                 <Keypad>
                                     <template #botones>
-                                        
+
                                         <button v-if="false" v-on:click="downloadExcel()"
                                             class="px-3 py-1 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                                             >Exportar en Excel
@@ -201,7 +193,7 @@ onMounted(()=>{
                                 </tr>
                                 <tr class="bg-primary/20 border-primary/20">
                                     <th colspan="2" class="">
-                                        <strong>Desde: </strong> 
+                                        <strong>Desde: </strong>
                                     </th>
                                     <th colspan="4" class="text-left font-medium">
                                         <span v-if="petty_cash.state == 0">
@@ -211,7 +203,7 @@ onMounted(()=>{
                                 </tr>
                                 <tr class="bg-primary/20 border-primary/20">
                                     <th colspan="2" class="text-left font-medium">
-                                        <strong>HASTA: </strong> 
+                                        <strong>HASTA: </strong>
                                     </th>
                                     <th colspan="4" class="text-left font-medium">
                                         <span v-if="petty_cash.state == 0">
@@ -231,16 +223,16 @@ onMounted(()=>{
                                         Fecha
                                     </th>
                                     <th>
-                                        Tienda
+                                        Establecimiento
                                     </th>
                                     <th>
-                                        Producto / Servicio
+                                        Serie y Número
                                     </th>
                                     <th>
-                                        Precio Vendido
+                                        Tipo
                                     </th>
                                     <th>
-                                        Cantidad
+                                        Estado
                                     </th>
                                     <th>
                                         Total
@@ -253,63 +245,28 @@ onMounted(()=>{
                                         {{ ticket.sale_date }}
                                     </th>
                                     <td>
-                                        {{ getLocal(ticket.local_id) }}
+                                        {{ ticket.establishment.description }}
                                     </td>
                                     <td>
-                                        {{ ticket.interne + " - " + ticket.product_description }}
+                                        <template v-if="ticket.physical == 1 || ticket.physical == 2">
+                                            {{ ticket.document.invoice_serie + "-" + ticket.document.invoice_correlative }}
+                                        </template>
+                                        <template v-else-if="ticket.physical == 3">
+                                            {{ ticket.physicalDocument }}
+                                            <!-- {{ ticket.physicalDocument.serie + "-" + ticket.physicalDocument.corelative }} -->
+                                        </template>
                                     </td>
                                     <td class="text-right">
-                                        {{ ticket.price }}
+
                                     </td>
                                     <td class="text-right">
-                                        {{ ticket.quantity }}
+
                                     </td>
                                     <td class="text-right">
-                                        {{ (ticket.quantity * ticket.price).toFixed(2) }}
+                                        {{ ticket.total }}
                                     </td>
                                 </tr>
-                                <template v-for="(physical, key) in physicals">
-                                    <tr v-for="(pro, k) in JSON.parse(physical.products)"  :key="pro.id">
-                                        <th class="font-medium whitespace-nowrap">
-                                            {{ physical.sale_date }}
-                                        </th>
-                                        <td>
-                                            {{ physical.description }}
-                                        </td>
-                                        <td>
-                                            {{ pro.interne + " - " + pro.description }}
-                                        </td>
-                                        <td class="text-right" style="text-align: right;">
-                                            {{ pro.unit_price }}
-                                        </td>
-                                        <td class="text-right" style="text-align: right;">
-                                            {{ pro.quantity }}
-                                        </td>
-                                        <td class="text-right" style="text-align: right;">
-                                            {{ pro.total }}
-                                        </td>
-                                    </tr>
-                                </template>
-                                <tr v-for="(document, index) in documents" :key="document.id">
-                                    <th class="font-medium whitespace-nowrap">
-                                        {{ document.sale_date }}
-                                    </th>
-                                    <td>
-                                        {{ getLocal(document.local_id) }}
-                                    </td>
-                                    <td>
-                                        {{ document.interne + " - " + document.product_description }}
-                                    </td>
-                                    <td class="text-right">
-                                        {{ document.price }}
-                                    </td>
-                                    <td class="text-right">
-                                        {{ document.quantity }}
-                                    </td>
-                                    <td class="text-right">
-                                        {{ (document.quantity * document.price).toFixed(2) }}
-                                    </td>
-                                </tr>
+
                                 <tr class="">
                                     <td colspan="5" class="text-right font-medium whitespace-nowrap" style="text-align: right;">
                                         <strong>Totales En Ventas</strong>
@@ -323,21 +280,21 @@ onMounted(()=>{
                                         <td class="text-center text-sm" colspan="6"><b>GASTOS</b></td>
                                     </tr>
                                     <tr class="bg-danger/20 border-danger/20 uppercase">
-                                        
+
                                         <td scope="col" ><b>N° Documento</b></td>
                                         <td scope="col" colspan="4"><b>Motivo o Descripción</b></td>
                                         <td scope="col" ><b>Monto</b></td>
                                     </tr>
-                                    <tr v-for="(expense, index) in expenses" :key="expense.id" class="bg-danger/20 border-danger/20">  
+                                    <tr v-for="(expense, index) in expenses" :key="expense.id" class="bg-danger/20 border-danger/20">
                                         <td class="text-left">
                                             {{ expense.document }}
                                         </td>
                                         <td colspan="4" class="text-left">
                                             {{ expense.description }}
-                                        </td>      
+                                        </td>
                                         <td class="text-right" style="text-align: right;">
                                             {{ expense.amount }}
-                                        </td>                          
+                                        </td>
                                     </tr>
                                     <tr class="bg-danger/20 border-danger/20">
                                         <td colspan="5" class="text-right" style="text-align: right;">Total en Gastos:</td>

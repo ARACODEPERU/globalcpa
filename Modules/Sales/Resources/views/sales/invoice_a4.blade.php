@@ -881,14 +881,16 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
                                             {{ $document->getClient()->getNumDoc() }}
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <td>Dirección: </td>
-                                        <td>{{ $document->getClient()->getAddress()->getDireccion() }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td></td>
-                                        <td>{{ $document->getClient()->getAddress()->getDepartamento() }}-{{ $document->getClient()->getAddress()->getProvincia() }}-{{ $document->getClient()->getAddress()->getDistrito() }}</td>
-                                    </tr>
+                                    @if($document->getClient()->getAddress())
+                                        <tr>
+                                            <td>Dirección: </td>
+                                            <td>{{ $document->getClient()->getAddress()->getDireccion() }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td>{{ $document->getClient()->getAddress()->getDepartamento() }}-{{ $document->getClient()->getAddress()->getProvincia() }}-{{ $document->getClient()->getAddress()->getDistrito() }}</td>
+                                        </tr>
+                                    @endif
                                 </table>
                             </td>
                             <td class="w-1/2 align-top text-right">
@@ -1077,7 +1079,8 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
                                                     Cta. Banco de la Nación
                                                 </td>
                                                 <td
-                                                    style="border: 1px solid #5c6ac4;border-collapse: collapse; padding: 4px">
+                                                    width="140px"
+                                                    style="border: 1px solid #5c6ac4;border-collapse: collapse; padding: 4px;">
                                                     {{ $document->getDetraccion()->getCtaBanco() }}
                                                 </td>
                                             </tr>

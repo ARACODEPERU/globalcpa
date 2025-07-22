@@ -851,10 +851,10 @@ class SaleDocumentController extends Controller
                     $res = $notaCredito->getNotaCreditoPdf($id, $format);
                 } else if ($file == 'XML') {
                     $content_type =  'application/xml';
-                    //$res = $notaCredito->getBoletaXML($id);
+                    $res = $notaCredito->getNotaCreditoXML($id);
                 } else {
                     $content_type =  'application/zip';
-                    //$res = $notaCredito->getBoletaCDR($id);
+                    $res = $notaCredito->getNotaCreditoCDR($id);
                 }
 
                 break;
