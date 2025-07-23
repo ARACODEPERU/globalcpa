@@ -69,9 +69,14 @@ class CmsSubscriberController extends Controller
             'message'       => $request->get('message') ?? null,
         ]);
 
-        //Correo a Ronald
+        try {
+            //Correo a Ronald
         Mail::to("jsuclupe@globalcpaperu.com")
         ->send(new NotificacionDescarga_brochure($Subscriber));
+
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
 
         return response()->json([
             'success' => true,
