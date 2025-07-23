@@ -104,15 +104,15 @@
                             @csrf
                             <div class="mb-3">
                                 <label for="exampleInputName" class="form-label">Nombre Completo</label>
-                                <input type="text" class="form-control" id="exampleInputName" name="fullname">
+                                <input type="text" class="form-control" id="exampleInputName" name="fullname" required>
                             </div>
                             <div class="mb-3">
                                 <label for="exampleInputPhone" class="form-label">Teléfono</label>
-                                <input type="text" class="form-control" id="exampleInputPhone" name="phone">
+                                <input type="text" class="form-control" id="exampleInputPhone" name="phone" required>
                             </div>
                             <div class="mb-3">
                                 <label for="exampleInputEmail1" class="form-label">Correo Electrónico</label>
-                                <input type="email" class="form-control" id="exampleInputEmail1" name="email">
+                                <input type="email" class="form-control" id="exampleInputEmail1" name="email" required>
                             </div>
                             <input type="hidden" name="subject" value="{{ $item->name }}">
                             <input type="hidden" name="message" value="Descargué el Brochure">
