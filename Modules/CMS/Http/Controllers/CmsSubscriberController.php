@@ -45,12 +45,16 @@ class CmsSubscriberController extends Controller
             $request->all(),
             [
                 'email' => 'required|email|max:255',
+                'full_name' => 'required',
+                'phone' => 'required',
             ],
             [
                 //'email.unique' => 'El correo electrónico ya existe',
                 'email.required' => 'El correo electrónico es obligatorio',
                 'email.email' => 'Por favor, ingrese una dirección de correo electrónico válida.',
                 'email.max' => 'Limita la longitud máxima del campo de correo electrónico a 255 caracteres',
+                'full_name' => 'Agrega tu nombre por favor.',
+                'phone' => 'Ponga un numero de teléfono valido por favor.'
             ]
         );
 
