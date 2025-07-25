@@ -134,7 +134,7 @@
                                         {{ item.sale_date }}
                                     </td>
                                     <td>
-                                        {{ item.document.client_rzn_social }}
+                                        {{ item.document?.client_rzn_social }}
                                     </td>
                                     <td>
                                         <div class="space-y-2">
