@@ -38,7 +38,7 @@ class SalePhysicalDocument extends Model
         'sale_id'
     ];
 
-    public function documentType(): BelongsTo
+    public function saleDocumentType(): BelongsTo
     {
         return $this->belongsTo(SaleDocumentType::class,'document_type','id');
     }

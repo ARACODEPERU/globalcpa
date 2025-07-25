@@ -18,6 +18,14 @@ const props = defineProps({
         type: Object,
         default: () => ({}),
     },
+    physicals: {
+        type: Object,
+        default: () => ({}),
+    },
+    documents: {
+        type: Object,
+        default: () => ({}),
+    },
     start: {
         type: String,
         default: null
@@ -189,13 +197,13 @@ onMounted(()=>{
                             <thead class="text-xs uppercase">
                                 <tr class="bg-primary/20 border-primary/20">
                                     <th colspan="2" class=""><strong>LOCAL:</strong> </th>
-                                    <th colspan="4" class="">{{ local_name }}</th>
+                                    <th colspan="3" class="">{{ local_name }}</th>
                                 </tr>
                                 <tr class="bg-primary/20 border-primary/20">
                                     <th colspan="2" class="">
                                         <strong>Desde: </strong>
                                     </th>
-                                    <th colspan="4" class="text-left font-medium">
+                                    <th colspan="3" class="text-left font-medium">
                                         <span v-if="petty_cash.state == 0">
                                             {{ petty_cash.date_opening +" "+ petty_cash.time_opening.slice(0, -3) }}
                                         </span>
@@ -205,7 +213,7 @@ onMounted(()=>{
                                     <th colspan="2" class="text-left font-medium">
                                         <strong>HASTA: </strong>
                                     </th>
-                                    <th colspan="4" class="text-left font-medium">
+                                    <th colspan="3" class="text-left font-medium">
                                         <span v-if="petty_cash.state == 0">
                                             {{ petty_cash.date_closed +" "+ petty_cash.time_closed }}
                                         </span>
@@ -213,26 +221,23 @@ onMounted(()=>{
                                 </tr>
                                 <tr class="bg-primary/20 border-primary/20">
                                     <th colspan="2"  class="text-left font-medium"><strong>Monto final en Caja:</strong></th>
-                                    <th colspan="4"  class="text-left font-medium ">{{ petty_cash.final_balance }}</th>
+                                    <th colspan="3"  class="text-left font-medium ">{{ petty_cash.final_balance }}</th>
                                 </tr>
                                 <tr class="bg-primary/20 border-primary/20">
-                                    <td class="text-center text-sm" colspan="6"><b>Ventas</b></td>
+                                    <td class="text-center text-sm" colspan="5"><b>Ventas</b></td>
                                 </tr>
                                 <tr>
                                     <th scope="col">
                                         Fecha
                                     </th>
                                     <th>
-                                        Establecimiento
+                                        Tienda
                                     </th>
                                     <th>
-                                        Serie y Número
+                                        Serie / Número
                                     </th>
                                     <th>
                                         Tipo
-                                    </th>
-                                    <th>
-                                        Estado
                                     </th>
                                     <th>
                                         Total
@@ -248,27 +253,53 @@ onMounted(()=>{
                                         {{ ticket.establishment.description }}
                                     </td>
                                     <td>
-                                        <template v-if="ticket.physical == 1 || ticket.physical == 2">
-                                            {{ ticket.document.invoice_serie + "-" + ticket.document.invoice_correlative }}
-                                        </template>
-                                        <template v-else-if="ticket.physical == 3">
-                                            {{ ticket.physicalDocument }}
-                                            <!-- {{ ticket.physicalDocument.serie + "-" + ticket.physicalDocument.corelative }} -->
-                                        </template>
+                                        {{ ticket.document.invoice_serie + "-" + ticket.document.invoice_correlative }}
                                     </td>
                                     <td class="text-right">
-
-                                    </td>
-                                    <td class="text-right">
-
+                                        {{ ticket.document.serie.document_type.description }}
                                     </td>
                                     <td class="text-right">
                                         {{ ticket.total }}
                                     </td>
                                 </tr>
-
+                                <template v-for="(physical, key) in physicals">
+                                     <tr>
+                                        <th class="font-medium whitespace-nowrap">
+                                            {{ physical.sale_date }}
+                                        </th>
+                                        <td>
+                                            {{ physical.establishment.description }}
+                                        </td>
+                                        <td>
+                                            {{ physical.physical_document.serie + " - " + physical.physical_document.correlative }}
+                                        </td>
+                                        <td class="text-right" style="text-align: right;">
+                                            {{ physical.physical_document.sale_document_type.description }}
+                                        </td>
+                                        <td class="text-right" style="text-align: right;">
+                                            {{ physical.total }}
+                                        </td>
+                                    </tr>
+                                </template>
+                                <tr v-for="(document, index) in documents" :key="document.id">
+                                    <th class="font-medium whitespace-nowrap">
+                                        {{ document.sale_date }}
+                                    </th>
+                                    <td>
+                                        {{ document.establishment.description }}
+                                    </td>
+                                    <td>
+                                        {{ document.document.invoice_serie + "-" + document.document.invoice_correlative }}
+                                    </td>
+                                    <td class="text-right">
+                                        {{ document.document.serie.document_type.description }}
+                                    </td>
+                                    <td class="text-right">
+                                        {{ document.total }}
+                                    </td>
+                                </tr>
                                 <tr class="">
-                                    <td colspan="5" class="text-right font-medium whitespace-nowrap" style="text-align: right;">
+                                    <td colspan="4" class="text-right font-medium whitespace-nowrap" style="text-align: right;">
                                         <strong>Totales En Ventas</strong>
                                     </td>
                                     <td class="text-right" style="text-align: right;">
@@ -277,19 +308,19 @@ onMounted(()=>{
                                 </tr>
                                 <template v-if="expenses.length > 0">
                                     <tr class="bg-danger/20 border-danger/20 uppercase">
-                                        <td class="text-center text-sm" colspan="6"><b>GASTOS</b></td>
+                                        <td class="text-center text-sm" colspan="5"><b>GASTOS</b></td>
                                     </tr>
                                     <tr class="bg-danger/20 border-danger/20 uppercase">
 
                                         <td scope="col" ><b>N° Documento</b></td>
-                                        <td scope="col" colspan="4"><b>Motivo o Descripción</b></td>
+                                        <td scope="col" colspan="3"><b>Motivo o Descripción</b></td>
                                         <td scope="col" ><b>Monto</b></td>
                                     </tr>
                                     <tr v-for="(expense, index) in expenses" :key="expense.id" class="bg-danger/20 border-danger/20">
                                         <td class="text-left">
                                             {{ expense.document }}
                                         </td>
-                                        <td colspan="4" class="text-left">
+                                        <td colspan="3" class="text-left">
                                             {{ expense.description }}
                                         </td>
                                         <td class="text-right" style="text-align: right;">
@@ -297,7 +328,7 @@ onMounted(()=>{
                                         </td>
                                     </tr>
                                     <tr class="bg-danger/20 border-danger/20">
-                                        <td colspan="5" class="text-right" style="text-align: right;">Total en Gastos:</td>
+                                        <td colspan="4" class="text-right" style="text-align: right;">Total en Gastos:</td>
                                         <td class="text-right" style="text-align: right;">S/ {{ getTotalExpenses() }}</td>
                                     </tr>
                                 </template>
