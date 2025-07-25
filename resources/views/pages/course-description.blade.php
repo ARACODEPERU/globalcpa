@@ -104,7 +104,7 @@
                             @csrf
                             <div class="mb-3">
                                 <label for="exampleInputName" class="form-label">Nombre Completo</label>
-                                <input type="text" class="form-control" id="exampleInputName" name="fullname" required>
+                                <input type="text" class="form-control" id="exampleInputName" name="full_name" required>
                             </div>
                             <div class="mb-3">
                                 <label for="exampleInputPhone" class="form-label">Teléfono</label>
