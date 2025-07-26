@@ -75,7 +75,7 @@ class CmsSubscriberController extends Controller
 
         try {
             //Correo a Ronald
-        Mail::to("jsuclupe@globalcpaperu.com")
+        Mail::to(env("MAIL_ADMIN"))
         ->send(new NotificacionDescarga_brochure($Subscriber));
 
         } catch (\Throwable $th) {
