@@ -64,7 +64,7 @@ class CmsSubscriberController extends Controller
         }
 
         $Subscriber = CmsSubscriber::create([
-            'full_name'     => $request->get('fullname') ?? null,
+            'full_name'     => $request->get('full_name') ?? null,
             'email'         => $request->get('email'),
             'phone'         => $request->get('phone') ?? null,
             'client_ip'     => $request->ip(),
