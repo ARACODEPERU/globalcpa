@@ -670,37 +670,43 @@
                             <div>{{ $page.props.company.phone }}</div>
                         </div>
                     </div>
-                    <div class="lg:w-1/2 w-full lg:max-w-fit">
-                        <div class="flex items-center">
-                            <label for="sale_documenttype_id" class="ltr:mr-2 rtl:ml-2 w-1/3 mb-0">Tipo </label>
-                            <select @change="getSeriesByDocumentType" v-model="form.sale_documenttype_id" id="sale_documenttype_id" class="form-select form-select-sm text-white-dark flex-1">
-                                <option v-for="(type, index) in saleDocumentTypes" :value="type.id"> {{  type.description  }}</option>
-                            </select>
-                            <div class="flex-1 ">
-                                <InputError :message="form.errors.sale_documenttype_id" class="mt-2" />
+                    <div class="lg:w-1/2 w-full lg:max-w-fit space-y-4">
+                        <div class="items-center">
+                            <!-- <label for="sale_documenttype_id" class="sm:col-span-1">Tipo </label> -->
+                            <div >
+                                <select @change="getSeriesByDocumentType" v-model="form.sale_documenttype_id" id="sale_documenttype_id" class="w-full appearance-none text-3xl rounded-xl text-center font-extrabold text-blue-800 border-4  py-6 px-4 bg-green-100">
+                                    <option v-for="(type, index) in saleDocumentTypes" :value="type.id"> {{  type.description  }}</option>
+                                </select>
+                                <div class="flex-1 ">
+                                    <InputError :message="form.errors.sale_documenttype_id" class="mt-2" />
+                                </div>
                             </div>
                         </div>
-                        <div class="flex items-center mt-4">
-                            <label for="serie" class="ltr:mr-2 rtl:ml-2 w-1/3 mb-0">Serie </label>
-                            <select @change="getSeriesByDocumentType" v-model="form.serie" id="serie" class="form-select form-select-sm text-white-dark flex-1">
-                                <option v-for="(serie, index) in series" :value="serie.id"> {{  serie.description  }}</option>
-                            </select>
-                            <div class="flex-1 ">
-                                <InputError :message="form.errors.serie" class="mt-2" />
+                        <div class="grid grid-cols-3 gap-4 items-center">
+                            <label for="serie" class="sm:col-span-1">Serie </label>
+                            <div class="sm:col-span-2">
+                                <select @change="getSeriesByDocumentType" v-model="form.serie" id="serie" class="form-select text-white-dark">
+                                    <option v-for="(serie, index) in series" :value="serie.id"> {{  serie.description  }}</option>
+                                </select>
+                                <div class="flex-1 ">
+                                    <InputError :message="form.errors.serie" class="mt-2" />
+                                </div>
                             </div>
                         </div>
-                        <div class="flex items-center mt-4">
-                            <label for="startDate" class="ltr:mr-2 rtl:ml-2 w-1/3 mb-0">fecha de emisión</label>
-                            <div class="flex-1 ">
-                                <input id="startDate" type="date" name="inv-date" class="form-input flex-1 form-input-sm" v-model="form.date_issue" />
+                        <div class="grid grid-cols-3 gap-4 items-center">
+                            <label for="startDate" class="sm:col-span-1">fecha de emisión</label>
+                            <div class="sm:col-span-2">
+                                <input id="startDate" type="date" name="inv-date" class="form-input" v-model="form.date_issue" />
                                 <InputError :message="form.errors.date_issue" class="mt-2" />
                             </div>
                         </div>
-                        <div class="flex items-center mt-4">
-                            <label for="dueDate" class="ltr:mr-2 rtl:ml-2 w-1/3 mb-0">Fecha de vencimiento</label>
-                            <div class="flex-1 ">
-                                <input id="dueDate" type="date" name="due-date" class="form-input form-input-sm" v-model="form.date_end" />
+                        <div class="grid grid-cols-3 gap-4 items-center">
+                            <label for="dueDate" class="sm:col-span-1">Fecha de vencimiento</label>
+                            <div class="sm:col-span-2">
+
+                                <input id="dueDate" type="date" name="due-date" class="form-input" v-model="form.date_end" />
                                 <InputError :message="form.errors.date_end" class="mt-2" />
+
                             </div>
                         </div>
                     </div>
