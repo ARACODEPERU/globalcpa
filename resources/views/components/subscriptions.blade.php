@@ -28,7 +28,13 @@
             </div>
             <div class="tab-content pt-4">
                 @foreach ($subscriptions as $subscription)
-                    @if ($subscription->period == 'Anual')
+                    @if ($subscription->period == 'Mensual')
+                        @php
+                            // Decodificar el JSON a un array de PHP
+                            $prices = json_decode($subscription->prices, true);
+                            $details = json_decode($subscription->details, true);
+                        @endphp
+
                         <div x-show="activeTab === 'tabMensual'"
                             x-transition:enter="transition-all duration-500 easy-in-out"
                             x-transition:enter-start="opacity-0 [transform:translate3d(1rem,0,0)]"
@@ -43,19 +49,22 @@
                                             class="text-sm+ font-medium text-slate-700 line-clamp-1
                                     hover:text-primary focus:text-primary dark:text-navy-100
                                     dark:hover:text-accent-light dark:focus:text-accent-light">
-                                            <h3 style="font-size: 20px;">Título del plan</h3>
+                                            <h3 style="font-size: 20px;">{{ $subscription->title }}</h3>
                                         </a>
                                         <p class="mt-2 grow line-clamp-3">
                                         <ul>
-                                            <li><i class="fa fa-circle"></i> items 01</li>
+                                            @foreach ($details as $detail)
+                                                <li><i class="fa fa-circle"></i> {{ $detail['label'] }}</li>
+                                            @endforeach
+                                            {{-- <li><i class="fa fa-circle"></i> items 01</li>
                                             <li><i class="fa fa-circle"></i> items 02</li>
                                             <li><i class="fa fa-circle"></i> items 03</li>
-                                            <li><i class="fa fa-circle"></i> items 04</li>
+                                            <li><i class="fa fa-circle"></i> items 04</li> --}}
                                         </ul>
                                         </p>
                                         <br>
                                         <p>
-                                            S/ 250.00
+                                           S/ {{ $prices[0]['amount'] }} ó $ {{ $prices[1]['amount'] }}
                                         </p>
                                         <div class="mt-4">
                                             <a>
@@ -72,7 +81,14 @@
                                 </div>
                             </div>
                         </div>
-                    @elseif($subscription->period == 'Mensual')
+                    @elseif($subscription->period == 'Anual')
+
+                            @php
+                            // Decodificar el JSON a un array de PHP
+                            $prices = json_decode($subscription->prices, true);
+                            $details = json_decode($subscription->details, true);
+                            @endphp
+
                         <div x-show="activeTab === 'tabAnual'"
                             x-transition:enter="transition-all duration-500 easy-in-out"
                             x-transition:enter-start="opacity-0 [transform:translate3d(1rem,0,0)]"
@@ -91,15 +107,18 @@
                                         </a>
                                         <p class="mt-2 grow line-clamp-3">
                                         <ul>
-                                            <li><i class="fa fa-circle"></i> items 01</li>
+                                            @foreach ($details as $detail)
+                                                <li><i class="fa fa-circle"></i> {{ $detail['label'] }}</li>
+                                            @endforeach
+                                            {{-- <li><i class="fa fa-circle"></i> items 01</li>
                                             <li><i class="fa fa-circle"></i> items 02</li>
                                             <li><i class="fa fa-circle"></i> items 03</li>
-                                            <li><i class="fa fa-circle"></i> items 04</li>
+                                            <li><i class="fa fa-circle"></i> items 04</li> --}}
                                         </ul>
                                         </p>
                                         <br>
                                         <p>
-                                            S/ 180.00
+                                            S/ {{ $prices[0]['amount'] }} ó $ {{ $prices[1]['amount'] }}
                                         </p>
                                         <div class="mt-4">
                                             <a href="{{ route('academic_step_account', 1) }}"
@@ -120,5 +139,4 @@
             </div>
         </div>
     </div>
-
 </div>
