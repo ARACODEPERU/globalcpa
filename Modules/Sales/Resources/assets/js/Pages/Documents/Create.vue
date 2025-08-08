@@ -92,7 +92,8 @@
             number: 1,
             days: 15,
             amounts: [],
-            end_month: false
+            end_month: false,
+            amount: null
         }
     });
 
@@ -684,7 +685,7 @@
                             </div>
                             <p class="text-sm">Ancash, Chimbote<br>{{ company.fiscal_address }}</p>
                         </div>
-                        <div  class="text-4xl uppercase font-bold">
+                        <div class="text-4xl uppercase font-bold">
                             <select @change="getSeriesByDocumentType" v-model="formDocument.sale_documenttype_id" class="w-full appearance-none text-3xl rounded-xl text-center font-extrabold text-blue-800 border-4  py-6 px-4 bg-green-100">
                                 <option v-for="(type, index) in saleDocumentTypes" :value="type.id"> {{  type.description  }}</option>
                             </select>
