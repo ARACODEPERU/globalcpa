@@ -12,7 +12,7 @@
 
     <main class="main-content w-full px-[var(--margin-x)] pb-8">
         <br>
-        <x-slider /> 
+        <x-slider />
 
         <div class=" mt-4 w-full transition-all duration-[.25s] sm:mt-5 lg:mt-6">
             <div class="col-span-12 space-y-4 sm:space-y-5 lg:col-span-12 lg:space-y-6 xl:col-span-12">
@@ -33,7 +33,7 @@
                     </div> --}}
                 </div>
                 <!--Courses One Start-->
-                <x-courses.list-card /> 
+                <x-courses.list-card />
                 <!--Courses One End-->
                 <br>
                 <a href="{{ route('web_courses') }}">
@@ -48,14 +48,14 @@
         </div>
 
 
-        <x-subscriptions />
-            
+        {{-- <x-subscriptions /> --}}
 
-        <x-social-networks /> 
 
-        
+        <x-social-networks />
+
+
     </main>
-    
+
     <br>
     <br>
     <br>
@@ -111,5 +111,5 @@
         });
 
     </script>
-    
+
 @stop
