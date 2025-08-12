@@ -67,7 +67,7 @@
                                            S/ {{ $prices[0]['amount'] }} ó $ {{ $prices[1]['amount'] }}
                                         </p>
                                         <div class="mt-4">
-                                            <a>
+                                            <a href="{{ route('academic_step_account',$subscription->id) }}">
                                                 <button class="boton-degradado-courses">
                                                     <b style="font-size: 18px;">
                                                         <i class="fa fa-edit" aria-hidden="true"
@@ -121,8 +121,7 @@
                                             S/ {{ $prices[0]['amount'] }} ó $ {{ $prices[1]['amount'] }}
                                         </p>
                                         <div class="mt-4">
-                                            <a href="{{ route('academic_step_account', 1) }}"
-                                                class="boton-degradado-courses">
+                                            <a href="{{ route('academic_step_account',$subscription->id) }}" class="boton-degradado-courses">
                                                 <b style="font-size: 18px;">
                                                     <i class="fa fa-edit" aria-hidden="true"
                                                         style="font-size: 20px;"></i>
