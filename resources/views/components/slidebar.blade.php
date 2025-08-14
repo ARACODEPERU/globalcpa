@@ -1,33 +1,26 @@
 <div class="sidebar print:hidden">
     <!-- Main Sidebar -->
     <div class="main-sidebar">
-        <div class="flex h-full w-full flex-col items-center border-r border-slate-150 bg-white dark:border-navy-700 dark:bg-navy-800">
+        <div
+            class="flex h-full w-full flex-col items-center border-r border-slate-150 bg-white dark:border-navy-700 dark:bg-navy-800">
             <!-- Application Logo -->
             <div class="flex pt-4">
                 <a href="/">
                     <img x-show="!$store.global.isDarkModeEnabled"
-                    class="size-11 transition-transform duration-500 ease-in-out hover:rotate-[360deg]"
-                    {{-- src="themes/webpage/images/app-logo.svg" --}}
-                    src="{{ asset('storage/'.$logo[3]->content) }}"
-                    alt="Logo"
-                    />
+                        class="size-11 transition-transform duration-500 ease-in-out hover:rotate-[360deg]"
+                        {{-- src="themes/webpage/images/app-logo.svg" --}} src="{{ asset('storage/' . $logo[3]->content) }}" alt="Logo" />
                     <img x-show="$store.global.isDarkModeEnabled"
-                    class="size-11 transition-transform duration-500 ease-in-out hover:rotate-[360deg]"
-                    {{-- src="themes/webpage/images/app-logo.svg" --}}
-                    src="{{ asset('storage/'.$logo[4]->content) }}"
-                    alt="Logo"
-                    />
+                        class="size-11 transition-transform duration-500 ease-in-out hover:rotate-[360deg]"
+                        {{-- src="themes/webpage/images/app-logo.svg" --}} src="{{ asset('storage/' . $logo[4]->content) }}" alt="Logo" />
                 </a>
             </div>
 
             <!-- Main Sections Links -->
             <div class="is-scrollbar-hidden flex grow flex-col space-y-4 overflow-y-auto pt-6">
                 <!-- Dashobards -->
-                <a
-                    href="{{ route('index_main') }}"
+                <a href="{{ route('index_main') }}"
                     class="flex size-11 items-center justify-center rounded-lg bg-primary/10 text-primary outline-none transition-colors duration-200 hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25 dark:bg-navy-600 dark:text-accent-light dark:hover:bg-navy-450 dark:focus:bg-navy-450 dark:active:bg-navy-450/90"
-                    x-tooltip.placement.right="'Home'"
-                >
+                    x-tooltip.placement.right="'Home'">
                     <i class="fa fa-home" aria-hidden="true" style="font-size: 23px;"></i>
                     {{-- <svg
                     class="size-7"
@@ -56,12 +49,10 @@
                 </a>
 
                 <!-- Apps -->
-                <a
-                    href="{{ route('web_courses') }}"
+                <a href="{{ route('web_courses') }}"
                     class="flex size-11 items-center justify-center rounded-lg outline-none transition-colors duration-200 hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25"
-                    x-tooltip.placement.right="'Webinar / Cursos Taller / Programas de Especialización'"
-                >
-                <i class="fa fa-graduation-cap" aria-hidden="true" style="font-size: 23px;"></i>
+                    x-tooltip.placement.right="'Webinar / Cursos Taller / Programas de Especialización'">
+                    <i class="fa fa-graduation-cap" aria-hidden="true" style="font-size: 23px;"></i>
                     {{--
                     <svg
                     class="size-7"
@@ -108,11 +99,9 @@
                 >
                     <i class="fa-cubes" aria-hidden="true" style="font-size: 23px;"></i>
                 </a> --}}
-                <a
-                    href="{{ route('web_book_amauta') }}"
+                <a href="{{ route('web_book_amauta') }}"
                     class="flex size-11 items-center justify-center rounded-lg outline-none transition-colors duration-200 hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25"
-                    x-tooltip.placement.right="'Libro: El Amauta de las NIIF'"
-                >
+                    x-tooltip.placement.right="'Libro: El Amauta de las NIIF'">
                     <i class="fa fa-book" aria-hidden="true" style="font-size: 23px;"></i>
                     {{-- <svg
                     class="size-7"
@@ -172,33 +161,11 @@
                 </a> --}}
 
                 <!-- Components -->
-                {{-- <a
-                    href="components-accordion.html"
+                <a href="{{ route('web_claims') }}"
                     class="flex size-11 items-center justify-center rounded-lg outline-none transition-colors duration-200 hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25"
-                    x-tooltip.placement.right="'Components'"
-                >
-                    <svg
-                    class="size-7"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    >
-                    <path
-                        fill-opacity="0.5"
-                        d="M14.2498 16C14.2498 17.5487 13.576 18.9487 12.4998 19.9025C11.5723 20.7425 10.3473 21.25 8.99976 21.25C6.10351 21.25 3.74976 18.8962 3.74976 16C3.74976 13.585 5.39476 11.5375 7.61726 10.9337C8.22101 12.4562 9.51601 13.6287 11.1173 14.0662C11.5548 14.1887 12.0185 14.25 12.4998 14.25C12.981 14.25 13.4448 14.1887 13.8823 14.0662C14.1185 14.6612 14.2498 15.3175 14.2498 16Z"
-                        fill="currentColor"
-                    />
-                    <path
-                        d="M17.75 9.00012C17.75 9.68262 17.6187 10.3389 17.3825 10.9339C16.7787 12.4564 15.4837 13.6289 13.8825 14.0664C13.445 14.1889 12.9813 14.2501 12.5 14.2501C12.0187 14.2501 11.555 14.1889 11.1175 14.0664C9.51625 13.6289 8.22125 12.4564 7.6175 10.9339C7.38125 10.3389 7.25 9.68262 7.25 9.00012C7.25 6.10387 9.60375 3.75012 12.5 3.75012C15.3962 3.75012 17.75 6.10387 17.75 9.00012Z"
-                        fill="currentColor"
-                    />
-                    <path
-                        fill-opacity="0.3"
-                        d="M21.25 16C21.25 18.8962 18.8962 21.25 16 21.25C14.6525 21.25 13.4275 20.7425 12.5 19.9025C13.5763 18.9487 14.25 17.5487 14.25 16C14.25 15.3175 14.1187 14.6612 13.8825 14.0662C15.4837 13.6287 16.7787 12.4562 17.3825 10.9337C19.605 11.5375 21.25 13.585 21.25 16Z"
-                        fill="currentColor"
-                    />
-                    </svg>
-                </a> --}}
+                    x-tooltip.placement.right="'Libro de reclamaciones'">
+                    <i class="fa fa-pencil" aria-hidden="true" style="font-size: 23px;"></i>
+                </a>
 
             </div>
 
@@ -501,71 +468,47 @@
                 <p class="text-base tracking-wider text-slate-800 dark:text-navy-100">
                     Global CPA - Business School
                 </p>
-                <button
-                    @click="$store.global.isSidebarExpanded = false"
-                    class="btn size-7 rounded-full p-0 text-primary hover:bg-slate-300/20 focus:bg-slate-300/20 active:bg-slate-300/25 dark:text-accent-light/80 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25 xl:hidden"
-                >
-                    <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="size-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    >
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M15 19l-7-7 7-7"
-                    />
+                <button @click="$store.global.isSidebarExpanded = false"
+                    class="btn size-7 rounded-full p-0 text-primary hover:bg-slate-300/20 focus:bg-slate-300/20 active:bg-slate-300/25 dark:text-accent-light/80 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25 xl:hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="size-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                     </svg>
                 </button>
             </div>
 
             <!-- Sidebar Panel Body -->
-            <div
-            x-data="{expandedItem:null}"
-            class="h-[calc(100%-4.5rem)] overflow-x-hidden pb-6"
-            x-init="$el._x_simplebar = new SimpleBar($el);"
-            >
+            <div x-data="{ expandedItem: null }" class="h-[calc(100%-4.5rem)] overflow-x-hidden pb-6" x-init="$el._x_simplebar = new SimpleBar($el);">
                 <ul class="flex flex-1 flex-col px-4 font-inter">
                     <li>
-                        <a
-                            x-data="navLink"
-                            href="{{ route('index_main') }}"
-                            :class="isActive ? 'font-medium text-primary dark:text-accent-light' : 'text-slate-600 hover:text-slate-900 dark:text-navy-200 dark:hover:text-navy-50'"
-                            class="flex py-2 text-xs+ tracking-wide outline-none transition-colors duration-300 ease-in-out"
-                        >
+                        <a x-data="navLink" href="{{ route('index_main') }}"
+                            :class="isActive ? 'font-medium text-primary dark:text-accent-light' :
+                                'text-slate-600 hover:text-slate-900 dark:text-navy-200 dark:hover:text-navy-50'"
+                            class="flex py-2 text-xs+ tracking-wide outline-none transition-colors duration-300 ease-in-out">
                             Home
                         </a>
                     </li>
                     <li>
-                        <a
-                            x-data="navLink"
-                            href="#dashboards"
-                            :class="isActive ? 'font-medium text-primary dark:text-accent-light' : 'text-slate-600 hover:text-slate-900 dark:text-navy-200 dark:hover:text-navy-50'"
-                            class="flex py-2 text-xs+ tracking-wide outline-none transition-colors duration-300 ease-in-out"
-                        >
+                        <a x-data="navLink" href="#dashboards"
+                            :class="isActive ? 'font-medium text-primary dark:text-accent-light' :
+                                'text-slate-600 hover:text-slate-900 dark:text-navy-200 dark:hover:text-navy-50'"
+                            class="flex py-2 text-xs+ tracking-wide outline-none transition-colors duration-300 ease-in-out">
                             Nosotros
                         </a>
                     </li>
                     <li>
-                        <a
-                            x-data="navLink"
-                            href="{{ route('web_privacy_policies') }}"
-                            :class="isActive ? 'font-medium text-primary dark:text-accent-light' : 'text-slate-600 hover:text-slate-900 dark:text-navy-200 dark:hover:text-navy-50'"
-                            class="flex py-2 text-xs+ tracking-wide outline-none transition-colors duration-300 ease-in-out"
-                        >
+                        <a x-data="navLink" href="{{ route('web_privacy_policies') }}"
+                            :class="isActive ? 'font-medium text-primary dark:text-accent-light' :
+                                'text-slate-600 hover:text-slate-900 dark:text-navy-200 dark:hover:text-navy-50'"
+                            class="flex py-2 text-xs+ tracking-wide outline-none transition-colors duration-300 ease-in-out">
                             Politicas de Privacidad
                         </a>
                     </li>
                     <li>
-                        <a
-                            x-data="navLink"
-                            href="#dashboards"
-                            :class="isActive ? 'font-medium text-primary dark:text-accent-light' : 'text-slate-600 hover:text-slate-900 dark:text-navy-200 dark:hover:text-navy-50'"
-                            class="flex py-2 text-xs+ tracking-wide outline-none transition-colors duration-300 ease-in-out"
-                        >
+                        <a x-data="navLink" href="#dashboards"
+                            :class="isActive ? 'font-medium text-primary dark:text-accent-light' :
+                                'text-slate-600 hover:text-slate-900 dark:text-navy-200 dark:hover:text-navy-50'"
+                            class="flex py-2 text-xs+ tracking-wide outline-none transition-colors duration-300 ease-in-out">
                             Contactanos
                         </a>
                     </li>
@@ -573,43 +516,30 @@
                 <div class="my-3 mx-4 h-px bg-slate-200 dark:bg-navy-500"></div>
                 <ul class="flex flex-1 flex-col px-4 font-inter">
                     <li x-data="accordionItem('menu-item-1')">
-                        <a
-                            :class="expanded ? 'text-slate-800 font-semibold dark:text-navy-50' : 'text-slate-600 dark:text-navy-200  hover:text-slate-800  dark:hover:text-navy-50'"
+                        <a :class="expanded ? 'text-slate-800 font-semibold dark:text-navy-50' :
+                            'text-slate-600 dark:text-navy-200  hover:text-slate-800  dark:hover:text-navy-50'"
                             @click="expanded = !expanded"
                             class="flex items-center justify-between py-2 text-xs+ tracking-wide outline-none transition-[color,padding-left] duration-300 ease-in-out"
-                            href="javascript:void(0);"
-                        >
+                            href="javascript:void(0);">
                             <span>Cursos</span>
-                            <svg
-                            :class="expanded && 'rotate-90'"
-                            xmlns="http://www.w3.org/2000/svg"
-                            class="size-4 text-slate-400 transition-transform ease-in-out"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                            >
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M9 5l7 7-7 7"
-                            />
+                            <svg :class="expanded && 'rotate-90'" xmlns="http://www.w3.org/2000/svg"
+                                class="size-4 text-slate-400 transition-transform ease-in-out" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 5l7 7-7 7" />
                             </svg>
                         </a>
                         <ul x-collapse x-show="expanded">
-                            @foreach ($courses as $item )
-                            <li>
-                                <a
-                                    x-data="navLink"
-                                    href="{{ route('web_course_description', $item->id) }}"
-                                    class="flex items-center justify-between p-1 text-xs+ tracking-wide transition-[color,padding-left] duration-300 ease-in-out hover:pl-4"
-                                >
-                                    <div class="flex items-center space-x-2">
-                                    <div class="size-0.5 opacity-60"</div>
-                                    <span>{{ $item->name }}</span>
-                                    </div>
-                                </a>
-                            </li>
+                            @foreach ($courses as $item)
+                                <li>
+                                    <a x-data="navLink" href="{{ route('web_course_description', $item->id) }}"
+                                        class="flex items-center justify-between p-1 text-xs+ tracking-wide transition-[color,padding-left] duration-300 ease-in-out hover:pl-4">
+                                        <div class="flex items-center space-x-2">
+                                            <div class="size-0.5 opacity-60"</div>
+                                                <span>{{ $item->name }}</span>
+                                            </div>
+                                    </a>
+                                </li>
                             @endforeach
                         </ul>
                     </li>
@@ -620,7 +550,8 @@
                     <a
                         x-data="navLink"
                         href="dashboards-widget-ui.html"
-                        :class="isActive ? 'font-medium text-primary dark:text-accent-light' : 'text-slate-600 hover:text-slate-900 dark:text-navy-200 dark:hover:text-navy-50'"
+                        :class="isActive ? 'font-medium text-primary dark:text-accent-light' :
+                            'text-slate-600 hover:text-slate-900 dark:text-navy-200 dark:hover:text-navy-50'"
                         class="flex py-2 text-xs+ tracking-wide outline-none transition-colors duration-300 ease-in-out"
                     >
                         Widget UI
@@ -630,13 +561,14 @@
                     <a
                         x-data="navLink"
                         href="dashboards-widget-contacts.html"
-                        :class="isActive ? 'font-medium text-primary dark:text-accent-light' : 'text-slate-600 hover:text-slate-900 dark:text-navy-200 dark:hover:text-navy-50'"
+                        :class="isActive ? 'font-medium text-primary dark:text-accent-light' :
+                            'text-slate-600 hover:text-slate-900 dark:text-navy-200 dark:hover:text-navy-50'"
                         class="flex py-2 text-xs+ tracking-wide outline-none transition-colors duration-300 ease-in-out"
                     >
                         Widget Contacts
                     </a>
                     </li>
-                </ul> --}}
+                </ul>
             </div>
         </div>
     </div>
