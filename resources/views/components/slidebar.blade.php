@@ -568,7 +568,7 @@
                         Widget Contacts
                     </a>
                     </li>
-                </ul>
+                </ul> --}}
             </div>
         </div>
     </div>
