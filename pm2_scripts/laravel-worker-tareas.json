@@ -1,6 +1,6 @@
 {
     "apps": [{
-      "name": "laravel-worker-exports",
+      "name": "laravel-worker-homework",
       "script": "php",
       "args": "artisan schedule:run",
       "cwd": "/var/www/html/globalcpa",
