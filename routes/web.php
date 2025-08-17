@@ -29,7 +29,7 @@ use App\Http\Controllers\WebController;
 // PAGINA WEB //
 // Route::get('/', [WebPageController::class, 'construction'])->name('construction');
 Route::get('/', [WebPageController::class, 'index'])->name('index_main');
-Route::get('/home', [WebPageController::class, 'index'])->name('index_main');
+Route::get('/home', [WebPageController::class, 'index'])->name('index_main_home');
 Route::get('/nosotros', [WebPageController::class, 'about'])->name('web_about');
 
 Route::get('/el-amauta-de-las-niif', [WebPageController::class, 'bookamauta'])->name('web_book_amauta');
@@ -176,7 +176,7 @@ Route::middleware('auth')->group(function () {
         'company/upload/images',
         [CompanyController::class, 'uploadImages']
     )->name('company_upload_images');
-	
+
 	Route::post(
         'user/persom/info/store',
         [PersonController::class, 'updateInfoPersonByUser']
