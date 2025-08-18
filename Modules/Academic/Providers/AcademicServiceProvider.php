@@ -4,7 +4,6 @@ namespace Modules\Academic\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Factory;
-use Modules\Academic\Console\CheckExpiredSubscriptions;
 
 class AcademicServiceProvider extends ServiceProvider
 {
@@ -29,13 +28,6 @@ class AcademicServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->moduleName, 'Database/Migrations'));
-
-        // Asegúrate de que esta sección exista y esté correcta:
-        if ($this->app->runningInConsole()) {
-            $this->commands([
-                CheckExpiredSubscriptions::class, // <-- ¡Agrega (o asegura) esta línea!
-            ]);
-        }
     }
 
     /**
