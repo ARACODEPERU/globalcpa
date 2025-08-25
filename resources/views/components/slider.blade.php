@@ -8,22 +8,7 @@
                         <img src="{{ asset('storage/'.$slide->item->items[0]->content) }}" alt="Imagen" class="w-full">
                     </a>
                 </div>
-                @endforeach 
-                {{-- <div class="slide">
-                    <img src="{{ asset('themes/webpage/images/slider_01.jpeg') }}" alt="Imagen 2" class="w-full">
-                </div>
-                <div class="slide">
-                    <img src="{{ asset('themes/webpage/images/slider_02.jpeg') }}" alt="Imagen 2" class="w-full">
-                </div>
-                <div class="slide">
-                    <img src="{{ asset('themes/webpage/images/slider_03.jpeg') }}" alt="Imagen 3" class="w-full">
-                </div>
-                <div class="slide">
-                    <img src="{{ asset('themes/webpage/images/slider_04.jpeg') }}" alt="Imagen 3" class="w-full">
-                </div>
-                <div class="slide">
-                    <img src="{{ asset('themes/webpage/images/slider_05.jpeg') }}" alt="Imagen 3" class="w-full">
-                </div> --}}
+                @endforeach
             </div>
         </div>
     </section>

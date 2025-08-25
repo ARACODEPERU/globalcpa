@@ -4,7 +4,6 @@
 <header class="header">
     <div class="header__container">
         <img src="{{ asset('themes/webpage/slidebar/img/perfil.jpg') }}" alt="" class="header__img">
-
         <a href="#" class="header__logo"></a>
     
         <div class="header__search">
