@@ -34,6 +34,7 @@ Route::get('/nosotros', [WebPageController::class, 'about'])->name('web_about');
 
 Route::get('/el-amauta-de-las-niif', [WebPageController::class, 'bookamauta'])->name('web_book_amauta');
 Route::get('/politicas-de-privacidad', [WebPageController::class, 'privacypolicies'])->name('web_privacy_policies');
+Route::get('/terminos-y-condiciones', [WebPageController::class, 'terms'])->name('web_terms_main');
 
 Route::get('/cursos', [WebPageController::class, 'courses'])->name('web_courses');
 Route::get('/curso-descripcion/{id}', [WebPageController::class, 'coursedescription'])->name('web_course_description');

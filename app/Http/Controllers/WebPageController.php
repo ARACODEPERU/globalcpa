@@ -101,6 +101,11 @@ class WebPageController extends Controller
         return view('pages/privacy-policies');
     }
 
+    public function terms()
+    {
+        return view('pages/terms');
+    }
+
     public function courses()
     {
         $courses = OnliItem::with('course')->get();
