@@ -33,8 +33,10 @@ Route::get('/home', [WebPageController::class, 'index'])->name('index_main_home'
 Route::get('/nosotros', [WebPageController::class, 'about'])->name('web_about');
 
 Route::get('/el-amauta-de-las-niif', [WebPageController::class, 'bookamauta'])->name('web_book_amauta');
-Route::get('/politicas-de-privacidad', [WebPageController::class, 'privacypolicies'])->name('web_privacy_policies');
-Route::get('/terminos-y-condiciones', [WebPageController::class, 'terms'])->name('terms_main');
+Route::get('/politicas-de-privacidad', [WebPageController::class, 'privacypolicies'])->name('politicas_devoluciones');
+Route::get('/terms', [LandingController::class, 'terms'])->name('terms_main');  //terminos y condiciones
+Route::get('/politicas_privacidad', [LandingController::class, 'politicas_privacidad'])->name('politicas_privacidad');
+//Route::get('/terminos-y-condiciones', [WebPageController::class, 'terms'])->name('terms_main'); //ya está hecho
 
 Route::get('/cursos', [WebPageController::class, 'courses'])->name('web_courses');
 Route::get('/curso-descripcion/{id}', [WebPageController::class, 'coursedescription'])->name('web_course_description');
@@ -46,9 +48,6 @@ Route::post('/user_safe_pay', [WebPageController::class, 'pagar_auth'])->name('p
 Route::get('/gracias/{id}', [WebPageController::class, 'thanks'])->name('web_thanks');
 Route::get('/curso-descripcion-x/{id}', [WebPageController::class, 'cursodescripcion'])->name('web_curso_descripcion');
 Route::get('/prices/academic', [LandingController::class, 'academicPrices'])->name('academic_prices');
-Route::get('/terms', [LandingController::class, 'terms'])->name('terms_main');  //terminos y condiciones
-Route::get('/politicas_privacidad', [LandingController::class, 'politicas_privacidad'])->name('politicas_privacidad');
-Route::get('/politicas_devoluciones', [LandingController::class, 'politicas_devoluciones'])->name('politicas_devoluciones');
 
 
 Route::get('/libro-de-reclamaciones',  [WebPageController::class, 'claims'])->name('web_claims');
