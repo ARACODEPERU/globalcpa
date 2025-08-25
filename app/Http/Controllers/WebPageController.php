@@ -101,6 +101,11 @@ class WebPageController extends Controller
         return view('pages/privacy-policies');
     }
 
+    public function politicas_devoluciones()
+    {
+        return view('pages/politicas_devoluciones');
+    }
+
     public function terms()
     {
         return view('pages/terms');

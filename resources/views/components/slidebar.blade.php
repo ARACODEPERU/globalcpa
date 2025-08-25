@@ -161,23 +161,31 @@
                 </a> --}}
 
                 <!-- Components -->
-                <a href="{{ route('web_claims') }}"
+                <a href="{{ route('complaints_book') }}" target="_blank"
                     class="flex size-11 items-center justify-center rounded-lg outline-none transition-colors duration-200 hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25"
                     x-tooltip.placement.right="'Libro de reclamaciones'">
                     <i class="fa fa-pencil" aria-hidden="true" style="font-size: 23px;"></i>
                 </a>
 
-                <a href="{{ route('web_terms_main') }}"
+                <a href="{{ route('terms_main') }}"
                     class="flex size-11 items-center justify-center rounded-lg outline-none transition-colors duration-200 hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25"
                     x-tooltip.placement.right="'Términos y condiciones'">
                     <i class="fa fa-handshake-o" aria-hidden="true" style="font-size: 23px;"></i>
                 </a>
 
-                <a href="{{ route('web_privacy_policies') }}"
+                <a href="{{ route('politicas_privacidad') }}"
                     class="flex size-11 items-center justify-center rounded-lg outline-none transition-colors duration-200 hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25"
                     x-tooltip.placement.right="'Politicas de privacidad'">
                     <i class="fa fa-gavel" aria-hidden="true" style="font-size: 23px;"></i>
                 </a>
+
+                <a href="{{ route('politicas_devoluciones') }}"
+                class="flex size-11 items-center justify-center rounded-lg outline-none transition-colors duration-200 hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25"
+                x-tooltip.placement.right="'Politicas de devoluciones'">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" width="30" height="30">
+                    <path fill="#808080" d="M246.9 82.3L271 67.8C292.6 54.8 317.3 48 342.5 48C379.3 48 414.7 62.6 440.7 88.7L504.6 152.6C519.6 167.6 528 188 528 209.2L528 240.1L547.7 259.8L547.7 259.8C563.3 244.2 588.6 244.2 604.3 259.8C620 275.4 619.9 300.7 604.3 316.4L540.3 380.4C524.7 396 499.4 396 483.7 380.4C468 364.8 468.1 339.5 483.7 323.8L464 304L433.1 304C411.9 304 391.5 295.6 376.5 280.6L327.4 231.5C312.4 216.5 304 196.1 304 174.9L304 162.2C304 151 298.1 140.5 288.5 134.8L246.9 109.8C236.5 103.6 236.5 88.6 246.9 82.4zM50.7 466.7L272.8 244.6L363.3 335.1L141.2 557.2C116.2 582.2 75.7 582.2 50.7 557.2C25.7 532.2 25.7 491.7 50.7 466.7z"/>
+                </svg>
+            </a>
 
             </div>
 
@@ -509,7 +517,7 @@
                         </a>
                     </li>
                     <li>
-                        <a x-data="navLink" href="{{ route('web_privacy_policies') }}"
+                        <a x-data="navLink" href="{{ route('politicas_privacidad') }}"
                             :class="isActive ? 'font-medium text-primary dark:text-accent-light' :
                                 'text-slate-600 hover:text-slate-900 dark:text-navy-200 dark:hover:text-navy-50'"
                             class="flex py-2 text-xs+ tracking-wide outline-none transition-colors duration-300 ease-in-out">
