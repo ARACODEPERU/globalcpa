@@ -39,9 +39,7 @@ background: linear-gradient(0deg, rgba(2, 0, 36, 1) 0%, rgba(60, 74, 153, 1) 35%
             </div>
             <div class="col-md-3" style="padding: 15px;">
                 <h2 style="color: #fff; font-size: 20px; padding-bottom: 10px;"><b>CONTACTANOS EN</b></h2>
-                <ul>
-                    <li  class="font-medium line-clamp-1 dark:text-navy-100" style="color: #fff;">sdsd</li>
-                </ul>
+                
                 <br>
                 <a href="{{ route('complaints_book') }}">
                     <img style="width: 180px;" src="{{ asset('themes/webpage/images/libroReclamaciones.png') }}" alt="">
