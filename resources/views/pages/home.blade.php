@@ -52,15 +52,12 @@
 
 
         <x-social-networks />
+        
+        <x-footer />
 
 
 
     </main>
-
-    <br>
-    <br>
-    <br>
-
 
     <script>
 
