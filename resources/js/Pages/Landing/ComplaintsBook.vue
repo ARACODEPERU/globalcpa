@@ -97,17 +97,17 @@
 
                                 <div class="relative z-10">
                                     <p class="text-sm italic text-justify text-gray-800 dark:text-white">
-                                        Al enviar esta reclamación, usted autoriza a Aracode Perú a tratar sus datos personales para la gestión de su reclamo y, en general, para los fines relacionados con la provisión de nuestros productos o servicios. Su información será procesada respetando nuestra <Link class="text-primary duration-300 hover:underline dark:text-warning">Política de Privacidad</Link> y la Ley N° 29733. Garantizamos la confidencialidad y seguridad de sus datos. Para mayor información, puede revisar nuestra <Link class="text-primary duration-300 hover:underline dark:text-warning">Política de Privacidad</Link> y nuestros <Link :href="route('terms_main')" class="text-primary duration-300 hover:underline dark:text-warning">Términos y Condiciones</Link>.
+                                        Al enviar esta reclamación, usted autoriza a Aracode Perú a tratar sus datos personales para la gestión de su reclamo y, en general, para los fines relacionados con la provisión de nuestros productos o servicios. Su información será procesada respetando nuestra <Link :href="route('politicas_privacidad')" class="text-primary duration-300 hover:underline dark:text-warning">Política de Privacidad</Link> y la Ley N° 29733. Garantizamos la confidencialidad y seguridad de sus datos. Para mayor información, puede revisar nuestra <Link :href="route('politicas_privacidad')" class="text-primary duration-300 hover:underline dark:text-warning">Política de Privacidad</Link> y nuestros <Link :href="route('terms_main')" class="text-primary duration-300 hover:underline dark:text-warning">Términos y Condiciones</Link>.
                                     </p>
                                 </div>
                                 <div class="relative z-10 mt-16 border-2 p-6 rounded-lg">
                                     <p class="text-sm italic text-justify text-gray-800 dark:text-white">
                                         {{ $page.props.company.name }}<br />
-                                        Av. A Casuarinas P1 26, Nuevo Chimbote, Áncash, Perú<br />
+                                        Pedro Conde Nro. 514 Dpto. 203, Lince-Lima Perú<br />
                                         El libro de reclamaciones virtual de Aracode Perú es un servicio proporcionado en cumplimiento de la Ley N° 29571, Código de Protección y Defensa del Consumidor.
                                         La formulación del reclamo no impide acudir a otras vías de solución de controversias ni es requisito previo para interponer una denuncia ante el INDECOPI.
-                                        El proveedor {{ $page.props.company.name }} dará respuesta al reclamo o queja en un plazo no mayor a quince (15) días hábiles, el cual es improrrogable.
-                                        Sus datos personales serán conservados durante el tiempo requerido por la normativa vigente para asegurar la correcta gestión de su reclamación y cumplir con nuestras obligaciones legales. Más información sobre el tratamiento de sus datos, sus derechos y los términos de uso de nuestro servicio, consulte nuestra <Link class="text-primary duration-300 hover:underline dark:text-warning">Política de Privacidad</Link> y nuestros <Link :href="route('terms_main')" class="text-primary duration-300 hover:underline dark:text-warning">Términos y Condiciones</Link>.
+                                        El proveedor {{ $page.props.company.name }} dará respuesta al reclamo o queja en un plazo no mayor a treinta (30) días calendario, el cual es improrrogable.
+                                        Sus datos personales serán conservados durante el tiempo requerido por la normativa vigente para asegurar la correcta gestión de su reclamación y cumplir con nuestras obligaciones legales. Más información sobre el tratamiento de sus datos, sus derechos y los términos de uso de nuestro servicio, consulte nuestra <Link :href="route('politicas_privacidad')" class="text-primary duration-300 hover:underline dark:text-warning">Política de Privacidad</Link> y nuestros <Link :href="route('terms_main')" class="text-primary duration-300 hover:underline dark:text-warning">Términos y Condiciones</Link>.
                                     </p>
                                 </div>
                             </blockquote>
@@ -251,7 +251,7 @@
                                     </div>
                                     <!-- End Card -->
                                      <div>
-                                        <p class="text-info text-xs my-4"><Link class="text-primary duration-300 hover:underline dark:text-warning">Política de Privacidad</Link> y nuestros <Link :href="route('terms_main')" class="text-primary duration-300 hover:underline dark:text-warning">Términos y Condiciones</Link>.</p>
+                                        <p class="text-info text-xs my-4"><Link :href="route('politicas_privacidad')" class="text-primary duration-300 hover:underline dark:text-warning">Política de Privacidad</Link> y nuestros <Link :href="route('terms_main')" class="text-primary duration-300 hover:underline dark:text-warning">Términos y Condiciones</Link>.</p>
                                         <label class="inline-flex">
                                             <input v-model="bookForm.acepto" type="checkbox" class="form-checkbox outline-primary peer" />
                                             <span class="peer-checked:text-primary">He leído y acepto el tratamiento de mis datos personales según lo descrito.</span>
@@ -271,5 +271,5 @@
             <!-- End Hero -->
         </div>
     </section>
-    <Footer />
+    <!-- <Footer /> -->
 </template>

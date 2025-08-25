@@ -295,6 +295,15 @@
                                         </div>
                                     </div> --}}
                                 </div>
+
+                                <div>
+                                    <input type="checkbox" class="" id="acepto_terminos"/>
+                                    <label class="flex items-center space-x-2 cursor-pointer">
+                                      <span class="text-sm text-gray-700">Acepto recibir información sobre futuros cursos, programas y promociones de Global CPA.</span>
+                                    </label>
+
+                                  </div>
+
                                 <button class="mt-8 boton-degradado-courses" id="btn-crear-cuenta">
                                         <b>Pagar con tarjeta</b>
                                 </button>
@@ -416,6 +425,14 @@
 
                             <!-- Botones -->
                             <div>
+                                <input type="checkbox" class="" id="acepto_terminos"/>
+                                <label class="flex items-center space-x-2 cursor-pointer">
+                                  <span class="text-sm text-gray-700">Acepto recibir información sobre futuros cursos, programas y promociones de Global CPA.</span>
+                                </label>
+
+                              </div>
+
+                            <div>
                                 <button type="submit" class="mt-8 boton-degradado-courses" id="btn-crear-cuenta">
                                     <b>CREAR CUENTA PARA PAGAR</b>
                                 </button>
@@ -430,7 +447,42 @@
                         </form>
                         @endauth
 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+  const checkbox = document.getElementById('acepto_terminos');
+  const buttons = document.querySelectorAll('#btn-crear-cuenta, #btn-login, .boton-degradado-transferencia');
 
+  // Función para deshabilitar todos los botones
+  function disableButtons() {
+    buttons.forEach(button => {
+      button.disabled = true;
+      button.classList.add('opacity-50', 'cursor-not-allowed');
+      button.classList.remove('hover:opacity-100');
+    });
+  }
+
+  // Función para habilitar todos los botones
+  function enableButtons() {
+    buttons.forEach(button => {
+      button.disabled = false;
+      button.classList.remove('opacity-50', 'cursor-not-allowed');
+      button.classList.add('hover:opacity-100');
+    });
+  }
+
+  // Deshabilita los botones al cargar la página
+  disableButtons();
+
+  // Agrega un evento 'change' al checkbox
+  checkbox.addEventListener('change', function() {
+    if (this.checked) {
+      enableButtons();
+    } else {
+      disableButtons();
+    }
+  });
+});
+</script>
                         <div id="loginModal" class="modal">
                             <div class="modal-content">
                                 <!-- Aquí se incrustará la vista de la página de inicio de sesión -->
