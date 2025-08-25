@@ -51,7 +51,7 @@
 
 <template>
     <Head>
-        <title>Aracode</title>
+        <title>Libro de Reclamaciones</title>
         <!-- Meta para Facturación Electrónica -->
         <meta name="description" content="Simplifica tu facturación electrónica con nuestra solución. Envía facturas y boletas electrónicas a SUNAT de forma rápida, segura y eficiente.">
         <meta name="keywords" content="facturación electrónica, enviar facturas SUNAT, boletas electrónicas, software SUNAT, sistema de facturación Perú, boletas Perú, SUNAT online">
@@ -97,7 +97,7 @@
 
                                 <div class="relative z-10">
                                     <p class="text-sm italic text-justify text-gray-800 dark:text-white">
-                                        Al enviar esta reclamación, usted autoriza a Aracode Perú a tratar sus datos personales para la gestión de su reclamo y, en general, para los fines relacionados con la provisión de nuestros productos o servicios. Su información será procesada respetando nuestra <Link :href="route('politicas_privacidad')" class="text-primary duration-300 hover:underline dark:text-warning">Política de Privacidad</Link> y la Ley N° 29733. Garantizamos la confidencialidad y seguridad de sus datos. Para mayor información, puede revisar nuestra <Link :href="route('politicas_privacidad')" class="text-primary duration-300 hover:underline dark:text-warning">Política de Privacidad</Link> y nuestros <Link :href="route('terms_main')" class="text-primary duration-300 hover:underline dark:text-warning">Términos y Condiciones</Link>.
+                                        Al enviar esta reclamación, usted autoriza a <b>Global Cpa Business School</b> a tratar sus datos personales para la gestión de su reclamo y, en general, para los fines relacionados con la provisión de nuestros productos o servicios. Su información será procesada respetando nuestra <Link :href="route('politicas_privacidad')" class="text-primary duration-300 hover:underline dark:text-warning">Política de Privacidad</Link> y la Ley N° 29733. Garantizamos la confidencialidad y seguridad de sus datos. Para mayor información, puede revisar nuestra <Link :href="route('politicas_privacidad')" class="text-primary duration-300 hover:underline dark:text-warning">Política de Privacidad</Link> y nuestros <Link :href="route('terms_main')" class="text-primary duration-300 hover:underline dark:text-warning">Términos y Condiciones</Link>.
                                     </p>
                                 </div>
                                 <div class="relative z-10 mt-16 border-2 p-6 rounded-lg">
