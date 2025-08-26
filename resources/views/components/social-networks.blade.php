@@ -127,17 +127,18 @@
                 </div>
             </div>
             <div class="flex w-36 shrink-0 flex-col items-center">
-                <a href="https://www.youtube.com/" class="z-10" >
+                <a href="https://www.youtube.com/@globalcpaperu" class="z-10" >
                     <img style="width: 50px;" src="{{ asset('themes/webpage/images/logos/youtube-round.svg') }}" alt="flag">
                 </a>
                 <div class="card -mt-5 w-full rounded-2xl px-3 py-3 text-center">
-                    <a href="https://www.youtube.com/">
+                    <a href="https://www.youtube.com/@globalcpaperu">
                         <p class="mt-3 text-base font-medium text-slate-700 dark:text-navy-100">
                             Youtube
                         </p>
                     </a>
-                    <a href="https://www.youtube.com/"
-                        class="mt-1 font-inter text-xs+ tracking-wide text-slate-400 hover:text-primary focus:text-primary dark:hover:text-accent-light dark:focus:text-accent-light">@theapp
+                    <a href="https://www.youtube.com/@globalcpaperu"
+                        class="mt-1 font-inter text-xs+ tracking-wide text-slate-400 hover:text-primary 
+                        focus:text-primary dark:hover:text-accent-light dark:focus:text-accent-light">@globalcpaperu
                     </a>
                     {{-- <div class="mt-6 flex justify-center space-x-1 font-inter">
                         <p class="text-4xl font-medium text-slate-700 dark:text-navy-100">
