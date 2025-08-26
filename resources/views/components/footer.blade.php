@@ -33,7 +33,7 @@ background: linear-gradient(0deg, rgba(2, 0, 36, 1) 0%, rgba(60, 74, 153, 1) 35%
                 </ul>
             </div>
             <div class="col-md-3" style="padding: 15px;">
-                <h2 style="color: #fff; font-size: 20px; padding-bottom: 10px;"><b>CONTACTANOS EN</b></h2>
+                <h2 style="color: #fff; font-size: 20px; padding-bottom: 10px;"><b>CONTACTANOS</b></h2>
                 <ul>
                     <li style="color: #fff; font-size: 16px;"><i class="fa fa-phone-square" aria-hidden="true"></i> 967 052 506</li>
                     <li style="color: #fff; font-size: 16px;"><i class="fa fa-envelope" aria-hidden="true"></i> informes@globalcpaperu.com</li>

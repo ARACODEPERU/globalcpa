@@ -243,11 +243,10 @@
         <div class="mt-4 w-full transition-all duration-[.25s] sm:mt-5 lg:mt-6">
             <x-social-networks />
         </div>
+        
+        <x-footer />
 
     </main>
-
-    <br>
-    <br>
 
 
     <script>

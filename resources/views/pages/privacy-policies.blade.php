@@ -154,11 +154,10 @@
             </div>
         </div>
 
-
-        <br>
-        <div class="mt-4 w-full transition-all duration-[.25s] sm:mt-5 lg:mt-6">
-            <x-social-networks />
-        </div>
+        
+        <x-social-networks />
+        
+        <x-footer />
 
     </main>
 

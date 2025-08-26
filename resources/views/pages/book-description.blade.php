@@ -578,6 +578,8 @@
         </div>
 
         <x-social-networks />
+        
+        <x-footer />
 
 
     </main>
