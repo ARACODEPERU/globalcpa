@@ -6,7 +6,7 @@
 background: linear-gradient(90deg, rgba(2, 0, 36, 1) 0%, rgba(60, 74, 153, 1) 35%, rgba(79, 70, 229, 1) 100%);"
     > --}}
 
-
+    
 <div class="mt-4 w-full transition-all duration-[.25s] sm:mt-5 lg:mt-6">
     <div
     style="background: #020024;
@@ -14,20 +14,9 @@ background: linear-gradient(0deg, rgba(2, 0, 36, 1) 0%, rgba(60, 74, 153, 1) 35%
     >
     <div class="container">
         <div class="row">
-<<<<<<< HEAD
             <div class="col-md-1"></div>
             <div class="col-md-2" style="padding: 15px; text-align:center;">
                 <img style="width: 90%;" src="{{ asset('themes/webpage/images/Logo_cpa_negativo.png') }}" alt="">
-=======
-            <div class="col-md-3" style="padding: 15px;">
-                <img src="{{ asset('themes/webpage/images/Logo_cpa_negativo.png') }}" alt="">
-            </div>
-            <div class="col-md-3" style="padding: 15px;">
-                <h2 style="color: #fff; font-size: 20px; padding-bottom: 10px;"><b>NAVEGAR</b></h2>
-                <ul>
-                    <li  class="font-medium text-slate-600 line-clamp-1 dark:text-navy-100">.</li>
-                </ul>
->>>>>>> 5f94d130591c2fe3e9e65a2fcd4bd6671c6e8ecb
             </div>
             <div class="col-md-3" style="padding: 15px;">
                 <h2 style="color: #fff; font-size: 20px; padding-bottom: 10px;"><b>LEGAL</b></h2>
@@ -45,7 +34,6 @@ background: linear-gradient(0deg, rgba(2, 0, 36, 1) 0%, rgba(60, 74, 153, 1) 35%
             </div>
             <div class="col-md-3" style="padding: 15px;">
                 <h2 style="color: #fff; font-size: 20px; padding-bottom: 10px;"><b>CONTACTANOS EN</b></h2>
-<<<<<<< HEAD
                 <ul>
                     <li style="color: #fff; font-size: 16px;"><i class="fa fa-phone-square" aria-hidden="true"></i> 967 052 506</li>
                     <li style="color: #fff; font-size: 16px;"><i class="fa fa-phone-square" aria-hidden="true"></i> correo@asdsd</li>
@@ -54,11 +42,6 @@ background: linear-gradient(0deg, rgba(2, 0, 36, 1) 0%, rgba(60, 74, 153, 1) 35%
             <div class="col-md-2" style="padding: 15px;">
                 <h2 style="color: #fff; font-size: 20px; padding-bottom: 10px;"><b>ERES IMPORTANTE</b></h2>
                 <a href="{{ route('complaints_book') }}">
-=======
-
-                <br>
-                <a href="{{ route('complaints_book') }}" target="_blank">
->>>>>>> 5f94d130591c2fe3e9e65a2fcd4bd6671c6e8ecb
                     <img style="width: 180px;" src="{{ asset('themes/webpage/images/libroReclamaciones.png') }}" alt="">
                 </a>
             </div>
