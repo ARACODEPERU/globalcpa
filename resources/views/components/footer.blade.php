@@ -20,7 +20,7 @@ background: linear-gradient(0deg, rgba(2, 0, 36, 1) 0%, rgba(60, 74, 153, 1) 35%
             <div class="col-md-3" style="padding: 15px;">
                 <h2 style="color: #fff; font-size: 20px; padding-bottom: 10px;"><b>NAVEGAR</b></h2>
                 <ul>
-                    <li  class="font-medium text-slate-600 line-clamp-1 dark:text-navy-100">sdsd</li>
+                    <li  class="font-medium text-slate-600 line-clamp-1 dark:text-navy-100">.</li>
                 </ul>
             </div>
             <div class="col-md-3" style="padding: 15px;">
