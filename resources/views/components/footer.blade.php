@@ -41,7 +41,7 @@ background: linear-gradient(0deg, rgba(2, 0, 36, 1) 0%, rgba(60, 74, 153, 1) 35%
             </div>
             <div class="col-md-2" style="padding: 15px;">
                 <a href="{{ route('complaints_book') }}">
-                    <img style="width: 180px;" src="{{ asset('themes/webpage/images/libroReclamaciones.png') }}" alt="">
+                    <img style="width: 180px;" src="{{ asset('themes/webpage/images/libroReclamaciones.png') }}" alt=""  style="margin-top: -10px;">
                 </a>
             </div>
             <div class="col-md-1"></div>
