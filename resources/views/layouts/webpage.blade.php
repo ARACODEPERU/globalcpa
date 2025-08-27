@@ -3,6 +3,7 @@
 <html lang="es">
   <head>
     <!-- Meta tags  -->
+    <meta name="facebook-domain-verification" content="3qhwpfunszdc5ag3cwum3r70v123vo" />
     {{-- <meta name="csrf-token" content="{{ csrf_token() }}"> --}}
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
