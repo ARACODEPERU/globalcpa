@@ -6,7 +6,7 @@
 background: linear-gradient(90deg, rgba(2, 0, 36, 1) 0%, rgba(60, 74, 153, 1) 35%, rgba(79, 70, 229, 1) 100%);"
     > --}}
 
-    
+
 <div class="mt-4 w-full transition-all duration-[.25s] sm:mt-5 lg:mt-6">
     <div
     style="background: #020024;
@@ -29,6 +29,9 @@ background: linear-gradient(0deg, rgba(2, 0, 36, 1) 0%, rgba(60, 74, 153, 1) 35%
                     </li>
                     <li class="font-medium line-clamp-1 dark:text-navy-100" style="color: #fff;">
                         <a href="{{ route('terms_main') }}">Terminos y condiciones</a>
+                    </li>
+                    <li class="font-medium line-clamp-1 dark:text-navy-100" style="color: #fff;">
+                        <a href="{{ route('certificado_validar') }}">Validar Certificado<i class="fa fa-certificate"></i></a>
                     </li>
                 </ul>
             </div>

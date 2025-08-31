@@ -12,7 +12,7 @@
       content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
     />
 
-    <title>Global CPA - Business School</title>
+    <title>Global CPA - Business School @yield('title')</title>
     <link rel="icon" type="image/png" href="{{ asset('themes/webpage/images/Logo_isotipo.png') }}" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
