@@ -10,7 +10,7 @@ background: linear-gradient(90deg, rgba(2, 0, 36, 1) 0%, rgba(60, 74, 153, 1) 35
 <div class="mt-4 w-full transition-all duration-[.25s] sm:mt-5 lg:mt-6">
     <div
     style="background: #020024;
-background: linear-gradient(0deg, rgba(2, 0, 36, 1) 0%, rgba(60, 74, 153, 1) 35%, rgba(79, 70, 229, 1) 100%); padding: 80px 0px;"
+            background: linear-gradient(0deg, rgba(2, 0, 36, 1) 0%, rgba(60, 74, 153, 1) 35%, rgba(79, 70, 229, 1) 100%); padding: 80px 0px;"
     >
     <div class="container">
         <div class="row">
