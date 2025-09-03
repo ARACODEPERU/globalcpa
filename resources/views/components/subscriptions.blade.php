@@ -26,48 +26,37 @@
                     </button>
                 </div>
             </div>
-            <div class="tab-content pt-4">
-                @foreach ($subscriptions as $subscription)
-                    @if ($subscription->period == 'Mensual')
-                        @php
-                            // Decodificar el JSON a un array de PHP
-                            $prices = json_decode($subscription->prices, true);
-                            $details = json_decode($subscription->details, true);
-                        @endphp
 
-                        <div x-show="activeTab === 'tabMensual'"
-                            x-transition:enter="transition-all duration-500 easy-in-out"
-                            x-transition:enter-start="opacity-0 [transform:translate3d(1rem,0,0)]"
-                            x-transition:enter-end="opacity-100 [transform:translate3d(0,0,0)]">
-                            <div
-                                class="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6 xl:grid-cols-4">
-                                <div class="flex flex-col">
-                                    <img class="h-44 w-full rounded-2xl object-cover object-center"
-                                        src="{{ asset('themes/webpage/images/object/object-2.jpg') }}" alt="image">
-                                    <div class="card -mt-8 grow rounded-2xl p-4">
-                                        <a href="#"
-                                            class="text-sm+ font-medium text-slate-700 line-clamp-1
-                                    hover:text-primary focus:text-primary dark:text-navy-100
-                                    dark:hover:text-accent-light dark:focus:text-accent-light">
-                                            <h3 style="font-size: 20px;">{{ $subscription->title }}</h3>
-                                        </a>
-                                        <p class="mt-2 grow line-clamp-3">
-                                        <ul>
+            <div class="container">
+                <br>
+                <div class="row" x-show="activeTab === 'tabMensual'"
+                    x-transition:enter="transition-all duration-500 easy-in-out"
+                    x-transition:enter-start="opacity-0 [transform:translate3d(1rem,0,0)]"
+                    x-transition:enter-end="opacity-100 [transform:translate3d(0,0,0)]">
+                    @foreach ($subscriptions as $subscription)
+                        @if ($subscription->period == 'Mensual')
+                            @php
+                                // Decodificar el JSON a un array de PHP
+                                $prices = json_decode($subscription->prices, true);
+                                $details = json_decode($subscription->details, true);
+                            @endphp
+                            <div class="col-md-4">
+                                <div class="card" style="width: 90%; padding: 10px 15px;">
+                                    <div class="card-body">
+                                        <h3 class="title_aracode" 
+                                            style="font-size: 25px; line-height: 1.1; font-weight: 700; padding: 25px 10px;">
+                                            {{ $subscription->title }}
+                                        </h3>
+                                        <ul style="height: 250px;">
                                             @foreach ($details as $detail)
-                                                <li><i class="fa fa-circle"></i> {{ $detail['label'] }}</li>
+                                                <li style="padding: 3px 0px;">
+                                                    <i class="fa fa-circle" style="font-size: 12px;"></i>
+                                                    &nbsp;{{ $detail['label'] }}
+                                                </li>
                                             @endforeach
-                                            {{-- <li><i class="fa fa-circle"></i> items 01</li>
-                                            <li><i class="fa fa-circle"></i> items 02</li>
-                                            <li><i class="fa fa-circle"></i> items 03</li>
-                                            <li><i class="fa fa-circle"></i> items 04</li> --}}
                                         </ul>
-                                        </p>
                                         <br>
-                                        <p>
-                                           S/ {{ $prices[0]['amount'] }} ó $ {{ $prices[1]['amount'] }}
-                                        </p>
-                                        <div class="mt-4">
-                                            <a href="{{ route('academic_step_account',$subscription->id) }}">
+                                            <a href="{{ route('academic_step_account', $subscription->id) }}">
                                                 <button class="boton-degradado-courses">
                                                     <b style="font-size: 18px;">
                                                         <i class="fa fa-edit" aria-hidden="true"
@@ -76,66 +65,47 @@
                                                     </b>
                                                 </button>
                                             </a>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    @elseif($subscription->period == 'Anual')
-
+                        @endif
+                    @endforeach
+                </div>
+                <br>
+                <div class="row" x-show="activeTab === 'tabAnual'">
+                    @foreach ($subscriptions as $subscription)
+                        @if ($subscription->period == 'Anual')
                             @php
-                            // Decodificar el JSON a un array de PHP
-                            $prices = json_decode($subscription->prices, true);
-                            $details = json_decode($subscription->details, true);
+                                // Decodificar el JSON a un array de PHP
+                                $prices = json_decode($subscription->prices, true);
+                                $details = json_decode($subscription->details, true);
                             @endphp
-
-                        <div x-show="activeTab === 'tabAnual'"
-                            x-transition:enter="transition-all duration-500 easy-in-out"
-                            x-transition:enter-start="opacity-0 [transform:translate3d(1rem,0,0)]"
-                            x-transition:enter-end="opacity-100 [transform:translate3d(0,0,0)]">
-                            <div
-                                class="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6 xl:grid-cols-4">
-                                <div class="flex flex-col">
-                                    <img class="h-44 w-full rounded-2xl object-cover object-center"
-                                        src="{{ asset('themes/webpage/images/object/object-2.jpg') }}" alt="image">
-                                    <div class="card -mt-8 grow rounded-2xl p-4">
-                                        <a href="#"
-                                            class="text-sm+ font-medium text-slate-700 line-clamp-1
-                                    hover:text-primary focus:text-primary dark:text-navy-100
-                                    dark:hover:text-accent-light dark:focus:text-accent-light">
-                                            <h3 style="font-size: 20px;">Título del plan</h3>
-                                        </a>
-                                        <p class="mt-2 grow line-clamp-3">
+                            <div class="col-md-4" style="">
+                                <div class="card" style="width: 100%; padding: 10px 20px;">
+                                    <div class="card-body">
+                                        <h3 class="title_aracode" 
+                                            style="font-size: 25px; line-height: 1.1; font-weight: 700; padding: 15px 10px;">
+                                            {{ $subscription->title }}
+                                        </h3>
+                                        <p class="card-text">
                                         <ul>
                                             @foreach ($details as $detail)
                                                 <li><i class="fa fa-circle"></i> {{ $detail['label'] }}</li>
                                             @endforeach
-                                            {{-- <li><i class="fa fa-circle"></i> items 01</li>
-                                            <li><i class="fa fa-circle"></i> items 02</li>
-                                            <li><i class="fa fa-circle"></i> items 03</li>
-                                            <li><i class="fa fa-circle"></i> items 04</li> --}}
                                         </ul>
                                         </p>
                                         <br>
-                                        <p>
-                                            S/ {{ $prices[0]['amount'] }} ó $ {{ $prices[1]['amount'] }}
-                                        </p>
-                                        <div class="mt-4">
-                                            <a href="{{ route('academic_step_account',$subscription->id) }}" class="boton-degradado-courses">
-                                                <b style="font-size: 18px;">
-                                                    <i class="fa fa-edit" aria-hidden="true"
-                                                        style="font-size: 20px;"></i>
-                                                    &nbsp; Suscribirme
-                                                </b>
-                                            </a>
-                                        </div>
+                                        <a href="#" class="btn btn-primary">Go somewhere</a>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    @endif
-                @endforeach
+                        @endif
+                    @endforeach
+                </div>
             </div>
+
+            <br>
+            <br>
         </div>
     </div>
 </div>
