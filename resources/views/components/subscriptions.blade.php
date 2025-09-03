@@ -44,10 +44,15 @@
                                 <div class="card" style="width: 90%; padding: 10px 15px;">
                                     <div class="card-body">
                                         <h3 class="title_aracode" 
-                                            style="font-size: 25px; line-height: 1.1; font-weight: 700; padding: 25px 10px;">
+                                            style="font-size: 25px; line-height: 1.1; font-weight: 700; padding: 10px;">
                                             {{ $subscription->title }}
                                         </h3>
-                                        <ul style="height: 250px;">
+                                        <h4 style="text-align: center; font-weight: 500;">
+                                            {{ $subscription->description }}<br>
+                                            <b>{{ $subscription->period }}</b>
+                                        </h4>
+                                        <br>
+                                        <ul style="height: auto;">
                                             @foreach ($details as $detail)
                                                 <li style="padding: 3px 0px;">
                                                     <i class="fa fa-circle" style="font-size: 12px;"></i>
