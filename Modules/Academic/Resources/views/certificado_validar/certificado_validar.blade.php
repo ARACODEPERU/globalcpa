@@ -1,5 +1,5 @@
 @extends('layouts.webpage')
-@section('title', '- Validar Certificado') {{-- <-- Agrega esta línea --}}
+{{-- @section('title', '- Validar Certificado') <-- Agrega esta línea --}}
 @section('content')
 
 

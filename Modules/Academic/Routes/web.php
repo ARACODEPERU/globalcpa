@@ -432,7 +432,7 @@ Route::middleware(['auth', 'verified', 'invalid_updated_information'])->prefix('
         ->name('aca_subscriptions_expired_student');
 });
 
-/////////no nesesita haber iniciado session//////////
+/////////no nesesita aver iniciado session//////////
 Route::get('academic/certificate/image/{id}/download', [AcaCertificateController::class, 'generateCertificateStudent'])->name('aca_image_download');
 
 Route::get('create/payment/{id}/account', [LandingController::class, 'academiCreatePayment'])->name('academic_step_account');

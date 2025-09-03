@@ -22,7 +22,6 @@ use Illuminate\Support\Facades\Storage;
 use Modules\Academic\Entities\AcaCertificateParameter;
 use Modules\Academic\Entities\AcaStudentSubscription;
 use Modules\Academic\Operations\CertificateImage;
-use App\Models\Person;
 
 class AcaCertificateController extends Controller
 {
