@@ -48,7 +48,7 @@
         </div>
 
 
-        {{-- <x-subscriptions /> --}}
+        <x-subscriptions /> 
 
 
         <x-social-networks />
