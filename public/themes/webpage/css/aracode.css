@@ -16,6 +16,14 @@
   color: #a3adc2;
 }
 
+.dolartitle_aracode{
+  color: #747682;
+  text-align: center;
+}
+
+.dolartitle_aracode:is(.dark *) {
+  color: #a3adc2;
+}
 /* -------------ACORDEON-------------- */
 
 .accordion-aracode {

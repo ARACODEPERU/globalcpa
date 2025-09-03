@@ -43,7 +43,7 @@
                             <div class="col-md-4">
                                 <div class="card" style="width: 90%; padding: 10px 15px;">
                                     <div class="card-body">
-                                        <h3 class="title_aracode" 
+                                        <h3 class="title_aracode"
                                             style="font-size: 25px; line-height: 1.1; font-weight: 700; padding: 10px;">
                                             {{ $subscription->title }}
                                         </h3>
@@ -61,15 +61,28 @@
                                             @endforeach
                                         </ul>
                                         <br>
-                                            <a href="{{ route('academic_step_account', $subscription->id) }}">
-                                                <button class="boton-degradado-courses">
-                                                    <b style="font-size: 18px;">
-                                                        <i class="fa fa-edit" aria-hidden="true"
-                                                            style="font-size: 20px;"></i>
-                                                        &nbsp; Suscribirme
-                                                    </b>
-                                                </button>
-                                            </a>
+                                        <h2 style="text-align: center;">
+                                            <b  class="title_aracode"
+                                            style="font-size: 35px; line-height: 1.1; font-weight: 700; padding: 10px;">
+                                            S/ {{ $prices[0]['amount'] }}
+                                            </b> 
+                                            / {{ $prices[0]['detail'] }}
+                                        </h2>
+                                        {{-- <p style="text-align: center;">ó</p>
+                                        <h2 class="dolartitle_aracode"
+                                            style="font-size: 25px; line-height: 1.1; font-weight: 500; padding: 10px;">
+                                            $ {{ $prices[1]['amount'] }}
+                                        </h2> --}}
+                                        <br>
+                                        <a href="{{ route('academic_step_account', $subscription->id) }}">
+                                            <button class="boton-degradado-courses">
+                                                <b style="font-size: 18px;">
+                                                    <i class="fa fa-edit" aria-hidden="true"
+                                                        style="font-size: 20px;"></i>
+                                                    &nbsp; Suscribirme
+                                                </b>
+                                            </button>
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -85,22 +98,49 @@
                                 $prices = json_decode($subscription->prices, true);
                                 $details = json_decode($subscription->details, true);
                             @endphp
-                            <div class="col-md-4" style="">
-                                <div class="card" style="width: 100%; padding: 10px 20px;">
+                            <div class="col-md-4">
+                                <div class="card" style="width: 90%; padding: 10px 15px;">
                                     <div class="card-body">
-                                        <h3 class="title_aracode" 
-                                            style="font-size: 25px; line-height: 1.1; font-weight: 700; padding: 15px 10px;">
+                                        <h3 class="title_aracode"
+                                            style="font-size: 25px; line-height: 1.1; font-weight: 700; padding: 10px;">
                                             {{ $subscription->title }}
                                         </h3>
-                                        <p class="card-text">
-                                        <ul>
+                                        <h4 style="text-align: center; font-weight: 500;">
+                                            {{ $subscription->description }}<br>
+                                            <b>{{ $subscription->period }}</b>
+                                        </h4>
+                                        <br>
+                                        <ul style="height: auto;">
                                             @foreach ($details as $detail)
-                                                <li><i class="fa fa-circle"></i> {{ $detail['label'] }}</li>
+                                                <li style="padding: 3px 0px;">
+                                                    <i class="fa fa-circle" style="font-size: 12px;"></i>
+                                                    &nbsp;{{ $detail['label'] }}
+                                                </li>
                                             @endforeach
                                         </ul>
-                                        </p>
                                         <br>
-                                        <a href="#" class="btn btn-primary">Go somewhere</a>
+                                        <h2 style="text-align: center;">
+                                            <b  class="title_aracode"
+                                            style="font-size: 35px; line-height: 1.1; font-weight: 700; padding: 10px;">
+                                            S/ {{ $prices[0]['amount'] }}
+                                            </b> 
+                                            / {{ $prices[0]['detail'] }}
+                                        </h2>
+                                        {{-- <p style="text-align: center;">ó</p>
+                                        <h2 class="dolartitle_aracode"
+                                            style="font-size: 25px; line-height: 1.1; font-weight: 500; padding: 10px;">
+                                            $ {{ $prices[1]['amount'] }}
+                                        </h2> --}}
+                                        <br>
+                                        <a href="{{ route('academic_step_account', $subscription->id) }}">
+                                            <button class="boton-degradado-courses">
+                                                <b style="font-size: 18px;">
+                                                    <i class="fa fa-edit" aria-hidden="true"
+                                                        style="font-size: 20px;"></i>
+                                                    &nbsp; Suscribirme
+                                                </b>
+                                            </button>
+                                        </a>
                                     </div>
                                 </div>
                             </div>
