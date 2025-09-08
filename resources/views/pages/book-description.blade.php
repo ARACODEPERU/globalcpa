@@ -10,7 +10,7 @@
     <x-slidebar />
 
     <main class="main-content w-full px-[var(--margin-x)] pb-8">
-      <br>
+        <br>
         <div class="mt-4 w-full transition-all duration-[.25s] sm:mt-5 lg:mt-6">
             <div style="text-align:center;">
                 <h1 class="title_aracode" style="font-size: 45px; line-height: 1.1; font-weight: 700;">
@@ -453,28 +453,48 @@
                         <div class="my-7 h-px bg-slate-200 dark:bg-navy-500"></div>
 
                         <div class="flex items-center justify-between pt-4">
-                            <a href="{{ asset('themes/webpage/El_Amauta_de_las_NIIF.pdf') }}" download="El_Amauta_de_las_NIIF">
-                                <button style="width: 100%;"
+                            <a href="{{ asset('themes/webpage/El_Amauta_de_las_NIIF.pdf') }}"
+                                download="El_Amauta_de_las_NIIF">
+                                {{-- <button style="width: 100%;"
                                     class="btn space-x-2 bg-primary font-medium text-white hover:bg-primary-focus 
                                     focus:bg-primary-focus active:bg-primary-focus/90 dark:bg-accent dark:hover:bg-accent-focus 
                                     dark:focus:bg-accent-focus dark:active:bg-accent/90">
                                     <span>Descargar Brochure</span>
+                                </button> --}}
+                                <button class="boton-degradado-courses">
+                                    <b style="font-size: 15px;">
+                                        <i class="fa fa-download" aria-hidden="true" style="font-size: 20px;"></i>
+                                        &nbsp; Descargar Brochure
+                                    </b>
                                 </button>
                             </a>
-                            <a href="https://wa.link/yibjj7">
-                                <button style="width: 100%;"
+                            <a href="https://wa.link/yibjj7" target="_blank">
+                                {{-- <button style="width: 100%;"
                                     class="btn space-x-2 bg-primary font-medium text-white hover:bg-primary-focus 
                                     focus:bg-primary-focus active:bg-primary-focus/90 dark:bg-accent dark:hover:bg-accent-focus 
                                     dark:focus:bg-accent-focus dark:active:bg-accent/90">
                                     <span>Comprar versión impresa</span>
+                                </button> --}}
+                                <button class="boton-degradado-courses">
+                                    <b style="font-size: 15px;">
+                                        <i class="fa fa-cart-plus" aria-hidden="true" style="font-size: 20px;"></i>
+                                        &nbsp; Comprar versión impresa
+                                    </b>
                                 </button>
                             </a>
-                            <a href="https://www.amazon.com/-/es/dp/B0DVTBXPCF?binding=kindle_edition&ref=dbs_dp_rwt_sb_pc_tkin">
-                                <button style="width: 100%;"
+                            <a href="https://www.amazon.com/-/es/dp/B0DVTBXPCF?binding=kindle_edition&ref=dbs_dp_rwt_sb_pc_tkin"
+                                target="_blank">
+                                {{-- <button style="width: 100%;"
                                     class="btn space-x-2 bg-primary font-medium text-white hover:bg-primary-focus 
                                     focus:bg-primary-focus active:bg-primary-focus/90 dark:bg-accent dark:hover:bg-accent-focus 
                                     dark:focus:bg-accent-focus dark:active:bg-accent/90">
                                     <span>Comprar ebook</span>
+                                </button> --}}
+                                <button class="boton-degradado-courses">
+                                    <b style="font-size: 15px;">
+                                        <i class="fa fa-cart-plus" aria-hidden="true" style="font-size: 20px;"></i>
+                                        &nbsp; Comprar ebook
+                                    </b>
                                 </button>
                             </a>
                         </div>
@@ -501,60 +521,82 @@
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6 xl:grid-cols-4">
             <div class="card">
                 <div class="flex grow flex-col items-center px-4 pb-4 sm:px-5">
-                    <img style="width: 100%; margin-top: 20px;" src="{{ asset('themes/webpage/images/amauta_2020.jpg') }}" alt="">
+                    <img style="width: 100%; margin-top: 20px;" src="{{ asset('themes/webpage/images/amauta_2020.jpg') }}"
+                        alt="">
                     <h3 class="pt-3 text-lg font-medium text-slate-700 dark:text-navy-100">
-                      EL AMAUTA DE LAS NIIF
+                        EL AMAUTA DE LAS NIIF
                     </h3>
                     <p class="text-xs+">EDICIÓN 2020</p>
                     <div class="mt-6 grid w-full grid-cols-1 gap-1">
-                      <a href="https://isbn.bnp.gob.pe/catalogo.php?mode=busqueda_menu&id_autor=64814&pagina=2">
-                        <button style="width: 100%;"
-                            class="btn space-x-2 bg-primary font-medium text-white hover:bg-primary-focus 
+                        <a href="https://isbn.bnp.gob.pe/catalogo.php?mode=busqueda_menu&id_autor=64814&pagina=2"
+                            target="_blank">
+                            {{-- <button style="width: 100%;"
+                                class="btn space-x-2 bg-primary font-medium text-white hover:bg-primary-focus 
                             focus:bg-primary-focus active:bg-primary-focus/90 dark:bg-accent dark:hover:bg-accent-focus 
                             dark:focus:bg-accent-focus dark:active:bg-accent/90">
-                            <span>Información</span>
-                        </button>
-                      </a>
+                                <span>Información</span>
+                            </button> --}}
+                            <button class="boton-degradado-courses">
+                                <b style="font-size: 15px;">
+                                    <i class="fa fa-book" aria-hidden="true" style="font-size: 20px;"></i>
+                                    &nbsp; Información
+                                </b>
+                            </button>
+                        </a>
                     </div>
                 </div>
             </div>
             <div class="card">
-              <div class="flex grow flex-col items-center px-4 pb-4 sm:px-5">
-                  <img style="width: 100%; margin-top: 20px;" src="{{ asset('themes/webpage/images/amauta_2021.jpg') }}" alt="">
-                  <h3 class="pt-3 text-lg font-medium text-slate-700 dark:text-navy-100">
-                    EL AMAUTA DE LAS NIIF
-                  </h3>
-                  <p class="text-xs+">EDICIÓN 2021</p>
-                  <div class="mt-6 grid w-full grid-cols-1 gap-1">
-                    <a href="https://isbn.bnp.gob.pe/catalogo.php?mode=detalle&nt=122583">
-                      <button style="width: 100%;"
-                          class="btn space-x-2 bg-primary font-medium text-white hover:bg-primary-focus 
-                          focus:bg-primary-focus active:bg-primary-focus/90 dark:bg-accent dark:hover:bg-accent-focus 
-                          dark:focus:bg-accent-focus dark:active:bg-accent/90">
-                          <span>Información</span>
-                      </button>
-                    </a>
-                  </div>
-              </div>
+                <div class="flex grow flex-col items-center px-4 pb-4 sm:px-5">
+                    <img style="width: 100%; margin-top: 20px;" src="{{ asset('themes/webpage/images/amauta_2021.jpg') }}"
+                        alt="">
+                    <h3 class="pt-3 text-lg font-medium text-slate-700 dark:text-navy-100">
+                        EL AMAUTA DE LAS NIIF
+                    </h3>
+                    <p class="text-xs+">EDICIÓN 2021</p>
+                    <div class="mt-6 grid w-full grid-cols-1 gap-1">
+                        <a href="https://isbn.bnp.gob.pe/catalogo.php?mode=detalle&nt=122583" target="_blank">
+                            {{-- <button style="width: 100%;"
+                                class="btn space-x-2 bg-primary font-medium text-white hover:bg-primary-focus 
+                                focus:bg-primary-focus active:bg-primary-focus/90 dark:bg-accent dark:hover:bg-accent-focus 
+                                dark:focus:bg-accent-focus dark:active:bg-accent/90">
+                                <span>Información</span>
+                            </button> --}}
+                            <button class="boton-degradado-courses">
+                                <b style="font-size: 15px;">
+                                    <i class="fa fa-book" aria-hidden="true" style="font-size: 20px;"></i>
+                                    &nbsp; Información
+                                </b>
+                            </button>
+                        </a>
+                    </div>
+                </div>
             </div>
             <div class="card">
-              <div class="flex grow flex-col items-center px-4 pb-4 sm:px-5">
-                  <img style="width: 100%; margin-top: 20px;" src="{{ asset('themes/webpage/images/amauta_2023.jpg') }}" alt="">
-                  <h3 class="pt-3 text-lg font-medium text-slate-700 dark:text-navy-100">
-                    EL AMAUTA DE LAS NIIF
-                  </h3>
-                  <p class="text-xs+">EDICIÓN 2023</p>
-                  <div class="mt-6 grid w-full grid-cols-1 gap-1">
-                    <a href="https://isbn.bnp.gob.pe/catalogo.php?mode=detalle&nt=131181">
-                      <button style="width: 100%;"
-                          class="btn space-x-2 bg-primary font-medium text-white hover:bg-primary-focus 
-                          focus:bg-primary-focus active:bg-primary-focus/90 dark:bg-accent dark:hover:bg-accent-focus 
-                          dark:focus:bg-accent-focus dark:active:bg-accent/90">
-                          <span>Información</span>
-                      </button>
-                    </a>
-                  </div>
-              </div>
+                <div class="flex grow flex-col items-center px-4 pb-4 sm:px-5">
+                    <img style="width: 100%; margin-top: 20px;" src="{{ asset('themes/webpage/images/amauta_2023.jpg') }}"
+                        alt="">
+                    <h3 class="pt-3 text-lg font-medium text-slate-700 dark:text-navy-100">
+                        EL AMAUTA DE LAS NIIF
+                    </h3>
+                    <p class="text-xs+">EDICIÓN 2023</p>
+                    <div class="mt-6 grid w-full grid-cols-1 gap-1">
+                        <a href="https://isbn.bnp.gob.pe/catalogo.php?mode=detalle&nt=131181" target="_blank">
+                            {{-- <button style="width: 100%;"
+                                class="btn space-x-2 bg-primary font-medium text-white hover:bg-primary-focus 
+                                focus:bg-primary-focus active:bg-primary-focus/90 dark:bg-accent dark:hover:bg-accent-focus 
+                                dark:focus:bg-accent-focus dark:active:bg-accent/90">
+                                <span>Información</span>
+                            </button> --}}
+                            <button class="boton-degradado-courses">
+                                <b style="font-size: 15px;">
+                                    <i class="fa fa-book" aria-hidden="true" style="font-size: 20px;"></i>
+                                    &nbsp; Información
+                                </b>
+                            </button>
+                        </a>
+                    </div>
+                </div>
             </div>
             {{-- <div class="card">
               <div class="flex grow flex-col items-center px-4 pb-4 sm:px-5">
@@ -578,7 +620,7 @@
         </div>
 
         <x-social-networks />
-        
+
         <x-footer />
 
 
