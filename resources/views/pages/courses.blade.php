@@ -29,7 +29,7 @@
                             class="btn shrink-0 px-3 py-1.5 font-medium">
                             Todos
                         </button>
-                        {{-- <button @click="activeTab = 'tabProfile'"
+                        <button @click="activeTab = 'tabProfile'"
                             :class="activeTab === 'tabProfile' ?
                                 'bg-white shadow dark:bg-navy-500 dark:text-navy-100' :
                                 'hover:text-slate-800 focus:text-slate-800 dark:hover:text-navy-100 dark:focus:text-navy-100'"
@@ -49,7 +49,7 @@
                                 'hover:text-slate-800 focus:text-slate-800 dark:hover:text-navy-100 dark:focus:text-navy-100'"
                             class="btn shrink-0 px-3 py-1.5 font-medium">
                             Ca 03
-                        </button> --}}
+                        </button>
                     </div>
                 </div>
                 <div class="tab-content pt-4">
