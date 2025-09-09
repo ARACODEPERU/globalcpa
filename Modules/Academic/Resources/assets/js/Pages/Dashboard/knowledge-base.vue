@@ -66,7 +66,7 @@
             btnMenuMycourses.value = document.getElementById("btnMenuMycourses");
             btnHeaderPerfilUser.value = document.getElementById("btnHeaderPerfilUser");
         });
-        console.log(userData.tour_completed)
+        //console.log(userData.tour_completed)
         if (!localStorage.getItem('tourShown') && !userData.tour_completed) {
             open.value = true; // Mostrar el tour por primera vez
         }
@@ -112,9 +112,18 @@
         open.value = val;
         if (!val) {
             // Guardar en localStorage que el tour ya se mostró
-            localStorage.setItem('tourShown', 'true');
+            updateTourUser();
         }
     };
+
+    const updateTourUser = () => {
+        axios({
+            method: "POST",
+            url: route('update_tour_user')
+        }).then(() => {
+            localStorage.setItem('tourShown', 'true');
+        });
+    }
 </script>
 <template>
     <AppLayout title="Dashboard">
