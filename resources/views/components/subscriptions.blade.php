@@ -8,33 +8,30 @@
             </h1>
         </div>
         <br>
-        <div x-data="{ activeTab: 'tabMensual' }" class="tabs flex flex-col">
+        <div x-data="{ activeTab: 'tabAnual' }" class="tabs flex flex-col">
             <div
                 class="is-scrollbar-hidden overflow-x-auto rounded-lg bg-slate-200 text-slate-600 dark:bg-navy-800 dark:text-navy-200">
                 <div class="tabs-list flex px-1.5 py-1">
-                    <button @click="activeTab = 'tabMensual'"
-                        :class="activeTab === 'tabMensual' ? 'bg-white shadow dark:bg-navy-500 dark:text-navy-100' :
-                            'hover:text-slate-800 focus:text-slate-800 dark:hover:text-navy-100 dark:focus:text-navy-100'"
-                        class="btn shrink-0 px-3 py-1.5 font-medium">
-                        Mensual
-                    </button>
                     <button @click="activeTab = 'tabAnual'"
                         :class="activeTab === 'tabAnual' ? 'bg-white shadow dark:bg-navy-500 dark:text-navy-100' :
                             'hover:text-slate-800 focus:text-slate-800 dark:hover:text-navy-100 dark:focus:text-navy-100'"
                         class="btn shrink-0 px-3 py-1.5 font-medium">
                         Anual
                     </button>
+                    <button @click="activeTab = 'tabMensual'"
+                        :class="activeTab === 'tabMensual' ? 'bg-white shadow dark:bg-navy-500 dark:text-navy-100' :
+                            'hover:text-slate-800 focus:text-slate-800 dark:hover:text-navy-100 dark:focus:text-navy-100'"
+                        class="btn shrink-0 px-3 py-1.5 font-medium">
+                        Mensual
+                    </button>
                 </div>
             </div>
 
             <div class="container">
                 <br>
-                <div class="row" x-show="activeTab === 'tabMensual'"
-                    x-transition:enter="transition-all duration-500 easy-in-out"
-                    x-transition:enter-start="opacity-0 [transform:translate3d(1rem,0,0)]"
-                    x-transition:enter-end="opacity-100 [transform:translate3d(0,0,0)]">
+                <div class="row" x-show="activeTab === 'tabAnual'">
                     @foreach ($subscriptions as $subscription)
-                        @if ($subscription->period == 'Mensual')
+                        @if ($subscription->period == 'Anual')
                             @php
                                 // Decodificar el JSON a un array de PHP
                                 $prices = json_decode($subscription->prices, true);
@@ -90,9 +87,12 @@
                     @endforeach
                 </div>
                 <br>
-                <div class="row" x-show="activeTab === 'tabAnual'">
+                <div class="row" x-show="activeTab === 'tabMensual'"
+                    x-transition:enter="transition-all duration-500 easy-in-out"
+                    x-transition:enter-start="opacity-0 [transform:translate3d(1rem,0,0)]"
+                    x-transition:enter-end="opacity-100 [transform:translate3d(0,0,0)]">
                     @foreach ($subscriptions as $subscription)
-                        @if ($subscription->period == 'Anual')
+                        @if ($subscription->period == 'Mensual')
                             @php
                                 // Decodificar el JSON a un array de PHP
                                 $prices = json_decode($subscription->prices, true);
