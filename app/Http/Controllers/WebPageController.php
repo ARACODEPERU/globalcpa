@@ -116,6 +116,7 @@ class WebPageController extends Controller
         $courses = OnliItem::with('course')->get();
         $courses = $courses->shuffle();
         $categories = AcaCategoryCourse::all();
+        $types = getEnumValues('onli_items', 'additional', 0, 1);
 
         // $banner = CmsSection::where('component_id', 'cursos_banner_area_14')  //siempre cambiar el id del componente
         //     ->join('cms_section_items', 'section_id', 'cms_sections.id')
@@ -141,7 +142,8 @@ class WebPageController extends Controller
             'courses' => $courses,
             'categories' => $categories,
             // 'banner' => $banner,
-            'title' => $title
+            'title' => $title,
+            'types' => $types,
         ]);
     }
 
