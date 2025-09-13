@@ -33,6 +33,7 @@ Route::get('/home', [WebPageController::class, 'index'])->name('index_main_home'
 Route::get('/nosotros', [WebPageController::class, 'about'])->name('web_about');
 
 Route::get('/el-amauta-de-las-niif', [WebPageController::class, 'bookamauta'])->name('web_book_amauta');
+Route::get('/planes-de-suscripcion', [WebPageController::class, 'subscriptions'])->name('web_subscriptions');
 Route::get('/politicas-de-devolucion', [WebPageController::class, 'politicas_devoluciones'])->name('politicas_devoluciones');
 Route::get('/Terminos-y-condiciones', [LandingController::class, 'terms'])->name('terms_main');  //terminos y condiciones
 Route::get('/politicas_privacidad', [WebPageController::class, 'privacypolicies'])->name('politicas_privacidad');
