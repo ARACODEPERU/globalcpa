@@ -119,7 +119,7 @@ class WebPageController extends Controller
     public function courses()
     {
         $courses = OnliItem::with('course')->get();
-        $courses = $courses->shuffle();
+        //$courses = $courses->shuffle();
         $categories = AcaCategoryCourse::all();
         $types = getEnumValues('onli_items', 'additional', 0, 1);
 
