@@ -204,7 +204,7 @@
                                                                         style="font-size: 16px;"></i>
                                                                     &nbsp; S/ {{ $item->price }}
                                                                 </b>
-                                                                @if ($item->price < 0.01)
+                                                                @if ($item->price < 1)
                                                                 <button><b> <a href="{{ route('register') }}">Registrate Gratis</a> </b></button>
                                                                 @endif
                                                             </button>
