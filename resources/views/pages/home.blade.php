@@ -47,10 +47,6 @@
             </div>
         </div>
 
-
-        <x-subscriptions /> 
-
-
         <x-social-networks />
         
         <x-footer />
