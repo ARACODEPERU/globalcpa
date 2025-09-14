@@ -1,5 +1,5 @@
 <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6">
-    @foreach ($courses as $item )
+    @foreach ($courses->take(12) as $item )
     <div class="card group p-3">
         <div class="flex items-center justify-between space-x-2 px-1">
             <div class="flex items-center space-x-2">
