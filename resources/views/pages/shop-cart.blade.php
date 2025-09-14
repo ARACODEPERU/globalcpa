@@ -479,7 +479,7 @@
                         document.addEventListener('DOMContentLoaded', function() {
                             const checkbox = document.getElementById('acepto_terminos');
                             const buttons = document.querySelectorAll(
-                                '#btn-crear-cuenta, #btn-login, .boton-degradado-transferencia');
+                                '#btn-crear-cuenta, .boton-degradado-transferencia');
 
                             // Función para deshabilitar todos los botones
                             function disableButtons() {
