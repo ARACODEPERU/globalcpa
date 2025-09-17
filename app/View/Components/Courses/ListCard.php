@@ -13,6 +13,7 @@ class ListCard extends Component
 
     protected $courses_title;
     protected $courses;
+    protected $types;
 
     public function __construct()
     {
@@ -27,7 +28,8 @@ class ListCard extends Component
         //     ->orderBy('cms_section_items.position')
         //     ->get();
 
-        $this->courses = OnliItem::with('course.teacher.person')->limit(12)->orderBy('id','desc')->get();
+        $this->courses = OnliItem::with('course.teacher.person')->orderBy('id','desc')->get();
+        $this->types = getEnumValues('onli_items', 'additional', 0, 1);
             
     }
 
@@ -38,7 +40,8 @@ class ListCard extends Component
     {
         return view('components.courses.list-card', [
             // 'courses_title' => $this->courses_title,
-            'courses' => $this->courses
+            'courses' => $this->courses,
+            'types' => $this->types,
         ]);
     }
 }

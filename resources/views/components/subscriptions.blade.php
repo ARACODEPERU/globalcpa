@@ -18,12 +18,12 @@
                         class="btn shrink-0 px-3 py-1.5 font-medium">
                         Anual
                     </button>
-                    <button @click="activeTab = 'tabMensual'"
+                    {{-- <button @click="activeTab = 'tabMensual'"
                         :class="activeTab === 'tabMensual' ? 'bg-white shadow dark:bg-navy-500 dark:text-navy-100' :
                             'hover:text-slate-800 focus:text-slate-800 dark:hover:text-navy-100 dark:focus:text-navy-100'"
                         class="btn shrink-0 px-3 py-1.5 font-medium">
                         Mensual
-                    </button>
+                    </button> --}}
                 </div>
             </div>
 

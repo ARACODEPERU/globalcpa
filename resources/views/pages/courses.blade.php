@@ -10,11 +10,10 @@
     <x-slidebar />
 
     <main class="main-content w-full px-[var(--margin-x)] pb-8">
-
         <div class="mt-5 w-full transition-all duration-[.25s] sm:mt-5 lg:mt-6">
             <div style="text-align:center;">
                 <h1 class="title_aracode" style="font-size: 45px; line-height: 1.1; font-weight: 700;">
-                    NUESTRA FORMACIÓN ACADÉMICA
+                    FORMACIÓN QUE TRANSFORMA TU TALENTO <br>EN RESULTADOS REALES
                 </h1>
             </div>
             <br>
@@ -135,7 +134,7 @@
                             <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6">
                                 @foreach ($courses as $item)
 
-                                    @if ($item->additional == $type)
+                                    @if (strtolower($item->additional) == strtolower($type))
                                         <div class="card group p-3">
                                             <div class="flex items-center justify-between space-x-2 px-1">
                                                 <div class="flex items-center space-x-2">
@@ -204,6 +203,9 @@
                                                                         style="font-size: 16px;"></i>
                                                                     &nbsp; S/ {{ $item->price }}
                                                                 </b>
+                                                                @if ($item->price < 1)
+                                                                <button><b> <a href="{{ route('register') }}">Registrate Gratis</a> </b></button>
+                                                                @endif
                                                             </button>
                                                         </a>
                                                     </div>
