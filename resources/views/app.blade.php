@@ -7,6 +7,13 @@
 
     <title inertia>{{ config('app.name', 'Laravel') }}</title>
     <link rel="icon" href="{{ asset('img/isotipo.png') }}">
+    @php
+        $parameters = new \App\Models\Parameter();
+        $P000022=$parameters->where('parameter_code', 'P000022')->value('value_default')?? "";
+        $cadena_decodificada = htmlspecialchars_decode($P000022, ENT_QUOTES);
+    @endphp
+    {!! $cadena_decodificada !!}
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

@@ -5,13 +5,6 @@
     <!-- Meta tags  -->
     <meta name="facebook-domain-verification" content="3qhwpfunszdc5ag3cwum3r70v123vo" />
 
-@php
-$parameters = new \App\Models\Parameter();
-$P000022=$parameters->where('parameter_code', 'P000022')->value('value_default')?? "";
-$cadena_decodificada = htmlspecialchars_decode($P000022, ENT_QUOTES);
-@endphp
-{!! $cadena_decodificada !!}
-
     {{-- <meta name="csrf-token" content="{{ csrf_token() }}"> --}}
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
