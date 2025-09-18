@@ -500,13 +500,13 @@ class AcaStudentController extends Controller
             $canView = false; // Valor por defecto
 
             // Condición 4: Si el tipo es 'Programas de especialización', NUNCA se puede ver (a menos que haya una lógica de compra/pago específica no indicada)
-            if ($course->type_description === 'Programas de especialización') {
+            // Normalizar ambas cadenas (recomendado)
+            if (strcasecmp($course->type_description, 'Programas de Especialización') === 0) {
                 if (in_array($course->id, $registeredCourseIds)) {
                     $canView = true;
                 } else {
                     $canView = false;
                 }
-
             }
             // Condición 3: Suscripción activa (siempre puede ver, excepto los de especialización)
             elseif ($hasActiveSubscription) {

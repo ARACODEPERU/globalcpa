@@ -81,26 +81,6 @@ const selectCity = () => {
     form.ubigeo = ubigeoSelected.value.district_id;
 }
 
-const loadFile = (event) => {
-    const input = event.target;
-    const file = input.files[0];
-    const type = file.type;
-
-    // Obtén una referencia al elemento de imagen a través de Vue.js
-    const imagePreview = document.getElementById('preview_img');
-
-    // Crea un objeto de archivo de imagen y asigna la URL al formulario
-    const imageFile = URL.createObjectURL(event.target.files[0]);
-    form.image_preview = imageFile;
-    // Asigna el archivo a form.image
-    form.image = file;
-    // Libera la URL del objeto una vez que la imagen se haya cargado
-    imagePreview.onload = function() {
-        URL.revokeObjectURL(imageFile); // libera memoria
-    }
-};
-
-
 const createFormSearch = () => {
 
     let formHTML = document.createElement('form');
@@ -234,6 +214,34 @@ const getPersonData = (newValues) => {
     form.presentacion = newValues.presentacion;
     form.gender = newValues.gender;
 };
+
+const imagePreviewRef = ref(null);
+const loadFile = (event) => {
+    const file = event.target.files[0];
+    if (!file) {
+        // If the user cancels the file selection, clear the fields and exit
+        form.image = null;
+        form.image_preview = null;
+        return;
+    }
+
+    // Assign the file object to the `image` field for form submission
+    form.image = file;
+
+    // Create a temporary URL for the preview and assign it
+    const fileUrl = URL.createObjectURL(file);
+    form.image_preview = fileUrl;
+
+    // Use the template ref to get the <img> element
+    const imageElement = imagePreviewRef.value;
+
+    if (imageElement) {
+        // This is a good practice to free up memory when the image has loaded
+        imageElement.onload = () => {
+            URL.revokeObjectURL(fileUrl);
+        };
+    }
+};
 </script>
 
 <template>
@@ -275,19 +283,6 @@ const getPersonData = (newValues) => {
 
                 />
                 <InputError :message="form.errors.birthdate" class="mt-2" />
-            </div>
-            <div class="col-span-6 sm:col-span-6 ">
-                <div class="flex items-center space-x-6">
-                    <div v-show="form.image_preview" class="shrink-0">
-                        <img id='preview_img' class="h-16 w-16 object-cover rounded-full" :src="form.image_preview" alt="Current profile photo" />
-                    </div>
-                    <label class="block ml-1">
-                        <input @change="loadFile" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-                        id="file_input"
-                        type="file"
-                        >
-                    </label>
-                </div>
             </div>
             <div class="col-span-6 sm:col-span-2 ">
                 <InputLabel for="names" value="Nombres *" />
@@ -427,6 +422,41 @@ const getPersonData = (newValues) => {
                     track-by="id"
                 ></multiselect>
                 <InputError :message="form.errors.occupation_id" class="mt-1" />
+            </div>
+            <div class="lg:col-span-3">
+                <div class="flex items-center gap-4">
+                    <div>
+                        <div v-if="form.image_preview" style="width: 80px;height: 80px;">
+                            <img id='preview_img' class="w-full h-full object-cover rounded-full" :src="form.image_preview" alt="Current profile photo" />
+                        </div>
+                        <span v-else class="group-has-[div]:hidden flex shrink-0 justify-center items-center size-20 border-2 border-dotted border-gray-300 text-gray-400 cursor-pointer rounded-full hover:bg-gray-50 dark:border-neutral-700 dark:text-neutral-600 dark:hover:bg-neutral-700/50">
+                            <svg class="shrink-0 size-7" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <circle cx="12" cy="10" r="3"></circle>
+                                <path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662"></path>
+                            </svg>
+                        </span>
+                    </div>
+                    <div>
+                        <label class="block">
+                            <span class="sr-only">Elige tu foto de perfil</span>
+                            <input
+                                @change="loadFile"
+                                type="file" class="block w-full text-sm text-gray-500
+                                file:me-4 file:py-2 file:px-4
+                                file:rounded-lg file:border-0
+                                file:text-sm file:font-semibold
+                                file:bg-blue-600 file:text-white
+                                hover:file:bg-blue-700
+                                file:disabled:opacity-50 file:disabled:pointer-events-none
+                                dark:text-neutral-500
+                                dark:file:bg-blue-500
+                                dark:hover:file:bg-blue-400"
+                                ref="imagePreviewRef"
+                            >
+                        </label>
+                    </div>
+                </div>
             </div>
             <div class="col-span-6 sm:col-span-3">
                 <InputLabel for="gender" value="Genero *" />
