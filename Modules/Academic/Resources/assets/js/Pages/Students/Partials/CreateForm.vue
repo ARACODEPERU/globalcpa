@@ -10,6 +10,7 @@ import Swal2 from 'sweetalert2';
 import { ref, watch, onMounted } from 'vue';
 import Multiselect from '@suadelabs/vue3-multiselect';
 import '@suadelabs/vue3-multiselect/dist/vue3-multiselect.css';
+import { Select, SelectOption } from 'ant-design-vue';
 
 const props = defineProps({
     identityDocumentTypes: {
@@ -31,9 +32,18 @@ const props = defineProps({
     occupations: {
         type: Object,
         default: () => ({})
+    },
+    countries: {
+        type: Object,
+        default: () => ({})
     }
 });
 
+const getFlagImage = (path) => {
+    return baseUrl + path;
+}
+
+const filteredCountries = ref([]);
 
 const form = useForm({
     id: null,
@@ -53,7 +63,8 @@ const form = useForm({
     gender: 'M',
     industry_id: null,
     profession_id: null,
-    occupation_id: null
+    occupation_id: null,
+    country_id: 1,
 });
 
 const createPatient = () => {
@@ -137,6 +148,7 @@ const createFormSearch = () => {
 
 onMounted(() => {
     openSwal2Search();
+    filteredCountries.value = props.countries;
 });
 
 const baseUrl = assetUrl;
@@ -242,6 +254,33 @@ const loadFile = (event) => {
         };
     }
 };
+
+const normalizeText = (text) => {
+    return (text || "")
+        .normalize("NFD")                // descompone letras + tildes (ej: "á" → "á")
+        .replace(/\p{Diacritic}/gu, "")  // elimina los diacríticos
+        .toLowerCase()
+        .trim();
+};
+
+const handleSearch = (input) => {
+    const term = normalizeText(input);
+
+    if (!term) {
+        filteredCountries.value = props.countries;
+        return;
+    }
+
+    filteredCountries.value = props.countries.filter(c =>
+        normalizeText(c.description).includes(term)
+    );
+};
+
+const countrySelected = ref(1);
+
+const handleChange = (val) => {
+    form.country_id = val;
+};
 </script>
 
 <template>
@@ -317,7 +356,59 @@ const loadFile = (event) => {
                 />
                 <InputError :message="form.errors.mother_lastname" class="mt-2" />
             </div>
-            <div class="col-span-6 sm:col-span-3 ">
+
+            <div class="col-span-6 lg:col-span-2">
+                <InputLabel for="country" value="País *" />
+                <Select
+                    style="width: 100%"
+                    placeholder="Seleccione un país"
+                    show-search
+                    :filter-option="false"
+                    @search="handleSearch"
+                    @change="handleChange"
+                    v-model:value="countrySelected"
+                    :allowClear="true"
+                >
+                    <template v-for="country in filteredCountries">
+                        <SelectOption :value="country.id" :label="country.description">
+                            <div class="flex items-center gap-4">
+                                <img :src="getFlagImage(country.image)" class="w-4 h-4" />
+                                <span>{{ country.description }}</span>
+                            </div>
+                        </SelectOption>
+                   </template>
+                </Select>
+            </div>
+            <div class="col-span-6 sm:col-span-2">
+                <InputLabel for="ubigeo" value="Ciudad *" />
+                <template v-if="form.country_id == 1">
+                    <multiselect
+                        id="industry_id"
+                        :model-value="ubigeoSelected"
+                        v-model="ubigeoSelected"
+                        :options="ubigeo"
+                        class="custom-multiselect"
+                        :searchable="true"
+                        placeholder="Buscar"
+                        selected-label="seleccionado"
+                        select-label="Elegir"
+                        deselect-label="Quitar"
+                        label="ubigeo_description"
+                        track-by="district_id"
+                        @update:model-value="selectCity"
+                    ></multiselect>
+                    <InputError :message="form.errors.ubigeo" class="mt-2" />
+                </template>
+                <template v-else>
+                    <TextInput
+                        id="ubigeo_id"
+                        v-model="form.ubigeo_description"
+                        type="text"
+                    />
+                    <InputError :message="form.errors.ubigeo_description" class="mt-2" />
+                </template>
+            </div>
+            <div class="col-span-6 sm:col-span-2">
                 <InputLabel for="address" value="Dirección *" />
                 <TextInput
                     id="address"
@@ -327,25 +418,6 @@ const loadFile = (event) => {
 
                 />
                 <InputError :message="form.errors.address" class="mt-2" />
-            </div>
-            <div class="col-span-6 sm:col-span-3 ">
-                <InputLabel for="ubigeo" value="Ciudad *" />
-                <multiselect
-                    id="industry_id"
-                    :model-value="ubigeoSelected"
-                    v-model="ubigeoSelected"
-                    :options="ubigeo"
-                    class="custom-multiselect"
-                    :searchable="true"
-                    placeholder="Buscar"
-                    selected-label="seleccionado"
-                    select-label="Elegir"
-                    deselect-label="Quitar"
-                    label="ubigeo_description"
-                    track-by="district_id"
-                    @update:model-value="selectCity"
-                ></multiselect>
-                <InputError :message="form.errors.ubigeo" class="mt-2" />
             </div>
             <div class="col-span-6 sm:col-span-2 ">
                 <InputLabel for="telephone" value="Teléfono *" />

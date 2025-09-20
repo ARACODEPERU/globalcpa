@@ -30,4 +30,13 @@ class AcaStudent extends Model
     {
         return $this->hasMany(AcaCapRegistration::class, 'student_id');
     }
+    public function subscriptions()
+    {
+        return $this->hasMany(AcaStudentSubscription::class, 'student_id', 'id');
+    }
+
+    public function certificates()
+    {
+        return $this->hasMany(AcaCertificate::class, 'student_id', 'id');
+    }
 }
