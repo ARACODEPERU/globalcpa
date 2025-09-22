@@ -18,7 +18,7 @@
             <div class="col-span-12 space-y-4 sm:space-y-5 lg:col-span-12 lg:space-y-6 xl:col-span-12">
                 <div class="flex items-center justify-between">
                     <h3 class="text-xl font-medium text-slate-800 dark:text-navy-50">
-                        Global CPA Business School | Formación:
+                        Formación que trasciende fronteras
                     </h3>
                     {{-- <div class="hidden w-full max-w-xs justify-between space-x-4 text-slate-700 dark:text-navy-100 sm:flex" x-data="{activeTab:'tabAll'}">
                             <button @click="activeTab = 'tabAll'" class="font-medium tracking-wide text-primary dark:text-accent-light" :class="activeTab === 'tabAll' &amp;&amp; 'text-primary dark:text-accent-light' ">

@@ -58,14 +58,15 @@
 }
 
 .accordion-header-aracode.active{
-  background: linear-gradient(45deg, #4f46e5, #3c4a99);
+  /* background: linear-gradient(45deg, #4f46e5, #3c4a99); */
+  background: linear-gradient(45deg, #6a4c93, #3c4a99);
 }
 
 .accordion-header-aracode:is(.dark *) {
   background-color: #1d273a; 
 }
 .accordion-header-aracode:hover {
-  background: linear-gradient(45deg, #4f46e5, #3c4a99);
+  background: linear-gradient(45deg, #6a4c93, #3c4a99);
 }
 .accordion-content-aracode {
   padding: 0 15px;
@@ -91,7 +92,7 @@
 }
 .list-icon-aracode {
   margin-right: 10px;
-  color: #4f46e5,
+  color: #6a4c93,
 }
 
 /* -------------BOTON DEGRADADO-------------- */
@@ -101,7 +102,7 @@
   padding: 15px 30px;
   border: none;
   border-radius: 10px;
-  background: linear-gradient(45deg, #3c4a99, #4f46e5);
+  background: linear-gradient(45deg, #3c4a99, #6a4c93);
   color: white;
   font-size: 17px;
   cursor: pointer;
@@ -111,7 +112,7 @@
 
 .boton-degradado-primary:hover {
   transform: translateY(-3px);
-  background: linear-gradient(45deg, #4f46e5, #3c4a99);
+  background: linear-gradient(45deg, #6a4c93, #3c4a99);
 }
 
 
@@ -139,7 +140,7 @@
   padding: 10px 20px;
   border: none;
   border-radius: 10px;
-  background: linear-gradient(45deg, #3c4a99, #4f46e5);
+  background: linear-gradient(45deg, #6a4c93, #3c4a99);
   color: white;
   font-size: 16px;
   cursor: pointer;
@@ -149,7 +150,7 @@
 
 .boton-degradado-campus:hover {
   transform: translateY(-3px);
-  background: linear-gradient(45deg, #4f46e5, #3c4a99);
+  background: linear-gradient(45deg, #3c4a99, #6a4c93);
   
 }
 
@@ -159,7 +160,7 @@
   padding: 12px 14px;
   border: none;
   border-radius: 10px;
-  background: linear-gradient(45deg, #3c4a99, #4f46e5);
+  background: linear-gradient(45deg, #6a4c93, #3c4a99);
   color: white;
   font-size: 14px;
   cursor: pointer;
@@ -169,7 +170,7 @@
 
 .boton-degradado-courses:hover {
   transform: translateY(-3px);
-  background: linear-gradient(45deg, #4f46e5, #3c4a99);
+  background: linear-gradient(45deg, #3c4a99, #6a4c93);
 }
 
 .boton-degradado-info {
@@ -196,7 +197,7 @@
   padding: 12px 15px;
   border: none;
   border-radius: 10px;
-  background: linear-gradient(45deg, #3c4a99, #4f46e5);
+  background: linear-gradient(45deg, #6a4c93, #3c4a99);
   color: white;
   font-size: 17px;
   cursor: pointer;
@@ -224,7 +225,7 @@
 
 .boton-degradado-trash:hover {
   transform: translateY(-3px);
-  background: linear-gradient(45deg, #4f46e5, #3c4a99);
+  background: linear-gradient(45deg, #3c4a99, #6a4c93);
 }
 
 @media (min-width: 1700px) {
@@ -244,4 +245,5 @@
       display: block;
     }
 }
+
 

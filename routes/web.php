@@ -30,6 +30,7 @@ use App\Http\Controllers\WebController;
 // Route::get('/', [WebPageController::class, 'construction'])->name('construction');
 Route::get('/', [WebPageController::class, 'index'])->name('index_main');
 Route::get('/home', [WebPageController::class, 'index'])->name('index_main_home');
+Route::get('/home2', [WebPageController::class, 'index2'])->name('index_main_home2');
 Route::get('/nosotros', [WebPageController::class, 'about'])->name('web_about');
 
 Route::get('/el-amauta-de-las-niif', [WebPageController::class, 'bookamauta'])->name('web_book_amauta');

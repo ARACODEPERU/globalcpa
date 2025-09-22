@@ -50,6 +50,11 @@ class WebPageController extends Controller
         return view('pages.home');
     }
 
+    public function index2()
+    {
+        return view('pages.home2');
+    }
+
     public function nosotros()
     {
 

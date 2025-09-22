@@ -10,27 +10,24 @@ use Modules\Onlineshop\Entities\OnliItem;
 
 class ListCard extends Component
 {
-
-    protected $courses_title;
     protected $courses;
     protected $types;
 
     public function __construct()
     {
-
-        // $this->courses_title = CmsSection::where('component_id', 'cursos_area_5')
-        //     ->join('cms_section_items', 'section_id', 'cms_sections.id')
-        //     ->join('cms_items', 'cms_section_items.item_id', 'cms_items.id')
-        //     ->select(
-        //         'cms_items.content',
-        //         'cms_section_items.position'
-        //     )
-        //     ->orderBy('cms_section_items.position')
-        //     ->get();
-
-        $this->courses = OnliItem::with('course.teacher.person')->orderBy('id','desc')->get();
+        $this->courses = OnliItem::with('course.teacher.person')->orderBy('id', 'desc')->get();
         $this->types = getEnumValues('onli_items', 'additional', 0, 1);
-            
+    }
+
+    /**
+     * Limitar caracteres de los títulos de los cursos.
+     */
+    protected function limitCourseTitles($courses, $length = 45)
+    {
+        return $courses->map(function ($course) use ($length) {
+            $course->name = mb_substr($course->name, 0, $length);
+            return $course;
+        });
     }
 
     /**
@@ -38,10 +35,35 @@ class ListCard extends Component
      */
     public function render(): View|Closure|string
     {
+        $limitedCourses = $this->limitCourseTitles($this->courses, 4); // Limita a 50 caracteres
+
         return view('components.courses.list-card', [
-            // 'courses_title' => $this->courses_title,
-            'courses' => $this->courses,
+            'courses' => $limitedCourses,
             'types' => $this->types,
         ]);
     }
 }
+
+
+// class ListCard extends Component
+// {
+
+//     protected $courses_title;
+//     protected $courses;
+//     protected $types;
+
+//     public function __construct()
+//     {
+//         $this->courses = OnliItem::with('course.teacher.person')->orderBy('id','desc')->get();
+//         $this->types = getEnumValues('onli_items', 'additional', 0, 1);
+            
+//     }
+
+//     public function render(): View|Closure|string
+//     {
+//         return view('components.courses.list-card', [
+//             'courses' => $this->courses,
+//             'types' => $this->types,
+//         ]);
+//     }
+// }
