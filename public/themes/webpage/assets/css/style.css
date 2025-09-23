@@ -1708,8 +1708,8 @@ svg.f-light {
 }
 .btn-outline-primary-2x:hover, .btn-outline-primary-2x:focus, .btn-outline-primary-2x:active, .btn-outline-primary-2x.active {
   color: white;
-  background-color: #289797 !important;
-  border-color: #289797 !important;
+  background-color: #6a4c93 !important;
+  border-color: #6a4c93 !important;
   -webkit-box-shadow: none;
           box-shadow: none;
 }
@@ -25916,12 +25916,12 @@ footer {
 }
 
 .pagination-success .page-item .page-link {
-  color: #63d5be !important;
+  color: #6a4c93 !important;
 }
 .pagination-success .page-item.active .page-link {
   color: #fff !important;
-  background-color: #63d5be !important;
-  border-color: #63d5be;
+  background-color: #6a4c93 !important;
+  border-color: #6a4c93;
 }
 
 .pagination-danger .page-item .page-link {
@@ -36167,7 +36167,7 @@ footer p .footer-icon {
   overflow: auto;
 }
 .page-wrapper.compact-sidebar .page-body-wrapper div.sidebar-wrapper .sidebar-main .sidebar-links .main-submenu .d-flex a {
-  color: #33BFBF;
+  color: #6a4c93;
 }
 .page-wrapper.compact-sidebar .page-body-wrapper div.sidebar-wrapper .sidebar-main .sidebar-links li a {
   color: #1F2F3E;
@@ -36180,11 +36180,13 @@ footer p .footer-icon {
   font-size: 14px;
 }
 .page-wrapper.compact-sidebar .page-body-wrapper div.sidebar-wrapper .sidebar-main .sidebar-links li a.active {
-  color: #33BFBF;
+  color: #6a4c93;
   border-radius: 6px;
 }
 .page-wrapper.compact-sidebar .page-body-wrapper div.sidebar-wrapper .sidebar-main .sidebar-links li a.active span {
-  color: #33BFBF;
+  padding: 15px 0px;
+  background: #6a4c93;
+  color: #fff;
 }
 .page-wrapper.compact-sidebar .page-body-wrapper div.sidebar-wrapper .sidebar-main .sidebar-links li a:not(.active) ~ .sidebar-submenu {
   -webkit-animation: fadeOutLeft 500ms ease-in;
@@ -36449,10 +36451,10 @@ footer p .footer-icon {
   font-size: 15px;
 }
 .page-wrapper.compact-small .page-body-wrapper div.sidebar-wrapper .sidebar-main .sidebar-links .sidebar-list .sidebar-submenu .main-submenu .d-flex.active {
-  color: #33BFBF;
+  color: #6a4c93;
 }
 .page-wrapper.compact-small .page-body-wrapper div.sidebar-wrapper .sidebar-main .sidebar-links .sidebar-list .sidebar-submenu .main-submenu .d-flex.active svg {
-  stroke: #33BFBF !important;
+  stroke: #6a4c93 !important;
 }
 .page-wrapper.compact-small .page-body-wrapper div.sidebar-wrapper .sidebar-main .sidebar-links .sidebar-list .sidebar-submenu .main-submenu .d-flex.active .arrow {
   -webkit-transform: rotate(90deg);

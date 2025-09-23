@@ -19,26 +19,11 @@ class ListCard extends Component
         $this->types = getEnumValues('onli_items', 'additional', 0, 1);
     }
 
-    /**
-     * Limitar caracteres de los títulos de los cursos.
-     */
-    protected function limitCourseTitles($courses, $length = 45)
-    {
-        return $courses->map(function ($course) use ($length) {
-            $course->name = mb_substr($course->name, 0, $length);
-            return $course;
-        });
-    }
-
-    /**
-     * Get the view / contents that represent the component.
-     */
     public function render(): View|Closure|string
     {
-        $limitedCourses = $this->limitCourseTitles($this->courses, 4); // Limita a 50 caracteres
 
         return view('components.courses.list-card', [
-            'courses' => $limitedCourses,
+            'courses' => $this->courses,
             'types' => $this->types,
         ]);
     }

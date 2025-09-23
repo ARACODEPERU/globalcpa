@@ -50,6 +50,23 @@
                                     <ul class="submenu-wrapper">
                                         <li><a href="">Curso 1</a></li>
                                         <li><a href="">Curso 2</a></li>
+                                        <li><a href="">Curso 3</a></li>
+                                        <li><a href="">Curso 4</a></li>
+                                        <li><a href="">Curso 5</a></li>
+                                        <li><a href="">Curso 6</a></li>
+                                        <li>
+                                            <div class="btn-showcase" style="text-align: center;">
+                                                <a href=" ">
+                                                    <button class="btn btn-pill btn-primary btn-air-primary btn-sm"
+                                                        type="button"
+                                                        data-bs-original-title="btn btn-pill btn-primary btn-air-primary btn-sm">
+                                                        <i class="fa fa-graduation-cap" aria-hidden="true"
+                                                            style="font-size: 18px;"></i>
+                                                        &nbsp; Ver Todos
+                                                    </button>
+                                                </a>
+                                            </div>
+                                        </li>
                                     </ul>
                                 </li>
                                 <li class="main-submenu">
@@ -70,6 +87,23 @@
                                     <ul class="submenu-wrapper">
                                         <li><a href="">Webinar 1</a></li>
                                         <li><a href="">Webinar 2</a></li>
+                                        <li><a href="">Webinar 3</a></li>
+                                        <li><a href="">Webinar 4</a></li>
+                                        <li><a href="">Webinar 5</a></li>
+                                        <li><a href="">Webinar 6</a></li>
+                                        <li>
+                                            <div class="btn-showcase" style="text-align: center;">
+                                                <a href=" ">
+                                                    <button class="btn btn-pill btn-primary btn-air-primary btn-sm"
+                                                        type="button"
+                                                        data-bs-original-title="btn btn-pill btn-primary btn-air-primary btn-sm">
+                                                        <i class="fa fa-graduation-cap" aria-hidden="true"
+                                                            style="font-size: 18px;"></i>
+                                                        &nbsp; Ver Todos
+                                                    </button>
+                                                </a>
+                                            </div>
+                                        </li>
                                     </ul>
                                 </li>
                                 <li class="main-submenu">
@@ -81,15 +115,32 @@
                                         <svg class="fill-icon">
                                             <use href="themes/webpage/assets/svg/icon-sprite.svg#stroke-others">
                                             </use>
-                                        </svg>Programas de Especialización
+                                        </svg>Especialización
                                         <svg class="arrow">
                                             <use href="themes/webpage/assets/svg/icon-sprite.svg#Arrow-right">
                                             </use>
                                         </svg>
                                     </a>
                                     <ul class="submenu-wrapper">
-                                        <li><a href="">Programas de Especialización 1</a></li>
-                                        <li><a href="">Programas de Especialización 2</a></li>
+                                        <li><a href="">Pro. Especialización 1</a></li>
+                                        <li><a href="">Pro. Especialización 2</a></li>
+                                        <li><a href="">Pro. Especialización 3</a></li>
+                                        <li><a href="">Pro. Especialización 4</a></li>
+                                        <li><a href="">Pro. Especialización 5</a></li>
+                                        <li><a href="">Pro. Especialización 6</a></li>
+                                        <li>
+                                            <div class="btn-showcase" style="text-align: center;">
+                                                <a href=" ">
+                                                    <button class="btn btn-pill btn-primary btn-air-primary btn-sm"
+                                                        type="button"
+                                                        data-bs-original-title="btn btn-pill btn-primary btn-air-primary btn-sm">
+                                                        <i class="fa fa-graduation-cap" aria-hidden="true"
+                                                            style="font-size: 18px;"></i>
+                                                        &nbsp; Ver Todos
+                                                    </button>
+                                                </a>
+                                            </div>
+                                        </li>
                                     </ul>
                                 </li>
                             </ul>
