@@ -148,12 +148,15 @@ class WebPageController extends Controller
             ->orderBy('cms_section_items.position')
             ->get();
 
+        $p = 12; //numero de cursos mostrados PAGINACION
+
         return view('pages.courses', [
             'courses' => $courses,
             'categories' => $categories,
             // 'banner' => $banner,
             'title' => $title,
             'types' => $types,
+            'p' => $p,
         ]);
     }
 
