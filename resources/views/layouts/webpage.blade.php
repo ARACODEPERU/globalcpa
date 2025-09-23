@@ -22,8 +22,6 @@
     <link rel="stylesheet" href="{{ asset('themes/webpage/bootstrap-5.3.3/css/bootstrap.css') }}" />
     <!-- CSS Assets -->
     <link rel="stylesheet" href="{{ asset('themes/webpage/css/app.css') }}" />
-
-
     <link rel="stylesheet" href="{{ asset('themes/webpage/css/aracode.css') }}" />
 
     <!-- Javascript Assets -->
@@ -56,28 +54,28 @@
 
 
     <!-- Themify icon-->
-    <link rel="stylesheet" type="text/css" href="themes/webpage/assets/css/vendors/themify.css">
+    <link rel="stylesheet" type="text/css" href="{{ asset('themes/webpage/assets/css/vendors/themify.css') }}">
     <!-- Flag icon-->
-    <link rel="stylesheet" type="text/css" href="themes/webpage/assets/css/vendors/flag-icon.css">
+    <link rel="stylesheet" type="text/css" href="{{ asset('themes/webpage/assets/css/vendors/flag-icon.css') }}">
     <!-- Feather icon-->
-    <link rel="stylesheet" type="text/css" href="themes/webpage/assets/css/vendors/feather-icon.css">
+    <link rel="stylesheet" type="text/css" href="{{ asset('themes/webpage/assets/css/vendors/feather-icon.css') }}">
     <!-- Plugins css start-->
-    <link rel="stylesheet" type="text/css" href="themes/webpage/assets/css/vendors/slick.css">
-    <link rel="stylesheet" type="text/css" href="themes/webpage/assets/css/vendors/slick-theme.css">
-    <link rel="stylesheet" type="text/css" href="themes/webpage/assets/css/vendors/scrollbar.css">
-    <link rel="stylesheet" type="text/css" href="themes/webpage/assets/css/vendors/animate.css">
-    <link rel="stylesheet" type="text/css" href="themes/webpage/assets/css/vendors/datatables.css">
-    <link rel="stylesheet" type="text/css" href="themes/webpage/assets/css/vendors/datatable/select.dataTables.min.css">
-    <link rel="stylesheet" type="text/css" href="themes/webpage/assets/css/vendors/prism.css">
-    <link rel="stylesheet" type="text/css" href="themes/webpage/assets/css/vendors/vector-map.css">
+    <link rel="stylesheet" type="text/css" href="{{ asset('themes/webpage/assets/css/vendors/slick.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('themes/webpage/assets/css/vendors/slick-theme.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('themes/webpage/assets/css/vendors/scrollbar.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('themes/webpage/assets/css/vendors/animate.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('themes/webpage/assets/css/vendors/datatables.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('themes/webpage/assets/css/vendors/datatable/select.dataTables.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('themes/webpage/assets/css/vendors/prism.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('themes/webpage/assets/css/vendors/vector-map.css') }}">
     <!-- Plugins css Ends-->
     <!-- Bootstrap css-->
     <link rel="stylesheet" type="text/css" href="{{ asset('themes/webpage/assets/css/vendors/bootstrap.css') }}">
     <!-- App css-->
     <link rel="stylesheet" type="text/css" href="{{ asset('themes/webpage/assets/css/style.css') }}">
-    <link id="color" rel="stylesheet" href="themes/webpage/assets/css/color-1.css" media="screen">
+    <link id="color" rel="stylesheet" href="{{ asset('themes/webpage/assets/css/color-1.css') }}" media="screen">
     <!-- Responsive css-->
-    <link rel="stylesheet" type="text/css" href="themes/webpage/assets/css/responsive.css">
+    <link rel="stylesheet" type="text/css" href="{{ asset('themes/webpage/assets/css/responsive.css') }}">
 
 
 
@@ -103,40 +101,24 @@
     </script>
   </head>
 
-  <body x-data class="is-header-blur" x-bind="$store.global.documentBody">
+  <body>
 
-    <!-- App preloader-->
-    {{-- <div class="app-preloader fixed z-50 grid h-full w-full place-content-center bg-slate-50 dark:bg-navy-900">
-      <div class="app-preloader-inner relative inline-block size-48"></div>
-    </div> Agregar time --}}
-
-
-    <!-- Page Wrapper -->
-    {{-- <div
-      id="root"
-      class="min-h-100vh flex grow bg-slate-50 dark:bg-navy-900"
-      x-cloak
-    > --}}
-
-    <div
-      id="root"
-      class="min-h-100vh flex grow bg-slate-100 dark:bg-navy-900"
-      x-cloak
-    >
+    
+  <body>
 
 
         @yield('content')
-
-        <!--Whatsapp Start-->
         <x-whatsapp />
-        <!--Whatsapp End-->
+
+    {{-- <div id="root" class="min-h-100vh flex grow bg-slate-100 dark:bg-navy-900" x-cloak>
+        @yield('content')
+        <x-whatsapp />
+    </div> --}}
 
 
-    </div>
-    <!--
-        This is a place for Alpine.js Teleport feature
-        @see https://alpinejs.dev/directives/teleport
-    -->
+
+
+
     <div id="x-teleport-target"></div>
     <script>
       window.addEventListener("DOMContentLoaded", () => Alpine.start());

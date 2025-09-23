@@ -16,7 +16,7 @@
     #merchandising .mer {
         position: fixed;
         transform: all .5s ease;
-        background-color: #6a4c93;
+        background-color: #3c4a99;
         display: block;
         text-align: center;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
@@ -44,7 +44,7 @@
         display: block;
         width: 60px;
         height: 60px;
-        background-color: #6a4c93;
+        background-color: #3c4a99;
         border-radius: 50%;
         -webkit-animation: pulse-border 1500ms ease-out infinite;
         animation: pulse-border 1500ms ease-out infinite;
