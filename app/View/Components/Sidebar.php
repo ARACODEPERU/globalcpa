@@ -14,10 +14,11 @@ class Sidebar extends Component
     protected $logo;
     // protected $courses_title;
     protected $courses;
+    protected $types;
 
     public function __construct()
     {
-        
+
         $this->logo = CmsSection::where('component_id', 'logos_1')
             ->join('cms_section_items', 'section_id', 'cms_sections.id')
             ->join('cms_items', 'cms_section_items.item_id', 'cms_items.id')
@@ -38,8 +39,10 @@ class Sidebar extends Component
         //     ->orderBy('cms_section_items.position')
         //     ->get();
 
-        $this->courses = OnliItem::with('course')->orderBy('id','desc')->get();
-            
+        //$this->courses = OnliItem::with('course')->orderBy('id','desc')->get();
+        $this->courses = OnliItem::select('id', 'name', 'additional')->latest()->get();
+        $this->types = getEnumValues('onli_items', 'additional', 0, 1);
+
     }
 
     /**
@@ -51,6 +54,9 @@ class Sidebar extends Component
             'logo' => $this->logo,
             // 'courses_title' => $this->courses_title,
             'courses' => $this->courses,
+            'types' => $this->types,
+            'p' => 6,   //numeros maximo de cursos mostrados en el sidebar
+            'lines' => 2,  //lineas mostradas del titulo del curso es una variable para el css
         ]);
     }
 }
