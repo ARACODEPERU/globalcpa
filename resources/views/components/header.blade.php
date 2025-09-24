@@ -61,18 +61,51 @@
                             </svg> --}}
                         </div>
                     </li>
-                    <li class="profile-nav onhover-dropdown pe-0 py-0">
-                        <div class="d-flex align-items-center profile-media">
-                            <img class="b-r-25" src="{{ asset('themes/webpage/assets/images/dashboard/profile.png') }}"
-                                alt="">
-                            <div class="flex-grow-1 user"><span>Helen Walter</span>
-                                <p class="mb-0 font-nunito">Estudiante
-                                </p>
+                    @auth
+                        <li class="profile-nav onhover-dropdown pe-0 py-0">
+                            <div class="d-flex align-items-center profile-media">
+                                {{-- Muestra la imagen de perfil del usuario logueado --}}
+                                {{-- Asumiendo que el usuario tiene un campo 'profile_picture' --}}
+
+                                @php
+                                    // Obtenemos el nombre y el avatar del usuario
+                                    $userName = Auth::user()->name;
+                                    $userAvatar = Auth::user()->avatar;
+                                    // Verificamos si el archivo de la imagen existe en el disco 'public'
+                                    $avatarExists = Storage::disk('public')->exists($userAvatar);
+                                @endphp
+
+                                {{-- Si el avatar existe, muestra la imagen --}}
+                                @if($avatarExists)
+                                    <img class="b-r-25" src="{{ asset('storage' . $userAvatar) }}" alt="" style="max-height: 3rem; max-width: 3rem;">
+                                @else
+                                    {{-- Si el avatar no existe, muestra el círculo con las iniciales --}}
+                                    <div class="initials-circle">
+                                        {{-- Obtenemos las iniciales del nombre --}}
+                                        <span>{{ substr($userName, 0, 1) }}</span>
+                                    </div>
+                                @endif
+
+
+
+
+
+                                <div class="flex-grow-1 user">
+                                    {{-- Muestra el nombre del usuario logueado --}}
+                                    <span>{{ Auth::user()->name }}</span>
+                                    <p class="mb-0 font-nunito">
+                                        @if(Auth::user()->role === 'Alumno')
+                                            Alumno
+                                        @else
+                                            Docente
+                                        @endif
+                                    </p>
+                                </div>
                             </div>
-                        </div>
-                    </li>
+                        </li>
+                    @endauth
                     <li>
-                        <a href="">
+                        <a href="{{ route('login') }}">
                             <button class="btn btn-pill btn-primary btn-air-primary btn-sm" type="button"
                                 data-bs-original-title="btn btn-pill btn-primary btn-air-primary btn-sm">
                                 <i class="fa fa-cart-plus" aria-hidden="true" style="font-size: 18px;"></i>
@@ -125,6 +158,18 @@
             text-align: center;
             font-size: 14px;
             font-weight: 700;
+        }
+        .initials-circle {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%; /* Esto crea la forma circular */
+            background-color: #007bff; /* Color de fondo, cámbialo a tu gusto */
+            color: white;
+            font-weight: bold;
+            font-size: 1.5rem; /* Ajusta el tamaño de la fuente */
         }
     </style>
 
