@@ -1,14 +1,14 @@
 <div>
     <div class="sidebar-wrapper" data-layout="stroke-svg">
         <div>
-            <div class="logo-wrapper"><a href="index.html"><img class="img-fluid"
+            <div class="logo-wrapper"><a href="{{ route('index_main') }}"><img class="img-fluid"
                         src="{{ asset('themes/webpage/images/Logo_isotipo_negativo.png') }}" alt=""></a>
                 <div class="back-btn"><i class="fa fa-angle-left"> </i></div>
             </div>
             <nav class="sidebar-main">
                 <div id="sidebar-menu">
                     <ul class="sidebar-links" id="simple-bar">
-                        <li class="back-btn"><a href="index.html"></a>
+                        <li class="back-btn"><a href=""></a>
                             <div class="mobile-back text-end"><span>Back</span><i class="fa fa-angle-right ps-2"
                                     aria-hidden="true"></i></div>
                         </li>
@@ -16,7 +16,7 @@
                             <div></div>
                         </li>
                         <li class="sidebar-list" style="padding: 15px 0px;">
-                            <a class="sidebar-link sidebar-title" href="">
+                            <a class="sidebar-link sidebar-title" href="{{ route('index_main') }}">
                                 <span>
                                     <i class="fa fa-home" aria-hidden="true" style="font-size: 26px;"></i><br>
                                     Home

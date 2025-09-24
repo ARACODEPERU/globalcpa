@@ -7,23 +7,30 @@
                 </div>
                 <div class="card-body">
                     <ul class="nav nav-pills nav-primary" id="pills-tab" role="tablist">
-                        <li class="nav-item" role="presentation"><a class="f-w-600 nav-link active"
-                                id="pills-aboutus-tab" data-bs-toggle="pill" href="#pills-aboutus" role="tab"
-                                aria-controls="pills-aboutus" aria-selected="false" tabindex="-1">Todos</a></li>
-                        <li class="nav-item" role="presentation"><a class="f-w-600 nav-link" id="pills-contactus-tab"
-                                data-bs-toggle="pill" href="#pills-contactus" role="tab"
-                                aria-controls="pills-contactus" aria-selected="false" tabindex="-1">Tipo</a></li>
-                        <li class="nav-item" role="presentation"><a class="f-w-600 nav-link " id="pills-blog-tab"
-                                data-bs-toggle="pill" href="#pills-blog" role="tab" aria-controls="pills-blog"
-                                aria-selected="true">Tipo </a>
+                        <li class="nav-item" role="presentation">
+                            <a class="f-w-600 nav-link active" id="todos-tab" data-bs-toggle="pill"
+                                onclick="show_paginator()" href="#todos" role="tab"
+                                aria-controls="todos" aria-selected="false" tabindex="-1">Todos
+                            </a>
                         </li>
+                        @foreach ($types as $type)
+                                            <li class="nav-item" role="presentation">
+                                                <a class="f-w-600 nav-link "
+                                                    onclick="unhidden('{{ str_replace(' ', '', $type) }}')"
+                                                    id="{{ str_replace(' ', '', $type) }}-tab" data-bs-toggle="pill"
+                                                    href="#{{ str_replace(' ', '', $type) }}" role="tab"
+                                                    aria-controls="{{ str_replace(' ', '', $type) }}" aria-selected="true">
+                                                    {{ $type }}
+                                                </a>
+                                            </li>
+                        @endforeach
                     </ul>
                     <div class="tab-content" id="pills-tabContent">
-                        <div class="tab-pane fade show active" id="pills-aboutus" role="tabpanel"
-                            aria-labelledby="pills-aboutus-tab">
+                        <div class="tab-pane fade show active" id="todos" role="tabpanel"
+                        aria-labelledby="todos-tab">
                             <br>
                             <div class="row widget-grid">
-                                @foreach ($courses->take(9) as $item)
+                                @foreach ($courses->take($p) as $item)
                                     <div class="col-xl-4 col-md-6 col-sm-12 box-col-4">
                                         <div class="card weekend-card">
                                             <div class="card-body">
@@ -71,15 +78,62 @@
                                 @endforeach
                             </div>
                         </div>
-                        <div class="tab-pane fade" id="pills-contactus" role="tabpanel"
-                            aria-labelledby="pills-contactus-tab">
-                            <ul class="d-flex flex-column gap-1 pt-3">
-                                <li> Create professional web page design. Responsive, fully customizable
-                                    with easy Drag-n-Drop Nicepage editor. Adjust colors, fonts, header and
-                                    footer, layout and other design elements, as well as content and images.
-                                </li>
-                            </ul>
-                        </div>
+                        @foreach ($types as $type)
+                                <div hidden class="tab-pane fade show active" id="{{ str_replace(' ', '', $type) }}" role="tabpanel"
+                                aria-labelledby="{{ str_replace(' ', '', $type) }}-tab">
+                                <br>
+                                <div class="row widget-grid">
+                                    @foreach ($courses as $item)
+                                        @if (strtolower($item->additional) == strtolower($type))
+                                            <div class="col-xl-4 col-md-6 col-sm-12 box-col-4">
+                                                <div class="card weekend-card">
+                                                    <div class="card-body">
+                                                        <a href="{{ route('web_course_description', $item->id) }}">
+                                                            <img class="w-100 mb-3"
+                                                                src="{{ asset('storage/' . $item->course->image) }}"
+                                                                alt="">
+                                                        </a>
+                                                        <br>
+                                                        <span style="color: #6a4c93;">{{ $item->additional }}</span>
+                                                        <br>
+                                                        <a href="{{ route('web_course_description', $item->id) }}"
+                                                            style="text-decoration: none;">
+                                                            <h4 style=" height: 30px; color: #000;">{{ $item->name }}</h4>
+                                                        </a>
+                                                        <br>
+                                                        <div class="card">
+                                                            <div class="">
+                                                                <div class="btn-showcase">
+                                                                    <a href="{{ route('web_course_description', $item->id) }}">
+                                                                        <button
+                                                                            class="btn btn-pill btn-light btn-air-light btn-sm"
+                                                                            type="button"
+                                                                            data-bs-original-title="btn btn-pill btn-light btn-air-light btn-sm">
+                                                                            Leer Más
+                                                                        </button>
+                                                                    </a>
+                                                                    <a
+                                                                        onclick="agregarAlCarrito({ id: {{ $item->id }}, nombre: '{{ $item->name }}', precio: {{ $item->price }} })">
+                                                                        <button
+                                                                            class="btn btn-pill btn-primary btn-air-primary btn-sm"
+                                                                            type="button"
+                                                                            data-bs-original-title="btn btn-pill btn-primary btn-air-primary btn-sm">
+                                                                            <i class="fa fa-cart-plus" aria-hidden="true"
+                                                                                style="font-size: 18px;"></i>
+                                                                            &nbsp; S/ {{ $item->price }}
+                                                                        </button>
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endif
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endforeach
                         <div class="tab-pane fade " id="pills-blog" role="tabpanel" aria-labelledby="pills-blog-tab">
                             <p>
                                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Tenetur similique
@@ -110,11 +164,33 @@
             </div>
         </div>
     </div>
+    <script>
+        window.onload = function() {
+            // Espera 1 segundo para mejorar la experiencia de usuario
+            setTimeout(function() {
+                // Redirecciona a la misma URL con el fragmento #todos al final
+                window.location.href = window.location.href.split('#')[0] + '#todos';
+            }, 500);
+        };
+
+        function unhidden(id) {
+            // 1. Obtener el elemento por su ID
+            const miElemento = document.getElementById(id);
+
+            // 2. Eliminar el atributo 'hidden'
+            miElemento.removeAttribute('hidden');
+            document.getElementById('paginator').hidden = true;
+        }
+
+        function show_paginator() {
+            document.getElementById('paginator').removeAttribute('hidden');
+        }
+    </script>
 </div>
 
 
 
-{{-- 
+{{--
 <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6">
     @foreach ($courses->take(12) as $item)
         <div class="card group p-3">
