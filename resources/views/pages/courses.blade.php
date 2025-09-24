@@ -24,7 +24,6 @@
             <!-- Page Sidebar Start-->
             <x-sidebar />
             <!-- Page Sidebar Ends-->
-
             <div class="page-body">
                 <div class="container-fluid"></div>
                 <div class="container-fluid">
@@ -301,11 +300,8 @@
                 </div>
             </div>
         </div>
-
-
         <!-- footer start-->
         <x-footer />
-
     </div>
 
 

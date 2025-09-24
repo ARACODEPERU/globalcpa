@@ -25,7 +25,6 @@
         <div class="page-body-wrapper">
             <!-- Page Sidebar Start-->
             <x-sidebar />
-
             <!-- Page Sidebar Ends-->
             <div class="page-body">
                 <div class="container-fluid"></div>
@@ -38,25 +37,9 @@
                 <x-courses.list-card />
                 <!-- Container-fluid Ends-->
             </div>
-            <!-- footer start-->
-            <footer class="footer">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-md-6 footer-copyright">
-                            <p class="mb-0">Copyright 2023 © Cion theme by pixelstrap.</p>
-                        </div>
-                        <div class="col-md-6">
-                            <p class="float-end mb-0">Hand crafted &amp; made with
-                                <svg class="footer-icon">
-                                    <use href="assets/svg/icon-sprite.svg#heart"></use>
-                                </svg>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </footer>
         </div>
-        
+        <!-- footer start-->
+        <x-footer />
     </div>
 
 

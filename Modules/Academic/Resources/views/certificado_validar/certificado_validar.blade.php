@@ -3,123 +3,249 @@
 @section('content')
 
 
-    <!-- App Header Wrapper-->
-    <x-nav />
 
-    <!-- Sidebar -->
-    <x-slidebar />
+    <!-- Loader starts-->
+    <!-- <div class="loader-wrapper">
+                                                              <div class="loader"></div>
+                                                            </div> -->
+    <!-- Loader ends-->
+    <!-- tap on top starts-->
+    <div class="tap-top"><i data-feather="chevrons-up"></i></div>
+    <!-- tap on tap ends-->
 
-    <main class="main-content w-full px-[var(--margin-x)] pb-8">
 
-        <div class="mt-5 w-full transition-all duration-[.25s] sm:mt-5 lg:mt-6">
-            <div style="text-align:center;">
-                <h1 class="title_aracode" style="font-size: 45px; line-height: 1.1; font-weight: 700;">
-                    Validar Certificado
-                </h1>
-            </div>
-        </div>
 
-        @if ($person=="")
 
-        <form id="search-form" class="max-w-md mx-auto" method="get">
-            <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
-            <div class="relative">
-                <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
-                    </svg>
+    <!-- page-wrapper Start-->
+    <div class="page-wrapper" id="pageWrapper">
+        <!-- Page Header Start-->
+        <x-header />
+        <!-- Page Header Ends-->
+        <!-- Page Body Start-->
+        <div class="page-body-wrapper">
+            <!-- Page Sidebar Start-->
+            <x-sidebar />
+
+            <!-- Page Sidebar Ends-->
+            <div class="page-body">
+                <br><br><br>
+                <div class="container-fluid">
+
+
+                    <div class="mt-5 w-full transition-all duration-[.25s] sm:mt-5 lg:mt-6">
+                        <div style="text-align:center;">
+                            <h1 class="title_aracode" style="font-size: 45px; line-height: 1.1; font-weight: 700;">
+                                Validar Certificado
+                            </h1>
+                        </div>
+                    </div>
+
+                    @if ($person == '')
+
+                        <form id="search-form" class="max-w-md mx-auto" method="get">
+                            <label for="default-search"
+                                class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                            stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                                    </svg>
+                                </div>
+                                <input type="search" id="default-search"
+                                    class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    placeholder="Ingresa Numero DNI" required name="dni" />
+                                <button type="submit"
+                                    class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"></button>
+                            </div>
+                        </form>
+
+                        <script>
+                            document.getElementById('search-form').addEventListener('submit', function(event) {
+                                event.preventDefault(); // Detiene el envío normal del formulario
+
+                                const dniInput = document.getElementById('default-search');
+                                const dniValue = dniInput.value;
+
+                                // Construye la URL usando el valor del input
+                                const newAction = `{{ route('certificado_validar', ['dni' => '__DNI__']) }}`.replace('__DNI__',
+                                    dniValue);
+
+                                // Redirige al usuario a la nueva URL
+                                window.location.href = newAction;
+                            });
+                        </script>
+                    @else
+                        <div>
+                            <div class="text-2xl">{{ $person->full_name }}</div>
+                            <div class="profile-image-container">
+                                <img src="{{ asset('storage/' . $person->image) }}" alt="{{ $person->full_name }}"
+                                    class="profile-image">
+                            </div>
+                        </div>
+
+                        <style>
+                            .profile-image-container {
+                                width: 60px;
+                                height: 60px;
+                                border: 2px solid #ccc;
+                                /* Borde del círculo vacío */
+                                border-radius: 50%;
+                                /* Forma circular */
+                                overflow: hidden;
+                                /* Oculta cualquier parte de la imagen que se salga */
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                            }
+
+                            .profile-image {
+                                max-width: 100%;
+                                max-height: 100%;
+                                object-fit: cover;
+                                /* Para que la imagen cubra el contenedor sin deformarse */
+                            }
+                        </style>
+                        <br>
+                        <hr>
+                        <div class="overflow-x-auto relative shadow-md sm:rounded-lg">
+                            <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                                <thead
+                                    class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                    <tr class="text-2xl">
+                                        <th scope="col" class="py-3 px-6">
+                                            Curso
+                                        </th>
+                                        <th scope="col" class="py-3 px-6">
+                                            Fecha entregado
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($certificates as $certificate)
+                                        <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                            <td
+                                                class="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                <a
+                                                    href="{{ route('certificado_validar', ['dni' => $person->number, 'course_id' => $certificate->course_id]) }}">{{ $certificate->description }}</a>
+                                            </td>
+                                            <td
+                                                class="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                {{ explode(' ', $certificate->fecha)[0] }}
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @endif
+                    <hr>
+                    @if ($course != '')
+                        <div class="card group p-5">
+                            <p class="">
+                                {!! $certificate->curriculum_plan ?? 'No existe Registro, Verifica el curso y el número del Alumno.' !!}
+                            </p>
+                        </div>
+                    @endif
+
                 </div>
-                <input type="search" id="default-search" class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Ingresa Numero DNI" required
-                name="dni"/>
-                <button type="submit" class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"></button>
-            </div>
-        </form>
-
-        <script>
-            document.getElementById('search-form').addEventListener('submit', function(event) {
-                event.preventDefault(); // Detiene el envío normal del formulario
-
-                const dniInput = document.getElementById('default-search');
-                const dniValue = dniInput.value;
-
-                // Construye la URL usando el valor del input
-                const newAction = `{{ route('certificado_validar', ['dni' => '__DNI__']) }}`.replace('__DNI__', dniValue);
-
-                // Redirige al usuario a la nueva URL
-                window.location.href = newAction;
-            });
-        </script>
-
-        @else
-                    <div>
-                        <div class="text-2xl">{{ $person->full_name }}</div>
-                    <div class="profile-image-container">
-                        <img src="{{ asset('storage/'.$person->image)}}" alt="{{ $person->full_name }}" class="profile-image">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-2"></div>
+                        <div class="col-md-8">
+                            <div class="card height-equal">
+                                <div class="row">
+                                    <div class="col-md-3" style="text-align: center; justify-content:center; padding: 0px;">
+                                        <img style="width: 100%; heigth: 100%;"
+                                            src="{{ asset('themes/webpage/images/landingform.jpg') }}" alt="">
+                                    </div>
+                                    <div class="col-md-9">
+                                        <div class="card-header pb-0">
+                                            <h3>Título del formulario</h3>
+                                            <p>
+                                                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Debitis doloribus
+                                                officia officiis totam! Soluta,
+                                                velit deserunt sunt veritatis repudiandae quas distinctio officiis, labore
+                                                doloribus placeat sint at culpa
+                                                eos cupiditate.
+                                            </p>
+                                        </div>
+                                        <div class="card-body custom-input">
+                                            <form class="row g-3">
+                                                <div class="col-6">
+                                                    <label class="form-label" for="first-name">Nombres y Apellidos</label>
+                                                    <input class="form-control" id="first-name" type="text"
+                                                        placeholder="..." aria-label="First name" required="">
+                                                </div>
+                                                <div class="col-6">
+                                                    <label class="form-label" for="exampleFormControlInput1">Email
+                                                        address</label>
+                                                    <input class="form-control" id="exampleFormControlInput1" type="email"
+                                                        placeholder="@" required="">
+                                                </div>
+                                                <div class="col-6">
+                                                    <label class="form-label" for="first-name">Teléfono</label>
+                                                    <input class="form-control" id="phone" type="text"
+                                                        placeholder="..." aria-label="Phone" required="">
+                                                </div>
+                                                <div class="col-6">
+                                                    <label class="form-label" for="validationDefault04">Pais</label>
+                                                    <select class="form-select" id="validationDefault04" required="">
+                                                        <option selected="" value="">Perú</option>
+                                                        <option>otro pais</option>
+                                                        <option>otro pais</option>
+                                                        <option>otro pais</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-4">
+                                                    <label class="form-label" for="first-name">Ciudad</label>
+                                                    <input class="form-control" id="city" type="text"
+                                                        placeholder="..." aria-label="City" required="">
+                                                </div>
+                                                <div class="col-8">
+                                                    <label class="form-label" for="validationDefault04">Programas de
+                                                        Formación</label>
+                                                    <select class="form-select" id="validationDefault04" required="">
+                                                        <option selected="" value="">Seleccionar...</option>
+                                                        <option>curos 1</option>
+                                                        <option>curos 2</option>
+                                                        <option>curos 3</option>
+                                                        <option>curos 4</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-12 checkbox-checked">
+                                                    <input class="form-check-input" id="flexCheckDefault" type="checkbox"
+                                                        value="">
+                                                    <label class="form-check-label" for="flexCheckDefault">
+                                                        Estoy de acuerdo con las politicas de privacidad
+                                                    </label>
+                                                </div>
+                                                <div class="col-12">
+                                                    <button class="btn btn-primary" type="submit">Enviar</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2"></div>
                     </div>
                 </div>
-
-                <style>
-                .profile-image-container {
-                    width: 60px;
-                    height: 60px;
-                    border: 2px solid #ccc; /* Borde del círculo vacío */
-                    border-radius: 50%; /* Forma circular */
-                    overflow: hidden; /* Oculta cualquier parte de la imagen que se salga */
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                }
-                .profile-image {
-                    max-width: 100%;
-                    max-height: 100%;
-                    object-fit: cover; /* Para que la imagen cubra el contenedor sin deformarse */
-                }
-                </style>
-                <br><hr>
-                <div class="overflow-x-auto relative shadow-md sm:rounded-lg">
-                    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                            <tr class="text-2xl">
-                                <th scope="col" class="py-3 px-6">
-                                    Curso
-                                </th>
-                                <th scope="col" class="py-3 px-6">
-                                    Fecha entregado
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($certificates as $certificate)
-                            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                                <td class="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                    <a href="{{ route('certificado_validar', ['dni'=>$person->number, 'course_id'=>$certificate->course_id]) }}">{{ $certificate->description }}</a>
-                                </td>
-                                <td class="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                    {{ explode(' ', $certificate->fecha)[0] }}
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-        @endif
-        <hr>
-        @if ($course != "")
-        <div class="card group p-5"><p class="">
-            {!! $certificate->curriculum_plan ?? 'No existe Registro, Verifica el curso y el número del Alumno.' !!}
-          </p>
+            </div>
+            <!-- footer start-->
+            <x-footer />
         </div>
-        @endif
 
-        <x-courses.list-card />
-        <x-social-networks />
+    </div>
 
-        <x-footer />
 
-    </main>
+    <!-- App Header Wrapper-->
+    {{-- <x-nav /> --}}
 
-    <br>
-    <br>
+    <!-- Sidebar -->
+    {{-- <x-slidebar /> --}}
 
 
     <script>
