@@ -54,19 +54,19 @@
                             informes@globalcpaperu.com</li>
                     </ul>
                     <div style="margin-top: 9px; display:flex;">
-                        <a href="https://www.facebook.com/globalcpaperu"
+                        <a target="_blank" href="https://www.facebook.com/globalcpaperu"
                             style="padding: 0px 5px 0px 0px;">
                             <img  style="width: 30px;" src="{{ asset('themes/webpage/images/logos/facebook-round.svg') }}" alt="flag">
                         </a>
-                        <a href="https://www.instagram.com/globalcpaperu?fbclid=IwY2xjawJgP6xleHRuA2FlbQIxMAABHmC56yDiAjSs4BvQSToBjedZ_3TBmwWJVvy1bu2BAk1wlFtAL3aOytzhh9a1_aem_djL_wmqYvY30HkGI5Fpl8w"
+                        <a target="_blank" href="https://www.instagram.com/globalcpaperu?fbclid=IwY2xjawJgP6xleHRuA2FlbQIxMAABHmC56yDiAjSs4BvQSToBjedZ_3TBmwWJVvy1bu2BAk1wlFtAL3aOytzhh9a1_aem_djL_wmqYvY30HkGI5Fpl8w"
                             style="padding: 0px 5px;" >
                             <img style="width: 30px;" src="{{ asset('themes/webpage/images/logos/instagram-round.svg') }}" alt="flag">
                         </a>
-                        <a href="https://www.tiktok.com/@globalcpa?fbclid=IwY2xjawJgQIFleHRuA2FlbQIxMAABHiRm71gl0ia3vlL0xGmy3mBrZsuIYuP53Mbwbe3w_OmFqAHpkq0_B3SfUHzj_aem_tGPEL911HtXoOaqpidsq7w"
+                        <a target="_blank" href="https://www.tiktok.com/@globalcpa?fbclid=IwY2xjawJgQIFleHRuA2FlbQIxMAABHiRm71gl0ia3vlL0xGmy3mBrZsuIYuP53Mbwbe3w_OmFqAHpkq0_B3SfUHzj_aem_tGPEL911HtXoOaqpidsq7w"
                             style="padding: 0px 5px;" >
                             <img style="width: 30px;" src="{{ asset('themes/webpage/images/logos/tik_tok-round.svg') }}" alt="flag">
                         </a>
-                        <a href="https://www.youtube.com/@globalcpaperu"
+                        <a target="_blank" href="https://www.youtube.com/@globalcpaperu"
                             style="padding: 0px 5px;" >
                             <img style="width: 30px;" src="{{ asset('themes/webpage/images/logos/youtube-round.svg') }}" alt="flag">
                         </a>

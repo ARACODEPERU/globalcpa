@@ -110,7 +110,7 @@
     </div>
     <style>
         /* Clase principal para truncar el texto */
-        .truncated-link {
+        .truncated-link:first-letter {
             display: block;
             max-height: {{ 1.2 * $lines }}em;
             /* Altura de 2 líneas (1.2em * 2) */
@@ -121,6 +121,7 @@
             color: inherit;
             /* Agrega la transición a la altura máxima para una animación suave */
             transition: max-height 0.2s ease-in-out;
+            text-transform: uppercase;
         }
 
         /* Pseudo-elemento para los puntos suspensivos */

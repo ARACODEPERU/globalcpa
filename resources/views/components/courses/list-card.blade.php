@@ -3,7 +3,7 @@
         <div class="col-xl-12">
             <div class="card height-equal" style="min-height: 310.797px; background: none;">
                 <div class="card-header card-no-border pb-0" style="background: none;">
-                    <h3>Formación que transforma tu talento en resultados reales</h3>
+                    <h3 style="text-transform: uppercase;">Formación que transforma tu talento en resultados reales</h3>
                 </div>
                 <div class="card-body">
                     <ul class="nav nav-pills nav-primary" id="pills-tab" role="tablist">

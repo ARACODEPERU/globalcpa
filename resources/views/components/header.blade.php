@@ -11,7 +11,7 @@
                     href="{{ asset('themes/webpage/assets/svg/icon-sprite.svg#Grid') }}">
                 </use>
             </svg>
-            <form class="col-md-2 form-inline search-full" action="#" method="get">
+            {{-- <form class="col-md-2 form-inline search-full" action="#" method="get">
                 <div class="form-group">
                     <div class="Typeahead Typeahead--twitterUsers">
                         <div class="u-posRelative">
@@ -24,7 +24,7 @@
                         <div class="Typeahead-menu"></div>
                     </div>
                 </div>
-            </form>
+            </form> --}}
 
             <img style="width: 280px;" src="{{ asset('themes/webpage/images/Logo_cpa_modificado.png') }}"
                 alt="">
@@ -53,14 +53,11 @@
                             </svg>
                         </div>
                     </li>
-                    <li>
+                    {{-- <li>
                         <div class="mode">
                             <i class="fa fa-moon" aria-hidden="true" style="font-size: 26px;"></i>
-                            {{-- <svg>
-                                <use href="themes/webpage/assets/svg/icon-sprite.svg#moon"></use>
-                            </svg> --}}
                         </div>
-                    </li>
+                    </li> --}}
                     @auth
                         <li class="profile-nav onhover-dropdown pe-0 py-0">
                             <div class="d-flex align-items-center profile-media">
