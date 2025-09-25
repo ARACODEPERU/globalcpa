@@ -8,7 +8,8 @@
             <nav class="sidebar-main">
                 <div id="sidebar-menu">
                     <ul class="sidebar-links" id="simple-bar">
-                        <li class="back-btn"><a href=""></a>
+                        <li class="back-btn">
+                            <a href=""></a>
                             <div class="mobile-back text-end"><span>Back</span><i class="fa fa-angle-right ps-2"
                                     aria-hidden="true"></i></div>
                         </li>
@@ -36,33 +37,40 @@
                                     <li class="main-submenu">
                                         <a class="d-flex sidebar-menu" href="javascript:void(0)">
                                             <svg class="stroke-icon">
-                                                <use href="themes/webpage/assets/svg/icon-sprite.svg#stroke-others">
+                                                <use
+                                                    href="{{ asset('themes/webpage/assets/svg/icon-sprite.svg#stroke-others') }}">
                                                 </use>
                                             </svg>
                                             <svg class="fill-icon">
-                                                <use href="themes/webpage/assets/svg/icon-sprite.svg#stroke-others">
+                                                <use
+                                                    href="{{ asset('themes/webpage/assets/svg/icon-sprite.svg#stroke-others') }}">
                                                 </use>
-                                            </svg>{{ $type=="Programas de Especialización"? 'Especialización' : $type }}
+                                            </svg>{{ $type == 'Programas de Especialización' ? 'Especialización' : $type }}
                                             <svg class="arrow">
-                                                <use href="themes/webpage/assets/svg/icon-sprite.svg#Arrow-right">
+                                                <use
+                                                    href="{{ asset('themes/webpage/assets/svg/icon-sprite.svg#Arrow-right') }}">
                                                 </use>
                                             </svg>
                                         </a>
                                         <ul class="submenu-wrapper">
                                             @php
-                                                $x=0;
+                                                $x = 0;
                                             @endphp
                                             @foreach ($courses as $course)
-                                            @if ((strtolower($course->additional) == strtolower($type)) && $x<$p)
-                                            <li><a class="truncated-link" href="{{ route('web_course_description', $course->id) }}" title="{{ $course->name }}">{{$course->name}}</a></li>
-                                                @php
-                                                    $x++;
-                                                @endphp
+                                                @if (strtolower($course->additional) == strtolower($type) && $x < $p)
+                                                    <li>
+                                                        <a class="truncated-link"
+                                                            href="{{ route('web_course_description', $course->id) }}"
+                                                            title="{{ $course->name }}">{{ $course->name }}</a>
+                                                    </li>
+                                                    @php
+                                                        $x++;
+                                                    @endphp
                                                 @endif
                                             @endforeach
                                             <li>
                                                 <div class="btn-showcase" style="text-align: center;">
-                                                    <a href=" ">
+                                                    <a href=" {{ route('web_courses') }}">
                                                         <button class="btn btn-pill btn-primary btn-air-primary btn-sm"
                                                             type="button"
                                                             data-bs-original-title="btn btn-pill btn-primary btn-air-primary btn-sm">
@@ -80,7 +88,7 @@
                             </ul>
                         </li>
                         <li class="sidebar-list" style="padding: 15px 0px;">
-                            <a class="sidebar-link sidebar-title" href="">
+                            <a class="sidebar-link sidebar-title" href="{{ route('web_subscriptions') }}">
                                 <span>
                                     <i class="fa fa-briefcase" aria-hidden="true" style="font-size: 26px;"></i><br>
                                     Empresas
@@ -88,7 +96,7 @@
                             </a>
                         </li>
                         <li class="sidebar-list" style="padding: 15px 0px;">
-                            <a class="sidebar-link sidebar-title" href="">
+                            <a class="sidebar-link sidebar-title" href="{{ route('web_book_amauta') }}">
                                 <span>
                                     <i class="fa fa-book" aria-hidden="true" style="font-size: 26px;"></i><br>
                                     Publicación
@@ -101,10 +109,11 @@
         </div>
     </div>
     <style>
-       /* Clase principal para truncar el texto */
+        /* Clase principal para truncar el texto */
         .truncated-link {
             display: block;
-            max-height: {{ 1.2*$lines }}em; /* Altura de 2 líneas (1.2em * 2) */
+            max-height: {{ 1.2 * $lines }}em;
+            /* Altura de 2 líneas (1.2em * 2) */
             line-height: 1.2em;
             overflow: hidden;
             position: relative;
@@ -121,15 +130,18 @@
             bottom: 0;
             right: 0;
             padding: 0 5px;
-            background: white; /* Ajusta este color al fondo de tu sitio */
+            background: white;
+            /* Ajusta este color al fondo de tu sitio */
             /* Agrega la transición para que los puntos suspensivos desaparezcan suavemente */
             transition: opacity 0.2s ease-in-out;
-            opacity: 1; /* Por defecto, los puntos suspensivos son visibles */
+            opacity: 1;
+            /* Por defecto, los puntos suspensivos son visibles */
         }
 
         /* Clase para mostrar el texto completo */
         .truncated-link.show-full {
-            max-height: 200px; /* Un valor lo suficientemente grande para mostrar todo el texto */
+            max-height: 200px;
+            /* Un valor lo suficientemente grande para mostrar todo el texto */
             overflow: visible;
         }
 
@@ -141,20 +153,20 @@
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-    // Selecciona todos los elementos que tengan la clase 'truncated-link'
-    const links = document.querySelectorAll('.truncated-link');
+            // Selecciona todos los elementos que tengan la clase 'truncated-link'
+            const links = document.querySelectorAll('.truncated-link');
 
-    links.forEach(link => {
-        link.addEventListener('mouseenter', () => {
-            // Agrega la clase 'show-full' al pasar el mouse
-            link.classList.add('show-full');
-        });
+            links.forEach(link => {
+                link.addEventListener('mouseenter', () => {
+                    // Agrega la clase 'show-full' al pasar el mouse
+                    link.classList.add('show-full');
+                });
 
-        link.addEventListener('mouseleave', () => {
-            // Elimina la clase 'show-full' al salir el mouse
-            link.classList.remove('show-full');
+                link.addEventListener('mouseleave', () => {
+                    // Elimina la clase 'show-full' al salir el mouse
+                    link.classList.remove('show-full');
+                });
+            });
         });
-    });
-});
     </script>
 </div>

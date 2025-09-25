@@ -4,12 +4,12 @@
         style="background: #020024;
                 background: linear-gradient(0deg, rgba(2, 0, 36, 1) 0%, rgb(80, 57, 112) 35%, rgba(106, 76, 147, 1) 100%); 
                 width: 100%;">
-        <div class="container">
-            <div class="row" style=" padding: 80px 0px;">
+        <div class="container"  style=" padding: 80px 0px;">
+            <div class="row">
                 <div class="col-md-3" style="padding: 15px;">
                     <h2 style="color: #fff; font-size: 16px; padding-bottom: 10px;"><b>VERIFICA EL <br> CERTIFICADO</b>
                     </h2>
-                    <p style="color: #fff;">Valida el certificado GLOBAL CPA ingresando el código único</p>
+                    <p style="color: #fff;">Valida el certificado GLOBAL CPA ingresando el DNI</p>
 
                     <div class="card">
                         <div class="">
@@ -53,12 +53,36 @@
                         <li style="color: #fff; font-size: 16px;"><i class="fa fa-envelope" aria-hidden="true"></i>
                             informes@globalcpaperu.com</li>
                     </ul>
+                    <div style="margin-top: 9px; display:flex;">
+                        <a href="https://www.facebook.com/globalcpaperu"
+                            style="padding: 0px 5px 0px 0px;">
+                            <img  style="width: 30px;" src="{{ asset('themes/webpage/images/logos/facebook-round.svg') }}" alt="flag">
+                        </a>
+                        <a href="https://www.instagram.com/globalcpaperu?fbclid=IwY2xjawJgP6xleHRuA2FlbQIxMAABHmC56yDiAjSs4BvQSToBjedZ_3TBmwWJVvy1bu2BAk1wlFtAL3aOytzhh9a1_aem_djL_wmqYvY30HkGI5Fpl8w"
+                            style="padding: 0px 5px;" >
+                            <img style="width: 30px;" src="{{ asset('themes/webpage/images/logos/instagram-round.svg') }}" alt="flag">
+                        </a>
+                        <a href="https://www.tiktok.com/@globalcpa?fbclid=IwY2xjawJgQIFleHRuA2FlbQIxMAABHiRm71gl0ia3vlL0xGmy3mBrZsuIYuP53Mbwbe3w_OmFqAHpkq0_B3SfUHzj_aem_tGPEL911HtXoOaqpidsq7w"
+                            style="padding: 0px 5px;" >
+                            <img style="width: 30px;" src="{{ asset('themes/webpage/images/logos/tik_tok-round.svg') }}" alt="flag">
+                        </a>
+                        <a href="https://www.youtube.com/@globalcpaperu"
+                            style="padding: 0px 5px;" >
+                            <img style="width: 30px;" src="{{ asset('themes/webpage/images/logos/youtube-round.svg') }}" alt="flag">
+                        </a>
+                    </div>
                 </div>
                 <div class="col-md-3" style="padding: 15px;">
                     <a href="{{ route('complaints_book') }}">
                         <img style="width: 180px;" src="{{ asset('themes/webpage/images/libroReclamaciones.png') }}"
                             alt="" style="margin-top: -10px;">
                     </a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12">
+                    Derechos reservados
                 </div>
             </div>
         </div>
