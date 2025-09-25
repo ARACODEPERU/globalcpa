@@ -4,7 +4,7 @@
         style="background: #020024;
                 background: linear-gradient(0deg, rgba(2, 0, 36, 1) 0%, rgb(80, 57, 112) 35%, rgba(106, 76, 147, 1) 100%); 
                 width: 100%;">
-        <div class="container"  style=" padding: 80px 0px;">
+        <div class="container"  style=" padding: 80px 0px 40px 0px;">
             <div class="row">
                 <div class="col-md-3" style="padding: 15px;">
                     <h2 style="color: #fff; font-size: 16px; padding-bottom: 10px;"><b>VERIFICA EL <br> CERTIFICADO</b>
@@ -77,12 +77,6 @@
                         <img style="width: 180px;" src="{{ asset('themes/webpage/images/libroReclamaciones.png') }}"
                             alt="" style="margin-top: -10px;">
                     </a>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="col-md-12">
-                    Derechos reservados
                 </div>
             </div>
         </div>
