@@ -3,14 +3,54 @@
 @section('content')
 
 
+
+    <!-- Loader starts-->
+    <!-- <div class="loader-wrapper">
+                      <div class="loader"></div>
+                    </div> -->
+    <!-- Loader ends-->
+    <!-- tap on top starts-->
+    <div class="tap-top"><i data-feather="chevrons-up"></i></div>
+    <!-- tap on tap ends-->
+
+
+    
+    
+    <!-- page-wrapper Start-->
+    <div class="page-wrapper" id="pageWrapper">
+        <!-- Page Header Start-->
+        <x-header />
+        <!-- Page Header Ends-->
+        <!-- Page Body Start-->
+        <div class="page-body-wrapper">
+            <!-- Page Sidebar Start-->
+            <x-sidebar />
+            <!-- Page Sidebar Ends-->
+            <div class="page-body">
+                <div class="container-fluid"></div>
+                <div class="container-fluid">
+                    <br><br><br>
+                    <x-slider />
+                </div>
+                <br>
+                <!-- Container-fluid starts-->
+                <x-courses.list-card />
+                <!-- Container-fluid Ends-->
+            </div>
+        </div>
+        <!-- footer start-->
+        <x-footer />
+    </div>
+
+
     <!-- App Header Wrapper-->
-    <x-nav />
+    {{-- <x-nav /> --}}
 
     <!-- Sidebar -->
-    <x-slidebar />
+    {{-- <x-slidebar /> --}}
 
 
-    <main class="main-content w-full px-[var(--margin-x)] pb-8">
+    {{-- <main class="main-content w-full px-[var(--margin-x)] pb-8">
         <br>
         <x-slider />
 
@@ -18,23 +58,10 @@
             <div class="col-span-12 space-y-4 sm:space-y-5 lg:col-span-12 lg:space-y-6 xl:col-span-12">
                 <div class="flex items-center justify-between">
                     <h3 class="text-xl font-medium text-slate-800 dark:text-navy-50">
-                        Global CPA Business School | Formación:
+                        Formación que trasciende fronteras
                     </h3>
-                    {{-- <div class="hidden w-full max-w-xs justify-between space-x-4 text-slate-700 dark:text-navy-100 sm:flex" x-data="{activeTab:'tabAll'}">
-                            <button @click="activeTab = 'tabAll'" class="font-medium tracking-wide text-primary dark:text-accent-light" :class="activeTab === 'tabAll' &amp;&amp; 'text-primary dark:text-accent-light' ">
-                            Todos
-                            </button>
-                            <button @click="activeTab = 'tabArt'" class="font-medium tracking-wide" :class="activeTab === 'tabArt' &amp;&amp; 'text-primary dark:text-accent-light' ">
-                            Cursos
-                            </button>
-                            <button @click="activeTab = 'tabSport'" class="font-medium tracking-wide" :class="activeTab === 'tabSport' &amp;&amp; 'text-primary dark:text-accent-light' ">
-                            Programas
-                            </button>
-                    </div> --}}
                 </div>
-                <!--Courses One Start-->
                 <x-courses.list-card />
-                <!--Courses One End-->
                 <br>
                 <a href="{{ route('web_courses') }}">
                     <button class="boton-degradado-courses">
@@ -53,7 +80,7 @@
 
 
 
-    </main>
+    </main> --}}
 
     <script>
 

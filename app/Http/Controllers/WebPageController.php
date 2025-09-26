@@ -50,6 +50,50 @@ class WebPageController extends Controller
         return view('pages.home');
     }
 
+    public function index2()
+    {
+        return view('pages.home2');
+    }
+
+    public function landing()
+    {
+        $courses = OnliItem::with('course')->latest()->get();
+        //$courses = $courses->shuffle();
+        $categories = AcaCategoryCourse::all();
+        $types = getEnumValues('onli_items', 'additional', 0, 1);
+
+        // $banner = CmsSection::where('component_id', 'cursos_banner_area_14')  //siempre cambiar el id del componente
+        //     ->join('cms_section_items', 'section_id', 'cms_sections.id')
+        //     ->join('cms_items', 'cms_section_items.item_id', 'cms_items.id')
+        //     ->select(
+        //         'cms_items.content',
+        //         'cms_section_items.position'
+        //     )
+        //     ->orderBy('cms_section_items.position')
+        //     ->first();
+
+        $title = CmsSection::where('component_id', 'cursos_titulo_area_15')  //siempre cambiar el id del componente
+            ->join('cms_section_items', 'section_id', 'cms_sections.id')
+            ->join('cms_items', 'cms_section_items.item_id', 'cms_items.id')
+            ->select(
+                'cms_items.content',
+                'cms_section_items.position'
+            )
+            ->orderBy('cms_section_items.position')
+            ->get();
+
+        $p = 12; //numero de cursos mostrados PAGINACION
+
+        return view('pages.landing', [
+            'courses' => $courses,
+            'categories' => $categories,
+            // 'banner' => $banner,
+            'title' => $title,
+            'types' => $types,
+            'p' => $p,
+        ]);
+    }
+
     public function nosotros()
     {
 
@@ -120,7 +164,7 @@ class WebPageController extends Controller
     {
         $courses = OnliItem::with('course')->latest()->get();
         //$courses = $courses->shuffle();
-        $categories = AcaCategoryCourse::all();
+        //$categories = AcaCategoryCourse::all();
         $types = getEnumValues('onli_items', 'additional', 0, 1);
 
         // $banner = CmsSection::where('component_id', 'cursos_banner_area_14')  //siempre cambiar el id del componente
@@ -143,12 +187,15 @@ class WebPageController extends Controller
             ->orderBy('cms_section_items.position')
             ->get();
 
+        $p = 12; //numero de cursos mostrados PAGINACION
+
         return view('pages.courses', [
             'courses' => $courses,
-            'categories' => $categories,
+            //'categories' => $categories,
             // 'banner' => $banner,
             'title' => $title,
             'types' => $types,
+            'p' => $p,
         ]);
     }
 
