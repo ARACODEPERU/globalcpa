@@ -62,7 +62,6 @@
                         <li class="profile-nav onhover-dropdown pe-0 py-0">
                             <div class="d-flex align-items-center profile-media">
                                 {{-- Muestra la imagen de perfil del usuario logueado --}}
-                                {{-- Asumiendo que el usuario tiene un campo 'profile_picture' --}}
 
                                 @php
                                     // Obtenemos el nombre y el avatar del usuario
@@ -82,11 +81,6 @@
                                         <span>{{ substr($userName, 0, 1) }}</span>
                                     </div>
                                 @endif
-
-
-
-
-
                                 <div class="flex-grow-1 user">
                                     {{-- Muestra el nombre del usuario logueado --}}
                                     <span>{{ Auth::user()->name }}</span>
