@@ -637,7 +637,17 @@ class AcaStudentController extends Controller
 
         // Verificar si el estudiante está matriculado
         $studentId = AcaStudent::where('person_id', Auth::user()->person_id)->value('id');
-        $isEnrolled = $this->checkCourseAccess($studentId, $id);
+
+        $isEnrolled = false;
+
+        $user = Auth::user();
+        if ($user->hasAnyRole(['admin', 'Docente', 'Administrador'])) {
+            $isEnrolled = true;
+        }
+
+        if($studentId){
+            $isEnrolled = $this->checkCourseAccess($studentId, $id);
+        }
 
         // Verificar si el curso es gratuito
         $isFree = $course->price == 0 || is_null($course->price);
