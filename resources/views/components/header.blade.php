@@ -67,23 +67,25 @@
                                     // Obtenemos el nombre y el avatar del usuario
                                     $userName = Auth::user()->name;
                                     $userAvatar = Auth::user()->avatar;
-                                    // Verificamos si el archivo de la imagen existe en el disco 'public'
-                                    $avatarExists = Storage::disk('public')->exists($userAvatar);
                                 @endphp
 
                                 {{-- Si el avatar existe, muestra la imagen --}}
-                                @if($avatarExists)
-                                    <img class="b-r-25" src="{{ asset('storage' . $userAvatar) }}" alt="" style="max-height: 3rem; max-width: 3rem;">
+                                @if($userAvatar && Storage::disk('public')->exists($userAvatar))
+                                    <img class="b-r-25" src="{{ asset('storage/' . $userAvatar) }}" alt="" style="max-height: 3rem; max-width: 3rem;">
                                 @else
                                     {{-- Si el avatar no existe, muestra el círculo con las iniciales --}}
-                                    <div class="initials-circle">
-                                        {{-- Obtenemos las iniciales del nombre --}}
+                                    {{-- <div class="initials-circle">
                                         <span>{{ substr($userName, 0, 1) }}</span>
-                                    </div>
+                                    </div> --}}
+                                    <img
+                                        src="https://ui-avatars.com/api/?name={{ urlencode($userName) }}&size=150&rounded=true"
+                                        alt="{{ $userName }}"
+                                        class="b-r-25"
+                                        style="max-height: 3rem; max-width: 3rem;">
                                 @endif
                                 <div class="flex-grow-1 user">
                                     {{-- Muestra el nombre del usuario logueado --}}
-                                    <span>{{ Auth::user()->name }}</span>
+                                    <span>{{ $userName }}</span>
                                     <p class="mb-0 font-nunito">
                                         @if(Auth::user()->role === 'Alumno')
                                             Alumno

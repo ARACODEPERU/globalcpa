@@ -14,8 +14,8 @@
     <!-- tap on tap ends-->
 
 
-    
-    
+
+
     <!-- page-wrapper Start-->
     <div class="page-wrapper" id="pageWrapper">
         <!-- Page Header Start-->
@@ -75,7 +75,7 @@
         </div>
 
         <x-social-networks />
-        
+
         <x-footer />
 
 
