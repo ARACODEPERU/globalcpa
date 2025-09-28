@@ -36748,7 +36748,7 @@ footer p .footer-icon {
     display: none;
   }
   .page-wrapper.material-icon .page-header .header-wrapper .nav-right > ul > li.cart-nav {
-    display: none;
+    display: block;
   }
   .page-wrapper.material-icon .page-header .header-wrapper .nav-right > ul > li.message-box {
     display: none;

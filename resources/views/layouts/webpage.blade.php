@@ -22,7 +22,6 @@
     <link rel="stylesheet" href="{{ asset('themes/webpage/bootstrap-5.3.3/css/bootstrap.css') }}" />
     <!-- CSS Assets -->
     <link rel="stylesheet" href="{{ asset('themes/webpage/css/app.css') }}" />
-    <link rel="stylesheet" href="{{ asset('themes/webpage/css/aracode.css') }}" />
 
     <!-- Javascript Assets -->
     <!-- Carrito JS -->
@@ -88,6 +87,7 @@
 
 
 
+    <link rel="stylesheet" href="{{ asset('themes/webpage/css/aracode.css') }}" />
 
 
 
