@@ -13,6 +13,14 @@
       content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
     />
 
+    @php
+    $parameters = new \App\Models\Parameter();
+    $P000022=$parameters->where('parameter_code', 'P000022')->value('value_default')?? "";
+    $cadena_decodificada = htmlspecialchars_decode($P000022, ENT_QUOTES);
+    @endphp
+{!! $cadena_decodificada !!}
+
+
     <title>Global CPA - Business School @yield('title')</title>
     <link rel="icon" type="image/png" href="{{ asset('themes/webpage/images/Logo_isotipo.png') }}" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
@@ -103,7 +111,7 @@
 
   <body>
 
-    
+
   <body>
 
 
@@ -137,7 +145,7 @@
 
 
 
-    
+
     <!-- latest jquery-->
     <script src="{{ asset('themes/webpage/assets/js/jquery.min.js') }}"></script>
     <!-- Bootstrap js-->
@@ -175,7 +183,7 @@
     <script src="{{ asset('themes/webpage/assets/js/datatable/datatables/datatable.custom.js') }}"></script>
     <script src="{{ asset('themes/webpage/assets/js/datatable/datatables/dataTables.select.min.js') }}"></script>
     <script src="{{ asset('themes/webpage/assets/js/typeahead/handlebars.js') }}"></script>
-    <script src="{{ asset('themes/webpage/assets/js/typeahead/typeahead.bundle.js') }}"></script> 
+    <script src="{{ asset('themes/webpage/assets/js/typeahead/typeahead.bundle.js') }}"></script>
     <script src="{{ asset('themes/webpage/assets/js/typeahead/typeahead.custom.js') }}"></script>
     <script src="{{ asset('themes/webpage/assets/js/typeahead-search/handlebars.js') }}"></script>
     <script src="{{ asset('themes/webpage/assets/js/typeahead-search/typeahead-custom.js') }}"></script>
