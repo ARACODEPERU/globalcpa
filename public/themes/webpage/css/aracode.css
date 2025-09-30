@@ -10,38 +10,47 @@
     width: 280px;
 }
 
-        .cart-icon {
-            position: relative;
-            display: inline-block;
-        }
+/*  TITLES  */
+.ara_title{
+    text-transform: uppercase; 
+    text-align:center; 
+    color: #3c4a99;
+    padding: 10px 0px 25px 0px; 
+}
 
-        .cart-count {
-            position: absolute;
-            top: -7px;
-            left: 15px;
-            background-color: #6a4c93;
-            color: #ffffff;
-            border-radius: 50%;
-            /* Para hacer un círculo */
-            width: 22px;
-            height: 22px;
-            line-height: 22px;
-            text-align: center;
-            font-size: 14px;
-            font-weight: 700;
-        }
-        .initials-circle {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 3rem;
-            height: 3rem;
-            border-radius: 50%; /* Esto crea la forma circular */
-            background-color: #007bff; /* Color de fondo, cámbialo a tu gusto */
-            color: white;
-            font-weight: bold;
-            font-size: 1.5rem; /* Ajusta el tamaño de la fuente */
-        }
+
+.cart-icon {
+    position: relative;
+    display: inline-block;
+}
+
+.cart-count {
+    position: absolute;
+    top: -7px;
+    left: 15px;
+    background-color: #6a4c93;
+    color: #ffffff;
+    border-radius: 50%;
+    /* Para hacer un círculo */
+    width: 22px;
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 700;
+}
+.initials-circle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%; /* Esto crea la forma circular */
+    background-color: #007bff; /* Color de fondo, cámbialo a tu gusto */
+    color: white;
+    font-weight: bold;
+    font-size: 1.5rem; /* Ajusta el tamaño de la fuente */
+}
 
 @media (max-width: 420px) {
     .logo_header {

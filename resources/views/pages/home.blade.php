@@ -33,9 +33,8 @@
                     <x-slider />
                 </div>
                 <br>
-                <!-- Container-fluid starts-->
                 <x-courses.list-card />
-                <!-- Container-fluid Ends-->
+                <x-eleva />
             </div>
         </div>
         <!-- footer start-->

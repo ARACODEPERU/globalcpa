@@ -6,16 +6,16 @@
 
     <!-- Loader starts-->
     <!-- <div class="loader-wrapper">
-                      <div class="loader"></div>
-                    </div> -->
+                                                  <div class="loader"></div>
+                                                </div> -->
     <!-- Loader ends-->
     <!-- tap on top starts-->
     <div class="tap-top"><i data-feather="chevrons-up"></i></div>
     <!-- tap on tap ends-->
 
 
-    
-    
+
+
     <!-- page-wrapper Start-->
     <div class="page-wrapper" id="pageWrapper">
         <!-- Page Header Start-->
@@ -33,9 +33,8 @@
                     <x-slider />
                 </div>
                 <br>
-                <!-- Container-fluid starts-->
                 <x-courses.list-card />
-                <!-- Container-fluid Ends-->
+                <x-eleva />
             </div>
         </div>
         <!-- footer start-->
