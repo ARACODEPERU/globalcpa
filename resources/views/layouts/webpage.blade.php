@@ -5,18 +5,23 @@
     <!-- Meta tags  -->
     <meta name="facebook-domain-verification" content="3qhwpfunszdc5ag3cwum3r70v123vo" />
 
+    @php
+    $parameters = new \App\Models\Parameter();
+    $P000022 = $parameters->where('parameter_code', 'P000022')->value('value_default') ?? "";
+
+    // 1. Decodificar el nivel más externo (&amp; a &)
+    $cadena_decodificada_parcial = htmlspecialchars_decode($P000022, ENT_QUOTES);
+
+    // 2. Decodificar el nivel interno (de &lt; a <, &quot; a " y &#039; a ')
+    $cadena_decodificada = html_entity_decode($cadena_decodificada_parcial);
+    @endphp
+    {!! $cadena_decodificada !!}
+
     {{-- <meta name="csrf-token" content="{{ csrf_token() }}"> --}}
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
-
-    @php
-    $parameters = new \App\Models\Parameter();
-    $P000022=$parameters->where('parameter_code', 'P000022')->value('value_default')?? "";
-    $cadena_decodificada = htmlspecialchars_decode($P000022, ENT_QUOTES);
-    @endphp
-{!! $cadena_decodificada !!}
 
 
     <title>Global CPA - Business School @yield('title')</title>
