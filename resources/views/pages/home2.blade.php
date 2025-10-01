@@ -35,11 +35,14 @@
                 <br>
                 <x-courses.list-card />
                 <x-eleva />
+                <x-teachers />
             </div>
         </div>
         <!-- footer start-->
         <x-footer />
     </div>
+
+    
 
 
 
