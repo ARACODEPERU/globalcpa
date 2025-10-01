@@ -31,7 +31,7 @@
     }
 
     let ImagePreview = props.landingPage?.main_image;
-    console.log('de', getImage(ImagePreview));
+
     const form = useForm({
         landing_id: props.landingPage?.id,
         image: null,
@@ -221,7 +221,7 @@
                     <div class="md:flex">
                         <div class="w-full">
                             <div
-                                class="relative h-48 rounded-lg border-2 border-blue-200 bg-gray-50 flex justify-center items-center shadow-lg hover:shadow-xl transition-shadow duration-300 ease-in-out"
+                                class="relative h-48 rounded-lg border-2 border-blue-200 bg-gray-50 flex justify-center items-center shadow-lg hover:shadow-xl transition-shadow duration-300 ease-in-out dark:bg-gray-800 dark:border-gray-700"
                             >
                                 <div class="absolute flex flex-col items-center">
                                     <img
