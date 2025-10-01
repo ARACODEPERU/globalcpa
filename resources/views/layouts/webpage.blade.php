@@ -5,7 +5,7 @@
     <!-- Meta tags  -->
     <meta name="facebook-domain-verification" content="3qhwpfunszdc5ag3cwum3r70v123vo" />
 
-    @php
+    {{-- @php
         $parameters = new \App\Models\Parameter();
         $P000022 = $parameters->where('parameter_code', 'P000022')->value('value_default') ?? '';
 
@@ -15,7 +15,14 @@
         // 2. Decodificar el nivel interno (de &lt; a <, &quot; a " y &#039; a ')
         $cadena_decodificada = html_entity_decode($cadena_decodificada_parcial);
     @endphp
-    {!! $cadena_decodificada !!}
+    {!! $cadena_decodificada !!} --}}
+
+    @php
+    $parameters = new \App\Models\Parameter();
+    $P000022=$parameters->where('parameter_code', 'P000022')->value('value_default')?? "";
+    $cadena_decodificada = htmlspecialchars_decode($P000022, ENT_QUOTES);
+    @endphp
+{!! $cadena_decodificada !!}
 
     {{-- <meta name="csrf-token" content="{{ csrf_token() }}"> --}}
     <meta charset="UTF-8" />
