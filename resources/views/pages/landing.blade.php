@@ -37,22 +37,17 @@
                                 <div class="blog-box blog-list row">
                                     <div class="col-sm-7">
                                         <img class="img-fluid sm-100-w"
-                                            src="{{ asset('themes/webpage/images/cyber.jpg') }}"alt="">
+                                            src="{{ asset('storage/'.$landingPage->main_image) }}"alt="">
                                     </div>
                                     <div class="col-sm-5">
                                         <div class="blog-details">
                                             <div class="blog-date">
                                                 <span>05</span> January 2023
                                             </div>
-                                            <h3>Java Language </h3>
+                                            <h3>{{ $landingPage->title }} </h3>
                                             <div class="blog-bottom-content">
                                                 <hr>
-                                                <p class="mt-0">Java is an object-oriented programming language.
-                                                    Sun Microsystems first released Java in the year 1995. It is
-                                                    popularly used for developing Java applications in data centers,
-                                                    laptops, cell phones, game consoles, and scientific
-                                                    supercomputers. There are multiple websites and applications
-                                                    which will not work if Java is not installed.</p>
+                                                <div>{!! $landingPage->description_long !!}</div>
                                             </div>
                                         </div>
                                     </div>
@@ -91,13 +86,13 @@
                                         <h2>Seleccionar Formación Gratis</h2>
                                         <form>
                                             <div class="row">
-                                                @foreach ($courses->take(20) as $item)
+                                                @foreach ($coursesFree as $item)
                                                     <div class="col-md-3 box-col-4">
                                                         <div class="card weekend-card">
                                                             <div class="card-body">
                                                                 <img class="w-100 mb-3"
-                                                                    src="{{ asset('storage/' . $item->course->image) }}"
-                                                                    alt="">
+                                                                    src="{{ asset('storage/' . $item->image) }}"
+                                                                    alt="{{ $item->description }}">
                                                             </div>
                                                         </div>
                                                     </div>
@@ -109,13 +104,13 @@
                                         <h2>Seleccionar Areas de Interes</h2>
                                         <form>
                                             <div class="row">
-                                                @foreach ($courses->take(20) as $item)
+                                                @foreach ($coursesFree as $item)
                                                     <div class="col-md-3 box-col-4">
                                                         <div class="card weekend-card">
                                                             <div class="card-body">
                                                                 <img class="w-100 mb-3"
-                                                                    src="{{ asset('storage/' . $item->course->image) }}"
-                                                                    alt="">
+                                                                    src="{{ asset('storage/' . $item->image) }}"
+                                                                    alt="{{ $item->description }}">
                                                             </div>
                                                         </div>
                                                     </div>
