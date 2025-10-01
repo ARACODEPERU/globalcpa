@@ -15,37 +15,14 @@
                 <div class="col-md-10">
                     <div class="slider-container">
                         <div class="team-slider">
-                            <!-- Tarjeta 1 -->
-                            <div class="team-member">
-                                <img src="https://via.placeholder.com/150" alt="Nombre del miembro 1">
-                                <h3>Nombre del Miembro 1</h3>
-                                <p>Puesto en la Empresa</p>
-                            </div>
-                            <!-- Tarjeta 2 -->
-                            <div class="team-member">
-                                <img src="https://via.placeholder.com/150" alt="Nombre del miembro 2">
-                                <h3>Nombre del Miembro 2</h3>
-                                <p>Puesto en la Empresa</p>
-                            </div>
-                            <!-- Tarjeta 3 -->
-                            <div class="team-member">
-                                <img src="https://via.placeholder.com/150" alt="Nombre del miembro 3">
-                                <h3>Nombre del Miembro 3</h3>
-                                <p>Puesto en la Empresa</p>
-                            </div>
-                            <!-- Tarjeta 4 -->
-                            <div class="team-member">
-                                <img src="https://via.placeholder.com/150" alt="Nombre del miembro 4">
-                                <h3>Nombre del Miembro 4</h3>
-                                <p>Puesto en la Empresa</p>
-                            </div>
-                            <!-- Duplicación de las tarjetas para el efecto de bucle infinito -->
-                            <div class="team-member">
-                                <img src="https://via.placeholder.com/150" alt="Nombre del miembro 1">
-                                <h3>Nombre del Miembro 1</h3>
-                                <p>Puesto en la Empresa</p>
-                            </div>
-                            <div class="team-member">
+                            @foreach ($teachers as $k => $teacher)
+                                <div class="team-member">
+                                    <img src="{{ asset('storage/' . $teacher->item->items[2]->content) }}" alt="">
+                                    <h3>{{ $teacher->item->items[0]->content }}</h3>
+                                    <p>{{ $teacher->item->items[1]->content }}</p>
+                                </div>
+                            @endforeach
+                            {{-- <div class="team-member">
                                 <img src="https://via.placeholder.com/150" alt="Nombre del miembro 2">
                                 <h3>Nombre del Miembro 2</h3>
                                 <p>Puesto en la Empresa</p>
@@ -60,6 +37,26 @@
                                 <h3>Nombre del Miembro 4</h3>
                                 <p>Puesto en la Empresa</p>
                             </div>
+                            <div class="team-member">
+                                <img src="https://via.placeholder.com/150" alt="Nombre del miembro 1">
+                                <h3>Nombre del Miembro 1</h3>
+                                <p>Puesto en la Empresa</p>
+                            </div>
+                            <div class="team-member">
+                                <img src="https://via.placeholder.com/150" alt="Nombre del miembro 2">
+                                <h3>Nombre del Miembro 2</h3>
+                                <p>Puesto en la Empresa</p>
+                            </div>
+                            <div class="team-member">
+                                <img src="https://via.placeholder.com/150" alt="Nombre del miembro 3">
+                                <h3>Nombre del Miembro 3</h3>
+                                <p>Puesto en la Empresa</p>
+                            </div>
+                            <div class="team-member">
+                                <img src="https://via.placeholder.com/150" alt="Nombre del miembro 4">
+                                <h3>Nombre del Miembro 4</h3>
+                                <p>Puesto en la Empresa</p>
+                            </div> --}}
                         </div>
                     </div>
                 </div>
@@ -101,7 +98,10 @@
             padding: 20px;
             transition: transform 0.3s ease-in-out;
 
-            display: flex; flex-direction: column; align-items: center; justify-content: center
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center
         }
 
         .team-member:hover {
