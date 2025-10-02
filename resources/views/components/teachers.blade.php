@@ -78,7 +78,7 @@
         .team-slider {
             display: flex;
             gap: 20px;
-            animation: slide-animation 20s linear infinite;
+            animation: slide-animation 10s linear infinite;
             /* Animación de desplazamiento infinito */
 
         }
@@ -146,7 +146,7 @@
         /* Media Queries para la adaptabilidad */
         @media (max-width: 768px) {
             .team-slider {
-                animation: slide-animation-tablet 20s linear infinite;
+                animation: slide-animation-tablet 10s linear infinite;
             }
 
             @keyframes slide-animation-tablet {
@@ -168,7 +168,7 @@
 
         @media (max-width: 480px) {
             .team-slider {
-                animation: slide-animation-mobile 20s linear infinite;
+                animation: slide-animation-mobile 8s linear infinite;
             }
 
             @keyframes slide-animation-mobile {
