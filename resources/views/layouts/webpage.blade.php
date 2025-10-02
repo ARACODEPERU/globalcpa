@@ -104,17 +104,10 @@
         localStorage.getItem("_x_darkMode_on") === "true" &&
             document.documentElement.classList.add("dark");
     </script>
+     @yield('etiquetasmeta')
 </head>
 
 <body>
-
-
-<<<<<<< HEAD
-    <body>
-=======
-  <body>
->>>>>>> b815db69b9ad27d10abb9fd900c24165f214ab6d
-
 
         @yield('content')
         <x-whatsapp />
@@ -138,72 +131,8 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script> --}}
 
-<<<<<<< HEAD
-        <script src="{{ asset('themes/webpage/bootstrap-5.3.3/js/bootstrap.js') }}"></script>
-=======
+
     <script src="{{ asset('themes/webpage/bootstrap-5.3.3/js/bootstrap.js') }}"></script>
-
-
-
-
-
-
-
-
-    <!-- latest jquery-->
-    <script src="{{ asset('themes/webpage/assets/js/jquery.min.js') }}"></script>
-    <!-- Bootstrap js-->
-    <script src="{{ asset('themes/webpage/assets/js/bootstrap/bootstrap.bundle.min.js') }}"></script>
-    <!-- feather icon js-->
-    <script src="{{ asset('themes/webpage/assets/js/icons/feather-icon/feather.min.js') }}"></script>
-    <script src="{{ asset('themes/webpage/assets/js/icons/feather-icon/feather-icon.js') }}"></script>
-    <!-- scrollbar js-->
-    <script src="{{ asset('themes/webpage/assets/js/scrollbar/simplebar.js') }}"></script>
-    <script src="{{ asset('themes/webpage/assets/js/scrollbar/custom.js') }}"></script>
-    <!-- Sidebar jquery-->
-    <script src="{{ asset('themes/webpage/assets/js/config.js') }}"></script>
-    <!-- Plugins JS start-->
-    <script src="{{ asset('themes/webpage/assets/js/sidebar-menu.js') }}"></script>
-    <script src="{{ asset('themes/webpage/assets/js/slick/slick.min.js') }}"></script>
-    <script src="{{ asset('themes/webpage/assets/js/slick/slick.js') }}"></script>
-    <script src="{{ asset('themes/webpage/assets/js/header-slick.js') }}"></script>
-    <script src="{{ asset('themes/webpage/assets/js/chart/apex-chart/apex-chart.js') }}"></script>
-    <script src="{{ asset('themes/webpage/assets/js/chart/apex-chart/stock-prices.js') }}"></script>
-    <script src="{{ asset('themes/webpage/assets/js/prism/prism.min.js') }}"></script>
-    <script src="{{ asset('themes/webpage/assets/js/clipboard/clipboard.min.js') }}"></script>
-    <script src="{{ asset('themes/webpage/assets/js/custom-card/custom-card.js') }}"></script>
-    <script src="{{ asset('themes/webpage/assets/js/notify/bootstrap-notify.min.js') }}"></script>
-    <script src="{{ asset('themes/webpage/assets/js/vector-map/jquery-jvectormap-2.0.2.min.js') }}"></script>
-    <script src="{{ asset('themes/webpage/assets/js/vector-map/map/jquery-jvectormap-world-mill-en.js') }}"></script>
-    <script src="{{ asset('themes/webpage/assets/js/vector-map/map/jquery-jvectormap-us-aea-en.js') }}"></script>
-    <script src="{{ asset('themes/webpage/assets/js/vector-map/map/jquery-jvectormap-uk-mill-en.js') }}"></script>
-    <script src="{{ asset('themes/webpage/assets/js/vector-map/map/jquery-jvectormap-au-mill.js') }}"></script>
-    <script src="{{ asset('themes/webpage/assets/js/vector-map/map/jquery-jvectormap-chicago-mill-en.js') }}"></script>
-    <script src="{{ asset('themes/webpage/assets/js/vector-map/map/jquery-jvectormap-in-mill.js') }}"></script>
-    <script src="{{ asset('themes/webpage/assets/js/vector-map/map/jquery-jvectormap-asia-mill.js') }}"></script>
-    <script src="{{ asset('themes/webpage/assets/js/dashboard/default.js') }}"></script>
-    {{-- <script src="{{ asset('themes/webpage/assets/js/notify/index.js') }}"></script> --}}
-    <script src="{{ asset('themes/webpage/assets/js/datatable/datatables/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('themes/webpage/assets/js/datatable/datatables/datatable.custom.js') }}"></script>
-    <script src="{{ asset('themes/webpage/assets/js/datatable/datatables/dataTables.select.min.js') }}"></script>
-    <script src="{{ asset('themes/webpage/assets/js/typeahead/handlebars.js') }}"></script>
-    <script src="{{ asset('themes/webpage/assets/js/typeahead/typeahead.bundle.js') }}"></script>
-    <script src="{{ asset('themes/webpage/assets/js/typeahead/typeahead.custom.js') }}"></script>
-    <script src="{{ asset('themes/webpage/assets/js/typeahead-search/handlebars.js') }}"></script>
-    <script src="{{ asset('themes/webpage/assets/js/typeahead-search/typeahead-custom.js') }}"></script>
-    <script src="{{ asset('themes/webpage/assets/js/animation/wow/wow.min.js') }}"></script>
-    <!-- Plugins JS Ends-->
-    <!-- Theme js-->
-    <script src="{{ asset('themes/webpage/assets/js/script.js') }}"></script>
-    {{-- <script src="themes/webpage/assets/js/theme-customizer/customizer.js"></script>  --}}
-    {{-- <script>new WOW().init();</script> --}}
->>>>>>> b815db69b9ad27d10abb9fd900c24165f214ab6d
-
-
-
-
-
-
 
 
         <!-- latest jquery-->

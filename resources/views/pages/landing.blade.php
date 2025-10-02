@@ -1,5 +1,7 @@
 @extends('layouts.webpage')
-
+@section('etiquetasmeta')
+<meta name="description" content="{{ $landingPage->description_short }}" />
+@stop
 @section('content')
 
 
