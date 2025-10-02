@@ -18,6 +18,13 @@
     padding: 10px 0px 25px 0px; 
 }
 
+.ara_title_white{
+    text-transform: uppercase; 
+    text-align:center; 
+    color: #fff;
+    padding: 10px 0px 25px 0px; 
+}
+
 
 .cart-icon {
     position: relative;

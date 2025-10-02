@@ -36,8 +36,10 @@
                 <x-courses.list-card />
                 <x-eleva />
                 <x-teachers />
+                <x-solutions />
             </div>
         </div>
+        <br>
         <!-- footer start-->
         <x-footer />
     </div>

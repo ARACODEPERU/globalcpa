@@ -249,7 +249,18 @@
     {{-- <script src="themes/webpage/assets/js/theme-customizer/customizer.js"></script>  --}}
     {{-- <script>new WOW().init();</script> --}}
 
+    <script src="{{ asset('themes/webpage/assets/js/modalpage/validation-modal.js') }}"></script>
 
+
+    
+    <script>
+        var myModal = document.getElementById('myModal')
+        var myInput = document.getElementById('myInput')
+
+        myModal.addEventListener('shown.bs.modal', function() {
+            myInput.focus()
+        })
+    </script>
 
 
 </body>
