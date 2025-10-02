@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Company;
+use App\Models\Parameter;
 use Illuminate\Support\ServiceProvider;
 use App\Rules\SizeExistence;
 use Illuminate\Support\Facades\Blade;
@@ -35,11 +36,5 @@ class AppServiceProvider extends ServiceProvider
             'MERCADOPAGO_KEY' => env('MERCADOPAGO_KEY'), // Comparte la clave con el frontend
         ]);
 
-        Inertia::share([
-            'flash' => fn () => [
-                'success' => session('success'),
-                'error'   => session('error'),
-            ],
-        ]);
     }
 }

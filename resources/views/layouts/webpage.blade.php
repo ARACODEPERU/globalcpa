@@ -17,12 +17,15 @@
     @endphp
     {!! $cadena_decodificada !!} --}}
 
-    @php
-    $parameters = new \App\Models\Parameter();
-    $P000022=$parameters->where('parameter_code', 'P000022')->value('value_default')?? "";
-    $cadena_decodificada = htmlspecialchars_decode($P000022, ENT_QUOTES);
-    @endphp
-    {!! $cadena_decodificada !!}
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WXX1QVD5Y0"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-WXX1QVD5Y0');
+    </script>
 
     {{-- <meta name="csrf-token" content="{{ csrf_token() }}"> --}}
     <meta charset="UTF-8" />
