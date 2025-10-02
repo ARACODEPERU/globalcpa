@@ -24,7 +24,7 @@ class OneFreeCourseController extends Controller
 
     public function index($id)
     {
-        $courses = AcaCourse::where('type_description','Programas de Especialización')->get();
+        $courses = AcaCourse::where('type_description','<>','Programas de Especialización')->get();
 
         $landingPage = CmsLanding::where('menu_id', $id)->first();
 
@@ -65,8 +65,8 @@ class OneFreeCourseController extends Controller
                     'additional_field1' => $request->get('additional_field1'),
                     'additional_field2' => $request->get('additional_field2'),
                     'additional_field3' => $request->get('additional_field3'),
-                    'date_start'        => $request->get('date_start'),
-                    'date_end'          => $request->get('date_end'),
+                    'date_start'        => $request->get('date_start') ?? null,
+                    'date_end'          => $request->get('date_end') ?? null,
                     'status'            => $request->get('status', 1),
                     'menu_id'           => $menu
                 ]);
@@ -92,8 +92,8 @@ class OneFreeCourseController extends Controller
                     'additional_field1' => $request->get('additional_field1'),
                     'additional_field2' => $request->get('additional_field2'),
                     'additional_field3' => $request->get('additional_field3'),
-                    'date_start'        => $request->get('date_start'),
-                    'date_end'          => $request->get('date_end'),
+                    'date_start'        => $request->get('date_start') ?? null,
+                    'date_end'          => $request->get('date_end') ?? null,
                     'status'            => $request->get('status', 1),
                 ]);
 

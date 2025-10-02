@@ -5,7 +5,7 @@
     <!-- Meta tags  -->
     <meta name="facebook-domain-verification" content="3qhwpfunszdc5ag3cwum3r70v123vo" />
 
-    @php
+    {{-- @php
         $parameters = new \App\Models\Parameter();
         $P000022 = $parameters->where('parameter_code', 'P000022')->value('value_default') ?? '';
 
@@ -15,7 +15,41 @@
         // 2. Decodificar el nivel interno (de &lt; a <, &quot; a " y &#039; a ')
         $cadena_decodificada = html_entity_decode($cadena_decodificada_parcial);
     @endphp
-    {!! $cadena_decodificada !!}
+    {!! $cadena_decodificada !!} --}}
+
+
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WXX1QVD5Y0"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-WXX1QVD5Y0');
+    </script>
+
+
+    <!-- Meta Pixel Code -->
+    <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '993310582924547');
+    fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=993310582924547&ev=PageView&noscript=1"
+    /></noscript>
+    <!-- End Meta Pixel Code -->
+
+
+
 
     {{-- <meta name="csrf-token" content="{{ csrf_token() }}"> --}}
     <meta charset="UTF-8" />
@@ -104,15 +138,13 @@
         localStorage.getItem("_x_darkMode_on") === "true" &&
             document.documentElement.classList.add("dark");
     </script>
+     @yield('etiquetasmeta')
 </head>
 
 <body>
 
-
-
-
-    @yield('content')
-    <x-whatsapp />
+        @yield('content')
+        <x-whatsapp />
 
     {{-- <div id="root" class="min-h-100vh flex grow bg-slate-100 dark:bg-navy-900" x-cloak>
         @yield('content')
@@ -132,8 +164,6 @@
     {{--
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script> --}}
-
-    <script src="{{ asset('themes/webpage/bootstrap-5.3.3/js/bootstrap.js') }}"></script>
 
     <script src="{{ asset('themes/webpage/bootstrap-5.3.3/js/bootstrap.js') }}"></script>
 
@@ -190,11 +220,6 @@
     <script src="{{ asset('themes/webpage/assets/js/script.js') }}"></script>
     {{-- <script src="themes/webpage/assets/js/theme-customizer/customizer.js"></script>  --}}
     {{-- <script>new WOW().init();</script> --}}
-
-
-
-
-
 
 
 
@@ -264,5 +289,6 @@
 
 
 </body>
+
 
 </html>

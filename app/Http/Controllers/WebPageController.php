@@ -56,14 +56,14 @@ class WebPageController extends Controller
         return view('pages.home2');
     }
 
-    public function landing()
+    public function landing($slug)
     {
         $courses = OnliItem::with('course')->latest()->get();
         //$courses = $courses->shuffle();
         $categories = AcaCategoryCourse::all();
         $types = getEnumValues('onli_items', 'additional', 0, 1);
 
-        $landingPage = CmsLanding::where('menu_id', '01')->first();
+        $landingPage = CmsLanding::where('slug', $slug)->first();
 
         $ids = $landingPage->data_related['items'] ?? [];
 

@@ -5,7 +5,7 @@
     import Footer from '@/Components/vristo/layout/Footer.vue';
     import Setting from '@/Components/vristo/ThemeCustomizer.vue';
     import appSetting from '@/app-setting';
-    import { Head } from '@inertiajs/vue3';
+    import { Head, usePage } from '@inertiajs/vue3';
     import { useAppStore } from '@/stores/index';
 
     import ChatBox from 'Modules/CRM/Resources/assets/js/Components/ChatBox.vue';
@@ -13,7 +13,6 @@
     const store = useAppStore();
 
     const showTopButton = ref(false);
-
 
     onMounted(() => {
         window.onscroll = () => {
@@ -124,7 +123,7 @@
                 </div>
             </div>
         </div>
-        <ChatBox /> 
+        <ChatBox />
     </div>
 </template>
 

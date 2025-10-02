@@ -6,6 +6,34 @@
     import Editor from '@tinymce/tinymce-vue'
     import InputError from '@/Components/InputError.vue';
     import { usePage } from '@inertiajs/vue3';
+    import flatPickr from 'vue-flatpickr-component';
+    import 'flatpickr/dist/flatpickr.css';
+    import { Spanish } from "flatpickr/dist/l10n/es.js"
+
+    const rangeCalendar = ref({
+        dateFormat: 'Y-m-d',
+        mode: 'range',
+        position: 'auto left',
+        locale: Spanish,
+        onChange: (selectedDates) => {
+            if (selectedDates.length === 2) {
+            const [start, end] = selectedDates
+
+            // Validar que el rango sea de al menos 1 día
+            if (end <= start) {
+                // Si es igual o menor, forzar end = start + 1 día
+                const newEnd = new Date(start)
+                newEnd.setDate(newEnd.getDate() + 1)
+                dateRange.value = [start, newEnd]
+                form.date_start = start.toISOString().split('T')[0]
+                form.date_end = newEnd.toISOString().split('T')[0]
+            } else {
+                form.date_start = start.toISOString().split('T')[0]
+                form.date_end = end.toISOString().split('T')[0]
+            }
+            }
+        }
+    });
 
     const page = usePage();
 
@@ -166,6 +194,17 @@
         form.slug = generateSlug(form.title)
     }
 
+    const dateRange = ref(null);
+
+    onMounted(() => {
+        if (props.landingPage?.date_start && props.landingPage?.date_end) {
+            const start = new Date(props.landingPage.date_start)
+            const end = new Date(props.landingPage.date_end)
+
+            dateRange.value = [start, end]
+        }
+    })
+
 </script>
 <template>
     <form class="space-y-5" @submit.prevent="createLanding">
@@ -252,10 +291,17 @@
             </div>
         </div>
         <div class="flex sm:flex-row flex-col">
-            <label for="txtaditional1" class="mb-0 sm:w-1/4 sm:ltr:mr-2 rtl:ml-2">Título del formulario</label>
+            <label for="txtaditional1" class="mb-0 sm:w-1/4 sm:ltr:mr-2 rtl:ml-2">Título del formulario paso 1</label>
             <div class="flex-1">
                 <input v-model="form.additional_field1" id="txtaditional1" type="text" placeholder="Título del formulario" class="form-input flex-1" />
                 <InputError :message="form.errors.additional_field1" class="mt-2" />
+            </div>
+        </div>
+        <div class="flex sm:flex-row flex-col">
+            <label for="txtaditional2" class="mb-0 sm:w-1/4 sm:ltr:mr-2 rtl:ml-2">Título del formulario paso 2</label>
+            <div class="flex-1">
+                <input v-model="form.additional_field2" id="txtaditional2" type="text" placeholder="adicional 2" class="form-input flex-1" />
+                <InputError :message="form.errors.additional_field2" class="mt-2" />
             </div>
         </div>
         <div class="flex sm:flex-row flex-col">
@@ -280,12 +326,13 @@
         </div>
 
         <div class="flex sm:flex-row flex-col">
-            <label for="txtaditional2" class="mb-0 sm:w-1/4 sm:ltr:mr-2 rtl:ml-2">Campo adicional 2</label>
+            <label for="txtaditional2" class="mb-0 sm:w-1/4 sm:ltr:mr-2 rtl:ml-2">Duración de la promocion</label>
             <div class="flex-1">
-                <input v-model="form.additional_field2" id="txtaditional2" type="text" placeholder="adicional 2" class="form-input flex-1" />
+                <flat-pickr v-model="dateRange" class="form-input" :config="rangeCalendar"></flat-pickr>
                 <InputError :message="form.errors.additional_field2" class="mt-2" />
             </div>
         </div>
+
         <div class="flex sm:flex-row flex-col">
             <label for="txtaditional3" class="mb-0 sm:w-1/4 sm:ltr:mr-2 rtl:ml-2">Campo adicional 3</label>
             <div class="flex-1">
