@@ -162,7 +162,7 @@
                                                     <br>
                                                 </div>
                                             </div>
-                                            <div class="accordion-item-aracode">
+                                            {{-- <div class="accordion-item-aracode">
                                                 <div class="accordion-header-aracode" aria-expanded="false">
                                                     <span class="accordion-icon-aracode">►</span>
                                                     RUTA DE APRENDIZAJE
@@ -175,7 +175,7 @@
                                                     @endif
                                                     <br>
                                                 </div>
-                                            </div>
+                                            </div> --}}
                                             <div class="accordion-item-aracode">
                                                 <div class="accordion-header-aracode" aria-expanded="false">
                                                     <span class="accordion-icon-aracode">►</span>
