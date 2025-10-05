@@ -242,5 +242,8 @@ Route::middleware('auth')->group(function () {
 //CERTIFICADOS AUTOMATIZACIÓN Y PRUEBAS
 Route::get('/test-image/{student_id}/{certificate_id}', [WebController::class, 'testimage'])->name('test-image');
 
+Route::post('landing/store/course-free',[WebPageController::class, 'storeCourseFree'])
+    ->name('landing_store_course_free');
+
 require __DIR__ . '/auth.php';
 require __DIR__ . '/system.php';

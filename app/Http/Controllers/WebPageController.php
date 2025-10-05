@@ -21,6 +21,9 @@ use Illuminate\Support\Facades\Validator;
 use App\Mail\StudentRegistrationMailable;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ConfirmPurchaseMail;
+use App\Models\Country;
+use App\Models\Department;
+use App\Models\District;
 use Carbon\Carbon;
 use Modules\Academic\Entities\AcaStudent;
 use Modules\Academic\Entities\AcaCapRegistration;
@@ -63,7 +66,9 @@ class WebPageController extends Controller
         $categories = AcaCategoryCourse::all();
         $types = getEnumValues('onli_items', 'additional', 0, 1);
 
-        $landingPage = CmsLanding::where('slug', $slug)->first();
+        //$landingPage = CmsLanding::where('slug', $slug)->first();
+        $landingPage = CmsLanding::where('menu_id', '01')->first();
+
 
         $ids = $landingPage->data_related['items'] ?? [];
 
@@ -79,6 +84,10 @@ class WebPageController extends Controller
             ->orderBy('cms_section_items.position')
             ->get();
 
+        $countries = Country::orderBy('description')->get();
+        $documentTypes = DB::table('identity_document_type')->get();
+        $ubigeo = District::with('province.department')->get();
+
         $p = 12; //numero de cursos mostrados PAGINACION
 
         return view('pages.landing', [
@@ -88,7 +97,10 @@ class WebPageController extends Controller
             'types' => $types,
             'p' => $p,
             'landingPage' => $landingPage,
-            'coursesFree' => $coursesFree
+            'coursesFree' => $coursesFree,
+            'countries' => $countries,
+            'documentTypes' => $documentTypes,
+            'ubigeo' => $ubigeo
         ]);
     }
 
@@ -982,5 +994,93 @@ class WebPageController extends Controller
             'modality_id' => 3,
             'unlimited' => true
         ]);
+    }
+
+    public function storeCourseFree(Request $request)
+    {
+        // 🔹 VALIDACIÓN
+        $validator = Validator::make($request->all(), [
+            'courseFree' => 'required',
+            'courseInterest' => 'required',
+            'nombres' => 'required|string|max:255',
+            'apaterno' => 'required|string|max:255',
+            'amaterno' => 'required|string|max:255',
+            'tidocumento' => 'required',
+            'numero' => [
+                'required',
+                'string',
+                'max:20',
+                function ($attribute, $value, $fail) use ($request) {
+                    // Validar combinación única de tipo documento + número
+                    $exists = DB::table('people')
+                        ->where('document_type_id', $request->tidocumento)
+                        ->where('number', $value)
+                        ->exists();
+
+                    if ($exists) {
+                        $fail('El número de documento ya está registrado para este tipo de documento.');
+                    }
+                },
+            ],
+            'email' => 'required|email|unique:people,email',
+            'phone' => 'required|string|max:20',
+            'pais' => 'required',
+            'politicas' => 'accepted', // debe estar marcado
+        ], [
+            'required' => 'El campo :attribute es obligatorio.',
+            'email.email' => 'Debe ingresar un correo electrónico válido.',
+            'email.unique' => 'El correo electrónico ya está registrado.',
+            'politicas.accepted' => 'Debe aceptar las políticas para continuar.',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        // 🔹 REGISTRO EN TABLA people
+        $person = Person::create([
+            'short_name' => $request->nombres,
+            'full_name' => $request->apaterno. ' '.$request->amaterno.' '.$request->nombres,
+            'document_type_id' => $request->tidocumento,
+            'names' => $request->nombres,
+            'father_lastname' => $request->apaterno,
+            'mother_lastname' => $request->amaterno,
+            'number' => $request->numero,
+            'telephone' => $request->phone,
+            'email' => $request->email,
+            'country_id' => $request->pais,
+            'status' => true,
+        ]);
+
+        // 🔹 REGISTRO EN TABLA aca_students
+        $student = AcaStudent::create([
+            'student_code' => $request->numero,
+            'person_id' => $person->id,
+            'new_student' => true,
+        ]);
+
+        // 🔹 REGISTRO EN TABLA aca_cap_registrations
+        AcaCapRegistration::create([
+            'student_id' => $student->id,
+            'course_id' => $request->courseFree,
+            'status' => true,
+            'certificate_date' => Carbon::now(),
+        ]);
+
+        // 🔹 REGISTRO EN TABLA users
+        User::create([
+            'name' => $request->nombres,
+            'email' => $request->email,
+            'email_verified_at' => Carbon::now(),
+            'password' => Hash::make($request->numero),
+            'local_id' => 1,
+            'person_id' => $person->id,
+            'status' => true,
+            'updated_information' => false,
+            'tour_completed' => true,
+        ]);
+
+        // 🔹 MENSAJE DE ÉXITO
+        return redirect()->back()->with('success', 'Registro completado exitosamente.');
     }
 }

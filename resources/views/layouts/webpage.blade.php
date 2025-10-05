@@ -250,7 +250,7 @@
     {{-- <script src="themes/webpage/assets/js/theme-customizer/customizer.js"></script>  --}}
     {{-- <script>new WOW().init();</script> --}}
 
-
+    @yield('javascripts')
 
 
 </body>
