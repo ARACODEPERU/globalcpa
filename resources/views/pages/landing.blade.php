@@ -9,8 +9,8 @@
 
     <!-- Loader starts-->
     <!-- <div class="loader-wrapper">
-                                                                                          <div class="loader"></div>
-                                                                                        </div> -->
+                                                                                                      <div class="loader"></div>
+                                                                                                    </div> -->
     <!-- Loader ends-->
     <!-- tap on top starts-->
     <div class="tap-top"><i data-feather="chevrons-up"></i></div>
@@ -134,7 +134,8 @@
                                                         <div class="card weekend-card">
                                                             <!-- From Uiverse.io by Praashoo7 -->
                                                             <label class="c-container">
-                                                                <input value="{{ $item->id }}" type="radio" name="courseInterest">
+                                                                <input value="{{ $item->id }}" type="radio"
+                                                                    name="courseInterest">
                                                                 <div class="c-checkmark">
                                                                     <svg viewBox="0 0 50 50" version="1.1"
                                                                         xmlns="http://www.w3.org/2000/svg" class="c-icon">
@@ -164,100 +165,104 @@
                                                 @endforeach
                                             </div>
                                         </div>
-                                        <div class="form_3 data_info" style="display: none;">
-                                            <div class="p-6">
-                                                <h2 class="text-center">Professional Info</h2>
-                                                <div class="card-body custom-input">
-                                                    <div class="row">
-                                                        <div class="col-md-6 col-lg-4 mx-auto">
-                                                            <div class="row g-3">
-                                                                <div class="col-12">
-                                                                    <label class="form-label" for="nombres">Nombres</label>
-                                                                    <input class="form-control" id="nombres"
-                                                                        name="nombres" type="text" required="">
-                                                                </div>
-                                                                <div class="col-12">
-                                                                    <label class="form-label" for="apaterno">Apellido
-                                                                        Paterno</label>
-                                                                    <input class="form-control" id="apaterno"
-                                                                        name="apaterno" type="text" required="">
-                                                                </div>
-                                                                <div class="col-12">
-                                                                    <label class="form-label" for="amaterno">Apellido
-                                                                        Materno</label>
-                                                                    <input class="form-control" id="amaterno"
-                                                                        name="amaterno" type="text" required="">
-                                                                </div>
-                                                                <div class="col-6">
-                                                                    <label class="form-label" for="tidocumento">Tipo
-                                                                        Identificación</label>
-                                                                    <select class="form-control" id="tidocumento"
-                                                                        name="tidocumento">
-                                                                        @foreach ($documentTypes as $documentType)
-                                                                            <option value="{{ $documentType->id }}"
-                                                                                {{ $documentType->id == 1 ? 'selected' : '' }}>
-                                                                                {{ $documentType->description }}</option>
-                                                                        @endforeach
-                                                                    </select>
-                                                                </div>
-                                                                <div class="col-6">
-                                                                    <label class="form-label"
-                                                                        for="numero">Número</label>
-                                                                    <input class="form-control" id="numero"
-                                                                        name="numero" type="number" />
-                                                                </div>
-                                                                <div class="col-12">
-                                                                    <label class="form-label" for="email">Dirección de
-                                                                        correo electrónico</label>
-                                                                    <input class="form-control" id="email"
-                                                                        name="email" type="email" />
-                                                                </div>
-                                                                <div class="col-12">
-                                                                    <label class="form-label"
-                                                                        for="phone">Teléfono</label>
-                                                                    <input class="form-control" id="phone"
-                                                                        name="phone" type="text" />
-                                                                </div>
-                                                                <div class="col-12">
-                                                                    <label class="form-label"
-                                                                        for="select-countries">Pais</label>
-                                                                    <select class="form-select" id="select-countries"
-                                                                        name="pais">
-                                                                        @foreach ($countries as $country)
-                                                                            <option value="{{ $country->id }}"
-                                                                                {{ $country->country_code == 'PE' ? 'selected' : '' }}>
-                                                                                {{ $country->description }}</option>
-                                                                        @endforeach
-                                                                    </select>
-                                                                </div>
-                                                                <div id="divSelectCity" class="col-12">
-                                                                    <label class="form-label" for="select-city">Ciudad</label>
-                                                                    <select class="form-select" id="select-city"
-                                                                        name="pais">
-                                                                        @foreach ($ubigeo as $city)
-                                                                            <option value="{{ $city->id }}">
-                                                                                {{ $city->department->name }}-{{ $city->province->name }}-{{ $city->name }}
-                                                                            </option>
-                                                                        @endforeach
-                                                                    </select>
-                                                                </div>
-                                                                <div id="divInputCity" class="col-12">
-                                                                    <label class="form-label" for="ciudad">Ciudad</label>
-                                                                    <input class="form-control" id="ciudad" name="ciudad" type="text" />
-                                                                </div>
-                                                                <div class="col-12 checkbox-checked">
-                                                                    <input class="form-check-input" id="politicas" name="politicas" type="checkbox">
-                                                                    <label class="form-check-label" for="politicas"> 
-                                                                        Estoy de acuerdo con las 
-                                                                        <a target="_blank" href="{{ 'politicas_privacidad' }}"> 
-                                                                            políticas de privacidad
-                                                                        </a>
-                                                                    </label>
-                                                                </div>
+                                        <div class="form_3" style="display: none;">
+                                            <h2 class="text-center">Professional Info</h2>
+                                            <div class="row">
+                                                <div class="col-md-2"></div>
+                                                <div class="col-md-8 card">
+                                                    <div class="card-body">
+                                                        <div class="row g-3">
+                                                            <div class="col-4">
+                                                                <label class="form-label" for="nombres">Nombres</label>
+                                                                <input class="form-control" id="nombres" name="nombres"
+                                                                    type="text" required="">
+                                                            </div>
+                                                            <div class="col-4">
+                                                                <label class="form-label" for="apaterno">Apellido
+                                                                    Paterno</label>
+                                                                <input class="form-control" id="apaterno"
+                                                                    name="apaterno" type="text" required="">
+                                                            </div>
+                                                            <div class="col-4">
+                                                                <label class="form-label" for="amaterno">Apellido
+                                                                    Materno</label>
+                                                                <input class="form-control" id="amaterno"
+                                                                    name="amaterno" type="text" required="">
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <label class="form-label" for="tidocumento">Tipo
+                                                                    Identificación</label>
+                                                                <select class="form-control" id="tidocumento"
+                                                                    name="tidocumento">
+                                                                    @foreach ($documentTypes as $documentType)
+                                                                        <option value="{{ $documentType->id }}"
+                                                                            {{ $documentType->id == 1 ? 'selected' : '' }}>
+                                                                            {{ $documentType->description }}
+                                                                        </option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <label class="form-label" for="numero">Número</label>
+                                                                <input class="form-control" id="numero" name="numero"
+                                                                    type="number" />
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <label class="form-label" for="email">Dirección
+                                                                    de
+                                                                    correo electrónico</label>
+                                                                <input class="form-control" id="email" name="email"
+                                                                    type="email" />
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <label class="form-label" for="phone">Teléfono</label>
+                                                                <input class="form-control" id="phone" name="phone"
+                                                                    type="text" />
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <label class="form-label"
+                                                                    for="select-countries">Pais</label>
+                                                                <select class="form-select" id="select-countries"
+                                                                    name="pais">
+                                                                    @foreach ($countries as $country)
+                                                                        <option value="{{ $country->id }}"
+                                                                            {{ $country->country_code == 'PE' ? 'selected' : '' }}>
+                                                                            {{ $country->description }}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                            <div id="divSelectCity" class="col-6">
+                                                                <label class="form-label" for="select-city">Ciudad</label>
+                                                                <select class="form-select" id="select-city"
+                                                                    name="pais">
+                                                                    @foreach ($ubigeo as $city)
+                                                                        <option value="{{ $city->id }}">
+                                                                            {{ $city->department->name }}-{{ $city->province->name }}-{{ $city->name }}
+                                                                        </option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                            <div id="divInputCity" class="col-12">
+                                                                <label class="form-label" for="ciudad">Ciudad</label>
+                                                                <input class="form-control" id="ciudad" name="ciudad"
+                                                                    type="text" />
+                                                            </div>
+                                                            <div class="col-12 checkbox-checked">
+                                                                <input class="form-check-input" id="politicas"
+                                                                    name="politicas" type="checkbox">
+                                                                <label class="form-check-label" for="politicas">
+                                                                    Estoy de acuerdo con las
+                                                                    <a target="_blank"
+                                                                        href="{{ 'politicas_privacidad' }}">
+                                                                        políticas de privacidad
+                                                                    </a>
+                                                                </label>
                                                             </div>
                                                         </div>
+
                                                     </div>
                                                 </div>
+                                                <div class="col-md-2"></div>
                                             </div>
                                         </div>
                                     </div>
@@ -324,91 +329,6 @@
                         </div>
                     </div>
                 </div>
-                <br>
-                {{-- <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-md-2"></div>
-                        <div class="col-md-8">
-                            <div class="card height-equal">
-                                <div class="row">
-                                    <div class="col-md-3"
-                                        style="text-align: center; justify-content:center; padding: 0px;">
-                                        <img style="width: 100%; heigth: 100%;"
-                                            src="{{ asset('themes/webpage/images/landingform.jpg') }}" alt="">
-                                    </div>
-                                    <div class="col-md-9">
-                                        <div class="card-header pb-0">
-                                            <h3>Título del formulario</h3>
-                                            <p>
-                                                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Debitis doloribus
-                                                officia officiis totam! Soluta,
-                                                velit deserunt sunt veritatis repudiandae quas distinctio officiis, labore
-                                                doloribus placeat sint at culpa
-                                                eos cupiditate.
-                                            </p>
-                                        </div>
-                                        <div class="card-body custom-input">
-                                            <form class="row g-3">
-                                                <div class="col-6">
-                                                    <label class="form-label" for="first-name">Nombres y Apellidos</label>
-                                                    <input class="form-control" id="first-name" type="text"
-                                                        placeholder="..." aria-label="First name" required="">
-                                                </div>
-                                                <div class="col-6">
-                                                    <label class="form-label" for="exampleFormControlInput1">Email
-                                                        address</label>
-                                                    <input class="form-control" id="exampleFormControlInput1"
-                                                        type="email" placeholder="@" required="">
-                                                </div>
-                                                <div class="col-6">
-                                                    <label class="form-label" for="first-name">Teléfono</label>
-                                                    <input class="form-control" id="phone" type="text"
-                                                        placeholder="..." aria-label="Phone" required="">
-                                                </div>
-                                                <div class="col-6">
-                                                    <label class="form-label" for="validationDefault04">Pais</label>
-                                                    <select class="form-select" id="validationDefault04" required="">
-                                                        <option selected="" value="">Perú</option>
-                                                        <option>otro pais</option>
-                                                        <option>otro pais</option>
-                                                        <option>otro pais</option>
-                                                    </select>
-                                                </div>
-                                                <div class="col-4">
-                                                    <label class="form-label" for="first-name">Ciudad</label>
-                                                    <input class="form-control" id="city" type="text"
-                                                        placeholder="..." aria-label="City" required="">
-                                                </div>
-                                                <div class="col-8">
-                                                    <label class="form-label" for="validationDefault04">Programas de
-                                                        Formación</label>
-                                                    <select class="form-select" id="validationDefault04" required="">
-                                                        <option selected="" value="">Seleccionar...</option>
-                                                        <option>curos 1</option>
-                                                        <option>curos 2</option>
-                                                        <option>curos 3</option>
-                                                        <option>curos 4</option>
-                                                    </select>
-                                                </div>
-                                                <div class="col-12 checkbox-checked">
-                                                    <input class="form-check-input" id="flexCheckDefault" type="checkbox"
-                                                        value="">
-                                                    <label class="form-check-label" for="flexCheckDefault">
-                                                        Estoy de acuerdo con las politicas de privacidad
-                                                    </label>
-                                                </div>
-                                                <div class="col-12">
-                                                    <button class="btn btn-primary" type="submit">Enviar</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-2"></div>
-                    </div>
-                </div> --}}
             </div>
             <!-- footer start-->
             <x-footer />
@@ -662,11 +582,9 @@
             }
 
             /* From Uiverse.io by Praashoo7 */
-
         </style>
-        
+
         <style>
-            
             /* Hide the default checkbox */
 
             .c-container input {
