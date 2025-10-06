@@ -200,7 +200,7 @@
                                                                 <div class="col-12 checkbox-checked">
                                                                     <input class="form-check-input" id="politicas" name="politicas" type="checkbox">
                                                                     <label class="form-check-label" for="politicas">
-                                                                        Estoy de acuerdo con las politicas de privacidad
+                                                                        Estoy de acuerdo con las <a target="_blank" href="{{ 'politicas_privacidad' }}"> políticas de privacidad</a>
                                                                     </label>
                                                                 </div>
                                                             </div>

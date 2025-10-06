@@ -28,6 +28,7 @@ use Carbon\Carbon;
 use Modules\Academic\Entities\AcaStudent;
 use Modules\Academic\Entities\AcaCapRegistration;
 use Illuminate\Support\Facades\DB;
+use Modules\Academic\Entities\AcaStudentCoursesInterest;
 use Modules\CMS\Entities\CmsLanding;
 use Spatie\Permission\Models\Role;
 
@@ -1057,6 +1058,8 @@ class WebPageController extends Controller
             'student_code' => $request->numero,
             'person_id' => $person->id,
             'new_student' => true,
+            'arrival_source_id' => 1,
+            'arrival_source_information' => '01'
         ]);
 
         // 🔹 REGISTRO EN TABLA aca_cap_registrations
@@ -1065,6 +1068,12 @@ class WebPageController extends Controller
             'course_id' => $request->courseFree,
             'status' => true,
             'certificate_date' => Carbon::now(),
+        ]);
+
+        AcaStudentCoursesInterest::create([
+            'student_id' => $student->id,
+            'course_id' => $request->courseInterest,
+            'status' => 0
         ]);
 
         // 🔹 REGISTRO EN TABLA users
