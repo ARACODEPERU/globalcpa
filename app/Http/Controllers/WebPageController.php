@@ -1113,8 +1113,8 @@ class WebPageController extends Controller
           Mail::to($person->email)
           ->send(new StudentRegistrationMailable([
               'courses'   => $courses,
-              'names'     => $person->names,
-              'email'      => $person->email,
+              'names'     => $request->nombres,
+              'email'      => $request->email,
               'password'  => $request->numero
           ]));
            // 3. CONFIRMACIÓN (COMMIT)
