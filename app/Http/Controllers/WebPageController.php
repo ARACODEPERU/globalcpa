@@ -1110,7 +1110,7 @@ class WebPageController extends Controller
             ];
 
           //////////codigo enviar correo /////
-          Mail::to($person->email)
+          Mail::to($request->email)
           ->send(new StudentRegistrationMailable([
               'courses'   => $courses,
               'names'     => $request->nombres,
