@@ -169,7 +169,7 @@
                     <b style="color: #8b0e06;">Contraseña: </b>{{ $data['password'] }}
                 </p>
                 <br>
-                <button class="btn primary">Ingresar al Campus Virtual</button>
+                <button class="btn primary"><a href="{{ route('login') }}">Ingresar al Campus Virtual</a></button>
             </div>
         </div>
     </section>
