@@ -1097,6 +1097,26 @@ class WebPageController extends Controller
             'tour_completed' => true,
         ]);
 
+        $courses = [];
+            $item = OnliItem::find($request->courseInterest);
+            $courses[0] = [
+                'image'       => $item->image,
+                'name'        => $item->name,
+                'description' => $item->description,
+                'type'        => $item->additional,
+                'modality'    => $item->additional1,
+                'price'      => $item->price
+            ];
+
+          //////////codigo enviar correo /////
+          Mail::to($person->email)
+          ->send(new StudentRegistrationMailable([
+              'courses'   => $courses,
+              'names'     => $person->names,
+              'email'      => $person->email,
+              'password'  => $request->numero
+          ]));
+
         // 🔹 MENSAJE DE ÉXITO
         return redirect()->back()->with('success', 'Registro completado exitosamente.');
     }

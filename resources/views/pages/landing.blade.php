@@ -94,7 +94,7 @@
                                                 @foreach ($coursesFree as $item)
                                                     <div class="col-md-3 box-col-4">
                                                         <div class="card weekend-card">
-                                                            <!-- From Uiverse.io by Praashoo7 -->
+                                                            <!-- Aracode -->
                                                             <label class="c-container">
                                                                 <input value="{{ $item->id }}" type="radio"
                                                                     name="courseFree">
@@ -133,7 +133,7 @@
                                                 @foreach ($coursesFree as $item)
                                                     <div class="col-md-3 box-col-4">
                                                         <div class="card weekend-card">
-                                                            <!-- From Uiverse.io by Praashoo7 -->
+                                                            <!-- Aracode -->
                                                             <label class="c-container">
                                                                 <input value="{{ $item->id }}" type="radio"
                                                                     name="courseInterest">
@@ -603,7 +603,7 @@
                 transform: translate(-50%, -50%);
             }
 
-            /* From Uiverse.io by Praashoo7 */
+            /* Aracode */
         </style>
 
         <style>
