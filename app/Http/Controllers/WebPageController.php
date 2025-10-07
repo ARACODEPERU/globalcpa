@@ -1106,7 +1106,7 @@ class WebPageController extends Controller
                 'description' => $item->description,
                 'type'        => $item->additional,
                 'modality'    => $item->additional1,
-                'price'      => $item->price
+                'price'      => "Gratis",
             ];
 
           //////////codigo enviar correo /////
@@ -1115,7 +1115,7 @@ class WebPageController extends Controller
               'courses'   => $courses,
               'names'     => $request->nombres,
               'email'      => $request->email,
-              'password'  => $request->numero
+              'password'  => $request->numero,
           ]));
            // 3. CONFIRMACIÓN (COMMIT)
            DB::commit();
