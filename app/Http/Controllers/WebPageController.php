@@ -1041,8 +1041,9 @@ class WebPageController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-
-        // 🔹 REGISTRO EN TABLA people
+        DB::beginTransaction();
+        try {
+            // 🔹 REGISTRO EN TABLA people
         $person = Person::create([
             'short_name' => $request->nombres,
             'full_name' => $request->apaterno. ' '.$request->amaterno.' '.$request->nombres,
@@ -1097,7 +1098,36 @@ class WebPageController extends Controller
             'tour_completed' => true,
         ]);
 
-        // 🔹 MENSAJE DE ÉXITO
-        return redirect()->back()->with('success', 'Registro completado exitosamente.');
+        $courses = [];
+            $item = OnliItem::where('item_id', '=', $request->courseInterest)->first();
+            $courses[0] = [
+                'image'       => $item->image,
+                'name'        => $item->name,
+                'description' => $item->description,
+                'type'        => $item->additional,
+                'modality'    => $item->additional1,
+                'price'      => "Gratis",
+            ];
+
+          //////////codigo enviar correo /////
+          Mail::to($request->email)
+          ->send(new StudentRegistrationMailable([
+              'courses'   => $courses,
+              'names'     => $request->nombres,
+              'user'      => $request->email,
+              'password'  => $request->numero,
+          ]));
+           // 3. CONFIRMACIÓN (COMMIT)
+           DB::commit();
+           // 🔹 MENSAJE DE ÉXITO
+            return redirect()->back()->with('success', 'Registro completado exitosamente.');
+
+        } catch (\Throwable $th) {
+             // 5. REVERSIÓN (ROLLBACK) si algo falla
+             DB::rollBack();
+             dd($th);
+            return redirect()->back()->with('fail', 'Registro fallido Reintentar.');
+        }
+
     }
 }

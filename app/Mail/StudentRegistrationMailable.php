@@ -31,14 +31,14 @@ class StudentRegistrationMailable extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            from: new Address(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME')),
-            subject: 'Student Registration Mailable',
+            from: new Address(env('MAIL_FROM_ADDRESS', 'capacitacion@globalcpaperu.com'), env('MAIL_FROM_NAME', 'GlobalCpa')),
+            subject: 'Bienvenido a Global CPA',
         );
     }
 
     public function build()
     {
-        return $this->view('capperu.email.gratitude', [
+        return $this->view('emails.grattitude_landing', [
             'data' => $this->data
         ]);
     }

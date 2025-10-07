@@ -213,8 +213,8 @@
     <!-- Plugins JS Ends-->
     <!-- Theme js-->
     <script src="{{ asset('themes/webpage/assets/js/script.js') }}"></script>
-    <script src="themes/webpage/assets/js/theme-customizer/customizer.js"></script> 
-    <script>new WOW().init();</script>
+    {{-- <script src="themes/webpage/assets/js/theme-customizer/customizer.js"></script> 
+    <script>new WOW().init();</script> --}}
 
 
      @yield('javascripts') 
