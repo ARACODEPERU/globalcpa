@@ -1041,8 +1041,9 @@ class WebPageController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-
-        // 🔹 REGISTRO EN TABLA people
+        DB::beginTransaction();
+        try {
+            // 🔹 REGISTRO EN TABLA people
         $person = Person::create([
             'short_name' => $request->nombres,
             'full_name' => $request->apaterno. ' '.$request->amaterno.' '.$request->nombres,
@@ -1098,7 +1099,7 @@ class WebPageController extends Controller
         ]);
 
         $courses = [];
-            $item = OnliItem::find($request->courseInterest);
+            $item = OnliItem::where('item_id', $request->courseInterest);
             $courses[0] = [
                 'image'       => $item->image,
                 'name'        => $item->name,
@@ -1116,6 +1117,14 @@ class WebPageController extends Controller
               'email'      => $person->email,
               'password'  => $request->numero
           ]));
+           // 3. CONFIRMACIÓN (COMMIT)
+           DB::commit();
+        } catch (\Throwable $th) {
+             // 5. REVERSIÓN (ROLLBACK) si algo falla
+             DB::rollBack();
+            return redirect()->back()->with('fail', 'Registro fallido Reintentar.');
+        }
+
 
         // 🔹 MENSAJE DE ÉXITO
         return redirect()->back()->with('success', 'Registro completado exitosamente.');
