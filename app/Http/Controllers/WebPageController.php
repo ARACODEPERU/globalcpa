@@ -1114,7 +1114,7 @@ class WebPageController extends Controller
           ->send(new StudentRegistrationMailable([
               'courses'   => $courses,
               'names'     => $request->nombres,
-              'email'      => $request->email,
+              'user'      => $request->email,
               'password'  => $request->numero,
           ]));
            // 3. CONFIRMACIÓN (COMMIT)

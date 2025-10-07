@@ -158,7 +158,7 @@
     <section style="padding-bottom: 15px;">
         <div class="contenedor">
             <div class="columna" style="text-align: center; padding: 15px; background-color: #F9FAFD;">
-                <p>
+                <p> Hola {{ $data['names'] }}:
                     Estos son tus accesos al campus virtual:
                 </p>
                 <br>
