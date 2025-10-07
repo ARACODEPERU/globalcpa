@@ -31,7 +31,7 @@
 
             <!-- Page Sidebar Ends-->
             <div class="page-body" style="padding: 80px 0px;">
-                <div class="container-fluid"></div>
+                <div class="container-fluid mb-6"></div>
                 <br><br><br>
                 <div class="container-fluid crm_dashboard">
                     <div class="row">
@@ -84,6 +84,7 @@
                                                 </div>
                                             </li>
                                         </ul>
+
                                     </div>
                                     <div class="form_wrap">
 
@@ -167,105 +168,126 @@
                                         </div>
                                         <div class="form_3" style="display: none;">
                                             <h2 class="text-center">Professional Info</h2>
-                                            <div class="row">
-                                                <div class="col-md-2"></div>
-                                                <div class="col-md-8 card">
+
+                                            <div class="d-flex justify-content-center">
+                                                <div class="card col-md-8">
                                                     <div class="card-body">
                                                         <div class="row g-3">
-                                                            <div class="col-4">
-                                                                <label class="form-label" for="nombres">Nombres</label>
-                                                                <input class="form-control" id="nombres" name="nombres"
-                                                                    type="text" required="">
-                                                            </div>
-                                                            <div class="col-4">
-                                                                <label class="form-label" for="apaterno">Apellido
-                                                                    Paterno</label>
-                                                                <input class="form-control" id="apaterno"
-                                                                    name="apaterno" type="text" required="">
-                                                            </div>
-                                                            <div class="col-4">
-                                                                <label class="form-label" for="amaterno">Apellido
-                                                                    Materno</label>
-                                                                <input class="form-control" id="amaterno"
-                                                                    name="amaterno" type="text" required="">
-                                                            </div>
-                                                            <div class="col-6">
-                                                                <label class="form-label" for="tidocumento">Tipo
-                                                                    Identificación</label>
-                                                                <select class="form-control" id="tidocumento"
-                                                                    name="tidocumento">
-                                                                    @foreach ($documentTypes as $documentType)
-                                                                        <option value="{{ $documentType->id }}"
-                                                                            {{ $documentType->id == 1 ? 'selected' : '' }}>
-                                                                            {{ $documentType->description }}
-                                                                        </option>
-                                                                    @endforeach
-                                                                </select>
-                                                            </div>
-                                                            <div class="col-6">
-                                                                <label class="form-label" for="numero">Número</label>
-                                                                <input class="form-control" id="numero" name="numero"
-                                                                    type="number" />
-                                                            </div>
-                                                            <div class="col-6">
-                                                                <label class="form-label" for="email">Dirección
-                                                                    de
-                                                                    correo electrónico</label>
-                                                                <input class="form-control" id="email" name="email"
-                                                                    type="email" />
-                                                            </div>
-                                                            <div class="col-6">
-                                                                <label class="form-label" for="phone">Teléfono</label>
-                                                                <input class="form-control" id="phone" name="phone"
-                                                                    type="text" />
-                                                            </div>
-                                                            <div class="col-6">
-                                                                <label class="form-label"
-                                                                    for="select-countries">Pais</label>
-                                                                <select class="form-select" id="select-countries"
-                                                                    name="pais">
-                                                                    @foreach ($countries as $country)
-                                                                        <option value="{{ $country->id }}"
-                                                                            {{ $country->country_code == 'PE' ? 'selected' : '' }}>
-                                                                            {{ $country->description }}</option>
-                                                                    @endforeach
-                                                                </select>
-                                                            </div>
-                                                            <div id="divSelectCity" class="col-6">
-                                                                <label class="form-label" for="select-city">Ciudad</label>
-                                                                <select class="form-select" id="select-city"
-                                                                    name="pais">
-                                                                    @foreach ($ubigeo as $city)
-                                                                        <option value="{{ $city->id }}">
-                                                                            {{ $city->department->name }}-{{ $city->province->name }}-{{ $city->name }}
-                                                                        </option>
-                                                                    @endforeach
-                                                                </select>
-                                                            </div>
-                                                            <div id="divInputCity" class="col-12">
-                                                                <label class="form-label" for="ciudad">Ciudad</label>
-                                                                <input class="form-control" id="ciudad" name="ciudad"
-                                                                    type="text" />
-                                                            </div>
-                                                            <div class="col-12 checkbox-checked">
-                                                                <input class="form-check-input" id="politicas"
-                                                                    name="politicas" type="checkbox">
-                                                                <label class="form-check-label" for="politicas">
-                                                                    Estoy de acuerdo con las
-                                                                    <a target="_blank"
-                                                                        href="{{ 'politicas_privacidad' }}">
-                                                                        políticas de privacidad
-                                                                    </a>
-                                                                </label>
-                                                            </div>
+
+                                                        <div class="col-4">
+                                                            <label class="form-label" for="nombres">Nombres</label>
+                                                            <input class="form-control" id="nombres" name="nombres"
+                                                                type="text" required value="{{ old('nombres') }}">
+                                                        </div>
+
+                                                        <div class="col-4">
+                                                            <label class="form-label" for="apaterno">Apellido Paterno</label>
+                                                            <input class="form-control" id="apaterno" name="apaterno"
+                                                                type="text" required value="{{ old('apaterno') }}">
+                                                        </div>
+
+                                                        <div class="col-4">
+                                                            <label class="form-label" for="amaterno">Apellido Materno</label>
+                                                            <input class="form-control" id="amaterno" name="amaterno"
+                                                                type="text" required value="{{ old('amaterno') }}">
+                                                        </div>
+
+                                                        <div class="col-6">
+                                                            <label class="form-label" for="tidocumento">Tipo Identificación</label>
+                                                            <select class="form-control" id="tidocumento" name="tidocumento">
+                                                                @foreach ($documentTypes as $documentType)
+                                                                    <option value="{{ $documentType->id }}"
+                                                                        {{ old('tidocumento', 1) == $documentType->id ? 'selected' : '' }}>
+                                                                        {{ $documentType->description }}
+                                                                    </option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+
+                                                        <div class="col-6">
+                                                            <label class="form-label" for="numero">Número</label>
+                                                            <input class="form-control" id="numero" name="numero"
+                                                                type="number" value="{{ old('numero') }}">
+                                                        </div>
+
+                                                        <div class="col-6">
+                                                            <label class="form-label" for="email">Correo electrónico</label>
+                                                            <input class="form-control" id="email" name="email"
+                                                                type="email" value="{{ old('email') }}">
+                                                        </div>
+
+                                                        <div class="col-6">
+                                                            <label class="form-label" for="phone">Teléfono</label>
+                                                            <input class="form-control" id="phone" name="phone"
+                                                                type="text" value="{{ old('phone') }}">
+                                                        </div>
+
+                                                        <div class="col-6">
+                                                            <label class="form-label" for="select-countries">País</label>
+                                                            <select class="form-select" id="select-countries" name="pais">
+                                                                @foreach ($countries as $country)
+                                                                    <option value="{{ $country->id }}"
+                                                                        {{ old('pais', 'PE') == $country->country_code ? 'selected' : '' }}>
+                                                                        {{ $country->description }}
+                                                                    </option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+
+                                                        <div id="divSelectCity" class="col-6">
+                                                            <label class="form-label" for="select-city">Ciudad</label>
+                                                            <select class="form-select" id="select-city" name="ciudad">
+                                                                <option value="">Seleccionar ciudad</option>
+                                                                @foreach ($ubigeo as $city)
+                                                                    <option value="{{ $city->id }}"
+                                                                        {{ old('ciudad') == $city->id ? 'selected' : '' }}>
+                                                                        {{ $city->department->name }} - {{ $city->province->name }} - {{ $city->name }}
+                                                                    </option>
+                                                                @endforeach
+                                                            </select>
+                                                            <input class="form-control" id="ubigeo" name="ubigeo"
+                                                                type="hidden" value="{{ old('ubigeo') }}">
+                                                        </div>
+
+                                                        <div id="divInputCity" class="col-12">
+                                                            <label class="form-label" for="ciudad">Ciudad</label>
+                                                            <input class="form-control" id="ciudad" name="ciudad"
+                                                                type="text" value="{{ old('ciudad') }}">
+                                                        </div>
+
+                                                        <div class="col-6">
+                                                            <label class="form-label" for="fecha_nacimiento">Fecha de nacimiento</label>
+                                                            <input class="form-control" id="fecha_nacimiento" name="fecha_nacimiento"
+                                                                type="date" value="{{ old('fecha_nacimiento') }}">
+                                                        </div>
+
+                                                        <div class="col-6">
+                                                            <label class="form-label" for="genero">Género</label>
+                                                            <select class="form-control" id="genero" name="genero">
+                                                                <option value="">Seleccionar</option>
+                                                                <option value="M" {{ old('genero') == 'M' ? 'selected' : '' }}>Masculino</option>
+                                                                <option value="F" {{ old('genero') == 'F' ? 'selected' : '' }}>Femenino</option>
+                                                            </select>
+                                                        </div>
+
+                                                        <div class="col-12 checkbox-checked">
+                                                            <input class="form-check-input" id="politicas"
+                                                                name="politicas" type="checkbox"
+                                                                {{ old('politicas') ? 'checked' : '' }}>
+                                                            <label class="form-check-label" for="politicas">
+                                                                Estoy de acuerdo con las
+                                                                <a target="_blank" href="{{ 'politicas_privacidad' }}">
+                                                                    políticas de privacidad
+                                                                </a>
+                                                            </label>
                                                         </div>
 
                                                     </div>
                                                 </div>
-                                                <div class="col-md-2"></div>
                                             </div>
                                         </div>
                                     </div>
+
                                     <div class="btns_wrap">
                                         <div class="common_btns form_1_btns">
                                             <button type="button" class="btn_next">
@@ -298,7 +320,7 @@
                                             </button>
                                             <button type="submit" class="btn_done">Enviar</button>
                                         </div>
-                                        <div>
+                                        <div class="mt-6">
                                             @if ($errors->any())
                                                 <div class="alert alert-danger">
                                                     <ul class="mb-0">
@@ -873,7 +895,16 @@
         });
 
         $('#select-city').select2({
+            placeholder: "Seleccionar ciudad",
+            allowClear: true,
             theme: 'bootstrap-5'
+        });
+
+        $('#select-city').on('change', function() {
+            let valor = $(this).val();
+            let texto = $('#select-city option:selected').text();
+            $('#ubigeo').val(valor);
+            $('#ciudad').val(texto);
         });
     </script>
 

@@ -1026,6 +1026,9 @@ class WebPageController extends Controller
             'email' => 'required|email|unique:people,email',
             'phone' => 'required|string|max:20',
             'pais' => 'required',
+            'ciudad' => 'required',
+            'genero' => 'required',
+            'fecha_nacimiento' => 'required',
             'politicas' => 'accepted', // debe estar marcado
         ], [
             'required' => 'El campo :attribute es obligatorio.',
@@ -1037,6 +1040,7 @@ class WebPageController extends Controller
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
+
 
         // 🔹 REGISTRO EN TABLA people
         $person = Person::create([
@@ -1051,6 +1055,10 @@ class WebPageController extends Controller
             'email' => $request->email,
             'country_id' => $request->pais,
             'status' => true,
+            'ubigeo' => $request->ubigeo ?? null,
+            'ubigeo_description' => $request->ciudad ?? null,
+            'gender' => $request->genero ?? null,
+            'birthdate' => $request->fecha_nacimiento ?? null
         ]);
 
         // 🔹 REGISTRO EN TABLA aca_students
