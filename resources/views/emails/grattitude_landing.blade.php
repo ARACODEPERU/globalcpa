@@ -125,7 +125,7 @@
 
 <body>
     <section>
-        <img class="banner" src="{{ asset('storage/' . $company->logo) }}" alt="">
+        <img class="banner" src="https://academy.globalcpaperu.com/themes/webpage/images/Logo_cpa_modificado.png" alt="">
     </section>
 
     <section class="bienvenida">
