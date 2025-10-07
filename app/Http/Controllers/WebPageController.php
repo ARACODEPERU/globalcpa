@@ -1119,14 +1119,15 @@ class WebPageController extends Controller
           ]));
            // 3. CONFIRMACIÓN (COMMIT)
            DB::commit();
+           // 🔹 MENSAJE DE ÉXITO
+            return redirect()->back()->with('success', 'Registro completado exitosamente.');
+
         } catch (\Throwable $th) {
              // 5. REVERSIÓN (ROLLBACK) si algo falla
              DB::rollBack();
+             dd($th);
             return redirect()->back()->with('fail', 'Registro fallido Reintentar.');
         }
 
-
-        // 🔹 MENSAJE DE ÉXITO
-        return redirect()->back()->with('success', 'Registro completado exitosamente.');
     }
 }
