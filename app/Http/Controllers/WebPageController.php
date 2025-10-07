@@ -1099,7 +1099,7 @@ class WebPageController extends Controller
         ]);
 
         $courses = [];
-            $item = OnliItem::where('item_id', $request->courseInterest);
+            $item = OnliItem::where('item_id', '=', $request->courseInterest)->first();
             $courses[0] = [
                 'image'       => $item->image,
                 'name'        => $item->name,
