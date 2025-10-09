@@ -1044,61 +1044,63 @@ class WebPageController extends Controller
         DB::beginTransaction();
         try {
             // 🔹 REGISTRO EN TABLA people
-        $person = Person::create([
-            'short_name' => $request->nombres,
-            'full_name' => $request->apaterno. ' '.$request->amaterno.' '.$request->nombres,
-            'document_type_id' => $request->tidocumento,
-            'names' => $request->nombres,
-            'father_lastname' => $request->apaterno,
-            'mother_lastname' => $request->amaterno,
-            'number' => $request->numero,
-            'telephone' => $request->phone,
-            'email' => $request->email,
-            'country_id' => $request->pais,
-            'status' => true,
-            'ubigeo' => $request->ubigeo ?? null,
-            'ubigeo_description' => $request->ciudad ?? null,
-            'gender' => $request->genero ?? null,
-            'birthdate' => $request->fecha_nacimiento ?? null
-        ]);
+            $person = Person::create([
+                'short_name' => $request->nombres,
+                'full_name' => $request->apaterno. ' '.$request->amaterno.' '.$request->nombres,
+                'document_type_id' => $request->tidocumento,
+                'names' => $request->nombres,
+                'father_lastname' => $request->apaterno,
+                'mother_lastname' => $request->amaterno,
+                'number' => $request->numero,
+                'telephone' => $request->phone,
+                'email' => $request->email,
+                'country_id' => $request->pais,
+                'status' => true,
+                'ubigeo' => $request->ubigeo ?? null,
+                'ubigeo_description' => $request->ciudad ?? null,
+                'gender' => $request->genero ?? null,
+                'birthdate' => $request->fecha_nacimiento ?? null
+            ]);
 
-        // 🔹 REGISTRO EN TABLA aca_students
-        $student = AcaStudent::create([
-            'student_code' => $request->numero,
-            'person_id' => $person->id,
-            'new_student' => true,
-            'arrival_source_id' => 1,
-            'arrival_source_information' => '01'
-        ]);
+            // 🔹 REGISTRO EN TABLA aca_students
+            $student = AcaStudent::create([
+                'student_code' => $request->numero,
+                'person_id' => $person->id,
+                'new_student' => true,
+                'arrival_source_id' => 1,
+                'arrival_source_information' => '01'
+            ]);
 
-        // 🔹 REGISTRO EN TABLA aca_cap_registrations
-        AcaCapRegistration::create([
-            'student_id' => $student->id,
-            'course_id' => $request->courseFree,
-            'status' => true,
-            'certificate_date' => Carbon::now(),
-        ]);
+            // 🔹 REGISTRO EN TABLA aca_cap_registrations
+            AcaCapRegistration::create([
+                'student_id' => $student->id,
+                'course_id' => $request->courseFree,
+                'status' => true,
+                'certificate_date' => Carbon::now(),
+                'arrival_source_id' => 1,
+                'arrival_source_information' => '01'
+            ]);
 
-        AcaStudentCoursesInterest::create([
-            'student_id' => $student->id,
-            'course_id' => $request->courseInterest,
-            'status' => 0
-        ]);
+            AcaStudentCoursesInterest::create([
+                'student_id' => $student->id,
+                'course_id' => $request->courseInterest,
+                'status' => 0
+            ]);
 
-        // 🔹 REGISTRO EN TABLA users
-        User::create([
-            'name' => $request->nombres,
-            'email' => $request->email,
-            'email_verified_at' => Carbon::now(),
-            'password' => Hash::make($request->numero),
-            'local_id' => 1,
-            'person_id' => $person->id,
-            'status' => true,
-            'updated_information' => false,
-            'tour_completed' => true,
-        ]);
+            // 🔹 REGISTRO EN TABLA users
+            User::create([
+                'name' => $request->nombres,
+                'email' => $request->email,
+                'email_verified_at' => Carbon::now(),
+                'password' => Hash::make($request->numero),
+                'local_id' => 1,
+                'person_id' => $person->id,
+                'status' => true,
+                'updated_information' => false,
+                'tour_completed' => true,
+            ]);
 
-        $courses = [];
+            $courses = [];
             $item = OnliItem::where('item_id', '=', $request->courseInterest)->first();
             $courses[0] = [
                 'image'       => $item->image,
@@ -1109,17 +1111,16 @@ class WebPageController extends Controller
                 'price'      => "Gratis",
             ];
 
-          //////////codigo enviar correo /////
-          Mail::to($request->email)
-          ->send(new StudentRegistrationMailable([
-              'courses'   => $courses,
-              'names'     => $request->nombres,
-              'user'      => $request->email,
-              'password'  => $request->numero,
-          ]));
-           // 3. CONFIRMACIÓN (COMMIT)
-           DB::commit();
-           // 🔹 MENSAJE DE ÉXITO
+            //////////codigo enviar correo /////
+            Mail::to($request->email)->send(new StudentRegistrationMailable([
+                'courses'   => $courses,
+                'names'     => $request->nombres,
+                'user'      => $request->email,
+                'password'  => $request->numero,
+            ]));
+            // 3. CONFIRMACIÓN (COMMIT)
+            DB::commit();
+            // 🔹 MENSAJE DE ÉXITO
             return redirect()->back()->with('success', 'Registro completado exitosamente.');
 
         } catch (\Throwable $th) {
