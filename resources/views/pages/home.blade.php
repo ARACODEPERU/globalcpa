@@ -5,9 +5,9 @@
 
 
     <!-- Loader starts-->
-    <!-- <div class="loader-wrapper">
-                      <div class="loader"></div>
-                    </div> -->
+    <div class="loader-wrapper">
+        <div class="loader"></div>
+    </div>
     <!-- Loader ends-->
     <!-- tap on top starts-->
     <div class="tap-top"><i data-feather="chevrons-up"></i></div>
@@ -83,7 +83,6 @@
     </main> --}}
 
     <script>
-
         let currentIndex = 0;
         const slides = document.querySelector('.slides');
         const totalSlides = document.querySelectorAll('.slide').length;
@@ -95,12 +94,10 @@
         }
 
         setInterval(showNextSlide, 3000); // Cambia cada 3 segundos
-
     </script>
 
 
     <script>
-
         const headers = document.querySelectorAll('.accordion-header-aracode');
         headers.forEach(header => {
             header.addEventListener('click', function() {
@@ -115,7 +112,8 @@
                 });
                 headers.forEach(h => {
                     h.classList.remove('active');
-                    h.querySelector('.accordion-icon-aracode').textContent = '►'; // Restablecer icono
+                    h.querySelector('.accordion-icon-aracode').textContent =
+                    '►'; // Restablecer icono
                     h.setAttribute('aria-expanded', 'false');
                 });
 
@@ -124,13 +122,13 @@
                     content.style.maxHeight = content.scrollHeight + "px";
                     content.style.padding = '15px';
                     this.classList.add('active'); // Añadir clase activa al encabezado clicado
-                    this.querySelector('.accordion-icon-aracode').textContent = '▼'; // Cambiar icono al expandido
+                    this.querySelector('.accordion-icon-aracode').textContent =
+                    '▼'; // Cambiar icono al expandido
                     this.setAttribute('aria-expanded', 'true');
                     content.setAttribute('aria-hidden', 'false');
                 }
             });
         });
-
     </script>
 
 @stop
