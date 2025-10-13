@@ -999,6 +999,7 @@ class WebPageController extends Controller
 
     public function storeCourseFree(Request $request)
     {
+
         // 🔹 VALIDACIÓN
         $validator = Validator::make($request->all(), [
             'courseFree' => 'required',
@@ -1081,11 +1082,18 @@ class WebPageController extends Controller
                 'arrival_source_information' => '01'
             ]);
 
-            AcaStudentCoursesInterest::create([
-                'student_id' => $student->id,
-                'course_id' => $request->courseInterest,
-                'status' => 0
-            ]);
+            $coursesInterest = $request->courseInterest ?? [];
+
+            if(count($coursesInterest) > 0){
+                foreach($coursesInterest as $course){
+                    AcaStudentCoursesInterest::create([
+                        'student_id' => $student->id,
+                        'course_id' => $course,
+                        'status' => 0
+                    ]);
+                }
+            }
+
 
             // 🔹 REGISTRO EN TABLA users
             User::create([

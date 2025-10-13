@@ -117,7 +117,7 @@
                                         <div class="col-md-3 box-col-4">
                                             <div class="card weekend-card">
                                                 <label class="c-container">
-                                                    <input value="{{ $item->id }}" type="radio" name="courseInterest">
+                                                    <input value="{{ $item->id }}" type="checkbox" name="courseInterest[]">
                                                     <div class="c-checkmark">
                                                         <svg viewBox="0 0 50 50" version="1.1"
                                                             xmlns="http://www.w3.org/2000/svg" class="c-icon">
