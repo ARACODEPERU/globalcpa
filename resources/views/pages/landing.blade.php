@@ -9,8 +9,8 @@
 
     <!-- Loader starts-->
     <!-- <div class="loader-wrapper">
-                                                                                                                                                              <div class="loader"></div>
-                                                                                                                                                            </div> -->
+                                                                                                                                                                  <div class="loader"></div>
+                                                                                                                                                                </div> -->
     <!-- Loader ends-->
     <!-- tap on top starts-->
     <div class="tap-top"><i data-feather="chevrons-up"></i></div>
@@ -149,6 +149,10 @@
                             <div class="d-flex justify-content-center">
                                 <div class="card col-md-10">
                                     <div class="card-body">
+                                        <div class="row">
+                                            <h2>Registrarse</h2>
+                                        </div>
+                                        <br>
                                         <div class="row g-3">
                                             <div class="col-4">
                                                 <label class="form-label" for="nombres">Nombres</label>
