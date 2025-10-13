@@ -64,7 +64,7 @@
                         <a href="{{ route('login') }}" class="view-pc">
                             <button class="btn btn-pill btn-primary btn-air-primary btn-sm" type="button"
                                 data-bs-original-title="btn btn-pill btn-primary btn-air-primary btn-sm">
-                                Inisiar Sesión
+                                Iniciar sesión
                             </button>
                         </a>
                         <a href="{{ route('login') }}" class="view-movile">
