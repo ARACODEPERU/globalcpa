@@ -9,8 +9,8 @@
 
     <!-- Loader starts-->
     <!-- <div class="loader-wrapper">
-                                                                                                                                                  <div class="loader"></div>
-                                                                                                                                                </div> -->
+                                                                                                                                                              <div class="loader"></div>
+                                                                                                                                                            </div> -->
     <!-- Loader ends-->
     <!-- tap on top starts-->
     <div class="tap-top"><i data-feather="chevrons-up"></i></div>
@@ -67,6 +67,7 @@
                                 <div class="row">
                                     <h2>Seleccionar Formación Gratis</h2>
                                 </div>
+                                <br>
                                 <div class="row">
                                     @foreach ($coursesFree as $item)
                                         <div class="col-md-3 box-col-4">
@@ -110,6 +111,7 @@
                                 <div class="row">
                                     <h2>Seleccionar Area de Interes</h2>
                                 </div>
+                                <br>
                                 <div class="row">
                                     @foreach ($coursesFree as $item)
                                         <div class="col-md-3 box-col-4">
@@ -267,10 +269,17 @@
                                         </div>
                                         <br>
                                         <div class="row">
-
-                                            <div class="common_btns form_3_btns">
-                                                <button type="submit" class="btn_done">Enviar</button>
+                                            <div class="col-md-3">
+                                                <button type="submit"
+                                                    class="btn btn-pill btn-primary btn-air-primary btn-sm"
+                                                    data-bs-original-title="btn btn-pill btn-primary btn-air-primary btn-sm">
+                                                    Enviar
+                                                </button>
                                             </div>
+
+                                            {{-- <div class="common_btns form_3_btns">
+                                                <button type="submit" class="btn_done">Enviar</button>
+                                            </div> --}}
                                             <div class="mt-6">
                                                 @if ($errors->any())
                                                     <div class="alert alert-danger">
