@@ -9,8 +9,8 @@
 
     <!-- Loader starts-->
     <!-- <div class="loader-wrapper">
-                                                                                                                  <div class="loader"></div>
-                                                                                                                </div> -->
+                                                                                                                                                  <div class="loader"></div>
+                                                                                                                                                </div> -->
     <!-- Loader ends-->
     <!-- tap on top starts-->
     <div class="tap-top"><i data-feather="chevrons-up"></i></div>
@@ -31,8 +31,6 @@
 
             <!-- Page Sidebar Ends-->
             <div class="page-body" style="padding: 80px 0px;">
-                <div class="container-fluid mb-6"></div>
-                <br><br><br>
                 <div class="container-fluid crm_dashboard">
                     <div class="row">
                         <div class="col-xl-12">
@@ -59,47 +57,255 @@
                         </div>
                     </div>
                 </div>
-                <div class="container-fluid" style="background: #f8f8f8;">
+                <div class="container-fluid" style="padding: 40px 0px;">
                     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
                     <form method="POST" action="{{ route('landing_store_course_free') }}">
                         @csrf
                         <div class="row">
-
-                            @foreach ($coursesFree as $item)
-                                <div class="col-md-3 box-col-4">
-                                    <div class="card weekend-card">
-                                        <!-- Aracode -->
-                                        <label class="c-container">
-                                            <input value="{{ $item->id }}" type="radio" name="courseFree">
-                                            <div class="c-checkmark">
-                                                <svg viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg"
-                                                    class="c-icon">
-                                                    <path
-                                                        d="M 24.10 6.29 Q 28.34 7.56 28.00 12.00 Q 27.56 15.10 27.13 18.19 A 0.45 0.45 4.5 0 0 27.57 18.70 Q 33.16 18.79 38.75 18.75 Q 42.13 18.97 43.23 21.45 Q 43.91 22.98 43.27 26.05 Q 40.33 40.08 40.19 40.44 Q 38.85 43.75 35.50 43.75 Q 21.75 43.75 7.29 43.75 A 1.03 1.02 0.0 0 1 6.26 42.73 L 6.42 19.43 A 0.54 0.51 -89.4 0 1 6.93 18.90 L 14.74 18.79 A 2.52 2.31 11.6 0 0 16.91 17.49 L 22.04 7.17 A 1.74 1.73 21.6 0 1 24.10 6.29 Z M 21.92 14.42 Q 20.76 16.58 19.74 18.79 Q 18.74 20.93 18.72 23.43 Q 18.65 31.75 18.92 40.06 A 0.52 0.52 88.9 0 0 19.44 40.56 L 35.51 40.50 A 1.87 1.83 5.9 0 0 37.33 39.05 L 40.51 23.94 Q 40.92 22.03 38.96 21.97 L 23.95 21.57 A 0.49 0.47 2.8 0 1 23.47 21.06 Q 23.76 17.64 25.00 12.00 Q 25.58 9.36 24.28 10.12 Q 23.80 10.40 23.50 11.09 Q 22.79 12.80 21.92 14.42 Z M 15.57 22.41 A 0.62 0.62 0 0 0 14.95 21.79 L 10.01 21.79 A 0.62 0.62 0 0 0 9.39 22.41 L 9.39 40.07 A 0.62 0.62 0 0 0 10.01 40.69 L 14.95 40.69 A 0.62 0.62 0 0 0 15.57 40.07 L 15.57 22.41 Z"
-                                                        fill-opacity="1.000">
-                                                    </path>
-                                                    <circle r="1.51" cy="37.50" cx="12.49" fill-opacity="1.000">
-                                                    </circle>
-                                                </svg>
-                                            </div>
-                                        </label>
-                                        <div class="card-body">
-                                            {{-- <img class="w-100 mb-3"
+                            <div class="col-md-1"></div>
+                            <div class="col-md-10">
+                                <div class="row">
+                                    <h2>Seleccionar Formación Gratis</h2>
+                                </div>
+                                <div class="row">
+                                    @foreach ($coursesFree as $item)
+                                        <div class="col-md-3 box-col-4">
+                                            <div class="card weekend-card">
+                                                <!-- Aracode -->
+                                                <label class="c-container">
+                                                    <input value="{{ $item->id }}" type="radio" name="courseFree">
+                                                    <div class="c-checkmark">
+                                                        <svg viewBox="0 0 50 50" version="1.1"
+                                                            xmlns="http://www.w3.org/2000/svg" class="c-icon">
+                                                            <path
+                                                                d="M 24.10 6.29 Q 28.34 7.56 28.00 12.00 Q 27.56 15.10 27.13 18.19 A 0.45 0.45 4.5 0 0 27.57 18.70 Q 33.16 18.79 38.75 18.75 Q 42.13 18.97 43.23 21.45 Q 43.91 22.98 43.27 26.05 Q 40.33 40.08 40.19 40.44 Q 38.85 43.75 35.50 43.75 Q 21.75 43.75 7.29 43.75 A 1.03 1.02 0.0 0 1 6.26 42.73 L 6.42 19.43 A 0.54 0.51 -89.4 0 1 6.93 18.90 L 14.74 18.79 A 2.52 2.31 11.6 0 0 16.91 17.49 L 22.04 7.17 A 1.74 1.73 21.6 0 1 24.10 6.29 Z M 21.92 14.42 Q 20.76 16.58 19.74 18.79 Q 18.74 20.93 18.72 23.43 Q 18.65 31.75 18.92 40.06 A 0.52 0.52 88.9 0 0 19.44 40.56 L 35.51 40.50 A 1.87 1.83 5.9 0 0 37.33 39.05 L 40.51 23.94 Q 40.92 22.03 38.96 21.97 L 23.95 21.57 A 0.49 0.47 2.8 0 1 23.47 21.06 Q 23.76 17.64 25.00 12.00 Q 25.58 9.36 24.28 10.12 Q 23.80 10.40 23.50 11.09 Q 22.79 12.80 21.92 14.42 Z M 15.57 22.41 A 0.62 0.62 0 0 0 14.95 21.79 L 10.01 21.79 A 0.62 0.62 0 0 0 9.39 22.41 L 9.39 40.07 A 0.62 0.62 0 0 0 10.01 40.69 L 14.95 40.69 A 0.62 0.62 0 0 0 15.57 40.07 L 15.57 22.41 Z"
+                                                                fill-opacity="1.000">
+                                                            </path>
+                                                            <circle r="1.51" cy="37.50" cx="12.49"
+                                                                fill-opacity="1.000">
+                                                            </circle>
+                                                        </svg>
+                                                    </div>
+                                                </label>
+                                                <div class="card-body">
+                                                    {{-- <img class="w-100 mb-3"
                                                                     src="{{ asset('storage/' . $item->image) }}"
                                                                     alt="{{ $item->description }}"> --}}
-                                            <img class="w-100 mb-3" src="{{ asset('storage/' . $item->image) }}"
-                                                alt="">
-                                            <h4 style=" height: 30px; color: #000;">
-                                                {{ $item->description }}
-                                            </h4>
+                                                    <img class="w-100 mb-3" src="{{ asset('storage/' . $item->image) }}"
+                                                        alt="">
+                                                    <h4 style=" height: 30px; color: #000;">
+                                                        {{ $item->description }}
+                                                    </h4>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                            <div class="col-md-1"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-1"></div>
+                            <div class="col-md-10">
+                                <div class="row">
+                                    <h2>Seleccionar Area de Interes</h2>
+                                </div>
+                                <div class="row">
+                                    @foreach ($coursesFree as $item)
+                                        <div class="col-md-3 box-col-4">
+                                            <div class="card weekend-card">
+                                                <label class="c-container">
+                                                    <input value="{{ $item->id }}" type="radio" name="courseInterest">
+                                                    <div class="c-checkmark">
+                                                        <svg viewBox="0 0 50 50" version="1.1"
+                                                            xmlns="http://www.w3.org/2000/svg" class="c-icon">
+                                                            <path
+                                                                d="M 24.10 6.29 Q 28.34 7.56 28.00 12.00 Q 27.56 15.10 27.13 18.19 A 0.45 0.45 4.5 0 0 27.57 18.70 Q 33.16 18.79 38.75 18.75 Q 42.13 18.97 43.23 21.45 Q 43.91 22.98 43.27 26.05 Q 40.33 40.08 40.19 40.44 Q 38.85 43.75 35.50 43.75 Q 21.75 43.75 7.29 43.75 A 1.03 1.02 0.0 0 1 6.26 42.73 L 6.42 19.43 A 0.54 0.51 -89.4 0 1 6.93 18.90 L 14.74 18.79 A 2.52 2.31 11.6 0 0 16.91 17.49 L 22.04 7.17 A 1.74 1.73 21.6 0 1 24.10 6.29 Z M 21.92 14.42 Q 20.76 16.58 19.74 18.79 Q 18.74 20.93 18.72 23.43 Q 18.65 31.75 18.92 40.06 A 0.52 0.52 88.9 0 0 19.44 40.56 L 35.51 40.50 A 1.87 1.83 5.9 0 0 37.33 39.05 L 40.51 23.94 Q 40.92 22.03 38.96 21.97 L 23.95 21.57 A 0.49 0.47 2.8 0 1 23.47 21.06 Q 23.76 17.64 25.00 12.00 Q 25.58 9.36 24.28 10.12 Q 23.80 10.40 23.50 11.09 Q 22.79 12.80 21.92 14.42 Z M 15.57 22.41 A 0.62 0.62 0 0 0 14.95 21.79 L 10.01 21.79 A 0.62 0.62 0 0 0 9.39 22.41 L 9.39 40.07 A 0.62 0.62 0 0 0 10.01 40.69 L 14.95 40.69 A 0.62 0.62 0 0 0 15.57 40.07 L 15.57 22.41 Z"
+                                                                fill-opacity="1.000">
+                                                            </path>
+                                                            <circle r="1.51" cy="37.50" cx="12.49"
+                                                                fill-opacity="1.000">
+                                                            </circle>
+                                                        </svg>
+                                                    </div>
+                                                </label>
+                                                <div class="card-body">
+                                                    <img class="w-100 mb-3" src="{{ asset('storage/' . $item->image) }}"
+                                                        alt="">
+                                                    <h4 style=" height: 30px; color: #000;">
+                                                        {{ $item->description }}
+                                                    </h4>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                            <div class="col-md-1"></div>
+                        </div>
+                        <div class="row">
+                            <div class="d-flex justify-content-center">
+                                <div class="card col-md-10">
+                                    <div class="card-body">
+                                        <div class="row g-3">
+                                            <div class="col-4">
+                                                <label class="form-label" for="nombres">Nombres</label>
+                                                <input class="form-control" id="nombres" name="nombres" type="text"
+                                                    required value="{{ old('nombres') }}">
+                                            </div>
+
+                                            <div class="col-4">
+                                                <label class="form-label" for="apaterno">Apellido
+                                                    Paterno</label>
+                                                <input class="form-control" id="apaterno" name="apaterno" type="text"
+                                                    required value="{{ old('apaterno') }}">
+                                            </div>
+
+                                            <div class="col-4">
+                                                <label class="form-label" for="amaterno">Apellido
+                                                    Materno</label>
+                                                <input class="form-control" id="amaterno" name="amaterno"
+                                                    type="text" required value="{{ old('amaterno') }}">
+                                            </div>
+
+                                            <div class="col-6">
+                                                <label class="form-label" for="tidocumento">Tipo
+                                                    Identificación</label>
+                                                <select class="form-control" id="tidocumento" name="tidocumento">
+                                                    @foreach ($documentTypes as $documentType)
+                                                        <option value="{{ $documentType->id }}"
+                                                            {{ old('tidocumento', 1) == $documentType->id ? 'selected' : '' }}>
+                                                            {{ $documentType->description }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+
+                                            <div class="col-6">
+                                                <label class="form-label" for="numero">Número</label>
+                                                <input class="form-control" id="numero" name="numero" type="number"
+                                                    value="{{ old('numero') }}">
+                                            </div>
+
+                                            <div class="col-6">
+                                                <label class="form-label" for="email">Correo
+                                                    electrónico</label>
+                                                <input class="form-control" id="email" name="email" type="email"
+                                                    value="{{ old('email') }}">
+                                            </div>
+
+                                            <div class="col-6">
+                                                <label class="form-label" for="phone">Teléfono</label>
+                                                <input class="form-control" id="phone" name="phone" type="text"
+                                                    value="{{ old('phone') }}">
+                                            </div>
+
+                                            <div class="col-6">
+                                                <label class="form-label" for="select-countries">País</label>
+                                                <select class="form-select" id="select-countries" name="pais">
+                                                    @foreach ($countries as $country)
+                                                        <option value="{{ $country->id }}"
+                                                            {{ old('pais', 'PE') == $country->country_code ? 'selected' : '' }}>
+                                                            {{ $country->description }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+
+                                            <div id="divSelectCity" class="col-6">
+                                                <label class="form-label" for="select-city">Ciudad</label>
+                                                <select class="form-select" id="select-city" name="ciudad">
+                                                    <option value="">Seleccionar ciudad</option>
+                                                    @foreach ($ubigeo as $city)
+                                                        <option value="{{ $city->id }}"
+                                                            {{ old('ciudad') == $city->id ? 'selected' : '' }}>
+                                                            {{ $city->department->name }} -
+                                                            {{ $city->province->name }} -
+                                                            {{ $city->name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                                <input class="form-control" id="ubigeo" name="ubigeo" type="hidden"
+                                                    value="{{ old('ubigeo') }}">
+                                            </div>
+
+                                            <div id="divInputCity" class="col-12">
+                                                <label class="form-label" for="ciudad">Ciudad</label>
+                                                <input class="form-control" id="ciudad" name="ciudad" type="text"
+                                                    value="{{ old('ciudad') }}">
+                                            </div>
+
+                                            <div class="col-6">
+                                                <label class="form-label" for="fecha_nacimiento">Fecha de
+                                                    nacimiento</label>
+                                                <input class="form-control" id="fecha_nacimiento" name="fecha_nacimiento"
+                                                    type="date" value="{{ old('fecha_nacimiento') }}">
+                                            </div>
+
+                                            <div class="col-6">
+                                                <label class="form-label" for="genero">Género</label>
+                                                <select class="form-control" id="genero" name="genero">
+                                                    <option value="">Seleccionar</option>
+                                                    <option value="M" {{ old('genero') == 'M' ? 'selected' : '' }}>
+                                                        Masculino</option>
+                                                    <option value="F" {{ old('genero') == 'F' ? 'selected' : '' }}>
+                                                        Femenino</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="col-12 checkbox-checked">
+                                                <input class="form-check-input" id="politicas" name="politicas"
+                                                    type="checkbox" {{ old('politicas') ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="politicas">
+                                                    Estoy de acuerdo con las
+                                                    <a target="_blank" href="{{ 'politicas_privacidad' }}">
+                                                        políticas de privacidad
+                                                    </a>
+                                                </label>
+                                            </div>
+
+                                        </div>
+                                        <br>
+                                        <div class="row">
+
+                                            <div class="common_btns form_3_btns">
+                                                <button type="submit" class="btn_done">Enviar</button>
+                                            </div>
+                                            <div class="mt-6">
+                                                @if ($errors->any())
+                                                    <div class="alert alert-danger">
+                                                        <ul class="mb-0">
+                                                            @foreach ($errors->all() as $error)
+                                                                <li>{{ $error }}</li>
+                                                            @endforeach
+                                                        </ul>
+                                                    </div>
+                                                @endif
+
+                                                @if (session('success'))
+                                                    <div class="alert alert-success">
+                                                        {{ session('success') }}
+                                                    </div>
+                                                @endif
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            @endforeach
+                            </div>
                         </div>
                     </form>
+
+                    <div class="modal_wrapper">
+                        <div class="shadow"></div>
+                        <div class="success_wrap">
+                            <span class="modal_icon"><ion-icon name="checkmark-sharp"></ion-icon></span>
+                            <p>You have successfully completed the process.</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="container-fluid">
+
+
+                {{-- <div class="container-fluid">
                     <div class="row">
                         <div class="col-md-12">
                             <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
@@ -134,7 +340,6 @@
                                                 @foreach ($coursesFree as $item)
                                                     <div class="col-md-3 box-col-4">
                                                         <div class="card weekend-card">
-                                                            <!-- Aracode -->
                                                             <label class="c-container">
                                                                 <input value="{{ $item->id }}" type="radio"
                                                                     name="courseFree">
@@ -152,9 +357,6 @@
                                                                 </div>
                                                             </label>
                                                             <div class="card-body">
-                                                                {{-- <img class="w-100 mb-3"
-                                                                    src="{{ asset('storage/' . $item->image) }}"
-                                                                    alt="{{ $item->description }}"> --}}
                                                                 <img class="w-100 mb-3"
                                                                     src="{{ asset('storage/' . $item->image) }}"
                                                                     alt="">
@@ -173,7 +375,6 @@
                                                 @foreach ($coursesFree as $item)
                                                     <div class="col-md-3 box-col-4">
                                                         <div class="card weekend-card">
-                                                            <!-- Aracode -->
                                                             <label class="c-container">
                                                                 <input value="{{ $item->id }}" type="radio"
                                                                     name="courseInterest">
@@ -191,9 +392,6 @@
                                                                 </div>
                                                             </label>
                                                             <div class="card-body">
-                                                                {{-- <img class="w-100 mb-3"
-                                                                    src="{{ asset('storage/' . $item->image) }}"
-                                                                    alt="{{ $item->description }}"> --}}
                                                                 <img class="w-100 mb-3"
                                                                     src="{{ asset('storage/' . $item->image) }}"
                                                                     alt="">
@@ -213,7 +411,6 @@
                                                 <div class="card col-md-8">
                                                     <div class="card-body">
                                                         <div class="row g-3">
-
                                                             <div class="col-4">
                                                                 <label class="form-label" for="nombres">Nombres</label>
                                                                 <input class="form-control" id="nombres" name="nombres"
@@ -407,11 +604,11 @@
                                     <p>You have successfully completed the process.</p>
                                 </div>
                             </div>
-
                         </div>
                     </div>
-                </div>
+                </div> --}}
             </div>
+
             <!-- footer start-->
             <x-footer />
         </div>

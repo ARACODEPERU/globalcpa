@@ -64,13 +64,13 @@
                         <a href="{{ route('login') }}" class="view-pc">
                             <button class="btn btn-pill btn-primary btn-air-primary btn-sm" type="button"
                                 data-bs-original-title="btn btn-pill btn-primary btn-air-primary btn-sm">
-                                Campus Virtual
+                                Inisiar Sesión
                             </button>
                         </a>
                         <a href="{{ route('login') }}" class="view-movile">
                             <button class="btn btn-pill btn-primary btn-air-primary btn-sm" type="button"
                                 data-bs-original-title="btn btn-pill btn-primary btn-air-primary btn-sm">
-                                Campus
+                                Login
                             </button>
                         </a>
                     </li>
