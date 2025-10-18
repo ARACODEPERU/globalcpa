@@ -40,11 +40,11 @@
     t.src=v;s=b.getElementsByTagName(e)[0];
     s.parentNode.insertBefore(t,s)}(window, document,'script',
     'https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', '993310582924547');
+    fbq('init', '791233956872790');
     fbq('track', 'PageView');
     </script>
     <noscript><img height="1" width="1" style="display:none"
-    src="https://www.facebook.com/tr?id=993310582924547&ev=PageView&noscript=1"
+    src="https://www.facebook.com/tr?id=791233956872790&ev=PageView&noscript=1"
     /></noscript>
     <!-- End Meta Pixel Code -->
 
@@ -156,7 +156,7 @@
 
 
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script> 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
     <script src="{{ asset('themes/webpage/bootstrap-5.3.3/js/bootstrap.js') }}"></script>
 
@@ -213,11 +213,11 @@
     <!-- Plugins JS Ends-->
     <!-- Theme js-->
     <script src="{{ asset('themes/webpage/assets/js/script.js') }}"></script>
-    {{-- <script src="themes/webpage/assets/js/theme-customizer/customizer.js"></script> 
+    {{-- <script src="themes/webpage/assets/js/theme-customizer/customizer.js"></script>
     <script>new WOW().init();</script> --}}
 
 
-     @yield('javascripts') 
+     @yield('javascripts')
 
     <script src="{{ asset('themes/webpage/assets/js/modalpage/validation-modal.js') }}"></script>
 
