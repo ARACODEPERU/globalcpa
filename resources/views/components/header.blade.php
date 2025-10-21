@@ -1,8 +1,11 @@
 <div>
     <div class="page-header">
         <div class="header-wrapper row">
-            <div class="logo-wrapper"><a href=""><img class="img-fluid"
-                        src="{{ asset('themes/webpage/assets/images/logo/logo.png') }}" alt=""></a></div>
+            <div class="logo-wrapper">
+                <a href="">
+                    <img class="img-fluid" src="{{ asset('themes/webpage/assets/images/logo/logo.png') }}" alt="">
+                </a>
+            </div>
             <svg class="stroke-icon toggle-sidebar">
                 <use class="status_toggle middle sidebar-toggle"
                     href="{{ asset('themes/webpage/assets/svg/icon-sprite.svg#Grid') }}">
@@ -32,25 +35,23 @@
                                 @endphp
 
                                 {{-- Si el avatar existe, muestra la imagen --}}
-                                @if($userAvatar && Storage::disk('public')->exists($userAvatar))
-                                    <img class="b-r-25" src="{{ asset('storage/' . $userAvatar) }}" alt="" style="max-height: 3rem; max-width: 3rem;">
+                                @if ($userAvatar && Storage::disk('public')->exists($userAvatar))
+                                    <img class="b-r-25" src="{{ asset('storage/' . $userAvatar) }}" alt=""
+                                        style="max-height: 3rem; max-width: 3rem;">
                                 @else
                                     {{-- Si el avatar no existe, muestra el círculo con las iniciales --}}
                                     {{-- <div class="initials-circle">
                                         <span>{{ substr($userName, 0, 1) }}</span>
                                     </div> --}}
-                                    <img
-                                        src="https://ui-avatars.com/api/?name={{ urlencode($userName) }}&size=150&rounded=true"
-                                        alt="{{ $userName }}"
-                                        class="b-r-25"
-                                        style="max-height: 3rem; max-width: 3rem;">
+                                    <img src="https://ui-avatars.com/api/?name={{ urlencode($userName) }}&size=150&rounded=true"
+                                        alt="{{ $userName }}" class="b-r-25" style="max-height: 3rem; max-width: 3rem;">
                                 @endif
                                 <div class="flex-grow-1 user">
                                     {{-- Muestra el nombre del usuario logueado --}}
                                     <span>{{ $userName }}</span>
 
                                     <p class="mb-0 font-nunito">
-                                        @if(Auth::user()->role === 'Alumno')
+                                        @if (Auth::user()->role === 'Alumno')
                                             Alumno
                                         @else
                                             Docente

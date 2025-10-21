@@ -1,8 +1,11 @@
 <div>
-    <div class="sidebar-wrapper" data-layout="stroke-svg">
+    <div class="sidebar-wrapper" data-layout="stroke-svg" style="background-color: #575756 !important;">
         <div>
-            <div class="logo-wrapper"><a href="{{ route('index_main') }}"><img class="img-fluid"
-                        src="{{ asset('themes/webpage/images/Logo_isotipo_negativo.png') }}" alt=""></a>
+            <div class="logo-wrapper">
+                <a href="{{ route('index_main') }}">
+                    <img class="img-fluid"
+                        src="{{ asset('themes/webpage/images/Logo_isotipo_negativo.png') }}" alt="">
+                </a>
                 <div class="back-btn"><i class="fa fa-angle-left"> </i></div>
             </div>
             <nav class="sidebar-main">

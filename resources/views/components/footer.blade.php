@@ -1,8 +1,8 @@
 <div>
 
     <footer
-        style="background: #020024;
-                background: linear-gradient(0deg, rgba(2, 0, 36, 1) 0%, rgb(80, 57, 112) 35%, rgba(106, 76, 147, 1) 100%); 
+        style="background: #575756;
+                background: linear-gradient(0deg, rgb(19, 19, 19) 0%, rgb(42, 42, 42) 35%, rgba(87, 87, 86, 1) 100%); 
                 width: 100%;">
         <div class="container"  style=" padding: 80px 0px; 40px 0px">
             <div class="row">
