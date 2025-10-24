@@ -9,8 +9,8 @@
 
     <!-- Loader starts-->
     <!-- <div class="loader-wrapper">
-                                                                                                                                                                  <div class="loader"></div>
-                                                                                                                                                                </div> -->
+                                                                                                                                                                      <div class="loader"></div>
+                                                                                                                                                                    </div> -->
     <!-- Loader ends-->
     <!-- tap on top starts-->
     <div class="tap-top"><i data-feather="chevrons-up"></i></div>
@@ -102,9 +102,11 @@
                                         </div>
                                     @endforeach
                                 </div>
+                                <hr>
                             </div>
                             <div class="col-md-1"></div>
                         </div>
+                        <br>
                         <div class="row">
                             <div class="col-md-1"></div>
                             <div class="col-md-10">
@@ -117,7 +119,8 @@
                                         <div class="col-md-3 box-col-4">
                                             <div class="card weekend-card">
                                                 <label class="c-container">
-                                                    <input value="{{ $item->id }}" type="checkbox" name="courseInterest[]">
+                                                    <input value="{{ $item->id }}" type="checkbox"
+                                                        name="courseInterest[]">
                                                     <div class="c-checkmark">
                                                         <svg viewBox="0 0 50 50" version="1.1"
                                                             xmlns="http://www.w3.org/2000/svg" class="c-icon">
@@ -142,9 +145,11 @@
                                         </div>
                                     @endforeach
                                 </div>
+                                <hr>
                             </div>
                             <div class="col-md-1"></div>
                         </div>
+                        <br>
                         <div class="row">
                             <div class="d-flex justify-content-center">
                                 <div class="card col-md-10">

@@ -9324,11 +9324,11 @@ btn-group .dropdown-wrapper {
   font-weight: 500;
 }
 .checkbox-checked .form-check-input:checked {
-  background-color: #33BFBF;
-  border-color: #33BFBF;
+  background-color: #e30613;
+  border-color: #e30613;
 }
 .checkbox-checked .form-check-input:focus {
-  border-color: #33BFBF;
+  border-color: #e30613;
   -webkit-box-shadow: 0 0 0 4px rgba(51, 191, 191, 0.25);
           box-shadow: 0 0 0 4px rgba(51, 191, 191, 0.25);
 }
@@ -35440,7 +35440,7 @@ footer p .footer-icon {
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
-  background-color: #1f2f3e;
+  background-color: #131313;
 }
 .page-wrapper .sidebar-wrapper .back-btn {
   display: none;
@@ -36095,7 +36095,7 @@ footer p .footer-icon {
       -ms-flex-direction: column;
           flex-direction: column;
   height: 100%;
-  background: #1f2f3e;
+  background: #131313;
 }
 .page-wrapper.compact-sidebar .toggle-sidebar {
   position: relative;
@@ -36427,7 +36427,8 @@ footer p .footer-icon {
 }
 .page-wrapper.compact-small .page-body-wrapper div.sidebar-wrapper .sidebar-main .sidebar-links .sidebar-list {
   padding: 20px;
-  background-color: #1f2f3e;
+  /* background-color: #1f2f3e; */
+  background-color: #131313;
 }
 .page-wrapper.compact-small .page-body-wrapper div.sidebar-wrapper .sidebar-main .sidebar-links .sidebar-list .sidebar-submenu li a .sub-arrow {
   display: none;
@@ -36454,7 +36455,7 @@ footer p .footer-icon {
   color: #e30613;
 }
 .page-wrapper.compact-small .page-body-wrapper div.sidebar-wrapper .sidebar-main .sidebar-links .sidebar-list .sidebar-submenu .main-submenu .d-flex.active svg {
-  stroke: #e30613 !important;
+  stroke: #131313 !important;
 }
 .page-wrapper.compact-small .page-body-wrapper div.sidebar-wrapper .sidebar-main .sidebar-links .sidebar-list .sidebar-submenu .main-submenu .d-flex.active .arrow {
   -webkit-transform: rotate(90deg);
