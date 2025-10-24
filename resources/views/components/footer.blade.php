@@ -1,7 +1,5 @@
 <div>
-
-    <footer
-        style="background: #575756;
+    <footer style="background: #575756;
                 background: linear-gradient(0deg, rgb(19, 19, 19) 0%, rgb(42, 42, 42) 35%, rgba(87, 87, 86, 1) 100%); 
                 width: 100%;">
         <div class="container"  style=" padding: 80px 0px; 40px 0px">
