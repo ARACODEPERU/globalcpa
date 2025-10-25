@@ -8,7 +8,7 @@
 
     import IconCaretDown from '@/Components/vristo/icon/icon-caret-down.vue';
     import { faUserGroup } from  '@fortawesome/free-solid-svg-icons';
-
+    import { Popover } from 'ant-design-vue';
     import { Link, usePage } from '@inertiajs/vue3';
     import menuData from './MenuData.js'
 
@@ -244,7 +244,34 @@
                                         </template>
                                         <template v-else>
                                             <li v-can="subItem.permissions" class="menu nav-item">
+                                                <Popover placement="right" v-if="subItem.info">
+                                                    <template #content>
+                                                        <div v-html="subItem.info?.content"></div>
+                                                    </template>
+                                                    <template #title>
+                                                        <h3 class="text-lg font-semibold text-gray-800 mb-2">
+                                                            {{ subItem.info?.title }}
+                                                        </h3>
+                                                    </template>
+                                                    <Link
+                                                        v-bind="{ id: subItem.id }"
+                                                        :href="subItem.route"
+                                                        class="nav-link group"
+                                                        @click="toggleMobileMenu"
+                                                        preserve-state
+                                                        preserve-scroll
+                                                    >
+                                                        <div class="flex items-center">
+                                                            <font-awesome-icon :icon="subItem.icom" class="group-hover:!text-primary shrink-0" />
+
+                                                            <span class="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">
+                                                                {{ subItem.text }}
+                                                            </span>
+                                                        </div>
+                                                    </Link>
+                                                </Popover>
                                                 <Link
+                                                    v-else
                                                     v-bind="{ id: subItem.id }"
                                                     :href="subItem.route"
                                                     class="nav-link group"
@@ -407,8 +434,8 @@
 </template>
 
 <style>
-ul.sub-menu-before li a.active {
-  --tw-text-opacity: 1;
-  color: rgb(67 97 238 / var(--tw-text-opacity));
-}
+    ul.sub-menu-before li a.active {
+        --tw-text-opacity: 1;
+        color: rgb(67 97 238 / var(--tw-text-opacity));
+    }
 </style>
