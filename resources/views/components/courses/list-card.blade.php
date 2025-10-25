@@ -47,7 +47,7 @@
                                                                 src="{{ asset('storage/' . $item->course->image) }}"
                                                                 alt="">
                                                         </a>
-                                                        <span style="color: #6a4c93;">{{ $item->additional }}</span>
+                                                        <span style="color: #e30613;">{{ $item->additional }}</span>
                                                         <br>
                                                         <a href="{{ route('web_course_description', $item->id) }}"
                                                             style="text-decoration: none;">

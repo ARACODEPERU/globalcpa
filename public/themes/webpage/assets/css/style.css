@@ -112,7 +112,7 @@
 
  */
 :root {
-  --theme-default: #6a4c93;
+  --theme-default: #e30613;
   --theme-secondary: #FF6150;
   --light-background: rgba(242, 243, 247, 0.7);
   --body-font-color: #2F2F3B;
@@ -148,7 +148,7 @@
   --active-shadow: #F4B555;
   --active-mouth: #F05136;
   --active-eye: #313036;
-  --active-tear: #6a4c93;
+  --active-tear: #e30613;
   --active-shadow-angry: #e94f1d;
 }
 
@@ -1708,8 +1708,8 @@ svg.f-light {
 }
 .btn-outline-primary-2x:hover, .btn-outline-primary-2x:focus, .btn-outline-primary-2x:active, .btn-outline-primary-2x.active {
   color: white;
-  background-color: #6a4c93 !important;
-  border-color: #6a4c93 !important;
+  background-color: #e30613 !important;
+  border-color: #e30613 !important;
   -webkit-box-shadow: none;
           box-shadow: none;
 }
@@ -9324,11 +9324,11 @@ btn-group .dropdown-wrapper {
   font-weight: 500;
 }
 .checkbox-checked .form-check-input:checked {
-  background-color: #33BFBF;
-  border-color: #33BFBF;
+  background-color: #e30613;
+  border-color: #e30613;
 }
 .checkbox-checked .form-check-input:focus {
-  border-color: #33BFBF;
+  border-color: #e30613;
   -webkit-box-shadow: 0 0 0 4px rgba(51, 191, 191, 0.25);
           box-shadow: 0 0 0 4px rgba(51, 191, 191, 0.25);
 }
@@ -10062,7 +10062,7 @@ btn-group .dropdown-wrapper {
   height: 100px;
   border-radius: 50%;
   border: 4px solid transparent;
-  border-top-color: #6a4c93;
+  border-top-color: #e30613;
   -webkit-animation: loader 2s linear infinite;
   animation: loader 2s linear infinite;
 }
@@ -10075,7 +10075,7 @@ btn-group .dropdown-wrapper {
   bottom: 5px;
   border-radius: 50%;
   border: 4px solid transparent;
-  border-top-color: #6a4c93;
+  border-top-color: #e30613;
   -webkit-animation: loader 3s linear infinite;
           animation: loader 3s linear infinite;
 }
@@ -10088,7 +10088,7 @@ btn-group .dropdown-wrapper {
   bottom: 15px;
   border-radius: 50%;
   border: 4px solid transparent;
-  border-top-color: #6a4c93;
+  border-top-color: #e30613;
   -webkit-animation: loader 1.5s linear infinite;
           animation: loader 1.5s linear infinite;
 }
@@ -25916,12 +25916,12 @@ footer {
 }
 
 .pagination-success .page-item .page-link {
-  color: #6a4c93 !important;
+  color: #e30613 !important;
 }
 .pagination-success .page-item.active .page-link {
   color: #fff !important;
-  background-color: #6a4c93 !important;
-  border-color: #6a4c93;
+  background-color: #e30613 !important;
+  border-color: #e30613;
 }
 
 .pagination-danger .page-item .page-link {
@@ -35440,7 +35440,7 @@ footer p .footer-icon {
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
-  background-color: #1f2f3e;
+  background-color: #131313;
 }
 .page-wrapper .sidebar-wrapper .back-btn {
   display: none;
@@ -36095,7 +36095,7 @@ footer p .footer-icon {
       -ms-flex-direction: column;
           flex-direction: column;
   height: 100%;
-  background: #1f2f3e;
+  background: #131313;
 }
 .page-wrapper.compact-sidebar .toggle-sidebar {
   position: relative;
@@ -36167,7 +36167,7 @@ footer p .footer-icon {
   overflow: auto;
 }
 .page-wrapper.compact-sidebar .page-body-wrapper div.sidebar-wrapper .sidebar-main .sidebar-links .main-submenu .d-flex a {
-  color: #6a4c93;
+  color: #e30613;
 }
 .page-wrapper.compact-sidebar .page-body-wrapper div.sidebar-wrapper .sidebar-main .sidebar-links li a {
   color: #1F2F3E;
@@ -36180,12 +36180,12 @@ footer p .footer-icon {
   font-size: 14px;
 }
 .page-wrapper.compact-sidebar .page-body-wrapper div.sidebar-wrapper .sidebar-main .sidebar-links li a.active {
-  color: #6a4c93;
+  color: #e30613;
   border-radius: 6px;
 }
 .page-wrapper.compact-sidebar .page-body-wrapper div.sidebar-wrapper .sidebar-main .sidebar-links li a.active span {
   padding: 15px 0px;
-  background: #6a4c93;
+  background: #e30613;
   color: #fff;
 }
 .page-wrapper.compact-sidebar .page-body-wrapper div.sidebar-wrapper .sidebar-main .sidebar-links li a:not(.active) ~ .sidebar-submenu {
@@ -36427,7 +36427,8 @@ footer p .footer-icon {
 }
 .page-wrapper.compact-small .page-body-wrapper div.sidebar-wrapper .sidebar-main .sidebar-links .sidebar-list {
   padding: 20px;
-  background-color: #1f2f3e;
+  /* background-color: #1f2f3e; */
+  background-color: #131313;
 }
 .page-wrapper.compact-small .page-body-wrapper div.sidebar-wrapper .sidebar-main .sidebar-links .sidebar-list .sidebar-submenu li a .sub-arrow {
   display: none;
@@ -36451,10 +36452,10 @@ footer p .footer-icon {
   font-size: 15px;
 }
 .page-wrapper.compact-small .page-body-wrapper div.sidebar-wrapper .sidebar-main .sidebar-links .sidebar-list .sidebar-submenu .main-submenu .d-flex.active {
-  color: #6a4c93;
+  color: #e30613;
 }
 .page-wrapper.compact-small .page-body-wrapper div.sidebar-wrapper .sidebar-main .sidebar-links .sidebar-list .sidebar-submenu .main-submenu .d-flex.active svg {
-  stroke: #6a4c93 !important;
+  stroke: #131313 !important;
 }
 .page-wrapper.compact-small .page-body-wrapper div.sidebar-wrapper .sidebar-main .sidebar-links .sidebar-list .sidebar-submenu .main-submenu .d-flex.active .arrow {
   -webkit-transform: rotate(90deg);

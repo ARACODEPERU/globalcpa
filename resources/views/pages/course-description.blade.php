@@ -143,7 +143,7 @@
                             </div>
                         </div>
                         <section style="padding: 30px 0px;">
-                            <div class="container">
+                            <div class="container-fluid">
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="accordion-aracode">
