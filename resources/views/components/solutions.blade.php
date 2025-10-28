@@ -28,7 +28,7 @@
                                     </div>
                                     <div class="col-md-10">
                                         <p>
-                                            <b>Formación con estándares globales</b> para contadores, financieros y
+                                            <b style="color: #e30613">Formación con estándares globales</b> para contadores, financieros y
                                             auditores.
                                         </p>
                                     </div>
@@ -44,7 +44,7 @@
                                     </div>
                                     <div class="col-md-10">
                                         <p>
-                                            <b>Suscripciones de formación y asesoría especializada,</b> flexibles y
+                                            <b style="color: #e30613">Suscripciones de formación y asesoría especializada,</b> flexibles y
                                             escalables.
                                         </p>
                                     </div>
@@ -60,7 +60,7 @@
                                     </div>
                                     <div class="col-md-10">
                                         <p>
-                                            <b>Preparación oficial para certificaciones ACCA –</b> somos la única
+                                            <b style="color: #e30613">Preparación oficial para certificaciones ACCA –</b> somos la única
                                             escuela en
                                             Perú con el sello Approved Learning Partner.
                                         </p>
@@ -77,7 +77,7 @@
                                     </div>
                                     <div class="col-md-10">
                                         <p>
-                                            <b>Capacitación in company</b> diseñada a medida para tu equipo.
+                                            <b style="color: #e30613">Capacitación in company</b> diseñada a medida para tu equipo.
                                         </p>
                                     </div>
                                 </div>

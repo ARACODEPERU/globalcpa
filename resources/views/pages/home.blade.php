@@ -36,6 +36,8 @@
                 <x-courses.list-card />
                 <x-eleva />
                 <x-teachers />
+                <x-solutions />
+                <x-clients-logo />
             </div>
         </div>
         <!-- footer start-->

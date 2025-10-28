@@ -37,6 +37,7 @@
                 <x-eleva />
                 <x-teachers />
                 <x-solutions />
+                <x-clients-logo />
             </div>
         </div>
         <br>
