@@ -1,5 +1,5 @@
-<div> 
-    <section style="padding: 60px 0px; background: #6a4c93;">
+<div>
+    <section style="padding: 60px 0px; background: #575756;">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-2"></div>
@@ -10,26 +10,82 @@
                 </div>
                 <div class="col-md-2"></div>
             </div>
+            <br>
             <div class="row">
-                <div class="col-md-1"></div>
-                <div class="col-md-10">
-                    <div class="card">
-                        <div class="blog-box blog-list row">
-                            <div class="col-sm-7">
-                                <img class="img-fluid sm-100-w"
-                                    src=""alt="">
+                <div class="col-md-2"></div>
+                <div class="col-md-3">
+                    <img style="width: 100%;" src="{{ asset('themes/webpage/images/soluciones-equipo.jpg') }}" alt="">
+                </div>
+                <div class="col-md-5">
+                    <br><br>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card" style="padding: 20px; display: flex; flex-direction: column;">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <img style="width: 60px;"
+                                            src="themes/webpage/images/capacitacion.png" alt="">
+                                    </div>
+                                    <div class="col-md-10">
+                                        <p>
+                                            <b>Formación con estándares globales</b> para contadores, financieros y
+                                            auditores.
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-sm-5">
-                                <div class="blog-details">
-                                    <ul>
-                                        <li>sdsd</li>
-                                    </ul>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="card" style="padding: 20px; display: flex; flex-direction: column;">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <img style="width: 60px; text-align:center;"
+                                            src="themes/webpage/images/capacitacion.png" alt="">
+                                    </div>
+                                    <div class="col-md-10">
+                                        <p>
+                                            <b>Suscripciones de formación y asesoría especializada,</b> flexibles y
+                                            escalables.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="card" style="padding: 20px; display: flex; flex-direction: column;">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <img style="width: 60px; text-align:center;"
+                                            src="themes/webpage/images/capacitacion.png" alt="">
+                                    </div>
+                                    <div class="col-md-10">
+                                        <p>
+                                            <b>Preparación oficial para certificaciones ACCA –</b> somos la única
+                                            escuela en
+                                            Perú con el sello Approved Learning Partner.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="card" style="padding: 20px; display: flex; flex-direction: column;">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <img style="width: 60px; text-align:center;"
+                                            src="themes/webpage/images/capacitacion.png" alt="">
+                                    </div>
+                                    <div class="col-md-10">
+                                        <p>
+                                            <b>Capacitación in company</b> diseñada a medida para tu equipo.
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-1"></div>
+                <div class="col-md-2"></div>
             </div>
         </div>
     </section>
