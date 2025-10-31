@@ -189,7 +189,7 @@
 
                 @if ($item)
                     <p>
-                        **Nombre del Curso:** {{ $item->decription_product }}<br> <h4>Importe #{{ $item->mto_total_total }}</h4>
+                        **Curso:** {{ $item->decription_product }}<br> <h4> S/. {{ $item->mto_total }}</h4>
                     </p>
                 @else
                     <p>⚠️ No se encontró el curso asociado (ID de Item: {{ $item->product_id }}).</p>
