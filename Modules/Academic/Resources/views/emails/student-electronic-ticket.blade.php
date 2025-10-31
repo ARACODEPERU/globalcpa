@@ -185,11 +185,11 @@
         @if ($sale->items->count() > 0)
             @foreach ($sale->items as $item)
             <div>
-                <h4>Importe #{{ $item->mto_total_total }}</h4>
+
 
                 @if ($item)
-                    <p> {{ $item }}
-                        **Nombre del Curso:** {{ $item->description_product }}<br>
+                    <p>
+                        **Nombre del Curso:** {{ $item->decription_product }}<br> <h4>Importe #{{ $item->mto_total_total }}</h4>
                     </p>
                 @else
                     <p>⚠️ No se encontró el curso asociado (ID de Item: {{ $item->product_id }}).</p>
