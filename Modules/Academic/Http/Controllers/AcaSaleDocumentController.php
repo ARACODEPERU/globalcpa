@@ -354,6 +354,7 @@ class AcaSaleDocumentController extends Controller
         $person_email = $request->get('person_email');
         $person_name = $request->get('person_name');
         $document_id = $request->get('document_id');
+        $onlisale_id = $request->get('onlisaleId');
 
         $success = false;
         $correosMessage = [];
