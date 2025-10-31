@@ -219,11 +219,7 @@
 
         </div>
         <div class="card-container">
-            <p>
-                👤 Querido Usuario para seguir estudiando dirigete a la plataforma de nuestro Campus Virtual
-                <br>
-                🔑
-            </p>
+
             <a href="https://academy.globalcpaperu.com/login" style="margin-top: 20px;">
                 <button class="boton-degradado-campus">Ingresar a la plataforma</button>
             </a>
