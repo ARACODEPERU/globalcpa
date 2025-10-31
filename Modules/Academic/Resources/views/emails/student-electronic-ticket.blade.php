@@ -172,11 +172,11 @@
             <img style="width: 25px;" data-emoji="🎉" class="an1" alt="🎉" aria-label="🎉" draggable="false"
                 src="https://fonts.gstatic.com/s/e/notoemoji/16.0/1f389/32.png" loading="lazy">
         </h1>
-        <p>{{ $data->clie_full_name }},
+        <p>
             Gracias por estár con nosotros, te hemos enviado tu comprobante de pago.
         </p>
         <p>
-            revisa los datos adjuntos para poder descargar.
+            revisa los datos adjuntos para poder descargar y ver mas detalles.
         </p>
         <div class="card-container">
 
