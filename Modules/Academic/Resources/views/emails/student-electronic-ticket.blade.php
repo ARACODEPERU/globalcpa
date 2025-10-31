@@ -180,7 +180,7 @@
         </p>
         <div class="card-container">
 
-            <h3>Cursos Incluidos en la Venta</h3>
+            <h3>Cursos Incluidos en compra</h3>
 
         @if ($sale->items->count() > 0)
             @foreach ($sale->items as $item)
@@ -189,7 +189,7 @@
 
                 @if ($item)
                     <p>
-                        **Curso:** {{ $item->decription_product }}<br> <h4> S/. {{ $item->mto_total }}</h4>
+                        **Curso:** {{ $item->decription_product }} <h4> S/. {{ $item->mto_total }}</h4>
                     </p>
                 @else
                     <p>⚠️ No se encontró el curso asociado (ID de Item: {{ $item->product_id }}).</p>
@@ -203,6 +203,7 @@
         @endif
 
         <div>
+            <hr><br>
             <p>Importe total: {{ $sale->overall_total }}</p>
         </div>
 
