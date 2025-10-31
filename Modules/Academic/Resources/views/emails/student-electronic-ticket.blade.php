@@ -183,16 +183,16 @@
             <h3>Cursos Incluidos en la Venta</h3>
 
         @if ($sale->details->count() > 0)
-            @foreach ($sale->details as $detail)
+            @foreach ($sale->items as $item)
             <div>
-                <h4>Importe #{{ $detail->price }}</h4>
+                <h4>Importe #{{ $item->mto_total_total }}</h4>
 
-                @if ($detail->course)
+                @if ($item)
                     <p>
-                        **Nombre del Curso:** {{ $detail->course->description }}<br>
+                        **Nombre del Curso:** {{ $item->description_product }}<br>
                     </p>
                 @else
-                    <p>⚠️ No se encontró el curso asociado (ID de Item: {{ $detail->item_id }}).</p>
+                    <p>⚠️ No se encontró el curso asociado (ID de Item: {{ $item->product_id }}).</p>
                 @endif
 
                 <hr>
@@ -201,6 +201,10 @@
         @else
             <p>La venta no contiene elementos detallados.</p>
         @endif
+
+        <div>
+            <p>Importe total: {{ $sale->overall_total }}</p>
+        </div>
 
         </div>
         <div class="card-container">
