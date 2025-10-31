@@ -180,32 +180,42 @@
         </p>
         <div class="card-container">
 
-            <h3>Cursos Incluidos en compra</h3>
-
-        @if ($sale->items->count() > 0)
-            @foreach ($sale->items as $item)
             <div>
+                <h3 style="color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; margin-bottom: 20px;">Cursos Incluidos en Compra</h3>
 
-
-                @if ($item)
-                    <p>
-                        **Curso:** {{ $item->decription_product }} <h4> S/. {{ $item->mto_total }}</h4>
-                    </p>
+                @if ($sale->items->count() > 0)
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                        <thead>
+                            <tr style="background-color: #3498db; color: white;">
+                                <th style="padding: 12px 15px; text-align: left; border-bottom: 1px solid #e0e0e0;">Curso</th>
+                                <th style="padding: 12px 15px; text-align: left; border-bottom: 1px solid #e0e0e0;">Precio</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($sale->items as $item)
+                            <tr style="border-bottom: 1px solid #e0e0e0;">
+                                @if ($item)
+                                    <td style="padding: 12px 15px;">{{ $item->decription_product }}</td>
+                                    <td style="padding: 12px 15px; color: #27ae60; font-weight: bold;">S/. {{ $item->mto_total }}</td>
+                                @else
+                                    <td colspan="2" style="padding: 12px 15px; color: #e74c3c; font-weight: bold;">
+                                        ⚠️ No se encontró el curso asociado (ID de Item: {{ $item->product_id }}).
+                                    </td>
+                                @endif
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 @else
-                    <p>⚠️ No se encontró el curso asociado (ID de Item: {{ $item->product_id }}).</p>
+                    <p style="text-align: center; color: #7f8c8d; font-style: italic; padding: 20px;">
+                        La venta no contiene elementos detallados.
+                    </p>
                 @endif
 
-                <hr>
+                <div style="background-color: #2c3e50; color: white; padding: 15px; border-radius: 8px; text-align: right; font-size: 1.2em; font-weight: bold;">
+                    Importe total: {{ $sale->overall_total }}
+                </div>
             </div>
-            @endforeach
-        @else
-            <p>La venta no contiene elementos detallados.</p>
-        @endif
-
-        <div>
-            <hr><br>
-            <p>Importe total: {{ $sale->overall_total }}</p>
-        </div>
 
         </div>
         <div class="card-container">
