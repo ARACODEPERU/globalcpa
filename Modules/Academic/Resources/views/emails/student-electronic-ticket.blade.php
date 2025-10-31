@@ -182,7 +182,7 @@
 
             <h3>Cursos Incluidos en la Venta</h3>
 
-        @if ($sale->details->count() > 0)
+        @if ($sale->items->count() > 0)
             @foreach ($sale->items as $item)
             <div>
                 <h4>Importe #{{ $item->mto_total_total }}</h4>
