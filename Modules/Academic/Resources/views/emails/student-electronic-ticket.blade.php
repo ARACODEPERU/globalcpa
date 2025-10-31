@@ -188,7 +188,7 @@
                 <h4>Importe #{{ $item->mto_total_total }}</h4>
 
                 @if ($item)
-                    <p>
+                    <p> {{ $item }}
                         **Nombre del Curso:** {{ $item->description_product }}<br>
                     </p>
                 @else
