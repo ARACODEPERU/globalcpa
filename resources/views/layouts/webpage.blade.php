@@ -108,8 +108,7 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('themes/webpage/assets/css/vendors/scrollbar.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('themes/webpage/assets/css/vendors/animate.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('themes/webpage/assets/css/vendors/datatables.css') }}">
-    <link rel="stylesheet" type="text/css"
-        href="{{ asset('themes/webpage/assets/css/vendors/datatable/select.dataTables.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('themes/webpage/assets/css/vendors/datatable/select.dataTables.min.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('themes/webpage/assets/css/vendors/prism.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('themes/webpage/assets/css/vendors/vector-map.css') }}">
     <!-- Plugins css Ends-->

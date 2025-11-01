@@ -88,7 +88,7 @@ const submit = () => {
                     > -->
                     
                     <div
-                        class="relative hidden w-full items-center justify-center bg-[linear-gradient(225deg,rgba(106,76,147,1)_0%,rgba(60,74,153,1)_100%)] p-5 lg:inline-flex lg:max-w-[835px] xl:-ms-28 ltr:xl:skew-x-[14deg] rtl:xl:skew-x-[-14deg]"
+                        class="relative hidden w-full items-center justify-center bg-[linear-gradient(225deg,rgba(153,4,12,1)_0%,rgba(227,6,19,1)_100%)] p-5 lg:inline-flex lg:max-w-[835px] xl:-ms-28 ltr:xl:skew-x-[14deg] rtl:xl:skew-x-[-14deg]"
                     >
                         <div
                             class="absolute inset-y-0 w-8 from-primary/10 via-transparent to-transparent ltr:-right-10 ltr:bg-gradient-to-r rtl:-left-10 rtl:bg-gradient-to-l xl:w-16 ltr:xl:-right-20 rtl:xl:-left-20"
@@ -210,7 +210,7 @@ const submit = () => {
                         <div class="w-full max-w-[440px] lg:mt-16">
                             <div class="mb-10">
                                 <h1
-                                    class="text-3xl font-extrabold uppercase !leading-snug text-primary md:text-4xl"
+                                    class="text-3xl font-extrabold uppercase !leading-snug text-[#e30613] md:text-4xl"
                                 >
                                     Iniciar sesión
                                 </h1>
@@ -266,7 +266,7 @@ const submit = () => {
                                         >
                                         <Link
                                             :href="route('password.request')"
-                                            class="inline-flex items-center gap-x-1 text-sm text-blue-600 decoration-2 hover:underline focus:outline-none focus:underline font-medium dark:text-blue-500"
+                                            class="inline-flex items-center gap-x-1 text-sm text-[#575756]-600 decoration-2 hover:underline focus:outline-none focus:underline font-medium dark:text-blue-500"
                                             >¿Has olvidado tu contraseña?</Link
                                         >
                                     </div>

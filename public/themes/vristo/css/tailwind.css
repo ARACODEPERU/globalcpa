@@ -346,7 +346,7 @@
 
     .btn-gradient {
         /* @apply bg-gradient-to-r from-[#EF1262] to-[#4361EE] hover:to-[#EF1262] hover:from-[#4361EE] text-white; */
-        @apply bg-gradient-to-r from-[#6a4c93] to-[#3c4a99] hover:to-[#6a4c93] hover:from-[#3c4a99] text-white;
+        @apply bg-gradient-to-r from-[#e30613] to-[#99040c] hover:to-[#e30613] hover:from-[#99040c] text-white;
     }
 
     /* Badge */
