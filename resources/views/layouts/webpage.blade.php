@@ -112,6 +112,7 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('themes/webpage/assets/css/vendors/prism.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('themes/webpage/assets/css/vendors/vector-map.css') }}">
     <!-- Plugins css Ends-->
+    
     <!-- Bootstrap css-->
     <link rel="stylesheet" type="text/css" href="{{ asset('themes/webpage/assets/css/vendors/bootstrap.css') }}">
     <!-- App css-->
@@ -119,7 +120,6 @@
     <link id="color" rel="stylesheet" href="{{ asset('themes/webpage/assets/css/color-1.css') }}" media="screen">
     <!-- Responsive css-->
     <link rel="stylesheet" type="text/css" href="{{ asset('themes/webpage/assets/css/responsive.css') }}">
-
 
 
 

@@ -38,6 +38,7 @@
                 <x-teachers />
                 <x-solutions />
                 <x-clients-logo />
+                <x-visionaries />
             </div>
         </div>
         <br>

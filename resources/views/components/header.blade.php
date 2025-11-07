@@ -2,7 +2,7 @@
     <div class="page-header">
         <div class="header-wrapper row">
             <div class="logo-wrapper">
-                <a href="">
+                <a href="{{ route('index_main') }}">
                     <img class="img-fluid" src="{{ asset('themes/webpage/assets/images/logo/logo.png') }}" alt="">
                 </a>
             </div>
