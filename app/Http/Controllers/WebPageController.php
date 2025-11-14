@@ -87,7 +87,9 @@ class WebPageController extends Controller
 
         $countries = Country::orderBy('description')->get();
         $documentTypes = DB::table('identity_document_type')->get();
-        $ubigeo = District::with('province.department')->get();
+        //$ubigeo = District::with('province.department')->get();
+        $ubigeo = Department::get();
+        //dd($ubigeo);
 
         $p = 12; //numero de cursos mostrados PAGINACION
 
@@ -1041,7 +1043,10 @@ class WebPageController extends Controller
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
-
+        $ubigeo = null;
+        if($request->ubigeo != null){
+            $ubigeo = $request->ubigeo."0101";
+        }
         DB::beginTransaction();
         try {
             // 🔹 REGISTRO EN TABLA people
@@ -1057,7 +1062,7 @@ class WebPageController extends Controller
                 'email' => $request->email,
                 'country_id' => $request->pais,
                 'status' => true,
-                'ubigeo' => $request->ubigeo ?? null,
+                'ubigeo' => $ubigeo ?? null,
                 'ubigeo_description' => $request->ciudad ?? null,
                 'gender' => $request->genero ?? null,
                 'birthdate' => $request->fecha_nacimiento ?? null
@@ -1129,7 +1134,7 @@ class WebPageController extends Controller
             // 3. CONFIRMACIÓN (COMMIT)
             DB::commit();
             // 🔹 MENSAJE DE ÉXITO
-            return redirect()->back()->with('success', 'Registro completado exitosamente.');
+            return redirect()->back()->with('success', 'Registro completado exitosamente, Revisa tu correo donde recibirás mas información.');
 
         } catch (\Throwable $th) {
              // 5. REVERSIÓN (ROLLBACK) si algo falla

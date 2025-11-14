@@ -224,15 +224,13 @@
                                             </div>
 
                                             <div id="divSelectCity" class="col-6">
-                                                <label class="form-label" for="select-city">Ciudad</label>
+                                                <label class="form-label" for="select-city">Departamento</label>
                                                 <select class="form-select" id="select-city" name="ciudad">
-                                                    <option value="">Seleccionar ciudad</option>
-                                                    @foreach ($ubigeo as $city)
-                                                        <option value="{{ $city->id }}"
-                                                            {{ old('ciudad') == $city->id ? 'selected' : '' }}>
-                                                            {{ $city->department->name }} -
-                                                            {{ $city->province->name }} -
-                                                            {{ $city->name }}
+                                                    <option value="">Seleccionar Departamento</option>
+                                                    @foreach ($ubigeo as $department)
+                                                        <option value="{{ $department->id }}"
+                                                            {{ old('department') == $department->id ? 'selected' : '' }}>
+                                                            {{ $department->name }}
                                                         </option>
                                                     @endforeach
                                                 </select>
@@ -1170,7 +1168,7 @@
         });
 
         $('#select-city').select2({
-            placeholder: "Seleccionar ciudad",
+            placeholder: "Seleccionar Departamento",
             allowClear: true,
             theme: 'bootstrap-5'
         });
