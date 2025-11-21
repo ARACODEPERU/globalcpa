@@ -103,7 +103,8 @@ class ParametersController extends Controller
             'control_type'          => 'required',
             'value_default'         => 'required'
         ]);
-        //dd($id);
+
+        $valor_seguro = $request->get('value_default');
 
         if($request->get('control_type') == 'tx'){
             $value_default = $request->get('value_default');

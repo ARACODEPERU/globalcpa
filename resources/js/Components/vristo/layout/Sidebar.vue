@@ -1,5 +1,5 @@
 <script setup>
-    import { ref, onMounted } from 'vue';
+    import { ref, onMounted, watch, nextTick } from 'vue';
 
     import { useAppStore } from '@/stores/index';
     import IconCaretsDown from '@/Components/vristo/icon/icon-carets-down.vue';
@@ -120,6 +120,7 @@
         }
     }
 
+
 </script>
 <template>
     <div :class="{ 'dark text-white-dark': store.semidark }">
@@ -149,7 +150,7 @@
                 <perfect-scrollbar
                     :options="{
                         swipeEasing: true,
-                        wheelPropagation: false,
+                        wheelPropagation: false
                     }"
                     class="h-[calc(100vh-80px)] relative"
                 >
@@ -244,7 +245,10 @@
                                         </template>
                                         <template v-else>
                                             <li v-can="subItem.permissions" class="menu nav-item">
-                                                <Popover placement="right" v-if="subItem.info">
+                                                <Popover
+                                                    v-if="subItem.info"
+                                                    :placement="subItem.info.placement"
+                                                >
                                                     <template #content>
                                                         <div v-html="subItem.info?.content"></div>
                                                     </template>
@@ -433,7 +437,7 @@
     </div>
 </template>
 
-<style>
+<style scoped>
     ul.sub-menu-before li a.active {
         --tw-text-opacity: 1;
         color: rgb(67 97 238 / var(--tw-text-opacity));

@@ -57,6 +57,11 @@ const menuAcademic = {
                         <li>📘 <span>Ver matrículas — inscribir y revisar cursos activos.</span></li>
                         <li>🔄 <span>Suscripciones — consultar y registrar nuevas.</span></li>
                         <li>💰 <span>Cobrar — crear boleta o factura.</span></li>
+                        <li>⭐ <span>Cuotas pendientes especiales.</span>
+                            <div class="text-xs text-gray-500 pl-6 mt-1 flex items-center">
+                                👉 Pagos especiales como cuotas, reprogramación, cancelaciones artesanales, etc...
+                            </div>
+                        </li>
                         <li>
                         📄 <span>Lista de comprobantes:</span>
                             <div class="text-xs text-gray-500 pl-6 mt-1 flex items-center">
@@ -74,7 +79,8 @@ const menuAcademic = {
                         </li>
                         <li>🗑️ <span>Eliminar estudiante si es necesario.</span></li>
                     </ul>
-                `
+                `,
+                placement: 'right'
             }
         },
         {
