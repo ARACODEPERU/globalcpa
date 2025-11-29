@@ -28348,7 +28348,7 @@ html {
 	4.1. Dark CSS Start
 ==========================**/
 body.dark-only {
-  color: rgba(255, 255, 255, 0.8);
+  color: #fff;
   background-color: #15202b;
 }
 body.dark-only .page-body .bg-light {
@@ -28469,6 +28469,10 @@ body.dark-only button[data-toggle=dropdown]:hover ~ .dropdown-menu {
   background-color: #15202b;
 }
 body.dark-only .upcoming-course .d-flex .flex-grow-1 span:first-child {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+body.dark-only .page-wrapper .page-body-wrapper .page-title .row h1 {
   color: rgba(255, 255, 255, 0.8);
 }
 body.dark-only .page-wrapper .page-body-wrapper .page-title .row h3 {
@@ -34848,7 +34852,7 @@ footer p .footer-icon {
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-  padding: 18px 40px;
+  padding: 10px 40px;
   position: relative;
   margin-left: 0px;
 }
@@ -35440,7 +35444,8 @@ footer p .footer-icon {
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
-  background-color: #131313;
+  /* background-color: #131313; */
+  background-color: #1f2f3e; 
 }
 .page-wrapper .sidebar-wrapper .back-btn {
   display: none;
@@ -36095,7 +36100,8 @@ footer p .footer-icon {
       -ms-flex-direction: column;
           flex-direction: column;
   height: 100%;
-  background: #131313;
+  /* background: #131313; */
+  background: #1f2f3e;
 }
 .page-wrapper.compact-sidebar .toggle-sidebar {
   position: relative;
@@ -36427,8 +36433,8 @@ footer p .footer-icon {
 }
 .page-wrapper.compact-small .page-body-wrapper div.sidebar-wrapper .sidebar-main .sidebar-links .sidebar-list {
   padding: 20px;
-  /* background-color: #1f2f3e; */
-  background-color: #131313;
+  background-color: #1f2f3e;
+  /* background-color: #131313; */
 }
 .page-wrapper.compact-small .page-body-wrapper div.sidebar-wrapper .sidebar-main .sidebar-links .sidebar-list .sidebar-submenu li a .sub-arrow {
   display: none;

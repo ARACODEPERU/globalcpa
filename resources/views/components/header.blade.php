@@ -3,7 +3,7 @@
         <div class="header-wrapper row">
             <div class="logo-wrapper">
                 <a href="{{ route('index_main') }}">
-                    <img class="img-fluid" src="{{ asset('themes/webpage/assets/images/logo/logo.png') }}" alt="">
+                    <img class="img-fluid" src="{{ asset('themes/webpage/assets/images/logo/logo.png') }}" alt="Logo">
                 </a>
             </div>
             <svg class="stroke-icon toggle-sidebar">
@@ -15,8 +15,13 @@
             <img class="logo_header" src="{{ asset('themes/webpage/images/Logo_cpa_modificado.png') }}" alt="">
             <div class="nav-right col-auto pull-right right-header p-0 ms-auto">
                 <ul class="nav-menus">
+                    <li>
+                        <div class="mode">
+                            <i class="fa fa-toggle-on" aria-hidden="true" style="font-size: 26px;"></i>
+                        </div>
+                    </li>
                     <li class="cart-nav onhover-dropdown">
-                        <div class="cart-box" style="top: 8px;">
+                        <div class="cart-box" style="top: 0px;">
                             <a href="{{ route('web_carrito') }}">
                                 <i class="fa fa-cart-plus" aria-hidden="true" style="font-size: 26px;">
                                     <span class="cart-count contador" id="contadorCarritoWeb">0</span>
@@ -40,9 +45,9 @@
                                         style="max-height: 3rem; max-width: 3rem;">
                                 @else
                                     {{-- Si el avatar no existe, muestra el círculo con las iniciales --}}
-                                    {{-- <div class="initials-circle">
+                                    <div class="initials-circle">
                                         <span>{{ substr($userName, 0, 1) }}</span>
-                                    </div> --}}
+                                    </div>
                                     <img src="https://ui-avatars.com/api/?name={{ urlencode($userName) }}&size=150&rounded=true"
                                         alt="{{ $userName }}" class="b-r-25" style="max-height: 3rem; max-width: 3rem;">
                                 @endif
