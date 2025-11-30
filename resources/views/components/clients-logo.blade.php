@@ -1,19 +1,22 @@
 <div>
-    <section style="padding: 80px 0px; background: #fff;">
+    <section style="padding: 80px 0px;">
+        <div class="container-fluid">
+            <div class="page-title">
+                <div class="row">
+                    <div class="col-sm-3 pe-0">
+                    </div>
+                    <div class="col-sm-6 ps-0">
+                        <h1 class="ara_title">Profesionales de empresas líderes confían en CPA Academy</h1>
+                    </div>
+                    <div class="col-sm-3 pe-0">
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="container-fluid">
             <div class="row">
-                <div class="col-md-2"></div>
-                <div class="col-md-8">
-                    <h1 class="ara_title">
-                        Profesionales de empresas líderes confían en <br> CPA Academy
-                    </h1>
-                </div>
-                <div class="col-md-2"></div>
-            </div>
-            <br>
-            <div class="row">
                 <div class="col-md-1"></div>
-                <div class="col-md-10">
+                <div class="col-md-10" style="background: #fff; padding: 12px 18px;">
                     <div class="row">
                         <div class="col-md-2" style="margin-bottom: 20px;">
                             <img src="{{ asset('themes/webpage/images/clients/alicorp.jpg') }}" alt=""
@@ -33,7 +36,7 @@
                         </div>
                         <div class="col-md-2" style="margin-bottom: 20px;">
                             <img style="width: 100%;"
-                                src="{{ asset('themes/webpage/images/clients/electro-puno.jpg') }}"  alt=""
+                                src="{{ asset('themes/webpage/images/clients/electro-puno.jpg') }}" alt=""
                                 class="logo_clients">
                         </div>
                         <div class="col-md-2" style="margin-bottom: 20px;">
@@ -64,28 +67,23 @@
                             <img src="{{ asset('themes/webpage/images/clients/antamina.jpg') }}" alt=""
                                 class="logo_clients">
                         </div>
-                        <div class="col-md-2"
-                            style="margin-bottom: 20px;">
+                        <div class="col-md-2" style="margin-bottom: 20px;">
                             <img src="{{ asset('themes/webpage/images/clients/minsur.jpg') }}" alt=""
                                 class="logo_clients">
                         </div>
-                        <div class="col-md-2"
-                            style="margin-bottom: 20px;">
+                        <div class="col-md-2" style="margin-bottom: 20px;">
                             <img src="{{ asset('themes/webpage/images/clients/entel.jpg') }}" alt=""
                                 class="logo_clients">
                         </div>
-                        <div class="col-md-2"
-                            style="margin-bottom: 20px;">
+                        <div class="col-md-2" style="margin-bottom: 20px;">
                             <img src="{{ asset('themes/webpage/images/clients/san-pablo.jpg') }}" alt=""
                                 class="logo_clients">
                         </div>
-                        <div class="col-md-2"
-                            style="margin-bottom: 20px;">
+                        <div class="col-md-2" style="margin-bottom: 20px;">
                             <img src="{{ asset('themes/webpage/images/clients/finanty.jpg') }}" alt=""
                                 class="logo_clients">
                         </div>
-                        <div class="col-md-2"
-                            style="margin-bottom: 20px;">
+                        <div class="col-md-2" style="margin-bottom: 20px;">
                             <img src="{{ asset('themes/webpage/images/clients/prima.jpg') }}" alt=""
                                 class="logo_clients">
                         </div>

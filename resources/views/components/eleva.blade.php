@@ -1,15 +1,19 @@
 <div>
     <section style="padding: 60px 0px;">
         <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-3"></div>
-                <div class="col-md-6">
-                    <h1 class="ara_title">
-                        Formación que eleva tu potencial y el de tu equipo
-                    </h1>
+            <div class="page-title">
+                <div class="row">
+                    <div class="col-sm-3 pe-0">
+                    </div>
+                    <div class="col-sm-6 ps-0">
+                        <h1 class="ara_title">Formación que eleva tu potencial y el de tu equipo</h1>
+                    </div>
+                    <div class="col-sm-3 pe-0">
+                    </div>
                 </div>
-                <div class="col-md-3"></div>
             </div>
+        </div>
+        <div class="container-fluid">
             <div class="row">
                 <div class="col-md-2"></div>
                 <div class="col-md-8">

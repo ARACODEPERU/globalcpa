@@ -1,15 +1,19 @@
 <div>
     <section style="padding: 60px 0px;">
         <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-3"></div>
-                <div class="col-md-6">
-                    <h1 class="ara_title wow fadeInUp" data-wow-delay=".2s">
-                        Formación que transforma tu talento en resultados reales
-                    </h1>
+            <div class="page-title">
+              <div class="row">
+                <div class="col-sm-3 pe-0">
                 </div>
-                <div class="col-md-3"></div>
+                <div class="col-sm-6 ps-0">
+                  <h1 class="ara_title">Formación que transforma tu talento en resultados reales</h1>
+                </div>
+                <div class="col-sm-3 pe-0">
+                </div>
+              </div>
             </div>
+          </div>
+        <div class="container-fluid">
             <div class="row">
                 <div class="col-md-12">
                     <div class="card height-equal" style="background: none;">
@@ -51,7 +55,7 @@
                                                         <br>
                                                         <a href="{{ route('web_course_description', $item->id) }}"
                                                             style="text-decoration: none;">
-                                                            <h4 style=" height: 30px; color: #000;">{{ $item->name }}
+                                                            <h4 style=" height: 30px;">{{ $item->name }}
                                                             </h4>
                                                         </a>
                                                         <br>

@@ -1,5 +1,5 @@
 <div>
-    <div class="sidebar-wrapper" data-layout="stroke-svg" style="background-color: #575756 !important;">
+    <div class="sidebar-wrapper" data-layout="stroke-svg">
         <div>
             <div class="logo-wrapper">
                 <a href="{{ route('index_main') }}">

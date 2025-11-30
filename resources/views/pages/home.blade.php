@@ -38,6 +38,7 @@
                 <x-teachers />
                 <x-solutions />
                 <x-clients-logo />
+                <br>
             </div>
         </div>
         <!-- footer start-->
