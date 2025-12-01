@@ -27,11 +27,8 @@
             <x-sidebar />
             <!-- Page Sidebar Ends-->
             <div class="page-body">
-                <div class="container-fluid"></div>
-                <div class="container-fluid">
                     <br><br><br>
                     <x-slider />
-                </div>
                 <x-courses.list-card />
                 <x-eleva />
                 <x-teachers />
