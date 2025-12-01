@@ -5,7 +5,7 @@
                 width: 100%;">
         <div class="container-xl" style="padding: 80px 0px; 40px 0px;">
             <div class="row">
-                <div class="col-md-3" style="padding: 8px;">
+                <div class="col-md-4" style="padding: 8px;">
                     <h2 style="color: #fff; font-size: 16px; padding-bottom: 10px;"><b>VERIFICA EL <br> CERTIFICADO</b>
                     </h2>
                     <p style="color: #fff;">Valida el certificado GLOBAL CPA ingresando el DNI</p>
@@ -21,7 +21,7 @@
                         </a>
                     </div>
                 </div>
-                <div class="col-md-3" style="padding: 8px;">
+                <div class="col-md-2" style="padding: 8px;">
                     <h2 style="color: #fff; font-size: 16px; padding-bottom: 10px;"><b>LEGAL</b></h2>
                     <ul>
                         <li class="font-medium line-clamp-1 dark:text-navy-100">
@@ -79,7 +79,7 @@
                 </div>
                 <div class="col-md-3" style="padding: 8px;">
                     <a href="{{ route('complaints_book') }}">
-                        <img style="width: 90%;" src="{{ asset('themes/webpage/images/libroReclamaciones.png') }}"
+                        <img style="width: 50%;" src="{{ asset('themes/webpage/images/libroReclamaciones.png') }}"
                             alt="libro">
                     </a>
                 </div>
