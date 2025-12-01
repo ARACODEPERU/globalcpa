@@ -1,5 +1,5 @@
 <div>
-    <section style="padding: 60px 0px;">
+    <section style="padding: 40px 0px;">
         <div class="container-fluid">
             <div class="page-title">
                 <div class="row">

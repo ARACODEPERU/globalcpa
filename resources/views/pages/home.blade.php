@@ -32,7 +32,6 @@
                     <br><br><br>
                     <x-slider />
                 </div>
-                <br>
                 <x-courses.list-card />
                 <x-eleva />
                 <x-teachers />
