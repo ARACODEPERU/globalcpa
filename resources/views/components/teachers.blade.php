@@ -20,7 +20,7 @@
                     <div class="slider-container">
                         <div class="team-slider">
                             @foreach ($teachers as $k => $teacher)
-                                <div class="card" style="cursor: pointer; padding: 10px 5px; text-align: center; width: 320px;" data-bs-toggle="modal"
+                                <div class="card team-member" style="cursor: pointer; padding: 10px 5px; text-align: center; width: 320px;" data-bs-toggle="modal"
                                     data-bs-target="#staticBackdrop{{ str_replace(' ', '', $teacher->item->items[0]->content) }}">
                                     <img src="{{ asset('storage/' . $teacher->item->items[3]->content) }}"
                                         alt="photo">
@@ -89,7 +89,7 @@
         .team-member {
             flex: 0 0 250px;
             /* Tamaño fijo para cada tarjeta */
-            background-color: #ffffff;
+            
             border-radius: 10px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             text-align: center;
