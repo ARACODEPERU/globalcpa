@@ -24,8 +24,9 @@
                             <div class="card" style="padding: 20px; display: flex; flex-direction: column;">
                                 <div class="row">
                                     <div class="col-md-2">
-                                        <img style="width: 60px;" src="themes/webpage/images/internet.png"
-                                            alt="">
+                                        <i class="fa fa-globe" aria-hidden="true" style="font-size: 60px;"></i>
+                                        {{-- <img style="width: 60px;" src="themes/webpage/images/internet.png"
+                                            alt=""> --}}
                                     </div>
                                     <div class="col-md-10">
                                         <p>
@@ -58,8 +59,9 @@
                             <div class="card" style="padding: 20px; display: flex; flex-direction: column;">
                                 <div class="row">
                                     <div class="col-md-2">
-                                        <img style="width: 60px; text-align:center;"
-                                            src="themes/webpage/images/capacitacion.png" alt="">
+                                        <i class="fa fa-handshake-o" aria-hidden="true" style="font-size: 60px;"></i>
+                                        {{-- <img style="width: 60px; text-align:center;"
+                                            src="themes/webpage/images/capacitacion.png" alt=""> --}}
                                     </div>
                                     <div class="col-md-10">
                                         <p>

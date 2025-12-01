@@ -20,7 +20,9 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="card" style="padding: 20px; text-align:center;">
-                                <h3 style="text-align: center;">Alumnos en + de 10 países de LATAM</h3>
+                                <div class="card-header pb-0">
+                                    <h3>Alumnos en + de 10 países de LATAM</h3>
+                                </div>
                                 <p>
                                     Talento que transforma empresas.
                                 </p>
@@ -59,7 +61,7 @@
                                                                         justify-content: center; /* Centra el contenido horizontalmente */
                                                                         align-items: center; /* Centra el contenido verticalmente */
                                                                         /* Propiedades originales */
-                                                                        background: #6a4c93;
+                                                                        background: #e30613;
                                                                         width: 30px;
                                                                         height: 30px;
                                                                         border-radius: 50%;
@@ -76,18 +78,23 @@
                         <div class="col-md-6">
                             <div class="card"
                                 style="padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                                <h3 style="text-align: center;">Expertos en acción</h3>
+                                <div class="card-header pb-0">
+                                    <h3>Expertos en acción</h3>
+                                </div>
                                 <p>
                                     Docentes de Big Four, banca y organismos internacionales.
                                 </p>
-                                <img style="width: 60px; text-align:center;"
-                                    src="themes/webpage/images/capacitacion.png" alt="">
+                                <i class="fa fa-university" aria-hidden="true" style="font-size: 60px;"></i>
+                                {{-- <img style="width: 60px; text-align:center;"
+                                    src="themes/webpage/images/capacitacion.png" alt=""> --}}
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="card"
                                 style="padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                                <h3 style="text-align: center;">Respaldo ACCA</h3>
+                                <div class="card-header pb-0">
+                                    <h3>Respaldo ACCA</h3>
+                                </div>
                                 <p>
                                     Única escuela de negocios peruana reconocida oficialmente.
                                 </p>
@@ -98,12 +105,13 @@
                         <div class="col-md-6">
                             <div class="card"
                                 style="padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                                <h3 style="text-align: center;">Aprendizaje aplicable</h3>
+                                <div class="card-header pb-0">
+                                    <h3>Aprendizaje aplicable</h3>
+                                </div>
                                 <p>
                                     Diseñado para generar impacto inmediato.
                                 </p>
-                                <img style="width: 60px; text-align:center;" src="themes/webpage/images/aprendiz.png"
-                                    alt="">
+                                <i class="fa fa-line-chart" aria-hidden="true" style="font-size: 60px;"></i>
                             </div>
                         </div>
                     </div>
