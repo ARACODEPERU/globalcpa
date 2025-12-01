@@ -53,7 +53,6 @@
                             informes@globalcpaperu.com
                         </li>
                     </ul>
-<<<<<<< Updated upstream
                     <div style="margin-top: 9px; display:flex;">
                         <a target="_blank" href="https://www.facebook.com/globalcpaperu"
                             style="padding: 0px 5px 0px 0px;">
@@ -75,25 +74,6 @@
                         <a target="_blank" href="https://www.youtube.com/@globalcpaperu" style="padding: 0px 5px;">
                             <img style="width: 30px;" src="{{ asset('themes/webpage/images/logos/youtube-round.svg') }}"
                                 alt="flag">
-=======
-                    <div class="social-links">
-                        <a href="https://facebook.com" class="social-link" style="background-color: #3b5998;">
-                            <i class="fa fa-whatsapp"></i>
-                        </a>
-                        <a href="https://facebook.com" class="social-link" style="background-color: #3b5998;">
-                            <i class="fa fa-facebook-f"></i>
-                        </a>
-                        <a href="https://instagram.com" class="social-link" style="background-color: #e1306c;">
-                            <i class="fa fa-instagram"></i>
-                        </a>
-                        <a href="https://twitter.com" class="social-link" style="background-color: #1da1f2;">
-                            <i class="fa fa-tiktok"></i>
-                        </a>
-                        <a href="https://linkedin.com" class="social-link" style="background-color: #0077b5;">
-                            <i class="fa fa-youtube"></i>
->>>>>>> Stashed changes
-                        </a>
-                    </div>
                 </div>
                 <div class="col-md-3" style="padding: 15px;">
                     <a href="{{ route('complaints_book') }}">
