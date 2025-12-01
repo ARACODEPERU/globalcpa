@@ -20,11 +20,13 @@
                     <div class="slider-container">
                         <div class="team-slider">
                             @foreach ($teachers as $k => $teacher)
-                                <div class="team-member" style="cursor: pointer;" data-bs-toggle="modal"
+                                <div class="card" style="cursor: pointer; padding: 10px 5px; text-align: center; width: 320px;" data-bs-toggle="modal"
                                     data-bs-target="#staticBackdrop{{ str_replace(' ', '', $teacher->item->items[0]->content) }}">
                                     <img src="{{ asset('storage/' . $teacher->item->items[3]->content) }}"
-                                        alt="">
+                                        alt="photo">
+                                        <div class="card-header pb-0">
                                     <h3>{{ $teacher->item->items[0]->content }}</h3>
+                                </div>
                                     <p>{{ $teacher->item->items[1]->content }}</p>
                                 </div>
                             @endforeach

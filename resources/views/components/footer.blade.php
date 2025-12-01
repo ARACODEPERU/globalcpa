@@ -10,15 +10,16 @@
                     </h2>
                     <p style="color: #fff;">Valida el certificado GLOBAL CPA ingresando el DNI</p>
 
-                            <div class="btn-showcase">
-                                <a href="{{ route('certificado_validar') }}">
-                                    <button class="btn btn-pill btn-light btn-air-light btn-sm" type="button"
-                                        data-bs-original-title="btn btn-pill btn-light btn-air-light btn-sm">
-                                        <i class="fa fa-certificate"></i>
-                                        Validar Certificado
-                                    </button>
-                                </a>
-                            </div>
+                    <div class="btn-showcase">
+                        <a href="{{ route('certificado_validar') }}" style="color: #fff;">
+                            <button class="btn btn-pill btn-primary btn-air-primary btn-sm" type="button"
+                                data-bs-original-title="btn btn-pill btn-primary btn-air-primary btn-sm">
+
+                                <i class="fa fa-certificate" style="font-size: 18px;"></i>
+                                Validar Certificado
+                            </button>
+                        </a>
+                    </div>
                 </div>
                 <div class="col-md-3" style="padding: 15px;">
                     <h2 style="color: #fff; font-size: 16px; padding-bottom: 10px;"><b>LEGAL</b></h2>
