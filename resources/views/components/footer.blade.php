@@ -44,11 +44,16 @@
                 <div class="col-md-3" style="padding: 15px;">
                     <h2 style="color: #fff; font-size: 16px; padding-bottom: 10px;"><b>CONTÁCTANOS</b></h2>
                     <ul>
-                        <li style="color: #fff; font-size: 16px;"><i class="fa fa-phone-square" aria-hidden="true"></i>
-                            967 052 506</li>
-                        <li style="color: #fff; font-size: 16px;"><i class="fa fa-envelope" aria-hidden="true"></i>
-                            informes@globalcpaperu.com</li>
+                        <li style="color: #fff; font-size: 14px;">
+                            <i class="fa fa-phone-square" aria-hidden="true"></i>
+                            967 052 506
+                        </li>
+                        <li style="color: #fff; font-size: 14px;">
+                            <i class="fa fa-envelope" aria-hidden="true"></i>
+                            informes@globalcpaperu.com
+                        </li>
                     </ul>
+<<<<<<< Updated upstream
                     <div style="margin-top: 9px; display:flex;">
                         <a target="_blank" href="https://www.facebook.com/globalcpaperu"
                             style="padding: 0px 5px 0px 0px;">
@@ -70,6 +75,23 @@
                         <a target="_blank" href="https://www.youtube.com/@globalcpaperu" style="padding: 0px 5px;">
                             <img style="width: 30px;" src="{{ asset('themes/webpage/images/logos/youtube-round.svg') }}"
                                 alt="flag">
+=======
+                    <div class="social-links">
+                        <a href="https://facebook.com" class="social-link" style="background-color: #3b5998;">
+                            <i class="fa fa-whatsapp"></i>
+                        </a>
+                        <a href="https://facebook.com" class="social-link" style="background-color: #3b5998;">
+                            <i class="fa fa-facebook-f"></i>
+                        </a>
+                        <a href="https://instagram.com" class="social-link" style="background-color: #e1306c;">
+                            <i class="fa fa-instagram"></i>
+                        </a>
+                        <a href="https://twitter.com" class="social-link" style="background-color: #1da1f2;">
+                            <i class="fa fa-tiktok"></i>
+                        </a>
+                        <a href="https://linkedin.com" class="social-link" style="background-color: #0077b5;">
+                            <i class="fa fa-youtube"></i>
+>>>>>>> Stashed changes
                         </a>
                     </div>
                 </div>
@@ -82,4 +104,32 @@
             </div>
         </div>
     </footer>
+    <style>
+        .social-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .social-link {
+            margin-top: 10px;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #0077b5; /* Cambia el color según la red social */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            color: white;
+            transition: background-color 0.3s;
+        }
+
+        .social-link:hover {
+            background-color: #005582; /* Color al pasar el ratón */
+        }
+
+        .fa {
+            font-size: 18px; /* Tamaño del icono */
+        }
+    </style>
 </div>
