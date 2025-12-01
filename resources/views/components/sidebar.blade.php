@@ -73,11 +73,7 @@
                                             @endforeach
                                             <li>
                                                 <div class="btn-showcase" style="text-align: center;">
-<<<<<<< Updated upstream
-                                                    <a href=" {{ route('web_courses') }}">
-=======
                                                     <a href="{{ route('web_courses') }}">
->>>>>>> Stashed changes
                                                         <button class="btn btn-pill btn-primary btn-air-primary btn-sm"
                                                             type="button"
                                                             data-bs-original-title="btn btn-pill btn-primary btn-air-primary btn-sm">
@@ -94,11 +90,7 @@
 
                             </ul>
                         </li>
-<<<<<<< Updated upstream
                         {{-- <li class="sidebar-list" style="padding: 15px 0px;">
-=======
-                        <li class="sidebar-list" style="padding: 15px 0px;">
->>>>>>> Stashed changes
                             <a class="sidebar-link sidebar-title" href="{{ route('web_subscriptions') }}">
                                 <span>
                                     <i class="fa fa-briefcase" aria-hidden="true" style="font-size: 26px;"></i><br>
