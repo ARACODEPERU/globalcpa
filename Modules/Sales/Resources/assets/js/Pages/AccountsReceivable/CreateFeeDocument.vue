@@ -52,6 +52,10 @@
         message: {
             type: String,
             default: null,
+        },
+        fromId: {
+            type: String,
+            default: null,
         }
     });
 
@@ -367,9 +371,13 @@
                                 icon: 'info',
                                 padding: '2em',
                                 customClass: 'sweet-alerts',
+                            }).then(() => {
+                                closeMyPopup();
                             });
                         }
                     } else if (result.isDenied) {
+                        closeMyPopup();
+                    } else if (result.isDismissed) {
                         closeMyPopup();
                     }
                 });
@@ -613,7 +621,12 @@
     const closeMyPopup = () => {
         if (window.opener) {
             // Enviar mensaje a la ventana principal
-            window.opener.postMessage("refresh-payment", "*");
+            if(props.fromId == 'v1'){
+                window.opener.postMessage("refresh-payment-all", "*");
+            }else if(props.fromId == 'v2'){
+                window.opener.postMessage("refresh-payment-students", "*");
+            }
+
         }
         window.close();
     }

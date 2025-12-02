@@ -161,12 +161,13 @@ class AccountsReceivableController extends Controller
     }
 
     public function specialRatesStore(Request $request){
+
         $update_id = $request->get('person_id');
 
         $user_id = optional(
             User::where('person_id', $update_id)->first()
         )->id;
-
+            //dd($request->all());
         $this->validate($request, [
             // Validar que al menos venga un curso
             'courses' => ['array', new ValidationRuleCourseSubscriptions],
@@ -196,17 +197,20 @@ class AccountsReceivableController extends Controller
 
             // Campos obligatorios si es factura (sale_document_type = 1)
             'sale_address' => [
-                Rule::requiredIf(fn () => $request->document_type == 6),
+                Rule::requiredIf(fn () => $request->sale_document_type == 1),
+                'nullable',
                 'string',
                 'max:255'
             ],
             'sale_ubigeo_description' => [
-                Rule::requiredIf(fn () => $request->document_type == 6),
+                Rule::requiredIf(fn () => $request->sale_document_type == 1),
+                'nullable',
                 'string',
                 'max:255'
             ],
             'sale_ubigeo' => [
-                Rule::requiredIf(fn () => $request->document_type == 6),
+                Rule::requiredIf(fn () => $request->sale_document_type == 1),
+                'nullable',
                 'string',
                 'max:10'
             ],
@@ -454,7 +458,7 @@ class AccountsReceivableController extends Controller
         }
     }
 
-    public function spaceSalesCreate($id){
+    public function spaceSalesCreate($id, $fromId){
 
         $payments = PaymentMethod::all();
 
@@ -532,7 +536,8 @@ class AccountsReceivableController extends Controller
             'standardIdentityDocument' => $standardIdentityDocument,
             'departments' => $ubigeo,
             'student' => $student,
-            'message' => $msg
+            'message' => $msg,
+            'fromId' => $fromId
         ]);
     }
     private function getNextPendingInstallment($saleId)

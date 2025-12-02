@@ -26,6 +26,10 @@
             if (validateStep()) {
                 currentStep.value++
             }
+            if (currentStep.value === 3){
+                formSale.sale_full_name = formSale.names +' '+formSale.afather+' '+ formSale.amother
+                formSale.number = formSale.alu_number
+            }
         }
     }
 
@@ -286,7 +290,7 @@
             });
 
             // Si es factura (document_type = 1)
-            if (formSale.document_type === 1) {
+            if (formSale.sale_document_type === 1) {
                 const facturaFields = [
                     'sale_address',
                     'sale_ubigeo_description',
