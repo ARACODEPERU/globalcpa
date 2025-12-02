@@ -7,8 +7,8 @@
 
     <!-- Loader starts-->
     <!-- <div class="loader-wrapper">
-                                          <div class="loader"></div>
-                                        </div> -->
+                                                      <div class="loader"></div>
+                                                    </div> -->
     <!-- Loader ends-->
     <!-- tap on top starts-->
     <div class="tap-top"><i data-feather="chevrons-up"></i></div>
@@ -62,10 +62,10 @@
                                 </div> --}}
                                 <div class="card-body">
                                     <div class="row">
-                                        <div class="col-md-6">
+                                        <div class="col-md-8">
                                             <img src="{{ asset('storage/' . $item->course->image) }}" alt="portada_curso">
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <div class="page-title" style="margin-top: 0px;">
                                                 <div class="row">
                                                     <div class="col-sm-12 ps-0">
@@ -73,10 +73,9 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <p class="mt-6" style="font-size: 19px; line-height: 1.3;">
+                                            <p class="mt-4" style="font-size: 19px; line-height: 1.3;">
                                                 {{ $item->description }}
                                             </p>
-                                            <br>
                                             @if ($item->price)
                                                 <h2 style="font-size: 35px; line-height: 1.1; font-weight: 500;">
                                                     S/ {{ $item->price }}
@@ -86,7 +85,6 @@
                                                     Free
                                                 </h2>
                                             @endif
-                                            <br>
                                             <div class="row">
                                                 @if ($item->price)
                                                     <div class="col-md-6" style="padding: 10px 0px;">
@@ -135,67 +133,66 @@
                         </div>
                     </div>
 
-
-                    <main class="main-content w-full px-[var(--margin-x)] pb-8">
-
-                        <div class="modal fade" id="exampleModalToggle" aria-hidden="true"
-                            aria-labelledby="exampleModalToggleLabel" tabindex="-1">
-                            <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h1 class="modal-title fs-5" id="exampleModalToggleLabel">{{ $item->name }}</h1>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <form action="{{ route('apisubscriber') }}" method="post" id="pageContactForm">
-                                            @csrf
-                                            <div class="mb-3">
-                                                <label for="exampleInputName" class="form-label">Nombre Completo</label>
-                                                <input type="text" class="form-control" id="exampleInputName"
-                                                    name="full_name" required>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="exampleInputPhone" class="form-label">Teléfono</label>
-                                                <input type="text" class="form-control" id="exampleInputPhone"
-                                                    name="phone" required>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="exampleInputEmail1" class="form-label">Correo
-                                                    Electrónico</label>
-                                                <input type="email" class="form-control" id="exampleInputEmail1"
-                                                    name="email" required>
-                                            </div>
-                                            <input type="hidden" name="subject" value="{{ $item->name }}">
-                                            <input type="hidden" name="message" value="Descargué el Brochure">
-                                            <button type="submit" class="boton-degradado-courses"
-                                                id="submitPageContactButton">Descargar Brochure</button>
-                                        </form>
-                                    </div>
+                    <div class="modal fade" id="exampleModalToggle" aria-hidden="true"
+                        aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="exampleModalToggleLabel">{{ $item->name }}</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="{{ route('apisubscriber') }}" method="post" id="pageContactForm">
+                                        @csrf
+                                        <div class="mb-3">
+                                            <label for="exampleInputName" class="form-label">Nombre Completo</label>
+                                            <input type="text" class="form-control" id="exampleInputName"
+                                                name="full_name" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="exampleInputPhone" class="form-label">Teléfono</label>
+                                            <input type="text" class="form-control" id="exampleInputPhone" name="phone"
+                                                required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="exampleInputEmail1" class="form-label">Correo
+                                                Electrónico</label>
+                                            <input type="email" class="form-control" id="exampleInputEmail1"
+                                                name="email" required>
+                                        </div>
+                                        <input type="hidden" name="subject" value="{{ $item->name }}">
+                                        <input type="hidden" name="message" value="Descargué el Brochure">
+                                        <button type="submit" class="boton-degradado-courses"
+                                            id="submitPageContactButton">Descargar Brochure</button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
-                        <section style="padding: 30px 0px;">
-                            <div class="container-fluid">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="accordion-aracode">
-                                            <div class="accordion-item-aracode  card">
-                                                <div class="accordion-header-aracode  active" aria-expanded="true">
-                                                    <span class="accordion-icon-aracode">►</span>
-                                                    PRESENTACIÓN
-                                                </div>
-                                                <div class="accordion-content-aracode" aria-hidden="false"
-                                                    style="max-height: 100%; padding: 25px 20px;">
-                                                    @if ($course->brochure)
-                                                        <p class="mt-1" style="font-size: 17px; line-height: 1.3;">
-                                                            {!! $course->brochure->presentation !!}
-                                                        </p>
-                                                    @endif
-                                                    <br>
-                                                </div>
-                                            </div>
-                                            {{-- <div class="accordion-item-aracode">
+                    </div>
+
+                </div>
+
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="accordion-aracode">
+                                <div class="accordion-item-aracode  card">
+                                    <div class="accordion-header-aracode  active" aria-expanded="true">
+                                        <span class="accordion-icon-aracode">►</span>
+                                        PRESENTACIÓN
+                                    </div>
+                                    <div class="accordion-content-aracode" aria-hidden="false"
+                                        style="max-height: 100%; padding: 25px 20px;">
+                                        @if ($course->brochure)
+                                            <p class="mt-1" style="font-size: 17px; line-height: 1.3;">
+                                                {!! $course->brochure->presentation !!}
+                                            </p>
+                                        @endif
+                                        <br>
+                                    </div>
+                                </div>
+                                {{-- <div class="accordion-item-aracode">
                                                 <div class="accordion-header-aracode" aria-expanded="false">
                                                     <span class="accordion-icon-aracode">►</span>
                                                     RUTA DE APRENDIZAJE
@@ -209,205 +206,187 @@
                                                     <br>
                                                 </div>
                                             </div> --}}
-                                            <div class="accordion-item-aracode">
-                                                <div class="accordion-header-aracode" aria-expanded="false">
-                                                    <span class="accordion-icon-aracode">►</span>
-                                                    FACILITADORES
-                                                </div>
-                                                <div class="accordion-content-aracode" aria-hidden="true">
-                                                    @if (count($course->teachers) > 0)
-                                                        @foreach ($course->teachers as $teach)
-                                                            <div class="row" style="margin-bottom: 20px;">
-                                                                <div class="col-md-2">
-                                                                    <a href="">
-                                                                        <img style="width: 150px; margin-bottom: 10px; margin-left: 10px;"
-                                                                            src="{{ asset('storage/' . $teach->teacher->person->image) }}"
-                                                                            alt="img">
-                                                                    </a>
+                                <div class="accordion-item-aracode">
+                                    <div class="accordion-header-aracode" aria-expanded="false">
+                                        <span class="accordion-icon-aracode">►</span>
+                                        FACILITADORES
+                                    </div>
+                                    <div class="accordion-content-aracode" aria-hidden="true">
+                                        @if (count($course->teachers) > 0)
+                                            @foreach ($course->teachers as $teach)
+                                                <div class="row" style="margin-bottom: 20px;">
+                                                    <div class="col-md-2">
+                                                        <a href="">
+                                                            <img style="width: 150px; margin-bottom: 10px; margin-left: 10px;"
+                                                                src="{{ asset('storage/' . $teach->teacher->person->image) }}"
+                                                                alt="img">
+                                                        </a>
+                                                    </div>
+                                                    <div class="col-md-10">
+                                                        <h2 style="font-size: 18px;">
+                                                            <b>
+                                                                {{ $teach->teacher->person->names . ' ' . $teach->teacher->person->father_lastname . ' ' . $teach->teacher->person->mother_lastname }}
+                                                            </b>
+                                                        </h2>
+                                                        @if (count($teach->teacher->person->resumes))
+                                                            @foreach ($teach->teacher->person->resumes as $resume)
+                                                                <div class="list-item-aracode" style="font-size: 17px;">
+                                                                    <span class="list-icon-aracode">•</span>
+                                                                    {{ $resume->description }}
                                                                 </div>
-                                                                <div class="col-md-10">
-                                                                    <h2 style="font-size: 18px;">
-                                                                        <b>
-                                                                            {{ $teach->teacher->person->names . ' ' . $teach->teacher->person->father_lastname . ' ' . $teach->teacher->person->mother_lastname }}
-                                                                        </b>
-                                                                    </h2>
-                                                                    @if (count($teach->teacher->person->resumes))
-                                                                        @foreach ($teach->teacher->person->resumes as $resume)
-                                                                            <div class="list-item-aracode"
-                                                                                style="font-size: 17px;">
-                                                                                <span class="list-icon-aracode">•</span>
-                                                                                {{ $resume->description }}
-                                                                            </div>
-                                                                        @endforeach
-                                                                    @endif
-                                                                </div>
-                                                            </div>
-                                                        @endforeach
-                                                    @endif
-                                                    <br>
+                                                            @endforeach
+                                                        @endif
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
-
-                        <section style="padding: 30px 0px;">
-                            <div class="container">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <h2 class="title_aracode"
-                                            style="font-size: 35px; line-height: 1.5; font-weight: 700; text-align: center; margin-top: 10px; margin-bottom: 30px;">
-                                            INCLUYE
-                                        </h2>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-3">
-                                        <div class="card" style="place-items: center; padding: 40px 10px;">
-                                            <img x-show="!$store.global.isDarkModeEnabled" style="width: 80px;"
-                                                src="{{ asset('themes/webpage/images/icons/chat-en-vivo.png') }}"
-                                                alt="">
-                                            <img x-show="$store.global.isDarkModeEnabled" style="width: 80px;"
-                                                src="{{ asset('themes/webpage/images/icons/chat-en-vivo-blanco.png') }}"
-                                                alt="">
-                                            <p
-                                                style="font-size: 17px; line-height: 1.3; text-align:center; margin-top: 10px;">
-                                                Formación práctica en vivo con atención a tus consultas.
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="card" style="place-items: center; padding: 40px 10px;">
-                                            <img x-show="!$store.global.isDarkModeEnabled" style="width: 80px;"
-                                                src="{{ asset('themes/webpage/images/icons/grabacion.png') }}"
-                                                alt="">
-                                            <img x-show="$store.global.isDarkModeEnabled" style="width: 80px;"
-                                                src="{{ asset('themes/webpage/images/icons/grabacion-blanco.png') }}"
-                                                alt="">
-                                            <p
-                                                style="font-size: 17px; line-height: 1.3; text-align:center; margin-top: 10px;">
-                                                Acceso permanente a las grabaciones de las sesiones desde nuestra
-                                                plataforma.
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="card" style="place-items: center; padding: 40px 10px;">
-                                            <img x-show="!$store.global.isDarkModeEnabled" style="width: 80px;"
-                                                src="{{ asset('themes/webpage/images/icons/descarga-de-archivos.png') }}"
-                                                alt="">
-                                            <img x-show="$store.global.isDarkModeEnabled" style="width: 80px;"
-                                                src="{{ asset('themes/webpage/images/icons/descarga-de-archivos-blanco.png') }}"
-                                                alt="">
-                                            <p
-                                                style="font-size: 17px; line-height: 1.3; text-align:center; margin-top: 10px;">
-                                                Materiales disponibles para descarga inmediata.
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="card" style="place-items: center; padding: 40px 10px;">
-                                            <img x-show="!$store.global.isDarkModeEnabled" style="width: 80px;"
-                                                src="{{ asset('themes/webpage/images/icons/ganador.png') }}"
-                                                alt="">
-                                            <img x-show="$store.global.isDarkModeEnabled" style="width: 80px;"
-                                                src="{{ asset('themes/webpage/images/icons/ganador-blanco.png') }}"
-                                                alt="">
-                                            <p
-                                                style="font-size: 17px; line-height: 1.3; text-align:center; margin-top: 10px;">
-                                                Certificado de <br>participación.
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </section>
-
-                        <section style="padding: 30px 0px;">
-                            <div class="container  card">
-                                <div class="row">
-                                    <div class="col-md-2"></div>
-                                    <div class="col-md-4">
+                                            @endforeach
+                                        @endif
                                         <br>
-                                        <div style="padding: 40px 20px;">
-                                            <h2 class="title_aracode"
-                                                style="font-size: 30px; line-height: 1.5; font-weight: 700; margin-top: 10px; margin-bottom: 10px;">
-                                                ¡Comparte tus logros con un certificado!
-                                            </h2>
-                                            <p style="font-size: 17px; line-height: 1.3; margin-top: 10px;">
-                                                Cuando termines el curso tendrás acceso al certificado digital para
-                                                compartirlo con tu
-                                                familia, amigos, empleadores y la comunidad.
-                                            </p>
-                                        </div>
                                     </div>
-                                    <div class="col-md-4">
-                                        <div style="place-items: center; padding: 40px 20px;">
-                                            <img style="width: 100%;"
-                                                src="{{ asset('themes/webpage/images/certificado.jpeg') }}"
-                                                alt="">
-                                            <p style="font-size: 17px; line-height: 1.3; margin-top: 10px;">
-                                                <b>* IMAGEN REFERENCIAL</b>
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2"></div>
                                 </div>
                             </div>
-                        </section>
+                        </div>
+                    </div>
+                </div>
 
-                        <section class="padding: 30px 0px;">
-                            <div class="container">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h2 class="title_aracode"
+                                style="font-size: 35px; line-height: 1.5; font-weight: 700; text-align: center; margin-top: 10px; margin-bottom: 30px;">
+                                INCLUYE
+                            </h2>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="card" style="place-items: center; padding: 40px 10px;">
+                                <img x-show="!$store.global.isDarkModeEnabled" style="width: 80px;"
+                                    src="{{ asset('themes/webpage/images/icons/chat-en-vivo.png') }}" alt="">
+                                <img x-show="$store.global.isDarkModeEnabled" style="width: 80px;"
+                                    src="{{ asset('themes/webpage/images/icons/chat-en-vivo-blanco.png') }}"
+                                    alt="">
+                                <p style="font-size: 17px; line-height: 1.3; text-align:center; margin-top: 10px;">
+                                    Formación práctica en vivo con atención a tus consultas.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card" style="place-items: center; padding: 40px 10px;">
+                                <img x-show="!$store.global.isDarkModeEnabled" style="width: 80px;"
+                                    src="{{ asset('themes/webpage/images/icons/grabacion.png') }}" alt="">
+                                <img x-show="$store.global.isDarkModeEnabled" style="width: 80px;"
+                                    src="{{ asset('themes/webpage/images/icons/grabacion-blanco.png') }}" alt="">
+                                <p style="font-size: 17px; line-height: 1.3; text-align:center; margin-top: 10px;">
+                                    Acceso permanente a las grabaciones de las sesiones desde nuestra
+                                    plataforma.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card" style="place-items: center; padding: 40px 10px;">
+                                <img x-show="!$store.global.isDarkModeEnabled" style="width: 80px;"
+                                    src="{{ asset('themes/webpage/images/icons/descarga-de-archivos.png') }}"
+                                    alt="">
+                                <img x-show="$store.global.isDarkModeEnabled" style="width: 80px;"
+                                    src="{{ asset('themes/webpage/images/icons/descarga-de-archivos-blanco.png') }}"
+                                    alt="">
+                                <p style="font-size: 17px; line-height: 1.3; text-align:center; margin-top: 10px;">
+                                    Materiales disponibles para descarga inmediata.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card" style="place-items: center; padding: 40px 10px;">
+                                <img x-show="!$store.global.isDarkModeEnabled" style="width: 80px;"
+                                    src="{{ asset('themes/webpage/images/icons/ganador.png') }}" alt="">
+                                <img x-show="$store.global.isDarkModeEnabled" style="width: 80px;"
+                                    src="{{ asset('themes/webpage/images/icons/ganador-blanco.png') }}" alt="">
+                                <p style="font-size: 17px; line-height: 1.3; text-align:center; margin-top: 10px;">
+                                    Certificado de <br>participación.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-                                <div class="row">
-                                    @if ($course->price)
-                                        <div class="col-md-6" style="padding: 10px 0px;">
-                                            <a
-                                                onclick="agregarAlCarrito({ id: {{ $item->id }}, nombre: '{{ $item->name }}', precio: {{ $item->price }} })">
-                                                <button class="boton-degradado-courses">
-                                                    <b>
-                                                        <i class="fa fa-cart-plus" aria-hidden="true"
-                                                            style="font-size: 16px;"></i>
-                                                        &nbsp; Añadir al Carrito
-                                                    </b>
-                                                </button>
-                                            </a>
-                                        </div>
-                                    @else
-                                        <div class="col-md-6" style="padding: 10px 0px;">
-                                            <a href="">
-                                                <button class="boton-degradado-courses">
-                                                    <b>
-                                                        <i class="fa fa-edit" aria-hidden="true"
-                                                            style="font-size: 16px;"></i>
-                                                        &nbsp; Registrarme
-                                                    </b>
-                                                </button>
-                                            </a>
-                                        </div>
-                                    @endif
-                                    @if ($course->brochure->path_file)
-                                        <div class="col-md-6" style="padding: 10px 0px;">
-                                            <button class="boton-degradado-info" data-bs-target="#exampleModalToggle"
-                                                data-bs-toggle="modal">
+                <div class="container-fluid  card">
+                    <div class="row">
+                        <div class="col-md-2"></div>
+                        <div class="col-md-4">
+                            <br>
+                            <div style="padding: 40px 20px;">
+                                <h2 class="title_aracode"
+                                    style="font-size: 30px; line-height: 1.5; font-weight: 700; margin-top: 10px; margin-bottom: 10px;">
+                                    ¡Comparte tus logros con un certificado!
+                                </h2>
+                                <p style="font-size: 17px; line-height: 1.3; margin-top: 10px;">
+                                    Cuando termines el curso tendrás acceso al certificado digital para
+                                    compartirlo con tu
+                                    familia, amigos, empleadores y la comunidad.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div style="place-items: center; padding: 40px 20px;">
+                                <img style="width: 100%;" src="{{ asset('themes/webpage/images/certificado.jpeg') }}"
+                                    alt="">
+                                <p style="font-size: 17px; line-height: 1.3; margin-top: 10px;">
+                                    <b>* IMAGEN REFERENCIAL</b>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-md-2"></div>
+                    </div>
+                </div>
+
+                <main class="main-content w-full px-[var(--margin-x)] pb-8">
+                    <section class="padding: 30px 0px;">
+                        <div class="container">
+
+                            <div class="row">
+                                @if ($course->price)
+                                    <div class="col-md-6" style="padding: 10px 0px;">
+                                        <a
+                                            onclick="agregarAlCarrito({ id: {{ $item->id }}, nombre: '{{ $item->name }}', precio: {{ $item->price }} })">
+                                            <button class="boton-degradado-courses">
+                                                <b>
+                                                    <i class="fa fa-cart-plus" aria-hidden="true"
+                                                        style="font-size: 16px;"></i>
+                                                    &nbsp; Añadir al Carrito
+                                                </b>
+                                            </button>
+                                        </a>
+                                    </div>
+                                @else
+                                    <div class="col-md-6" style="padding: 10px 0px;">
+                                        <a href="">
+                                            <button class="boton-degradado-courses">
                                                 <b>
                                                     <i class="fa fa-edit" aria-hidden="true"
                                                         style="font-size: 16px;"></i>
-                                                    &nbsp; Descargar brochure
+                                                    &nbsp; Registrarme
                                                 </b>
                                             </button>
-                                        </div>
-                                    @endif
+                                        </a>
+                                    </div>
+                                @endif
+                                @if ($course->brochure->path_file)
+                                    <div class="col-md-6" style="padding: 10px 0px;">
+                                        <button class="boton-degradado-info" data-bs-target="#exampleModalToggle"
+                                            data-bs-toggle="modal">
+                                            <b>
+                                                <i class="fa fa-edit" aria-hidden="true" style="font-size: 16px;"></i>
+                                                &nbsp; Descargar brochure
+                                            </b>
+                                        </button>
+                                    </div>
+                                @endif
 
-                                </div>
                             </div>
-                        </section>
+                        </div>
+                    </section>
 
-                    </main>
-                </div>
+                </main>
             </div>
         </div>
         <!-- footer start-->
