@@ -7,8 +7,8 @@
 
     <!-- Loader starts-->
     <!-- <div class="loader-wrapper">
-                          <div class="loader"></div>
-                        </div> -->
+                                          <div class="loader"></div>
+                                        </div> -->
     <!-- Loader ends-->
     <!-- tap on top starts-->
     <div class="tap-top"><i data-feather="chevrons-up"></i></div>
@@ -28,82 +28,116 @@
             <x-sidebar />
             <!-- Page Sidebar Ends-->
             <div class="page-body">
-                <div class="container-fluid"></div>
+                {{-- <div class="container-fluid">
+                    <div class="page-title">
+                        <div class="row">
+                            <div class="col-sm-12 ps-0">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item">
+                                        <a href="">
+                                            <svg class="stroke-icon">
+                                                <use
+                                                    href="{{ asset('themes/webpage/assets/svg/icon-sprite.svg#stroke-home') }}">
+                                                </use>
+                                            </svg>
+                                        </a>
+                                    </li>
+                                    <li class="breadcrumb-item">Learning</li>
+                                    <li class="breadcrumb-item active">Detailed Course</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div> --}}
+                <br><br>
                 <div class="container-fluid">
-
-
-                    <main class="main-content w-full px-[var(--margin-x)] pb-8">
-
-                        <section style="padding: 20px;">
-                            <div class="mx-auto mt-8 grid w-full grid-cols-1 gap-4 sm:grid-cols-1 sm:gap-5 lg:gap-6">
-                                <div class="mx-auto mt-8 grid w-full grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:gap-6">
-                                    <div style="place-items: center;">
-                                        <img src="{{ asset('storage/' . $item->course->image) }}" alt="">
-                                    </div>
-                                    <div class="p-4 sm:p-5">
-                                        <br>
-                                        <h1 class="title_aracode"
-                                            style="font-size: 45px; line-height: 1.1; font-weight: 700;">
-                                            {{ $item->name }}
-                                        </h1>
-                                        <p class="mt-6" style="font-size: 19px; line-height: 1.3;">
-                                            {{ $item->description }}
-                                        </p>
-                                        <br>
-                                        @if ($item->price)
-                                            <h2 style="font-size: 35px; line-height: 1.1; font-weight: 500;">
-                                                S/ {{ $item->price }}
-                                            </h2>
-                                        @else
-                                            <h2 style="font-size: 35px; line-height: 1.1; font-weight: 500;">
-                                                Free
-                                            </h2>
-                                        @endif
-                                        <br>
-                                        <div class="row">
-                                            @if ($item->price)
-                                                <div class="col-md-6" style="padding: 10px 0px;">
-                                                    <a
-                                                        onclick="agregarAlCarrito({ id: {{ $item->id }}, nombre: '{{ $item->name }}', precio: {{ $item->price }} })">
-                                                        <button class="boton-degradado-courses">
-                                                            <b>
-                                                                <i class="fa fa-cart-plus" aria-hidden="true"
-                                                                    style="font-size: 16px;"></i>
-                                                                &nbsp; Añadir al Carrito
-                                                            </b>
-                                                        </button>
-                                                    </a>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                {{-- <div class="card-header pb-0">
+                                    <h3><i class="icofont icofont-library me-2"></i> Icon In Heading</h3>
+                                    <p class="f-m-light mt-1">Use the any icons for heading.
+                                        <code>[font-awesome/ico-font/feather]</code>.
+                                    </p>
+                                </div> --}}
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <img src="{{ asset('storage/' . $item->course->image) }}" alt="portada_curso">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <br>
+                                            <div class="page-title">
+                                                <div class="row">
+                                                    <div class="col-sm-12 ps-0">
+                                                        <h1 class="ara_title">{{ $item->name }}</h1>
+                                                    </div>
                                                 </div>
+                                            </div>
+                                            <p class="mt-6" style="font-size: 19px; line-height: 1.3;">
+                                                {{ $item->description }}
+                                            </p>
+                                            <br>
+                                            @if ($item->price)
+                                                <h2 style="font-size: 35px; line-height: 1.1; font-weight: 500;">
+                                                    S/ {{ $item->price }}
+                                                </h2>
                                             @else
-                                                <div class="col-md-6" style="padding: 10px 0px;">
-                                                    <a href="">
-                                                        <button class="boton-degradado-courses">
+                                                <h2 style="font-size: 35px; line-height: 1.1; font-weight: 500;">
+                                                    Free
+                                                </h2>
+                                            @endif
+                                            <br>
+                                            <div class="row">
+                                                @if ($item->price)
+                                                    <div class="col-md-6" style="padding: 10px 0px;">
+                                                        <a
+                                                            onclick="agregarAlCarrito({ id: {{ $item->id }}, nombre: '{{ $item->name }}', precio: {{ $item->price }} })">
+                                                            <button class="boton-degradado-courses">
+                                                                <b>
+                                                                    <i class="fa fa-cart-plus" aria-hidden="true"
+                                                                        style="font-size: 16px;"></i>
+                                                                    &nbsp; Añadir al Carrito
+                                                                </b>
+                                                            </button>
+                                                        </a>
+                                                    </div>
+                                                @else
+                                                    <div class="col-md-6" style="padding: 10px 0px;">
+                                                        <a href="">
+                                                            <button class="boton-degradado-courses">
+                                                                <b>
+                                                                    <i class="fa fa-edit" aria-hidden="true"
+                                                                        style="font-size: 16px;"></i>
+                                                                    &nbsp; Registrarme
+                                                                </b>
+                                                            </button>
+                                                        </a>
+                                                    </div>
+                                                @endif
+                                                @if ($course->brochure->path_file)
+                                                    <div class="col-md-6" style="padding: 10px 0px;">
+                                                        <button class="boton-degradado-info"
+                                                            data-bs-target="#exampleModalToggle" data-bs-toggle="modal">
                                                             <b>
                                                                 <i class="fa fa-edit" aria-hidden="true"
                                                                     style="font-size: 16px;"></i>
-                                                                &nbsp; Registrarme
+                                                                &nbsp; Descargar Brochure
                                                             </b>
                                                         </button>
-                                                    </a>
-                                                </div>
-                                            @endif
-                                            @if ($course->brochure->path_file)
-                                                <div class="col-md-6" style="padding: 10px 0px;">
-                                                    <button class="boton-degradado-info"
-                                                        data-bs-target="#exampleModalToggle" data-bs-toggle="modal">
-                                                        <b>
-                                                            <i class="fa fa-edit" aria-hidden="true"
-                                                                style="font-size: 16px;"></i>
-                                                            &nbsp; Descargar Brochure
-                                                        </b>
-                                                    </button>
-                                                </div>
-                                            @endif
+                                                    </div>
+                                                @endif
+                                            </div>
+
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </section>
+                        </div>
+                    </div>
+
+
+                    <main class="main-content w-full px-[var(--margin-x)] pb-8">
 
                         <div class="modal fade" id="exampleModalToggle" aria-hidden="true"
                             aria-labelledby="exampleModalToggleLabel" tabindex="-1">
