@@ -7,8 +7,8 @@
 
     <!-- Loader starts-->
     <!-- <div class="loader-wrapper">
-                                                      <div class="loader"></div>
-                                                    </div> -->
+                                                              <div class="loader"></div>
+                                                            </div> -->
     <!-- Loader ends-->
     <!-- tap on top starts-->
     <div class="tap-top"><i data-feather="chevrons-up"></i></div>
@@ -66,14 +66,14 @@
                                             <img src="{{ asset('storage/' . $item->course->image) }}" alt="portada_curso">
                                         </div>
                                         <div class="col-md-4">
-                                            <div class="page-title" style="margin-top: 0px;">
+                                            <div style="padding: 0px;">
                                                 <div class="row">
                                                     <div class="col-sm-12 ps-0">
                                                         <h1 class="ara_title">{{ $item->name }}</h1>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <p class="mt-4" style="font-size: 19px; line-height: 1.3;">
+                                            <p style="font-size: 19px; line-height: 1.3;">
                                                 {{ $item->description }}
                                             </p>
                                             @if ($item->price)
@@ -249,12 +249,15 @@
                 </div>
 
                 <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <h2 class="title_aracode"
-                                style="font-size: 35px; line-height: 1.5; font-weight: 700; text-align: center; margin-top: 10px; margin-bottom: 30px;">
-                                INCLUYE
-                            </h2>
+                    <div class="page-title">
+                        <div class="row">
+                            <div class="col-sm-3 pe-0">
+                            </div>
+                            <div class="col-sm-6 ps-0">
+                                <h1 class="ara_title">INCLUYE</h1>
+                            </div>
+                            <div class="col-sm-3 pe-0">
+                            </div>
                         </div>
                     </div>
                     <div class="row">
@@ -313,12 +316,14 @@
                     <div class="row">
                         <div class="col-md-2"></div>
                         <div class="col-md-4">
-                            <br>
-                            <div style="padding: 40px 20px;">
-                                <h2 class="title_aracode"
-                                    style="font-size: 30px; line-height: 1.5; font-weight: 700; margin-top: 10px; margin-bottom: 10px;">
-                                    ¡Comparte tus logros con un certificado!
-                                </h2>
+                            <div style="padding: 20px 20px;">
+                                <div class="page-title">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <h1 class="ara_title">¡Comparte tus logros con un certificado!</h1>
+                                        </div>
+                                    </div>
+                                </div>
                                 <p style="font-size: 17px; line-height: 1.3; margin-top: 10px;">
                                     Cuando termines el curso tendrás acceso al certificado digital para
                                     compartirlo con tu
