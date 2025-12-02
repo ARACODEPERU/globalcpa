@@ -66,8 +66,7 @@
                                             <img src="{{ asset('storage/' . $item->course->image) }}" alt="portada_curso">
                                         </div>
                                         <div class="col-md-6">
-                                            <br>
-                                            <div class="page-title">
+                                            <div class="page-title" style="margin-top: 0px;">
                                                 <div class="row">
                                                     <div class="col-sm-12 ps-0">
                                                         <h1 class="ara_title">{{ $item->name }}</h1>
