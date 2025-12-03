@@ -56,7 +56,7 @@
                                     <span>{{ $userName }}</span>
 
                                     <p class="mb-0 font-nunito">
-                                        @if (Auth::user()->role === 'Alumno')
+                                        @if (Auth::user()->hasRole(['Alumno']))
                                             Alumno
                                         @else
                                             Docente
