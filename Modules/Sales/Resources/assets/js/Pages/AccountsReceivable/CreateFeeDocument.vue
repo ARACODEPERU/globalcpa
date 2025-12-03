@@ -817,8 +817,8 @@
                                         </td> -->
                                         <td class="text-primary border-b border-blue-400">
                                             <!-- <span>{{ item.title }}</span> -->
-                                            <!-- <textarea class="form-textarea text-primary" rows="6" v-model="item.description"></textarea> -->
-                                             {{ item.description }}
+                                            <textarea class="form-textarea text-primary" rows="6" v-model="item.description"></textarea>
+                                            <!-- {{ item.description }} -->
                                         </td>
                                         <td class="text-primary text-right border-b border-blue-400 w-20 px-1">{{ item.quantity }}</td>
                                         <td class="text-primary text-right border-b border-blue-400">
