@@ -645,8 +645,22 @@ class AccountsReceivableController extends Controller
 
                 $forma_pago = $request->get('forma_pago');
 
+                $existingPayments = $sale->payments ? json_decode($sale->payments , true) : [];
+
+                // Obtener el nuevo pago enviado desde el request
+                $newPayments = $request->get('payments');
+
+                // Asegurar que sea un array
+                if (!is_array($newPayments)) {
+                    $newPayments = [$newPayments];
+                }
+
                 if ($forma_pago && $forma_pago === 'Contado') {
-                    $sale->payments = json_encode($request->get('payments'));
+                    // Mezclar pagos anteriores + nuevos
+                    $updatedPayments = array_merge($existingPayments, $newPayments);
+
+                    // Guardar nuevamente como JSON
+                    $sale->payments = json_encode($updatedPayments);
                     $sale->save();
                 }
 
@@ -788,8 +802,6 @@ class AccountsReceivableController extends Controller
 
                     $total_tax = $igv;
 
-                    $classEntity = null;
-
                     //se inserta los datos al detalle del documento
                     SaleDocumentItem::create([
                         'document_id'           => $document->id,
@@ -812,7 +824,7 @@ class AccountsReceivableController extends Controller
                         'mto_total'             => round($unit_price * $produc['quantity'], 2),
                         'mto_discount'          => $mto_discount ?? 0,
                         'json_discounts'        => json_encode($array_discounts),
-                        'entity_name_product'   => $classEntity
+                        'entity_name_product'   => SalePaymentSchedule::class
                     ]);
 
                     $mto_igv = $mto_igv + $igv; //total del igv
@@ -840,7 +852,7 @@ class AccountsReceivableController extends Controller
                         'amount_paid'      => $newAmountPaid,
                         'remaining_amount' => $newRemaining,
                         'document_id'      => $document->id,
-                        'is_paid'          => $isPaid
+                        'is_paid'          => $isPaid,
                     ]);
 
                 }

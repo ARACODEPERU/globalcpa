@@ -675,7 +675,9 @@
                                     {{ formatDate(row.invoice_broadcast_date) }}
                                 </td>
                                 <td class="px-6 py-4 text-justify hyphens-auto">
-                                    {{ row.items[0].decription_product }}
+                                    <template v-if="row.items.length > 0">
+                                        {{ row.items[0].decription_product }}
+                                    </template>
                                 </td>
                                 <td class="px-6 py-4 text-right">
                                     {{ row.overall_total }}
