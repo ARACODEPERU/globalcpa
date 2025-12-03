@@ -42,8 +42,8 @@ import { bottom } from "@popperjs/core";
 
     const messageAlert = ref(null);
     const getExpiringItems = () => {
-        const c = props.expiring.courses;
-        const s = props.expiring.subscriptions;
+        const c = props.expiring.courses ?? [];
+        const s = props.expiring.subscriptions ?? [];
 
         if (c.length > 0 || s.length > 0) {
 
