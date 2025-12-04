@@ -1,7 +1,7 @@
-<script  setup>
+<script setup>
     import AppLayout from "@/Layouts/Vristo/AppLayout.vue";
-    import { Link  } from '@inertiajs/vue3';
-    import { ref, onMounted  } from 'vue';
+    import { Link } from '@inertiajs/vue3';
+    import { ref, onMounted, computed } from 'vue'; // 👈 Importamos 'computed'
     import { usePage } from '@inertiajs/vue3';
     import { useAppStore } from '@/stores/index';
     import Swal from "sweetalert2";
@@ -11,7 +11,6 @@
     const page = usePage();
     const store = useAppStore();
     const publicKey = ref(null);
-
 
     const props = defineProps({
         courses: {
@@ -116,37 +115,47 @@
         });
     }
 
-    const coursesData = ref(null);
+    // 1. Inicializamos con un arreglo vacío
+    const selectedCourses = ref([]);
 
+    // 2. Propiedad computada para ordenar los cursos seleccionados
+    const orderedCoursesData = computed(() => {
+        if (!selectedCourses.value) {
+            return [];
+        }
+
+        // Creamos una copia y ordenamos.
+        // Queremos 'can_view: true' (1) antes que 'can_view: false' (0).
+        // Usamos b.can_view - a.can_view para orden DESCENDENTE.
+        return [...selectedCourses.value].sort((a, b) => {
+            return b.can_view - a.can_view;
+        });
+    });
+
+    // 3. Modificamos la función changeSelectCourses para asignar a 'selectedCourses'
     const changeSelectCourses = (courses, index = 0) => {
         if(index != 99){
-            coursesData.value = courses;
-        }else{
-            coursesData.value = props.mycourses;
+            // Cuando se selecciona un tipo específico de curso (p.ej., Diplomado)
+            selectedCourses.value = courses;
+        } else {
+            // Cuando se selecciona "Todos"
+            selectedCourses.value = props.mycourses;
         }
     }
 
+    // 4. Montar y establecer los cursos iniciales a 'mycourses'
     onMounted(() => {
-        changeSelectCourses(props.mycourses, 0);
+        changeSelectCourses(props.mycourses, 99); // Usamos 99 para seleccionar 'Todos' al inicio
     });
 </script>
 
 <template>
     <AppLayout title="Mis Cursos">
-        <ul class="flex space-x-2 rtl:space-x-reverse">
-            <li>
-                <a href="javascript:;" class="text-primary hover:underline">Académico</a>
-            </li>
-            <li class="before:content-['/'] ltr:before:mr-1 rtl:before:ml-1">
-                <span>Cursos Disponibles</span>
-            </li>
-        </ul>
         <div class="pt-5">
             <div class="grid gap-6"
                 :class="P000019 == true ? 'grid-cols-6' : ''"
             >
                 <section :class="P000019 == true ? 'col-span-6 sm:col-span-4' : 'w-full'">
-                    <!-- justify pills -->
                     <div class="w-[40%] mb-6">
                         <select class="form-select px-4 py-3 text-base">
                             <option :value="'Todos'" @click="changeSelectCourses(null, 99)">Todos</option>
@@ -156,7 +165,8 @@
                         </select>
                     </div>
                     <div class="grid sm:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-6 sm:gap-6 lg:gap-4">
-                        <template v-for="(course, index) in coursesData">
+
+                        <template v-for="(course, index) in orderedCoursesData">
                             <article class="rounded-xl bg-white p-3 shadow-lg hover:shadow-xl hover:transform hover:scale-105 duration-300 dark:bg-gray-900">
                                 <template v-if="course.can_view">
                                     <Link :href="route('aca_mycourses_lessons',course.id)">
@@ -171,7 +181,6 @@
                                     </Link>
                                 </template>
                                 <template v-else>
-
                                     <div class="relative flex items-end overflow-hidden justify-center rounded-xl">
                                         <img :src="getImage(course.image)" alt="Hotel Photo" class="max-h-[105.05px]" />
                                     </div>
@@ -232,6 +241,7 @@
 
     </AppLayout>
 </template>
+
 <style>
 .etiquet-price {
     background: #fdbd4a;
