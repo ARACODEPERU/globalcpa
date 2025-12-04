@@ -652,7 +652,7 @@ class WebPageController extends Controller
         }
 
 
-
+        //dd($request->all());
 
         $productids = $request->get('item_id');
 
