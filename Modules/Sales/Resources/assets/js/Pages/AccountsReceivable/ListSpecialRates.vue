@@ -9,10 +9,9 @@
     import { faGears } from "@fortawesome/free-solid-svg-icons";
     import { ref, watch, onMounted, nextTick } from "vue";
     import Navigation from '@/Components/vristo/layout/Navigation.vue';
-    import { TransitionRoot, TransitionChild, Dialog, DialogPanel, DialogOverlay } from '@headlessui/vue';
     import textWriting from '@/Components/loader/text-writing.vue';
     import iconExcel from '@/Components/vristo/icon/icon-excel.vue';
-
+    import { Dropdown, Menu, MenuItem } from 'ant-design-vue';
 
     const props = defineProps({
         sales: {
@@ -404,27 +403,27 @@
                                         <td class="text-center">
                                             <div class="flex gap-4 items-center justify-center">
                                                 <div class="dropdown">
-                                                    <Popper :placement="'bottom-start'" offsetDistance="0" class="align-middle">
+                                                    <Dropdown>
                                                         <button type="button" class="btn btn-outline-primary px-2 py-2 dropdown-toggle">
                                                             <font-awesome-icon :icon="faGears" />
                                                         </button>
-                                                        <template #content="{ close }">
-                                                        <ul @click="close()" class="whitespace-nowrap">
-                                                            <li>
-                                                                <a @click="openModalDetails(item)" href="javascript:;">Ver detalles</a>
-                                                            </li>
-                                                            <li>
-                                                                <a @click="openModalCronograma(item)" href="javascript:;">Ver cronograma</a>
-                                                            </li>
-                                                            <li>
-                                                                <a @click="openModalDocuments(item)" href="javascript:;" class="text-red-600 hover:text-red-800">Ver Documentos de venta</a>
-                                                            </li>
-                                                            <li>
-                                                                <a @click="openDialogCreateFeeDocument(item)" href="javascript:;" class="text-blue-600 underline hover:text-blue-800 visited:text-purple-700" >Registrar pago</a>
-                                                            </li>
-                                                        </ul>
+                                                        <template #overlay>
+                                                            <Menu>
+                                                                <MenuItem>
+                                                                    <a @click="openModalDetails(item)" href="javascript:;">Ver detalles</a>
+                                                                </MenuItem>
+                                                                <MenuItem>
+                                                                    <a @click="openModalCronograma(item)" href="javascript:;">Ver cronograma</a>
+                                                                </MenuItem>
+                                                                <MenuItem>
+                                                                    <a @click="openModalDocuments(item)" href="javascript:;" class="text-red-600 hover:text-red-800">Ver Documentos de venta</a>
+                                                                </MenuItem>
+                                                                <MenuItem>
+                                                                    <a @click="openDialogCreateFeeDocument(item)" href="javascript:;" class="text-blue-600 underline hover:text-blue-800 visited:text-purple-700" >Registrar pago</a>
+                                                                </MenuItem>
+                                                            </Menu>
                                                         </template>
-                                                    </Popper>
+                                                    </Dropdown>
                                                 </div>
                                             </div>
                                         </td>

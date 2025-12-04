@@ -94,14 +94,6 @@ class AccountsReceivableController extends Controller
             ->toJson();
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request): RedirectResponse
-    {
-        //
-    }
-
 
     public function specialRates(){
 
@@ -114,7 +106,7 @@ class AccountsReceivableController extends Controller
                 $query->whereDate('created_at', '=', $search);
             })
             ->orderBy('id', 'DESC')
-            ->paginate(20);
+            ->paginate(1);
 
         return Inertia::render('Sales::AccountsReceivable/ListSpecialRates', [
             'sales' => $sales,
