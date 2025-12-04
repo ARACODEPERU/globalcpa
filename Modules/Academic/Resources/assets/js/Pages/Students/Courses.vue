@@ -155,9 +155,6 @@
                 :class="P000019 == true ? 'grid-cols-6' : ''"
             >
                 <section :class="P000019 == true ? 'col-span-6 sm:col-span-4' : 'w-full'">
-<<<<<<< HEAD
-
-
                     <ul class="flex flex-wrap items-center text-sm font-medium text-center text-body mb-6">
                         <li class="me-2">
                             <a
@@ -200,16 +197,7 @@
                             </li>
                         </template>
                     </ul>
-=======
-                    <div class="w-[40%] mb-6">
-                        <select class="form-select px-4 py-3 text-base">
-                            <option :value="'Todos'" @click="changeSelectCourses(props.mycourses, 99)">Todos</option>
-                            <template v-for="(type, key) in courses">
-                                <option :value="type.type_description" @click="changeSelectCourses(type.courses, key)">{{ type.type_description }}</option>
-                            </template>
-                        </select>
-                    </div>
->>>>>>> 06731f1d96ee05f45b20661f3fe069b69ad770cb
+
                     <div class="grid sm:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-6 sm:gap-6 lg:gap-4">
 
                         <template v-for="(course, index) in orderedCoursesData" :key="course.id">
