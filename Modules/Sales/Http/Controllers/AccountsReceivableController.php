@@ -106,7 +106,7 @@ class AccountsReceivableController extends Controller
                 $query->whereDate('created_at', '=', $search);
             })
             ->orderBy('id', 'DESC')
-            ->paginate(1);
+            ->paginate(20);
 
         return Inertia::render('Sales::AccountsReceivable/ListSpecialRates', [
             'sales' => $sales,
