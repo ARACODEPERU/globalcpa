@@ -112,6 +112,7 @@ class PersonController extends Controller
 
     public function saveUpdateOrCreate(Request $request)
     {
+        // --- PASO 1: Validar el formato básico y los campos requeridos ---
         $this->validate($request, [
             'document_type' => 'required',
             'number' => 'required',
@@ -121,17 +122,51 @@ class PersonController extends Controller
             'email' => [
                 'nullable',
                 'email',
-                Rule::unique('people')->where(function ($query) use ($request) {
-                    return $query
-                        ->where('document_type_id', '!=', $request->input('document_type'))
-                        ->orWhere('number', '!=', $request->input('number'));
-                })
+                // Rule::unique('people')->where(function ($query) use ($request) {
+                //     return $query
+                //         ->where('document_type_id', '!=', $request->input('document_type'))
+                //         ->orWhere('number', '!=', $request->input('number'));
+                // })
             ],
         ]);
 
         $ubigeo = $request->input('ubigeo');
         $ubigeo_description = $request->input('ubigeo_description');
 
+        // --- PASO 2: Determinar si el registro existe (Edición) ---
+
+        // Buscar si ya existe una persona con la clave de búsqueda
+        $existingPerson = Person::where([
+            'document_type_id' => $request->input('document_type'),
+            'number' => $request->input('number'),
+        ])->first();
+
+        $isEditing = (bool) $existingPerson; // True si se encontró el registro (es edición)
+        $personId = $existingPerson ? $existingPerson->id : null;
+
+
+        // --- PASO 3: Lógica para anular el email si está duplicado ---
+
+        $emailToProcess = $request->input('email');
+        $email = $request->input('email');
+
+        if ($emailToProcess) {
+            // 1. Iniciar la consulta para buscar el email
+            $duplicateEmailQuery = Person::where('email', $emailToProcess);
+
+            // 2. Si estamos en modo EDICIÓN, excluimos a la persona actual de la búsqueda de duplicados.
+            if ($isEditing) {
+                $duplicateEmailQuery->where('id', '!=', $personId);
+            }
+
+            // 3. Ejecutar la búsqueda de duplicados
+            if ($duplicateEmailQuery->exists()) {
+                // ¡El email está en uso por otra persona! Lo anulamos.
+                $email = null;
+            }
+        }
+
+        // --- PASO 4: Ejecutar updateOrCreate con los datos modificados ---
         $person = Person::updateOrCreate(
             [
                 'document_type_id' => $request->input('document_type'),
@@ -140,7 +175,7 @@ class PersonController extends Controller
             [
                 'full_name' => trim($request->input('full_name')),
                 'telephone' => $request->input('telephone'),
-                'email' => $request->input('email'),
+                'email' => $email,
                 'address' => $request->input('address'),
                 'is_client' => $request->boolean('is_client'),
                 'is_provider' => $request->boolean('is_provider'),
