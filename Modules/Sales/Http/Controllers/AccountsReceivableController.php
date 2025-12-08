@@ -34,6 +34,8 @@ use Modules\Academic\Entities\AcaStudentSubscription;
 use Modules\Academic\Entities\AcaSubscriptionType;
 use Modules\Sales\Entities\SalePaymentSchedule;
 use Modules\Sales\Rules\ValidationRuleCourseSubscriptions;
+use Modules\Sales\Emails\CuotasMail;
+use Illuminate\Support\Facades\Mail;
 
 class AccountsReceivableController extends Controller
 {
@@ -207,6 +209,7 @@ class AccountsReceivableController extends Controller
                 'max:10'
             ],
         ]);
+        $sale_note=null;
 
         try {
             $res = DB::transaction(function () use ($request) {
@@ -345,8 +348,8 @@ class AccountsReceivableController extends Controller
                         SaleProduct::create([
                             'sale_id' => $sale_note->id,
                             'product_id' => $suscription['id'],
-                            'product' => json_encode($xSuscription),
-                            'saleProduct' => json_encode($suscription),
+                            'product' => json_encode($xSuscription), //producto original
+                            'saleProduct' => json_encode($suscription), //producto modificado o no(este va)
                             'price' => $suscription['price'],
                             'discount' => 0,
                             'quantity' => 1,
@@ -440,7 +443,23 @@ class AccountsReceivableController extends Controller
                     // Siguiente mes
                     $date->addMonth();
                 }
+
+
+                 //enviar correo con credenciales y cronograma de pagos
+
+                //  $sale = Sale::with(['saleProduct', 'client'])
+                //  ->where('id', $sale_note->id)
+                //  ->first();
+                 $name = Person::where('id', $sale_note->client_id)->first()->short_name;
+                 $cronograma = SalePaymentSchedule::where('sale_id', $sale_note->id)->get();
+
+                 Mail::to($request->get('email'))
+                 ->send(new CuotasMail($sale_note, $name, $cronograma));
+
             });
+
+
+
 
 
             //return response()->json($res);
