@@ -161,7 +161,7 @@
         </h1>
         <p>{{ $person }},
             Gracias por tu compra. La transacción ha sido registrada sin inconvenientes, luego se te enviará los comprobantes de pago.
-            Aqui tienes un cronograma de pagos en cuotas.
+            Aqui tienes un resumen de los productos que adquiriste y un cronograma de pagos.
         </p>
         <p>
             Para comenzar, aquí tienes tus datos de acceso a nuestra plataforma
