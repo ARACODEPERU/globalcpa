@@ -16,6 +16,7 @@
     import flatPickr from 'vue-flatpickr-component';
     import 'flatpickr/dist/flatpickr.css';
     import { Spanish } from "flatpickr/dist/l10n/es.js"
+    import iconMail from '@/Components/vristo/icon/icon-mail.vue';
 
     const props = defineProps({
         sales: {
@@ -396,7 +397,84 @@
         displayModalExportStatus.value = false;
     }
 
+    const sendEmailDocument = (sale, email) => {
+        Swal.fire({
+            icon: 'question',
+            title: '¿Estas seguro?',
+            html: createFormSendEmail(sale, email),
+            showCloseButton: true,
+            showCancelButton: true,
+            focusConfirm: false,
+            confirmButtonText: 'Aceptar',
+            cancelButtonText: 'Cancelar',
+            padding: '2em',
+            customClass: 'sweet-alerts',
+            showLoaderOnConfirm: true,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            backdrop: true,
+            preConfirm: async (input) => {
+                let inputEmailSend = document.getElementById("ctnTextSendEmailDocument").value;
+                let resp = null;
+                if(inputEmailSend){
+                    resp = axios.post(route('aca_send_email_student_document'), {
+                        person_email: inputEmailSend,
+                        person_name: sale.client_rzn_social,
+                        document_id: sale.id,
+                        onlisaleId: null
+                    },
+                    {
+                        timeout: 0,
+                    }).then((res) => {
+                        if (!res.data.success) {
+                            Swal.showValidationMessage(res.data.alert)
+                        }
+                        return res
+                    });
+                }else{
+                    Swal.showValidationMessage('El correo electrónico es obligatorio.')
+                }
+                return resp;
+            },
+            allowOutsideClick: () => !Swal.isLoading()
+        }).then((res) => {
+            console.log();
+            if (res.isConfirmed) {
+                showMessage('El mensaje se envió correctamente.');
+            }
+            refreshTable();
+        });
 
+    }
+
+    const createFormSendEmail = (sale, email) => {
+
+        let formHTML = document.createElement('form');
+        formHTML.classList.add('max-w-sm', 'mx-auto');
+
+        let rParrafo = document.createElement('p');
+        rParrafo.classList.add('text-center','text-lg','mt-4');
+        rParrafo.innerHTML = 'Se enviará un mensaje con el documento de venta <b>' + sale.invoice_serie + '-' + sale.invoice_correlative +'</b> adjunto';
+
+        let rLabel = document.createElement('label');
+        rLabel.setAttribute('for', 'ctnTextSendEmailDocument');
+        rLabel.classList.add('text-left','text-sm','mt-4');
+        rLabel.textContent = 'Correo Electronico';
+
+        let rInput = document.createElement('input');
+        rInput.id = 'ctnTextSendEmailDocument';
+        rInput.value = email;
+        rInput.classList.add(
+            'form-input'
+        );
+        rInput.required = true;
+        formHTML.appendChild(rParrafo);
+        formHTML.appendChild(rLabel);
+        formHTML.appendChild(rInput);
+
+        return formHTML;
+
+    }
 </script>
 
 <template>
@@ -435,7 +513,6 @@
                                             Exportar Excel
                                         </button>
                                         <Link :href="route('acco_sales_special_rates_create')" class="btn btn-primary uppercase text-xs">Nuevo</Link>
-
                                     </template>
                                 </Keypad>
                             </div>
@@ -729,6 +806,9 @@
                         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
                                 <th scope="col" class="px-6 py-3">
+                                    Acción
+                                </th>
+                                <th scope="col" class="px-6 py-3">
                                     serie-número
                                 </th>
                                 <th scope="col" class="px-6 py-3">
@@ -744,6 +824,13 @@
                         </thead>
                         <tbody v-if="saleDocuments.documents.length > 0">
                             <tr v-for="(row, key) in saleDocuments.documents" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                <td class="text-center">
+                                    <div class="flex items-center ">
+                                        <button @click="sendEmailDocument(row, saleDocuments.client.email)" type="button">
+                                            <iconMail class="w-5 h-5" />
+                                        </button>
+                                    </div>
+                                </td>
                                 <td>
                                     <a @click="downloadDocument(row.id,row.invoice_type_doc,'PDF')" href="javascript:;" class="text-blue-600 underline hover:text-blue-800 visited:text-purple-700">{{ row.invoice_serie+'-'+row.invoice_correlative }}</a>
                                 </td>
