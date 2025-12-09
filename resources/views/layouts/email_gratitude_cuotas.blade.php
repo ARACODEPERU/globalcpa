@@ -159,12 +159,14 @@
             <img style="width: 25px;" data-emoji="🎉" class="an1" alt="🎉" aria-label="🎉" draggable="false"
                 src="https://fonts.gstatic.com/s/e/notoemoji/16.0/1f389/32.png" loading="lazy">
         </h1>
-        <p>{{ $data->clie_full_name }},
-            Gracias por tu compra. La transacción ha sido registrada sin inconvenientes. proximamente enviaremos el comprobante de pago
+        <p>{{ $person }},
+            Gracias por tu compra. La transacción ha sido registrada sin inconvenientes, luego se te enviará los comprobantes de pago.
+            Aqui tienes un resumen de los productos que adquiriste y un cronograma de pagos.
         </p>
         <p>
             Para comenzar, aquí tienes tus datos de acceso a nuestra plataforma
         </p>
+
 
         <table style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; margin: 20px 0;">
             <!-- Header azul suave -->
@@ -181,16 +183,16 @@
 
             <!-- Cuerpo de la tabla -->
             <tbody>
-                @foreach ($data->details as $product)
+                @foreach ($data->saleProduct as $product)
                 <tr>
                     <td style="padding: 12px 15px; border: 1px solid #e5e7eb;">
                         <h4 style="margin: 0; font-size: 16px; font-weight: 600;">
-                            {{ $product->item->name }}
+                            {{ json_decode($product->product)->description }}
                         </h4>
                     </td>
                     <td style="padding: 12px 15px; border: 1px solid #e5e7eb; text-align: right;">
                         <p style="color: #4f46e5; font-size: 16px; font-weight: 700; margin: 0;">
-                            S/. {{ $product->item->price  }}
+                            S/. {{ $product->price }}
                         </p>
                     </td>
                 </tr>
@@ -204,57 +206,86 @@
                         TOTAL:
                     </td>
                     <td style="padding: 15px; text-align: right; color: white; font-weight: bold; font-size: 18px;">
-                        S/. {{
-                            number_format(
-                                $data->details->sum(function ($product) {
-                                    return $product->item->price;
-                                }),
-                            2)
-                        }}
+                        S/. {{ number_format($data->saleProduct->sum('price'), 2) }}
                     </td>
                 </tr>
             </tfoot>
         </table>
 
 
-        {{-- <div class="card-container">
-            @foreach ($data->details as $product)
-            <div class="card">
-                <img width="100%" src="{{ $product->item->image }}" alt="product" />
-                <h4 style="margin-top: 5px;">{{ $product->item->name }}</h4>
-                <p style="color: #4f46e5; font-size: 16px; font-weight: 700; margin-top: -10px;">
-                    S/. {{ $product->item->price }}
-                </p>
-            </div>
-            @endforeach
-            {{-- <div class="card">
-                <img width="100%" src="{{ asset('img/curso.jpeg') }}" alt="product" />
-                <h4 style="margin-top: 5px;">Título del curso y/o programa educativo</h4>
-                <p style="color: #4f46e5; font-size: 16px; font-weight: 700; margin-top: -10px;">
-                    S/. 395.00
-                </p>
-            </div>
-            <div class="card">
-                <img width="100%" src="{{ asset('img/curso.jpeg') }}" alt="product" />
-                <h4 style="margin-top: 5px;">Título del curso y/o programa educativo</h4>
-                <p style="color: #4f46e5; font-size: 16px; font-weight: 700; margin-top: -10px;">
-                    S/. 395.00
-                </p>
-            </div> --}}
-        </div> --}}
+
+
+
 
 
         <div class="card-container">
             <p>
-                👤 Usuario:  {{ $data->email}}
+                👤 Usuario:  {{ $data->client->email}}
                 <br>
-                🔑 {{ $dni }}
+                🔑Contraseña: es su Dni, si aún no lo ha cambiado.
             </p>
             <a href="https://academy.globalcpaperu.com/login" style="margin-top: 20px;">
                 <button class="boton-degradado-campus">Ingresar a la plataforma</button>
             </a>
         </div>
-        <br>
+        <br><hr>
+        CRONOGRAMA DE PAGOS/Paga a tiempo y evita contratiempos
+        <hr>
+        <table style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; margin: 20px 0;">
+            <!-- Header -->
+            <thead>
+                <tr style="background-color: #3498db;">
+                    <th style="padding: 12px 15px; text-align: center; border: 1px solid #3498db; color: #ffffff; font-weight: bold;">
+                        Cuota
+                    </th>
+                    <th style="padding: 12px 15px; text-align: left; border: 1px solid #3498db; color: #ffffff; font-weight: bold;">
+                        Fecha Vencimiento
+                    </th>
+                    <th style="padding: 12px 15px; text-align: right; border: 1px solid #3498db; color: #ffffff; font-weight: bold;">
+                        Monto
+                    </th>
+                </tr>
+            </thead>
+
+            <!-- Cuerpo -->
+            <tbody>
+                @php $total = 0; @endphp
+
+                @foreach ($data->schedules as $schedule)
+                    @php $total += $schedule->amount_to_pay; @endphp
+
+                    <tr>
+                        <td style="padding: 12px 15px; border: 1px solid #e5e7eb; text-align: center; font-weight: bold;">
+                            {{ $schedule->installment_number }}
+                        </td>
+                        <td style="padding: 12px 15px; border: 1px solid #e5e7eb;">
+                            @if($schedule->payment_date)
+                                {{ \Carbon\Carbon::parse($schedule->payment_date)->format('d/m/Y') }}
+                            @else
+                                <span style="color: #95a5a6;">Sin fecha</span>
+                            @endif
+                        </td>
+                        <td style="padding: 12px 15px; border: 1px solid #e5e7eb; text-align: right; font-weight: bold; color: #4f46e5;">
+                            S/. {{ number_format($schedule->amount_to_pay, 2) }}
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+
+            <!-- Footer -->
+            <tfoot>
+                <tr style="background-color: #2c3e50;">
+                    <td colspan="2" style="padding: 15px; text-align: right; color: white; font-weight: bold; font-size: 16px;">
+                        TOTAL CUOTAS:
+                    </td>
+                    <td style="padding: 15px; text-align: right; color: white; font-weight: bold; font-size: 18px;">
+                        S/. {{ number_format($total, 2) }}
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+
+
         <p>
             <b>Tu acceso ya está habilitado.</b> <br>
             Puedes ingresar ahora y comenzar a vivir la experiencia.<br><br>
@@ -266,10 +297,11 @@
 
             <b>Confianza y respaldo técnico</b><br>
             Formarás parte de una escuela respaldada por profesionales con experiencia en <b>firmas líderes</b>, y reconocida como <b>Approved Learning Partner (ALP) de ACCA</b>. Este estándar garantiza rigurosidad técnica y aplicabilidad práctica desde el primer día.
-            <br><br>
+            <br>
             <b>Soporte inmediato</b><br>
-            Si necesitas asistencia, puedes escribirnos en todo momento al WhatsApp: <b>+51 967 052 506</b>.<br><br><br>
+            Si necesitas asistencia, puedes escribirnos en todo momento al WhatsApp: <b>+51 967 052 506</b>.<br><br>
             Gracias por confiar en <b>CPA Academy</b>. Estamos comprometidos en acompañarte en cada etapa de tu avance profesional.<br><br>
+
 
             Atentamente,<br><br><br>
 
@@ -283,7 +315,7 @@
         </p>
         <br>
         <footer>
-            <p style="text-align: center; font-size: 15px;">
+            <p style="text-align: center; font-size: 13px;">
                 &copy; Derechos Reservados {{ env('APP_NAME') }} | Desarrollado por <a href="https://aracodeperu.com/"
                     style="">Aracode Smart Solutions</a>
             </p>

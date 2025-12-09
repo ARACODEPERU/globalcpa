@@ -326,7 +326,7 @@
                                             <b>Pagar con tarjeta</b>
                                         </button>
                                         <br>
-                                        <button class="mt-8 boton-degradado-transferencia">
+                                        <button disabled class="mt-8 boton-degradado-transferencia" tittle="PROXIMAMENTE">
                                             <b>TRANSFERENCIA | YAPE ó PLIN</b>
                                         </button>
                                     </form>
@@ -497,7 +497,7 @@
                                                 <b>CREAR CUENTA PARA PAGAR</b>
                                             </button>
                                             <br>
-                                            <button class="mt-8 boton-degradado-transferencia">
+                                            <button disabled class="mt-8 boton-degradado-transferencia" tittle="PROXIMAMENTE">
                                                 <b>TRANSFERENCIA | YAPE ó PLIN</b>
                                             </button>
                                         </div>

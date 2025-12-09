@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Mail;
+namespace Modules\Sales\Emails;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -10,20 +10,21 @@ use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Mail\Mailables\Address;
 
-
-class ConfirmPurchaseMail extends Mailable
+class CuotasMail extends Mailable
 {
     use Queueable, SerializesModels;
 
     public $data;
-    public $dni;
+    public $person;
+    public $cronograma;
     /**
      * Create a new message instance.
      */
-    public function __construct($data, $dni = "")
+    public function __construct($data, $person = "", $cronograma = null)
     {
         $this->data = $data;
-        $this->dni = $dni;
+        $this->person = $person;
+        $this->cronograma = $cronograma;
     }
 
     /**
@@ -36,7 +37,7 @@ class ConfirmPurchaseMail extends Mailable
                 env('MAIL_FROM_ADDRESS', 'informes@globalcpaperu.com'),
                 env('MAIL_FROM_NAME', 'CPA Academy')
             ),
-            subject: 'Gracias por estar con nosotros - ' . env('APP_NAME', 'Global CPA'),
+            subject: 'Gracias por estar con nosotros - ' . env('APP_NAME', 'CPA Academy'),
         );
     }
 
@@ -46,10 +47,11 @@ class ConfirmPurchaseMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'layouts.email_gratitude',
+            view: 'layouts.email_gratitude_cuotas',
             with: [
                 'data' => $this->data,
-                'dni' => $this->dni,
+                'person' => $this->person,
+                'cronograma' => $this->cronograma,
             ],
         );
     }
