@@ -232,7 +232,23 @@ Detalle de tu compra
 
         <div class="card-container">
 
-            <a href="https://academy.globalcpaperu.com/login" style="margin-top: 20px;">
+            <a href="https://academy.globalcpaperu.com/login" style="
+            /* Estilos de fondo azul */
+            background-color: ##4947ce;
+            border: 1px solid ##4947ce;
+            /* Padding (espacio) para que parezca botón */
+            padding: 10px 20px;
+            /* Color y decoración del texto */
+            color: #ffffff;
+            text-decoration: none;
+            /* Esquinas redondeadas (opcional) */
+            border-radius: 5px;
+            /* Display inline-block para que el padding y margen funcionen bien */
+            display: inline-block;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 20px;
+        ">
                 <button class="boton-degradado-campus">Ingresar a la plataforma</button>
             </a>
         </div>
