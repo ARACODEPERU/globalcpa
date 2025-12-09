@@ -249,8 +249,8 @@ Puedes ingresar ahora y comenzar a vivir la experiencia.<br><br>
 
 <b>Confianza y respaldo técnico</b><br>
 Formarás parte de una escuela respaldada por profesionales con experiencia en <b>firmas líderes</b>, y reconocida como <b>Approved Learning Partner (ALP) de ACCA</b>. Este estándar garantiza rigurosidad técnica y aplicabilidad práctica desde el primer día.
-<br>
-<b>Soporte inmediato</b><br>
+<br><br>
+<b>Soporte inmediato</b><br><br>
 Si necesitas asistencia, puedes escribirnos en todo momento al WhatsApp: <b>+51 967 052 506</b>.<br>
 Gracias por confiar en <b>CPA Academy</b>. Estamos comprometidos en acompañarte en cada etapa de tu avance profesional.<br><br>
 
