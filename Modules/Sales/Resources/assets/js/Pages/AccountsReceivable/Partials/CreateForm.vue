@@ -14,7 +14,7 @@
     import iconLoader from '@/Components/vristo/icon/icon-loader.vue';
     import InputLabel from '@/Components/InputLabel.vue';
     import previewInvoice from './previewInvoice.vue';
-    import IconTrash from '@/Components/vristo/icon/icon-trash.vue';
+    import iconSave from '@/Components/vristo/icon/icon-save.vue';
 
     const disReset = ref(true);
     const isFinalStep = ref(false);
@@ -142,9 +142,14 @@
 
     onMounted(() => {
         filteredCountries.value = props.countries;
-        filteredCourses.value = props.courses.filter(
+            const filtered = props.courses.filter(
             course => course.type_description === selectType.value
         );
+
+        // Si no se encontró ninguno, mostrar todos
+        filteredCourses.value = filtered.length > 0
+            ? filtered
+            : props.courses;
     });
 
     const normalizeText = (text) => {

@@ -263,4 +263,22 @@
 .bg-info-100 {
     background-color: var(--color-info-200) !important;
 }
+.bg-teal-500 {
+    background-color: var(--color-teal-500) !important;
+}
+.text-blue-600{
+    color: var(--color-blue-600) !important;
+}
+.text-blue-800{
+    color: var(--color-blue-800) !important;
+}
+.text-purple-700 {
+    color: var(--color-purple-700) !important;
+}
+.dark .dark-forces-gray-700{
+    background-color: var(--color-gray-700) !important;
+}
+.dark .dark-forces-blue-900 {
+    background-color: var(--color-blue-900) !important;
+}
 

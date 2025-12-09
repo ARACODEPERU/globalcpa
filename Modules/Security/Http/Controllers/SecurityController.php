@@ -2,6 +2,7 @@
 
 namespace Modules\Security\Http\Controllers;
 
+use App\Models\User;
 use FilesystemIterator;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
@@ -93,54 +94,37 @@ class SecurityController extends Controller
         ];
     }
 
-    /**
-     * Store a newly created resource in storage.
-     * @param Request $request
-     * @return Renderable
-     */
-    public function store(Request $request)
+    public function usersOnline()
     {
-        //
+        // cantidad por página (puedes cambiarlo o recibirlo por parámetro)
+        $perPage = 10;
+
+        // paginar desde la BD (MUY IMPORTANTE si tienes cientos o miles)
+        $users = User::paginate($perPage);
+
+        // transformar la data manteniendo la estructura de la paginación
+        $users->getCollection()->transform(function ($user) {
+
+            $online = $user->isOnline();
+            $lastActivity = $user->lastActivity();
+
+            return [
+                'id' => $user->id,
+                'name' => $user->name,
+                'online' => $online,
+                'last_activity' =>
+                    $online
+                        ? 'En línea'
+                        : ($lastActivity
+                            ? \Carbon\Carbon::parse($lastActivity)->diffForHumans()
+                            : 'Sin actividad'),
+                'avatar' => $user->avatar,
+            ];
+        });
+
+        return response()->json([
+            'usersOnline' => $users
+        ]);
     }
 
-    /**
-     * Show the specified resource.
-     * @param int $id
-     * @return Renderable
-     */
-    public function show($id)
-    {
-        return view('security::show');
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     * @param int $id
-     * @return Renderable
-     */
-    public function edit($id)
-    {
-        return view('security::edit');
-    }
-
-    /**
-     * Update the specified resource in storage.
-     * @param Request $request
-     * @param int $id
-     * @return Renderable
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     * @param int $id
-     * @return Renderable
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }

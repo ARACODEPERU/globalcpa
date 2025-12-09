@@ -30,4 +30,6 @@ Route::middleware('auth')->prefix('security')->group(function () {
     Route::get('dashboard/storage/indicator', [SecurityController::class, 'storageIndicador'])->name('security_storage_indicator');
 
     Route::get('table/permissions', [PermissionController::class, 'getData'])->name('security_permissions_data');
+
+    Route::get('user/activity/online', [SecurityController::class, 'usersOnline'])->name('security_users_online');
 });
