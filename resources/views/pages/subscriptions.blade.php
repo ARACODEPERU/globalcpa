@@ -49,13 +49,13 @@
                         <div class="col-span-12 lg:col-span-8">
                             <div class="card">
                                 <div
-                                    class="items-center space-y-4 border-b border-slate-200 
+                                    class="items-center space-y-4 border-b border-slate-200
                             p-4 dark:border-navy-500 sm:flex-row sm:justify-between sm:space-y-0 sm:px-5">
                                     <h2 class="text-lg font-medium tracking-wide text-slate-700 dark:text-navy-100">
                                         POTENCIA TU CRECIMIENTO PROFESIONAL Y FORTAMECE TU EQUIPO CON FORMACIÓN ESTRATÉGICA.
                                     </h2>
                                     <p>
-                                        La suscripción anual de Global CPA Business School te conecta con conocimientos
+                                        La suscripción anual de CPA Academy te conecta con conocimientos
                                         de alto nivel, asesoría especializada y una comunidad de expertos que impulsan
                                         tu desarrollo.
                                     </p>
