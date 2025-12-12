@@ -1,11 +1,3 @@
-.view-pc {
-    display: block;
-}
-
-.view-movile {
-    display: none;
-}
-
 .logo_header {
     width: 280px;
 }
@@ -59,16 +51,19 @@
 
 @media (max-width: 680px) {
     .logo_header {
-        width: 150px;
+        width: 90px;
     }
-
+}
+@media (max-width: 320px) {
+    .logo_header {
+        width: 50px; /* Further reduce logo size for very small screens */
+    }
     .view-pc {
-        display: none;
+        display: none !important;
     }
-
     .view-movile {
-        display: block;
-    }
+        display: block !important;
+    } 
 }
 
 .title_aracode {
@@ -292,4 +287,22 @@
 }
 
 @media (max-width: 1600px) {
+}
+
+/* Default styles for mobile */
+.view-pc {
+    display: none !important;
+}
+.view-movile {
+    display: block !important;
+}
+
+/* Styles for desktop (1200px and up) */
+@media (min-width: 1200px) {
+    .view-pc {
+        display: block !important;
+    }
+    .view-movile {
+        display: none !important;
+    }
 }

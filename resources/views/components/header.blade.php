@@ -1,5 +1,5 @@
 <div>
-    <div class="page-header">
+    <div class="page-header view-pc">
         <div class="header-wrapper row">
             <div class="logo-wrapper">
                 <a href="{{ route('index_main') }}">
@@ -31,7 +31,7 @@
                         </div>
                     </li>
                     @auth
-                        <li class="profile-nav onhover-dropdown pe-0 py-0">
+                        <li class="profile-nav onhover-dropdown pe-0 py-0 view-pc">
                             <div class="d-flex align-items-center profile-media">
 
                                 @php
@@ -72,13 +72,52 @@
                                 data-bs-original-title="btn btn-pill btn-primary btn-air-primary btn-sm">
                                 Iniciar sesión
                             </button>
+                        </a> 
+                        <a href="{{ route('login') }}"  class="view-movile">
+                            <button class="view-movile btn btn-pill btn-primary btn-air-primary btn-sm" type="button">
+                                <i class="fa fa-key"></i>
+                            </button>
                         </a>
-                        <a href="{{ route('login') }}" class="view-movile">
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="page-header view-movile">
+        <div class="header-wrapper row">
+            <div class="logo-wrapper">
+                <a href="{{ route('index_main') }}">
+                    <img class="img-fluid" src="{{ asset('themes/webpage/assets/images/logo/logo.png') }}" alt="Logo">
+                </a>
+            </div>
+            <svg class="stroke-icon toggle-sidebar">
+                <use class="status_toggle middle sidebar-toggle"
+                    href="{{ asset('themes/webpage/assets/svg/icon-sprite.svg#Grid') }}">
+                </use>
+            </svg>
+            
+            <img class="logo_header" src="{{ asset('themes/webpage/images/Logo_cpa_modificado.png') }}" alt="">
+            
+<div class="nav-right col-auto p-0 ms-auto">
+    
+                <ul class="" style="width: 100%">
+                    <li class="cart-nav">
+                        <div class="cart-box" style="top: 0px; padding: 0px 10px;">
+                            <a href="{{ route('web_carrito') }}">
+                                <i class="fa fa-cart-plus" aria-hidden="true" style="font-size: 46px;">
+                                    <span class="cart-count contador" id="contadorCarritoWeb">0</span>
+                                    <span id="contadorCarritoMovil" hidden
+                                        style="color: white; display: none;"></span></i>
+                            </a>
+                        </div>
+                    </li>
+                    <li>
+                        <a href="{{ route('login') }}">
                             <button class="btn btn-pill btn-primary btn-air-primary btn-sm" type="button"
                                 data-bs-original-title="btn btn-pill btn-primary btn-air-primary btn-sm">
                                 Login
                             </button>
-                        </a>
+                        </a> 
                     </li>
                 </ul>
             </div>
