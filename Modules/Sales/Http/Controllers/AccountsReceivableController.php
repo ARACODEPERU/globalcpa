@@ -39,6 +39,9 @@ use Modules\Sales\Jobs\PaymentDestinations;
 use Modules\Sales\Rules\ValidationRuleCourseSubscriptions;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Builder;
+use Modules\Sales\Emails\CuotasMail;
+use Illuminate\Support\Facades\Mail;
+
 class AccountsReceivableController extends Controller
 {
     private $ubl;
