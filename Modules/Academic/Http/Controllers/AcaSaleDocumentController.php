@@ -377,7 +377,6 @@ class AcaSaleDocumentController extends Controller
 
         try {
 
-            //dd($data);
             Mail::to(trim($person_email))->send(new StudentElectronicTicket($data));
 
             $success = true;
@@ -419,15 +418,25 @@ class AcaSaleDocumentController extends Controller
         }
 
         try {
+
             $format = 'A4';
-            $boleta = new Boleta();
-            $factura = new Factura();
+
+            $document = SaleDocument::find($id);
+
+            if($document->invoice_type_doc == '01'){
+                $factura = new Factura();
+                $resb = $factura->getFacturaDomPdf($id, $format); //metodo para generar pdf
+                $resF = $factura->getFacturaXML($id);
+            }elseif($document->invoice_type_doc == '03'){
+                $boleta = new Boleta();
+                $resb = $boleta->getBoletatDomPdf($id, $format);
+            }
+
             // Intentar obtener la boleta
-            $resb = $boleta->getBoletatDomPdf($id, $format); //metodo para generar pdf
-            $resF = $factura->getFacturaXML($id); // para generar el xml
+            // para generar el xml
             // Verificar si se obtuvo un resultado válido
             if (!$resb) {
-                throw new \Exception("No se pudo generar la boleta.");
+                throw new \Exception("No se pudo generar la documento de venta.");
             }
 
             return array(
