@@ -326,9 +326,9 @@
                                             <b>Pagar con tarjeta</b>
                                         </button>
                                         <br>
-                                        <button disabled class="mt-8 boton-degradado-transferencia" tittle="PROXIMAMENTE">
+                                        {{-- <button disabled class="mt-8 boton-degradado-transferencia" tittle="PROXIMAMENTE">
                                             <b>TRANSFERENCIA | YAPE ó PLIN</b>
-                                        </button>
+                                        </button> --}}
                                     </form>
                                 @else
                                     <form class="form" method="POST" action="{{ route('paying') }}" id="CartForm">
@@ -497,9 +497,9 @@
                                                 <b>CREAR CUENTA PARA PAGAR</b>
                                             </button>
                                             <br>
-                                            <button disabled class="mt-8 boton-degradado-transferencia" tittle="PROXIMAMENTE">
+                                            {{-- <button disabled class="mt-8 boton-degradado-transferencia" tittle="PROXIMAMENTE">
                                                 <b>TRANSFERENCIA | YAPE ó PLIN</b>
-                                            </button>
+                                            </button> --}}
                                         </div>
                                     </form>
                                 @endauth
