@@ -1,7 +1,8 @@
 @extends('layouts.webpage')
 
 @section('content')
-
+{{-- Ideally, this CSS should be in the <head> of your main layout file (e.g., layouts/webpage.blade.php) --}}
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
 
 
@@ -27,7 +28,7 @@
             <!-- Page Sidebar Start-->
             <x-sidebar />
             <!-- Page Sidebar Ends-->
-            <div class="page-body">
+            <div class="page-body" x-data>
                 {{-- <div class="container-fluid">
                     <div class="page-title">
                         <div class="row">
@@ -52,7 +53,7 @@
                 <br><br>
                 <div class="container-fluid">
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-12" data-aos="fade-in">
                             <div class="card">
                                 {{-- <div class="card-header pb-0">
                                     <h3><i class="icofont icofont-library me-2"></i> Icon In Heading</h3>
@@ -175,7 +176,7 @@
 
                 <div class="container-fluid">
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-12" data-aos="fade-up">
                             <div class="accordion-aracode">
                                 <div class="accordion-item-aracode  card">
                                     <div class="accordion-header-aracode  active" aria-expanded="true">
@@ -248,7 +249,7 @@
                     </div>
                 </div>
 
-                <div class="container-fluid">
+                <div class="container-fluid" data-aos="fade-up">
                     <div class="page-title">
                         <div class="row">
                             <div class="col-sm-3 pe-0">
@@ -261,49 +262,34 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-3">
+                        <div class="col-md-3" data-aos="fade-up" data-aos-delay="0">
                             <div class="card" style="place-items: center; padding: 40px 10px;">
-                                <img x-show="!$store.global.isDarkModeEnabled" style="width: 80px;"
-                                    src="{{ asset('themes/webpage/images/icons/chat-en-vivo.png') }}" alt="">
-                                <img x-show="$store.global.isDarkModeEnabled" style="width: 80px;"
-                                    src="{{ asset('themes/webpage/images/icons/chat-en-vivo-blanco.png') }}"
-                                    alt="">
-                                <p style="font-size: 17px; line-height: 1.3; text-align:center; margin-top: 10px;">
+                                <i style="font-size: 90px;" class="fa fa-chalkboard-teacher mb-1" :class="$store.global.isDarkModeEnabled ? 'text-gray-100' : 'text-gray-800'"></i>
+                                <p style="font-size: 17px; line-height: 1.3; text-align:center; margin-top: 0px;">
                                     Formación práctica en vivo con atención a tus consultas.
                                 </p>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-3" data-aos="fade-up" data-aos-delay="100">
                             <div class="card" style="place-items: center; padding: 40px 10px;">
-                                <img x-show="!$store.global.isDarkModeEnabled" style="width: 80px;"
-                                    src="{{ asset('themes/webpage/images/icons/grabacion.png') }}" alt="">
-                                <img x-show="$store.global.isDarkModeEnabled" style="width: 80px;"
-                                    src="{{ asset('themes/webpage/images/icons/grabacion-blanco.png') }}" alt="">
-                                <p style="font-size: 17px; line-height: 1.3; text-align:center; margin-top: 10px;">
+                                <i style="font-size: 90px;"  class="fa fa-video-camera mb-1" :class="$store.global.isDarkModeEnabled ? 'text-gray-100' : 'text-gray-800'"></i>
+                                <p style="font-size: 17px; line-height: 1.3; text-align:center; margin-top: 0px;">
                                     Acceso permanente a las grabaciones de las sesiones desde nuestra
                                     plataforma.
                                 </p>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-3" data-aos="fade-up" data-aos-delay="200">
                             <div class="card" style="place-items: center; padding: 40px 10px;">
-                                <img x-show="!$store.global.isDarkModeEnabled" style="width: 80px;"
-                                    src="{{ asset('themes/webpage/images/icons/descarga-de-archivos.png') }}"
-                                    alt="">
-                                <img x-show="$store.global.isDarkModeEnabled" style="width: 80px;"
-                                    src="{{ asset('themes/webpage/images/icons/descarga-de-archivos-blanco.png') }}"
-                                    alt="">
+                                <i style="font-size: 90px;" class="fa fa-download mb-1" :class="$store.global.isDarkModeEnabled ? 'text-gray-100' : 'text-gray-800'"></i>
                                 <p style="font-size: 17px; line-height: 1.3; text-align:center; margin-top: 10px;">
                                     Materiales disponibles para descarga inmediata.
                                 </p>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-3" data-aos="fade-up" data-aos-delay="300">
                             <div class="card" style="place-items: center; padding: 40px 10px;">
-                                <img x-show="!$store.global.isDarkModeEnabled" style="width: 80px;"
-                                    src="{{ asset('themes/webpage/images/icons/ganador.png') }}" alt="">
-                                <img x-show="$store.global.isDarkModeEnabled" style="width: 80px;"
-                                    src="{{ asset('themes/webpage/images/icons/ganador-blanco.png') }}" alt="">
+                                <i style="font-size: 90px;"  class="fa fa-certificate mb-1" :class="$store.global.isDarkModeEnabled ? 'text-gray-100' : 'text-gray-800'"></i>
                                 <p style="font-size: 17px; line-height: 1.3; text-align:center; margin-top: 10px;">
                                     Certificado de <br>participación.
                                 </p>
@@ -312,7 +298,7 @@
                     </div>
                 </div>
 
-                <div class="container-fluid  card">
+                <div class="container-fluid  card" data-aos="fade-up">
                     <div class="row">
                         <div class="col-md-2"></div>
                         <div class="col-md-4">
@@ -344,7 +330,7 @@
                     </div>
                 </div>
 
-                <main class="main-content w-full px-[var(--margin-x)] pb-8">
+                <main class="main-content w-full px-[var(--margin-x)] pb-8" data-aos="fade-up">
                     <section class="padding: 30px 0px;">
                         <div class="container">
 
@@ -404,6 +390,16 @@
 
     <!-- Sidebar -->
     {{-- <x-slidebar /> --}}
+
+    {{-- Ideally, this JS should be at the end of your <body> in the main layout file --}}
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            mirror: true, // This makes animations trigger on scroll up as well
+            duration: 800, // Animation duration
+            once: false // Ensures animation happens every time you scroll to it
+        });
+    </script>
 
 
     <script>

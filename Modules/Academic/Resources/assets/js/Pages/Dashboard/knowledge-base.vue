@@ -6,6 +6,8 @@
     import IconSearch from '@/Components/vristo/icon/icon-search.vue';
     import IconArrowForward from '@/Components/vristo/icon/icon-arrow-forward.vue';
     import { Tour } from 'ant-design-vue';
+    import AOS from 'aos';
+    import 'aos/dist/aos.css';
     import LastRegisteredCourse from "../../Components/LastRegisteredCourse.vue";
     import { Drawer } from 'ant-design-vue';
 import { bottom } from "@popperjs/core";
@@ -124,6 +126,12 @@ import { bottom } from "@popperjs/core";
             open.value = true; // Mostrar el tour por primera vez
         }
 
+        AOS.init({
+            duration: 800,
+            mirror: true,
+            once: false,
+        });
+
         getExpiringItems();
     });
 
@@ -188,6 +196,7 @@ import { bottom } from "@popperjs/core";
             <div
                 v-if="interests.popularArticles.length > 0"
                 :style="`background-image:url('${urlBasek}themes/vristo/images/knowledge/pattern.png');`"
+                data-aos="fade-in"
                 class="relative rounded-t-md bg-primary-light bg-contain bg-left-top bg-no-repeat px-5 py-10 dark:bg-black md:px-10"
             >
                 <div class="absolute -bottom-1 -end-6 hidden text-[#DBE7FF] rtl:rotate-y-180 dark:text-[#1B2E4B] lg:block xl:end-0">
@@ -329,7 +338,7 @@ import { bottom } from "@popperjs/core";
                     </div>
                 </div>
             </div>
-            <div class="mb-12 flex items-center rounded-b-md bg-[#DBE7FF] dark:bg-[#141F31]">
+            <div data-aos="fade-up" class="mb-12 flex items-center rounded-b-md bg-[#DBE7FF] dark:bg-[#141F31]">
                 <div v-if="articlesData.length > 0" class="mx-auto px-3 py-4.5 xl:gap-8">
                     <p class="text-white-dark font-bold mb-5 text-base">Resultados</p>
                     <template v-for="(art, ixg) in articlesData"class="mb-5">
@@ -374,11 +383,11 @@ import { bottom } from "@popperjs/core";
                     <button type="button" class="btn btn-primary">Chatea con nosotros</button>
                 </div>
             </div> -->
-            <div class="mt-10">
+            <div class="mt-10" data-aos="fade-up">
                 <h3 ref="h3CoursesPopulares" class="mb-6 text-xl font-bold md:text-3xl">Cursos populares</h3>
                 <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
                     <template v-for="(item, index) in interests.popularCourses">
-                        <div class="space-y-5 rounded-md border border-white-light bg-white p-5 shadow-[0px_0px_2px_0px_rgba(145,158,171,0.20),0px_12px_24px_-4px_rgba(145,158,171,0.12)] dark:border-[#1B2E4B] dark:bg-black" >
+                        <div class="space-y-5 rounded-md border border-white-light bg-white p-5 shadow-[0px_0px_2px_0px_rgba(145,158,171,0.20),0px_12px_24px_-4px_rgba(145,158,171,0.12)] dark:border-[#1B2E4B] dark:bg-black" data-aos="fade-up" :data-aos-delay="index * 100">
                             <div class="max-h-56 overflow-hidden rounded-md">
                                 <img :src="`${urlBasek}storage/${item.image}`" alt="..." class="w-full object-cover" />
                             </div>
@@ -402,11 +411,11 @@ import { bottom } from "@popperjs/core";
                 </div>
             </div>
 
-            <div v-if="interests.popularArticles.length > 0" class="mt-10 lg:mt-16">
+            <div v-if="interests.popularArticles.length > 0" class="mt-10 lg:mt-16" data-aos="fade-up">
                 <h3 class="mb-6 text-xl font-bold md:text-3xl">Artículos más buscados</h3>
                 <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
                     <template v-for="(article, i) in  interests.popularArticles" :key="i">
-                        <div class="space-y-5 rounded-md border border-white-light bg-white p-5 shadow-[0px_0px_2px_0px_rgba(145,158,171,0.20),0px_12px_24px_-4px_rgba(145,158,171,0.12)] dark:border-[#1B2E4B] dark:bg-black" >
+                        <div class="space-y-5 rounded-md border border-white-light bg-white p-5 shadow-[0px_0px_2px_0px_rgba(145,158,171,0.20),0px_12px_24px_-4px_rgba(145,158,171,0.12)] dark:border-[#1B2E4B] dark:bg-black" data-aos="fade-up" :data-aos-delay="i * 100">
                             <div class="relative h-[340px] overflow-hidden rounded-md group">
                                 <img :src="article.imagen" alt="video tutorial" class="h-full w-full object-cover cursor-pointer" @click="modal = true" />
                                 <Link
@@ -443,4 +452,3 @@ import { bottom } from "@popperjs/core";
         </Drawer>
     </AppLayout>
 </template>
-

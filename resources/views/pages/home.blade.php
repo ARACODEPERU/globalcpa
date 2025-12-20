@@ -1,7 +1,8 @@
 @extends('layouts.webpage')
 
 @section('content')
-
+{{-- Ideally, this CSS should be in the <head> of your main layout file (e.g., layouts/webpage.blade.php) --}}
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
 
     <!-- Loader starts-->
@@ -28,19 +29,20 @@
             <!-- Page Sidebar Ends-->
             <div class="page-body">
                     <br><br><br>
-                    <x-slider />
-                <x-courses.list-card />
-                <x-eleva />
-                <x-teachers />
-                <x-solutions />
-                <x-clients-logo />
+                <div data-aos="fade-in">
+                     <x-slider />
+                </div>
+                <div data-aos="fade-up"><x-courses.list-card /></div>
+                <div data-aos="fade-up"><x-eleva /></div>
+                <div data-aos="fade-up"><x-teachers /></div>
+                <div data-aos="fade-up"><x-solutions /></div>
+                <div data-aos="fade-up"><x-clients-logo /></div>
                 <br>
             </div>
         </div>
         <!-- footer start-->
         <x-footer />
     </div>
-
 
     <!-- App Header Wrapper-->
     {{-- <x-nav /> --}}
@@ -49,37 +51,14 @@
     {{-- <x-slidebar /> --}}
 
 
-    {{-- <main class="main-content w-full px-[var(--margin-x)] pb-8">
-        <br>
-        <x-slider />
-
-        <div class=" mt-4 w-full transition-all duration-[.25s] sm:mt-5 lg:mt-6">
-            <div class="col-span-12 space-y-4 sm:space-y-5 lg:col-span-12 lg:space-y-6 xl:col-span-12">
-                <div class="flex items-center justify-between">
-                    <h3 class="text-xl font-medium text-slate-800 dark:text-navy-50">
-                        Formación que trasciende fronteras
-                    </h3>
-                </div>
-                <x-courses.list-card />
-                <br>
-                <a href="{{ route('web_courses') }}">
-                    <button class="boton-degradado-courses">
-                        <b>
-                            <i class="fa fa-graduation-cap" aria-hidden="true" style="font-size: 18px;"></i>
-                            &nbsp; Webinar / Cursos Taller / Programas de Especialización
-                        </b>
-                    </button>
-                </a>
-            </div>
-        </div>
-
-        <x-social-networks />
-
-        <x-footer />
-
-
-
-    </main> --}}
+    {{-- Ideally, this JS should be at the end of your <body> in the main layout file --}}
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            mirror: true, // This makes animations trigger on scroll up as well
+            duration: 800, // Animation duration
+        });
+    </script>
 
     <script>
         let currentIndex = 0;
