@@ -370,8 +370,8 @@ class AcaSaleDocumentController extends Controller
             'for_name' => $person_name,
             'file_path' => $dataFile["pdf"]['filePath'],
             'file_name' => $dataFile["pdf"]['fileName'],
-            'xml_file_path' => $dataFile["xml"]['filePath'],
-            'xml_file_name' => $dataFile["xml"]['fileName'],
+            'xml_file_path' => $dataFile["xml"] ? $dataFile["xml"]['filePath'] : null,
+            'xml_file_name' => $dataFile["xml"] ? $dataFile["xml"]['fileName'] : null,
             'document_id'   => $document_id,
         ];
 
@@ -422,7 +422,7 @@ class AcaSaleDocumentController extends Controller
             $format = 'A4';
 
             $document = SaleDocument::find($id);
-
+            $resF = array();
             if($document->invoice_type_doc == '01'){
                 $factura = new Factura();
                 $resb = $factura->getFacturaDomPdf($id, $format); //metodo para generar pdf

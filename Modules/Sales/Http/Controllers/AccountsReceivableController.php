@@ -41,7 +41,6 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Builder;
 use Modules\Sales\Emails\CuotasMail;
 use Illuminate\Support\Facades\Mail;
-
 class AccountsReceivableController extends Controller
 {
     private $ubl;
@@ -257,6 +256,7 @@ class AccountsReceivableController extends Controller
                 'max:10'
             ],
         ]);
+        $sale_note=null;
 
         $sale_note = null;
 
@@ -503,12 +503,10 @@ class AccountsReceivableController extends Controller
                 //  $sale = Sale::with(['saleProduct', 'client'])
                 //  ->where('id', $sale_note->id)
                 //  ->first();
+                $name = Person::where('id', $sale_note->client_id)->first()->short_name;
+                $cronograma = SalePaymentSchedule::where('sale_id', $sale_note->id)->get();
 
-                 $name = Person::where('id', $sale_note->client_id)->first()->short_name;
-                 $cronograma = SalePaymentSchedule::where('sale_id', $sale_note->id)->get();
-
-                 Mail::to($request->get('email'))
-                 ->send(new CuotasMail($sale_note, $name, $cronograma));
+                Mail::to($request->get('email'))->send(new CuotasMail($sale_note, $name, $cronograma));
 
 
             });
