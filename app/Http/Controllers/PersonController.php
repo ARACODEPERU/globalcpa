@@ -112,7 +112,6 @@ class PersonController extends Controller
 
     public function saveUpdateOrCreate(Request $request)
     {
-        // --- PASO 1: Validar el formato básico y los campos requeridos ---
         $this->validate($request, [
             'document_type' => 'required',
             'number' => 'required',
@@ -122,51 +121,17 @@ class PersonController extends Controller
             'email' => [
                 'nullable',
                 'email',
-                // Rule::unique('people')->where(function ($query) use ($request) {
-                //     return $query
-                //         ->where('document_type_id', '!=', $request->input('document_type'))
-                //         ->orWhere('number', '!=', $request->input('number'));
-                // })
+                Rule::unique('people')->where(function ($query) use ($request) {
+                    return $query
+                        ->where('document_type_id', '!=', $request->input('document_type'))
+                        ->orWhere('number', '!=', $request->input('number'));
+                })
             ],
         ]);
 
         $ubigeo = $request->input('ubigeo');
         $ubigeo_description = $request->input('ubigeo_description');
 
-        // --- PASO 2: Determinar si el registro existe (Edición) ---
-
-        // Buscar si ya existe una persona con la clave de búsqueda
-        $existingPerson = Person::where([
-            'document_type_id' => $request->input('document_type'),
-            'number' => $request->input('number'),
-        ])->first();
-
-        $isEditing = (bool) $existingPerson; // True si se encontró el registro (es edición)
-        $personId = $existingPerson ? $existingPerson->id : null;
-
-
-        // --- PASO 3: Lógica para anular el email si está duplicado ---
-
-        $emailToProcess = $request->input('email');
-        $email = $request->input('email');
-
-        if ($emailToProcess) {
-            // 1. Iniciar la consulta para buscar el email
-            $duplicateEmailQuery = Person::where('email', $emailToProcess);
-
-            // 2. Si estamos en modo EDICIÓN, excluimos a la persona actual de la búsqueda de duplicados.
-            if ($isEditing) {
-                $duplicateEmailQuery->where('id', '!=', $personId);
-            }
-
-            // 3. Ejecutar la búsqueda de duplicados
-            if ($duplicateEmailQuery->exists()) {
-                // ¡El email está en uso por otra persona! Lo anulamos.
-                $email = null;
-            }
-        }
-
-        // --- PASO 4: Ejecutar updateOrCreate con los datos modificados ---
         $person = Person::updateOrCreate(
             [
                 'document_type_id' => $request->input('document_type'),
@@ -175,12 +140,15 @@ class PersonController extends Controller
             [
                 'full_name' => trim($request->input('full_name')),
                 'telephone' => $request->input('telephone'),
-                'email' => $email,
+                'email' => $request->input('email'),
                 'address' => $request->input('address'),
                 'is_client' => $request->boolean('is_client'),
                 'is_provider' => $request->boolean('is_provider'),
                 'ubigeo' => is_array($ubigeo) ? $ubigeo['district_id'] : $ubigeo,
                 'ubigeo_description' => is_array($ubigeo) ? $ubigeo['city_name'] : $ubigeo_description,
+                'names' => $request->input('names') ?? null,
+                'father_lastname' => $request->input('father_lastname') ?? null,
+                'mother_lastname' => $request->input('mother_lastname') ?? null
             ]
         );
 
@@ -434,41 +402,72 @@ class PersonController extends Controller
 
     public function getBirthdays()
     {
-        $startDate = Carbon::now()->subDays(2)->format('m-d'); // Hace 2 días (MM-DD)
-        $endDate = Carbon::now()->addWeek()->format('m-d'); // Próxima semana (MM-DD)
+        $today = Carbon::today();
+        $start = $today->copy()->subDays(2);
+        $end   = $today->copy()->addWeek();
 
-        $persons = Person::whereRaw("DATE_FORMAT(birthdate, '%m-%d') BETWEEN ? AND ?", [$startDate, $endDate])
-            ->orderByRaw("DATE_FORMAT(birthdate, '%m-%d')")
-            ->get()
-            ->map(function ($person) {
+        $startDay = $start->dayOfYear;
+        $endDay   = $end->dayOfYear;
+        $daysInYear = $today->isLeapYear() ? 366 : 365;
+
+        $persons = Person::all()
+            ->filter(function ($person) use ($startDay, $endDay, $daysInYear) {
+                if (!$person->birthdate) {
+                    return false;
+                }
+
+                $birthday = Carbon::parse($person->birthdate)->dayOfYear;
+
+                // 🔥 Rango normal
+                if ($startDay <= $endDay) {
+                    return $birthday >= $startDay && $birthday <= $endDay;
+                }
+
+                // 🔥 Cruza fin de año
+                return $birthday >= $startDay || $birthday <= $endDay;
+            })
+            ->sortBy(function ($person) use ($startDay, $endDay) {
+                $birthday = Carbon::parse($person->birthdate)->dayOfYear;
+
+                // Ajuste para ordenar bien cuando cruza el año
+                return $birthday < $startDay ? $birthday + 366 : $birthday;
+            })
+            ->values()
+            ->map(function ($person) use ($today) {
+
                 $birthdate = Carbon::parse($person->birthdate);
-                $currentYear = Carbon::now()->year;
-                $today = Carbon::now()->format('m-d');
-                $birthdayThisYear = Carbon::createFromDate($currentYear, $birthdate->month, $birthdate->day)->format('m-d');
+                $currentYear = $today->year;
 
-                // Determinar el estado (status)
-                if ($birthdayThisYear < $today) {
+                $birthdayThisYear = Carbon::create(
+                    $currentYear,
+                    $birthdate->month,
+                    $birthdate->day
+                );
+
+                $todayDOY = $today->dayOfYear;
+                $birthdayDOY = $birthdayThisYear->dayOfYear;
+
+                if ($birthdayDOY < $todayDOY) {
                     $status = 'pasado';
-                } elseif ($birthdayThisYear > $today) {
+                } elseif ($birthdayDOY > $todayDOY) {
                     $status = 'proximo';
                 } else {
                     $status = 'hoy';
                 }
 
-                $day = Carbon::createFromDate($currentYear, $birthdate->month, $birthdate->day)->format('Y-m-d');
-
                 return [
                     'image' => $person->image,
                     'name' => $person->full_name,
-                    'birthdate' => Carbon::parse($day)->translatedFormat('d \d\e F'),
+                    'birthdate' => $birthdayThisYear->translatedFormat('d \d\e F'),
                     'age' => $currentYear - $birthdate->year,
                     'status' => $status,
                     'id' => $person->id,
                     'email' => $person->email,
-                    'telephone' => $person->telephone
+                    'telephone' => $person->telephone,
                 ];
             });
 
+            //dd($persons);
         return $persons;
     }
 
