@@ -261,7 +261,7 @@ Detalle de tu compra
 
                 👤 Usuario:  {{ $data['for_mail']}}
                 <br>
-                🔑Contraseña: es su Dni, si aún no lo ha cambiado.
+                🔑Contraseña: su N° Dni, si aún no lo ha cambiado.
             </p>
             <a href="https://academy.globalcpaperu.com/login" style="margin-top: 20px;">
                 <button class="boton-degradado-campus">Ingresar a la plataforma</button>
