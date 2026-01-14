@@ -240,8 +240,8 @@ Detalle de tu compra
 
                 👤 Usuario:  {{ $data['for_mail']}}
                 <br>
-                🔑Contraseña: {{ $data['document_id'] }}, si aún no lo ha cambiado.
-            </p><br>
+                🔑Contraseña: "Tu número de DNI", si aún no lo ha cambiado.
+            </p>
             <div class="card-container">
                 <a href="https://academy.globalcpaperu.com/login"
                    style="
@@ -266,6 +266,8 @@ Detalle de tu compra
             </div>
         </div>
 <br><hr>
+
+<div class="card-container">
         <p>
 <b>Dentro de la plataforma podrás:</b><br>
 – Acceder y descargar los materiales de trabajo<br>
@@ -279,11 +281,12 @@ Formarás parte de una escuela respaldada por profesionales con experiencia en <
 Si necesitas asistencia, puedes escribirnos en todo momento al WhatsApp: <b>+51 967 052 506</b>.<br>
 Gracias por confiar en <b>CPA Academy</b>. Estamos comprometidos en acompañarte en cada etapa de tu avance profesional.<br><br>
 
+        </div>
 Atentamente,<br><br><br>
 
 
 Equipo de CPA Academy<br>
-academy.globalcpaperu.com<br>
+academy.globalcpaperu.com<br><br>
 
         </p>
 
