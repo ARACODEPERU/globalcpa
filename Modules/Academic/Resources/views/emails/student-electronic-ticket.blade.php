@@ -168,7 +168,7 @@
         <h1>
             <img style="width: 25px;" data-emoji="🎉" class="an1" alt="🎉" aria-label="🎉" draggable="false"
                 src="https://fonts.gstatic.com/s/e/notoemoji/16.0/1f389/32.png" loading="lazy">
-            &nbsp; ¡Gracias por tu compra! &nbsp;
+            &nbsp; ¡Felicitaciones por tu compra! &nbsp;
             <img style="width: 25px;" data-emoji="🎉" class="an1" alt="🎉" aria-label="🎉" draggable="false"
                 src="https://fonts.gstatic.com/s/e/notoemoji/16.0/1f389/32.png" loading="lazy">
         </h1>
