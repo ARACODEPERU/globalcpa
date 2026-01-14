@@ -155,25 +155,22 @@
         <h1>
             <img style="width: 25px;" data-emoji="🎉" class="an1" alt="🎉" aria-label="🎉" draggable="false"
                 src="https://fonts.gstatic.com/s/e/notoemoji/16.0/1f389/32.png" loading="lazy">
-                &nbsp; ¡Bienvenido(a) a CPA Academy! &nbsp;
+                &nbsp; ¡Felicitaciones por tu compra!  &nbsp;
             <img style="width: 25px;" data-emoji="🎉" class="an1" alt="🎉" aria-label="🎉" draggable="false"
                 src="https://fonts.gstatic.com/s/e/notoemoji/16.0/1f389/32.png" loading="lazy">
         </h1>
-        <p>{{ $data->clie_full_name }},
-            Gracias por tu compra. La transacción ha sido registrada sin inconvenientes. proximamente enviaremos el comprobante de pago
-        </p>
-        <p>
-            Para comenzar, aquí tienes tus datos de acceso a nuestra plataforma
+        <p>Estimado(a) {{ $data->clie_full_name }},
+            Te felicitamos por tomar la decisión de invertir en tu actualización y crecimiento. Es una excelente elección que estamos seguros marcará la diferencia en tu camino profesional.
         </p>
 
         <table style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; margin: 20px 0;">
             <!-- Header azul suave -->
             <thead>
-                <tr style="background-color: #3498db;">
-                    <th style="padding: 12px 15px; text-align: left; border: 1px solid #3498db; color: #ffffff; font-weight: bold;">
-                        Descripción del Curso
+                <tr style="background-color: #ee0000;">
+                    <th style="padding: 12px 15px; text-align: left; border: 1px solid #ee0000; color: #ffffff; font-weight: bold;">
+                        Curso
                     </th>
-                    <th style="padding: 12px 15px; text-align: right; border: 1px solid #3498db; color: #ffffff; font-weight: bold;">
+                    <th style="padding: 12px 15px; text-align: right; border: 1px solid #ee0000; color: #ffffff; font-weight: bold;">
                         Precio
                     </th>
                 </tr>
@@ -183,13 +180,13 @@
             <tbody>
                 @foreach ($data->details as $product)
                 <tr>
-                    <td style="padding: 12px 15px; border: 1px solid #e5e7eb;">
-                        <h4 style="margin: 0; font-size: 16px; font-weight: 600;">
+                    <td style="padding: 12px 15px; border: 1px solid #ffffff;">
+                        <h4 style="margin: 0; color: #000000; font-size: 16px; font-weight: 600;">
                             {{ $product->item->name }}
                         </h4>
                     </td>
-                    <td style="padding: 12px 15px; border: 1px solid #e5e7eb; text-align: right;">
-                        <p style="color: #4f46e5; font-size: 16px; font-weight: 700; margin: 0;">
+                    <td style="padding: 12px 15px; border: 1px solid #ffffff; text-align: right;">
+                        <p style="color: #000000; font-size: 16px; font-weight: 700; margin: 0;">
                             S/. {{ $product->item->price  }}
                         </p>
                     </td>
@@ -244,25 +241,25 @@
         </div> --}}
 
 
-        <div class="card-container">
-            <p>
-                👤 Usuario:  {{ $data->email}}
-                <br>
-                🔑 {{ $dni }}
-            </p>
-            <a href="https://academy.globalcpaperu.com/login" style="margin-top: 20px;">
-                <button class="boton-degradado-campus">Ingresar a la plataforma</button>
-            </a>
-        </div>
         <br>
         <p>
             <b>Tu acceso ya está habilitado.</b> <br>
             Puedes ingresar ahora y comenzar a vivir la experiencia.<br><br>
+            <div class="card-container">
+                <p>
+                    👤 Usuario:  {{ $data->email}}
+                    <br>
+                    🔑 {{ $dni }}
+                </p>
+                <a href="https://academy.globalcpaperu.com/login" style="margin-top: 20px;">
+                    <button class="boton-degradado-campus">Ingresar a la plataforma</button>
+                </a>
+            </div>
 
             <b>Dentro de la plataforma podrás:</b><br>
             – Acceder y descargar los materiales de trabajo<br>
             – Revisar las grabaciones sin fecha de caducidad<br>
-            – Certificado <br><br>
+            – Tu Certificado <br><br>
 
             <b>Confianza y respaldo técnico</b><br>
             Formarás parte de una escuela respaldada por profesionales con experiencia en <b>firmas líderes</b>, y reconocida como <b>Approved Learning Partner (ALP) de ACCA</b>. Este estándar garantiza rigurosidad técnica y aplicabilidad práctica desde el primer día.
@@ -279,7 +276,7 @@
 
         </p>
         <p style="text-align: center; font-size: 14px;">
-            CPA Academy, Jirón Pedro Conde Nro. 514, Oficina 203., Distrito de Lince, Provincia de Lima, Perú, +51 967052506
+            CPA Academy, Jirón Pedro Conde Nro. 514, Oficina 204., Distrito de Lince, Provincia de Lima, Perú, +51 967052506
         </p>
         <br>
         <footer>

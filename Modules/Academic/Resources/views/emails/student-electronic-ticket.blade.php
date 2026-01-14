@@ -279,7 +279,7 @@ academy.globalcpaperu.com<br>
         </p>
 
         <p style="text-align: center; font-size: 14px;">
-            CPA Academy, Jirón Pedro Conde Nro. 514, Oficina 203., Distrito de Lince, Provincia de Lima,
+            CPA Academy, Jirón Pedro Conde Nro. 514, Oficina 204., Distrito de Lince, Provincia de Lima,
             Perú, +51 967052506
         </p>
         <br>
