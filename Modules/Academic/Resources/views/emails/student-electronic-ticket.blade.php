@@ -94,7 +94,7 @@
             padding: 10px 20px;
             border: none;
             border-radius: 10px;
-            background: linear-gradient(45deg, #3c4a99, #4f46e5);
+            background: linear-gradient(45deg, #ee0000, #ee6030);
             color: white;
             font-size: 16px;
             cursor: pointer;
@@ -104,7 +104,7 @@
 
         .boton-degradado-campus:hover {
             transform: translateY(-3px);
-            background: linear-gradient(45deg, #4f46e5, #3c4a99);
+            background: linear-gradient(45deg, #ff0000, #ee3010);
         }
 
 
@@ -198,12 +198,12 @@ Detalle de tu compra
 
                 @foreach ($sale->items as $item)
                 <tr>
-                    <td style="padding: 12px 15px; border: 1px solid #e5e7eb;">
+                    <td style="padding: 12px 15px; border: 1px solid #e5e7eb; border-bottom: 1px solid #000000;">
                         <h4 style="margin: 0; font-size: 16px; font-weight: 600;">
                             {{ $item->decription_product }}
                         </h4>
                     </td>
-                    <td style="padding: 12px 15px; border: 1px solid #e5e7eb; text-align: right;">
+                    <td style="padding: 12px 15px; border: 1px solid #e5e7eb; text-align: right; border-bottom: 1px solid #000000;">
                         <p style="color: #4f46e5; font-size: 16px; font-weight: 700; margin: 0;">
                             S/. {{ $item->mto_total }}
                         </p>
@@ -234,8 +234,8 @@ Detalle de tu compra
             <a href="https://academy.globalcpaperu.com/login"
                style="
                    /* Estilos de fondo azul */
-                   background-color: #4947ce;
-                   border: 1px solid #4947ce;
+                   background-color: #ee0000;
+                   border: 1px solid #fff;
                    /* Padding (espacio) para que parezca botón */
                    padding: 10px 20px;
                    /* Color y decoración del texto */

@@ -83,7 +83,7 @@
             padding: 10px 20px;
             border: none;
             border-radius: 10px;
-            background: linear-gradient(45deg, #3c4a99, #4f46e5);
+            background: linear-gradient(45deg, #ee0000, #ee6030);
             color: white;
             font-size: 16px;
             cursor: pointer;
@@ -93,7 +93,7 @@
 
         .boton-degradado-campus:hover {
             transform: translateY(-3px);
-            background: linear-gradient(45deg, #4f46e5, #3c4a99);
+            background: linear-gradient(45deg, #ff0000, #ee3010);
         }
 
 
@@ -159,7 +159,7 @@
             <img style="width: 25px;" data-emoji="🎉" class="an1" alt="🎉" aria-label="🎉" draggable="false"
                 src="https://fonts.gstatic.com/s/e/notoemoji/16.0/1f389/32.png" loading="lazy">
         </h1>
-        <p>Estimado(a) {{ $data->clie_full_name }},
+        <p>Estimado(a) {{ $data->clie_full_name }},<br>
             Te felicitamos por tomar la decisión de invertir en tu actualización y crecimiento. Es una excelente elección que estamos seguros marcará la diferencia en tu camino profesional.
         </p>
 
@@ -180,12 +180,12 @@
             <tbody>
                 @foreach ($data->details as $product)
                 <tr>
-                    <td style="padding: 12px 15px; border: 1px solid #ffffff;">
+                    <td style="padding: 12px 15px; border: 1px solid #ffffff; border-bottom: 1px solid #000000;">
                         <h4 style="margin: 0; color: #000000; font-size: 16px; font-weight: 600;">
                             {{ $product->item->name }}
                         </h4>
                     </td>
-                    <td style="padding: 12px 15px; border: 1px solid #ffffff; text-align: right;">
+                    <td style="padding: 12px 15px; border: 1px solid #ffffff; text-align: right; border-bottom: 1px solid #000000;">
                         <p style="color: #000000; font-size: 16px; font-weight: 700; margin: 0;">
                             S/. {{ $product->item->price  }}
                         </p>
