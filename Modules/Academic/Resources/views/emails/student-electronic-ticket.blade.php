@@ -259,7 +259,7 @@ Detalle de tu compra
                 Puedes ingresar ahora y comenzar a vivir la experiencia:
                 <br>
 
-                👤 Usuario:  {{ $data->client->email}}
+                👤 Usuario:  {{ $data['for_mail']}}
                 <br>
                 🔑Contraseña: es su Dni, si aún no lo ha cambiado.
             </p>
