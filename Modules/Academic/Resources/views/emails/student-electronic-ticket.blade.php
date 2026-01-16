@@ -168,25 +168,25 @@
         <h1>
             <img style="width: 25px;" data-emoji="🎉" class="an1" alt="🎉" aria-label="🎉" draggable="false"
                 src="https://fonts.gstatic.com/s/e/notoemoji/16.0/1f389/32.png" loading="lazy">
-            &nbsp; ¡Gracias por tu compra! &nbsp;
+            &nbsp; ¡Felicitaciones por tu compra! &nbsp;
             <img style="width: 25px;" data-emoji="🎉" class="an1" alt="🎉" aria-label="🎉" draggable="false"
                 src="https://fonts.gstatic.com/s/e/notoemoji/16.0/1f389/32.png" loading="lazy">
         </h1>
         <p>
             Estimado(a) {{ $data['for_name'] }},<br>
-Gracias por tu compra. Tu comprobante de pago ha sido enviado correctamente y puedes descargarlo en los archivos adjuntos. La transacción ha sido registrada sin inconvenientes.
-<br><br>
+            Te felicitamos por tomar la decisión de invertir en tu actualización y crecimiento. Es una excelente elección que estamos seguros marcará la diferencia en tu camino profesional
+            <br><br>
 Detalle de tu compra
         </p>
 
         <table style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; margin: 20px 0;">
             <!-- Header azul suave -->
             <thead>
-                <tr style="background-color: #3498db;">
-                    <th style="padding: 12px 15px; text-align: left; border: 1px solid #3498db; color: #ffffff; font-weight: bold;">
+                <tr style="background-color: #ee0000;">
+                    <th style="padding: 12px 15px; text-align: left; border: 1px solid #ee0000; color: #ffffff; font-weight: bold;">
                         Curso
                     </th>
-                    <th style="padding: 12px 15px; text-align: right; border: 1px solid #3498db; color: #ffffff; font-weight: bold;">
+                    <th style="padding: 12px 15px; text-align: right; border: 1px solid #ee0000; color: #ffffff; font-weight: bold;">
                         Precio
                     </th>
                 </tr>
@@ -198,13 +198,13 @@ Detalle de tu compra
 
                 @foreach ($sale->items as $item)
                 <tr>
-                    <td style="padding: 12px 15px; border: 1px solid #e5e7eb; border-bottom: 1px solid #000000;">
-                        <h4 style="margin: 0; font-size: 16px; font-weight: 600;">
+                    <td style="padding: 12px 15px; border: 1px solid #ffffff; border-bottom: 1px solid #000000;">
+                        <h4 style="margin: 0; color: #000000; font-size: 16px; font-weight: 600;">
                             {{ $item->decription_product }}
                         </h4>
                     </td>
-                    <td style="padding: 12px 15px; border: 1px solid #e5e7eb; text-align: right; border-bottom: 1px solid #000000;">
-                        <p style="color: #4f46e5; font-size: 16px; font-weight: 700; margin: 0;">
+                    <td style="padding: 12px 15px; border: 1px solid #ffffff; text-align: right; border-bottom: 1px solid #000000;">
+                        <p style="color: #000000; font-size: 16px; font-weight: 700; margin: 0;">
                             S/. {{ $item->mto_total }}
                         </p>
                     </td>
@@ -230,34 +230,45 @@ Detalle de tu compra
             @endif
         </table>
 
-        <div class="card-container">
-            <a href="https://academy.globalcpaperu.com/login"
-               style="
-                   /* Estilos de fondo azul */
-                   background-color: #ee0000;
-                   border: 1px solid #fff;
-                   /* Padding (espacio) para que parezca botón */
-                   padding: 10px 20px;
-                   /* Color y decoración del texto */
-                   color: #ffffff;
-                   text-decoration: none;
-                   /* Esquinas redondeadas (opcional) */
-                   border-radius: 5px;
-                   /* Display inline-block para que el padding y margen funcionen bien */
-                   display: inline-block;
-                   font-size: 16px;
-                   font-weight: bold;
-                   margin-top: 20px;
-               ">
-                Ingresar a la plataforma
-            </a>
-        </div>
+
         <br>
 
-        <p>
-<b>Tu acceso ya está habilitado.</b><br>
-Puedes ingresar ahora y comenzar a vivir la experiencia.<br><br>
+        <div class="card-container">
+            <p>Tu acceso ya está habilitado.
+                Puedes ingresar ahora y comenzar a vivir la experiencia:
+                <br>
 
+                👤 Usuario:  {{ $data['for_mail']}}
+                <br>
+                🔑Contraseña: "Tu número de DNI", si aún no lo ha cambiado.
+            </p>
+            <div class="card-container">
+                <a href="https://academy.globalcpaperu.com/login"
+                   style="
+                       /* Estilos de fondo azul */
+                       background-color: #ee0000;
+                       border: 1px solid #fff;
+                       /* Padding (espacio) para que parezca botón */
+                       padding: 10px 20px;
+                       /* Color y decoración del texto */
+                       color: #ffffff;
+                       text-decoration: none;
+                       /* Esquinas redondeadas (opcional) */
+                       border-radius: 5px;
+                       /* Display inline-block para que el padding y margen funcionen bien */
+                       display: inline-block;
+                       font-size: 16px;
+                       font-weight: bold;
+                       margin-top: 20px;
+                   ">
+                    Ingresar a la plataforma
+                </a>
+            </div>
+        </div>
+<br><hr>
+
+<div class="card-container">
+        <p>
 <b>Dentro de la plataforma podrás:</b><br>
 – Acceder y descargar los materiales de trabajo<br>
 – Revisar las grabaciones sin fecha de caducidad<br>
@@ -270,11 +281,12 @@ Formarás parte de una escuela respaldada por profesionales con experiencia en <
 Si necesitas asistencia, puedes escribirnos en todo momento al WhatsApp: <b>+51 967 052 506</b>.<br>
 Gracias por confiar en <b>CPA Academy</b>. Estamos comprometidos en acompañarte en cada etapa de tu avance profesional.<br><br>
 
+        </div>
 Atentamente,<br><br><br>
 
 
 Equipo de CPA Academy<br>
-academy.globalcpaperu.com<br>
+academy.globalcpaperu.com<br><br>
 
         </p>
 

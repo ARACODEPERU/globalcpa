@@ -163,12 +163,6 @@
             Te felicitamos por tomar la decisión de invertir en tu actualización y crecimiento. Es una excelente elección que estamos seguros marcará la diferencia en tu camino profesional
             Aqui tienes un resumen de los productos que adquiriste y un cronograma de pagos.
         </p>
-        <p>
-            Tu acceso ya está habilitado.
-            Puedes ingresar ahora y comenzar a vivir la experiencia:
-        </p>
-
-
 
         <table style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; margin: 20px 0;">
             <!-- Header azul suave -->
