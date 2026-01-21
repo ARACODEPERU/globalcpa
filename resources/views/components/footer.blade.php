@@ -239,7 +239,7 @@
                 <!-- Columna 1: Certificado -->
                 <div class="col-lg-4 col-md-6">
                     <h3>Verifica el Certificado</h3>
-                    <p>Garantiza la autenticidad de tus logros académicos. Valida el certificado GLOBAL CPA ingresando
+                    <p>Garantiza la autenticidad de tus logros académicos. Valida el certificado CPA Academy ingresando
                         el código correspondiente.</p>
                     <a href="{{ route('certificado_validar') }}" class="footer-cta-btn">
                         <i class="fa fa-certificate"></i>
@@ -299,7 +299,7 @@
             </div>
 
             <div class="footer-bottom">
-                <p class="mb-0">&copy; {{ date('Y') }} Global CPA. Todos los derechos reservados.</p>
+                <p class="mb-0">&copy; {{ date('Y') }} CPA Academy. Todos los derechos reservados.</p>
             </div>
         </div>
     </footer>
