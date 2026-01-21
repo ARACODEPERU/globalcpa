@@ -4,8 +4,8 @@
 
     <!-- Loader starts-->
     <!-- <div class="loader-wrapper">
-                                                                                      <div class="loader"></div>
-                                                                                    </div> -->
+                                                                                          <div class="loader"></div>
+                                                                                        </div> -->
     <!-- Loader ends-->
     <!-- tap on top starts-->
     <div class="tap-top"><i data-feather="chevrons-up"></i></div>
@@ -24,7 +24,17 @@
 
             <!-- Page Sidebar Ends-->
             <div class="page-body" style="padding: 80px 0px;">
-                <div class="container-fluid">
+
+                <div class="container mt-5 mb-5">
+                    <div class="text-center">
+                        <h2 class="clients-modern-title">LAS NIIF COMO NUNCA TE LO EXPLICARON</h2>
+                        <p class="clients-modern-subtitle">
+                            Domina la normativa internacional con un enfoque visual, práctico y directo al grano.
+                        </p>
+                    </div>
+                </div>
+
+                {{-- <div class="container-fluid">
                     <div class="row">
                         <div class="col-md-12">
                             <h1 class="title_aracode" style="font-size: 45px; line-height: 1.1; font-weight: 700;">
@@ -32,7 +42,7 @@
                             </h1>
                         </div>
                     </div>
-                </div>
+                </div> --}}
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-md-4">
@@ -610,5 +620,49 @@
         </div>
 
     </div>
+
+    <style>
+        .clients-modern-section {
+            padding: 80px 0;
+            /* background-color: #f8f9fa; */
+        }
+
+        .clients-modern-title {
+            font-size: 2.1rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+        }
+
+        .clients-modern-subtitle {
+            font-size: 1.1rem;
+            color: #7f8c8d;
+            margin-bottom: 3rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+
+        /* Estilos para Modo Noche */
+        .dark .clients-modern-section,
+        .dark-only .clients-modern-section {
+            background-color: #111827;
+            /* Fondo oscuro profundo */
+        }
+
+        .dark .clients-modern-title,
+        .dark-only .clients-modern-title {
+            color: #ffffff;
+            /* Texto blanco */
+        }
+
+        .dark .clients-modern-subtitle,
+        .dark-only .clients-modern-subtitle {
+            color: #d1d5db;
+            /* Texto gris claro */
+        }
+    </style>
 
 @stop
