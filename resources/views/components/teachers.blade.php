@@ -1,5 +1,5 @@
-<div>
-    <section style="padding: 60px 0px;">
+<div>    
+    <section style="padding: 10px 0px;">
         <div class="container-fluid">
             <div class="page-title">
                 <div class="row">
@@ -13,7 +13,7 @@
                 </div>
             </div>
         </div>
-        <div class="container-fluid">
+        {{-- <div class="container-fluid">
             <div class="row">
                 <div class="col-md-1"></div>
                 <div class="col-md-10">
@@ -35,9 +35,9 @@
                 </div>
                 <div class="col-md-1"></div>
             </div>
-        </div>
+        </div> --}}
     </section>
-
+{{--
     @foreach ($teachers as $k => $teacher)
         <div class="modal fade" id="staticBackdrop{{ str_replace(' ', '', $teacher->item->items[0]->content) }}"
             data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
@@ -185,6 +185,134 @@
                 /* 1 tarjeta por fila en móvil */
             }
         }
+    </style> --}}
+
+
+    <!-- Propuesta de Diseño Moderno Opción 2 -->
+    <style>
+        .teachers-section-opt2 {
+            padding: 40px 0;
+            /* background-color: #f8f9fa; */
+        }
+
+        .teacher-card-opt2 {
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            height: 100%;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            top: 0;
+        }
+
+        .teacher-card-opt2:hover {
+            top: -10px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .teacher-img-opt2-wrapper {
+            height: 300px;
+            /* Altura fija para uniformidad */
+            overflow: hidden;
+            position: relative;
+        }
+
+        .teacher-img-opt2 {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: top center;
+            transition: transform 0.5s ease;
+        }
+
+        .teacher-card-opt2:hover .teacher-img-opt2 {
+            transform: scale(1.05);
+        }
+
+        .teacher-content-opt2 {
+            padding: 25px;
+            text-align: center;
+            position: relative;
+        }
+
+        .teacher-name-opt2 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .teacher-role-opt2 {
+            font-size: 0.9rem;
+            color: #e30613;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        .teacher-divider {
+            width: 40px;
+            height: 3px;
+            background: #e30613;
+            margin: 0 auto;
+            border-radius: 2px;
+        }
     </style>
+
+    <section class="teachers-section-opt2">
+        <div class="container">
+            <div class="row g-4 justify-content-center">
+                @foreach ($teachers as $k => $teacher)
+                    <div class="col-md-6 col-lg-4 col-xl-3">
+                        <div class="teacher-card-opt2" data-bs-toggle="modal"
+                            data-bs-target="#modalOpt2{{ $k }}">
+                            <div class="teacher-img-opt2-wrapper">
+                                <img src="{{ asset('storage/' . $teacher->item->items[3]->content) }}"
+                                    alt="{{ $teacher->item->items[0]->content }}" class="teacher-img-opt2">
+                            </div>
+                            <div class="teacher-content-opt2">
+                                <h4 class="teacher-name-opt2">{{ $teacher->item->items[0]->content }}</h4>
+                                <p class="teacher-role-opt2">{{ $teacher->item->items[1]->content }}</p>
+                                <div class="teacher-divider"></div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </section>
+
+    <!-- Modals Opción 2 -->
+    @foreach ($teachers as $k => $teacher)
+        <div class="modal fade" id="modalOpt2{{ $k }}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content border-0 shadow-lg" style="border-radius: 15px; overflow: hidden;">
+                    <div class="row g-0">
+                        <div class="col-md-5 d-none d-md-block"
+                            style="background-image: url('{{ asset('storage/' . $teacher->item->items[3]->content) }}'); background-size: cover; background-position: center;">
+                        </div>
+                        <div class="col-md-7">
+                            <div class="modal-header border-0 pb-0">
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body p-4 p-lg-5">
+                                <h3 class="fw-bold text-dark mb-1">{{ $teacher->item->items[0]->content }}</h3>
+                                <p class="text-danger fw-bold text-uppercase mb-4">
+                                    {{ $teacher->item->items[1]->content }}</p>
+                                <p class="text-muted" style="line-height: 1.8;">
+                                    {{ $teacher->item->items[2]->content }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endforeach
 
 </div>
