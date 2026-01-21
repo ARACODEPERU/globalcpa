@@ -1120,7 +1120,7 @@
                                                                 <option value="0">frame de vídeo</option>
                                                                 <option value="3">Link videoconferencia</option>
                                                                 <option value="2">Subir Archivo</option>
-                                                                <option value="4">Examen</option>
+                                                                
                                                             </select>
                                                             <div class="text-danger text-sm mt-1" v-if="contentForm.errors.is_file">{{ contentForm.errors.is_file }}</div>
                                                         </div>
