@@ -72,8 +72,8 @@
                                 data-bs-original-title="btn btn-pill btn-primary btn-air-primary btn-sm">
                                 Iniciar sesión
                             </button>
-                        </a> 
-                        <a href="{{ route('login') }}"  class="view-movile">
+                        </a>
+                        <a href="{{ route('login') }}" class="view-movile">
                             <button class="view-movile btn btn-pill btn-primary btn-air-primary btn-sm" type="button">
                                 <i class="fa fa-key"></i>
                             </button>
@@ -87,7 +87,8 @@
         <div class="header-wrapper row">
             <div class="logo-wrapper">
                 <a href="{{ route('index_main') }}">
-                    <img class="img-fluid" src="{{ asset('themes/webpage/assets/images/logo/logo.png') }}" alt="Logo">
+                    <img class="img-fluid" src="{{ asset('themes/webpage/assets/images/logo/logo.png') }}"
+                        alt="Logo">
                 </a>
             </div>
             <svg class="stroke-icon toggle-sidebar">
@@ -95,11 +96,11 @@
                     href="{{ asset('themes/webpage/assets/svg/icon-sprite.svg#Grid') }}">
                 </use>
             </svg>
-            
+
             <img class="logo_header" src="{{ asset('themes/webpage/images/Logo_cpa_modificado.png') }}" alt="">
-            
-<div class="nav-right col-auto p-0 ms-auto">
-    
+
+            <div class="nav-right col-auto p-0 ms-auto">
+
                 <ul class="" style="width: 100%">
                     <li class="cart-nav">
                         <div class="cart-box" style="top: 0px; padding: 0px 10px;">
@@ -117,7 +118,7 @@
                                 data-bs-original-title="btn btn-pill btn-primary btn-air-primary btn-sm">
                                 Login
                             </button>
-                        </a> 
+                        </a>
                     </li>
                 </ul>
             </div>
