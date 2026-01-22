@@ -25,7 +25,7 @@
         color: #fff;
         font-weight: 700;
         font-size: 20px;
-        bottom: 130px;
+        bottom: 175px;
         right: 20px;
         border: 0;
         z-index: 9999;
@@ -67,7 +67,7 @@
         color: #fff;
         font-weight: 700;
         font-size: 30px;
-        bottom: 40px;
+        bottom: 95px;
         right: 20px;
         border: 0;
         z-index: 9999;
