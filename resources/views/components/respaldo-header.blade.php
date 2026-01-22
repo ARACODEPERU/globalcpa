@@ -1,4 +1,3 @@
-
 <div>
     <style>
         /* =========================================
@@ -64,8 +63,8 @@
         }
         .custom-cart-count {
             position: absolute;
-            top: -14px;
-            right: -12px;
+            top: -8px;
+            right: -8px;
             background-color: #e22454;
             color: #fff;
             font-size: 10px;
@@ -141,7 +140,7 @@
         @media only screen and (max-width: 575px) {
             .custom-page-header { padding: 10px 15px; }
             .header-left-group { gap: 10px; }
-            .custom-nav-list { gap: 20px; }
+            .custom-nav-list { gap: 10px; }
             
             .custom-logo-img { height: 30px; } /* Logo más pequeño */
             .custom-nav-icon { font-size: 20px; }
@@ -155,7 +154,7 @@
         @media only screen and (max-width: 450px) {
             .custom-page-header { padding: 8px 10px; }
             .header-left-group { gap: 5px; }
-            .custom-nav-list { gap: 17px; }
+            .custom-nav-list { gap: 8px; }
 
             .custom-logo-img { 
                 height: 26px; 
