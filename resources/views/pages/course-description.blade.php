@@ -79,7 +79,8 @@
                                 <div class="card-body p-4">
                                     <h3 class="fw-bold mb-4 border-bottom pb-2"
                                         :class="$store.global.isDarkModeEnabled ? 'text-gray-100' : 'text-gray-800'">
-                                        Tus Instructores (Propuesta 2)</h3>
+                                        Tus Instructores
+                                    </h3>
                                     
                                     @if (count($course->teachers) > 0)
                                         <div class="d-flex flex-column gap-4">
@@ -168,8 +169,8 @@
 
                         {{-- Columna Derecha (Sticky Sidebar) --}}
                         <div class="col-lg-4">
-                            <div class="card shadow border-0 sticky-top" style="top: 20px; z-index: 10;"
-                                data-aos="fade-left">
+                            <div class="sticky-top" style="top: 100px; z-index: 1;">
+                                <div class="card shadow border-0" data-aos="fade-left">
                                 <div class="position-relative">
                                     <img src="{{ asset('storage/' . $item->course->image) }}" class="card-img-top"
                                         alt="portada_curso">
@@ -243,6 +244,7 @@
                                             </a>
                                         </div>
                                     @endif
+                                </div>
                                 </div>
                             </div>
                         </div>
