@@ -49,8 +49,76 @@
                                         <span><i class="fa fa-globe me-1"></i> Español</span>
                                     </div>
                                 </div>
-                                <div class="col-lg-4 text-center d-none d-lg-block">
-                                    <i class="fa fa-laptop fa-5x text-white-50" style="opacity: 0.3;"></i>
+                                <div class="col-lg-4 text-center d-none d-lg-block position-relative" style="min-height: 250px;">
+                                    {{-- Animación CSS Propuesta: Ecosistema de Aprendizaje --}}
+                                    <style>
+                                        .orbit-system {
+                                            position: absolute;
+                                            top: 50%;
+                                            left: 50%;
+                                            width: 240px;
+                                            height: 240px;
+                                            transform: translate(-50%, -50%);
+                                            border-radius: 50%;
+                                            border: 1px dashed rgba(255, 255, 255, 0.15);
+                                            animation: orbit-spin 25s linear infinite;
+                                        }
+                                        .orbit-item {
+                                            position: absolute;
+                                            top: 50%;
+                                            left: 50%;
+                                            width: 44px;
+                                            height: 44px;
+                                            margin-top: -22px;
+                                            margin-left: -22px;
+                                            display: flex;
+                                            align-items: center;
+                                            justify-content: center;
+                                            background: rgba(255, 255, 255, 0.1);
+                                            border-radius: 50%;
+                                            backdrop-filter: blur(2px);
+                                        }
+                                        /* Contrarrotación para mantener los iconos verticales */
+                                        .orbit-item i { animation: orbit-counter-spin 25s linear infinite; }
+                                        
+                                        /* Posiciones fijas en la órbita (triángulo equilátero) */
+                                        .pos-1 { transform: rotate(0deg) translate(120px) rotate(0deg); }
+                                        .pos-2 { transform: rotate(120deg) translate(120px) rotate(-120deg); }
+                                        .pos-3 { transform: rotate(240deg) translate(120px) rotate(-240deg); }
+
+                                        .center-pulse {
+                                            position: absolute;
+                                            top: 50%;
+                                            left: 50%;
+                                            transform: translate(-50%, -50%);
+                                            animation: center-pulse-anim 3s ease-in-out infinite;
+                                        }
+
+                                        @keyframes orbit-spin { 100% { transform: translate(-50%, -50%) rotate(360deg); } }
+                                        @keyframes orbit-counter-spin { 100% { transform: rotate(-360deg); } }
+                                        @keyframes center-pulse-anim {
+                                            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.3; }
+                                            50% { transform: translate(-50%, -50%) scale(1.05); opacity: 0.7; text-shadow: 0 0 15px rgba(255,255,255,0.3); }
+                                        }
+                                    </style>
+
+                                    {{-- Icono Central --}}
+                                    <div class="center-pulse">
+                                        <i class="fa fa-laptop fa-5x text-white"></i>
+                                    </div>
+
+                                    {{-- Sistema Orbital --}}
+                                    <div class="orbit-system">
+                                        <div class="orbit-item pos-1" title="Clases en Video">
+                                            <i class="fa fa-play text-warning fs-5"></i>
+                                        </div>
+                                        <div class="orbit-item pos-2" title="Certificación">
+                                            <i class="fa fa-certificate text-info fs-5"></i>
+                                        </div>
+                                        <div class="orbit-item pos-3" title="Recursos Descargables">
+                                            <i class="fa fa-file-text-o text-success fs-5"></i>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
