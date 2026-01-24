@@ -31,7 +31,7 @@
                             <div class="row align-items-center">
                                 <div class="col-lg-8">
                                     <div class="d-flex align-items-center mb-3">
-                                        <span class="badge bg-warning text-dark me-2">Curso Online</span>
+                                        <span class="badge bg-warning text-dark me-2">{{ $item->additional }}</span>
                                         <div class="text-warning small">
                                             <i class="fa fa-star"></i>
                                             <i class="fa fa-star"></i>
@@ -39,7 +39,7 @@
                                             <i class="fa fa-star"></i>
                                             <i class="fa fa-star-half-o"></i>
                                             {{-- <span class="text-white ms-1">(4.8/5 de 120 alumnos)</span> --}}
-                                            <span class="text-white ms-1">(4.8/5 de 120 alumnos)</span>
+                                            <span class="text-white ms-1">(4.8/5 de {{ rand(30, 120) }} alumnos activos)</span>
                                         </div>
                                     </div>
                                     <h1 class="display-5 fw-bold mb-3" style="color: #fff;">{{ $item->name }}</h1>
@@ -50,7 +50,8 @@
                                         <span><i class="fa fa-globe me-1"></i> Español</span>
                                     </div>
                                 </div>
-                                <div class="col-lg-4 text-center d-none d-lg-block position-relative" style="min-height: 250px;">
+                                <div class="col-lg-4 text-center d-none d-lg-block position-relative"
+                                    style="min-height: 250px;">
                                     {{-- Animación CSS Propuesta: Ecosistema de Aprendizaje --}}
                                     <style>
                                         .orbit-system {
@@ -64,6 +65,7 @@
                                             border: 1px dashed rgba(255, 255, 255, 0.15);
                                             animation: orbit-spin 25s linear infinite;
                                         }
+
                                         .orbit-item {
                                             position: absolute;
                                             top: 50%;
@@ -79,13 +81,24 @@
                                             border-radius: 50%;
                                             backdrop-filter: blur(2px);
                                         }
+
                                         /* Contrarrotación para mantener los iconos verticales */
-                                        .orbit-item i { animation: orbit-counter-spin 25s linear infinite; }
-                                        
+                                        .orbit-item i {
+                                            animation: orbit-counter-spin 25s linear infinite;
+                                        }
+
                                         /* Posiciones fijas en la órbita (triángulo equilátero) */
-                                        .pos-1 { transform: rotate(0deg) translate(120px) rotate(0deg); }
-                                        .pos-2 { transform: rotate(120deg) translate(120px) rotate(-120deg); }
-                                        .pos-3 { transform: rotate(240deg) translate(120px) rotate(-240deg); }
+                                        .pos-1 {
+                                            transform: rotate(0deg) translate(120px) rotate(0deg);
+                                        }
+
+                                        .pos-2 {
+                                            transform: rotate(120deg) translate(120px) rotate(-120deg);
+                                        }
+
+                                        .pos-3 {
+                                            transform: rotate(240deg) translate(120px) rotate(-240deg);
+                                        }
 
                                         .center-pulse {
                                             position: absolute;
@@ -95,11 +108,31 @@
                                             animation: center-pulse-anim 3s ease-in-out infinite;
                                         }
 
-                                        @keyframes orbit-spin { 100% { transform: translate(-50%, -50%) rotate(360deg); } }
-                                        @keyframes orbit-counter-spin { 100% { transform: rotate(-360deg); } }
+                                        @keyframes orbit-spin {
+                                            100% {
+                                                transform: translate(-50%, -50%) rotate(360deg);
+                                            }
+                                        }
+
+                                        @keyframes orbit-counter-spin {
+                                            100% {
+                                                transform: rotate(-360deg);
+                                            }
+                                        }
+
                                         @keyframes center-pulse-anim {
-                                            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.3; }
-                                            50% { transform: translate(-50%, -50%) scale(1.05); opacity: 0.7; text-shadow: 0 0 15px rgba(255,255,255,0.3); }
+
+                                            0%,
+                                            100% {
+                                                transform: translate(-50%, -50%) scale(1);
+                                                opacity: 0.3;
+                                            }
+
+                                            50% {
+                                                transform: translate(-50%, -50%) scale(1.05);
+                                                opacity: 0.7;
+                                                text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+                                            }
                                         }
                                     </style>
 
@@ -150,36 +183,43 @@
                                         :class="$store.global.isDarkModeEnabled ? 'text-gray-100' : 'text-gray-800'">
                                         Tus Instructores
                                     </h3>
-                                    
+
                                     @if (count($course->teachers) > 0)
                                         <div class="d-flex flex-column gap-4">
                                             @foreach ($course->teachers as $teach)
                                                 <div class="d-flex flex-column flex-md-row p-4 rounded border"
-                                                    :class="$store.global.isDarkModeEnabled ? 'bg-dark border-secondary' : 'bg-light shadow-sm'">
-                                                    
+                                                    :class="$store.global.isDarkModeEnabled ? 'bg-dark border-secondary' :
+                                                        'bg-light shadow-sm'">
+
                                                     <div class="flex-shrink-0 mb-3 mb-md-0 me-md-4 text-center">
                                                         <img class="rounded-circle shadow-sm"
                                                             style="width: 100px; height: 100px; object-fit: cover;"
                                                             src="{{ asset('storage/' . $teach->teacher->person->image) }}"
                                                             alt="{{ $teach->teacher->person->names }}">
                                                         <div class="mt-2">
-                                                            <span class="badge bg-primary bg-opacity-10 text-[#fff]">Facilitador Experto</span>
+                                                            <span
+                                                                class="badge bg-primary bg-opacity-10 text-[#fff]">Facilitador
+                                                                Experto</span>
                                                         </div>
                                                     </div>
 
                                                     <div class="flex-grow-1">
                                                         <h5 class="fw-bold mb-1"
-                                                            :class="$store.global.isDarkModeEnabled ? 'text-gray-100' : 'text-gray-800'">
-                                                            {{ $teach->teacher->person->names }} {{ $teach->teacher->person->father_lastname }}
+                                                            :class="$store.global.isDarkModeEnabled ? 'text-gray-100' :
+                                                                'text-gray-800'">
+                                                            {{ $teach->teacher->person->names }}
+                                                            {{ $teach->teacher->person->father_lastname }}
                                                         </h5>
-                                                        
+
                                                         <div class="mt-3">
                                                             @if (count($teach->teacher->person->resumes))
                                                                 <ul class="list-unstyled mb-0">
                                                                     @foreach ($teach->teacher->person->resumes as $resume)
                                                                         <li class="d-flex align-items-start mb-2"
-                                                                            :class="$store.global.isDarkModeEnabled ? 'text-gray-300' : 'text-muted'">
-                                                                            <i class="fa fa-check-circle text-success mt-1 me-2 flex-shrink-0"></i>
+                                                                            :class="$store.global.isDarkModeEnabled ?
+                                                                                'text-gray-300' : 'text-muted'">
+                                                                            <i
+                                                                                class="fa fa-check-circle text-success mt-1 me-2 flex-shrink-0"></i>
                                                                             <span>{{ $resume->description }}</span>
                                                                         </li>
                                                                     @endforeach
@@ -200,37 +240,56 @@
                                     <h3 class="fw-bold mb-4 border-bottom pb-2"
                                         :class="$store.global.isDarkModeEnabled ? 'text-gray-100' : 'text-gray-800'">
                                         Opiniones de Estudiantes</h3>
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <div class="p-3 rounded"
-                                                :class="$store.global.isDarkModeEnabled ? 'bg-dark border border-secondary' :
-                                                    'bg-light'">
-                                                <div class="text-warning mb-2"><i class="fa fa-star"></i><i
-                                                        class="fa fa-star"></i><i class="fa fa-star"></i><i
-                                                        class="fa fa-star"></i><i class="fa fa-star"></i></div>
-                                                <p class="mb-2 fst-italic"
-                                                    :class="$store.global.isDarkModeEnabled ? 'text-gray-100' : 'text-muted'">
-                                                    "Excelente curso, muy completo y práctico."</p>
-                                                <small class="fw-bold"
-                                                    :class="$store.global.isDarkModeEnabled ? 'text-gray-400' : 'text-muted'">-
-                                                    Juan Pérez</small>
+                                    <div class="row" x-data="{
+                                        reviews: [
+                                            { name: 'Juan Pérez', comment: 'Excelente curso, muy completo y práctico.', stars: 5 },
+                                            { name: 'Maria Rodriguez', comment: 'Los instructores explican muy bien.', stars: 5 },
+                                            { name: 'Carlos Gomez', comment: 'Me ayudó mucho en mi carrera profesional.', stars: 4 },
+                                            { name: 'Ana López', comment: 'Contenido actualizado y fácil de entender.', stars: 5 },
+                                            { name: 'Pedro Martinez', comment: 'Recomendado al 100%, vale la pena.', stars: 5 },
+                                            { name: 'Lucia Fernandez', comment: 'La plataforma es muy intuitiva.', stars: 4 },
+                                            { name: 'Miguel Angel', comment: 'Buenos ejemplos prácticos.', stars: 5 },
+                                            { name: 'Sofia Torres', comment: 'Aprendí más de lo que esperaba.', stars: 5 },
+                                            { name: 'Jorge Ruiz', comment: 'Excelente soporte y comunidad.', stars: 4 },
+                                            { name: 'Elena Diaz', comment: 'Muy didáctico y bien estructurado.', stars: 5 }
+                                        ],
+                                        currentReviews: [],
+                                        updateReviews() {
+                                            let shuffled = [...this.reviews].sort(() => 0.5 - Math.random());
+                                            this.currentReviews = shuffled.slice(0, 2);
+                                        },
+                                        init() {
+                                            this.updateReviews();
+                                            setInterval(() => {
+                                                this.updateReviews();
+                                            }, 8000);
+                                        }
+                                    }">
+                                        <template x-for="review in currentReviews" :key="review.name">
+                                            <div class="col-md-6 mb-3"
+                                                x-transition:enter='transition ease-out duration-700'
+                                                x-transition:enter-start='opacity-0 transform scale-95'
+                                                x-transition:enter-end='opacity-100 transform scale-100'>
+                                                <div class="p-3 rounded h-100"
+                                                    :class="$store.global.isDarkModeEnabled ? 'bg-dark border border-secondary' :
+                                                        'bg-light'">
+                                                    <div class="text-warning mb-2">
+                                                        <template x-for="i in review.stars">
+                                                            <i class="fa fa-star"></i>
+                                                        </template>
+                                                        <template x-for="i in (5 - review.stars)">
+                                                            <i class="fa fa-star-o"></i>
+                                                        </template>
+                                                    </div>
+                                                    <p class="mb-2 fst-italic"
+                                                        :class="$store.global.isDarkModeEnabled ? 'text-gray-100' : 'text-muted'"
+                                                        x-text='&quot;&quot; + review.comment + &quot;&quot;'></p>
+                                                    <small class="fw-bold"
+                                                        :class="$store.global.isDarkModeEnabled ? 'text-gray-400' : 'text-muted'"
+                                                        x-text='&quot;- &quot; + review.name'></small>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <div class="p-3 rounded"
-                                                :class="$store.global.isDarkModeEnabled ? 'bg-dark border border-secondary' :
-                                                    'bg-light'">
-                                                <div class="text-warning mb-2"><i class="fa fa-star"></i><i
-                                                        class="fa fa-star"></i><i class="fa fa-star"></i><i
-                                                        class="fa fa-star"></i><i class="fa fa-star"></i></div>
-                                                <p class="mb-2 fst-italic"
-                                                    :class="$store.global.isDarkModeEnabled ? 'text-gray-100' : 'text-muted'">
-                                                    "Los instructores explican muy bien."</p>
-                                                <small class="fw-bold"
-                                                    :class="$store.global.isDarkModeEnabled ? 'text-gray-400' : 'text-muted'">-
-                                                    Maria Rodriguez</small>
-                                            </div>
-                                        </div>
+                                        </template>
                                     </div>
                                 </div>
                             </div>
@@ -240,80 +299,81 @@
                         <div class="col-lg-4">
                             <div class="sticky-top" style="top: 100px; z-index: 1;">
                                 <div class="card shadow border-0" data-aos="fade-left">
-                                <div class="position-relative">
-                                    <img src="{{ asset('storage/' . $item->course->image) }}" class="card-img-top"
-                                        alt="portada_curso">
-                                </div>
-                                <div class="card-body p-4">
-                                    <div class="mb-4">
-                                        @if ($item->price)
-                                            <h2 class="fw-bold mb-0 display-6"
+                                    <div class="position-relative">
+                                        <img src="{{ asset('storage/' . $item->course->image) }}" class="card-img-top"
+                                            alt="portada_curso">
+                                    </div>
+                                    <div class="card-body p-4">
+                                        <div class="mb-4">
+                                            @if ($item->price)
+                                                <h2 class="fw-bold mb-0 display-6"
+                                                    :class="$store.global.isDarkModeEnabled ? 'text-gray-100' : 'text-gray-800'">
+                                                    S/ {{ $item->price }}</h2>
+                                            @else
+                                                <h2 class="fw-bold text-success mb-0 display-6">Gratis</h2>
+                                            @endif
+                                            <span class="small"
+                                                :class="$store.global.isDarkModeEnabled ? 'text-gray-400' : 'text-muted'"><i
+                                                    class="fa fa-clock-o"></i> Oferta por tiempo limitado</span>
+                                        </div>
+
+                                        <div class="d-grid gap-2 mb-4">
+                                            @if ($item->price)
+                                                <button class="btn btn-primary btn-lg fw-bold shadow-sm py-3"
+                                                    onclick="agregarAlCarrito({ id: {{ $item->id }}, nombre: '{{ $item->name }}', precio: {{ $item->price }} })">
+                                                    Añadir al Carrito
+                                                </button>
+                                            @else
+                                                <a href="" class="btn btn-primary btn-lg fw-bold shadow-sm py-3">
+                                                    Inscribirme Gratis
+                                                </a>
+                                            @endif
+                                        </div>
+
+                                        <div class="mb-4">
+                                            <h6 class="fw-bold mb-3"
                                                 :class="$store.global.isDarkModeEnabled ? 'text-gray-100' : 'text-gray-800'">
-                                                S/ {{ $item->price }}</h2>
-                                        @else
-                                            <h2 class="fw-bold text-success mb-0 display-6">Gratis</h2>
-                                        @endif
-                                        <span class="small"
-                                            :class="$store.global.isDarkModeEnabled ? 'text-gray-400' : 'text-muted'"><i
-                                                class="fa fa-clock-o"></i> Oferta por tiempo limitado</span>
-                                    </div>
-
-                                    <div class="d-grid gap-2 mb-4">
-                                        @if ($item->price)
-                                            <button class="btn btn-primary btn-lg fw-bold shadow-sm py-3"
-                                                onclick="agregarAlCarrito({ id: {{ $item->id }}, nombre: '{{ $item->name }}', precio: {{ $item->price }} })">
-                                                Añadir al Carrito
-                                            </button>
-                                        @else
-                                            <a href="" class="btn btn-primary btn-lg fw-bold shadow-sm py-3">
-                                                Inscribirme Gratis
-                                            </a>
-                                        @endif
-                                    </div>
-
-                                    <div class="mb-4">
-                                        <h6 class="fw-bold mb-3"
-                                            :class="$store.global.isDarkModeEnabled ? 'text-gray-100' : 'text-gray-800'">
-                                            Este curso incluye:</h6>
-                                        <ul class="list-unstyled mb-0">
-                                            <li class="mb-2 d-flex align-items-center"
-                                                :class="$store.global.isDarkModeEnabled ? 'text-gray-300' : 'text-muted'">
-                                                <i class="fa fa-video-camera text-secondary me-3"
-                                                    style="width: 20px; text-align:center;"></i> <span>Acceso de por
-                                                    vida</span>
-                                            </li>
-                                            <li class="mb-2 d-flex align-items-center"
-                                                :class="$store.global.isDarkModeEnabled ? 'text-gray-300' : 'text-muted'">
-                                                <i class="fa fa-mobile text-secondary me-3"
-                                                    style="width: 20px; text-align:center;"></i> <span>Acceso en móviles y
-                                                    TV</span>
-                                            </li>
-                                            <li class="mb-2 d-flex align-items-center"
-                                                :class="$store.global.isDarkModeEnabled ? 'text-gray-300' : 'text-muted'">
-                                                <i class="fa fa-certificate text-secondary me-3"
-                                                    style="width: 20px; text-align:center;"></i> <span>Certificado de
-                                                    finalización</span>
-                                            </li>
-                                            @if ($course->brochure->path_file)
+                                                Este curso incluye:</h6>
+                                            <ul class="list-unstyled mb-0">
                                                 <li class="mb-2 d-flex align-items-center"
                                                     :class="$store.global.isDarkModeEnabled ? 'text-gray-300' : 'text-muted'">
-                                                    <i class="fa fa-file-pdf-o text-secondary me-3"
-                                                        style="width: 20px; text-align:center;"></i> <span>Recursos
-                                                        descargables</span>
+                                                    <i class="fa fa-video-camera text-secondary me-3"
+                                                        style="width: 20px; text-align:center;"></i> <span>Acceso de por
+                                                        vida</span>
                                                 </li>
-                                            @endif
-                                        </ul>
-                                    </div>
-
-                                    @if ($course->brochure->path_file)
-                                        <div class="text-center border-top pt-3">
-                                            <a href="#" class="text-decoration-none fw-bold text-primary"
-                                                data-bs-target="#exampleModalToggle" data-bs-toggle="modal">
-                                                <i class="fa fa-download me-1"></i> Descargar Temario (PDF)
-                                            </a>
+                                                <li class="mb-2 d-flex align-items-center"
+                                                    :class="$store.global.isDarkModeEnabled ? 'text-gray-300' : 'text-muted'">
+                                                    <i class="fa fa-mobile text-secondary me-3"
+                                                        style="width: 20px; text-align:center;"></i> <span>Acceso en
+                                                        móviles y
+                                                        TV</span>
+                                                </li>
+                                                <li class="mb-2 d-flex align-items-center"
+                                                    :class="$store.global.isDarkModeEnabled ? 'text-gray-300' : 'text-muted'">
+                                                    <i class="fa fa-certificate text-secondary me-3"
+                                                        style="width: 20px; text-align:center;"></i> <span>Certificado de
+                                                        finalización</span>
+                                                </li>
+                                                @if ($course->brochure->path_file)
+                                                    <li class="mb-2 d-flex align-items-center"
+                                                        :class="$store.global.isDarkModeEnabled ? 'text-gray-300' : 'text-muted'">
+                                                        <i class="fa fa-file-pdf-o text-secondary me-3"
+                                                            style="width: 20px; text-align:center;"></i> <span>Recursos
+                                                            descargables</span>
+                                                    </li>
+                                                @endif
+                                            </ul>
                                         </div>
-                                    @endif
-                                </div>
+
+                                        @if ($course->brochure->path_file)
+                                            <div class="text-center border-top pt-3">
+                                                <a href="#" class="text-decoration-none fw-bold text-primary"
+                                                    data-bs-target="#exampleModalToggle" data-bs-toggle="modal">
+                                                    <i class="fa fa-download me-1"></i> Descargar Temario (PDF)
+                                                </a>
+                                            </div>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -445,7 +505,7 @@
         });
     </script>
 
-
+    {{-- 
     <script>
         let currentIndex = 0;
         const slides = document.querySelector('.slides');
@@ -457,10 +517,10 @@
             slides.style.transform = `translateX(${offset}%)`;
         }
 
-        setInterval(showNextSlide, 3000); // Cambia cada 3 segundos
-    </script>
+        setInterval(showNextSlide, 3000); 
+    </script> --}}
 
-
+    {{-- 
     <script>
         const headers = document.querySelectorAll('.accordion-header-aracode');
         headers.forEach(header => {
@@ -468,7 +528,6 @@
                 const content = this.nextElementSibling;
                 const isVisible = content.style.maxHeight;
 
-                // Ocultar todos los contenidos y resetear iconos
                 document.querySelectorAll('.accordion-content-aracode').forEach(item => {
                     item.style.maxHeight = null;
                     item.style.padding = '0';
@@ -477,23 +536,22 @@
                 headers.forEach(h => {
                     h.classList.remove('active');
                     h.querySelector('.accordion-icon-aracode').textContent =
-                        '►'; // Restablecer icono
+                        '►'; 
                     h.setAttribute('aria-expanded', 'false');
                 });
 
-                // Mostrar el contenido del header clicado
                 if (!isVisible) {
                     content.style.maxHeight = content.scrollHeight + "px";
                     content.style.padding = '15px';
-                    this.classList.add('active'); // Añadir clase activa al encabezado clicado
+                    this.classList.add('active'); 
                     this.querySelector('.accordion-icon-aracode').textContent =
-                        '▼'; // Cambiar icono al expandido
+                        '▼'; 
                     this.setAttribute('aria-expanded', 'true');
                     content.setAttribute('aria-hidden', 'false');
                 }
             });
         });
-    </script>
+    </script> --}}
 
 
     <script>
@@ -513,20 +571,15 @@
             var formulario = document.getElementById('pageContactForm');
             var formData = new FormData(formulario);
 
-            // Deshabilitar el botón
             var submitButton = document.getElementById('submitPageContactButton');
             submitButton.disabled = true;
             submitButton.style.opacity = 0.25;
 
-            // Crear una nueva solicitud XMLHttpRequest
             var xhr = new XMLHttpRequest();
 
-            // Configurar la solicitud POST al servidor
             xhr.open('POST', "{{ route('apisubscriber') }}", true);
 
-            // Configurar la función de callback para manejar la respuesta
             xhr.onload = function() {
-                // Habilitar nuevamente el botón
                 submitButton.disabled = false;
                 submitButton.style.opacity = 1;
                 if (xhr.status === 200) {
@@ -536,13 +589,12 @@
                         title: 'Enhorabuena',
                         text: response.message,
                         customClass: {
-                            container: 'sweet-modal-zindex' // Clase personalizada para controlar el z-index
+                            container: 'sweet-modal-zindex'
                         }
                     });
                     formulario.reset();
                 } else if (xhr.status === 422) {
                     var errorResponse = JSON.parse(xhr.responseText);
-                    // Maneja los errores de validación aquí, por ejemplo, mostrando los mensajes de error en algún lugar de tu página.
                     var errorMessages = errorResponse.errors;
                     var errorMessageContainer = document.getElementById('messagePageContact');
                     errorMessageContainer.innerHTML = 'Errores de validación:<br>';
@@ -556,11 +608,10 @@
                     console.error('Error en la solicitud: ' + xhr.status);
                 }
                 const downloadUrl = "{{ $course->brochure->path_file }}";
-                window.open(downloadUrl, '_blank'); // '_blank' abre en nueva pestaña
+                window.open(downloadUrl, '_blank');
 
             };
 
-            // Enviar la solicitud al servidor
             xhr.send(formData);
         });
     </script>
