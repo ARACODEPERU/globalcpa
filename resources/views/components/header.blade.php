@@ -237,9 +237,11 @@
                                 <a href="{{ route('login') }}">
                                     <span style="font-weight: 600; font-size: 14px;">{{ $userName }}</span>
                                 </a>
-                                <span style="font-size: 12px; color: #898989;">
-                                    {{ Auth::user()->hasRole(['Alumno']) ? 'Alumno' : 'Docente' }}
-                                </span>
+                                <a href="{{ route('login') }}">
+                                    <span style="font-size: 12px; color: #898989;">
+                                        {{ Auth::user()->hasRole(['Alumno']) ? 'Alumno' : 'Docente' }}
+                                    </span>
+                                </a>
                             </div>
                         </div>
                     </li>
