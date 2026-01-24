@@ -168,7 +168,11 @@ class ExportSalesExcel implements ShouldQueue
                     // 5. ALUMNO
                     $clientFullName = $sale->client->full_name ?? 'N/A';
 
-                    $formaPago = $sale->document->forma_pago == 'Contado' ? 'Contado' : 'Crédito';
+                    $formaPago = 'N/A';
+                    if($sale->document){
+                        $formaPago = $sale->document->forma_pago == 'Contado' ? 'Contado' : 'Crédito';
+                    }
+
                     // 6. IMPORTE DE COBRANZA
                     $totalAmount = number_format($sale->total, 2, '.', ''); // Formato numérico
 
