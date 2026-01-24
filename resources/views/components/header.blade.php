@@ -222,15 +222,21 @@
                             @endphp
 
                             @if ($userAvatar && Storage::disk('public')->exists($userAvatar))
-                                <img class="custom-avatar-img" src="{{ asset('storage/' . $userAvatar) }}" alt="Avatar">
+                                <a href="{{ route('login') }}">
+                                    <img class="custom-avatar-img" src="{{ asset('storage/' . $userAvatar) }}" alt="Avatar">
+                                </a>
                             @else
-                                <div class="custom-initials-box">
-                                    <span>{{ substr($userName, 0, 1) }}</span>
-                                </div>
+                                <a href="{{ route('login') }}">
+                                    <div class="custom-initials-box">
+                                        <span>{{ substr($userName, 0, 1) }}</span>
+                                    </div>
+                                </a>
                             @endif
                             
                             <div class="custom-user-info">
-                                <span style="font-weight: 600; font-size: 14px;">{{ $userName }}</span>
+                                <a href="{{ route('login') }}">
+                                    <span style="font-weight: 600; font-size: 14px;">{{ $userName }}</span>
+                                </a>
                                 <span style="font-size: 12px; color: #898989;">
                                     {{ Auth::user()->hasRole(['Alumno']) ? 'Alumno' : 'Docente' }}
                                 </span>

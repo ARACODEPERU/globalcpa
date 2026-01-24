@@ -38,6 +38,7 @@
                                             <i class="fa fa-star"></i>
                                             <i class="fa fa-star"></i>
                                             <i class="fa fa-star-half-o"></i>
+                                            {{-- <span class="text-white ms-1">(4.8/5 de 120 alumnos)</span> --}}
                                             <span class="text-white ms-1">(4.8/5 de 120 alumnos)</span>
                                         </div>
                                     </div>
