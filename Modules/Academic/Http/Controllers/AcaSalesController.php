@@ -132,7 +132,7 @@ class AcaSalesController extends Controller
                 $forma_pago = $request->get('forma_pago');
 
                 if ($forma_pago && $forma_pago === 'Contado') {
-                    $sale->payments = json_encode($request->get('payments'));
+                    $sale->payments = $request->get('payments');
                     $sale->save();
                 }
 
@@ -642,7 +642,7 @@ class AcaSalesController extends Controller
                 $forma_pago = $request->get('forma_pago');
 
                 if ($forma_pago && $forma_pago === 'Contado') {
-                    $sale->payments = json_encode($request->get('payments'));
+                    $sale->payments = $request->get('payments');
                     $sale->save();
                 }
 
