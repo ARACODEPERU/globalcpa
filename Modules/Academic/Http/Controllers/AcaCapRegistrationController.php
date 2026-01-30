@@ -185,7 +185,9 @@ class AcaCapRegistrationController extends Controller
         }
 
         if ($stsubscription) {
-            $stsubscription->update([
+            $stsubscription = AcaStudentSubscription::where('student_id', $student->id)
+            ->where('subscription_id', $subscription_id)
+            ->update([
                 'student_id' => $student->id,
                 'subscription_id' => $subscription_id,
                 'date_start' => $dateStart->format('Y-m-d'),
@@ -194,7 +196,7 @@ class AcaCapRegistrationController extends Controller
                 'notes' => null,
                 'renewals' => true,
                 'registration_user_id' => $user->id,
-                'onli_sale_id' => null,
+                //'onli_sale_id' => null,
                 'amount_paid' => $amount
             ]);
         } else {
