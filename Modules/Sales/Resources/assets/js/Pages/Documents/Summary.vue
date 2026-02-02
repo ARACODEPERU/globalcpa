@@ -360,7 +360,7 @@
                 Crear Resumen
             </template>
             <template #message>
-                Buscar por Fecha de emisión documentos que faltantes de envio
+                Buscar por Fecha de emisión documentos aún no enviados a SUNAT
             </template>
             <template #content>
                 <div class="grid grid-cols-6">
