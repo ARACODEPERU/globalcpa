@@ -16,6 +16,7 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Modules\Academic\Entities\AcaStudentSubscription;
+use Modules\Academic\Entities\AcaSubscriptionPayment;
 use Modules\Academic\Entities\AcaSubscriptionType;
 
 class AcaCapRegistrationController extends Controller
@@ -192,7 +193,7 @@ class AcaCapRegistrationController extends Controller
                 'subscription_id' => $subscription_id,
                 'date_start' => $dateStart->format('Y-m-d'),
                 'date_end' => $dateEnd->format('Y-m-d'),
-                'status' => true,
+                'status' => false,
                 'notes' => null,
                 'renewals' => true,
                 'registration_user_id' => $user->id,
@@ -207,12 +208,20 @@ class AcaCapRegistrationController extends Controller
                 'date_end' => $dateEnd->format('Y-m-d'),
                 'status' => true,
                 'notes' => null,
-                'renewals' => 0,
+                'renewals' => false,
                 'registration_user_id' => $user->id,
                 'onli_sale_id' => null,
                 'amount_paid' => $amount
             ]);
         }
+        AcaSubscriptionPayment::create([
+            'student_id' => $student->id,
+            'subscription_id' => $subscription_id,
+            'document_id' => null,
+            'date_start' => $dateStart->format('Y-m-d'),
+            'date_end' => $dateEnd ? $dateEnd->format('Y-m-d') : null,
+            'amount' => $amount
+        ]);
     }
 
     public function subscriptionDestroy($student_id, $subscription_id)
