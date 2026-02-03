@@ -309,7 +309,7 @@
                 Crear Comunicación de baja
             </template>
             <template #message>
-                Buscar por Fecha de emisión documentos aún no enviados a SUNAT
+                Buscar por Fecha de emisión documentos que faltantes de envio
             </template>
             <template #content>
                 <div class="grid grid-cols-6">
