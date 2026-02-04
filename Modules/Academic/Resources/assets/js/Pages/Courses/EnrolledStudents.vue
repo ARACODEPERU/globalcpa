@@ -22,7 +22,11 @@
         students:{
             type: Object,
             default: () => ({}),
-        }
+        },
+        filters: {
+            type: Object,
+            default: () => ({}),
+        },
     });
 
     const studentsData = ref([]);
@@ -73,7 +77,7 @@
 
 
     const form = useForm({
-        search: null
+        search: props.filters.search,
     });
 
     const baseUrl = assetUrl;
@@ -319,10 +323,10 @@
                             placeholder="Buscar"
                             class="form-input py-2 ltr:pr-11 rtl:pl-11 peer"
                             v-model="form.search"
-                            @keyup.enter="form.get(route('aca_courses_list'))"
+                            @keyup.enter="form.get(route('aca_enrolledstudents_list', course.id))"
                         />
                         <div class="absolute ltr:right-[11px] rtl:left-[11px] top-1/2 -translate-y-1/2 peer-focus:text-primary">
-                            <icon-search class="mx-auto" />
+                            <icon-search @click="form.get(route('aca_enrolledstudents_list', course.id))" class="mx-auto w-4 h-4" />
                         </div>
                     </div>
                 </div>
