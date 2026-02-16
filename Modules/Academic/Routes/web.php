@@ -102,7 +102,7 @@ Route::middleware(['auth', 'verified', 'invalid_updated_information'])->prefix('
     Route::delete('students/certificates_destroy/{id}', 'AcaCertificateController@studentDestroy')
         ->name('aca_students_certificates_destroy');
 
-    Route::middleware(['permission:aca_estudiante_certificados_crear'])
+    Route::middleware(['permission:aca_estudiante_matriculas_crear'])
         ->get('students/registrations/{id}', 'AcaCapRegistrationController@create')
         ->name('aca_students_registrations_create');
 
