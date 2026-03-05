@@ -353,7 +353,7 @@
             font-size: 1.3rem;
             font-weight: 700;
             color: #2c3e50;
-            margin-top: 20px;
+            margin-top: 10px;
             margin-bottom: 8px;
         }
 
