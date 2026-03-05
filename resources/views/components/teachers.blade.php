@@ -287,34 +287,6 @@
         </div>
     </section> --}}
 
-    <!-- Modals Opción 2 -->
-    @foreach ($teachers as $k => $teacher)
-        <div class="modal fade" id="modalOpt2{{ $k }}" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-lg">
-                <div class="modal-content border-0 shadow-lg" style="border-radius: 15px; overflow: hidden;">
-                    <div class="row g-0">
-                        <div class="col-md-5 d-none d-md-block"
-                            style="background-image: url('{{ asset('storage/' . $teacher->item->items[3]->content) }}'); background-size: cover; background-position: center;">
-                        </div>
-                        <div class="col-md-7">
-                            <div class="modal-header border-0 pb-0">
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body p-4 p-lg-5">
-                                <h3 class="fw-bold text-dark mb-1">{{ $teacher->item->items[0]->content }}</h3>
-                                <p class="text-danger fw-bold text-uppercase mb-4">
-                                    {{ $teacher->item->items[1]->content }}</p>
-                                <p class="text-muted" style="line-height: 1.8;">
-                                    {{ $teacher->item->items[2]->content }}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    @endforeach
 
     <!-- Propuesta de Diseño Moderno Opción 3 -->
     <style>
@@ -416,4 +388,35 @@
         </div>
     </section>
 
+    {{-- Empujar los modales a un stack para evitar problemas de z-index con AOS --}}
+    @push('modals')
+        <!-- Modals para la sección de Docentes -->
+        @foreach ($teachers as $k => $teacher)
+            <div class="modal fade" id="modalOpt2{{ $k }}" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content border-0 shadow-lg" style="border-radius: 15px; overflow: hidden;">
+                        <div class="row g-0">
+                            <div class="col-md-5 d-none d-md-block"
+                                style="background-image: url('{{ asset('storage/' . $teacher->item->items[3]->content) }}'); background-size: cover; background-position: center;">
+                            </div>
+                            <div class="col-md-7">
+                                <div class="modal-header border-0 pb-0">
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body p-4 p-lg-5">
+                                    <h3 class="fw-bold text-dark mb-1">{{ $teacher->item->items[0]->content }}</h3>
+                                    <p class="text-danger fw-bold text-uppercase mb-4">
+                                        {{ $teacher->item->items[1]->content }}</p>
+                                    <p class="text-muted" style="line-height: 1.8;">
+                                        {{ $teacher->item->items[2]->content }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endforeach
+    @endpush
 </div>

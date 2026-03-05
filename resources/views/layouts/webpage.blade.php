@@ -176,12 +176,6 @@
 
 
 
-
-
-
-
-
-
     <!-- latest jquery-->
     <script src="{{ asset('themes/webpage/assets/js/jquery.min.js') }}"></script>
     <!-- Bootstrap js-->
@@ -244,6 +238,8 @@
         })
     </script>
 
+
+    @stack('modals')
 
 </body>
 
