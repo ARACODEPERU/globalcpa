@@ -386,11 +386,11 @@
         }
 
         .teacher-role-opt3 {
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             color: #e30613;
-            font-weight: 500;
+            font-weight: 400;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.1px;
         }
     </style>
 
