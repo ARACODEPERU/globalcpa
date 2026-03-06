@@ -1,21 +1,4 @@
-
-<div>    
-    <section style="padding: 10px 0px;">
-        <div class="container-fluid">
-            <div class="page-title">
-                <div class="row">
-                    <div class="col-sm-3 pe-0">
-                    </div>
-                    <div class="col-sm-6 ps-0">
-                        <h1 class="ara_title">Aprende de quienes lideran en las firmas más reconocidas</h1>
-                    </div>
-                    <div class="col-sm-3 pe-0">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
+<div>
     <!-- Propuesta de Diseño Moderno Opción 3 -->
     <style>
         .teachers-section-opt3 {
