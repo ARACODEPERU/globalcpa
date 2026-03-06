@@ -405,10 +405,10 @@
                                         aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body p-4 p-lg-5">
-                                    <h3 class="fw-bold text-dark mb-1">{{ $teacher->item->items[0]->content }}</h3>
+                                    <h3 class="fw-bold text-gray-900 dark:text-[#fff] mb-1">{{ $teacher->item->items[0]->content }}</h3>
                                     <p class="text-danger fw-bold text-uppercase mb-4">
                                         {{ $teacher->item->items[1]->content }}</p>
-                                    <p class="text-muted" style="line-height: 1.8;">
+                                    <p class="text-gray-600 dark:text-gray-400" style="line-height: 1.8;">
                                         {{ $teacher->item->items[2]->content }}
                                     </p>
                                 </div>
