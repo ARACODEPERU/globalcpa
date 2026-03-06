@@ -329,7 +329,7 @@
             border-radius: 50%;
             padding: 7px;
             /* Espacio para el borde degradado */
-            background: linear-gradient(45deg,  #e30613 0%, #a0040d 100%);
+            background: linear-gradient(45deg,  #004080 0%, #002060 100%);
             /* Degradado */
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
             transition: all 0.4s ease;
