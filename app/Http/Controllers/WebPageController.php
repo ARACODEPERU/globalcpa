@@ -147,6 +147,11 @@ class WebPageController extends Controller
             'lider' => $lider
         ]);
     }
+    
+    public function teachers()
+    {
+        return view('pages.teachers');
+    }
 
     public function bookamauta()
     {
