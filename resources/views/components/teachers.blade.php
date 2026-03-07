@@ -57,7 +57,7 @@
             border-radius: 50%;
             padding: 7px;
             /* Espacio para el borde degradado */
-            background: linear-gradient(45deg,  #004080 0%, #002060 100%);
+            background: linear-gradient(45deg,  #1f2f3e 0%, #000000 100%);
             /* Degradado */
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
             transition: all 0.4s ease;
@@ -87,8 +87,8 @@
 
         .teacher-role-opt3 {
             font-size: 0.8rem;
-            /* color: #e30613; */
-            color: #575656;
+            color: #e30613;
+            /* color: #575656; */
             font-weight: 400;
             text-transform: uppercase;
             letter-spacing: 0.1px;
