@@ -1120,7 +1120,7 @@
                                                                 <option value="0">frame de vídeo</option>
                                                                 <option value="3">Link videoconferencia</option>
                                                                 <option value="2">Subir Archivo</option>
-                                                                
+                                                                <option value="4">Examen</option>
                                                             </select>
                                                             <div class="text-danger text-sm mt-1" v-if="contentForm.errors.is_file">{{ contentForm.errors.is_file }}</div>
                                                         </div>
@@ -1478,7 +1478,7 @@
                                         </div>
                                         <p class="mt-2 text-sm text-red-600 dark:text-red-500"><span class="font-medium">NOTA!</span> El docente deberá calificar esta respuesta</p>
                                     </div>
-                                    
+
                                     <div v-else-if="formAnswer.type_answers == 'Alternativas'" class="w-full flex justify-between items-center mb-2">
                                         <label class="inline-flex">
                                             <input :id="'rdbanswer-'+answer.id" type="radio" class="form-radio rounded-none" :checked="answer.correct" />
