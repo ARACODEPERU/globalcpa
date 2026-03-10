@@ -104,6 +104,7 @@ import ContinuousArrow from './Components/ContinuousArrow.vue';
 
     <ServicesTI />
     <!-- about -->
+
     <About />
     <!-- Experience and Education -->
     <!-- <section id="experience" class="section-experience bg-[#f6f8ff] relative">
