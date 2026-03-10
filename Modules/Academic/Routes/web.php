@@ -105,7 +105,7 @@ Route::middleware(['auth', 'verified', 'invalid_updated_information'])->prefix('
     Route::delete('students/certificates_destroy/{id}', 'AcaCertificateController@studentDestroy')
         ->name('aca_students_certificates_destroy');
 
-    Route::middleware(['permission:aca_estudiante_matriculas_crear'])
+    Route::middleware(['permission:aca_estudiante_certificados_crear'])
         ->get('students/registrations/{id}', 'AcaCapRegistrationController@create')
         ->name('aca_students_registrations_create');
 
@@ -603,10 +603,6 @@ Route::middleware(['auth', 'verified', 'invalid_updated_information'])->prefix('
         ->post('grade/management/store', [AcaGradeManagementController::class, 'store'])
         ->name('aca_grade_management_store');
 });
-
-////asistencia
-Route::get('student/certificates/all', [AcaCertificateController::class, 'studentCertificates'])
-        ->name('aca_student_certificates_all');
 
 Route::get('asistencia/registrar/clase',[AcaAttendanceController::class, 'registerAttendance']);
 Route::post('asistencia/registrar/clase/store',[AcaAttendanceController::class, 'storeAttendance'])->name('aca_asistencia_store');
