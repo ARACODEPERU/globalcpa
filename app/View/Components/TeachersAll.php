@@ -7,19 +7,16 @@ use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 use Modules\CMS\Entities\CmsSectionItem;
 
-class Teachers extends Component
+class TeachersAll extends Component
 {
     /**
      * Create a new component instance.
      */
-    protected $teachers;
-
     public function __construct()
     {
         $this->teachers = CmsSectionItem::with('item.items')
         ->where('section_id', 5)
         ->orderBy('position', 'asc')
-        ->take(8)
         ->get();
     }
 
@@ -28,7 +25,7 @@ class Teachers extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.teachers', [
+        return view('components.teachers-all', [
             'teachers' => $this->teachers
         ]);
     }

@@ -28,7 +28,108 @@
             <x-sidebar />
 
             <!-- Page Sidebar Ends-->
-            <div class="page-body" style="padding: 80px 0px;">
+            <div class="page-body" x-data>
+
+                <!-- Propuesta de Diseño Moderno Opción 4 (Más avatares) -->
+                <div class="container-fluid mt-5">
+                    <div class="card border-0 overflow-hidden shadow mb-4"
+                        style="background: linear-gradient(135deg, #002060 0%, #004080 100%); border-radius: 20px;"
+                        data-aos="fade-up">
+
+                        <div class="card-body p-4 p-lg-5 position-relative">
+                            <div class="row align-items-center">
+                                <div class="col-lg-7">
+                                    <nav aria-label="breadcrumb" class="mb-3">
+                                        <ol class="breadcrumb mb-0">
+                                            <li class="breadcrumb-item">
+                                                <a href="/"
+                                                    class="text-white-50 text-decoration-none text-uppercase small fw-bold"
+                                                    style="letter-spacing: 1px;">
+                                                    <i class="fa fa-home me-1"></i> Inicio
+                                                </a>
+                                            </li>
+                                            <li class="breadcrumb-item active text-white text-uppercase small fw-bold"
+                                                style="letter-spacing: 1px;" aria-current="page">
+                                                Suscripciones
+                                            </li>
+                                        </ol>
+                                    </nav>
+
+                                    <h1 class="display-4 fw-bold text-white mb-3">
+                                        Planes de Suscripción <span class="text-warning">Exclusivos</span>
+                                    </h1>
+                                    <p class="lead text-white-50 mb-4" style="max-width: 600px; line-height: 1.6;">
+                                        Elige el plan que mejor se adapte a tus necesidades y accede a un universo de
+                                        conocimiento, herramientas y una comunidad de profesionales para impulsar tu carrera.
+                                    </p>
+
+                                    <div class="d-flex gap-3">
+                                        <div class="d-flex align-items-center text-white-50 small">
+                                            <i class="fa fa-check-circle text-success me-2"></i> Acceso Ilimitado
+                                        </div>
+                                        <div class="d-flex align-items-center text-white-50 small">
+                                            <i class="fa fa-check-circle text-success me-2"></i> Contenido Premium
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-5 d-none d-lg-block">
+                                    <div class="subscription-icon-cloud position-relative" style="min-height: 280px;">
+                                        <!-- Íconos flotantes de beneficios -->
+                                        <div
+                                            class="icon-item item-1 shadow-lg d-flex align-items-center justify-content-center">
+                                            <i class="fa fa-infinity fa-2x text-white"></i>
+                                        </div>
+                                        <div class="icon-item item-2 shadow d-flex align-items-center justify-content-center">
+                                            <i class="fa fa-certificate fa-2x text-white"></i>
+                                        </div>
+                                        <div class="icon-item item-3 shadow d-flex align-items-center justify-content-center">
+                                            <i class="fa fa-users fa-2x text-white"></i>
+                                        </div>
+                                        <div class="icon-item item-4 shadow d-flex align-items-center justify-content-center">
+                                            <i class="fa fa-star fa-2x text-white"></i>
+                                        </div>
+                                        <div class="icon-item item-5 shadow d-flex align-items-center justify-content-center">
+                                            <i class="fa fa-play-circle fa-2x text-white"></i>
+                                        </div>
+                                        <div class="icon-item item-6 shadow d-flex align-items-center justify-content-center">
+                                            <i class="fa fa-book-open fa-2x text-white"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <style>
+                    .subscription-icon-cloud .icon-item {
+                        position: absolute;
+                        border-radius: 50%;
+                        border: 3px solid rgba(255, 255, 255, 0.5);
+                        background-color: rgba(255, 255, 255, 0.1);
+                        backdrop-filter: blur(5px);
+                        animation: float-icons 8s ease-in-out infinite;
+                    }
+
+                    .subscription-icon-cloud .item-1 { width: 100px; height: 100px; top: 50%; left: 50%; z-index: 5; animation-name: float-icons-center; animation-duration: 7s; }
+                    .subscription-icon-cloud .item-2 { width: 70px; height: 70px; top: 15%; left: 20%; animation-delay: -1.5s; }
+                    .subscription-icon-cloud .item-3 { width: 80px; height: 80px; top: 25%; left: 80%; animation-delay: -3s; animation-duration: 9s; }
+                    .subscription-icon-cloud .item-4 { width: 60px; height: 60px; top: 75%; left: 10%; animation-delay: -5s; }
+                    .subscription-icon-cloud .item-5 { width: 90px; height: 90px; top: 70%; left: 70%; animation-delay: -0.8s; animation-duration: 10s; }
+                    .subscription-icon-cloud .item-6 { width: 55px; height: 55px; top: 8%; left: 55%; animation-delay: -6s; animation-duration: 8s; }
+
+                    @keyframes float-icons {
+                        0%, 100% { transform: translateY(0px) rotate(4deg); }
+                        50% { transform: translateY(-20px) rotate(-4deg); }
+                    }
+
+                    @keyframes float-icons-center {
+                        0%, 100% { transform: translate(-50%, -50%) translateY(0px) rotate(4deg); }
+                        50% { transform: translate(-50%, -50%) translateY(-20px) rotate(-4deg); }
+                    }
+                </style>
+
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-md-12">
