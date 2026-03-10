@@ -34,8 +34,8 @@
                         @if ($subscription->period == 'Anual')
                             @php
                                 // Decodificar el JSON a un array de PHP
-                                $prices = json_decode($subscription->prices, true);
-                                $details = json_decode($subscription->details, true);
+                                $prices = is_string($subscription->prices) ? json_decode($subscription->prices, true) : $subscription->prices;
+                                $details = is_string($subscription->details) ? json_decode($subscription->details, true) : $subscription->details;
                             @endphp
                             <div class="col-md-4">
                                 <div class="card" style="width: 90%; padding: 10px 15px;">
@@ -95,8 +95,8 @@
                         @if ($subscription->period == 'Mensual')
                             @php
                                 // Decodificar el JSON a un array de PHP
-                                $prices = json_decode($subscription->prices, true);
-                                $details = json_decode($subscription->details, true);
+                                $prices = is_string($subscription->prices) ? json_decode($subscription->prices, true) : $subscription->prices;
+                                $details = is_string($subscription->details) ? json_decode($subscription->details, true) : $subscription->details;
                             @endphp
                             <div class="col-md-4">
                                 <div class="card" style="width: 90%; padding: 10px 15px;">
