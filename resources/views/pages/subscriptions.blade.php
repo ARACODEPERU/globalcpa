@@ -175,8 +175,11 @@
                     }
                 </style>
 
-                <div class="container-fluid">
 
+
+
+
+                {{-- <div class="container-fluid">
                     <div class="grid grid-cols-12 gap-4 mt-4 w-full transition-all duration-[.25s]  sm:gap-5 lg:gap-6">
                         <div class="col-span-12 lg:col-span-4">
                             <div class="card p-4 sm:p-5">
@@ -217,20 +220,6 @@
                                                     class="btn shrink-0 px-3 py-1.5 font-medium">
                                                     Red Global de Excelencia
                                                 </button>
-                                                {{-- <button @click="activeTab = 'tabMessages'"
-                                        :class="activeTab === 'tabMessages' ?
-                                            'bg-white shadow dark:bg-navy-500 dark:text-navy-100' :
-                                            'hover:text-slate-800 focus:text-slate-800 dark:hover:text-navy-100 dark:focus:text-navy-100'"
-                                        class="btn shrink-0 px-3 py-1.5 font-medium">
-                                        Sobre su autor
-                                    </button>
-                                    <button @click="activeTab = 'tabSettings'"
-                                        :class="activeTab === 'tabSettings' ?
-                                            'bg-white shadow dark:bg-navy-500 dark:text-navy-100' :
-                                            'hover:text-slate-800 focus:text-slate-800 dark:hover:text-navy-100 dark:focus:text-navy-100'"
-                                        class="btn shrink-0 px-3 py-1.5 font-medium">
-                                        Estructura de la obra
-                                    </button> --}}
                                             </div>
                                         </div>
                                         <div class="tab-content pt-4">
@@ -476,7 +465,8 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> --}}
+
                 <div class="container-fluid">
                     <x-subscriptions />
                 </div>
