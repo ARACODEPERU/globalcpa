@@ -132,16 +132,11 @@ export const useAppStore = defineStore('app', {
             localStorage.setItem('shoppingCart', JSON.stringify(this.shoppingCart));
         },
         clearCart() {
+            console.log('aca si debe llegar')
             this.shoppingCart = []; // Método para vaciar el carrito
             localStorage.removeItem("shoppingCart");
         },
-        clearSidebar() {
-            localStorage.removeItem("activeModule");
-            localStorage.removeItem("moduleSelected");
-            localStorage.removeItem("expandedSections");
-            localStorage.removeItem("activeOption");
-            localStorage.removeItem("activeSubOption");
-        },
+
     },
     getters: {},
 });

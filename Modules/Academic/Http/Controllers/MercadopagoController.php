@@ -67,8 +67,7 @@ class MercadopagoController extends Controller
             'preference' => $preference_id,
             'subscription' => $subscription,
             'samount' => floatval($amount),
-            'personInvoice' => $personInvoice,
-            'MERCADOPAGO_KEY' => config('services.mercadopago.key')
+            'personInvoice' => $personInvoice
         ]);
     }
 

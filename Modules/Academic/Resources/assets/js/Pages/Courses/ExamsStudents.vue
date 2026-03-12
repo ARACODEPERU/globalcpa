@@ -176,7 +176,6 @@
         return answer && !isNaN(answer.punctuation);
     }
 
-
     const getAnswerPunctuation = (questionId) => {
         const answer = examForm.answers.find(ans => ans.id == questionId);
         return answer.punctuation;
@@ -184,11 +183,11 @@
 </script>
 <template>
     <AppLayout title="Examenes">
-        <Navigation :routeModule="route('aca_dashboard')" :titleModule="'Académico'"
-            :data="[
-                {title: 'Lista de Alumnos'}
-            ]"
-        />
+        <Navigation :routeModule="route('aca_dashboard')" :titleModule="'Académico'">
+            <li class="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
+                <span>Lista de Alumnos </span>
+            </li>
+        </Navigation>
         <div class="mt-5">
             <div class="flex items-center justify-between flex-wrap gap-4">
                 <h2 class="text-xl" style="width: 30%;">Lista de Alumnos </h2>
@@ -389,7 +388,7 @@
                                         </template>
                                     </div>
                                 </template>
-                                <template v-else-if="hasValidPunctuation(question.id, question.type_answers)">
+                                <template v-else-if="hasValidPunctuation(question.id)">
                                     <!-- ✅ Totalmente correcto -->
                                     <div class="inline-flex flex-wrap gap-2 ps-5 mt-4">
                                         <div>
@@ -407,7 +406,7 @@
                                         </div>
                                     </div>
                                 </template>
-                                <template v-if="!hasValidPunctuation(question.id, question.type_answers)">
+                                <template v-if="!hasValidPunctuation(question.id)">
                                     <div class="mt-6 ps-5" style="width: 40%;">
                                         <label for="addonsRightoutline">Calificar</label>
                                         <div class="flex">

@@ -3,6 +3,13 @@
 @section('content')
 
 
+
+
+    <!-- Loader starts-->
+    <!-- <div class="loader-wrapper">
+                                                                  <div class="loader"></div>
+                                                                </div> -->
+    <!-- Loader ends-->
     <!-- tap on top starts-->
     <div class="tap-top"><i data-feather="chevrons-up"></i></div>
     <!-- tap on tap ends-->
@@ -38,7 +45,7 @@
                                                 <a href="/"
                                                     class="text-white-50 text-decoration-none text-uppercase small fw-bold"
                                                     style="letter-spacing: 1px;">
-                                                    <i class="fa fa-home me-1" aria-hidden="true"></i> Inicio
+                                                    <i class="fa fa-home me-1"></i> Inicio
                                                 </a>
                                             </li>
                                             <li class="breadcrumb-item active text-white text-uppercase small fw-bold"
@@ -53,16 +60,15 @@
                                     </h1>
                                     <p class="lead text-white-50 mb-4" style="max-width: 600px; line-height: 1.6;">
                                         Elige el plan que mejor se adapte a tus necesidades y accede a un universo de
-                                        conocimiento, herramientas y una comunidad de profesionales para impulsar tu
-                                        carrera.
+                                        conocimiento, herramientas y una comunidad de profesionales para impulsar tu carrera.
                                     </p>
 
                                     <div class="d-flex gap-3">
                                         <div class="d-flex align-items-center text-white-50 small">
-                                            <i class="fa fa-check-circle text-success me-2" aria-hidden="true"></i> Acceso Ilimitado
+                                            <i class="fa fa-check-circle text-success me-2"></i> Acceso Ilimitado
                                         </div>
                                         <div class="d-flex align-items-center text-white-50 small">
-                                            <i class="fa fa-check-circle text-success me-2" aria-hidden="true"></i> Contenido Premium
+                                            <i class="fa fa-check-circle text-success me-2"></i> Contenido Premium
                                         </div>
                                     </div>
                                 </div>
@@ -72,27 +78,22 @@
                                         <!-- Íconos flotantes de beneficios -->
                                         <div
                                             class="icon-item item-1 shadow-lg d-flex align-items-center justify-content-center">
-                                            <i class="fa fa-infinity fa-2x text-white" aria-hidden="true"></i>
+                                            <i class="fa fa-infinity fa-2x text-white"></i>
                                         </div>
-                                        <div
-                                            class="icon-item item-2 shadow d-flex align-items-center justify-content-center">
-                                            <i class="fa fa-certificate fa-2x text-white" aria-hidden="true"></i>
+                                        <div class="icon-item item-2 shadow d-flex align-items-center justify-content-center">
+                                            <i class="fa fa-certificate fa-2x text-white"></i>
                                         </div>
-                                        <div
-                                            class="icon-item item-3 shadow d-flex align-items-center justify-content-center">
-                                            <i class="fa fa-users fa-2x text-white" aria-hidden="true"></i>
+                                        <div class="icon-item item-3 shadow d-flex align-items-center justify-content-center">
+                                            <i class="fa fa-users fa-2x text-white"></i>
                                         </div>
-                                        <div
-                                            class="icon-item item-4 shadow d-flex align-items-center justify-content-center">
-                                            <i class="fa fa-star fa-2x text-white" aria-hidden="true"></i>
+                                        <div class="icon-item item-4 shadow d-flex align-items-center justify-content-center">
+                                            <i class="fa fa-star fa-2x text-white"></i>
                                         </div>
-                                        <div
-                                            class="icon-item item-5 shadow d-flex align-items-center justify-content-center">
-                                            <i class="fa fa-play-circle fa-2x text-white" aria-hidden="true"></i>
+                                        <div class="icon-item item-5 shadow d-flex align-items-center justify-content-center">
+                                            <i class="fa fa-play-circle fa-2x text-white"></i>
                                         </div>
-                                        <div
-                                            class="icon-item item-6 shadow d-flex align-items-center justify-content-center">
-                                            <i class="fa fa-book-open fa-2x text-white" aria-hidden="true"></i>
+                                        <div class="icon-item item-6 shadow d-flex align-items-center justify-content-center">
+                                            <i class="fa fa-book-open fa-2x text-white"></i>
                                         </div>
                                     </div>
                                 </div>
@@ -111,58 +112,12 @@
                         animation: float-icons 8s ease-in-out infinite;
                     }
 
-                    .subscription-icon-cloud .item-1 {
-                        width: 100px;
-                        height: 100px;
-                        top: 50%;
-                        left: 50%;
-                        z-index: 5;
-                        animation-name: float-icons-center;
-                        animation-duration: 7s;
-                    }
-
-                    .subscription-icon-cloud .item-2 {
-                        width: 70px;
-                        height: 70px;
-                        top: 15%;
-                        left: 20%;
-                        animation-delay: -1.5s;
-                    }
-
-                    .subscription-icon-cloud .item-3 {
-                        width: 80px;
-                        height: 80px;
-                        top: 25%;
-                        left: 80%;
-                        animation-delay: -3s;
-                        animation-duration: 9s;
-                    }
-
-                    .subscription-icon-cloud .item-4 {
-                        width: 60px;
-                        height: 60px;
-                        top: 75%;
-                        left: 10%;
-                        animation-delay: -5s;
-                    }
-
-                    .subscription-icon-cloud .item-5 {
-                        width: 90px;
-                        height: 90px;
-                        top: 70%;
-                        left: 70%;
-                        animation-delay: -0.8s;
-                        animation-duration: 10s;
-                    }
-
-                    .subscription-icon-cloud .item-6 {
-                        width: 55px;
-                        height: 55px;
-                        top: 8%;
-                        left: 55%;
-                        animation-delay: -6s;
-                        animation-duration: 8s;
-                    }
+                    .subscription-icon-cloud .item-1 { width: 100px; height: 100px; top: 50%; left: 50%; z-index: 5; animation-name: float-icons-center; animation-duration: 7s; }
+                    .subscription-icon-cloud .item-2 { width: 70px; height: 70px; top: 15%; left: 20%; animation-delay: -1.5s; }
+                    .subscription-icon-cloud .item-3 { width: 80px; height: 80px; top: 25%; left: 80%; animation-delay: -3s; animation-duration: 9s; }
+                    .subscription-icon-cloud .item-4 { width: 60px; height: 60px; top: 75%; left: 10%; animation-delay: -5s; }
+                    .subscription-icon-cloud .item-5 { width: 90px; height: 90px; top: 70%; left: 70%; animation-delay: -0.8s; animation-duration: 10s; }
+                    .subscription-icon-cloud .item-6 { width: 55px; height: 55px; top: 8%; left: 55%; animation-delay: -6s; animation-duration: 8s; }
 
                     @keyframes float-icons {
                         0%, 100% { transform: translateY(0px) rotate(4deg); }
@@ -175,15 +130,21 @@
                     }
                 </style>
 
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h1 class="title_aracode" style="font-size: 45px; line-height: 1.1; font-weight: 700;">
+                                PLANES DE SUSCRIPCIÓN
+                            </h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="container-fluid">
 
-
-
-
-                {{-- <div class="container-fluid">
                     <div class="grid grid-cols-12 gap-4 mt-4 w-full transition-all duration-[.25s]  sm:gap-5 lg:gap-6">
                         <div class="col-span-12 lg:col-span-4">
                             <div class="card p-4 sm:p-5">
-                                <img src="{{ asset('themes/webpage/images/suscripcion.jpg') }}" alt="Imagen promocional de los planes de suscripción de CPA Academy">
+                                <img src="{{ asset('themes/webpage/images/suscripcion.jpg') }}" alt="">
                             </div>
                         </div>
                         <div class="col-span-12 lg:col-span-8">
@@ -192,7 +153,7 @@
                                     class="items-center space-y-4 border-b border-slate-200
                             p-4 dark:border-navy-500 sm:flex-row sm:justify-between sm:space-y-0 sm:px-5">
                                     <h2 class="text-lg font-medium tracking-wide text-slate-700 dark:text-navy-100">
-                                        POTENCIA TU CRECIMIENTO PROFESIONAL Y FORTALECE TU EQUIPO CON FORMACIÓN ESTRATÉGICA.
+                                        POTENCIA TU CRECIMIENTO PROFESIONAL Y FORTAMECE TU EQUIPO CON FORMACIÓN ESTRATÉGICA.
                                     </h2>
                                     <p>
                                         La suscripción anual de CPA Academy te conecta con conocimientos
@@ -220,6 +181,20 @@
                                                     class="btn shrink-0 px-3 py-1.5 font-medium">
                                                     Red Global de Excelencia
                                                 </button>
+                                                {{-- <button @click="activeTab = 'tabMessages'"
+                                        :class="activeTab === 'tabMessages' ?
+                                            'bg-white shadow dark:bg-navy-500 dark:text-navy-100' :
+                                            'hover:text-slate-800 focus:text-slate-800 dark:hover:text-navy-100 dark:focus:text-navy-100'"
+                                        class="btn shrink-0 px-3 py-1.5 font-medium">
+                                        Sobre su autor
+                                    </button>
+                                    <button @click="activeTab = 'tabSettings'"
+                                        :class="activeTab === 'tabSettings' ?
+                                            'bg-white shadow dark:bg-navy-500 dark:text-navy-100' :
+                                            'hover:text-slate-800 focus:text-slate-800 dark:hover:text-navy-100 dark:focus:text-navy-100'"
+                                        class="btn shrink-0 px-3 py-1.5 font-medium">
+                                        Estructura de la obra
+                                    </button> --}}
                                             </div>
                                         </div>
                                         <div class="tab-content pt-4">
@@ -236,7 +211,7 @@
                                                     <p>
                                                         Brindamos formación oficial hacia la certificación contable líder en
                                                         el mundo,
-                                                        con <strong>tarifas preferenciales y acceso prioritario</strong> a programas y
+                                                        con <b>tarifas preferenciales y acceso prioritario</b> a programas y
                                                         certificaciones que elevan
                                                         la competitividad de empresas profesionales, a través de:
                                                     </p>
@@ -245,20 +220,20 @@
                                                         <li>
                                                             <i class="fa fa-circle" aria-hidden="true"
                                                                 style="color: red;"></i>&nbsp;
-                                                            <strong>Programas de especialización</strong> alineados a los estándares
+                                                            <b>Programas de especialización</b> alineados a los estándares
                                                             de ACCA
                                                         </li>
                                                         <li>
                                                             <i class="fa fa-circle" aria-hidden="true"
                                                                 style="color: red;"></i>&nbsp;
                                                             Preparación oficial para obtener la
-                                                            <strong>certificación internacional.</strong>
+                                                            <b>certificación internacional.</b>
                                                         </li>
                                                         <li>
                                                             <i class="fa fa-circle" aria-hidden="true"
                                                                 style="color: red;"></i>&nbsp;
                                                             Acceso a beneficios exclusivos a través de nuestros
-                                                            <strong>planes de suscripción anual.</strong>
+                                                            <b>planes de suscripción anual.</b>
                                                         </li>
                                                         <li>
                                                             <i class="fa fa-circle" aria-hidden="true"
@@ -272,10 +247,10 @@
                                                         ¿Y QUÉ ES ACCA?
                                                     </h2>
                                                     <p>
-                                                        ACCA es la <strong>Asociación de Contadores Públicos Certificados,</strong>
+                                                        ACCA es la <b>Asociación de Contadores Públicos Certificados,</b>
                                                         presente en
                                                         más de
-                                                        <strong>180 países.</strong> Certifica a profesionales destacados por su alta
+                                                        <b>180 países.</b> Certifica a profesionales destacados por su alta
                                                         preparación
                                                         en contabilidad,
                                                         finanzas y ética.
@@ -293,8 +268,8 @@
                                                     </h2>
                                                     <br>
                                                     <p>
-                                                        Formamos parte de la red internacional <strong>SFAI (Santa Fe Associates
-                                                            International),</strong> con
+                                                        Formamos parte de la red internacional <b>SFAI (Santa Fe Associates
+                                                            International),</b> con
                                                         presencia en más de 100 países, lo que nos permite mantener una
                                                         visión global y
                                                         actualizada
@@ -302,8 +277,8 @@
                                                     </p>
                                                     <p>
                                                         También pertenecemos al Foro de Firmas de la AIC
-                                                        <strong>(Asociación Internacional de
-                                                            Contabilidad),</strong> una membresía que garantiza nuestro
+                                                        <b>(Asociación Internacional de
+                                                            Contabilidad),</b> una membresía que garantiza nuestro
                                                         compromiso con los
                                                         más altos estándares técnicos, éticos y profesionales a nivel
                                                         mundial.
@@ -453,22 +428,24 @@
                                     <div class="my-7 h-px bg-slate-200 dark:bg-navy-500"></div>
 
                                     <div class="flex items-center justify-between pt-4">
-                                        <a href="{{ asset('themes/webpage/suscripcion_global.pdf') }}" download="suscripcion_global" class="boton-degradado-courses">
-                                            <strong style="font-size: 15px;">
-                                                <i class="fa fa-download" aria-hidden="true"
-                                                    style="font-size: 20px;"></i>
-                                                &nbsp; Descargar Brochure
-                                            </strong>
+                                        <a href="{{ asset('themes/webpage/suscripcion_global.pdf') }}"
+                                            download="suscripcion_global">
+                                            <button class="boton-degradado-courses">
+                                                <b style="font-size: 15px;">
+                                                    <i class="fa fa-download" aria-hidden="true"
+                                                        style="font-size: 20px;"></i>
+                                                    &nbsp; Descargar Brochure
+                                                </b>
+                                            </button>
                                         </a>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div> --}}
-
+                </div>
                 <div class="container-fluid">
-                    <x-subscriptions />
+                     <x-subscriptions />
                 </div>
             </div>
             <!-- footer start-->
@@ -476,5 +453,6 @@
         </div>
 
     </div>
-    
-@endsection
+
+
+@stop

@@ -57,7 +57,7 @@
     onMounted(() => {
         getFormattedDate();
     });
-
+    
     const getDataTable = async (data) => {
         // Verificar si el objeto ya existe en el array
         if (form.products.some(product => product.id === data.id && product.size === data.size)) {
@@ -65,13 +65,13 @@
             showMessage('El producto ya fue agregado','info');
         } else {
             // El objeto no existe, agregarlo al array
-
+            
             let xtotal = parseFloat(data.total) + parseFloat(form.total);
             form.total = xtotal.toFixed(2);
             form.products.push(data);
             form.payments[0].amount = form.total;
         }
-
+        
     }
 
     const removeProduct = (key) => {
@@ -134,13 +134,13 @@
                         form.setError('payments.'+index+'.amount', paymentsErrors[i]);
                     }
                 }
-
+                
                 Swal2.close();
             });
         }else{
             showMessage('Agregar Productos para realizar la venta');
         }
-
+        
     }
 
     const printPdf = (id) => {
@@ -172,12 +172,14 @@
 
 <template>
     <AppLayout title="Punto de Ventas">
-        <Navigation :routeModule="route('sales_dashboard')" :titleModule="'Ventas'"
-            :data="[
-                {route: route('sales.index'), title: 'Punto de Ventas'},
-                {title: 'Nuevo'}
-            ]"
-        />
+        <Navigation :routeModule="route('sales_dashboard')" :titleModule="'Ventas'">
+            <li class="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
+                <Link :href="route('sales.index')" class="text-primary hover:underline">Punto de Ventas</Link>
+            </li>
+            <li class="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
+                <span>Nuevo</span>
+            </li>
+        </Navigation>
         <div class="mt-5">
 
             <div class="grid grid-cols-2 gap-4">
@@ -242,7 +244,7 @@
                                                         <span class="font-medium">Vacío!</span> Agregar productos
                                                     </div>
                                                 </div>
-                                           </td>
+                                           </td> 
                                         </tr>
                                    </template>
                                 </tbody>

@@ -23,11 +23,7 @@ class AcaExam extends Model
         'description',
         'date_start',
         'date_end',
-        'status',
-        'attempts',
-        'duration_minutes',
-        'file_resolved_name',
-        'file_resolved_path'
+        'status'
     ];
 
     public function questions(): HasMany
@@ -37,16 +33,6 @@ class AcaExam extends Model
 
     public function course(): BelongsTo
     {
-        return $this->belongsTo(AcaCourse::class, 'course_id');
-    }
-
-    public function module(): BelongsTo
-    {
-        return $this->belongsTo(AcaModule::class, 'module_id');
-    }
-
-    public function student_exams(): HasMany
-    {
-        return $this->hasMany(AcaStudentExam::class, 'exam_id');
+        return $this->belongsTo(AcaCourse::class,'course_id');
     }
 }

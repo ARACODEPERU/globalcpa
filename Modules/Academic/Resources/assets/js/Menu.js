@@ -8,16 +8,13 @@ import {
     faCertificate,
     faPlay,
     faMugHot,
-    faChartLine,
-    faGraduationCap,
-    faClock,
-    faGavel
+    faChartLine
 } from "@fortawesome/free-solid-svg-icons";
 
 const menuAcademic = {
     status: false,
     text: "Académico",
-    icom: faGraduationCap,
+    icom: faBook,
     route: 'module',
     permissions: "aca_dashboard",
     items: [
@@ -138,22 +135,6 @@ const menuAcademic = {
             icom: faMugHot,
             permissions: "aca_cursos_revisar_examenes",
             id: 'btnReviewExams'
-        },
-        {
-            route: route("aca_attendance_administration"),
-            status: false,
-            text: "Revisar Asistencia de alumnos",
-            icom: faClock,
-            permissions: "aca_asistencia_administrador",
-            id: 'btnAsistencia'
-        },
-        {
-            route: route("aca_grade_management_panel"),
-            status: false,
-            text: "Gestión de Calificaciones",
-            icom: faGavel,
-            permissions: "aca_gestion_de_calificaciones",
-            id: 'btnCalificaciones'
         },
         {
             route: route('aca_reports_dashboard'),

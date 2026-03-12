@@ -681,11 +681,11 @@
 </script>
 <template>
     <AppLayout title="Punto de Ventas">
-        <Navigation :routeModule="route('sales_dashboard')" :titleModule="'Facturación Electrónica'"
-            :data="[
-                {title: 'Crear Documentos'}
-            ]"
-        />
+        <Navigation :routeModule="route('sales_dashboard')" :titleModule="'Facturación Electrónica'">
+            <li class="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
+                <span>Crear Documentos</span>
+            </li>
+        </Navigation>
         <div class="mt-5">
             <div class="flex-shrink max-w-full w-full mb-6">
                 <div class="panel">

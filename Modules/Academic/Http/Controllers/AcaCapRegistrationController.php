@@ -94,8 +94,7 @@ class AcaCapRegistrationController extends Controller
             AcaCapRegistration::create([
                 'student_id'        => $student_id,
                 'course_id'         => $course_id,
-                'status'            => true,
-                'date_start'        => Carbon::now()->format('Y-m-d'),
+                'status'             => true
             ]);
         }
 
