@@ -36,7 +36,8 @@ use Modules\Academic\Http\Controllers\AcaThemeCommentController;
 use Modules\Academic\Http\Controllers\MercadopagoController;
 use Modules\Academic\Jobs\ExportStudentsExcel;
 
-Route::middleware(['auth', 'verified', 'invalid_updated_information'])->prefix('academic')->group(function () {
+Route::middleware(['auth', 'verified', 'invalid_updated_information','user_activity_log'])->prefix('academic')->group(function () {
+
     Route::middleware(['middleware' => 'permission:aca_dashboard'])
         ->get('dashboard', [AcademicController::class, 'index'])
         ->name('aca_dashboard');
@@ -80,6 +81,7 @@ Route::middleware(['auth', 'verified', 'invalid_updated_information'])->prefix('
     Route::get('teachers/resume/{id}', 'AcaTeacherController@resume')->name('aca_teachers_resume');
     Route::post('teachers/resume/work_experience/store', 'AcaTeacherController@workExperienceStore')->name('aca_teachers_work_experience_store');
     Route::delete('teachers/resume/work_experience/destroy/{id}', 'AcaTeacherController@workExperienceDestroy')->name('aca_teachers_work_experience_destroy');
+
     Route::middleware(['middleware' => 'permission:aca_estudiante_listado'])
         ->get('students', 'AcaStudentController@index')
         ->name('aca_students_list');
@@ -510,9 +512,9 @@ Route::middleware(['auth', 'verified', 'invalid_updated_information'])->prefix('
         ->name('aca_course_exam_view_details');
 
     // Participaciones de estudiantes
-    Route::middleware(['middleware' => 'permission:aca_cursos_listado'])
-        ->get('courses/{courseId}/participations', [AcaCourseController::class, 'participations'])
-        ->name('aca_course_participations');
+    Route::middleware(['middleware' => 'permission:aca_gestion_de_participaciones'])
+        ->get('courses/participations/students', [AcaCourseController::class, 'participations'])
+        ->name('aca_students_course_participations');
 
     Route::middleware(['middleware' => 'permission:aca_cursos_listado'])
         ->put('courses/participations/search/{courseId}', [AcaCourseController::class, 'searchParticipations'])
@@ -521,6 +523,10 @@ Route::middleware(['auth', 'verified', 'invalid_updated_information'])->prefix('
     Route::middleware(['middleware' => 'permission:aca_cursos_listado'])
         ->post('courses/participations/store', [AcaCourseController::class, 'storeParticipation'])
         ->name('aca_course_participation_store');
+
+    Route::middleware(['middleware' => 'permission:aca_cursos_listado'])
+        ->post('courses/participations/store/all', [AcaCourseController::class, 'storeAllParticipations'])
+        ->name('aca_course_participation_store_all');
 
     Route::middleware(['middleware' => 'permission:aca_cursos_examen_configuracion'])
         ->post('course/exam/question/form/store', [AcaExamQuestionController::class, 'storeQuestion'])
@@ -540,6 +546,11 @@ Route::middleware(['auth', 'verified', 'invalid_updated_information'])->prefix('
     Route::middleware(['middleware' => 'permission:aca_cursos_examen_resolver'])
         ->post('student/module/exam/solve/finish', [AcaExamController::class, 'moduleStoreFinish'])
         ->name('aca_student_exam_module_finish');
+
+    Route::middleware(['middleware' => 'permission:aca_cursos_examen_resolver'])
+        ->post('student/module/exam/solve/retry/{id}', [AcaExamController::class, 'retryExam'])
+        ->name('aca_student_module_exam_retry');
+
     Route::middleware(['middleware' => 'permission:aca_cursos_examen_resolver'])
         ->get('student/module/exam/{id}/solve/download', [AcaExamController::class, 'downloadPdf'])
         ->name('aca_student_exam_download_pdf');
@@ -547,6 +558,18 @@ Route::middleware(['auth', 'verified', 'invalid_updated_information'])->prefix('
     Route::middleware(['middleware' => 'permission:aca_alumno_examenes'])
         ->get('student/exams/all', [AcaExamController::class, 'studentExams'])
         ->name('aca_student_exam_search');
+
+    Route::middleware(['middleware' => 'permission:aca_cursos_examen_eliminar'])
+        ->delete('student/exam/{id}/destroy', [AcaExamController::class, 'destroyStudentExam'])
+        ->name('aca_student_exam_destroy');
+
+    Route::middleware(['middleware' => 'permission:aca_alumno_examenes'])
+        ->get('student/attendances', [AcaStudentController::class, 'studentAttendances'])
+        ->name('aca_student_attendances');
+
+    Route::middleware(['middleware' => 'permission:aca_alumno_examenes'])
+        ->get('student/attendances/search', [AcaStudentController::class, 'searchStudentAttendances'])
+        ->name('aca_student_attendances_search');
 
     Route::get('student/certificates/all', [AcaCertificateController::class, 'studentCertificates'])
         ->name('aca_student_certificates_all');

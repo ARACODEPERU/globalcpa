@@ -25,7 +25,6 @@
         },
     });
 
-    const treeview1 = ref([]);
     const themeSelected = ref([]);
     const displayModalVideo = ref(false);
     const videoSelected = ref(null);
@@ -71,6 +70,7 @@
         // Y si ya terminó o hay un error
         const isFinished = studentExam.value.status === 'completado' ||
                           studentExam.value.status === 'revision_pendiente' ||
+                        studentExam.value.status === 'calificado' ||
                           studentExam.value.status === 'timeout';
         return hasAttempts && isFinished;
     };
@@ -712,7 +712,7 @@
                                         :href="route('aca_student_module_exam_solve', moduleExam.id)"
                                         class="w-full bg-blue-500 hover:bg-blue-600 text-white text-center py-2.5 px-4 rounded-lg text-sm font-medium transition-colors"
                                     >
-                                        Repetir Examen ({{ moduleExam.attempts }} intentos)
+                                        Repetir Examen ({{ moduleExam.attempts - studentExam.attempts_used }} intentos)
                                     </Link>
                                     <div v-else class="w-full bg-gray-400 text-white text-center py-2.5 px-4 rounded-lg text-sm font-medium">
                                         Examen Completado
