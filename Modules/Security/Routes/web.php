@@ -34,4 +34,7 @@ Route::middleware(['auth','user_activity_log'])->prefix('security')->group(funct
 
     Route::get('user/activity/logs', [UserActivityLogsController::class, 'index'])->name('user_activity_logs');
     Route::get('user/activity/logs/data', [UserActivityLogsController::class, 'getData'])->name('user_activity_logs_data');
+
+    Route::get('user/activity/online', [SecurityController::class, 'usersOnline'])->name('security_users_online');
+
 });

@@ -391,11 +391,14 @@ const refreshTable = () => {
 
 <template>
     <AppLayout title="Documentos">
-        <Navigation :routeModule="route('sales_dashboard')" :titleModule="'Facturación Electrónica'"
-            :data="[
-                {title: 'Notas de credito'}
-            ]"
-        />
+        <Navigation
+            :routeModule="route('sales_dashboard')"
+            :titleModule="'Facturación Electrónica'"
+        >
+            <li class="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
+                <span>Notas de credito </span>
+            </li>
+        </Navigation>
         <div class="mt-5">
             <div class="flex items-center justify-between flex-wrap gap-4">
                 <h2 class="text-xl">Notas de credito</h2>

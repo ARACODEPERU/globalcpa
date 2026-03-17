@@ -1,5 +1,4 @@
 import {
-    faBookReader,
     faBook,
     faGripVertical,
 } from "@fortawesome/free-solid-svg-icons";
@@ -7,7 +6,7 @@ import {
 const menuBibliodata = {
     status: false,
     text: "Biblio Data",
-    icom: faBookReader,
+    icom: faBook,
     route: 'module',
     permissions: "aca_dashboard",
     items: [

@@ -29,6 +29,7 @@ use Modules\Academic\Entities\AcaStudentAttendance;
 use Modules\Academic\Entities\AcaThemeComment;
 use Modules\Academic\Entities\AcaStudentParticipation;
 
+
 class AcaCourseController extends Controller
 {
     use ValidatesRequests;
@@ -50,48 +51,20 @@ class AcaCourseController extends Controller
 
     public function index()
     {
-        //dd(request()->all('status'));
         $courses = (new AcaCourse())->newQuery();
         if (request()->has('search')) {
             $courses->where('description', 'like', '%' . request()->input('search') . '%');
         }
-        if (request()->has('modality')) {
-            $courses->where('modality_id', '=', request()->input('modality'));
-        }
-        if (request()->has('status')) {
-
-            if (request()->get('status') == 1) {
-                $courses->where('status', true);
-            }
-
-            if (request()->get('status') == 0) {
-                 $courses->where('status', false);
-            }
-        }
         $courses->orderBy('id', 'DESC');
-        $courses->with([
-            'category',
-            'modality',
-            'exam' => function ($query){
-                $query->whereNull('module_id');
-            }
-        ]);
+        $courses->with('category');
+        $courses->with('modality');
         $courses = $courses->paginate($this->RPTABLE)->onEachSide(2);
-
-        $categories = AcaCategoryCourse::get();
-        $modalities = AcaModality::get();
-        $types = getEnumValues('aca_courses', 'type_description');
 
         $institutions = AcaInstitution::where('status', true)->get();
 
         return Inertia::render('Academic::Courses/List', [
             'courses'       => $courses,
-            'institutions'  => $institutions,
-            'categories' => $categories,
-            'modalities' => $modalities,
-            'types' => $types,
-            'coursesActive' => AcaCourse::where('status', true)->count(),
-            'filters' => request()->all()
+            'institutions'  => $institutions
         ]);
     }
 
@@ -371,6 +344,7 @@ class AcaCourseController extends Controller
                     ->orWhere('number', '=', $search);
                 });
             })
+
             ->paginate(20)
             ->through(function ($registration) {
                 $registration->checkbox = false;
@@ -385,6 +359,7 @@ class AcaCourseController extends Controller
             'filters' => request()->all()
         ]);
     }
+
 
     /**
      * Crear o actualizar examen final del curso
@@ -684,4 +659,5 @@ class AcaCourseController extends Controller
             'message' => "Se guardaron {$savedCount} participaciones correctamente",
         ]);
     }
+
 }

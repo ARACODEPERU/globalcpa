@@ -28,8 +28,7 @@ const pinia = createPinia();
 const head = createHead();
 
 createInertiaApp({
-    //title: (title) => `${title} - ${appName}`,
-    title: (title) => `${appName} - ${title}`,
+    title: (title) => `${title} - ${appName}`,
     resolve: (name) => {
         let parts = name.split("::");
         if (parts.length > 1) {
@@ -84,16 +83,16 @@ createInertiaApp({
         return app.mount(el);
     },
     progress: {
-        // The delay after which progress bar will appear, in milliseconds...
-        delay: 100, // Reducido para mejor UX
+        // The delay after which the progress bar will appear, in milliseconds...
+        delay: 250,
 
         // The color of the progress bar...
         color: "#4B5563",
 
-        // Whether to include default NProgress styles...
+        // Whether to include the default NProgress styles...
         includeCSS: true,
 
-        // Whether NProgress spinner will be shown...
+        // Whether the NProgress spinner will be shown...
         showSpinner: false,
     },
 });

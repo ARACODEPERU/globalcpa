@@ -21,15 +21,13 @@ class AcaStudentExam extends Model
         'date_End',
         'punctuation',
         'status',
-        'details',
-        'started_at',
-        'time_spent_seconds',
-        'is_timed_out'
+        'details'
     ];
 
-    protected $casts = [
-        'details' => 'array',
-    ];
+    public function getDetailsAttribute($value)
+    {
+        return json_decode($value, true);
+    }
 
     public function student(): BelongsTo
     {

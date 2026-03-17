@@ -338,11 +338,11 @@
 </script>
 <template>
     <AppLayout title="Punto de Ventas">
-        <Navigation :routeModule="route('sales_dashboard')" :titleModule="'Facturación Electrónica'"
-            :data="[
-                {title: 'Crear Nota'}
-            ]"
-        />
+        <Navigation :routeModule="route('sales_dashboard')" :titleModule="'Facturación Electrónica'">
+            <li class="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
+                <span>Crear Nota</span>
+            </li>
+        </Navigation>
         <div class="mt-5 space-y-6">
             <div class="panel flex items-center overflow-x-auto whitespace-nowrap p-3 text-primary">
                 <div class="rounded-full p-1.5 text-blue-600 ring-2 ring-primary/30 ltr:mr-3 rtl:ml-3">

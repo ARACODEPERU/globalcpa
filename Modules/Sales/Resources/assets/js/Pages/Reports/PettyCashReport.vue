@@ -144,12 +144,14 @@ onMounted(()=>{
 
 <template>
     <AppLayout title="Ventas en caja">
-        <Navigation :routeModule="route('sales_dashboard')" :titleModule="'Ventas'"
-            :data="[
-                {route: route('pettycash.index'), title: 'Caja Chica'},
-                {title: 'Reporte'}
-            ]"
-        />
+        <Navigation :routeModule="route('sales_dashboard')" :titleModule="'Ventas'">
+            <li class="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
+                <Link :href="route('pettycash.index')" class="text-primary hover:underline">Caja Chica</Link>
+            </li>
+            <li class="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
+                <span>Reporte</span>
+            </li>
+        </Navigation>
         <div class="mt-5">
             <!-- Breadcrumb End -->
             <!-- ====== Table Section Start -->

@@ -14,14 +14,16 @@ const props = defineProps({
 
 <template>
     <AppLayout title="Crear Categoría">
-        <Navigation :routeModule="route('sales_dashboard')" :titleModule="'Ventas'"
-            :data="[
-                {route:route('sale_brands_product_list'), title: 'Marcas'},
-                {title: 'Editar'}
-            ]"
-        />
+        <Navigation :routeModule="route('sales_dashboard')" :titleModule="'Ventas'">
+            <li class="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
+                <Link :href="route('sale_brands_product_list')">Marcas</Link>
+            </li>
+            <li class="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
+                <span>Editar</span>
+            </li>
+        </Navigation>
         <div class="mt-5">
-            <EditForm :brand="brand" />
+            <EditForm :brand="brand" /> 
         </div>
     </AppLayout>
 </template>

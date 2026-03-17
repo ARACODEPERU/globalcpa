@@ -386,8 +386,7 @@ class AccountsReceivableController extends Controller
                             'date_start'        => Carbon::now()->format('Y-m-d'),
                             'date_end'          => $request->get('date_end') ?? null,
                             'payment_installments' => $request->get('aplasos') ? true : false,
-                            'amount_paid' => $course['price'],
-                            'date_start'        => Carbon::now()->format('Y-m-d'),
+                            'amount_paid' => $course['price']
                         ]);
                     }
                 }
@@ -1161,20 +1160,5 @@ class AccountsReceivableController extends Controller
         }
 
         return response()->json($excelExportJob);
-    }
-
-    public function calculateDateEnd($period, Carbon $dateStart)
-    {
-        return match ($period) {
-            'Mensual'        => $dateStart->copy()->addMonth(),
-            'Trimestral'     => $dateStart->copy()->addMonths(3),
-            'Semestral'      => $dateStart->copy()->addMonths(6),
-            'Anual'          => $dateStart->copy()->addYear(),
-            'Semanal'        => $dateStart->copy()->addWeek(),
-            'Diario'         => $dateStart->copy()->addDay(),
-            'Prueba gratuita',
-            'Única Vez'      => null,
-            default          => null,
-        };
     }
 }

@@ -32,6 +32,11 @@ class AcaStudentSubscription extends Model
         'xsale_note_id'
     ];
 
+    protected static function newFactory(): AcaStudentSubscriptionFactory
+    {
+        //return AcaStudentSubscriptionFactory::new();
+    }
+
     public function subscription(): BelongsTo
     {
         return $this->belongsTo(AcaSubscriptionType::class, 'subscription_id');

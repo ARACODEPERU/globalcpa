@@ -18,7 +18,7 @@ import {
 const menuAcademic = {
     status: false,
     text: "Académico",
-    icom: faGraduationCap,
+    icom: faBook,
     route: 'module',
     permissions: "aca_dashboard",
     items: [

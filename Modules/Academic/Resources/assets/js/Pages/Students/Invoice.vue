@@ -970,8 +970,8 @@
                                             <!-- <textarea class="form-textarea mt-4" placeholder="Enter Description" v-model="item.description"></textarea> -->
                                         </td>
                                         <td class="text-danger text-right border border-l-0 border-r-0 border-t-0 border-[#d82f24]">1</td>
-                                        <td class="text-danger text-right border border-l-0 border-r-0 border-t-0 border-[#d82f24]">{{ subs.amount_paid ?? subs.amount }}</td>
-                                        <td class="text-danger text-right border border-l-0 border-r-0 border-t-0 border-[#d82f24]">S/. {{ ((subs.amount_paid ?? subs.amount) * 1).toFixed(2) }}</td>
+                                        <td class="text-danger text-right border border-l-0 border-r-0 border-t-0 border-[#d82f24]">{{ subs.amount_paid }}</td>
+                                        <td class="text-danger text-right border border-l-0 border-r-0 border-t-0 border-[#d82f24]">S/. {{ (subs.amount_paid * 1).toFixed(2) }}</td>
                                     </tr>
                                 </template>
                             </tbody>

@@ -170,11 +170,12 @@
                                     @if ($course->brochure)
                                         <div class="course-content" style="font-size: 1.05rem; line-height: 1.7;"
                                             :class="$store.global.isDarkModeEnabled ? 'text-gray-300' : 'text-gray-600'">
-                                            {!! $course->brochure->presentation !!}
+                                            <div class="tinymce-output">{!! $course->brochure->presentation !!}</div>
                                         </div>
                                     @endif
                                 </div>
                             </div>
+                            <style>.tinymce-output * { all: revert; }</style>
 
                             {{-- Facilitadores Propuesta 2 --}}
                             <div class="card shadow-sm border-0 mb-4" data-aos="fade-up">
@@ -516,7 +517,7 @@
                     }"
                     class="position-fixed start-0 bottom-0 m-3"
                     style="z-index: 9999; max-width: 350px; pointer-events: none;">
-                    
+
                     <div x-show="show"
                         x-transition:enter="transition ease-out duration-500"
                         x-transition:enter-start="opacity-0 transform translate-y-full"
@@ -527,7 +528,7 @@
                         class="d-flex align-items-center p-3 rounded shadow-lg border-start border-4 border-success"
                         :class="$store.global.isDarkModeEnabled ? 'bg-dark text-white' : 'bg-white text-dark'"
                         style="pointer-events: auto;">
-                        
+
                         <div class="flex-shrink-0 me-3">
                             <img src="{{ asset('storage/' . $item->course->image) }}" class="rounded" style="width: 50px; height: 50px; object-fit: cover;" alt="Course">
                         </div>
@@ -565,7 +566,7 @@
         });
     </script>
 
-    {{-- 
+    {{--
     <script>
         let currentIndex = 0;
         const slides = document.querySelector('.slides');
@@ -577,10 +578,10 @@
             slides.style.transform = `translateX(${offset}%)`;
         }
 
-        setInterval(showNextSlide, 3000); 
+        setInterval(showNextSlide, 3000);
     </script> --}}
 
-    {{-- 
+    {{--
     <script>
         const headers = document.querySelectorAll('.accordion-header-aracode');
         headers.forEach(header => {
@@ -596,16 +597,16 @@
                 headers.forEach(h => {
                     h.classList.remove('active');
                     h.querySelector('.accordion-icon-aracode').textContent =
-                        '►'; 
+                        '►';
                     h.setAttribute('aria-expanded', 'false');
                 });
 
                 if (!isVisible) {
                     content.style.maxHeight = content.scrollHeight + "px";
                     content.style.padding = '15px';
-                    this.classList.add('active'); 
+                    this.classList.add('active');
                     this.querySelector('.accordion-icon-aracode').textContent =
-                        '▼'; 
+                        '▼';
                     this.setAttribute('aria-expanded', 'true');
                     content.setAttribute('aria-hidden', 'false');
                 }

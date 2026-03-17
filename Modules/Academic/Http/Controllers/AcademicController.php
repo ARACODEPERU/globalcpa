@@ -9,7 +9,6 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Inertia\Inertia;
 use Modules\Academic\Entities\AcaCapRegistration;
 use Modules\Academic\Entities\AcaStudent;
 
@@ -21,7 +20,7 @@ class AcademicController extends Controller
      */
     public function index()
     {
-        return Inertia::render('Academic::Dashboard');
+        return view('academic::index');
     }
 
     /**
