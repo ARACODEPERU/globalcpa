@@ -3,12 +3,14 @@
 namespace Modules\Academic\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Company;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Modules\Academic\Entities\AcaContent;
 use Modules\Academic\Entities\AcaExam;
+use Modules\Academic\Entities\AcaExamQuestion;
 use Inertia\Inertia;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Support\Facades\Auth;
@@ -33,7 +35,7 @@ class AcaExamController extends Controller
         $dateStart = $request->get('date_start');
         $dateEnd = $request->get('date_end');
         $status = $request->get('status');
-
+        $attempts = $request->get('attempts');
 
         $this->validate(
             $request,
@@ -48,6 +50,7 @@ class AcaExamController extends Controller
         $origin = AcaContent::with('theme.module.course')
             ->where('id', $request->get('content_id'))
             ->first();
+
         $idExam =  null;
 
         $msg = null;
@@ -65,6 +68,7 @@ class AcaExamController extends Controller
                         'date_start' => $dateStart,
                         'date_end' => $dateEnd,
                         'status' => $status ? true : false,
+                        'attempts' => $attempts
                     ]);
 
                 $msg = 'Se actualizo correctamente';
@@ -83,6 +87,7 @@ class AcaExamController extends Controller
                 'date_start' => $dateStart,
                 'date_end' => $dateEnd,
                 'status' => $status ? true : false,
+                'attempts' => $attempts
             ]);
             $idExam = $exam->id;
             $msg = 'Se registro correctamente';
@@ -161,7 +166,6 @@ class AcaExamController extends Controller
     }
 
     public function storeStudent(Request $request){
-        //dd($request->all());
         $examId = $request->input('exam_id');
         $questions = $request->input('questions');
         $student = AcaStudent::where('person_id',Auth::user()->person_id)->first();
@@ -285,7 +289,6 @@ class AcaExamController extends Controller
             return "{$days} días {$hours}:{$minutes}:{$seconds}";
         })->toJson();
     }
-
 
     public function questionAnswerPanelModule($cId, $mId, $eId){
         $exam = AcaExam::with([
@@ -561,10 +564,10 @@ class AcaExamController extends Controller
     {
         $examStudent = AcaStudentExam::findOrFail($id);
         $exam = AcaExam::findOrFail($examStudent->exam_id);
-
+        
         // Verificar que el examen está terminado
         $isFinished = in_array($examStudent->status, ['terminado', 'revision_pendiente', 'completado', 'calificado']);
-
+        
         if (!$isFinished) {
             return response()->json([
                 'success' => false,
@@ -771,5 +774,4 @@ class AcaExamController extends Controller
             'message' => 'Examen eliminado correctamente'
         ]);
     }
-
 }

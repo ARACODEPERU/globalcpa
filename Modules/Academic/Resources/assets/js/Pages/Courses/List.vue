@@ -3,14 +3,15 @@
     import Pagination from '@/Components/Pagination.vue';
     import Swal2 from "sweetalert2";
     import { Link, router, useForm } from '@inertiajs/vue3';
-    import { faXmark, faGears, faTrashAlt, faCheck, faSpellCheck, faDownload, faPlay, faFile, faFilm } from "@fortawesome/free-solid-svg-icons";
+    import { faXmark, faGears, faTrashAlt, faCheck, faSpellCheck, faDownload, faPlay, faFile, faFilm, faEye, faEdit, faUsers, faBook, faHandshake, faLayerGroup, faSearch, faFilter, faClipboardCheck, faComments } from "@fortawesome/free-solid-svg-icons";
     import ModalLarge from '@/Components/ModalLarge.vue';
-    import { ref } from 'vue';
+    import { ref, computed, watch } from 'vue';
     import DangerButton from '@/Components/DangerButton.vue';
     import InputError from '@/Components/InputError.vue';
-    import { ConfigProvider, Dropdown,Menu,MenuItem,Button } from 'ant-design-vue';
+    import Navigation from '@/Components/vristo/layout/Navigation.vue';
     import IconPlus from '@/Components/vristo/icon/icon-plus.vue';
     import IconSearch from '@/Components/vristo/icon/icon-search.vue';
+    import IconLoader from '@/Components/vristo/icon/icon-loader.vue';
 
     const props = defineProps({
         courses: {
@@ -25,11 +26,138 @@
             type: Object,
             default: () => ({}),
         },
+        categories: {
+            type: Object,
+            default: () => ({}),
+        },
+        modalities: {
+            type: Object,
+            default: () => ({}),
+        },
+        types: {
+            type: Array,
+            default: () => ([]),
+        },
+        coursesActive: {
+            type: Number,
+            default: 0,
+        }
     });
 
     const form = useForm({
         search: props.filters.search,
+        category: props.filters.category,
+        modality: props.filters.modality,
+        status: props.filters.status ?? 9,
+        sort_order: null,
+        sort_by: null
     });
+
+    // Examen de curso
+    const displayCourseExamModal = ref(false);
+    const durationHours = ref(0);
+    const durationMinutes = ref(0);
+
+    const courseExamForm = useForm({
+        id: null,
+        course_id: null,
+        course_description: null,
+        description: null,
+        date_start: null,
+        date_end: null,
+        duration_minutes: null,
+        answer_key_pdf: null,
+        status: 1,
+        attempts: 1,
+        file_resolved_name: null
+    });
+
+    const openCourseExamModal = (course) => {
+        courseExamForm.reset();
+        courseExamForm.course_id = course.id;
+        courseExamForm.course_description = course.description;
+
+        if (course.exam) {
+            courseExamForm.id = course.exam.id;
+            courseExamForm.description = course.exam.description;
+            courseExamForm.date_start = course.exam.date_start;
+            courseExamForm.date_end = course.exam.date_end;
+            courseExamForm.duration_minutes = course.exam.duration_minutes;
+            courseExamForm.answer_key_pdf = course.exam.answer_key_pdf;
+            courseExamForm.status = course.exam.status;
+            courseExamForm.attempts = course.exam.attempts;
+            courseExamForm.file_resolved_name = course.exam.file_resolved_name;
+
+            // Convertir minutos a horas y minutos
+            if (course.exam.duration_minutes) {
+                durationHours.value = Math.floor(course.exam.duration_minutes / 60);
+                durationMinutes.value = course.exam.duration_minutes % 60;
+            }
+        } else {
+            durationHours.value = 0;
+            durationMinutes.value = 0;
+        }
+
+        displayCourseExamModal.value = true;
+    };
+
+    const closeCourseExamModal = () => {
+        displayCourseExamModal.value = false;
+        courseExamForm.reset();
+    };
+
+    const updateCourseExamDuration = () => {
+        courseExamForm.duration_minutes = (durationHours.value * 60) + durationMinutes.value;
+    };
+
+    const saveCourseExam = () => {
+        updateCourseExamDuration();
+
+        if (!courseExamForm.duration_minutes || courseExamForm.duration_minutes <= 0) {
+            Swal2.fire({
+                title: 'Advertencia',
+                text: 'Por favor, establece una duración válida para el examen',
+                icon: 'warning',
+                padding: '2em',
+                customClass: 'sweet-alerts',
+            });
+            return;
+        }
+
+        courseExamForm.post(route('aca_course_exam_update_create'), {
+            preserveScroll: true,
+            forceFormData: true,
+            onSuccess: () => {
+                closeCourseExamModal();
+                Swal2.fire({
+                    title: '¡Enhorabuena!',
+                    text: 'Se registro correctamente',
+                    icon: 'success',
+                    padding: '2em',
+                    customClass: 'sweet-alerts',
+                });
+            },
+        });
+    };
+
+    const formatDuration = (minutes) => {
+        if (!minutes) return '0 min';
+        const h = Math.floor(minutes / 60);
+        const m = minutes % 60;
+        return `${h}h ${m}m`;
+    };
+
+    // Watch to update hours and minutes when loading existing exam
+    watch(() => courseExamForm.duration_minutes, (newValue) => {
+        if (newValue) {
+            durationHours.value = Math.floor(newValue / 60);
+            durationMinutes.value = newValue % 60;
+        } else {
+            durationHours.value = 0;
+            durationMinutes.value = 0;
+        }
+    });
+
 
     const destroyCourse = (id) => {
         Swal2.fire({
@@ -168,41 +296,126 @@
         });
     }
 
-const dataModule = ref({});
+    const baseUrl = assetUrl;
 
+    const getImage = (path) => {
+        return baseUrl + 'storage/'+ path;
+    }
 
-const baseUrl = assetUrl;
+    // Fallback image when course has no image
+    const fallbackImage = '/img/course-placeholder.jpg';
 
-const getImage = (path) => {
-    return baseUrl + 'storage/'+ path;
-}
+    // Filter states
+    const showFilters = ref(false);
+    // Toggle filters panel
+    const toggleFilters = () => {
+        showFilters.value = !showFilters.value;
+    };
 
-const dataModalContent = ref(null);
+    const clearSearch = () => {
+        form.reset();
+
+        router.visit(route('aca_courses_list'), {
+            method: 'get',
+            data: {},
+            replace: false,
+            preserveState: false,
+            preserveScroll: false,
+            only: ['courses', 'filters'],
+        })
+    }
 
 </script>
 
 <template>
     <AppLayout title="Cursos">
-        <ul class="flex space-x-2 rtl:space-x-reverse">
-            <li>
-                <a href="javascript:;" class="text-primary hover:underline">Académico</a>
-            </li>
-            <li class="before:content-['/'] ltr:before:mr-1 rtl:before:ml-1">
-                <span>Cursos</span>
-            </li>
-        </ul>
+        <Navigation :routeModule="route('aca_dashboard')" :titleModule="'Académico'"
+            :data="[
+                {title: 'Cursos'}
+            ]"
+        />
         <div class="pt-5">
             <div class="flex items-center justify-between flex-wrap gap-4">
-                <h2 class="text-xl">Cursos</h2>
-                <div class="flex sm:flex-row flex-col sm:items-center sm:gap-3 gap-4 w-full sm:w-auto">
-                    <div class="flex gap-3">
-                        <div>
-                            <Link :href="route('aca_courses_create')" type="button" class="btn btn-primary">
-                                <icon-plus class="ltr:mr-2 rtl:ml-2" />
-                                Nuevo
-                            </Link>
-                        </div>
+                <div class="relative">
+                    <input
+                        type="text"
+                        placeholder="Buscar"
+                        class="form-input pl-8"
+                        v-model="form.search"
+                        @keyup.enter="form.get(route('aca_courses_list'))"
+                    />
+                    <div class="absolute left-[11px] top-1/2 -translate-y-1/2 peer-focus:text-primary">
+                        <icon-search class="w-4 h-4" />
                     </div>
+                </div>
+
+                <div class="flex gap-3">
+                    <button
+                        @click="toggleFilters"
+                        class="flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
+                    >
+                        <font-awesome-icon :icon="faFilter" class="w-4 h-4" />
+                        <span>Filtros</span>
+                        <span v-if="form.category || form.status !== '' || form.modality" class="ml-1 px-2 py-0.5 bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300 rounded-full text-xs">Activo</span>
+                    </button>
+                    <Link :href="route('aca_courses_create')" type="button" class="btn btn-primary">
+                        <icon-plus class="ltr:mr-2 rtl:ml-2" />
+                        Nuevo
+                    </Link>
+               </div>
+            </div>
+            <!-- Enhanced Search and Filters Section -->
+            <div class="mt-5 space-y-4">
+                <!-- Filters Panel -->
+                <div v-if="showFilters" class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 animate-in slide-in-from-top-2 duration-200">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                        <!-- Category Filter -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Categoría</label>
+                            <select @change="form.get(route('aca_courses_list'))" v-model="form.category" class="form-input w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
+                                <option :value="null">Todas las categorías</option>
+                                <option v-for="category in categories" :key="category.id" :value="category.id">{{ category.description }}</option>
+                            </select>
+                        </div>
+
+                        <!-- Status Filter -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Estado</label>
+                            <select v-model="form.status" @change="form.get(route('aca_courses_list'))" class="form-input w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
+                                <option :value="9">Todos los estados</option>
+                                <option :value="1">Activos</option>
+                                <option :value="0">Inactivos</option>
+                            </select>
+                        </div>
+
+                        <!-- Modality Filter -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Modalidad</label>
+                            <select v-model="form.modality" @change="form.get(route('aca_courses_list'))" class="form-input w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
+                                <option :value="null">Todas las modalidades</option>
+                                <option v-for="modality in modalities" :key="modality.id" :value="modality.id">{{ modality.description }}</option>
+                            </select>
+                        </div>
+
+                        <!-- <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Ordenar por</label>
+                            <select v-model="form.sort_by" class="form-input w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
+                                <option value="description">Nombre</option>
+                                <option value="category_id">Categoría</option>
+                                <option value="modality_id">Modalidad</option>
+                                <option value="status">Estado</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Orden</label>
+                            <select v-model="form.sort_order" class="form-input w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
+                                <option value="asc">Ascendente</option>
+                                <option value="desc">Descendente</option>
+                            </select>
+                        </div> -->
+                    </div>
+
                     <!-- Clear Filters -->
                     <div class="mt-4 flex justify-end">
                         <button
@@ -379,103 +592,27 @@ const dataModalContent = ref(null);
                                     </button>
                                 </div>
                             </div>
-
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="mt-5 panel p-0 border-0 overflow-hidden">
-                <div class="table-responsive">
-                    <ConfigProvider>
-                        <table class="table-striped table-hover">
-                            <thead>
-                                <tr class="!text-center">
-                                    <th>
-                                        Acciones
-                                    </th>
-                                    <th>
-                                        Nombre
-                                    </th>
-                                    <th>
-                                        Categoría
-                                    </th>
-                                    <th>
-                                        Sector
-                                    </th>
-                                    <th>
-                                        Tipo
-                                    </th>
-                                    <th>
-                                        Modalidad
-                                    </th>
-                                    <th>
-                                        Estado
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <template v-for="(course, index) in courses.data" :key="course.id">
-                                    <tr>
-                                        <td class="text-center">
-                                            <Dropdown :placement="'bottomLeft'">
-                                                <button class="border py-1.5 px-2 dropdown-button inline-block text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm" type="button">
-                                                    <font-awesome-icon :icon="faGears" />
-                                                </button>
-                                                <template #overlay>
-                                                <Menu>
-                                                    <MenuItem>
-                                                        <Link :href="route('aca_courses_edit',course.id)" >Editar</Link>
-                                                    </MenuItem>
-                                                    <MenuItem>
-                                                        <Link :href="route('aca_enrolledstudents_list',course.id)" >Alumnos</Link>
-                                                    </MenuItem>
-                                                    <MenuItem>
-                                                        <Link :href="route('aca_courses_information',course.id)" >Información</Link>
-                                                    </MenuItem>
-                                                    <MenuItem>
-                                                        <a @click="openModalAgreements(course)" href="#" >Convenios</a>
-                                                    </MenuItem>
-                                                    <MenuItem>
-                                                        <Link :href="route('aca_courses_module_panel',course.id)" >Módulos</Link>
-                                                    </MenuItem>
-                                                    <MenuItem>
-                                                        <a @click="destroyCourse(course.id)" href="#" >Eliminar</a>
-                                                    </MenuItem>
-                                                </Menu>
-                                                </template>
-                                            </Dropdown>
-                                        </td>
-                                        <td class="whitespace-nowrap">
-                                            {{ course.description }}
-                                        </td>
-                                        <td class="whitespace-nowrap">
-                                            {{ course.category.description }}
-                                        </td>
-                                        <td class="whitespace-nowrap">
-                                            {{ course.sector_description }}
-                                        </td>
-                                        <td class="whitespace-nowrap">
-                                            {{ course.type_description }}
-                                        </td>
-                                        <td class="whitespace-nowrap">
-                                            <template v-if="course.modality">
-                                                {{ course.modality.description }}
-                                            </template>
-                                        </td>
-                                        <td class="whitespace-nowrap">
-                                            <span v-if="course.status" class="bg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-blue-400 border border-blue-400">Activo</span>
-                                            <span v-else class="bg-red-100 text-red-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-red-400 border border-red-400">Inactivo</span>
-                                        </td>
-                                    </tr>
-                                </template>
-                            </tbody>
-                        </table>
-                        <Pagination :data="courses" />
-                    </ConfigProvider>
-                </div>
 
             </div>
+
+            <!-- No Results Message -->
+            <div v-if="courses.length === 0" class="text-center py-12">
+                <div class="text-gray-400 dark:text-gray-500 mb-4">
+                    <font-awesome-icon :icon="faBook" class="text-6xl" />
+                </div>
+                <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">No se encontraron cursos</h3>
+                <p class="text-gray-600 dark:text-gray-400">Intenta ajustar los filtros o buscar con otros términos.</p>
+            </div>
+
+            <!-- Pagination -->
+            <div class="mt-8">
+                <Pagination :data="courses" />
+            </div>
         </div>
+
 
         <ModalLarge
             :onClose = "closeModalAgreements"
@@ -531,6 +668,179 @@ const dataModalContent = ref(null);
                 >
                 Guardar
             </DangerButton>
+            </template>
+        </ModalLarge>
+
+        <!-- Modal Examen Final del Curso -->
+        <ModalLarge
+            :onClose="closeCourseExamModal"
+            :show="displayCourseExamModal"
+            :icon="'/img/examen.png'"
+        >
+            <template #title>
+                {{ courseExamForm.id ? 'Editar Examen' : 'Crear Examen' }} Final del Curso
+            </template>
+            <template #message>{{ courseExamForm.course_description }}</template>
+            <template #content>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Descripción -->
+                        <div class="col-span-2">
+                            <label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                Descripción del examen
+                            </label>
+                            <input v-model="courseExamForm.description" type="text" id="description"
+                                class="form-input"
+                                placeholder="Examen Final" required>
+                            <InputError :message="courseExamForm.errors.description" class="mt-2" />
+                        </div>
+
+                        <!-- Duración con Selects -->
+                        <div>
+                            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                Duración Máxima
+                            </label>
+                            <div class="space-y-3">
+                                <!-- Selector de Horas y Minutos -->
+                                <div class="flex items-center gap-2">
+                                    <div class="flex-1">
+                                        <label class="text-xs text-gray-600 dark:text-gray-400 font-medium mb-1 block">Horas</label>
+                                        <select
+                                            v-model.number="durationHours"
+                                            @change="updateCourseExamDuration"
+                                            class="form-select"
+                                        >
+                                            <option value="0">0 horas</option>
+                                            <option v-for="h in 5" :key="h" :value="h">{{ h }} hora{{ h > 1 ? 's' : '' }}</option>
+                                        </select>
+                                    </div>
+                                    <div class="flex-1">
+                                        <label class="text-xs text-gray-600 dark:text-gray-400 font-medium mb-1 block">Minutos</label>
+                                        <select
+                                            v-model.number="durationMinutes"
+                                            @change="updateCourseExamDuration"
+                                            class="form-select"
+                                        >
+                                            <option value="0">0 min</option>
+                                            <option v-for="m in 59" :key="m" :value="m">{{ m }} min</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <!-- Visualización del Total -->
+                                <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm font-medium text-blue-900 dark:text-blue-100">Tiempo total:</span>
+                                        <span class="text-sm font-bold text-blue-700 dark:text-blue-300">
+                                            {{ formatDuration(courseExamForm.duration_minutes) }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <InputError :message="courseExamForm.errors.duration_minutes" class="mt-2" />
+                        </div>
+                        <!-- Archivo PDF del Examen Resuelto -->
+                        <div>
+                            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                Examen Resuelto (PDF)
+                            </label>
+                            <div class="text-xs text-gray-600 dark:text-gray-400 font-medium mb-1 block">
+                                Solo se permiten archivos PDF. Máximo 10MB.
+                            </div>
+                            <div class="space-y-3">
+                                <!-- Input de Archivo -->
+                                <div class="relative">
+                                    <input
+                                        type="file"
+                                        @input="courseExamForm.answer_key_pdf = $event.target.files[0]"
+                                        accept=".pdf"
+                                        class="w-full text-sm text-gray-500 dark:text-gray-400
+                                            file:mr-4 file:py-2 file:px-4
+                                            file:rounded-lg file:border-0
+                                            file:text-sm file:font-medium
+                                            file:bg-blue-50 file:text-blue-700
+                                            hover:file:bg-blue-100
+                                            file:cursor-pointer file:transition-colors
+                                            dark:file:bg-blue-900/50 dark:file:text-blue-300
+                                            dark:hover:file:bg-blue-800/70
+                                            border border-gray-200 dark:border-gray-600
+                                            rounded-lg cursor-pointer
+                                            hover:border-blue-300 dark:hover:border-blue-500"
+                                    >
+                                </div>
+                                <!-- Información del Archivo Actual/Seleccionado -->
+                                <div v-if="courseExamForm.answer_key_pdf || (courseExamForm.id && courseExamForm.file_resolved_name)"
+                                     class="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg p-3">
+                                    <div class="flex items-center gap-2">
+                                        <svg class="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-5L9 2H4z" clip-rule="evenodd"/>
+                                        </svg>
+                                        <span class="text-sm text-gray-700 dark:text-gray-300 font-medium truncate">
+                                            {{ typeof courseExamForm.answer_key_pdf === 'string' ? courseExamForm.answer_key_pdf.split('/').pop() :
+                                                courseExamForm.answer_key_pdf?.name || (courseExamForm.file_resolved_name ?? 'Archivo PDF')
+                                            }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Fecha inicio -->
+                        <div>
+                            <label for="date_start" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                Fecha de Inicio
+                            </label>
+                            <input v-model="courseExamForm.date_start" type="datetime-local" id="date_start"
+                                class="form-input"
+                                required>
+                            <InputError :message="courseExamForm.errors.date_start" class="mt-2" />
+                        </div>
+
+                        <!-- Fecha fin -->
+                        <div>
+                            <label for="date_end" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                Fecha de Fin
+                            </label>
+                            <input v-model="courseExamForm.date_end" type="datetime-local" id="date_end"
+                                class="form-input"
+                                required>
+                            <InputError :message="courseExamForm.errors.date_end" class="mt-2" />
+                        </div>
+
+                        <!-- Intentos -->
+                        <div>
+                            <label for="attempts" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                Número de Intentos
+                            </label>
+                            <input v-model.number="courseExamForm.attempts" type="number" id="attempts" min="1" max="10"
+                                class="form-input"
+                                placeholder="1" required>
+                            <InputError :message="courseExamForm.errors.attempts" class="mt-2" />
+                        </div>
+
+                        <!-- Estado -->
+                        <div>
+                            <label for="status" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                Estado
+                            </label>
+                            <select v-model="courseExamForm.status" id="status"
+                                class="form-select">
+                                <option :value="1">Activo</option>
+                                <option :value="0">Inactivo</option>
+                            </select>
+                            <InputError :message="courseExamForm.errors.status" class="mt-2" />
+                        </div>
+                    </div>
+            </template>
+            <template #buttons>
+                <button
+                    @click="saveCourseExam" type="button"
+                    :disabled="courseExamForm.processing"
+                    class="btn btn-primary uppercase text-xs">
+                    <span v-if="courseExamForm.processing">
+                        <IconLoader class="w-4 h-4 mr-2" />
+                        Guardando...
+                    </span>
+                    <span v-else>{{ courseExamForm.id ? 'Actualizar' : 'Crear' }} Examen</span>
+                </button>
             </template>
         </ModalLarge>
     </AppLayout>

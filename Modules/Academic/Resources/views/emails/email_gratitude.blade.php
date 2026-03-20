@@ -94,7 +94,7 @@
             padding: 10px 20px;
             border: none;
             border-radius: 10px;
-            background: linear-gradient(45deg, #ee0000, #ee6030);
+            background: linear-gradient(45deg, #3c4a99, #4f46e5);
             color: white;
             font-size: 16px;
             cursor: pointer;
@@ -104,7 +104,7 @@
 
         .boton-degradado-campus:hover {
             transform: translateY(-3px);
-            background: linear-gradient(45deg, #ff0000, #ee3010);
+            background: linear-gradient(45deg, #4f46e5, #3c4a99);
         }
 
 
@@ -168,15 +168,18 @@
         <h1>
             <img style="width: 25px;" data-emoji="🎉" class="an1" alt="🎉" aria-label="🎉" draggable="false"
                 src="https://fonts.gstatic.com/s/e/notoemoji/16.0/1f389/32.png" loading="lazy">
-            &nbsp; ¡Felicitaciones por tu compra!   &nbsp;
+            &nbsp; ¡Bienvenido(a) a CPA Academy! &nbsp;
             <img style="width: 25px;" data-emoji="🎉" class="an1" alt="🎉" aria-label="🎉" draggable="false"
                 src="https://fonts.gstatic.com/s/e/notoemoji/16.0/1f389/32.png" loading="lazy">
         </h1>
-        <p>Estimado(a) {{ $data->clie_full_name }},<br>
-            Te felicitamos por tomar la decisión de invertir en tu actualización y crecimiento. Es una excelente elección que estamos seguros marcará la diferencia en tu camino profesional.
+        <p>{{ $data->clie_full_name }},
+            Has tomado una decisión valiosa al invertir en tu crecimiento profesional, y estamos aquí para acompañarte
+            en este
+            camino de aprendizaje y desarrollo. ¡Felicidades por dar este importante paso hacia tus metas!
         </p>
-        <br><br>
-        Detalle de tu compra
+        <p>
+            Para comenzar, aquí tienes tus datos de acceso a nuestra plataforma
+        </p>
         <div class="card-container">
             @foreach ($data->details as $course)
                 <div class="card">
@@ -228,7 +231,7 @@
             Equipo de CPA Academy
         </p>
         <p style="text-align: center; font-size: 14px;">
-            CPA Academy, Jirón Pedro Conde Nro. 514, Oficina 204., Distrito de Lince, Provincia de Lima,
+            CPA Academy, Jirón Pedro Conde Nro. 514, Oficina 203., Distrito de Lince, Provincia de Lima,
             Perú, +51 967052506
         </p>
         <br>

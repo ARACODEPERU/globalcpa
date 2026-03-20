@@ -28,13 +28,9 @@ class AcaCourse extends Model
         'price',
         'certificate_description',
         'discount',
-        'discount_applies'
+        'discount_applies',
+        'auto_certificate'
     ];
-
-    protected static function newFactory()
-    {
-        return \Modules\Academic\Database\factories\AcaCourseFactory::new();
-    }
 
     public function category(): BelongsTo
     {
@@ -88,5 +84,20 @@ class AcaCourse extends Model
     public function onlitem(): HasOne
     {
         return $this->hasOne(OnliItem::class, 'id', 'item_id');
+    }
+
+    public function exams(): HasOne
+    {
+        return $this->hasOne(AcaExam::class, 'course_id');
+    }
+
+    public function certificates(): HasMany
+    {
+        return $this->hasMany(AcaCertificate::class, 'course_id');
+    }
+
+    public function exam(): HasOne
+    {
+        return $this->hasOne(AcaExam::class, 'course_id');
     }
 }

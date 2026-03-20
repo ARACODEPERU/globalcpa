@@ -14,6 +14,7 @@
 use App\Http\Controllers\LandingController;
 use Illuminate\Support\Facades\Route;
 use Modules\Academic\Entities\AcaExcelStudentsExportJob;
+use Modules\Academic\Http\Controllers\AcaAttendanceController;
 use Modules\Academic\Http\Controllers\AcaAuthController;
 use Modules\Academic\Http\Controllers\AcaCapRegistrationController;
 use Modules\Academic\Http\Controllers\AcaCertificateController;
@@ -23,6 +24,7 @@ use Modules\Academic\Http\Controllers\AcademicController;
 use Modules\Academic\Http\Controllers\AcaExamAnswerController;
 use Modules\Academic\Http\Controllers\AcaExamController;
 use Modules\Academic\Http\Controllers\AcaExamQuestionController;
+use Modules\Academic\Http\Controllers\AcaGradeManagementController;
 use Modules\Academic\Http\Controllers\AcaListVideoController;
 use Modules\Academic\Http\Controllers\AcaModuleController;
 use Modules\Academic\Http\Controllers\AcaReportsController;
@@ -30,13 +32,14 @@ use Modules\Academic\Http\Controllers\AcaSaleDocumentController;
 use Modules\Academic\Http\Controllers\AcaSalesController;
 use Modules\Academic\Http\Controllers\AcaShortVideoController;
 use Modules\Academic\Http\Controllers\AcaStudentController;
+use Modules\Academic\Http\Controllers\AcaThemeCommentController;
 use Modules\Academic\Http\Controllers\MercadopagoController;
 use Modules\Academic\Jobs\ExportStudentsExcel;
 
 Route::middleware(['auth', 'verified', 'invalid_updated_information','user_activity_log'])->prefix('academic')->group(function () {
 
     Route::middleware(['middleware' => 'permission:aca_dashboard'])
-        ->get('dashboard', 'AcademicController@index')
+        ->get('dashboard', [AcademicController::class, 'index'])
         ->name('aca_dashboard');
 
     Route::middleware(['middleware' => 'permission:aca_institucion_listado'])
@@ -104,7 +107,7 @@ Route::middleware(['auth', 'verified', 'invalid_updated_information','user_activ
     Route::delete('students/certificates_destroy/{id}', 'AcaCertificateController@studentDestroy')
         ->name('aca_students_certificates_destroy');
 
-    Route::middleware(['permission:aca_estudiante_matriculas_crear'])
+    Route::middleware(['permission:aca_estudiante_certificados_crear'])
         ->get('students/registrations/{id}', 'AcaCapRegistrationController@create')
         ->name('aca_students_registrations_create');
 
@@ -211,6 +214,10 @@ Route::middleware(['auth', 'verified', 'invalid_updated_information','user_activ
     Route::middleware(['middleware' => 'permission:aca_miscursos'])
         ->delete('course/comments/theme/destroy/{id}', 'AcaThemeCommentController@destroy')
         ->name('aca_lesson_comments_destroy');
+
+    // Ruta para obtener comentarios de un estudiante en un tema
+    Route::post('course/comments/by-student',[AcaThemeCommentController::class, 'commentsByStudent'])
+        ->name('aca_theme_comments_by_student');
 
     Route::middleware(['middleware' => 'permission:aca_estudiante_cobrar'])
         ->get('student/invoice/create/{id}/{installments?}', [AcaStudentController::class, 'invoice'])
@@ -451,11 +458,43 @@ Route::middleware(['auth', 'verified', 'invalid_updated_information','user_activ
         ->get('reports/student/subscriptions/expired',[AcaReportsController::class, 'expiredSubscriptions'])
         ->name('aca_subscriptions_expired_student');
 
+    Route::middleware(['middleware' => 'permission:aca_reportes'])
+        ->get('reports/student/performance', [AcaReportsController::class, 'studentPerformanceReport'])
+        ->name('aca_student_performance_report');
+
+    Route::middleware(['middleware' => 'permission:aca_reportes'])
+        ->post('reports/student/performance/table', [AcaReportsController::class, 'studentPerformanceTable'])
+        ->name('aca_student_performance_report_table');
+
+    Route::middleware(['middleware' => 'permission:aca_reportes'])
+        ->post('reports/student/performance/export', [AcaReportsController::class, 'exportStudentPerformance'])
+        ->name('aca_student_performance_export');
+
+    Route::middleware(['middleware' => 'permission:aca_reportes'])
+        ->get('reports/student/performance/export/status/{jobId}', [AcaReportsController::class, 'exportStudentPerformanceStatus'])
+        ->name('aca_student_performance_export_status');
+
+    Route::middleware(['middleware' => 'permission:aca_reportes'])
+        ->get('reports/student/enrollment/documents', [AcaReportsController::class, 'enrollmentDocumentsReport'])
+        ->name('aca_enrollment_documents_report');
+
+    Route::middleware(['middleware' => 'permission:aca_reportes'])
+        ->post('reports/student/enrollment/documents/table', [AcaReportsController::class, 'enrollmentDocumentsTable'])
+        ->name('aca_enrollment_documents_report_table');
+
+    Route::middleware(['middleware' => 'permission:aca_reportes'])
+        ->post('reports/student/enrollment/documents/export', [AcaReportsController::class, 'exportEnrollmentDocuments'])
+        ->name('aca_enrollment_documents_export');
+
+    Route::middleware(['middleware' => 'permission:aca_reportes'])
+        ->get('reports/student/enrollment/documents/export/status/{jobId}', [AcaReportsController::class, 'exportEnrollmentDocumentsStatus'])
+        ->name('aca_enrollment_documents_export_status');
+
     Route::middleware(['middleware' => 'permission:aca_suscripcion_estudiante_editar'])
         ->post('reports/student/subscription/update',[AcaCapRegistrationController::class, 'updateSubscriptionStudent'])
         ->name('aca_subscriptions_update_student');
 
-        Route::middleware(['middleware' => 'permission:aca_cursos_modulos_examen'])
+    Route::middleware(['middleware' => 'permission:aca_cursos_modulos_examen'])
         ->post('courses/modules/exmen/updateorcreate',[AcaModuleController::class, 'updateOrCreateExam'])
         ->name('aca_course_module_exam_update_create');
 
@@ -535,6 +574,9 @@ Route::middleware(['auth', 'verified', 'invalid_updated_information','user_activ
     Route::get('student/certificates/all', [AcaCertificateController::class, 'studentCertificates'])
         ->name('aca_student_certificates_all');
 
+    Route::get('student/certificate/course/{courseId}/find', [AcaCertificateController::class, 'findStudentCertificate'])
+        ->name('aca_student_course_certificate_find');
+
     Route::middleware(['middleware' => 'permission:aca_asistencia_crear_link'])
         ->post('attendance/link/store', [AcaAttendanceController::class, 'storeLink'])
         ->name('aca_attendance_link_store');
@@ -586,15 +628,15 @@ Route::middleware(['auth', 'verified', 'invalid_updated_information','user_activ
     Route::middleware(['middleware' => 'permission:aca_gestion_de_calificaciones'])
         ->post('grade/management/store', [AcaGradeManagementController::class, 'store'])
         ->name('aca_grade_management_store');
-
 });
 
-Route::middleware(['auth', 'verified'])
-        ->post('users/student/update/tour',[AcademicController::class, 'updateTourUser'])
-        ->name('update_tour_user');
+Route::get('asistencia/registrar/clase',[AcaAttendanceController::class, 'registerAttendance']);
+Route::post('asistencia/registrar/clase/store',[AcaAttendanceController::class, 'storeAttendance'])->name('aca_asistencia_store');
+Route::get('asistencia/exitosa',[AcaAttendanceController::class, 'success'])->name('aca_attendance_success');
 
 /////////no nesesita aver iniciado session//////////
 Route::get('academic/certificate/image/{id}/download', [AcaCertificateController::class, 'generateCertificateStudent'])->name('aca_image_download');
+Route::get('academic/certificate/module/{module_id}/download', [AcaCertificateController::class, 'downloadModuleCertificate'])->name('aca_module_certificate_download');
 
 Route::get('create/payment/{id}/account', [LandingController::class, 'academiCreatePayment'])->name('academic_step_account');
 
