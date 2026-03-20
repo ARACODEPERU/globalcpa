@@ -38,7 +38,7 @@
                                             <i class="fa fa-star"></i>
                                             <i class="fa fa-star"></i>
                                             <i class="fa fa-star-half-o"></i>
-                                            {{-- <span class="text-white ms-1">(4.8/5 de 120 alumnos)</span> --}}
+
                                             <span class="text-white ms-1">(4.8/5 de {{ rand(30, 120) }} alumnos activos)</span>
                                         </div>
                                     </div>
@@ -483,65 +483,6 @@
                     </div>
                 </div>
 
-                {{-- Social Proof Notification (Compras en tiempo real simuladas) --}}
-                {{-- <div x-data="{
-                        show: false,
-                        name: '',
-                        location: '',
-                        people: [
-                            { name: 'Carlos M.', loc: 'de Lima' },
-                            { name: 'Ana R.', loc: 'de Arequipa' },
-                            { name: 'Jorge L.', loc: 'de Trujillo' },
-                            { name: 'Sofia P.', loc: 'de Cusco' },
-                            { name: 'Miguel A.', loc: 'de Piura' },
-                            { name: 'Lucia T.', loc: 'de Chiclayo' },
-                            { name: 'David G.', loc: 'de Huancayo' },
-                            { name: 'Elena S.', loc: 'de Iquitos' },
-                            { name: 'Roberto C.', loc: 'de Tacna' },
-                            { name: 'Patricia V.', loc: 'de Cajamarca' }
-                        ],
-                        init() {
-                            // Iniciar notificación única a los 40 segundos
-                            setTimeout(() => { this.trigger() }, 40000);
-                        },
-                        trigger() {
-                            let person = this.people[Math.floor(Math.random() * this.people.length)];
-                            this.name = person.name;
-                            this.location = person.loc;
-                            this.show = true;
-                            // Ocultar después de 6 segundos y no volver a mostrar
-                            setTimeout(() => {
-                                this.show = false;
-                            }, 6000);
-                        }
-                    }"
-                    class="position-fixed start-0 bottom-0 m-3"
-                    style="z-index: 9999; max-width: 350px; pointer-events: none;">
-
-                    <div x-show="show"
-                        x-transition:enter="transition ease-out duration-500"
-                        x-transition:enter-start="opacity-0 transform translate-y-full"
-                        x-transition:enter-end="opacity-100 transform translate-y-0"
-                        x-transition:leave="transition ease-in duration-500"
-                        x-transition:leave-start="opacity-100 transform translate-y-0"
-                        x-transition:leave-end="opacity-0 transform translate-y-full"
-                        class="d-flex align-items-center p-3 rounded shadow-lg border-start border-4 border-success"
-                        :class="$store.global.isDarkModeEnabled ? 'bg-dark text-white' : 'bg-white text-dark'"
-                        style="pointer-events: auto;">
-
-                        <div class="flex-shrink-0 me-3">
-                            <img src="{{ asset('storage/' . $item->course->image) }}" class="rounded" style="width: 50px; height: 50px; object-fit: cover;" alt="Course">
-                        </div>
-                        <div>
-                            <p class="mb-0 small fw-bold" x-text="name + ' ' + location"></p>
-                            <p class="mb-0 small" :class="$store.global.isDarkModeEnabled ? 'text-gray-300' : 'text-muted'" style="font-size: 0.8rem; line-height: 1.2;">
-                                Acaba de comprar <span class="fw-bold text-success">este curso</span>
-                            </p>
-                            <small class="text-muted" style="font-size: 0.7rem;">Hace un momento</small>
-                        </div>
-                        <button @click="show = false" class="btn-close ms-2 small" :class="$store.global.isDarkModeEnabled ? 'btn-close-white' : ''" aria-label="Close" style="font-size: 0.7rem;"></button>
-                    </div>
-                </div> --}}
 
             </div>
         </div>
@@ -566,53 +507,6 @@
         });
     </script>
 
-    {{--
-    <script>
-        let currentIndex = 0;
-        const slides = document.querySelector('.slides');
-        const totalSlides = document.querySelectorAll('.slide').length;
-
-        function showNextSlide() {
-            currentIndex = (currentIndex + 1) % totalSlides;
-            const offset = -currentIndex * 100;
-            slides.style.transform = `translateX(${offset}%)`;
-        }
-
-        setInterval(showNextSlide, 3000);
-    </script> --}}
-
-    {{--
-    <script>
-        const headers = document.querySelectorAll('.accordion-header-aracode');
-        headers.forEach(header => {
-            header.addEventListener('click', function() {
-                const content = this.nextElementSibling;
-                const isVisible = content.style.maxHeight;
-
-                document.querySelectorAll('.accordion-content-aracode').forEach(item => {
-                    item.style.maxHeight = null;
-                    item.style.padding = '0';
-                    item.setAttribute('aria-hidden', 'true');
-                });
-                headers.forEach(h => {
-                    h.classList.remove('active');
-                    h.querySelector('.accordion-icon-aracode').textContent =
-                        '►';
-                    h.setAttribute('aria-expanded', 'false');
-                });
-
-                if (!isVisible) {
-                    content.style.maxHeight = content.scrollHeight + "px";
-                    content.style.padding = '15px';
-                    this.classList.add('active');
-                    this.querySelector('.accordion-icon-aracode').textContent =
-                        '▼';
-                    this.setAttribute('aria-expanded', 'true');
-                    content.setAttribute('aria-hidden', 'false');
-                }
-            });
-        });
-    </script> --}}
 
 
     <script>

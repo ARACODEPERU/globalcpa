@@ -154,16 +154,6 @@
                                         </div>
                                     </div>
                                 @endforeach
-                                <div class="tab-pane fade " id="pills-blog" role="tabpanel"
-                                    aria-labelledby="pills-blog-tab">
-                                    <p>
-                                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Tenetur similique
-                                        at
-                                        nostrum? Et sequi repellendus, illum, fuga officiis quos, quaerat provident
-                                        iure eos enim maiores
-                                        sint suscipit iste? Neque, hic?
-                                    </p>
-                                </div>
                             </div>
 
                             <div class="row">

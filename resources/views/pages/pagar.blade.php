@@ -168,17 +168,6 @@
     <br>
 
     <script>
-        // let currentIndex = 0;
-        // const slides = document.querySelector('.slides');
-        // const totalSlides = document.querySelectorAll('.slide').length;
-
-        // function showNextSlide() {
-        //     currentIndex = (currentIndex + 1) % totalSlides;
-        //     const offset = -currentIndex * 100;
-        //     slides.style.transform = `translateX(${offset}%)`;
-        // }
-
-        // setInterval(showNextSlide, 3000); // Cambia cada 3 segundos
     </script>
 
 
@@ -320,42 +309,6 @@
                 var url_campus = "";
                 var url_descripcion_programa = "/descripcion-programa/" +
                     id; // esta ruta deberá corregirse si se cambia el el get de la RUTA :S
-
-                /*
-                   <tr class="border-y border-transparent border-b-slate-200 dark:border-b-navy-500" id="` + id + `_pc">
-                                                <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                                    <div class="flex items-center space-x-4">
-                                                        <div class="avatar">
-                                                        <img
-                                                            class="rounded-full"
-                                                            src="` + image + `"
-                                                            alt="avatar"
-                                                        />
-                                                        </div>
-
-                                                        <span class="font-medium text-slate-700 dark:text-navy-100">
-                                                            <a href="`+url_descripcion_programa+`" target="_blank">` + name + `</a>
-                                                        </span>
-                                                    </div>
-                                                </td>
-                                                <td
-                                                class="whitespace-nowrap px-4 py-3 font-medium text-slate-700 dark:text-navy-100 sm:px-5">
-                                                <b>` + modalidad + `</b>
-                                                </td>
-                                                <td
-                                                class="whitespace-nowrap px-4 py-3 font-medium text-slate-700 dark:text-navy-100 sm:px-5">
-                                                <b>S/ ` + price + `</b>
-                                                </td>
-                                                <td class="whitespace-nowrap px-4 py-3 text-slate-700 dark:text-navy-100 sm:px-5">
-                                                    <button class="boton-degradado-trash">
-                                                            <i class="fa fa-trash" aria-hidden="true" style="font-size: 16px;">
-                                                                <a title="Eliminar este Curso" class="remove" onclick="eliminarproducto({ id: ` + id + `, nombre: '` +
-                          name + `', precio: ` + price + ` });">X</a>
-                                      </i>
-                                                    </button>
-                                                </td>
-                                            </tr>
-                    */
 
                 cart.innerHTML += `
         <tr class="border-y border-transparent border-b-slate-200 dark:border-b-navy-500" id="` + id + `_pc">

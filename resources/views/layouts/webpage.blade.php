@@ -5,17 +5,6 @@
     <!-- Meta tags  -->
     <meta name="facebook-domain-verification" content="3qhwpfunszdc5ag3cwum3r70v123vo" />
 
-    {{-- @php
-        $parameters = new \App\Models\Parameter();
-        $P000022 = $parameters->where('parameter_code', 'P000022')->value('value_default') ?? '';
-
-        // 1. Decodificar el nivel más externo (&amp; a &)
-        $cadena_decodificada_parcial = htmlspecialchars_decode($P000022, ENT_QUOTES);
-
-        // 2. Decodificar el nivel interno (de &lt; a <, &quot; a " y &#039; a ')
-        $cadena_decodificada = html_entity_decode($cadena_decodificada_parcial);
-    @endphp
-    {!! $cadena_decodificada !!} --}}
 
 
 
@@ -63,7 +52,6 @@
 
 
 
-    {{-- <meta name="csrf-token" content="{{ csrf_token() }}"> --}}
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport"
@@ -75,7 +63,6 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
 
-    {{-- <link rel="stylesheet" href="{{ asset('themes/webpage/bootstrap-5.3.3/css/bootstrap-grid.css') }}" /> --}}
     <link rel="stylesheet" href="{{ asset('themes/webpage/bootstrap-5.3.3/css/bootstrap.css') }}" />
     <!-- CSS Assets -->
     <link rel="stylesheet" href="{{ asset('themes/webpage/css/app.css') }}" />
@@ -208,7 +195,6 @@
     <script src="{{ asset('themes/webpage/assets/js/vector-map/map/jquery-jvectormap-in-mill.js') }}"></script>
     <script src="{{ asset('themes/webpage/assets/js/vector-map/map/jquery-jvectormap-asia-mill.js') }}"></script>
     <script src="{{ asset('themes/webpage/assets/js/dashboard/default.js') }}"></script>
-    {{-- <script src="{{ asset('themes/webpage/assets/js/notify/index.js') }}"></script> --}}
     <script src="{{ asset('themes/webpage/assets/js/datatable/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('themes/webpage/assets/js/datatable/datatables/datatable.custom.js') }}"></script>
     <script src="{{ asset('themes/webpage/assets/js/datatable/datatables/dataTables.select.min.js') }}"></script>
@@ -221,8 +207,6 @@
     <!-- Plugins JS Ends-->
     <!-- Theme js-->
     <script src="{{ asset('themes/webpage/assets/js/script.js') }}"></script>
-    {{-- <script src="themes/webpage/assets/js/theme-customizer/customizer.js"></script>
-    <script>new WOW().init();</script> --}}
 
 
     @yield('javascripts')

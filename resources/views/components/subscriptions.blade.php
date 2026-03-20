@@ -18,12 +18,6 @@
                         class="btn shrink-0 px-3 py-1.5 font-medium">
                         Anual
                     </button>
-                    {{-- <button @click="activeTab = 'tabMensual'"
-                        :class="activeTab === 'tabMensual' ? 'bg-white shadow dark:bg-navy-500 dark:text-navy-100' :
-                            'hover:text-slate-800 focus:text-slate-800 dark:hover:text-navy-100 dark:focus:text-navy-100'"
-                        class="btn shrink-0 px-3 py-1.5 font-medium">
-                        Mensual
-                    </button> --}}
                 </div>
             </div>
 
@@ -65,11 +59,6 @@
                                             </b> 
                                             / {{ $prices[0]['detail'] }}
                                         </h2>
-                                        {{-- <p style="text-align: center;">ó</p>
-                                        <h2 class="dolartitle_aracode"
-                                            style="font-size: 25px; line-height: 1.1; font-weight: 500; padding: 10px;">
-                                            $ {{ $prices[1]['amount'] }}
-                                        </h2> --}}
                                         <br>
                                         <a href="{{ route('academic_step_account', $subscription->id) }}">
                                             <button class="boton-degradado-courses">
@@ -126,11 +115,6 @@
                                             </b> 
                                             / {{ $prices[0]['detail'] }}
                                         </h2>
-                                        {{-- <p style="text-align: center;">ó</p>
-                                        <h2 class="dolartitle_aracode"
-                                            style="font-size: 25px; line-height: 1.1; font-weight: 500; padding: 10px;">
-                                            $ {{ $prices[1]['amount'] }}
-                                        </h2> --}}
                                         <br>
                                         <a href="{{ route('academic_step_account', $subscription->id) }}">
                                             <button class="boton-degradado-courses">

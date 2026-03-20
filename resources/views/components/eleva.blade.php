@@ -86,8 +86,6 @@
                                     Docentes de Big Four, banca y organismos internacionales.
                                 </p>
                                 <i class="fa fa-university" aria-hidden="true" style="font-size: 60px;"></i>
-                                {{-- <img style="width: 60px; text-align:center;"
-                                    src="themes/webpage/images/capacitacion.png" alt=""> --}}
                             </div>
                         </div>
                         <div class="col-md-6">

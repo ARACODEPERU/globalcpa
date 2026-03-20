@@ -3,9 +3,6 @@
 @section('content')
 
     <!-- Loader starts-->
-    <!-- <div class="loader-wrapper">
-                                                                                          <div class="loader"></div>
-                                                                                        </div> -->
     <!-- Loader ends-->
     <!-- tap on top starts-->
     <div class="tap-top"><i data-feather="chevrons-up"></i></div>
@@ -34,15 +31,6 @@
                     </div>
                 </div>
 
-                {{-- <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <h1 class="title_aracode" style="font-size: 45px; line-height: 1.1; font-weight: 700;">
-                                LAS NIIF COMO NUNCA TE LO EXPLICARON
-                            </h1>
-                        </div>
-                    </div>
-                </div> --}}
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-md-4">
@@ -490,12 +478,6 @@
                                     <div class="flex items-center justify-between pt-4">
                                         <a href="{{ asset('themes/webpage/El_Amauta_de_las_NIIF.pdf') }}"
                                             download="El_Amauta_de_las_NIIF">
-                                            {{-- <button style="width: 100%;"
-                                    class="btn space-x-2 bg-primary font-medium text-white hover:bg-primary-focus 
-                                    focus:bg-primary-focus active:bg-primary-focus/90 dark:bg-accent dark:hover:bg-accent-focus 
-                                    dark:focus:bg-accent-focus dark:active:bg-accent/90">
-                                    <span>Descargar Brochure</span>
-                                </button> --}}
                                             <button class="boton-degradado-courses">
                                                 <b style="font-size: 15px;">
                                                     <i class="fa fa-download" aria-hidden="true"
@@ -505,12 +487,6 @@
                                             </button>
                                         </a>
                                         <a href="https://wa.link/yibjj7" target="_blank">
-                                            {{-- <button style="width: 100%;"
-                                    class="btn space-x-2 bg-primary font-medium text-white hover:bg-primary-focus 
-                                    focus:bg-primary-focus active:bg-primary-focus/90 dark:bg-accent dark:hover:bg-accent-focus 
-                                    dark:focus:bg-accent-focus dark:active:bg-accent/90">
-                                    <span>Comprar versión impresa</span>
-                                </button> --}}
                                             <button class="boton-degradado-courses">
                                                 <b style="font-size: 15px;">
                                                     <i class="fa fa-cart-plus" aria-hidden="true"
@@ -521,12 +497,6 @@
                                         </a>
                                         <a href="https://www.amazon.com/-/es/dp/B0DVTBXPCF?binding=kindle_edition&ref=dbs_dp_rwt_sb_pc_tkin"
                                             target="_blank">
-                                            {{-- <button style="width: 100%;"
-                                    class="btn space-x-2 bg-primary font-medium text-white hover:bg-primary-focus 
-                                    focus:bg-primary-focus active:bg-primary-focus/90 dark:bg-accent dark:hover:bg-accent-focus 
-                                    dark:focus:bg-accent-focus dark:active:bg-accent/90">
-                                    <span>Comprar ebook</span>
-                                </button> --}}
                                             <button class="boton-degradado-courses">
                                                 <b style="font-size: 15px;">
                                                     <i class="fa fa-cart-plus" aria-hidden="true"

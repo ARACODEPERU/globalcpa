@@ -44,12 +44,6 @@
         <x-footer />
     </div>
 
-    <!-- App Header Wrapper-->
-    {{-- <x-nav /> --}}
-
-    <!-- Sidebar -->
-    {{-- <x-slidebar /> --}}
-
 
     {{-- Ideally, this JS should be at the end of your <body> in the main layout file --}}
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
