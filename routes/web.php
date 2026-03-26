@@ -34,6 +34,7 @@ Route::get('/home2', [WebPageController::class, 'index2'])->name('index_main_hom
 Route::get('/nosotros', [WebPageController::class, 'about'])->name('web_about');
 Route::get('/docentes', [WebPageController::class, 'teachers'])->name('web_teachers');
 Route::get('/landing/{slug}', [WebPageController::class, 'landing'])->name('web_landing');
+Route::get('/academy', [WebPageController::class, 'academy'])->name('web_academy');
 
 Route::get('/el-amauta-de-las-niif', [WebPageController::class, 'bookamauta'])->name('web_book_amauta');
 Route::get('/planes-de-suscripcion', [WebPageController::class, 'subscriptions'])->name('web_subscriptions');
