@@ -69,7 +69,7 @@ class AcaCertificateController extends Controller
             $request,
             [
                 'name_certificate' => 'required',
-                'certificate_img' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
+                'certificate_img' => 'required|image|mimes:jpeg,png,jpg,gif|max:4096'
             ]
         );
 
@@ -625,11 +625,11 @@ class AcaCertificateController extends Controller
 
             $certificate_id = $certificateParameter->id;
         }
-        
+
         if ($certificate_id) {
             // Generar certificado ANVERSO (front)
             $imagenFront = $autoCertificate->generate($certificate_id, 'front', $student_id, $course_id);
-            
+
             // Generar certificado REVERSO (back) si has_reverse = true Y existe back_certificate_img
             $imagenBack = null;
             if ($certificateParameter && $certificateParameter->has_reverse && $certificateParameter->back_certificate_img) {
@@ -640,7 +640,7 @@ class AcaCertificateController extends Controller
             if ($imagenFront && $imagenBack) {
                 $zipFileName = "certificado_{$student_id}_{$course_id}.zip";
                 $tempFile = tempnam(sys_get_temp_dir(), 'cert_');
-                
+
                 $zip = new \ZipArchive();
                 if ($zip->open($tempFile, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) === true) {
                     $zip->addFromString('certificado_frente.png', $imagenFront);
@@ -785,7 +785,7 @@ class AcaCertificateController extends Controller
         if ($imagenFront && $imagenBack) {
             $zipFileName = "certificado_{$student->id}_{$module->id}.zip";
             $tempFile = tempnam(sys_get_temp_dir(), 'cert_');
-            
+
             $zip = new \ZipArchive();
             if ($zip->open($tempFile, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) === true) {
                 $zip->addFromString('certificado_frente.png', $imagenFront);
@@ -875,22 +875,22 @@ class AcaCertificateController extends Controller
     public function findStudentCertificate($courseId)
     {
         $student = AcaStudent::where('person_id', Auth::user()->person_id)->first();
-        
+
         if (!$student) {
             return response()->json(['success' => false]);
         }
-        
+
         $certificate = AcaCertificate::where('student_id', $student->id)
             ->where('course_id', $courseId)
             ->first();
-        
+
         if ($certificate) {
             return response()->json([
                 'success' => true,
                 'certificate_id' => $certificate->id
             ]);
         }
-        
+
         return response()->json(['success' => false]);
     }
 }
