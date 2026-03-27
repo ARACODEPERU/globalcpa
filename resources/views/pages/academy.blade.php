@@ -52,105 +52,140 @@
                                 </div>
                                 <div class="col-lg-4 text-center d-none d-lg-block position-relative"
                                     style="min-height: 250px;">
-                                    {{-- Animación CSS Propuesta: Ecosistema de Aprendizaje --}}
-                                    <style>
-                                        .orbit-system {
-                                            position: absolute;
-                                            top: 50%;
-                                            left: 50%;
-                                            width: 240px;
-                                            height: 240px;
-                                            transform: translate(-50%, -50%);
-                                            border-radius: 50%;
-                                            border: 1px dashed rgba(255, 255, 255, 0.15);
-                                            animation: orbit-spin 25s linear infinite;
-                                        }
+                                    <img src="{{ asset('themes/molde.jpeg') }}"
+                                        alt="Especialización en IA para Contabilidad" class="img-fluid" style="max-height: 250px;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-                                        .orbit-item {
-                                            position: absolute;
-                                            top: 50%;
-                                            left: 50%;
-                                            width: 44px;
-                                            height: 44px;
-                                            margin-top: -22px;
-                                            margin-left: -22px;
-                                            display: flex;
-                                            align-items: center;
-                                            justify-content: center;
-                                            background: rgba(255, 255, 255, 0.1);
-                                            border-radius: 50%;
-                                            backdrop-filter: blur(2px);
-                                        }
+                <div class="container-fluid card aos-animate" data-aos="fade-up">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card-body p-4 p-lg-5">
+                                <div class="mb-4">
+                                    <span class="badge rounded-pill bg-light text-primary px-3 py-2 mb-3 shadow-sm border" style="color: #002060 !important;">
+                                        <i class="fa fa-refresh me-1"></i> ACTUALIZACIÓN PROFESIONAL
+                                    </span>
+                                    <h2 class="fw-bold display-6" style="color: #002060;">Lidera la era de la Contabilidad Inteligente</h2>
+                                    <p class="text-muted fs-5">No solo aprendas a usar herramientas; domina la estrategia detrás de la Inteligencia Artificial para convertirte en un asesor financiero de alto valor.</p>
+                                </div>
 
-                                        /* Contrarrotación para mantener los iconos verticales */
-                                        .orbit-item i {
-                                            animation: orbit-counter-spin 25s linear infinite;
-                                        }
+                                <div class="row g-4 mt-2">
+                                    <div class="col-sm-6">
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-shrink-0 bg-warning-light p-3 rounded-circle me-3" style="background-color: rgba(255, 193, 7, 0.1);">
+                                                <i class="fa fa-line-chart text-warning fs-4"></i>
+                                            </div>
+                                            <div>
+                                                <h5 class="mb-0 fw-bold" style="color: #002060;">Eficiencia</h5>
+                                                <small class="text-muted">Automatiza tareas repetitivas.</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-shrink-0 bg-info-light p-3 rounded-circle me-3" style="background-color: rgba(0, 204, 255, 0.1);">
+                                                <i class="fa fa-database text-info fs-4"></i>
+                                            </div>
+                                            <div>
+                                                <h5 class="mb-0 fw-bold" style="color: #002060;">Data Driven</h5>
+                                                <small class="text-muted">Análisis predictivo financiero.</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card-body p-4 p-lg-5">
+                                <div class="mb-4">
+                                    <h2 class="fw-bold" style="color: #002060;">¿Listo para empezar?</h2>
+                                    <p class="text-muted">Completa tus datos para descargar el brochure detallado y recibir información sobre promociones exclusivas del programa.</p>
+                                </div>
 
-                                        /* Posiciones fijas en la órbita (triángulo equilátero) */
-                                        .pos-1 {
-                                            transform: rotate(0deg) translate(120px) rotate(0deg);
-                                        }
-
-                                        .pos-2 {
-                                            transform: rotate(120deg) translate(120px) rotate(-120deg);
-                                        }
-
-                                        .pos-3 {
-                                            transform: rotate(240deg) translate(120px) rotate(-240deg);
-                                        }
-
-                                        .center-pulse {
-                                            position: absolute;
-                                            top: 50%;
-                                            left: 50%;
-                                            transform: translate(-50%, -50%);
-                                            animation: center-pulse-anim 3s ease-in-out infinite;
-                                        }
-
-                                        @keyframes orbit-spin {
-                                            100% {
-                                                transform: translate(-50%, -50%) rotate(360deg);
-                                            }
-                                        }
-
-                                        @keyframes orbit-counter-spin {
-                                            100% {
-                                                transform: rotate(-360deg);
-                                            }
-                                        }
-
-                                        @keyframes center-pulse-anim {
-
-                                            0%,
-                                            100% {
-                                                transform: translate(-50%, -50%) scale(1);
-                                                opacity: 0.3;
-                                            }
-
-                                            50% {
-                                                transform: translate(-50%, -50%) scale(1.05);
-                                                opacity: 0.7;
-                                                text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
-                                            }
-                                        }
-                                    </style>
-
-                                    {{-- Icono Central --}}
-                                    <div class="center-pulse">
-                                        <i class="fa fa-laptop fa-5x text-white"></i>
+                                <form id="pageContactForm">
+                                    @csrf
+                                    <input type="hidden" name="subject" value="Solicitud de Brochure - Especialización IA">
+                                    <input type="hidden" name="message" value="El usuario ha solicitado el temario desde la landing de Academy.">
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold" style="color: #002060;">Nombres y Apellidos</label>
+                                        <div class="input-group shadow-sm">
+                                            <span class="input-group-text bg-white border-end-0"><i class="fa fa-user text-muted"></i></span>
+                                            <input type="text" name="full_name" class="form-control border-start-0 ps-0" placeholder="Ingresa tu nombre completo" required>
+                                        </div>
                                     </div>
 
-                                    {{-- Sistema Orbital --}}
-                                    <div class="orbit-system">
-                                        <div class="orbit-item pos-1" title="Clases en Video">
-                                            <i class="fa fa-play text-warning fs-5"></i>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label fw-bold" style="color: #002060;">WhatsApp</label>
+                                            <div class="input-group shadow-sm">
+                                                <span class="input-group-text bg-white border-end-0"><i class="fa fa-whatsapp text-muted"></i></span>
+                                                <input type="text" name="phone" class="form-control border-start-0 ps-0" placeholder="Ej: 999 888 777" required>
+                                            </div>
                                         </div>
-                                        <div class="orbit-item pos-2" title="Certificación">
-                                            <i class="fa fa-certificate text-info fs-5"></i>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label fw-bold" style="color: #002060;">Correo Electrónico</label>
+                                            <div class="input-group shadow-sm">
+                                                <span class="input-group-text bg-white border-end-0"><i class="fa fa-envelope text-muted"></i></span>
+                                                <input type="email" name="email" class="form-control border-start-0 ps-0" placeholder="ejemplo@correo.com" required>
+                                            </div>
                                         </div>
-                                        <div class="orbit-item pos-3" title="Recursos Descargables">
-                                            <i class="fa fa-file-text-o text-success fs-5"></i>
+                                    </div>
+
+                                    <div class="mt-4">
+                                        <button type="submit" id="submitPageContactButton" class="btn btn-warning btn-lg w-100 fw-bold shadow-sm py-3" style="color: #002060; border-radius: 12px; transition: all 0.3s ease;">
+                                            <i class="fa fa-file-pdf-o me-2"></i> DESCARGAR BROCHURE
+                                        </button>
+                                    </div>
+                                    <div id="messagePageContact" class="mt-3"></div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                
+                <div class="container-fluid card aos-animate" data-aos="fade-up">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card-body p-4 p-lg-5">
+                                <div class="text-center mb-5">
+                                    <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border" style="background-color: rgba(220, 53, 69, 0.1); color: #dc3545;">
+                                        <i class="fa fa-exclamation-triangle me-1"></i> EL PROBLEMA
+                                    </span>
+                                    <h2 class="fw-bold display-6" style="color: #002060;">Tu equipo está saturado y pierdes ventas todos los días</h2>
+                                    <p class="text-muted fs-5 mx-auto" style="max-width: 800px;">No es solo traer tráfico, es atender rápido sin multiplicar tu equipo.</p>
+                                </div>
+
+                                <div class="row g-4">
+                                    <div class="col-md-4" data-aos="zoom-in" data-aos-delay="100">
+                                        <div class="h-100 p-4 rounded-4 border shadow-sm text-center bg-white transition-all">
+                                            <div class="mb-4">
+                                                <i class="fa fa-clock-o text-warning" style="font-size: 3.5rem;"></i>
+                                            </div>
+                                            <h4 class="fw-bold mb-3" style="color: #002060;">No ofreces atención 24/7</h4>
+                                            <p class="text-muted mb-0">en canales como WhatsApp e Instagram y eso te hace perder ventas todos los días</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4" data-aos="zoom-in" data-aos-delay="200">
+                                        <div class="h-100 p-4 rounded-4 border shadow-sm text-center bg-white transition-all">
+                                            <div class="mb-4">
+                                                <i class="fa fa-users text-warning" style="font-size: 3.5rem;"></i>
+                                            </div>
+                                            <h4 class="fw-bold mb-3" style="color: #002060;">Equipo saturado en post-venta</h4>
+                                            <p class="text-muted mb-0">y eso consume el 70% de su tiempo</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4" data-aos="zoom-in" data-aos-delay="300">
+                                        <div class="h-100 p-4 rounded-4 border shadow-sm text-center bg-white transition-all">
+                                            <div class="mb-4">
+                                                <i class="fa fa-commenting-o text-warning" style="font-size: 3.5rem;"></i>
+                                            </div>
+                                            <h4 class="fw-bold mb-3" style="color: #002060;">Tu Chatbot no vende</h4>
+                                            <p class="text-muted mb-0">Chatbots básicos que responden, pero no convierten ni miden impacto.</p>
                                         </div>
                                     </div>
                                 </div>
