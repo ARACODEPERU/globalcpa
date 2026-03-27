@@ -4,6 +4,16 @@
     {{-- Ideally, this CSS should be in the <head> of your main layout file (e.g., layouts/webpage.blade.php) --}}
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
+    <style>
+        .transition-all {
+            transition: all 0.3s ease-in-out !important;
+        }
+        .transition-all:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 15px 30px rgba(0, 32, 96, 0.15) !important;
+            border-color: #ffc107 !important; /* Un sutil borde dorado al resaltar */
+        }
+    </style>
 
     <!-- tap on top starts-->
     <div class="tap-top"><i data-feather="chevrons-up"></i></div>
@@ -186,6 +196,84 @@
                                             </div>
                                             <h4 class="fw-bold mb-3" style="color: #002060;">Tu Chatbot no vende</h4>
                                             <p class="text-muted mb-0">Chatbots básicos que responden, pero no convierten ni miden impacto.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div class="container-fluid card aos-animate" data-aos="fade-up">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card-body p-4 p-lg-5">
+                                <!-- Header de Sección -->
+                                <div class="text-center mb-5">
+                                    <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border" style="background-color: rgba(0, 32, 96, 0.1); color: #002060;">
+                                        <i class="fa fa-list-ul me-1"></i> PLAN DE ESTUDIOS
+                                    </span>
+                                    <h2 class="fw-bold display-6" style="color: #002060;">Lo que vas a aprender</h2>
+                                    <p class="text-muted fs-5 mx-auto" style="max-width: 800px;">Un temario diseñado para transformar tu perfil profesional con habilidades prácticas y de alta demanda.</p>
+                                </div>
+
+                                <div class="row align-items-center">
+                                    <!-- Columna de Imagen -->
+                                    <div class="col-lg-5 mb-4 mb-lg-0" data-aos="fade-right">
+                                        <div class="position-relative">
+                                            <img src="https://images.unsplash.com/photo-1591453089816-0fbb971b454c?q=80&w=2070&auto=format&fit=crop" 
+                                                 alt="Temario Especializado" 
+                                                 class="img-fluid rounded-4 shadow-lg"
+                                                 style="border: 8px solid #f8f9fa;">
+                                            <div class="position-absolute bottom-0 start-0 m-3 p-3 bg-warning rounded-3 shadow d-none d-sm-block">
+                                                <span class="fw-bold text-dark">Módulos 100% Actualizados</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Columna de Temas -->
+                                    <div class="col-lg-7" data-aos="fade-left">
+                                        <div class="ps-lg-4">
+                                            <div class="d-flex mb-4">
+                                                <div class="flex-shrink-0">
+                                                    <span class="badge rounded-circle bg-primary d-flex align-items-center justify-content-center shadow" style="width: 45px; height: 45px; background-color: #002060 !important; font-size: 1.1rem;">1</span>
+                                                </div>
+                                                <div class="ms-3">
+                                                    <h5 class="fw-bold" style="color: #002060;">Fundamentos de IA y Prompt Engineering</h5>
+                                                    <p class="text-muted">Domina el arte de comunicarte con modelos de lenguaje para generar análisis técnicos precisos.</p>
+                                                </div>
+                                            </div>
+
+                                            <div class="d-flex mb-4">
+                                                <div class="flex-shrink-0">
+                                                    <span class="badge rounded-circle bg-primary d-flex align-items-center justify-content-center shadow" style="width: 45px; height: 45px; background-color: #002060 !important; font-size: 1.1rem;">2</span>
+                                                </div>
+                                                <div class="ms-3">
+                                                    <h5 class="fw-bold" style="color: #002060;">Automatización de Procesos Financieros</h5>
+                                                    <p class="text-muted">Conecta tus estados financieros con herramientas de IA para detectar errores y tendencias automáticamente.</p>
+                                                </div>
+                                            </div>
+
+                                            <div class="d-flex mb-4">
+                                                <div class="flex-shrink-0">
+                                                    <span class="badge rounded-circle bg-primary d-flex align-items-center justify-content-center shadow" style="width: 45px; height: 45px; background-color: #002060 !important; font-size: 1.1rem;">3</span>
+                                                </div>
+                                                <div class="ms-3">
+                                                    <h5 class="fw-bold" style="color: #002060;">Análisis Predictivo y Auditoría Inteligente</h5>
+                                                    <p class="text-muted">Aprende a proyectar flujos de caja y realizar auditorías basadas en algoritmos de aprendizaje automático.</p>
+                                                </div>
+                                            </div>
+
+                                            <div class="d-flex">
+                                                <div class="flex-shrink-0">
+                                                    <span class="badge rounded-circle bg-primary d-flex align-items-center justify-content-center shadow" style="width: 45px; height: 45px; background-color: #002060 !important; font-size: 1.1rem;">4</span>
+                                                </div>
+                                                <div class="ms-3">
+                                                    <h5 class="fw-bold" style="color: #002060;">Estrategia y Consultoría de Alto Valor</h5>
+                                                    <p class="text-muted">Transforma tus entregables contables en asesoría estratégica utilizando visualización de datos avanzada.</p>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
