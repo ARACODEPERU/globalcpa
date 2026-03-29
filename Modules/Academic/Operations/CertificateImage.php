@@ -54,10 +54,11 @@ class CertificateImage
         // Seleccionar imagen base según el tipo
         if ($type === 'back') {
             $img = Image::make(public_path('storage'.DIRECTORY_SEPARATOR.$this->certificates_param->back_certificate_img));
+            $textDefault = $this->certificates_param->back_description;
         } else {
             $img = Image::make(public_path('storage'.DIRECTORY_SEPARATOR.$this->certificates_param->certificate_img));
         }
-        $textDefault = $this->certificates_param->back_description;
+
 
         // Obtener fecha: si hay estudiante, usar fecha real del registro
         $fecha = $this->getRealDate();
@@ -148,7 +149,7 @@ class CertificateImage
             }
         } else {
             // Para el anverso, usar generación HTML
-            $descriptionText = $this->certificates_param->description ?? $textDefault;
+            $descriptionText = $course = AcaCourse::find($this->course_id)->certificate_description ?? $textDefault;
 
             if ($descriptionText && $this->getField('visible_description')) {
                 $htmlGenerator = new CertificateGeneratorHtml;
