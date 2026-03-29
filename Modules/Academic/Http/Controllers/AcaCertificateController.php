@@ -79,6 +79,7 @@ class AcaCertificateController extends Controller
                 'name_certificate' => 'required',
                 'certificate_img' => 'required|image|mimes:jpeg,png,jpg,gif|max:5120',
                 'back_certificate_img' => $hasReverse ? 'required|image|mimes:jpeg,png,jpg,gif|max:5120' : 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
+
             ]
         );
 
@@ -700,6 +701,7 @@ class AcaCertificateController extends Controller
                 $tempFile = tempnam(sys_get_temp_dir(), 'cert_');
 
                 $zip = new \ZipArchive;
+
                 if ($zip->open($tempFile, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) === true) {
                     $zip->addFromString('certificado_frente.png', $imagenFront);
                     $zip->addFromString('certificado_reverso.png', $imagenBack);
@@ -845,6 +847,7 @@ class AcaCertificateController extends Controller
             $tempFile = tempnam(sys_get_temp_dir(), 'cert_');
 
             $zip = new \ZipArchive;
+
             if ($zip->open($tempFile, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) === true) {
                 $zip->addFromString('certificado_frente.png', $imagenFront);
                 $zip->addFromString('certificado_reverso.png', $imagenBack);

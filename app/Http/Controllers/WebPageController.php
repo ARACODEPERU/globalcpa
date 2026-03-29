@@ -55,9 +55,9 @@ class WebPageController extends Controller
         return view('pages.home');
     }
 
-    public function index2()
+    public function academy()
     {
-        return view('pages.home2');
+        return view('pages.academy');
     }
 
     public function landing($slug)
@@ -273,6 +273,15 @@ class WebPageController extends Controller
             'latest_courses' => $latest_courses
         ]);
     }
+
+
+    
+    public function index2()
+    {
+        return view('pages.home2');
+    }
+
+
 
     public function shopcart()
     {
