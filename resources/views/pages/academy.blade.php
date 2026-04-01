@@ -104,6 +104,8 @@
                     </div>
                 </div>
 
+
+
                 <div class="container-fluid card aos-animate" data-aos="fade-up">
                     <div class="row">
                         <div class="col-md-6">
@@ -550,7 +552,7 @@
                     </div>
                 </div> --}}
 
-
+                
                 {{-- Propuesta de Diseño: Carrusel de Expertos Premium (Opción 5) --}}
                 <div class="container-fluid card aos-animate mt-5" data-aos="fade-up">
                     <div class="row">
@@ -607,28 +609,6 @@
                         </div>
                     </div>
                 </div>
-
-
-
-                
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
                 <div class="container-fluid card aos-init aos-animate" data-aos="fade-up">
