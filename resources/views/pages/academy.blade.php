@@ -365,7 +365,7 @@
 
 
 
-                <div>
+                {{-- <div>
                     <section style="padding: 10px 0px;">
                         <div class="container-fluid">
                             <div class="page-title">
@@ -382,7 +382,6 @@
                         </div>
                     </section>
 
-                    <!-- Propuesta de Diseño Moderno Opción 3 -->
                     <style>
                         .teachers-section-opt3 {
                             padding: 60px 0;
@@ -464,7 +463,6 @@
                     <section class="teachers-section-opt3">
                         <div class="carousel-viewport">
                             <div class="carousel-track">
-                                {{-- Bloque Original --}}
                                 @php
                                     $teachers_demo = [
                                         ['name' => 'Dr. Julian Arancibia', 'role' => 'Especialista en IA'],
@@ -495,9 +493,124 @@
                         </div>
                     </section>
 
+                </div> --}}
+
+                {{-- Nueva Propuesta: Grilla de Expertos (Opción 4) --}}
+                {{-- <div class="container-fluid card aos-animate mt-5" data-aos="fade-up">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card-body p-4 p-lg-5">
+                                <!-- Header de Sección -->
+                                <div class="text-center mb-5">
+                                    <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border"
+                                        style="background-color: rgba(255, 193, 7, 0.1); color: #002060;">
+                                        <i class="fa fa-graduation-cap me-1"></i> STAFF ACADÉMICO
+                                    </span>
+                                    <h2 class="fw-bold display-6" style="color: #002060;">Expertos que Guiarán tu Aprendizaje</h2>
+                                    <p class="text-muted fs-5 mx-auto" style="max-width: 800px;">
+                                        Nuestra plana docente está conformada por líderes de opinión y especialistas activos en la implementación de IA en las firmas contables más importantes.
+                                    </p>
+                                </div>
+
+                                <div class="row g-4">
+                                    @php
+                                        $teachers_grid = [
+                                            ['name' => 'Dr. Julian Arancibia', 'role' => 'Especialista en IA', 'img' => 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=2070&auto=format&fit=crop'],
+                                            ['name' => 'Mag. Carmen Luz', 'role' => 'Auditoría Digital', 'img' => 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1974&auto=format&fit=crop'],
+                                            ['name' => 'Dr. Roberto Mendoza', 'role' => 'Finanzas Tech', 'img' => 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=1974&auto=format&fit=crop'],
+                                            ['name' => 'Dra. Elena Ramos', 'role' => 'Estrategia Fiscal', 'img' => 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=1976&auto=format&fit=crop'],
+                                        ];
+                                    @endphp
+
+                                    @foreach($teachers_grid as $teacher)
+                                        <div class="col-md-6 col-lg-3" data-aos="zoom-in" data-aos-delay="{{ $loop->index * 100 }}">
+                                            <div class="card border-0 shadow-sm h-100 transition-all rounded-4 overflow-hidden bg-white">
+                                                <div style="height: 280px; overflow: hidden; position: relative;">
+                                                    <img src="{{ $teacher['img'] }}" 
+                                                         class="card-img-top h-100 w-100" 
+                                                         style="object-fit: cover; transition: transform 0.5s ease;" 
+                                                         onmouseover="this.style.transform='scale(1.1)'" 
+                                                         onmouseout="this.style.transform='scale(1)'" 
+                                                         alt="{{ $teacher['name'] }}">
+                                                    <div class="position-absolute bottom-0 start-0 w-100 p-3" 
+                                                         style="background: linear-gradient(transparent, rgba(0,32,96,0.8));">
+                                                        <p class="text-white small mb-0 fw-light">Socio Consultor</p>
+                                                    </div>
+                                                </div>
+                                                <div class="card-body text-center p-4">
+                                                    <h5 class="fw-bold mb-1" style="color: #002060;">{{ $teacher['name'] }}</h5>
+                                                    <p class="text-warning small fw-bold mb-0">{{ $teacher['role'] }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> --}}
+
+
+                {{-- Propuesta de Diseño: Carrusel de Expertos Premium (Opción 5) --}}
+                <div class="container-fluid card aos-animate mt-5" data-aos="fade-up">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card-body p-4 p-lg-5">
+                                <!-- Header de Sección -->
+                                <div class="text-center mb-4">
+                                    <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border"
+                                        style="background-color: rgba(0, 32, 96, 0.05); color: #002060;">
+                                        <i class="fa fa-users me-1"></i> NUESTRO STAFF (DINÁMICO)
+                                    </span>
+                                    <h2 class="fw-bold display-6" style="color: #002060;">Líderes de la Industria</h2>
+                                    <p class="text-muted fs-5 mx-auto" style="max-width: 800px;">
+                                        Desliza para conocer a los profesionales que transformarán tu carrera.
+                                    </p>
+                                </div>
+
+                                <div class="carousel-viewport" style="padding: 40px 0;">
+                                    <div class="carousel-track" style="animation-duration: 50s;">
+                                        @php
+                                            $teachers_premium = [
+                                                ['name' => 'Dr. Julian Arancibia', 'role' => 'Especialista en IA', 'img' => 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=2070&auto=format&fit=crop'],
+                                                ['name' => 'Mag. Carmen Luz', 'role' => 'Auditoría Digital', 'img' => 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1974&auto=format&fit=crop'],
+                                                ['name' => 'Dr. Roberto Mendoza', 'role' => 'Finanzas Tech', 'img' => 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=1974&auto=format&fit=crop'],
+                                                ['name' => 'Dra. Elena Ramos', 'role' => 'Estrategia Fiscal', 'img' => 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=1976&auto=format&fit=crop'],
+                                                ['name' => 'Mag. Luis Torres', 'role' => 'Data Analytics', 'img' => 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1974&auto=format&fit=crop'],
+                                            ];
+                                        @endphp
+
+                                        {{-- Se duplica el contenido para el loop infinito --}}
+                                        @foreach(array_merge($teachers_premium, $teachers_premium) as $teacher)
+                                            <div class="teacher-carousel-item" style="width: 280px;">
+                                                <div class="card border-0 shadow-sm h-100 transition-all rounded-4 overflow-hidden bg-white mx-2">
+                                                    <div style="height: 240px; overflow: hidden; position: relative;">
+                                                        <img src="{{ $teacher['img'] }}" 
+                                                             class="card-img-top h-100 w-100" 
+                                                             style="object-fit: cover;" 
+                                                             alt="{{ $teacher['name'] }}">
+                                                        <div class="position-absolute bottom-0 start-0 w-100 p-3" 
+                                                             style="background: linear-gradient(transparent, rgba(0,32,96,0.8));">
+                                                            <p class="text-white small mb-0 fw-light">Socio Consultor</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="card-body text-center p-3">
+                                                        <h5 class="fw-bold mb-1" style="color: #002060; font-size: 1.1rem;">{{ $teacher['name'] }}</h5>
+                                                        <p class="text-warning small fw-bold mb-0" style="font-size: 0.8rem;">{{ $teacher['role'] }}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
 
+
+                
 
 
 
