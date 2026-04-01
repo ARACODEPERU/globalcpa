@@ -111,8 +111,10 @@
                                                 activos)</span>
                                         </div>
                                     </div>
-                                    <h1 class="display-5 fw-bold mb-3" style="color: #fff;">Especialización en Inteligencia
-                                        Artificial aplicada a la Contabilidad y Finanzas</h1>
+                                    <h1 class="display-5 fw-bold mb-3" style="color: #fff;">
+                                        Especialización en Inteligencia
+                                        Artificial aplicada a la Contabilidad y Finanzas
+                                    </h1>
 
                                     <div class="d-flex align-items-center text-white-50">
                                         <span class="me-3"><i class="fa fa-clock-o me-1"></i>
