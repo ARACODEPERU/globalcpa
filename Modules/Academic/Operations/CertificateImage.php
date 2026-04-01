@@ -148,7 +148,7 @@ class CertificateImage
             }
         } else {
             // Para el anverso, usar generación HTML
-            $descriptionText = $this->certificates_param->description ?? $textDefault;
+            $descriptionText = $course = AcaCourse::find($this->course_id)->certificate_description ?? $textDefault;
 
             if ($descriptionText && $this->getField('visible_description')) {
                 $htmlGenerator = new CertificateGeneratorHtml;
