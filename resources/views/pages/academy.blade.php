@@ -828,6 +828,96 @@
                     </div>
                 </div>
 
+                
+                {{-- Nueva Sección: Planes de Inversión --}}
+                <div class="container-fluid card aos-animate mt-5" data-aos="fade-up">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card-body p-4 p-lg-5">
+                                <div class="text-center mb-5">
+                                    <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border"
+                                        style="background-color: rgba(255, 193, 7, 0.1); color: #002060;">
+                                        <i class="fa fa-money me-1"></i> INVERSIÓN
+                                    </span>
+                                    <h2 class="fw-bold display-6" style="color: #002060;">Planes de Inversión</h2>
+                                    <p class="text-muted fs-5 mx-auto" style="max-width: 800px;">
+                                        Elige el plan que mejor se adapte a tus necesidades y comienza tu transformación profesional hoy mismo.
+                                    </p>
+                                </div>
+
+                                <div class="row g-4 justify-content-center">
+                                    <!-- Plan Pronto Pago -->
+                                    <div class="col-md-4" data-aos="zoom-in" data-aos-delay="100">
+                                        <div class="card h-100 border-0 shadow-sm transition-all rounded-4 overflow-hidden bg-white text-center">
+                                            <div class="p-4 border-bottom bg-light">
+                                                <h4 class="fw-bold mb-0" style="color: #002060;">Pronto Pago</h4>
+                                                <small class="text-muted">Válido hasta el 15 de abril</small>
+                                            </div>
+                                            <div class="card-body p-4">
+                                                <div class="mb-4">
+                                                    <span class="display-4 fw-bold" style="color: #002060;">S/ 450</span>
+                                                    <span class="text-muted">/ pago único</span>
+                                                </div>
+                                                <ul class="list-unstyled text-start mb-4">
+                                                    <li class="mb-2"><i class="fa fa-check text-success me-2"></i> Acceso total al programa</li>
+                                                    <li class="mb-2"><i class="fa fa-check text-success me-2"></i> Material digital descargable</li>
+                                                    <li class="mb-2"><i class="fa fa-check text-success me-2"></i> Certificado de participación</li>
+                                                </ul>
+                                                <a href="#pageContactForm" class="btn btn-outline-warning w-100 fw-bold py-2" style="color: #002060; border-radius: 10px;">Inscribirse ahora</a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Plan Regular (Destacado) -->
+                                    <div class="col-md-4" data-aos="zoom-in" data-aos-delay="200">
+                                        <div class="card h-100 border-0 shadow-lg transition-all rounded-4 overflow-hidden bg-white border-top border-warning border-5" style="border-top: 5px solid #ffc107 !important;">
+                                            <div class="p-4 border-bottom" style="background-color: rgba(255, 193, 7, 0.05);">
+                                                <span class="badge bg-warning text-dark mb-2">RECOMENDADO</span>
+                                                <h4 class="fw-bold mb-0" style="color: #002060;">Inversión Regular</h4>
+                                                <small class="text-muted">Precio estándar</small>
+                                            </div>
+                                            <div class="card-body p-4 text-center">
+                                                <div class="mb-4">
+                                                    <span class="display-4 fw-bold" style="color: #002060;">S/ 600</span>
+                                                    <span class="text-muted">/ pago único</span>
+                                                </div>
+                                                <ul class="list-unstyled text-start mb-4">
+                                                    <li class="mb-2"><i class="fa fa-check text-success me-2"></i> <b>Todo lo del plan Pronto Pago</b></li>
+                                                    <li class="mb-2"><i class="fa fa-check text-success me-2"></i> Sesiones de Q&A en vivo</li>
+                                                    <li class="mb-2"><i class="fa fa-check text-success me-2"></i> Soporte prioritario vía WhatsApp</li>
+                                                </ul>
+                                                <a href="#pageContactForm" class="btn btn-warning w-100 fw-bold py-2 shadow-sm" style="color: #002060; border-radius: 10px;">Inscribirse ahora</a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Plan Corporativo -->
+                                    <div class="col-md-4" data-aos="zoom-in" data-aos-delay="300">
+                                        <div class="card h-100 border-0 shadow-sm transition-all rounded-4 overflow-hidden bg-white text-center">
+                                            <div class="p-4 border-bottom bg-light">
+                                                <h4 class="fw-bold mb-0" style="color: #002060;">Corporativo</h4>
+                                                <small class="text-muted">Desde 3 inscritos</small>
+                                            </div>
+                                            <div class="card-body p-4">
+                                                <div class="mb-4">
+                                                    <span class="display-4 fw-bold" style="color: #002060;">S/ 400</span>
+                                                    <span class="text-muted">/ por persona</span>
+                                                </div>
+                                                <ul class="list-unstyled text-start mb-4">
+                                                    <li class="mb-2"><i class="fa fa-check text-success me-2"></i> Beneficios del plan regular</li>
+                                                    <li class="mb-2"><i class="fa fa-check text-success me-2"></i> Sesión privada para el equipo</li>
+                                                    <li class="mb-2"><i class="fa fa-check text-success me-2"></i> Facturación personalizada</li>
+                                                </ul>
+                                                <a href="#pageContactForm" class="btn btn-outline-warning w-100 fw-bold py-2" style="color: #002060; border-radius: 10px;">Contactar ventas</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
 
 
                 <div class="container-fluid card aos-init aos-animate" data-aos="fade-up">
