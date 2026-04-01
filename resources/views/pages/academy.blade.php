@@ -44,6 +44,33 @@
             width: 300px;
             flex-shrink: 0;
         }
+
+        /* Estilos para FAQ Moderna */
+        .faq-modern .accordion-item {
+            border: 1px solid #e9ecef !important;
+            margin-bottom: 1.5rem;
+            border-radius: 12px !important;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .faq-modern .accordion-item:has(.show) {
+            border-color: #002060 !important;
+            box-shadow: 0 10px 25px rgba(0,32,96,0.1);
+        }
+        .faq-modern .accordion-button {
+            padding: 1.5rem;
+            font-weight: 600;
+            background-color: white !important;
+            color: #002060;
+        }
+        .faq-modern .accordion-button:not(.collapsed) {
+            color: #002060;
+            box-shadow: none;
+        }
+        .faq-modern .accordion-button::after {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23002060'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+            transition: transform 0.3s ease;
+        }
     </style>
 
     <!-- tap on top starts-->
@@ -918,6 +945,101 @@
                     </div>
                 </div>
                 
+                {{-- Propuesta 2: Preguntas Frecuentes (Diseño Moderno de Tarjetas) --}}
+                <div class="container-fluid card aos-animate mt-5" data-aos="fade-up">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card-body p-4 p-lg-5">
+                                <div class="text-center mb-5">
+                                    <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border"
+                                        style="background-color: rgba(111, 66, 193, 0.1); color: #6f42c1;">
+                                        <i class="fa fa-magic me-1"></i> FAQ - VERSIÓN MODERNA
+                                    </span>
+                                    <h2 class="fw-bold display-6" style="color: #002060;">Preguntas Frecuentes</h2>
+                                    <p class="text-muted fs-5 mx-auto" style="max-width: 700px;">
+                                        Todo lo que necesitas saber sobre la Especialización en IA.
+                                    </p>
+                                </div>
+
+                                <div class="row justify-content-center">
+                                    <div class="col-lg-10">
+                                        <div class="accordion faq-modern" id="modernFaqAccordion">
+                                            
+                                            <!-- Pregunta 1 -->
+                                            <div class="accordion-item shadow-sm" data-aos="fade-up">
+                                                <h2 class="accordion-header">
+                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#mCollapseOne">
+                                                        ¿Cuál es la duración de la especialización?
+                                                    </button>
+                                                </h2>
+                                                <div id="mCollapseOne" class="accordion-collapse collapse" data-bs-parent="#modernFaqAccordion">
+                                                    <div class="accordion-body py-4 text-muted">
+                                                        El programa está diseñado para completarse en <strong>3 meses</strong>. Las sesiones son intensivas y prácticas, asegurando que puedas aplicar lo aprendido inmediatamente.
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Pregunta 2 -->
+                                            <div class="accordion-item shadow-sm" data-aos="fade-up" data-aos-delay="100">
+                                                <h2 class="accordion-header">
+                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#mCollapseTwo">
+                                                        ¿Necesito conocimientos previos en programación o IA?
+                                                    </button>
+                                                </h2>
+                                                <div id="mCollapseTwo" class="accordion-collapse collapse" data-bs-parent="#modernFaqAccordion">
+                                                    <div class="accordion-body py-4 text-muted">
+                                                        <strong>Absolutamente no.</strong> Esta especialización inicia desde los conceptos más básicos. Está optimizada para contadores y financieros, no para programadores.
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Pregunta 3 -->
+                                            <div class="accordion-item shadow-sm" data-aos="fade-up" data-aos-delay="200">
+                                                <h2 class="accordion-header">
+                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#mCollapseThree">
+                                                        ¿Qué tipo de certificado obtendré al finalizar?
+                                                    </button>
+                                                </h2>
+                                                <div id="mCollapseThree" class="accordion-collapse collapse" data-bs-parent="#modernFaqAccordion">
+                                                    <div class="accordion-body py-4 text-muted">
+                                                        Obtendrás un <strong>Certificado de Especialización</strong> emitido por Global CPA. Este documento cuenta con un código QR único de verificación para validar tu autenticidad ante cualquier empleador.
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Pregunta 4 -->
+                                            <div class="accordion-item shadow-sm" data-aos="fade-up" data-aos-delay="300">
+                                                <h2 class="accordion-header">
+                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#mCollapseFour">
+                                                        ¿Hay opciones de pago a plazos?
+                                                    </button>
+                                                </h2>
+                                                <div id="mCollapseFour" class="accordion-collapse collapse" data-bs-parent="#modernFaqAccordion">
+                                                    <div class="accordion-body py-4 text-muted">
+                                                        Sí, contamos con financiamiento directo. Puedes dividir tu inversión en cuotas mensuales sin intereses bancarios. Consulta con un asesor para armar tu plan.
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="text-center mt-5 p-4 rounded-4" style="background-color: #f8f9fa; border: 1px dashed #dee2e6;">
+                                            <p class="mb-3 fw-bold" style="color: #002060;">¿Aún tienes dudas específicas?</p>
+                                            <a href="https://wa.me/tu-numero" class="btn btn-success rounded-pill px-4 shadow-sm">
+                                                <i class="fa fa-whatsapp me-2"></i> Hablar con un Asesor
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                
+                
+
+
 
 
                 <div class="container-fluid card aos-init aos-animate" data-aos="fade-up">
