@@ -666,6 +666,168 @@
                     </div>
                 </div>
 
+                
+                
+    {{-- Nueva Propuesta: Sección de Testimonios en Carrusel (Opción 6) --}}
+                <div class="container-fluid card aos-animate mt-5" data-aos="fade-up">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card-body p-4 p-lg-5">
+                                <!-- Header de Sección -->
+                                <div class="text-center mb-4">
+                                    <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border"
+                                        style="background-color: rgba(0, 123, 255, 0.05); color: #007bff;">
+                                        <i class="fa fa-quote-right me-1"></i> TESTIMONIOS
+                                    </span>
+                                    <h2 class="fw-bold display-6" style="color: #002060;">Lo que dicen nuestros alumnos</h2>
+                                    <p class="text-muted fs-5 mx-auto" style="max-width: 800px;">
+                                        Historias de éxito que inspiran y demuestran el impacto de nuestra formación.
+                                    </p>
+                                </div>
+
+                                <style>
+                                    .testimonial-carousel-viewport {
+                                        overflow: hidden;
+                                        padding: 20px 0; /* Espacio para sombras */
+                                        position: relative;
+                                        width: 100%;
+                                    }
+
+                                    .testimonial-carousel-track {
+                                        display: flex;
+                                        gap: 30px;
+                                        width: max-content;
+                                        animation: scroll-infinite-testimonials 60s linear infinite; /* Velocidad ajustada */
+                                    }
+
+                                    .testimonial-carousel-track:hover {
+                                        animation-play-state: paused;
+                                    }
+
+                                    @keyframes scroll-infinite-testimonials {
+                                        0% { transform: translateX(0); }
+                                        100% { transform: translateX(calc(-50%)); }
+                                    }
+
+                                    .testimonial-card {
+                                        width: 350px; /* Ancho fijo para las tarjetas de testimonio */
+                                        flex-shrink: 0;
+                                        background: #fff;
+                                        border-radius: 15px;
+                                        padding: 30px;
+                                        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+                                        transition: all 0.3s ease;
+                                        display: flex;
+                                        flex-direction: column;
+                                        justify-content: space-between;
+                                        min-height: 250px; /* Altura mínima para uniformidad */
+                                    }
+
+                                    .testimonial-card:hover {
+                                        transform: translateY(-8px);
+                                        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+                                    }
+
+                                    .testimonial-quote {
+                                        font-size: 1.1rem;
+                                        line-height: 1.6;
+                                        color: #343a40;
+                                        margin-bottom: 20px;
+                                        font-style: italic;
+                                    }
+
+                                    .testimonial-author-info {
+                                        display: flex;
+                                        align-items: center;
+                                        margin-top: auto; /* Empuja la info del autor hacia abajo */
+                                    }
+
+                                    .testimonial-avatar {
+                                        width: 60px;
+                                        height: 60px;
+                                        border-radius: 50%;
+                                        object-fit: cover;
+                                        margin-right: 15px;
+                                        border: 3px solid #007bff;
+                                    }
+
+                                    .testimonial-name {
+                                        font-weight: 700;
+                                        color: #002060;
+                                        font-size: 1rem;
+                                    }
+
+                                    .testimonial-title {
+                                        font-size: 0.85rem;
+                                        color: #6c757d;
+                                    }
+                                </style>
+
+                                <div class="testimonial-carousel-viewport">
+                                    <div class="testimonial-carousel-track">
+                                        @php
+                                            $testimonials = [
+                                                [
+                                                    'quote' => 'La especialización en IA transformó mi forma de trabajar. Ahora puedo automatizar tareas que antes me tomaban horas y enfocarme en el análisis estratégico.',
+                                                    'author' => 'Ana María López',
+                                                    'title' => 'Contadora Senior, Deloitte',
+                                                    'avatar' => 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=2070&auto=format&fit=crop',
+                                                ],
+                                                [
+                                                    'quote' => 'El contenido es de vanguardia y los docentes son expertos reales. Pude aplicar lo aprendido desde la primera semana, generando un impacto directo en mi empresa.',
+                                                    'author' => 'Roberto Carlos Vargas',
+                                                    'title' => 'Gerente de Finanzas, PwC',
+                                                    'avatar' => 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=1974&auto=format&fit=crop',
+                                                ],
+                                                [
+                                                    'quote' => 'Nunca pensé que la IA podría ser tan accesible para el área contable. Este programa me dio las herramientas y la confianza para innovar en mi rol.',
+                                                    'author' => 'Sofía Hernández',
+                                                    'title' => 'Auditora Interna, EY',
+                                                    'avatar' => 'https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=1961&auto=format&fit=crop',
+                                                ],
+                                                [
+                                                    'quote' => 'Una inversión que vale cada centavo. La capacidad de predecir tendencias financieras con IA es un game-changer para cualquier profesional de las finanzas.',
+                                                    'author' => 'Miguel Ángel Quispe',
+                                                    'title' => 'Analista Financiero, KPMG',
+                                                    'avatar' => 'https://images.unsplash.com/photo-1544723795-3fb6469e0453?q=80&w=1974&auto=format&fit=crop',
+                                                ],
+                                                [
+                                                    'quote' => 'La especialización en IA transformó mi forma de trabajar. Ahora puedo automatizar tareas que antes me tomaban horas y enfocarme en el análisis estratégico.',
+                                                    'author' => 'Ana María López',
+                                                    'title' => 'Contadora Senior, Deloitte',
+                                                    'avatar' => 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=2070&auto=format&fit=crop',
+                                                ],
+                                                [
+                                                    'quote' => 'El contenido es de vanguardia y los docentes son expertos reales. Pude aplicar lo aprendido desde la primera semana, generando un impacto directo en mi empresa.',
+                                                    'author' => 'Roberto Carlos Vargas',
+                                                    'title' => 'Gerente de Finanzas, PwC',
+                                                    'avatar' => 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=1974&auto=format&fit=crop',
+                                                ],
+                                            ];
+                                        @endphp
+
+                                        {{-- Duplicamos los testimonios para el efecto de carrusel infinito --}}
+                                        @foreach(array_merge($testimonials, $testimonials) as $testimonial)
+                                            <div class="testimonial-carousel-item">
+                                                <div class="testimonial-card mx-2">
+                                                    <p class="testimonial-quote">"{{ $testimonial['quote'] }}"</p>
+                                                    <div class="testimonial-author-info">
+                                                        <img src="{{ $testimonial['avatar'] }}" alt="{{ $testimonial['author'] }}" class="testimonial-avatar">
+                                                        <div>
+                                                            <h5 class="testimonial-name">{{ $testimonial['author'] }}</h5>
+                                                            <p class="testimonial-title">{{ $testimonial['title'] }}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
 
 
                 <div class="container-fluid card aos-init aos-animate" data-aos="fade-up">
