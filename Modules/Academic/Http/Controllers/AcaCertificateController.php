@@ -69,19 +69,15 @@ class AcaCertificateController extends Controller
             'certificates' => $certificates,
         ]);
     }
-    public function test3()
+    public function test3($id)
     {
-        $certificates = AcaCertificateParameter::with(['course'])
-            ->where('id', 8)->get();
+        $certificate = AcaCertificateParameter::find($id);
 
-        // Formatear la fecha antes de devolver los datos
-        //$certificates->getCollection()->transform(function ($certificate) {
-          //  $certificate->formatted_date = Carbon::parse($certificate->created_at)->format('d/m/Y');
-
-
+        $gradeConfig = AcaCertificateGradeConfig::where('certificate_id', $certificate->id)->first();
 
         return Inertia::render('Academic::Certificates/Test3', [
-            'certificates' => $certificates,
+            'certificate' => $certificate,
+            'gradeConfig' => $gradeConfig,
         ]);
     }
     public function index()
