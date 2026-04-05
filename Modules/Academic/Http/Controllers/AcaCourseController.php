@@ -131,7 +131,6 @@ class AcaCourseController extends Controller
                 'image' => 'required',
                 'modality_id' => 'required',
                 'type_description' => 'required',
-                'certificate_title' => 'required',
             ]
         );
 
@@ -149,7 +148,6 @@ class AcaCourseController extends Controller
             'sector_description' => $request->get('sector_description'),
             'price'                     => $request->get('price') ?? 0,
             'certificate_description'   => trim($request->get('certificate_description')) ?? null,
-            'certificate_title'   => trim($request->get('certificate_title')) ?? null,
             'discount'  => $request->get('discount'),
             'discount_applies'  => $request->get('discount_applies'),
             'auto_certificate'  => $request->get('auto_certificate') ? true : false
@@ -258,7 +256,6 @@ class AcaCourseController extends Controller
                 'category_id' => 'required',
                 'modality_id' => 'required',
                 'type_description' => 'required',
-                'certificate_title' => 'required',
             ]
         );
 
@@ -277,7 +274,6 @@ class AcaCourseController extends Controller
         $course->sector_description = $request->get('sector_description');
         $course->price                   = $request->get('price') ?? 0;
         $course->certificate_description  = trim($request->get('certificate_description')) ?? null;
-        $course->certificate_title  = trim($request->get('certificate_title')) ?? null;
         $course->discount = $request->get('discount') ?? 0;
         $course->discount_applies = $request->get('discount_applies') ?? null;
         $course->auto_certificate = $request->get('auto_certificate') ? true : false;

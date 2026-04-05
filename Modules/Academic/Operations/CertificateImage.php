@@ -42,6 +42,7 @@ class CertificateImage
     public function generate($certificate_id, $type = 'front', $student_id = null, $course_id = null, $module_id = null)
     {
         // Inicializar propiedades
+        //dd($course_id);
         $this->type = $type;
         $this->module_id = $module_id;
         $this->student_id = $student_id;
@@ -665,7 +666,7 @@ class CertificateImage
             $module = AcaModule::with('course')->find($this->module_id);
 
             if ($module && $module->course) {
-                $courseName = $module->course->certificate_title ?? 'Curso';
+                $courseName = $module->course->description ?? 'Curso';
                 $moduleName = $module->description ?? 'Módulo';
 
                 return "Curso: {$courseName} - Módulo: {$moduleName}";
@@ -676,7 +677,7 @@ class CertificateImage
         if ($this->course_id) {
             $course = AcaCourse::find($this->course_id);
             if ($course) {
-                return $course->certificate_title ?? $defaultTitle;
+                return $course->description ?? $defaultTitle;
             }
         }
 
