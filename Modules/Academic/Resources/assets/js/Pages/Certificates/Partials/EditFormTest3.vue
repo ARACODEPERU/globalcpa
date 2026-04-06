@@ -15,6 +15,7 @@ import iconQrcode from '@/Components/vristo/icon/icon-qrcode.vue';
 import iconInfoCircleTwo from '@/Components/vristo/icon/icon-info-circle-two.vue';
 import switchMobinkakei from '@/Components/switch/switch-mobinkakei.vue';
 import { Stage, Layer, Image as KonvaImage, Text, Rect, Group, Transformer } from 'vue-konva';
+import QRCode from 'qrcode';
 
 const props = defineProps({
     certificate: {
@@ -81,6 +82,32 @@ const activeTab = ref('front');
 const backgroundImage = ref(null);
 const backBackgroundImage = ref(null);
 const qrImage = ref(null);
+const qrImageElement = ref(null);
+const backQrImageElement = ref(null);
+
+const generateQrCode = async (url, side = 'front') => {
+    if (!url || !url.trim()) {
+        if (side === 'front') qrImageElement.value = null;
+        else backQrImageElement.value = null;
+        return;
+    }
+    try {
+        const dataUrl = await QRCode.toDataURL(url.trim(), {
+            width: 512,
+            margin: 1,
+            color: { dark: '#000000ff', light: '#ffffffff' },
+            errorCorrectionLevel: 'M'
+        });
+        const img = new Image();
+        img.onload = () => {
+            if (side === 'front') qrImageElement.value = img;
+            else backQrImageElement.value = img;
+        };
+        img.src = dataUrl;
+    } catch (err) {
+        console.error('Error generando QR:', err);
+    }
+};
 const isLoadingImages = ref(false);
 const isSavingAll = ref(false);
 
@@ -261,7 +288,7 @@ const backElements = ref({
         contentType: 'list'
     },
     qr: {
-        visible: false,
+        visible: true,
         x: 0,
         y: 0,
         size: 100,
@@ -316,6 +343,7 @@ const form = useForm({
     position_qr_y: props.certificate.position_qr_y,
     size_qr: props.certificate.size_qr,
     font_align_qr: props.certificate.font_align_qr,
+    qr_url: 'https://academy.globalcpaperu.com/academy',
     fontfamily_description: normalizeFontName(props.certificate.fontfamily_description) || 'Poppins',
     font_align_description: props.certificate.font_align_description,
     font_vertical_align_description: props.certificate.font_vertical_align_description,
@@ -403,6 +431,7 @@ const form = useForm({
     back_position_qr_x: props.certificate.back_position_qr_x ?? 600,
     back_position_qr_y: props.certificate.back_position_qr_y ?? 100,
     back_visible_qr: props.certificate.back_visible_qr == 1 ? true : false,
+    back_qr_url: 'https://academy.globalcpaperu.com',
     back_fontfamily_grade: normalizeFontName(props.gradeConfig?.back_fontfamily_grade) || 'Montserrat',
     back_font_size_grade: props.gradeConfig?.back_font_size_grade,
     back_color_grade: props.gradeConfig?.back_color_grade ?? '#000000',
@@ -989,6 +1018,9 @@ watch(() => [
     form.visible_image_qr, form.position_qr_x, form.position_qr_y, form.size_qr, form.font_align_qr
 ], () => syncFrontElementsWithForm());
 
+watch(() => form.qr_url, (url) => generateQrCode(url, 'front'));
+watch(() => form.back_qr_url, (url) => generateQrCode(url, 'back'));
+
 watch(() => [
     form.back_visible_date, form.back_position_date_x, form.back_position_date_y,
     form.back_font_size_date, form.back_fontfamily_date, form.back_font_align_date,
@@ -1051,6 +1083,9 @@ onMounted(async () => {
         const backUrl = getImage(form.back_certificate_img);
         await loadBackgroundImage(backUrl, true);
     }
+
+    if (form.qr_url) generateQrCode(form.qr_url, 'front');
+    if (form.back_qr_url) generateQrCode(form.back_qr_url, 'back');
 
     await waitForFonts();
     refreshStage();
@@ -1380,6 +1415,12 @@ onMounted(async () => {
                             <vue-collapsible :isOpen="accordians3 === 4">
                                 <div class="p-4 text-white-dark text-[13px] border-t border-[#d3d3d3] dark:border-[#1b2e4b]">
                                     <div class="grid grid-cols-4 gap-4">
+                                        <div class="col-span-4">
+                                            <InputLabel for="qr_url">Enlace del QR</InputLabel>
+                                            <TextInput type="url" v-model="form.qr_url" placeholder="https://ejemplo.com" class="w-full" />
+                                            <p v-if="form.qr_url && !qrImageElement" class="text-xs text-yellow-500 mt-1">Generando QR…</p>
+                                            <p v-if="qrImageElement" class="text-xs text-success mt-1">✓ QR generado correctamente</p>
+                                        </div>
                                         <div class="col-span-2">
                                             <InputLabel for="size_qr">Tamaño</InputLabel>
                                             <TextInput type="number" v-model.number="form.size_qr" />
@@ -2002,6 +2043,12 @@ onMounted(async () => {
                                 <vue-collapsible :isOpen="accordians3 === 27">
                                     <div class="p-4 border-t">
                                         <div class="grid grid-cols-4 gap-4">
+                                            <div class="col-span-4">
+                                                <InputLabel>Enlace del QR</InputLabel>
+                                                <TextInput type="url" v-model="form.back_qr_url" placeholder="https://ejemplo.com" class="w-full" />
+                                                <p v-if="form.back_qr_url && !backQrImageElement" class="text-xs text-yellow-500 mt-1">Generando QR…</p>
+                                                <p v-if="backQrImageElement" class="text-xs text-success mt-1">✓ QR generado correctamente</p>
+                                            </div>
                                             <div class="col-span-2">
                                                 <InputLabel>Tamaño</InputLabel>
                                                 <TextInput type="number" v-model.number="form.back_size_qr" />
@@ -2294,6 +2341,20 @@ onMounted(async () => {
                                         onDragEnd: (e) => handleDragEnd('description', 'front', e)
                                     }"
                                 />
+
+                                <!-- QR Code anverso -->
+                                <v-image
+                                    v-if="frontElements.qr.visible && qrImageElement"
+                                    :config="{
+                                        image: qrImageElement,
+                                        x: frontElements.qr.x,
+                                        y: frontElements.qr.y,
+                                        width: Number(frontElements.qr.size),
+                                        height: Number(frontElements.qr.size),
+                                        draggable: true,
+                                        onDragEnd: (e) => handleDragEnd('qr', 'front', e)
+                                    }"
+                                />
                             </template>
 
                             <!-- Elementos del REVERSO -->
@@ -2428,6 +2489,20 @@ onMounted(async () => {
                                         }"
                                     />
                                 </template>
+
+                                <!-- QR Code reverso -->
+                                <v-image
+                                    v-if="backElements.qr.visible && backQrImageElement"
+                                    :config="{
+                                        image: backQrImageElement,
+                                        x: backElements.qr.x,
+                                        y: backElements.qr.y,
+                                        width: Number(backElements.qr.size),
+                                        height: Number(backElements.qr.size),
+                                        draggable: true,
+                                        onDragEnd: (e) => handleDragEnd('qr', 'back', e)
+                                    }"
+                                />
                             </template>
                         </v-layer>
                     </v-stage>
