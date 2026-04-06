@@ -99,21 +99,18 @@
                             <div class="row align-items-center">
                                 <div class="col-lg-8">
                                     <div class="d-flex align-items-center mb-3">
-                                        <span class="badge bg-warning text-dark me-2">Texto</span>
+                                        <span class="badge bg-warning text-dark me-2">Categoria</span>
                                         <div class="text-warning small">
                                             <i class="fa fa-star"></i>
                                             <i class="fa fa-star"></i>
                                             <i class="fa fa-star"></i>
                                             <i class="fa fa-star"></i>
                                             <i class="fa fa-star-half-o"></i>
-
-                                            <span class="text-white ms-1">(4.8/5 de {{ rand(30, 120) }} alumnos
-                                                activos)</span>
                                         </div>
                                     </div>
                                     <h1 class="display-5 fw-bold mb-3" style="color: #fff;">
-                                        Especialización en Inteligencia
-                                        Artificial aplicada a la Contabilidad y Finanzas
+                                        Título del curso, programa y/o 
+                                        especialización
                                     </h1>
 
                                     <div class="d-flex align-items-center text-white-50">
@@ -144,11 +141,12 @@
                                         style="color: #002060 !important;">
                                         <i class="fa fa-refresh me-1"></i> ACTUALIZACIÓN PROFESIONAL
                                     </span>
-                                    <h2 class="fw-bold display-6" style="color: #002060;">Lidera la era de la Contabilidad
-                                        Inteligente</h2>
-                                    <p class="text-muted fs-5">No solo aprendas a usar herramientas; domina la estrategia
-                                        detrás de la Inteligencia Artificial para convertirte en un asesor financiero de
-                                        alto valor.</p>
+                                    <h2 class="fw-bold display-6" style="color: #002060;">
+                                        Título de Sección
+                                    </h2>
+                                    <p class="text-muted fs-5">
+                                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Et ducimus aliquam numquam officiis minus obcaecati quod velit, exercitationem voluptatum doloribus eligendi vel deserunt modi quia, odio quasi voluptates. Saepe, praesentium.
+                                    </p>
                                 </div>
 
                                 <div class="row g-4 mt-2">
