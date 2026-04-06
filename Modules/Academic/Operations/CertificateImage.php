@@ -42,7 +42,6 @@ class CertificateImage
     public function generate($certificate_id, $type = 'front', $student_id = null, $course_id = null, $module_id = null)
     {
         // Inicializar propiedades
-        //dd($course_id);
         $this->type = $type;
         $this->module_id = $module_id;
         $this->student_id = $student_id;
