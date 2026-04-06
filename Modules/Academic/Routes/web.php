@@ -301,17 +301,18 @@ Route::middleware(['auth', 'verified', 'invalid_updated_information', 'user_acti
     Route::post('subscriptions/student/expired/expiring', [AcaStudentController::class, 'getSubscriptionStatuses'])
         ->name('aca_subscriptions_expired_expiring');
 
+    // ////////////fin de suscripciones
         /////////prueba de imagen en vuejs certificado
 
 
-    Route::get('test', [AcaCertificateController::class, 'test'])
-    ->name('test');
-    Route::get('test2', [AcaCertificateController::class, 'test2'])
-    ->name('test2');
-    Route::get('test3/{id}', [AcaCertificateController::class, 'test3'])
-    ->name('test3');
-
-    // ////////////fin de suscripciones
+        Route::get('test', [AcaCertificateController::class, 'test'])
+        ->name('test');
+        Route::get('test2', [AcaCertificateController::class, 'test2'])
+        ->name('test2');
+        Route::get('test3/{id}', [AcaCertificateController::class, 'test3'])
+        ->name('test3');
+        Route::post('certificate/update/info/test3', [AcaCertificateController::class, 'updateInfoTest3'])
+            ->name('aca_certificate_update_infoTest3');
 
     Route::get('certificate/list', [AcaCertificateController::class, 'index'])
         ->name('aca_certificate_list');

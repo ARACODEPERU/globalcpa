@@ -1035,4 +1035,288 @@ class AcaCertificateController extends Controller
 
         return response()->json(['success' => false]);
     }
+
+    public function updateInfoTest3(Request $request)
+    {
+        $certificate = new CertificateImage;
+        $id = $request->get('id');
+
+        $acaCertificate = AcaCertificateParameter::find($id);
+
+        if (! $acaCertificate) {
+            return response()->json(['error' => 'Certificado no encontrado con ID: '.$id], 404);
+        }
+
+        // dd($request->all());
+        switch ($request->get('action_type')) {
+            case 1:
+                $acaCertificate->fontfamily_date = $request->get('fontfamily_date');
+                $acaCertificate->font_size_date = $request->get('font_size_date');
+                $acaCertificate->font_align_date = $request->get('font_align_date');
+                $acaCertificate->font_vertical_align_date = $request->get('font_vertical_align_date');
+                $acaCertificate->position_date_x = $request->get('position_date_x');
+                $acaCertificate->position_date_y = $request->get('position_date_y');
+                $acaCertificate->color_date = $request->get('color_date');
+                $acaCertificate->visible_date = $request->get('visible_date');
+                break;
+            case 2:
+                $acaCertificate->fontfamily_names = $request->get('fontfamily_names');
+                $acaCertificate->font_align_names = $request->get('font_align_names');
+                $acaCertificate->font_vertical_align_names = $request->get('font_vertical_align_names');
+                $acaCertificate->position_names_x = $request->get('position_names_x');
+                $acaCertificate->position_names_y = $request->get('position_names_y');
+                $acaCertificate->font_size_names = $request->get('font_size_names');
+                $acaCertificate->color_names = $request->get('color_names');
+                $acaCertificate->visible_names = $request->get('visible_names');
+                break;
+            case 3:
+                $acaCertificate->fontfamily_title = $request->get('fontfamily_title');
+                $acaCertificate->font_align_title = $request->get('font_align_title');
+                $acaCertificate->font_vertical_align_title = $request->get('font_vertical_align_title');
+                $acaCertificate->position_title_x = $request->get('position_title_x');
+                $acaCertificate->position_title_y = $request->get('position_title_y');
+                $acaCertificate->font_size_title = $request->get('font_size_title');
+                $acaCertificate->max_width_title = $request->get('max_width_title');
+                $acaCertificate->color_title = $request->get('color_title');
+                $acaCertificate->visible_title = $request->get('visible_title');
+                break;
+            case 4:
+                $acaCertificate->position_qr_x = $request->get('position_qr_x');
+                $acaCertificate->position_qr_y = $request->get('position_qr_y');
+                $acaCertificate->size_qr = $request->get('size_qr');
+                $acaCertificate->font_align_qr = $request->get('font_align_qr');
+                $acaCertificate->visible_image_qr = $request->get('visible_image_qr');
+                break;
+            case 5:
+                $acaCertificate->fontfamily_description = $request->get('fontfamily_description');
+                $acaCertificate->font_align_description = $request->get('font_align_description');
+                $acaCertificate->font_vertical_align_description = $request->get('font_vertical_align_description');
+                $acaCertificate->position_description_x = $request->get('position_description_x');
+                $acaCertificate->position_description_y = $request->get('position_description_y');
+                $acaCertificate->font_size_description = $request->get('font_size_description');
+                $acaCertificate->max_width_description = $request->get('max_width_description');
+                $acaCertificate->text_align_description = $request->get('text_align_description');
+                $acaCertificate->interspace_description = $request->get('interspace_description') ?? null;
+                $acaCertificate->color_description = $request->get('color_description');
+                $acaCertificate->visible_description = $request->get('visible_description');
+                break;
+                // Cases para el reverso
+            case 6:
+                // Configuración de fecha del reverso
+                $acaCertificate->back_fontfamily_date = $request->get('back_fontfamily_date');
+                $acaCertificate->back_font_align_date = $request->get('back_font_align_date');
+                $acaCertificate->back_font_vertical_align_date = $request->get('back_font_vertical_align_date');
+                $acaCertificate->back_position_date_x = $request->get('back_position_date_x');
+                $acaCertificate->back_position_date_y = $request->get('back_position_date_y');
+                $acaCertificate->back_font_size_date = $request->get('back_font_size_date');
+                $acaCertificate->back_color_date = $request->get('back_color_date');
+                $acaCertificate->back_visible_date = $request->get('back_visible_date');
+                break;
+            case 7:
+                // Configuración de nombres del reverso
+                $acaCertificate->back_fontfamily_names = $request->get('back_fontfamily_names');
+                $acaCertificate->back_font_align_names = $request->get('back_font_align_names');
+                $acaCertificate->back_font_vertical_align_names = $request->get('back_font_vertical_align_names');
+                $acaCertificate->back_position_names_x = $request->get('back_position_names_x');
+                $acaCertificate->back_position_names_y = $request->get('back_position_names_y');
+                $acaCertificate->back_font_size_names = $request->get('back_font_size_names');
+                $acaCertificate->back_color_names = $request->get('back_color_names');
+                $acaCertificate->back_visible_names = $request->get('back_visible_names');
+                break;
+            case 8:
+                // Configuración de título del reverso
+                $acaCertificate->back_fontfamily_title = $request->get('back_fontfamily_title');
+                $acaCertificate->back_font_align_title = $request->get('back_font_align_title');
+                $acaCertificate->back_font_vertical_align_title = $request->get('back_font_vertical_align_title');
+                $acaCertificate->back_position_title_x = $request->get('back_position_title_x');
+                $acaCertificate->back_position_title_y = $request->get('back_position_title_y');
+                $acaCertificate->back_font_size_title = $request->get('back_font_size_title');
+                $acaCertificate->back_max_width_title = $request->get('back_max_width_title');
+                $acaCertificate->back_color_title = $request->get('back_color_title');
+                $acaCertificate->back_visible_title = $request->get('back_visible_title');
+                break;
+            case 9:
+                // Configuración de descripción del reverso
+                $acaCertificate->back_description = $request->get('back_description');
+                $acaCertificate->back_fontfamily_description = $request->get('back_fontfamily_description');
+                $acaCertificate->back_font_align_description = $request->get('back_font_align_description');
+                $acaCertificate->back_font_vertical_align_description = $request->get('back_font_vertical_align_description');
+                $acaCertificate->back_position_description_x = $request->get('back_position_description_x');
+                $acaCertificate->back_position_description_y = $request->get('back_position_description_y');
+                $acaCertificate->back_font_size_description = $request->get('back_font_size_description');
+                $acaCertificate->back_max_width_description = $request->get('back_max_width_description');
+                $acaCertificate->back_text_align_description = $request->get('back_text_align_description');
+                $acaCertificate->back_color_description = $request->get('back_color_description');
+                $acaCertificate->back_visible_description = $request->get('back_visible_description');
+                break;
+            case 10:
+                // Contenido del reverso y campos generales
+                $acaCertificate->back_description = $request->get('back_description');
+                $acaCertificate->back_content_show_manual = $request->get('back_content_show_manual') ? true : false;
+                $acaCertificate->back_content_show_course = $request->get('back_content_show_course') ? true : false;
+                $acaCertificate->back_content_show_module = $request->get('back_content_show_module') ? true : false;
+                $acaCertificate->for_module = $request->get('for_module') ? true : false;
+                break;
+            case 12:
+                // Contenido del curso del reverso
+                $acaCertificate->back_fontfamily_course = $request->get('back_fontfamily_course');
+                $acaCertificate->back_font_align_course = $request->get('back_font_align_course');
+                $acaCertificate->back_font_vertical_align_course = $request->get('back_font_vertical_align_course');
+                $acaCertificate->back_position_course_x = $request->get('back_position_course_x');
+                $acaCertificate->back_position_course_y = $request->get('back_position_course_y');
+                $acaCertificate->back_font_size_course = $request->get('back_font_size_course');
+                $acaCertificate->back_max_width_course = $request->get('back_max_width_course');
+                $acaCertificate->back_color_course = $request->get('back_color_course');
+                $acaCertificate->back_visible_course = $request->get('back_visible_course') ? true : false;
+                $acaCertificate->back_content_type = $request->get('back_content_type');
+
+                // Guardar opciones de contenido en grade_config
+                $grade_id = $request->get('grade_id');
+                $gradeConfig = AcaCertificateGradeConfig::updateOrCreate(
+                    ['id' => $grade_id],
+                    [
+                        'certificate_id' => $id,
+                        'back_show_exam_grade' => $request->get('back_show_exam_grade') ? true : false,
+                        'back_show_themes' => $request->get('back_show_themes') ? true : false,
+                        'back_exam_fontfamily' => $request->get('back_exam_fontfamily'),
+                        'back_exam_font_size' => $request->get('back_exam_font_size'),
+                        'back_exam_color' => $request->get('back_exam_color') ?? '#000000',
+                    ]
+                );
+                break;
+            case 13:
+                // Contenido del módulo del reverso
+                $acaCertificate->back_fontfamily_module = $request->get('back_fontfamily_module');
+                $acaCertificate->back_font_align_module = $request->get('back_font_align_module');
+                $acaCertificate->back_font_vertical_align_module = $request->get('back_font_vertical_align_module');
+                $acaCertificate->back_position_module_x = $request->get('back_position_module_x');
+                $acaCertificate->back_position_module_y = $request->get('back_position_module_y');
+                $acaCertificate->back_font_size_module = $request->get('back_font_size_module');
+                $acaCertificate->back_max_width_module = $request->get('back_max_width_module');
+                $acaCertificate->back_color_module = $request->get('back_color_module');
+                $acaCertificate->back_visible_module = $request->get('back_visible_module') ? true : false;
+                $acaCertificate->back_content_type_module = $request->get('back_content_type_module');
+                break;
+            case 14:
+                // QR del reverso
+                // dd($request->get('back_size_qr'));
+                $acaCertificate->back_size_qr = $request->get('back_size_qr');
+                $acaCertificate->back_font_align_qr = $request->get('back_font_align_qr');
+                $acaCertificate->back_position_qr_x = $request->get('back_position_qr_x');
+                $acaCertificate->back_position_qr_y = $request->get('back_position_qr_y');
+                $acaCertificate->back_visible_qr = $request->get('back_visible_qr') ? true : false;
+                break;
+            case 15:
+                // Nota Final (PROMEDIO FINAL) - guardar en tabla relacionada
+                $grade_id = $request->get('grade_id');
+                $gradeConfig = AcaCertificateGradeConfig::updateOrCreate(
+                    ['id' => $grade_id],
+                    [
+                        'certificate_id' => $id,
+                        'back_fontfamily_grade' => $request->get('back_fontfamily_grade'),
+                        'back_font_size_grade' => $request->get('back_font_size_grade'),
+                        'back_color_grade' => $request->get('back_color_grade'),
+                        'back_position_grade_x' => $request->get('back_position_grade_x'),
+                        'back_position_grade_y' => $request->get('back_position_grade_y'),
+                        'back_visible_grade' => $request->get('back_visible_grade') ? true : false,
+                        'back_rectangle_width' => $request->get('back_rectangle_width') ?? 100,
+                        'back_rectangle_height' => $request->get('back_rectangle_height') ?? 100,
+                        'back_rectangle_color' => $request->get('back_rectangle_color') ?? '#000000',
+                    ]
+                );
+                break;
+            case 16:
+                // Opciones de contenido del curso (exam grade y themes)
+                $grade_id = $request->get('grade_id');
+                $gradeConfig = AcaCertificateGradeConfig::updateOrCreate(
+                    ['id' => $grade_id],
+                    [
+                        'certificate_id' => $id,
+                        'back_show_exam_grade' => $request->get('back_show_exam_grade') ? true : false,
+                        'back_show_themes' => $request->get('back_show_themes') ? true : false,
+                    ]
+                );
+                break;
+            case 17:
+                // Configuración de fuente para nota de examen
+                $grade_id = $request->get('grade_id');
+                $gradeConfig = AcaCertificateGradeConfig::updateOrCreate(
+                    ['id' => $grade_id],
+                    [
+                        'certificate_id' => $id,
+                        'back_exam_fontfamily' => $request->get('back_exam_fontfamily'),
+                        'back_exam_font_size' => $request->get('back_exam_font_size'),
+                        'back_exam_color' => $request->get('back_exam_color') ?? '#000000',
+                    ]
+                );
+                break;
+            case 98:
+                // Manejo de imagen del reverso
+                if ($request->hasFile('back_certificate_img')) {
+                    $destination = $this->directory;
+                    $file = $request->file('back_certificate_img');
+                    $original_name = date('YmdHis').'_back';
+                    $extension = $file->getClientOriginalExtension();
+                    $file_name = $original_name.'.'.$extension;
+                    $backPath = $file->storeAs($destination, $file_name, 'public');
+                    $acaCertificate->back_certificate_img = $backPath;
+                }
+                break;
+            default:
+                if ($request->get('state')) {
+                    if ($acaCertificate->course_id) {
+                        AcaCertificateParameter::where('course_id', $request->get('course_id'))->update([
+                            'state' => false,
+                        ]);
+                    } else {
+                        AcaCertificateParameter::whereNull('course_id')->update([
+                            'state' => false,
+                        ]);
+                    }
+                }
+                $acaCertificate->state = $request->get('state') ? true : false;
+                $acaCertificate->for_module = $request->get('for_module') ? true : false;
+                $acaCertificate->has_reverse = $request->get('has_reverse') ? true : false;
+                break;
+        }
+
+        $acaCertificate->save();
+
+        // $fullPath = null;
+
+        // // Generar imagen para anverso (cases 1-5) y reverso (cases 6-9, 12, 13, 14, 15)
+        // $generateForFront = in_array($request->get('action_type'), [1, 2, 3, 4, 5]);
+        // $generateForBack = in_array($request->get('action_type'), [6, 7, 8, 9, 12, 13, 14, 15]);
+
+        // if ($generateForFront) {
+        //     $imagen = $certificate->generate($id, 'front');
+
+        //     $carpeta = $this->directory.DIRECTORY_SEPARATOR.'parameters/forward';
+        //     $barios = new Barios;
+        //     $barios->deleteFilesSubfoldersPath($carpeta);
+        //     $path = $carpeta.DIRECTORY_SEPARATOR.date('YmdHis').'.png';
+        //     Storage::disk('public')->put($path, $imagen);
+
+        //     $fullPath = Storage::disk('public')->url($path);
+        //     $acaCertificate->certificate_img_finished = $path;
+        //     $acaCertificate->save();
+        // } elseif ($generateForBack) {
+
+        //     $imagen = $certificate->generate($id, 'back');
+
+        //     $carpeta = $this->directory.DIRECTORY_SEPARATOR.'parameters/back';
+        //     // NO eliminamos archivos existentes para no borrar la imagen del anverso
+        //     $path = $carpeta.DIRECTORY_SEPARATOR.date('YmdHis').'_back.png';
+        //     Storage::disk('public')->put($path, $imagen);
+
+        //     $fullPath = Storage::disk('public')->url($path);
+        //     $acaCertificate->back_certificate_img_finished = $path;
+        //     $acaCertificate->save();
+        // }
+
+        // return response()->json([
+        //     'success' => true,
+        //     'image' => $fullPath,
+        // ]);
+    }
 }
