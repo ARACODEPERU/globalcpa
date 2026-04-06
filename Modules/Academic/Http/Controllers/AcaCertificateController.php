@@ -45,7 +45,8 @@ class AcaCertificateController extends Controller
     public function test()
     {
         $certificates = AcaCertificateParameter::with(['course'])
-        ->where('id',8)->get();
+            ->whereNotNull('course_id')
+            ->get();
 
         return Inertia::render('Academic::Certificates/Test', [
             'certificates' => $certificates,
