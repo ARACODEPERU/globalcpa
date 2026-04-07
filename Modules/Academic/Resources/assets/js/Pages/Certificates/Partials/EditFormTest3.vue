@@ -15,6 +15,7 @@ import iconQrcode from '@/Components/vristo/icon/icon-qrcode.vue';
 import iconInfoCircleTwo from '@/Components/vristo/icon/icon-info-circle-two.vue';
 import switchMobinkakei from '@/Components/switch/switch-mobinkakei.vue';
 import { Stage, Layer, Image as KonvaImage, Text, Rect, Group, Transformer } from 'vue-konva';
+import QRCode from 'qrcode';
 
 const props = defineProps({
     certificate: {
@@ -34,7 +35,6 @@ const getImage = (path) => {
 };
 
 // Free Google Fonts available (loaded via Google Fonts CDN)
-// These font names can be used directly in Konva since the browser loads them
 const availableFonts = [
     { label: 'Pacifico (caligrafía)', value: 'Pacifico' },
     { label: 'Dancing Script (cursiva)', value: 'Dancing Script' },
@@ -58,7 +58,6 @@ const availableFonts = [
     { label: 'Source Serif 4 (lectura)', value: 'Source Serif 4' },
 ];
 
-// Normalize legacy .ttf font names to Google Fonts family names
 const normalizeFontName = (font) => {
     if (!font) return 'Poppins';
     const map = {
@@ -75,25 +74,52 @@ const normalizeFontName = (font) => {
     return map[font] || font;
 };
 
-// Referencias para Konva
 const stageRef = ref(null);
 const transformerRef = ref(null);
 const selectedElement = ref(null);
 const activeTab = ref('front');
 
-// Imágenes cargadas
 const backgroundImage = ref(null);
 const backBackgroundImage = ref(null);
 const qrImage = ref(null);
+const qrImageElement = ref(null);
+const backQrImageElement = ref(null);
+
+const generateQrCode = async (url, side = 'front') => {
+    if (!url || !url.trim()) {
+        if (side === 'front') qrImageElement.value = null;
+        else backQrImageElement.value = null;
+        return;
+    }
+    try {
+        const dataUrl = await QRCode.toDataURL(url.trim(), {
+            width: 512,
+            margin: 1,
+            color: { dark: '#000000ff', light: '#ffffffff' },
+            errorCorrectionLevel: 'M'
+        });
+        const img = new Image();
+        img.onload = () => {
+            if (side === 'front') qrImageElement.value = img;
+            else backQrImageElement.value = img;
+        };
+        img.src = dataUrl;
+    } catch (err) {
+        console.error('Error generando QR:', err);
+    }
+};
 const isLoadingImages = ref(false);
-const isGeneratingPreview = ref(false);
 const isSavingAll = ref(false);
 
-// Dimensiones del canvas
+const gradeRectSize = computed(() => {
+    const fs = Number(backElements.value?.grade?.fontSize) || 20;
+    const padding = fs * 1.2;
+    return { w: Math.round(fs * 2.5 + padding), h: Math.round(fs + padding) };
+});
+
 const stageWidth = ref(800);
 const stageHeight = ref(600);
 
-// Datos de ejemplo para previsualización
 const previewData = {
     studentName: 'Juan Pérez García',
     currentDate: new Date().toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' }),
@@ -103,7 +129,6 @@ const previewData = {
     certificateNumber: 'CERT-001-2024'
 };
 
-// Elementos dinámicos del certificado ANVERSO
 const frontElements = ref({
     date: {
         text: previewData.currentDate,
@@ -149,7 +174,7 @@ const frontElements = ref({
         originalY: 0
     },
     description: {
-        text: 'Por haber completado satisfactoriamente el curso',
+        text: 'Este certificado acredita que el estudiante ha completado con éxito todas las unidades modulares y evaluaciones del curso, demostrando un dominio avanzado de las competencias técnicas y prácticas exigidas. Se otorga como reconocimiento oficial a su compromiso académico y a su capacidad para aplicar estos conocimientos en entornos profesionales de alta exigencia.',
         visible: true,
         x: 0,
         y: 0,
@@ -175,7 +200,6 @@ const frontElements = ref({
     }
 });
 
-// Elementos dinámicos del certificado REVERSO
 const backElements = ref({
     date: {
         text: previewData.currentDate,
@@ -270,7 +294,7 @@ const backElements = ref({
         contentType: 'list'
     },
     qr: {
-        visible: false,
+        visible: true,
         x: 0,
         y: 0,
         size: 100,
@@ -325,6 +349,7 @@ const form = useForm({
     position_qr_y: props.certificate.position_qr_y,
     size_qr: props.certificate.size_qr,
     font_align_qr: props.certificate.font_align_qr,
+    qr_url: 'https://academy.globalcpaperu.com/academy',
     fontfamily_description: normalizeFontName(props.certificate.fontfamily_description) || 'Poppins',
     font_align_description: props.certificate.font_align_description,
     font_vertical_align_description: props.certificate.font_vertical_align_description,
@@ -412,6 +437,7 @@ const form = useForm({
     back_position_qr_x: props.certificate.back_position_qr_x ?? 600,
     back_position_qr_y: props.certificate.back_position_qr_y ?? 100,
     back_visible_qr: props.certificate.back_visible_qr == 1 ? true : false,
+    back_qr_url: 'https://academy.globalcpaperu.com',
     back_fontfamily_grade: normalizeFontName(props.gradeConfig?.back_fontfamily_grade) || 'Montserrat',
     back_font_size_grade: props.gradeConfig?.back_font_size_grade,
     back_color_grade: props.gradeConfig?.back_color_grade ?? '#000000',
@@ -431,16 +457,13 @@ const form = useForm({
 const isShowChatMenu = ref(false);
 const accordians3 = ref(0);
 
-// Cargar Google Fonts dinámicamente
 const loadGoogleFonts = () => {
-    const fontFamilies = availableFonts.map(f => f.value.replace(/ /g, '+')).join('|');
     const link = document.createElement('link');
     link.rel = 'stylesheet';
     link.href = `https://fonts.googleapis.com/css2?family=${availableFonts.map(f => f.value.replace(/ /g, '+') + ':wght@400;700').join('&family=')}&display=swap`;
     document.head.appendChild(link);
 };
 
-// Esperar a que las fuentes carguen antes de renderizar Konva
 const fontsLoaded = ref(false);
 const waitForFonts = async () => {
     try {
@@ -451,13 +474,11 @@ const waitForFonts = async () => {
     }
 };
 
-// Forzar re-render del stage cuando cambian las fuentes
 const stageKey = ref(0);
 const refreshStage = () => {
     stageKey.value++;
 };
 
-// Sincronizar elementos del anverso con el formulario
 const syncFrontElementsWithForm = () => {
     frontElements.value.date.visible = form.visible_date;
     frontElements.value.date.x = parseFloat(form.position_date_x) || 0;
@@ -516,7 +537,6 @@ const syncFrontElementsWithForm = () => {
     nextTick(() => refreshStage());
 };
 
-// Sincronizar elementos del reverso con el formulario
 const syncBackElementsWithForm = () => {
     backElements.value.date.visible = form.back_visible_date;
     backElements.value.date.x = parseFloat(form.back_position_date_x) || 0;
@@ -602,7 +622,6 @@ const syncBackElementsWithForm = () => {
     nextTick(() => refreshStage());
 };
 
-// Generar contenido de ejemplo para el curso
 const generateCourseContent = () => {
     if (form.for_module) return '';
 
@@ -621,7 +640,6 @@ const generateCourseContent = () => {
     return content;
 };
 
-// Generar contenido de ejemplo para el módulo
 const generateModuleContent = () => {
     if (!form.for_module) return '';
 
@@ -632,7 +650,6 @@ const generateModuleContent = () => {
     }
 };
 
-// Actualizar formulario desde elementos del anverso
 const updateFormFromFrontElements = () => {
     form.position_date_x = Math.round(frontElements.value.date.x);
     form.position_date_y = Math.round(frontElements.value.date.y);
@@ -655,7 +672,6 @@ const updateFormFromFrontElements = () => {
     form.visible_image_qr = frontElements.value.qr.visible;
 };
 
-// Actualizar formulario desde elementos del reverso
 const updateFormFromBackElements = () => {
     form.back_position_date_x = Math.round(backElements.value.date.x);
     form.back_position_date_y = Math.round(backElements.value.date.y);
@@ -688,18 +704,28 @@ const updateFormFromBackElements = () => {
     form.back_position_grade_x = Math.round(backElements.value.grade.x);
     form.back_position_grade_y = Math.round(backElements.value.grade.y);
     form.back_visible_grade = backElements.value.grade.visible;
+    form.back_rectangle_width = gradeRectSize.value.w;
+    form.back_rectangle_height = gradeRectSize.value.h;
 };
 
-// Cargar imagen de fondo
 const loadBackgroundImage = async (imageUrl, isBack = false) => {
+    const currentImg = isBack ? backBackgroundImage.value : backgroundImage.value;
+    if (currentImg?.src === imageUrl) {
+        return currentImg;
+    }
+
     isLoadingImages.value = true;
+
     return new Promise((resolve) => {
         const img = new window.Image();
         img.crossOrigin = 'Anonymous';
+
         img.onload = () => {
             if (!isBack) {
-                stageWidth.value = img.width;
-                stageHeight.value = img.height;
+                if (!backgroundImage.value) {
+                    stageWidth.value = img.width;
+                    stageHeight.value = img.height;
+                }
                 backgroundImage.value = img;
             } else {
                 backBackgroundImage.value = img;
@@ -707,16 +733,17 @@ const loadBackgroundImage = async (imageUrl, isBack = false) => {
             isLoadingImages.value = false;
             resolve(img);
         };
+
         img.onerror = () => {
             console.error('Error loading background image', imageUrl);
             isLoadingImages.value = false;
             resolve(null);
         };
+
         img.src = imageUrl;
     });
 };
 
-// Manejar arrastre de elementos
 const handleDragEnd = (elementType, side, event) => {
     const newX = event.target.x();
     const newY = event.target.y();
@@ -746,7 +773,6 @@ const handleDragEnd = (elementType, side, event) => {
     });
 };
 
-// Obtener datos planos del formulario (excluye métodos internos de Inertia)
 const getPlainFormData = (actionType) => {
     const plain = {};
     for (const key in form) {
@@ -759,7 +785,6 @@ const getPlainFormData = (actionType) => {
     return plain;
 };
 
-// Actualizar certificado (acción individual por sección)
 const updateCertificateData = async (actionType) => {
     if (activeTab.value === 'front') {
         updateFormFromFrontElements();
@@ -767,22 +792,26 @@ const updateCertificateData = async (actionType) => {
         updateFormFromBackElements();
     }
 
-    isGeneratingPreview.value = true;
-
     try {
         const response = await axios({
             method: 'post',
-            url: route('aca_certificate_update_info'),
+            url: route('aca_certificate_update_infoTest3'),
             data: getPlainFormData(actionType)
         });
 
         const data = response.data || {};
 
         if (data.image && activeTab.value === 'front') {
-            await loadBackgroundImage(data.image, false);
+            const currentImageUrl = backgroundImage.value?.src;
+            if (currentImageUrl !== data.image) {
+                await loadBackgroundImage(data.image, false);
+            }
         }
         if (data.back_image && form.has_back && activeTab.value === 'back') {
-            await loadBackgroundImage(data.back_image, true);
+            const currentBackUrl = backBackgroundImage.value?.src;
+            if (currentBackUrl !== data.back_image) {
+                await loadBackgroundImage(data.back_image, true);
+            }
         }
 
         Swal2.fire({
@@ -795,27 +824,30 @@ const updateCertificateData = async (actionType) => {
             timer: 2000
         });
     } catch (error) {
-        // El servidor puede devolver error HTTP aunque haya guardado los datos
-        // (ej. falla al generar la imagen de previsualización)
         const serverData = error?.response?.data;
         const httpStatus = error?.response?.status;
 
         if (serverData && httpStatus && httpStatus < 500) {
-            // Datos guardados, el error fue en un proceso secundario (ej. generar imagen)
             if (serverData.image && activeTab.value === 'front') {
-                await loadBackgroundImage(serverData.image, false).catch(() => {});
+                const currentImageUrl = backgroundImage.value?.src;
+                if (currentImageUrl !== serverData.image) {
+                    await loadBackgroundImage(serverData.image, false).catch(() => {});
+                }
             }
             if (serverData.back_image && form.has_back && activeTab.value === 'back') {
-                await loadBackgroundImage(serverData.back_image, true).catch(() => {});
+                const currentBackUrl = backBackgroundImage.value?.src;
+                if (currentBackUrl !== serverData.back_image) {
+                    await loadBackgroundImage(serverData.back_image, true).catch(() => {});
+                }
             }
             Swal2.fire({
                 title: 'Guardado',
-                text: 'Datos guardados. La vista previa puede no haberse actualizado.',
+                text: 'Datos guardados correctamente',
                 icon: 'success',
                 toast: true,
                 position: 'top-end',
                 showConfirmButton: false,
-                timer: 3000
+                timer: 2000
             });
         } else {
             console.error('Error al guardar sección:', error);
@@ -826,19 +858,15 @@ const updateCertificateData = async (actionType) => {
                 confirmButtonText: 'Ok'
             });
         }
-    } finally {
-        isGeneratingPreview.value = false;
     }
 };
 
-// Guardar TODOS los cambios a la vez (llama cada sección individualmente)
 const saveAllChanges = async () => {
     updateFormFromFrontElements();
     updateFormFromBackElements();
 
     isSavingAll.value = true;
 
-    // Tipos de acción a guardar — usamos los mismos que maneja el backend
     const frontActionTypes = [1, 2, 3, 4, 5];
     const backActionTypes = form.has_back ? [6, 7, 8, 9, 14, 15] : [];
     if (form.has_back && !form.for_module && form.back_content_show_course) backActionTypes.push(12);
@@ -849,14 +877,15 @@ const saveAllChanges = async () => {
     let savedCount = 0;
     let lastFrontImage = null;
     let lastBackImage = null;
+    let lastFrontUrl = backgroundImage.value?.src;
+    let lastBackUrl = backBackgroundImage.value?.src;
 
     try {
-        // Ejecutar todas las peticiones en paralelo
         const results = await Promise.allSettled(
             allActionTypes.map(actionType =>
                 axios({
                     method: 'post',
-                    url: route('aca_certificate_update_info'),
+                    url: route('aca_certificate_update_infoTest3'),
                     data: getPlainFormData(actionType)
                 })
             )
@@ -869,21 +898,18 @@ const saveAllChanges = async () => {
                 if (data.image) lastFrontImage = data.image;
                 if (data.back_image) lastBackImage = data.back_image;
             } else {
-                // Incluso en error HTTP, intentar extraer imagen de la respuesta
                 const serverData = result.reason?.response?.data;
                 if (serverData?.image) lastFrontImage = serverData.image;
                 if (serverData?.back_image) lastBackImage = serverData.back_image;
-                // Contamos como guardado si el error no es 5xx
                 const status = result.reason?.response?.status;
                 if (status && status < 500) savedCount++;
             }
         });
 
-        // Actualizar imágenes de previsualización si el servidor las devolvió
-        if (lastFrontImage) {
+        if (lastFrontImage && lastFrontUrl !== lastFrontImage) {
             await loadBackgroundImage(lastFrontImage, false).catch(() => {});
         }
-        if (lastBackImage && form.has_back) {
+        if (lastBackImage && form.has_back && lastBackUrl !== lastBackImage) {
             await loadBackgroundImage(lastBackImage, true).catch(() => {});
         }
 
@@ -929,7 +955,6 @@ const saveAllChanges = async () => {
     }
 };
 
-// Actualizar estado del certificado
 const updateCertificateStatus = async () => {
     form.action_type = 99;
     form.processing = true;
@@ -937,7 +962,7 @@ const updateCertificateStatus = async () => {
     try {
         await axios({
             method: 'post',
-            url: route('aca_certificate_update_info'),
+            url: route('aca_certificate_update_infoTest3'),
             data: form
         });
 
@@ -961,7 +986,6 @@ const updateCertificateStatus = async () => {
     }
 };
 
-// Resetear posición del elemento seleccionado
 const resetElementPosition = (elementType, side) => {
     if (side === 'front' && frontElements.value[elementType]) {
         frontElements.value[elementType].x = frontElements.value[elementType].originalX;
@@ -976,7 +1000,6 @@ const resetElementPosition = (elementType, side) => {
     }
 };
 
-// Watchers para mantener sincronización (también fuerzan re-render del stage)
 watch(() => [
     form.visible_date, form.position_date_x, form.position_date_y, form.font_size_date,
     form.fontfamily_date, form.font_align_date, form.font_vertical_align_date, form.color_date
@@ -1002,6 +1025,9 @@ watch(() => [
 watch(() => [
     form.visible_image_qr, form.position_qr_x, form.position_qr_y, form.size_qr, form.font_align_qr
 ], () => syncFrontElementsWithForm());
+
+watch(() => form.qr_url, (url) => generateQrCode(url, 'front'));
+watch(() => form.back_qr_url, (url) => generateQrCode(url, 'back'));
 
 watch(() => [
     form.back_visible_date, form.back_position_date_x, form.back_position_date_y,
@@ -1053,7 +1079,6 @@ watch(() => [
     form.back_rectangle_width, form.back_rectangle_height, form.back_rectangle_color
 ], () => syncBackElementsWithForm());
 
-// Inicializar
 onMounted(async () => {
     loadGoogleFonts();
     syncFrontElementsWithForm();
@@ -1066,6 +1091,9 @@ onMounted(async () => {
         const backUrl = getImage(form.back_certificate_img);
         await loadBackgroundImage(backUrl, true);
     }
+
+    if (form.qr_url) generateQrCode(form.qr_url, 'front');
+    if (form.back_qr_url) generateQrCode(form.back_qr_url, 'back');
 
     await waitForFonts();
     refreshStage();
@@ -1395,6 +1423,12 @@ onMounted(async () => {
                             <vue-collapsible :isOpen="accordians3 === 4">
                                 <div class="p-4 text-white-dark text-[13px] border-t border-[#d3d3d3] dark:border-[#1b2e4b]">
                                     <div class="grid grid-cols-4 gap-4">
+                                        <div class="col-span-4">
+                                            <InputLabel for="qr_url">Enlace del QR</InputLabel>
+                                            <TextInput type="url" v-model="form.qr_url" placeholder="https://ejemplo.com" class="w-full" />
+                                            <p v-if="form.qr_url && !qrImageElement" class="text-xs text-yellow-500 mt-1">Generando QR…</p>
+                                            <p v-if="qrImageElement" class="text-xs text-success mt-1">✓ QR generado correctamente</p>
+                                        </div>
                                         <div class="col-span-2">
                                             <InputLabel for="size_qr">Tamaño</InputLabel>
                                             <TextInput type="number" v-model.number="form.size_qr" />
@@ -2017,6 +2051,12 @@ onMounted(async () => {
                                 <vue-collapsible :isOpen="accordians3 === 27">
                                     <div class="p-4 border-t">
                                         <div class="grid grid-cols-4 gap-4">
+                                            <div class="col-span-4">
+                                                <InputLabel>Enlace del QR</InputLabel>
+                                                <TextInput type="url" v-model="form.back_qr_url" placeholder="https://ejemplo.com" class="w-full" />
+                                                <p v-if="form.back_qr_url && !backQrImageElement" class="text-xs text-yellow-500 mt-1">Generando QR…</p>
+                                                <p v-if="backQrImageElement" class="text-xs text-success mt-1">✓ QR generado correctamente</p>
+                                            </div>
                                             <div class="col-span-2">
                                                 <InputLabel>Tamaño</InputLabel>
                                                 <TextInput type="number" v-model.number="form.back_size_qr" />
@@ -2053,69 +2093,64 @@ onMounted(async () => {
                             </div>
 
                             <!-- Nota Final -->
-                            <div class="col-span-2 border border-[#d3d3d3] dark:border-[#1b2e4b] rounded">
-                                <button
-                                    type="button"
-                                    class="p-2.5 w-full flex items-center text-white-dark dark:bg-[#1b2e4b]"
-                                    :class="{ '!text-primary': accordians3 === 28 }"
-                                    @click="accordians3 === 28 ? (accordians3 = null) : (accordians3 = 28)"
-                                >
-                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                    Nota Final
-                                    <div class="ltr:ml-auto rtl:mr-auto" :class="{ 'rotate-180': accordians3 === 28 }">
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19 9L12 15L5 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-                                    </div>
-                                </button>
-                                <vue-collapsible :isOpen="accordians3 === 28">
-                                    <div class="p-4 border-t">
-                                        <div class="grid grid-cols-4 gap-4">
-                                            <div class="col-span-2">
-                                                <InputLabel>Fuente</InputLabel>
-                                                <select v-model="form.back_fontfamily_grade" class="form-select">
-                                                    <option v-for="font in availableFonts" :key="font.value" :value="font.value" :style="{ fontFamily: font.value }">{{ font.label }}</option>
-                                                </select>
+                                <div class="col-span-2 border border-[#d3d3d3] dark:border-[#1b2e4b] rounded">
+                                    <button
+                                        type="button"
+                                        class="p-2.5 w-full flex items-center text-white-dark dark:bg-[#1b2e4b]"
+                                        :class="{ '!text-primary': accordians3 === 28 }"
+                                        @click="accordians3 === 28 ? (accordians3 = null) : (accordians3 = 28)"
+                                    >
+                                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        Nota Final
+                                        <div class="ltr:ml-auto rtl:mr-auto" :class="{ 'rotate-180': accordians3 === 28 }">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19 9L12 15L5 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                                        </div>
+                                    </button>
+                                    <vue-collapsible :isOpen="accordians3 === 28">
+                                        <div class="p-4 border-t">
+                                            <div class="grid grid-cols-4 gap-4">
+                                                <div class="col-span-2">
+                                                    <InputLabel for="back_fontfamily_grade">Fuente</InputLabel>
+                                                    <select v-model="form.back_fontfamily_grade" class="form-select" :style="{ fontFamily: form.back_fontfamily_grade }">
+                                                        <option v-for="font in availableFonts" :key="font.value" :value="font.value" :style="{ fontFamily: font.value }">{{ font.label }}</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-span-2">
+                                                    <InputLabel for="back_font_size_grade">Tamaño letra</InputLabel>
+                                                    <TextInput type="number" id="back_font_size_grade" v-model.number="form.back_font_size_grade" min="8" max="200" />
+                                                </div>
+                                                <div class="col-span-2">
+                                                    <InputLabel for="back_color_grade">Color texto</InputLabel>
+                                                    <TextInput type="color" id="back_color_grade" v-model="form.back_color_grade" />
+                                                </div>
+                                                <div class="col-span-2">
+                                                    <InputLabel for="back_rectangle_color">Color borde</InputLabel>
+                                                    <TextInput type="color" id="back_rectangle_color" v-model="form.back_rectangle_color" />
+                                                </div>
+                                                <div class="col-span-2 flex items-end pb-1">
+                                                    <p class="text-xs text-gray-400">Borde 6px · tamaño automático según fuente</p>
+                                                </div>
+                                                <div class="col-span-2">
+                                                    <InputLabel for="back_position_grade_x">Posición X</InputLabel>
+                                                    <TextInput type="number" id="back_position_grade_x" v-model.number="form.back_position_grade_x" />
+                                                </div>
+                                                <div class="col-span-2">
+                                                    <InputLabel for="back_position_grade_y">Posición Y</InputLabel>
+                                                    <TextInput type="number" id="back_position_grade_y" v-model.number="form.back_position_grade_y" />
+                                                </div>
+                                                <div class="col-span-4 flex items-center justify-between">
+                                                    <InputLabel value="Visible" />
+                                                    <input type="checkbox" v-model="form.back_visible_grade" class="form-checkbox" />
+                                                </div>
                                             </div>
-                                            <div class="col-span-2">
-                                                <InputLabel>Tamaño</InputLabel>
-                                                <TextInput type="number" v-model.number="form.back_font_size_grade" min="8" max="200" />
-                                            </div>
-                                            <div class="col-span-2">
-                                                <InputLabel>Posición X</InputLabel>
-                                                <TextInput type="number" v-model.number="form.back_position_grade_x" />
-                                            </div>
-                                            <div class="col-span-2">
-                                                <InputLabel>Posición Y</InputLabel>
-                                                <TextInput type="number" v-model.number="form.back_position_grade_y" />
-                                            </div>
-                                            <div class="col-span-2">
-                                                <InputLabel>Color texto</InputLabel>
-                                                <TextInput type="color" v-model="form.back_color_grade" />
-                                            </div>
-                                            <div class="col-span-2">
-                                                <InputLabel>Ancho rectángulo</InputLabel>
-                                                <TextInput type="number" v-model.number="form.back_rectangle_width" />
-                                            </div>
-                                            <div class="col-span-2">
-                                                <InputLabel>Alto rectángulo</InputLabel>
-                                                <TextInput type="number" v-model.number="form.back_rectangle_height" />
-                                            </div>
-                                            <div class="col-span-2">
-                                                <InputLabel>Color rectángulo</InputLabel>
-                                                <TextInput type="color" v-model="form.back_rectangle_color" />
-                                            </div>
-                                            <div class="col-span-4 flex items-center justify-between">
-                                                <InputLabel value="Visible" />
-                                                <input type="checkbox" v-model="form.back_visible_grade" class="form-checkbox" />
+                                            <div class="flex justify-end mt-4">
+                                                <button @click="updateCertificateData(15)" class="btn btn-success">Guardar</button>
                                             </div>
                                         </div>
-                                        <div class="flex justify-end mt-4">
-                                            <button @click="updateCertificateData(15)" class="btn btn-success">Guardar</button>
-                                        </div>
-                                    </div>
-                                </vue-collapsible>
-                            </div>
+                                    </vue-collapsible>
+                                </div>
                         </template>
                     </template>
 
@@ -2173,7 +2208,6 @@ onMounted(async () => {
                             <span v-else>Vista previa</span>
                         </h4>
                     </div>
-                    <!-- Botón Guardar Todo en la barra superior del canvas -->
                     <button
                         @click="saveAllChanges"
                         :disabled="isSavingAll"
@@ -2204,17 +2238,16 @@ onMounted(async () => {
                     </p>
                 </div>
 
-                <!-- Indicador de carga -->
-                <div v-else-if="isLoadingImages || isGeneratingPreview" class="flex flex-col items-center justify-center h-64">
+                <!-- Indicador de carga inicial -->
+                <div v-else-if="isLoadingImages && !backgroundImage && !backBackgroundImage" class="flex flex-col items-center justify-center h-64">
                     <svg class="animate-spin h-8 w-8 text-primary mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
-                    <p class="text-gray-500 dark:text-gray-400">Generando vista previa...</p>
+                    <p class="text-gray-500 dark:text-gray-400">Cargando vista previa...</p>
                 </div>
 
                 <!-- Canvas Konva -->
-                <!-- La key :key="stageKey" fuerza re-render cuando cambian fuentes o tamaños -->
                 <div v-else class="canvas-container" style="overflow-x: auto; text-align: center;">
                     <v-stage
                         :key="stageKey"
@@ -2248,7 +2281,6 @@ onMounted(async () => {
 
                             <!-- Elementos del ANVERSO -->
                             <template v-if="activeTab === 'front'">
-                                <!-- Fecha -->
                                 <v-text
                                     v-if="frontElements.date.visible"
                                     :config="{
@@ -2265,7 +2297,6 @@ onMounted(async () => {
                                     }"
                                 />
 
-                                <!-- Nombre -->
                                 <v-text
                                     v-if="frontElements.names.visible"
                                     :config="{
@@ -2282,7 +2313,6 @@ onMounted(async () => {
                                     }"
                                 />
 
-                                <!-- Título -->
                                 <v-text
                                     v-if="frontElements.title.visible"
                                     :config="{
@@ -2299,7 +2329,6 @@ onMounted(async () => {
                                     }"
                                 />
 
-                                <!-- Descripción -->
                                 <v-text
                                     v-if="frontElements.description.visible"
                                     :config="{
@@ -2315,11 +2344,24 @@ onMounted(async () => {
                                         onDragEnd: (e) => handleDragEnd('description', 'front', e)
                                     }"
                                 />
+
+                                <!-- QR Code anverso -->
+                                <v-image
+                                    v-if="frontElements.qr.visible && qrImageElement"
+                                    :config="{
+                                        image: qrImageElement,
+                                        x: frontElements.qr.x,
+                                        y: frontElements.qr.y,
+                                        width: Number(frontElements.qr.size),
+                                        height: Number(frontElements.qr.size),
+                                        draggable: true,
+                                        onDragEnd: (e) => handleDragEnd('qr', 'front', e)
+                                    }"
+                                />
                             </template>
 
                             <!-- Elementos del REVERSO -->
                             <template v-if="activeTab === 'back' && form.has_back">
-                                <!-- Fecha -->
                                 <v-text
                                     v-if="backElements.date.visible"
                                     :config="{
@@ -2336,7 +2378,6 @@ onMounted(async () => {
                                     }"
                                 />
 
-                                <!-- Nombre -->
                                 <v-text
                                     v-if="backElements.names.visible"
                                     :config="{
@@ -2353,7 +2394,6 @@ onMounted(async () => {
                                     }"
                                 />
 
-                                <!-- Título -->
                                 <v-text
                                     v-if="backElements.title.visible"
                                     :config="{
@@ -2370,7 +2410,6 @@ onMounted(async () => {
                                     }"
                                 />
 
-                                <!-- Descripción Manual -->
                                 <v-text
                                     v-if="backElements.description.visible && form.back_content_show_manual"
                                     :config="{
@@ -2387,7 +2426,6 @@ onMounted(async () => {
                                     }"
                                 />
 
-                                <!-- Contenido del Curso -->
                                 <v-text
                                     v-if="!form.for_module && backElements.course.visible && form.back_content_show_course"
                                     :config="{
@@ -2404,7 +2442,6 @@ onMounted(async () => {
                                     }"
                                 />
 
-                                <!-- Contenido del Módulo -->
                                 <v-text
                                     v-if="form.for_module && backElements.module.visible && form.back_content_show_module"
                                     :config="{
@@ -2421,41 +2458,75 @@ onMounted(async () => {
                                     }"
                                 />
 
-                                <!-- Nota Final con rectángulo -->
-                                <template v-if="backElements.grade.visible">
-                                    <v-rect
+                                <!-- Nota Final: grupo arrastrable (etiqueta + rectángulo + nota) -->
+                                <v-group
+                                    v-if="backElements.grade.visible"
+                                    :config="{
+                                        x: backElements.grade.x,
+                                        y: backElements.grade.y,
+                                        draggable: true,
+                                        onDragEnd: (e) => {
+                                            backElements.grade.x = e.target.x();
+                                            backElements.grade.y = e.target.y();
+                                            updateFormFromBackElements();
+                                        }
+                                    }"
+                                >
+                                    <!-- Etiqueta "Promedio final" a la izquierda, centrada verticalmente -->
+                                    <v-text
                                         :config="{
-                                            x: backElements.grade.x,
-                                            y: backElements.grade.y,
-                                            width: Number(backElements.grade.rectangleWidth),
-                                            height: Number(backElements.grade.rectangleHeight),
-                                            fill: backElements.grade.rectangleColor,
-                                            draggable: true,
-                                            onDragEnd: (e) => {
-                                                backElements.grade.x = e.target.x();
-                                                backElements.grade.y = e.target.y();
-                                                updateFormFromBackElements();
-                                            }
+                                            text: 'Promedio final',
+                                            x: -(Number(backElements.grade.fontSize) * 9 + Number(backElements.grade.fontSize) * 0.6),
+                                            y: (gradeRectSize.h - Number(backElements.grade.fontSize)) / 2,
+                                            fontSize: Number(backElements.grade.fontSize),
+                                            fontFamily: backElements.grade.fontFamily,
+                                            fill: backElements.grade.color,
+                                            width: Number(backElements.grade.fontSize) * 9,
+                                            align: 'right'
                                         }"
                                     />
+                                    <!-- Borde del rectángulo (transparente por dentro) -->
+                                    <v-rect
+                                        :config="{
+                                            x: 0,
+                                            y: 0,
+                                            width: gradeRectSize.w,
+                                            height: gradeRectSize.h,
+                                            fill: 'transparent',
+                                            stroke: backElements.grade.rectangleColor,
+                                            strokeWidth: 6
+                                        }"
+                                    />
+                                    <!-- Nota dentro del rectángulo -->
                                     <v-text
                                         :config="{
                                             text: previewData.finalGrade,
-                                            x: backElements.grade.x + (Number(backElements.grade.rectangleWidth) / 2),
-                                            y: backElements.grade.y + (Number(backElements.grade.rectangleHeight) / 2),
+                                            x: 0,
+                                            y: 0,
                                             fontSize: Number(backElements.grade.fontSize),
                                             fontFamily: backElements.grade.fontFamily,
                                             fill: backElements.grade.color,
                                             align: 'center',
                                             verticalAlign: 'middle',
-                                            width: Number(backElements.grade.rectangleWidth),
-                                            height: Number(backElements.grade.rectangleHeight),
-                                            offsetX: Number(backElements.grade.rectangleWidth) / 2,
-                                            offsetY: Number(backElements.grade.rectangleHeight) / 2,
-                                            draggable: false
+                                            width: gradeRectSize.w,
+                                            height: gradeRectSize.h
                                         }"
                                     />
-                                </template>
+                                </v-group>
+
+                                <!-- QR Code reverso -->
+                                <v-image
+                                    v-if="backElements.qr.visible && backQrImageElement"
+                                    :config="{
+                                        image: backQrImageElement,
+                                        x: backElements.qr.x,
+                                        y: backElements.qr.y,
+                                        width: Number(backElements.qr.size),
+                                        height: Number(backElements.qr.size),
+                                        draggable: true,
+                                        onDragEnd: (e) => handleDragEnd('qr', 'back', e)
+                                    }"
+                                />
                             </template>
                         </v-layer>
                     </v-stage>
