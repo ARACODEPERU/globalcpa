@@ -111,12 +111,6 @@ const generateQrCode = async (url, side = 'front') => {
 const isLoadingImages = ref(false);
 const isSavingAll = ref(false);
 
-const gradeRectSize = computed(() => {
-    const fs = Number(backElements.value?.grade?.fontSize) || 20;
-    const padding = fs * 1.2;
-    return { w: Math.round(fs * 2.5 + padding), h: Math.round(fs + padding) };
-});
-
 const stageWidth = ref(800);
 const stageHeight = ref(600);
 
@@ -704,8 +698,6 @@ const updateFormFromBackElements = () => {
     form.back_position_grade_x = Math.round(backElements.value.grade.x);
     form.back_position_grade_y = Math.round(backElements.value.grade.y);
     form.back_visible_grade = backElements.value.grade.visible;
-    form.back_rectangle_width = gradeRectSize.value.w;
-    form.back_rectangle_height = gradeRectSize.value.h;
 };
 
 const loadBackgroundImage = async (imageUrl, isBack = false) => {
@@ -2093,64 +2085,69 @@ onMounted(async () => {
                             </div>
 
                             <!-- Nota Final -->
-                                <div class="col-span-2 border border-[#d3d3d3] dark:border-[#1b2e4b] rounded">
-                                    <button
-                                        type="button"
-                                        class="p-2.5 w-full flex items-center text-white-dark dark:bg-[#1b2e4b]"
-                                        :class="{ '!text-primary': accordians3 === 28 }"
-                                        @click="accordians3 === 28 ? (accordians3 = null) : (accordians3 = 28)"
-                                    >
-                                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                        </svg>
-                                        Nota Final
-                                        <div class="ltr:ml-auto rtl:mr-auto" :class="{ 'rotate-180': accordians3 === 28 }">
-                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19 9L12 15L5 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-                                        </div>
-                                    </button>
-                                    <vue-collapsible :isOpen="accordians3 === 28">
-                                        <div class="p-4 border-t">
-                                            <div class="grid grid-cols-4 gap-4">
-                                                <div class="col-span-2">
-                                                    <InputLabel for="back_fontfamily_grade">Fuente</InputLabel>
-                                                    <select v-model="form.back_fontfamily_grade" class="form-select" :style="{ fontFamily: form.back_fontfamily_grade }">
-                                                        <option v-for="font in availableFonts" :key="font.value" :value="font.value" :style="{ fontFamily: font.value }">{{ font.label }}</option>
-                                                    </select>
-                                                </div>
-                                                <div class="col-span-2">
-                                                    <InputLabel for="back_font_size_grade">Tamaño letra</InputLabel>
-                                                    <TextInput type="number" id="back_font_size_grade" v-model.number="form.back_font_size_grade" min="8" max="200" />
-                                                </div>
-                                                <div class="col-span-2">
-                                                    <InputLabel for="back_color_grade">Color texto</InputLabel>
-                                                    <TextInput type="color" id="back_color_grade" v-model="form.back_color_grade" />
-                                                </div>
-                                                <div class="col-span-2">
-                                                    <InputLabel for="back_rectangle_color">Color borde</InputLabel>
-                                                    <TextInput type="color" id="back_rectangle_color" v-model="form.back_rectangle_color" />
-                                                </div>
-                                                <div class="col-span-2 flex items-end pb-1">
-                                                    <p class="text-xs text-gray-400">Borde 6px · tamaño automático según fuente</p>
-                                                </div>
-                                                <div class="col-span-2">
-                                                    <InputLabel for="back_position_grade_x">Posición X</InputLabel>
-                                                    <TextInput type="number" id="back_position_grade_x" v-model.number="form.back_position_grade_x" />
-                                                </div>
-                                                <div class="col-span-2">
-                                                    <InputLabel for="back_position_grade_y">Posición Y</InputLabel>
-                                                    <TextInput type="number" id="back_position_grade_y" v-model.number="form.back_position_grade_y" />
-                                                </div>
-                                                <div class="col-span-4 flex items-center justify-between">
-                                                    <InputLabel value="Visible" />
-                                                    <input type="checkbox" v-model="form.back_visible_grade" class="form-checkbox" />
-                                                </div>
+                            <div class="col-span-2 border border-[#d3d3d3] dark:border-[#1b2e4b] rounded">
+                                <button
+                                    type="button"
+                                    class="p-2.5 w-full flex items-center text-white-dark dark:bg-[#1b2e4b]"
+                                    :class="{ '!text-primary': accordians3 === 28 }"
+                                    @click="accordians3 === 28 ? (accordians3 = null) : (accordians3 = 28)"
+                                >
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    Nota Final
+                                    <div class="ltr:ml-auto rtl:mr-auto" :class="{ 'rotate-180': accordians3 === 28 }">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19 9L12 15L5 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                                    </div>
+                                </button>
+                                <vue-collapsible :isOpen="accordians3 === 28">
+                                    <div class="p-4 border-t">
+                                        <div class="grid grid-cols-4 gap-4">
+                                            <div class="col-span-2">
+                                                <InputLabel>Fuente</InputLabel>
+                                                <select v-model="form.back_fontfamily_grade" class="form-select">
+                                                    <option v-for="font in availableFonts" :key="font.value" :value="font.value" :style="{ fontFamily: font.value }">{{ font.label }}</option>
+                                                </select>
                                             </div>
-                                            <div class="flex justify-end mt-4">
-                                                <button @click="updateCertificateData(15)" class="btn btn-success">Guardar</button>
+                                            <div class="col-span-2">
+                                                <InputLabel>Tamaño</InputLabel>
+                                                <TextInput type="number" v-model.number="form.back_font_size_grade" min="8" max="200" />
+                                            </div>
+                                            <div class="col-span-2">
+                                                <InputLabel>Posición X</InputLabel>
+                                                <TextInput type="number" v-model.number="form.back_position_grade_x" />
+                                            </div>
+                                            <div class="col-span-2">
+                                                <InputLabel>Posición Y</InputLabel>
+                                                <TextInput type="number" v-model.number="form.back_position_grade_y" />
+                                            </div>
+                                            <div class="col-span-2">
+                                                <InputLabel>Color texto</InputLabel>
+                                                <TextInput type="color" v-model="form.back_color_grade" />
+                                            </div>
+                                            <div class="col-span-2">
+                                                <InputLabel>Ancho rectángulo</InputLabel>
+                                                <TextInput type="number" v-model.number="form.back_rectangle_width" />
+                                            </div>
+                                            <div class="col-span-2">
+                                                <InputLabel>Alto rectángulo</InputLabel>
+                                                <TextInput type="number" v-model.number="form.back_rectangle_height" />
+                                            </div>
+                                            <div class="col-span-2">
+                                                <InputLabel>Color rectángulo</InputLabel>
+                                                <TextInput type="color" v-model="form.back_rectangle_color" />
+                                            </div>
+                                            <div class="col-span-4 flex items-center justify-between">
+                                                <InputLabel value="Visible" />
+                                                <input type="checkbox" v-model="form.back_visible_grade" class="form-checkbox" />
                                             </div>
                                         </div>
-                                    </vue-collapsible>
-                                </div>
+                                        <div class="flex justify-end mt-4">
+                                            <button @click="updateCertificateData(15)" class="btn btn-success">Guardar</button>
+                                        </div>
+                                    </div>
+                                </vue-collapsible>
+                            </div>
                         </template>
                     </template>
 
@@ -2458,61 +2455,40 @@ onMounted(async () => {
                                     }"
                                 />
 
-                                <!-- Nota Final: grupo arrastrable (etiqueta + rectángulo + nota) -->
-                                <v-group
-                                    v-if="backElements.grade.visible"
-                                    :config="{
-                                        x: backElements.grade.x,
-                                        y: backElements.grade.y,
-                                        draggable: true,
-                                        onDragEnd: (e) => {
-                                            backElements.grade.x = e.target.x();
-                                            backElements.grade.y = e.target.y();
-                                            updateFormFromBackElements();
-                                        }
-                                    }"
-                                >
-                                    <!-- Etiqueta "Promedio final" a la izquierda, centrada verticalmente -->
-                                    <v-text
-                                        :config="{
-                                            text: 'Promedio final',
-                                            x: -(Number(backElements.grade.fontSize) * 9 + Number(backElements.grade.fontSize) * 0.6),
-                                            y: (gradeRectSize.h - Number(backElements.grade.fontSize)) / 2,
-                                            fontSize: Number(backElements.grade.fontSize),
-                                            fontFamily: backElements.grade.fontFamily,
-                                            fill: backElements.grade.color,
-                                            width: Number(backElements.grade.fontSize) * 9,
-                                            align: 'right'
-                                        }"
-                                    />
-                                    <!-- Borde del rectángulo (transparente por dentro) -->
+                                <template v-if="backElements.grade.visible">
                                     <v-rect
                                         :config="{
-                                            x: 0,
-                                            y: 0,
-                                            width: gradeRectSize.w,
-                                            height: gradeRectSize.h,
-                                            fill: 'transparent',
-                                            stroke: backElements.grade.rectangleColor,
-                                            strokeWidth: 6
+                                            x: backElements.grade.x,
+                                            y: backElements.grade.y,
+                                            width: Number(backElements.grade.rectangleWidth),
+                                            height: Number(backElements.grade.rectangleHeight),
+                                            fill: backElements.grade.rectangleColor,
+                                            draggable: true,
+                                            onDragEnd: (e) => {
+                                                backElements.grade.x = e.target.x();
+                                                backElements.grade.y = e.target.y();
+                                                updateFormFromBackElements();
+                                            }
                                         }"
                                     />
-                                    <!-- Nota dentro del rectángulo -->
                                     <v-text
                                         :config="{
                                             text: previewData.finalGrade,
-                                            x: 0,
-                                            y: 0,
+                                            x: backElements.grade.x + (Number(backElements.grade.rectangleWidth) / 2),
+                                            y: backElements.grade.y + (Number(backElements.grade.rectangleHeight) / 2),
                                             fontSize: Number(backElements.grade.fontSize),
                                             fontFamily: backElements.grade.fontFamily,
                                             fill: backElements.grade.color,
                                             align: 'center',
                                             verticalAlign: 'middle',
-                                            width: gradeRectSize.w,
-                                            height: gradeRectSize.h
+                                            width: Number(backElements.grade.rectangleWidth),
+                                            height: Number(backElements.grade.rectangleHeight),
+                                            offsetX: Number(backElements.grade.rectangleWidth) / 2,
+                                            offsetY: Number(backElements.grade.rectangleHeight) / 2,
+                                            draggable: false
                                         }"
                                     />
-                                </v-group>
+                                </template>
 
                                 <!-- QR Code reverso -->
                                 <v-image
