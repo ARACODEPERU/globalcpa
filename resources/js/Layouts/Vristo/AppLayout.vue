@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import { ref, onMounted, watch, nextTick } from 'vue';
+    import { ref, onMounted } from 'vue';
     //import Sidebar from '@/Components/vristo/layout/Sidebar.vue';
     import Header from '@/Components/vristo/layout/Header.vue';
     import Footer from '@/Components/vristo/layout/Footer.vue';
@@ -16,17 +16,6 @@
     const userData = usePage().props.auth.user;
     const showTopButton = ref(false);
 
-
-    const cleanupAntDesignComponents = () => {
-        nextTick(() => {
-            document.querySelectorAll('.ant-tooltip-open').forEach(el => {
-                el.classList.remove('ant-tooltip-open');
-            });
-            document.querySelectorAll('.ant-popover-open').forEach(el => {
-                el.classList.remove('ant-popover-open');
-            });
-        });
-    };
 
     onMounted(() => {
         window.onscroll = () => {
