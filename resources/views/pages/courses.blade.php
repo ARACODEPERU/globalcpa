@@ -78,9 +78,15 @@
                                                                 <div class="card-body">
                                                                     <a
                                                                         href="{{ route('web_course_description', $item->id) }}">
+                                                                        @if($item->course?->image)
                                                                         <img class="w-100 mb-3"
                                                                             src="{{ asset('storage/' . $item->course->image) }}"
-                                                                            alt="">
+                                                                            alt="{{ $item->course->name ?? 'Imagen' }}">
+                                                                    @endif
+
+                                                                    <script>
+                                                                        console.log("Datos del item (ID: {{ $item->id ?? 'N/A' }}):", @json($item));
+                                                                    </script>
                                                                     </a>
                                                                     <br>
                                                                     <span
