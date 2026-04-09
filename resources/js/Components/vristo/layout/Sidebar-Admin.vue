@@ -1,7 +1,7 @@
 <script setup>
     // Asumiendo que usas Pinia para el store
     import { useAppStore } from '@/stores/index';
-    import { computed, ref, onMounted, nextTick, watch } from 'vue';
+    import { computed, ref, onMounted, onUnmounted, nextTick, watch } from 'vue';
     import VueCollapsible from 'vue-height-collapsible/vue3';
     import { Link, usePage } from '@inertiajs/vue3';
     import menuData from './MenuData.js';
@@ -10,6 +10,21 @@
     const store = useAppStore();
     const xasset = assetUrl;
     const page = usePage();
+
+    // Cleanup function paraTooltips de Ant Design
+    const cleanupTooltips = () => {
+        nextTick(() => {
+            document.querySelectorAll('.ant-tooltip-open').forEach(el => {
+                el.classList.remove('ant-tooltip-open');
+            });
+            document.querySelectorAll('.ant-tooltip').forEach(el => el.remove());
+        });
+    };
+
+    // Cleanup al desmontar el componente
+    onUnmounted(() => {
+        cleanupTooltips();
+    });
 
 
     // Computed para determinar si está colapsado

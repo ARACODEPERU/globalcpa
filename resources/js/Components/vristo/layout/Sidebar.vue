@@ -1,5 +1,5 @@
 <script setup>
-    import { ref, onMounted, watch, nextTick } from 'vue';
+    import { ref, onMounted, onUnmounted, watch, nextTick } from 'vue';
 
     import { useAppStore } from '@/stores/index';
     import IconCaretsDown from '@/Components/vristo/icon/icon-carets-down.vue';
@@ -21,6 +21,20 @@
     const hasAnyRole = (rolesToCheck) => {
         return userData.roles.some(role => rolesToCheck.includes(role.name))
     }
+
+    // Cleanup function para Popovers de Ant Design
+    const cleanupPopovers = () => {
+        nextTick(() => {
+            document.querySelectorAll('.ant-popover-open').forEach(el => {
+                el.classList.remove('ant-popover-open');
+            });
+            document.querySelectorAll('.ant-popover').forEach(el => el.remove());
+        });
+    };
+
+    onUnmounted(() => {
+        cleanupPopovers();
+    });
 
     onMounted(() => {
         //console.log('ruta actual',window.location.href)

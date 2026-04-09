@@ -5,7 +5,7 @@
     import Footer from '@/Components/vristo/layout/Footer.vue';
     import Setting from '@/Components/vristo/ThemeCustomizer.vue';
     import appSetting from '@/app-setting';
-    import { Head, usePage } from '@inertiajs/vue3';
+    import { Head, usePage, router } from '@inertiajs/vue3';
     import { useAppStore } from '@/stores/index';
     import SidebarAdmin from '@/Components/vristo/layout/Sidebar-Admin.vue';
     //import Sidebar from '@/Components/vristo/layout/Sidebar-Old.vue';
@@ -16,6 +16,33 @@
     const userData = usePage().props.auth.user;
     const showTopButton = ref(false);
 
+    // Función para limpiar componentes de Ant Design antes de navegar
+    const cleanupAntDesignComponents = () => {
+        // Remover clases 'open' de Ant Design
+        document.querySelectorAll('.ant-tooltip-open').forEach(el => {
+            el.classList.remove('ant-tooltip-open');
+        });
+        document.querySelectorAll('.ant-popover-open').forEach(el => {
+            el.classList.remove('ant-popover-open');
+        });
+        document.querySelectorAll('.ant-dropdown-open').forEach(el => {
+            el.classList.remove('ant-dropdown-open');
+        });
+        
+        // Remover elementos de tooltip del DOM
+        setTimeout(() => {
+            document.querySelectorAll('.ant-tooltip').forEach(el => el.remove());
+            document.querySelectorAll('.ant-popover').forEach(el => el.remove());
+            document.querySelectorAll('.ant-dropdown').forEach(el => el.remove());
+            document.querySelectorAll('.ant-select-dropdown').forEach(el => el.remove());
+            document.querySelectorAll('.ant-dropdown-menu').forEach(el => el.remove());
+        }, 50);
+    };
+
+    // Hook antes de cada navegación de Inertia
+    router.on('before', () => {
+        cleanupAntDesignComponents();
+    });
 
     onMounted(() => {
         window.onscroll = () => {
