@@ -301,8 +301,13 @@
                             <div class="sticky-top" style="top: 100px; z-index: 1;">
                                 <div class="card shadow border-0" data-aos="fade-left">
                                     <div class="position-relative">
-                                        <img src="{{ asset('storage/' . $item->course->image) }}" class="card-img-top"
-                                            alt="portada_curso">
+                                        @if($item->course?->image)
+                                                <img src="{{ asset('storage/' . $item->course->image) }}" class="card-img-top" alt="portada">
+                                            @endif
+
+                                            <script>
+                                                console.log("Item ID {{ $item->id }}:", @json($item));
+                                            </script>
                                     </div>
                                     <div class="card-body p-4">
                                         <div class="mb-4">
