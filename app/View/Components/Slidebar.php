@@ -17,7 +17,7 @@ class Slidebar extends Component
 
     public function __construct()
     {
-        
+
         $this->logo = CmsSection::where('component_id', 'logos_1')
             ->join('cms_section_items', 'section_id', 'cms_sections.id')
             ->join('cms_items', 'cms_section_items.item_id', 'cms_items.id')
@@ -38,8 +38,8 @@ class Slidebar extends Component
         //     ->orderBy('cms_section_items.position')
         //     ->get();
 
-        $this->courses = OnliItem::with('course')->orderBy('id','desc')->get();
-            
+        $this->courses = OnliItem::whereHas('course')->with('course')->orderBy('id','desc')->get();
+
     }
 
     /**

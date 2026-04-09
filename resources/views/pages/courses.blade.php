@@ -83,10 +83,6 @@
                                                                             src="{{ asset('storage/' . $item->course->image) }}"
                                                                             alt="{{ $item->course->name ?? 'Imagen' }}">
                                                                     @endif
-
-                                                                    <script>
-                                                                        console.log("Datos del item (ID: {{ $item->id ?? 'N/A' }}):", @json($item));
-                                                                    </script>
                                                                     </a>
                                                                     <br>
                                                                     <span

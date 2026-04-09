@@ -62,7 +62,7 @@ class WebPageController extends Controller
 
     public function landing($slug)
     {
-        $courses = OnliItem::with('course')->latest()->get();
+        $courses = OnliItem::whereHas('course')->with('course')->latest()->get();
         //$courses = $courses->shuffle();
         $categories = AcaCategoryCourse::all();
         $types = getEnumValues('onli_items', 'additional', 0, 1);
