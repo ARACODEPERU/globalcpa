@@ -151,9 +151,16 @@
                                                                     <div class="card-body">
                                                                         <a
                                                                             href="{{ route('web_course_description', $item->id) }}">
-                                                                            <img class="w-100 mb-3"
-                                                                                src="{{ asset('storage/' . $item->course->image) }}"
-                                                                                alt="">
+                                                                            @if($item->course?->image)
+                                                                                <img class="w-100 mb-3"
+                                                                                    src="{{ asset('storage/' . $item->course->image) }}"
+                                                                                    alt="{{ $item->course->name ?? 'Imagen del curso' }}">
+                                                                            @endif
+
+                                                                            <script>
+                                                                                // Usamos el ID o la propiedad iteration del bucle para identificar el log
+                                                                                console.log("Depurando Item:", @json($item));
+                                                                            </script>
                                                                         </a>
                                                                         <br>
                                                                         <span
