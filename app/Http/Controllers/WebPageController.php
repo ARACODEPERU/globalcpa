@@ -147,7 +147,7 @@ class WebPageController extends Controller
             'lider' => $lider
         ]);
     }
-    
+
     public function teachers()
     {
         return view('pages.teachers');
@@ -180,7 +180,11 @@ class WebPageController extends Controller
 
     public function courses()
     {
-        $courses = OnliItem::with('course')->latest()->get();
+        $courses = OnliItem::whereHas('course') // Filtra para que solo traiga items con curso existente
+                    ->with('course')                  // Carga la relación para evitar el problema de N+1
+                    ->latest()
+                    ->get();
+
         //$courses = $courses->shuffle();
         //$categories = AcaCategoryCourse::all();
         $types = getEnumValues('onli_items', 'additional', 0, 1);
@@ -275,7 +279,7 @@ class WebPageController extends Controller
     }
 
 
-    
+
     public function index2()
     {
         return view('pages.home2');
