@@ -105,9 +105,9 @@
                                                             <div class="card-body">
                                                                 <a
                                                                     href="{{ route('web_course_description', $item->id) }}">
-                                                                    <img class="w-100 mb-3"
-                                                                        src="{{ asset('storage/' . $item->course->image) }}"
-                                                                        alt="">
+                                                                    @if($item->course->image)
+                                                                        <img class="w-100 mb-3" src="{{ asset('storage/' . $item->course->image) }}" alt="{{ $item->course->name }}">
+                                                                    @endif
                                                                 </a>
                                                                 <br>
                                                                 <span
