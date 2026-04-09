@@ -15,7 +15,7 @@ class ListCard extends Component
 
     public function __construct()
     {
-        $this->courses = OnliItem::with('course.teacher.person')->orderBy('id', 'desc')->get();
+        $this->courses = OnliItem::whereHas('course')->with('course.teacher.person')->orderBy('id', 'desc')->get();
         $this->types = getEnumValues('onli_items', 'additional', 0, 1);
     }
 
