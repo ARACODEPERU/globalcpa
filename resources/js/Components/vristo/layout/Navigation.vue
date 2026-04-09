@@ -46,7 +46,7 @@ const fontTitleTooltip = 'text-xs text-white';
                         /
                     </span>
                     <div class="flex items-center">
-                        <Tooltip :title="item.title.length > maxChars ? item.title : ''" :color="colorTooltip" placement="bottom">
+                        <Tooltip v-if="item && item.title" :title="item.title.length > maxChars ? item.title : ''" :color="colorTooltip" placement="bottom">
 
                             <Link v-if="item.route && index !== data.length - 1"
                                 :href="item.route"

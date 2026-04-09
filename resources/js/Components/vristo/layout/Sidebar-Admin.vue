@@ -179,8 +179,8 @@
                             >
                                 <div class="w-full flex flex-col gap-3 items-center py-3">
                                     <template v-for="menu in menuData">
-                                        <template v-if="menu.route == null">
-                                            <Tooltip :color="colorTooltip" placement="right">
+                                        <template v-if="menu && menu.route == null">
+                                            <Tooltip v-if="menu" :color="colorTooltip" placement="right">
                                                 <template #title>
                                                     <span class="uppercase" :class="fontTitleTooltip">{{ menu.text }}</span>
                                                 </template>
@@ -199,8 +199,8 @@
                                                 </button>
                                             </Tooltip>
                                         </template>
-                                         <template v-else-if="menu.route == 'module'">
-                                            <Tooltip :color="colorTooltip" placement="right">
+                                         <template v-else-if="menu && menu.route == 'module'">
+                                            <Tooltip v-if="menu" :color="colorTooltip" placement="right">
                                                 <template #title>
                                                     <span class="uppercase" :class="fontTitleTooltip">{{ menu.text }}</span>
                                                 </template>
@@ -219,8 +219,8 @@
                                                 </button>
                                             </Tooltip>
                                         </template>
-                                        <template v-else>
-                                            <Tooltip :color="colorTooltip" placement="right">
+                                        <template v-else-if="menu">
+                                            <Tooltip v-if="menu" :color="colorTooltip" placement="right">
                                                 <template #title>
                                                     <span class="uppercase" :class="fontTitleTooltip">{{ menu.text }}</span>
                                                 </template>

@@ -246,7 +246,7 @@
                                         <template v-else>
                                             <li v-can="subItem.permissions" class="menu nav-item">
                                                 <Popover
-                                                    v-if="subItem.info"
+                                                    v-if="subItem && subItem.info"
                                                     :placement="subItem.info.placement"
                                                 >
                                                     <template #content>
