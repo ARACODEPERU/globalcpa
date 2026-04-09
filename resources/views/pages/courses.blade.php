@@ -152,15 +152,16 @@
                                                                         <a
                                                                             href="{{ route('web_course_description', $item->id) }}">
                                                                             @if($item->course?->image)
-                                                                                <img class="w-100 mb-3"
-                                                                                    src="{{ asset('storage/' . $item->course->image) }}"
-                                                                                    alt="{{ $item->course->name ?? 'Imagen del curso' }}">
-                                                                            @endif
-
+                                                                            {{-- Si hay imagen, la mostramos --}}
+                                                                            <img class="w-100 mb-3"
+                                                                                 src="{{ asset('storage/' . $item->course->image) }}"
+                                                                                 alt="{{ $item->course->name }}">
+                                                                        @else
+                                                                            {{-- Si NO hay imagen (o no hay curso), mandamos el log para investigar --}}
                                                                             <script>
-                                                                                // Usamos el ID o la propiedad iteration del bucle para identificar el log
-                                                                                console.log("Depurando Item:", @json($item));
+                                                                                console.warn("⚠️ Item sin imagen detectado (ID: {{ $item->id ?? 'N/A' }}):", @json($item));
                                                                             </script>
+                                                                        @endif
                                                                         </a>
                                                                         <br>
                                                                         <span
