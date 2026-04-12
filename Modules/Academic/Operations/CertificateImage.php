@@ -48,8 +48,8 @@ class CertificateImage
         $this->student_id = $student_id;
         $this->course_id = $course_id;
 
-        // Cargar configuración del certificado
-        $this->certificates_param = AcaCertificateParameter::find($certificate_id);
+        // Cargar configuración del certificado con la relación moduleConfig
+        $this->certificates_param = AcaCertificateParameter::with(['moduleConfig'])->find($certificate_id);
 
         // Texto de ejemplo para vista previa (cuando no hay datos reales)
         $textDefault = 'Curso de Desarrollo Web Avanzado con Laravel y Vue.js - 120 horas académicas. Temas tratados: Fundamentos de Laravel, APIs RESTful, integración de Vue.js, autenticación con JWT, optimización de bases de datos, despliegue en la nube y buenas prácticas de desarrollo. Fecha: Del 15 de marzo al 30 de mayo de 2023. Instructor: Juan Pérez.';
@@ -184,6 +184,51 @@ class CertificateImage
                         (int) ($this->getField('position_description_y') ?? 300)
                     );
                     File::delete($htmlPath);
+                }
+            }
+
+            // 3. RENDERIZAR DESCRIPCIÓN DEL MÓDULO (solo si for_module = true)
+            // Obtener configuración de la tabla separada aca_certificates_module_config
+            $moduleConfig = $this->certificates_param->moduleConfig ?? null;
+            
+            if ($this->getField('for_module') && $moduleConfig && $moduleConfig->visible_module_description) {
+                $moduleDescriptionText = null;
+                
+                // Buscar en aca_modules la descripción del módulo específico
+                if ($this->module_id) {
+                    $module = AcaModule::find($this->module_id);
+                    $moduleDescriptionText = $module->certificate_description ?? null;
+                }
+                
+                // Solo renderizar si hay descripción disponible en el módulo
+                if ($moduleDescriptionText) {
+                    $moduleDescContentWidth = (int) ($moduleConfig->max_width_module_description ?? 800);
+                    $moduleDescContentHeight = $this->certificates_param->certificate_img_height ?? 1550;
+                    
+                    $moduleDescViewData = [
+                        'text' => $moduleDescriptionText,
+                        'canvasWidth' => $moduleDescContentWidth,
+                        'canvasHeight' => $moduleDescContentHeight,
+                        'posX' => 10,
+                        'posY' => 10,
+                        'maxWidth' => $moduleDescContentWidth,
+                        'fontFamily' => $moduleConfig->fontfamily_module_description ?? 'arial.ttf',
+                        'fontSize' => (int) ($moduleConfig->font_size_module_description ?? 14),
+                        'color' => $moduleConfig->color_module_description ?? '#000000',
+                        'lineHeight' => (int) ($moduleConfig->font_size_module_description ?? 14) + 4,
+                        'textAlign' => $moduleConfig->text_align_module_description ?? 'left',
+                    ];
+                    
+                    $moduleDescHtmlPath = $htmlGenerator->generateFromView('text-module-description-front', $moduleDescViewData, $moduleDescContentWidth, $moduleDescContentHeight);
+                    
+                    if ($moduleDescHtmlPath && File::exists($moduleDescHtmlPath)) {
+                        $moduleDescHtmlImage = Image::make($moduleDescHtmlPath);
+                        $img->insert($moduleDescHtmlImage, 'top-left',
+                            (int) ($moduleConfig->position_module_description_x ?? 50),
+                            (int) ($moduleConfig->position_module_description_y ?? 350)
+                        );
+                        File::delete($moduleDescHtmlPath);
+                    }
                 }
             }
         }
