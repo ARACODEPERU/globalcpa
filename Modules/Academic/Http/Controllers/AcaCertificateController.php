@@ -688,8 +688,8 @@ class AcaCertificateController extends Controller
 
         $fullPath = null;
 
-        // Generar imagen para anverso (cases 1-5) y reverso (cases 6-9, 12, 13, 14, 15)
-        $generateForFront = in_array($request->get('action_type'), [1, 2, 3, 4, 5]);
+        // Generar imagen para anverso (cases 1-5, 11) y reverso (cases 6-9, 12, 13, 14, 15)
+        $generateForFront = in_array($request->get('action_type'), [1, 2, 3, 4, 5, 11]);
         $generateForBack = in_array($request->get('action_type'), [6, 7, 8, 9, 12, 13, 14, 15]);
 
         if ($generateForFront) {

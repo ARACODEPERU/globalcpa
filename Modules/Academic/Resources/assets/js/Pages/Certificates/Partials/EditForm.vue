@@ -102,16 +102,17 @@
         back_content_type_module: props.certificate.back_content_type_module || 'list',
 
         // Configuración del módulo/descripción del módulo (tabla separada)
-        fontfamily_module_description: props.certificate.moduleConfig?.fontfamily_module_description || 'Arial',
-        font_align_module_description: props.certificate.moduleConfig?.font_align_module_description || 'left',
-        font_vertical_module_description: props.certificate.moduleConfig?.font_vertical_module_description || 'top',
-        position_module_description_x: props.certificate.moduleConfig?.position_module_description_x || 425,
-        position_module_description_y: props.certificate.moduleConfig?.position_module_description_y || 350,
-        font_size_module_description: props.certificate.moduleConfig?.font_size_module_description || 14,
-        max_width_module_description: props.certificate.moduleConfig?.max_width_module_description || 600,
-        text_align_module_description: props.certificate.moduleConfig?.text_align_module_description || 'left',
-        color_module_description: props.certificate.moduleConfig?.color_module_description || '#1a1c2d',
-        visible_module_description: props.certificate.moduleConfig?.visible_module_description == 1 ? true : false,
+        // Obtener moduleConfig de forma segura (soporta camelCase y snake_case)
+        fontfamily_module_description: (props.certificate.module_config || props.certificate.moduleConfig || {}).fontfamily_module_description || 'Arial',
+        font_align_module_description: (props.certificate.module_config || props.certificate.moduleConfig || {}).font_align_module_description || 'left',
+        font_vertical_module_description: (props.certificate.module_config || props.certificate.moduleConfig || {}).font_vertical_module_description || 'top',
+        position_module_description_x: (props.certificate.module_config || props.certificate.moduleConfig || {}).position_module_description_x || 425,
+        position_module_description_y: (props.certificate.module_config || props.certificate.moduleConfig || {}).position_module_description_y || 350,
+        font_size_module_description: (props.certificate.module_config || props.certificate.moduleConfig || {}).font_size_module_description || 14,
+        max_width_module_description: (props.certificate.module_config || props.certificate.moduleConfig || {}).max_width_module_description || 600,
+        text_align_module_description: (props.certificate.module_config || props.certificate.moduleConfig || {}).text_align_module_description || 'left',
+        color_module_description: (props.certificate.module_config || props.certificate.moduleConfig || {}).color_module_description || '#1a1c2d',
+        visible_module_description: (props.certificate.module_config || props.certificate.moduleConfig || {}).visible_module_description == 1 ? true : false,
 
         // Configuración del reverso
         back_fontfamily_date: props.certificate.back_fontfamily_date,
