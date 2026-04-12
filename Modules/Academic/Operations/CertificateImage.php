@@ -191,18 +191,25 @@ class CertificateImage
             // Obtener configuración de la tabla separada aca_certificates_module_config
             $moduleConfig = $this->certificates_param->moduleConfig ?? null;
             
-            if ($this->getField('for_module') && $moduleConfig && $moduleConfig->visible_module_description) {
+            // Verificar si debe mostrar la descripción del módulo
+            $isForModule = $this->certificates_param->for_module ?? false;
+            $isModuleDescriptionVisible = $moduleConfig ? ($moduleConfig->visible_module_description ?? false) : true;
+            
+            if ($isForModule && $isModuleDescriptionVisible) {
                 $moduleDescriptionText = null;
                 
                 // Buscar en aca_modules la descripción del módulo específico
                 if ($this->module_id) {
                     $module = AcaModule::find($this->module_id);
                     $moduleDescriptionText = $module->certificate_description ?? null;
+                } else {
+                    // Para preview sin module_id, usar texto de ejemplo
+                    $moduleDescriptionText = 'Esta es la descripción personalizada del módulo. Se mostrará cuando el estudiante descargue su certificado desde el módulo específico.';
                 }
                 
                 // Solo renderizar si hay descripción disponible en el módulo
                 if ($moduleDescriptionText) {
-                    $moduleDescContentWidth = (int) ($moduleConfig->max_width_module_description ?? 800);
+                    $moduleDescContentWidth = (int) ($moduleConfig ? ($moduleConfig->max_width_module_description ?? 800) : 800);
                     $moduleDescContentHeight = $this->certificates_param->certificate_img_height ?? 1550;
                     
                     $moduleDescViewData = [
@@ -212,20 +219,20 @@ class CertificateImage
                         'posX' => 10,
                         'posY' => 10,
                         'maxWidth' => $moduleDescContentWidth,
-                        'fontFamily' => $moduleConfig->fontfamily_module_description ?? 'arial.ttf',
-                        'fontSize' => (int) ($moduleConfig->font_size_module_description ?? 14),
-                        'color' => $moduleConfig->color_module_description ?? '#000000',
-                        'lineHeight' => (int) ($moduleConfig->font_size_module_description ?? 14) + 4,
-                        'textAlign' => $moduleConfig->text_align_module_description ?? 'left',
+                        'fontFamily' => $moduleConfig ? ($moduleConfig->fontfamily_module_description ?? 'Arial') : 'Arial',
+                        'fontSize' => (int) ($moduleConfig ? ($moduleConfig->font_size_module_description ?? 14) : 14),
+                        'color' => $moduleConfig ? ($moduleConfig->color_module_description ?? '#1a1c2d') : '#1a1c2d',
+                        'lineHeight' => (int) ($moduleConfig ? ($moduleConfig->font_size_module_description ?? 14) : 14) + 4,
+                        'textAlign' => $moduleConfig ? ($moduleConfig->text_align_module_description ?? 'left') : 'left',
                     ];
                     
-                    $moduleDescHtmlPath = $htmlGenerator->generateFromView('text-module-description-front', $moduleDescViewData, $moduleDescContentWidth, $moduleDescContentHeight);
+                    $moduleDescHtmlPath = $htmlGenerator->generateFromView('text-description-front', $moduleDescViewData, $moduleDescContentWidth, $moduleDescContentHeight);
                     
                     if ($moduleDescHtmlPath && File::exists($moduleDescHtmlPath)) {
                         $moduleDescHtmlImage = Image::make($moduleDescHtmlPath);
                         $img->insert($moduleDescHtmlImage, 'top-left',
-                            (int) ($moduleConfig->position_module_description_x ?? 50),
-                            (int) ($moduleConfig->position_module_description_y ?? 350)
+                            (int) ($moduleConfig ? ($moduleConfig->position_module_description_x ?? 425) : 425),
+                            (int) ($moduleConfig ? ($moduleConfig->position_module_description_y ?? 350) : 350)
                         );
                         File::delete($moduleDescHtmlPath);
                     }
