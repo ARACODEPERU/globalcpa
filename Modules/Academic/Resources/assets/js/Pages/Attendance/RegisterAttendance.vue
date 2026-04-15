@@ -65,11 +65,24 @@
     const companyName = computed(() => props.company?.name || '');
 
     // ============ TIPO DE DOCUMENTO ============
+    const isOtrosDocument = computed(() => {
+        return form.identity_document_type_id == 999;
+    });
+
     const maxCharacters = computed(() => {
         if (!form.identity_document_type_id) return 8;
+        // Para "Otros" (id 999), permitir hasta 15 dígitos
+        if (form.identity_document_type_id == 999) return 15;
         const selected = props.identityDocumentTypes.find(d => d.id == form.identity_document_type_id);
         if (!selected) return 8;
         return parseInt(selected.number_characters) || 8;
+    });
+
+    const inputPattern = computed(() => {
+        if (form.identity_document_type_id == 999) {
+            return '[0-9]{1,15}';
+        }
+        return '[0-9]{' + maxCharacters.value + '}';
     });
 
     const form = useForm({
@@ -371,14 +384,15 @@
                                 type="text"
                                 v-model="form.dni"
                                 :maxlength="maxCharacters"
-                                :pattern="'[0-9]{' + maxCharacters + '}'"
+                                :pattern="inputPattern"
                                 inputmode="numeric"
                                 class="w-full px-4 py-3 form-input text-lg text-center"
                                 placeholder="Ingresa tu número de documento"
                                 required
                             >
                             <p class="text-xs text-gray-500 dark:text-gray-400 mt-2 text-center">
-                                Debes ingresar {{ maxCharacters }} dígitos
+                                <template v-if="isOtrosDocument">Máximo 15 dígitos</template>
+                                <template v-else>Debes ingresar {{ maxCharacters }} dígitos</template>
                             </p>
                             <div class="w-full text-center">
                                 <InputError :message="form.errors.dni" class="mt-2" />
