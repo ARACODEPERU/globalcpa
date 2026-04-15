@@ -149,6 +149,21 @@ Route::middleware(['auth', 'verified', 'invalid_updated_information', 'user_acti
         ->get('courses/edit/{id}', 'AcaCourseController@edit')
         ->name('aca_courses_edit');
 
+    Route::get('courses/{courseId}/landing', 'AcaCourseLandingController@edit')
+        ->name('aca_courses_landing_edit');
+
+    Route::put('courses/{courseId}/landing/general', 'AcaCourseLandingController@updateGeneral')
+        ->name('aca_courses_landing_update_general');
+
+    Route::put('courses/{courseId}/landing/banner', 'AcaCourseLandingController@updateBanner')
+        ->name('aca_courses_landing_update_banner');
+
+    Route::put('courses/{courseId}/landing/professional', 'AcaCourseLandingController@updateProfessional')
+        ->name('aca_courses_landing_update_professional');
+
+    Route::put('courses/{courseId}/landing', 'AcaCourseLandingController@update')
+        ->name('aca_courses_landing_update');
+
     Route::post('courses/update', 'AcaCourseController@update')->name('aca_courses_update');
 
     Route::middleware(['middleware' => 'permission:aca_cursos_eliminar'])
@@ -158,13 +173,6 @@ Route::middleware(['auth', 'verified', 'invalid_updated_information', 'user_acti
     Route::middleware(['middleware' => 'permission:aca_cursos_listado'])
         ->get('courses/information/{id}', 'AcaCourseController@information')
         ->name('aca_courses_information');
-
-    Route::middleware(['middleware' => 'permission:aca_cursos_editar'])
-        ->get('courses/landing/{id}', [AcaCourseController::class, 'landing'])
-        ->name('aca_courses_landing');
-
-    Route::post('courses/landing/store', [AcaCourseController::class, 'landingStore'])
-        ->name('aca_courses_landing_store');
 
     Route::middleware(['middleware' => 'permission:aca_cursos_listado'])
         ->get('agreement/list/{id}', 'AcaAgreementController@index')
