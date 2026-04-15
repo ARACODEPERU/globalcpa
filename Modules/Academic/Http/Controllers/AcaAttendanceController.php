@@ -133,15 +133,8 @@ class AcaAttendanceController extends Controller
         $docType = IdentityDocumentType::find($request->identity_document_type_id);
         $requiredLength = $docType ? (int) $docType->number_characters : 8;
 
-        // Para "Otros" (id 999), permitir hasta 15 dígitos
-        if ($request->identity_document_type_id == 999) {
-            if (strlen($request->dni) > 15) {
-                return back()->withErrors(['dni' => 'El número de documento debe tener máximo 15 dígitos.']);
-            }
-        } else {
-            if (strlen($request->dni) !== $requiredLength) {
-                return back()->withErrors(['dni' => 'El número de documento debe tener '.$requiredLength.' dígitos.']);
-            }
+        if (strlen($request->dni) !== $requiredLength) {
+            return back()->withErrors(['dni' => 'El número de documento debe tener '.$requiredLength.' dígitos.']);
         }
 
         $link = AcaAttendanceLink::with(['course', 'content'])
