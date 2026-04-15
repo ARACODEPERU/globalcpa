@@ -209,6 +209,9 @@ class CertificateImage
                 
                 // Solo renderizar si hay descripción disponible en el módulo
                 if ($moduleDescriptionText) {
+                    // Asegurar que htmlGenerator esté disponible
+                    $htmlGenerator = new CertificateGeneratorHtml;
+                    
                     $moduleDescContentWidth = (int) ($moduleConfig ? ($moduleConfig->max_width_module_description ?? 800) : 800);
                     $moduleDescContentHeight = $this->certificates_param->certificate_img_height ?? 1550;
                     
@@ -713,19 +716,25 @@ class CertificateImage
         // Texto de ejemplo por defecto
         $defaultTitle = 'Título del Curso 3025 - II';
 
-        // Si hay módulo específico, mostrar curso + módulo
+        // Si hay módulo específico
         if ($this->module_id) {
             $module = AcaModule::with('course')->find($this->module_id);
 
-            if ($module && $module->course) {
-                $courseName = $module->course->certificate_title ?? 'Curso';
-                $moduleName = $module->description ?? 'Módulo';
-
-                return "{$courseName} - Módulo: {$moduleName}";
+            if ($module) {
+                // Si el módulo tiene certificate_title personalizado, usarlo
+                if (!empty($module->certificate_title)) {
+                    return $module->certificate_title;
+                }
+                // Si no, usar el formato anterior: título del curso + nombre del módulo
+                if ($module->course) {
+                    $courseName = $module->course->certificate_title ?? 'Curso';
+                    $moduleName = $module->description ?? 'Módulo';
+                    return "{$courseName} - Módulo: {$moduleName}";
+                }
             }
         }
 
-        // Si hay curso pero no módulo
+        // Si hay curso pero no módulo (certificado de curso regular)
         if ($this->course_id) {
             $course = AcaCourse::find($this->course_id);
             if ($course) {
