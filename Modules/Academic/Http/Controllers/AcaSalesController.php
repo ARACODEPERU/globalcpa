@@ -313,10 +313,10 @@ class AcaSalesController extends Controller
                         $classEntity = AcaCourse::class;
 
                         $genericProduct = Product::firstOrCreate(
-                            ['usine' => '999999999'],
+                            ['usine' => '11211'],
                             [
-                                'interne' => '999999999',
-                                'description' => 'Curso en plataforma Virtual genérico',
+                                'interne' => '11211',
+                                'description' => 'Curso en plataforma Virtual',
                                 'purchase_prices' => 0.0,
                                 'sale_prices' => '{"high":"1500","under":500,"medium":1000}',
                                 'stock_min' => 1,
