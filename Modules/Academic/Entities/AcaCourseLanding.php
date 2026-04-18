@@ -19,6 +19,13 @@ class AcaCourseLanding extends Model
         'banner_language',
         'is_published',
         'professional_section',
+        'staff_section',
+        'results_section',
+        'testimonials_section',
+        'study_plan_section',
+        'problem_section',
+        'investment_section',
+        'faq_section',
     ];
 
     protected $casts = [
@@ -27,6 +34,13 @@ class AcaCourseLanding extends Model
         'banner_duration' => 'integer',
         'is_published' => 'boolean',
         'professional_section' => 'array',
+        'staff_section' => 'array',
+        'results_section' => 'array',
+        'testimonials_section' => 'array',
+        'study_plan_section' => 'array',
+        'problem_section' => 'array',
+        'investment_section' => 'array',
+        'faq_section' => 'array',
     ];
 
     public function course(): BelongsTo

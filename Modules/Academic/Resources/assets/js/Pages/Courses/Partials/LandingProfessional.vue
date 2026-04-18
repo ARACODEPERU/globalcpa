@@ -6,8 +6,7 @@ import Swal from 'sweetalert2';
 import IconLoader from '@/Components/vristo/icon/icon-loader.vue';
 import InputError from '@/Components/InputError.vue';
 import IconSave from "@/Components/vristo/icon/icon-save.vue";
-import { faUserGroup, faBook, faIcons } from  '@fortawesome/free-solid-svg-icons';
-
+import * as fasIcons from '@fortawesome/free-solid-svg-icons';
 
 const props = defineProps({
     course: {
@@ -168,9 +167,19 @@ const saveProfessionalSettings = () => {
 };
 
 const formatIconForVue = (iconName) => {
-    if (!iconName) return ['fas', 'icons'];
-    const iconKey = iconName.replace(/^fa-/, '');
-    return ['fas', iconKey];
+    if (!iconName) return fasIcons.faIcons; // Icono por defecto si está vacío
+
+    // 1. Quitar 'fa-' si existe
+    const cleanName = iconName.replace(/^fa-/, '');
+
+    // 2. Convertir 'user-tie' a 'faUserTie' (PascalCase)
+    const pascalName = 'fa' + cleanName
+        .split('-')
+        .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+        .join('');
+
+    // 3. Retornar el objeto si existe, o uno por defecto
+    return fasIcons[pascalName] || fasIcons.faIcons;
 };
 
 </script>

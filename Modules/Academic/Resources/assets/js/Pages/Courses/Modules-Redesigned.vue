@@ -110,7 +110,6 @@
         description: null,
         allow_certificate_download: false,
         certificate_description: '',
-        certificate_title: '',
     });
 
     const moduleExamForm = useForm({
@@ -190,7 +189,6 @@
             moduleForm.position = module.position;
             moduleForm.allow_certificate_download = module.allow_certificate_download ? true : false;
             moduleForm.certificate_description = module.certificate_description || '';
-            moduleForm.certificate_title = module.certificate_title || '';
         }
 
         moduleForm.course_name = props.course.description;
@@ -1734,19 +1732,6 @@
                                 :class="{ 'opacity-50 cursor-not-allowed': !moduleForm.allow_certificate_download }"
                             ></textarea>
                             <p class="text-xs text-gray-500 mt-1" :class="{ 'opacity-50': !moduleForm.allow_certificate_download }">Esta descripción aparecerá en el certificado del estudiante cuando complete este módulo.</p>
-                        </div>
-                        <div class="mt-4">
-                            <InputLabel for="certificate_title" value="Título del certificado" class="mb-1" />
-                            <input 
-                                v-model="moduleForm.certificate_title" 
-                                id="certificate_title" 
-                                type="text" 
-                                class="form-input"
-                                placeholder="Título personalizado que aparecerá en el certificado del módulo"
-                                :disabled="!moduleForm.allow_certificate_download"
-                                :class="{ 'opacity-50 cursor-not-allowed': !moduleForm.allow_certificate_download }"
-                            />
-                            <p class="text-xs text-gray-500 mt-1" :class="{ 'opacity-50': !moduleForm.allow_certificate_download }">Este título reemplazará el título por defecto del certificado.</p>
                         </div>
                     </div>
                 </div>

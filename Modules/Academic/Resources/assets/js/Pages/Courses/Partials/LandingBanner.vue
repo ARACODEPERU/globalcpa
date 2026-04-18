@@ -23,7 +23,7 @@ const props = defineProps({
     },
 });
 
-console.log(props.landing);
+
 const formBanner = useForm({
     banner_start_date: props.landing.banner_start_date || '',
     banner_end_date: props.landing.banner_end_date || '',

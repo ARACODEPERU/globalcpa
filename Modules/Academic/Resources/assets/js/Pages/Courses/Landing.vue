@@ -9,6 +9,14 @@ import InputError from '@/Components/InputError.vue';
 import IconSave from "@/Components/vristo/icon/icon-save.vue";
 import LandingBanner from './Partials/LandingBanner.vue';
 import LandingProfessional from './Partials/LandingProfessional.vue';
+import LandingStaff from './Partials/LandingStaff.vue';
+import LandingResults from './Partials/LandingResults.vue';
+import LandingTestimonials from './Partials/LandingTestimonials.vue';
+import LandingStudyPlan from './Partials/LandingStudyPlan.vue';
+import LandingProblem from './Partials/LandingProblem.vue';
+import LandingInvestment from './Partials/LandingInvestment.vue';
+import LandingFaq from './Partials/LandingFaq.vue';
+import * as fasIcons from '@fortawesome/free-solid-svg-icons';
 
 const props = defineProps({
     course: {
@@ -23,6 +31,14 @@ const props = defineProps({
         type: Object,
         default: () => ({}),
     },
+    teachers: {
+        type: Array,
+        default: () => ([]),
+    },
+    people: {
+        type: Array,
+        default: () => ([]),
+    },
 });
 
 const activeTab = ref('banner');
@@ -31,13 +47,13 @@ const baseUrl = assetUrl;
 const tabs = [
     { id: 'banner', label: 'Banner', icon: 'fa-image' },
     { id: 'professional', label: 'Actualización Profesional', icon: 'fa-graduation-cap' },
-    { id: 'features', label: 'Características', icon: 'fa-list-ul' },
-    { id: 'pricing', label: 'Precios', icon: 'fa-dollar-sign' },
+    { id: 'staff', label: 'Nuestro Staff', icon: 'fa-users' },
+    { id: 'results', label: 'Resultados del Programa', icon: 'fa-chart-line' },
     { id: 'testimonials', label: 'Testimonios', icon: 'fa-comments' },
+    { id: 'study_plan', label: 'Plan de Estudios', icon: 'fa-book-open' },
+    { id: 'problem', label: 'El Problema', icon: 'fa-exclamation-triangle' },
+    { id: 'investment', label: 'Inversión', icon: 'fa-dollar-sign' },
     { id: 'faq', label: 'Preguntas Frecuentes', icon: 'fa-question-circle' },
-    { id: 'about', label: 'Sobre Nosotros', icon: 'fa-info-circle' },
-    { id: 'contact', label: 'Contacto', icon: 'fa-envelope' },
-    { id: 'seo', label: 'SEO', icon: 'fa-search' },
 ];
 
 const form = useForm({
@@ -84,6 +100,15 @@ const saveGeneralSettings = () => {
 };
 
 
+const formatIconForVue = (iconName) => {
+    if (!iconName) return fasIcons.faIcons;
+    const cleanName = iconName.replace(/^fa-/, '');
+    const pascalName = 'fa' + cleanName
+        .split('-')
+        .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+        .join('');
+    return fasIcons[pascalName] || fasIcons.faIcons;
+};
 
 
 </script>
@@ -117,7 +142,7 @@ const saveGeneralSettings = () => {
                     <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
                         <!-- Estado Publicar -->
                         <div class="lg:col-span-1">
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
                                 <span class="inline-flex items-center gap-1">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -125,8 +150,8 @@ const saveGeneralSettings = () => {
                                     Estado de Publicación
                                 </span>
                             </label>
-                            <div class="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-                                <label class="relative inline-flex items-center cursor-pointer">
+                            <div class="flex items-center gap-3 p-2 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                                <label class="relative inline-flex items-center cursor-pointer p-0 mb-0">
                                     <input type="checkbox" v-model="form.is_published" class="sr-only peer">
                                     <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-500"></div>
                                     <span class="ml-3 text-sm font-medium" :class="form.is_published ? 'text-green-600 dark:text-green-400' : 'text-gray-500 dark:text-gray-400'">
@@ -144,6 +169,7 @@ const saveGeneralSettings = () => {
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
                                     </svg>
                                     URL Amigable
+                                    <p class="mt-1 text-xs text-gray-500 ml-6">Solo letras minúsculas, números y guiones</p>
                                 </span>
                             </label>
                             <div class="flex rounded-md shadow-sm">
@@ -158,7 +184,7 @@ const saveGeneralSettings = () => {
                                 >
                             </div>
                             <InputError :message="form.errors.url_slug" class="mt-2" />
-                            <p class="mt-1 text-xs text-gray-500">Solo letras minúsculas, números y guiones</p>
+
                         </div>
 
                         <!-- Botón Copiar + Guardar -->
@@ -192,23 +218,26 @@ const saveGeneralSettings = () => {
                 </div>
 
                 <!-- Tabs Navigation -->
-                <div class="border-b border-gray-200 dark:border-gray-700">
-                    <nav class="flex space-x-2 px-6" aria-label="Tabs" role="tablist">
+                <div class="p-4 bg-gray-50 dark:bg-gray-800/50">
+                    <nav class="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-9 gap-2">
                         <button
                             v-for="tab in tabs"
                             :key="tab.id"
                             @click="activeTab = tab.id"
                             :class="[
                                 activeTab === tab.id
-                                    ? 'border-blue-500 text-blue-600 dark:text-blue-400'
-                                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300',
-                                'group inline-flex items-center py-4 px-1 border-b-2 font-medium text-sm transition-colors'
+                                    ? 'bg-blue-600 text-white shadow-lg'
+                                    : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700',
+                                'flex flex-col items-center justify-center p-3 rounded-lg transition-all duration-200 border border-gray-200 dark:border-gray-700'
                             ]"
-                            :aria-selected="activeTab === tab.id"
-                            role="tab"
                         >
-                            <i :class="['fa', tab.icon, 'mr-2', activeTab === tab.id ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400 group-hover:text-gray-500']"></i>
-                            {{ tab.label }}
+                            <font-awesome-icon 
+                                :icon="formatIconForVue(tab.icon)" 
+                                :class="['text-lg mb-1', activeTab === tab.id ? 'text-white' : 'text-gray-500 dark:text-gray-400']" 
+                            />
+                            <span class="text-[10px] font-medium text-center leading-tight line-clamp-2">
+                                {{ tab.label }}
+                            </span>
                         </button>
                     </nav>
                 </div>
@@ -233,17 +262,63 @@ const saveGeneralSettings = () => {
                         />
                     </div>
 
-                    <!-- Placeholder for other tabs -->
-                    <div v-show="activeTab !== 'banner' && activeTab !== 'professional'" class="text-center py-12">
-                        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-700 mb-4">
-                            <i class="fa fa-cogs text-2xl text-gray-400"></i>
-                        </div>
-                        <h3 class="text-lg font-medium text-gray-900 dark:text-white">
-                            Sección en desarrollo
-                        </h3>
-                        <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                            Esta sección ({{ activeTab }}) está siendo preparada. Pronto podrás configurarla.
-                        </p>
+                    <!-- Staff Section -->
+                    <div v-show="activeTab === 'staff'">
+                        <LandingStaff
+                            :course="course"
+                            :landing="landing"
+                            :teachers="teachers"
+                        />
+                    </div>
+
+                    <!-- Results Section -->
+                    <div v-show="activeTab === 'results'">
+                        <LandingResults
+                            :course="course"
+                            :landing="landing"
+                            :language-options="languageOptions"
+                        />
+                    </div>
+
+                    <!-- Testimonials Section -->
+                    <div v-show="activeTab === 'testimonials'">
+                        <LandingTestimonials
+                            :course="course"
+                            :landing="landing"
+                            :people="people"
+                        />
+                    </div>
+
+                    <!-- Study Plan Section -->
+                    <div v-show="activeTab === 'study_plan'">
+                        <LandingStudyPlan
+                            :course="course"
+                            :landing="landing"
+                        />
+                    </div>
+
+                    <!-- Problem Section -->
+                    <div v-show="activeTab === 'problem'">
+                        <LandingProblem
+                            :course="course"
+                            :landing="landing"
+                        />
+                    </div>
+
+                    <!-- Investment Section -->
+                    <div v-show="activeTab === 'investment'">
+                        <LandingInvestment
+                            :course="course"
+                            :landing="landing"
+                        />
+                    </div>
+
+                    <!-- FAQ Section -->
+                    <div v-show="activeTab === 'faq'">
+                        <LandingFaq
+                            :course="course"
+                            :landing="landing"
+                        />
                     </div>
                 </div>
             </div>
