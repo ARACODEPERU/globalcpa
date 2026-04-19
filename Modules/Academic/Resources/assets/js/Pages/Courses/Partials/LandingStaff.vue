@@ -55,9 +55,9 @@ const formStaff = useForm({
 
 const availableTeachers = computed(() => {
     return props.teachers.map(teacher => {
-        const isSelected = initialData?.teachers?.some(
+        const selected = formStaff.teachers.some(
             t => t.teacher_id === teacher.id && t.selected
-        ) || false;
+        );
 
         return {
             teacher_id: teacher.id,
@@ -65,27 +65,23 @@ const availableTeachers = computed(() => {
             full_name: teacher.person?.formatted_name || teacher.person?.name || 'Sin nombre',
             photo: teacher.person?.image || null,
             occupation: teacher.person?.ocupacion || 'Instructor',
-            selected: isSelected,
+            selected: selected,
         };
     });
 });
 
 const toggleTeacher = (teacherId) => {
-    const tIndex = availableTeachers.value.findIndex(t => t.teacher_id === teacherId);
-    if (tIndex >= 0) {
-        availableTeachers.value[tIndex].selected = !availableTeachers.value[tIndex].selected;
-        
-        const formIndex = formStaff.teachers.findIndex(t => t.teacher_id === teacherId);
-        if (formIndex >= 0) {
-            formStaff.teachers[formIndex].selected = availableTeachers.value[tIndex].selected;
-        } else {
-            formStaff.teachers.push({ teacher_id: teacherId, selected: true });
-        }
+    const formIndex = formStaff.teachers.findIndex(t => t.teacher_id === teacherId);
+    
+    if (formIndex >= 0) {
+        formStaff.teachers[formIndex].selected = !formStaff.teachers[formIndex].selected;
+    } else {
+        formStaff.teachers.push({ teacher_id: teacherId, selected: true });
     }
 };
 
 const isTeacherSelected = (teacherId) => {
-    const teacher = availableTeachers.value.find(t => t.teacher_id === teacherId);
+    const teacher = formStaff.teachers.find(t => t.teacher_id === teacherId);
     return teacher ? teacher.selected : false;
 };
 
@@ -104,15 +100,6 @@ const saveStaffSettings = () => {
         },
     });
 };
-
-watch(() => formStaff.teachers, (newVal) => {
-    if (newVal && newVal.length > 0) {
-        formStaff.teachers = newVal.map(t => ({
-            teacher_id: t.teacher_id,
-            selected: t.selected,
-        }));
-    }
-}, { deep: true });
 
 </script>
 <template>
