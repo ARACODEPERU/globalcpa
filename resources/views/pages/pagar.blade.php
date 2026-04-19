@@ -371,10 +371,34 @@
             document.getElementById("CartForm").submit();
         }
     </script>
-    {!! htmlScriptTagJsApi([
-        'callback_then' => 'callbackThen',
+    <script src="https://www.google.com/recaptcha/api.js?render={{ env('RECAPTCHA_SITE_KEY') }}"></script>
+    <script>
+        function callbackThen(response) {
+            // Tu lógica existente para éxito
+            console.log("Token generado:", response);
+        }
 
-        'callback_catch' => 'callbackCatch',
-    ]) !!}
+        function callbackCatch(error) {
+            // Tu lógica existente para error
+            console.error("Error en reCAPTCHA:", error);
+        }
+
+        // Esta es la función que llama tu formulario
+        function onSubmit(e) {
+            if (e) e.preventDefault();
+            grecaptcha.ready(function() {
+                grecaptcha.execute("{{ env('RECAPTCHA_SITE_KEY') }}", {action: 'submit'}).then(function(token) {
+                    // Añadimos el token al formulario y lo enviamos
+                    let form = document.getElementById("CartForm");
+                    let input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'g-recaptcha-response';
+                    input.value = token;
+                    form.appendChild(input);
+                    form.submit();
+                });
+            });
+        }
+    </script>
 
 @stop

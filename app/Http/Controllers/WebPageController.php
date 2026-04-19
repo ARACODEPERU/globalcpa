@@ -539,7 +539,7 @@ class WebPageController extends Controller
 
         try {
             DB::beginTransaction();
-            MercadoPagoConfig::setAccessToken(env('MERCADOPAGO_TOKEN'));
+            MercadoPagoConfig::setAccessToken(config('services.mercadopago.token'));
             $client = new PreferenceClient();
             $items = [];
             $products = [];
@@ -682,7 +682,7 @@ class WebPageController extends Controller
 
         try {
             DB::beginTransaction();
-            MercadoPagoConfig::setAccessToken(env('MERCADOPAGO_TOKEN'));
+            MercadoPagoConfig::setAccessToken(config('services.mercadopago.token'));
             $client = new PreferenceClient();
             $items = [];
             $products = [];
@@ -876,7 +876,7 @@ class WebPageController extends Controller
 
     public function processPayment(Request $request, $id)
     {
-        MercadoPagoConfig::setAccessToken(env('MERCADOPAGO_TOKEN'));
+        MercadoPagoConfig::setAccessToken(config('services.mercadopago.token'));
 
         $client = new PaymentClient();
         $sale = OnliSale::find($id);

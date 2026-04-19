@@ -216,7 +216,7 @@
         cargarItemsCarritoBD();
 
         function cargarItemsCarritoBD() {
-            document.getElementById('cart').innerHTML = ""; 
+            document.getElementById('cart').innerHTML = "";
             let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
             let myIds = [];
             carrito.forEach(function(item) {
@@ -225,7 +225,7 @@
 
             let btnCrear = document.getElementById("btn-crear-cuenta");
             if (btnCrear) btnCrear.setAttribute("disabled", "disabled");
-            
+
             if (myIds.length > 0) {
                 realizarConsulta(myIds);
             }
@@ -243,7 +243,7 @@
                 headers: { 'X-CSRF-TOKEN': token_csrf },
                 success: function(respuesta) {
                     var divCartHidden = document.getElementById("divCartHidden");
-                    
+
                     respuesta.items.forEach(function(item) {
                         renderProducto(item);
                         if (divCartHidden) {
@@ -304,10 +304,34 @@
             }
         }
     </script>
-    {!! htmlScriptTagJsApi([
-        'callback_then' => 'callbackThen',
-    
-        'callback_catch' => 'callbackCatch',
-    ]) !!}
+    <script src="https://www.google.com/recaptcha/api.js?render={{ env('RECAPTCHA_SITE_KEY') }}"></script>
+    <script>
+        function callbackThen(response) {
+            // Tu lógica existente para éxito
+            console.log("Token generado:", response);
+        }
+
+        function callbackCatch(error) {
+            // Tu lógica existente para error
+            console.error("Error en reCAPTCHA:", error);
+        }
+
+        // Esta es la función que llama tu formulario
+        function onSubmit(e) {
+            if (e) e.preventDefault();
+            grecaptcha.ready(function() {
+                grecaptcha.execute("{{ env('RECAPTCHA_SITE_KEY') }}", {action: 'submit'}).then(function(token) {
+                    // Añadimos el token al formulario y lo enviamos
+                    let form = document.getElementById("CartForm");
+                    let input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'g-recaptcha-response';
+                    input.value = token;
+                    form.appendChild(input);
+                    form.submit();
+                });
+            });
+        }
+    </script>
 
 @stop
