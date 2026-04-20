@@ -23,6 +23,9 @@
 
 
     <!-- Meta Pixel Code -->
+
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
     <script>
         ! function(f, b, e, v, n, t, s) {
             if (f.fbq) return;
@@ -233,7 +236,7 @@
             if (slides) {
                 let currentIndex = 0;
                 const totalSlides = document.querySelectorAll('.slide').length;
-                
+
                 function showNextSlide() {
                     currentIndex = (currentIndex + 1) % totalSlides;
                     const offset = -currentIndex * 100;

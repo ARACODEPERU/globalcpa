@@ -76,7 +76,7 @@
     <!-- tap on top starts-->
     <div class="tap-top"><i data-feather="chevrons-up"></i></div>
     <!-- tap on tap ends-->
-
+    {{-- @vite(['resources/css/app.css', 'resources/js/app.js']) va en el LAyout en este caso webpage--}}
 
     <!-- page-wrapper Start-->
     <div class="page-wrapper" id="pageWrapper">
