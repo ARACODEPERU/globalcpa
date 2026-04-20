@@ -43,34 +43,65 @@
                                     <br>
                                     <div class="row widget-grid">
                                         @foreach ($courses->take($p) as $item)
+
                                             <div class="col-xl-4 col-md-6 col-sm-12 box-col-4">
                                                 <div class="card weekend-card">
                                                     <div class="card-body">
-                                                        <a href="{{ route('web_course_description', $item->id) }}">
-                                                            <img class="w-100 mb-3"
-                                                                src="{{ asset('storage/' . $item->course->image) }}"
-                                                                alt="">
-                                                        </a>
+                                                        @if ($item->url_slug)
+                                                            <a href="{{ route('course_url_slug', $item->url_slug) }}">
+                                                                <img class="w-100 mb-3"
+                                                                    src="{{ asset('storage/' . $item->course->image) }}"
+                                                                    alt="">
+                                                            </a>
+                                                        @else
+                                                            <a href="{{ route('web_course_description', $item->id) }}">
+                                                                <img class="w-100 mb-3"
+                                                                    src="{{ asset('storage/' . $item->course->image) }}"
+                                                                    alt="">
+                                                            </a>
+                                                        @endif
+
                                                         <span style="color: #e30613;">{{ $item->additional }}</span>
                                                         <br>
+                                                        @if ($item->url_slug)
+                                                        <a href="{{ route('course_url_slug', $item->url_slug) }}"
+                                                            style="text-decoration: none;">
+                                                            <h4 style=" height: 30px;">{{ $item->name }}
+                                                            </h4>
+                                                        </a>
+                                                        @else
                                                         <a href="{{ route('web_course_description', $item->id) }}"
                                                             style="text-decoration: none;">
                                                             <h4 style=" height: 30px;">{{ $item->name }}
                                                             </h4>
                                                         </a>
+                                                        @endif
                                                         <br>
                                                         <div class="card">
                                                             <div class="">
                                                                 <div class="btn-showcase">
-                                                                    <a
-                                                                        href="{{ route('web_course_description', $item->id) }}">
-                                                                        <button
-                                                                            class="btn btn-pill btn-light btn-air-light btn-sm"
-                                                                            type="button"
-                                                                            data-bs-original-title="btn btn-pill btn-light btn-air-light btn-sm">
-                                                                            Leer Más
-                                                                        </button>
-                                                                    </a>
+                                                                    @if ($item->url_slug)
+                                                                        <a
+                                                                            href="{{ route('course_url_slug', $item->url_slug) }}">
+                                                                            <button
+                                                                                class="btn btn-pill btn-light btn-air-light btn-sm"
+                                                                                type="button"
+                                                                                data-bs-original-title="btn btn-pill btn-light btn-air-light btn-sm">
+                                                                                Leer Más
+                                                                            </button>
+                                                                        </a>
+                                                                @else
+                                                                        <a
+                                                                            href="{{ route('web_course_description', $item->id) }}">
+                                                                            <button
+                                                                                class="btn btn-pill btn-light btn-air-light btn-sm"
+                                                                                type="button"
+                                                                                data-bs-original-title="btn btn-pill btn-light btn-air-light btn-sm">
+                                                                                Leer Más
+                                                                            </button>
+                                                                        </a>
+                                                                @endif
+
                                                                     <a
                                                                         onclick="agregarAlCarrito({ id: {{ $item->id }}, nombre: '{{ $item->name }}', precio: {{ $item->price }} })">
                                                                         <button
@@ -103,12 +134,22 @@
                                                     <div class="col-xl-4 col-md-6 col-sm-12 box-col-4">
                                                         <div class="card weekend-card">
                                                             <div class="card-body">
+                                                                @if ($item->url_slug)
                                                                 <a
-                                                                    href="{{ route('web_course_description', $item->id) }}">
+                                                                    href="{{ route('course_url_slug', $item->url_slug) }}">
                                                                     @if($item->course?->image)
                                                                         <img class="w-100 mb-3" src="{{ asset('storage/' . $item->course->image) }}" alt="">
                                                                     @endif
                                                                 </a>
+                                                                @else
+                                                                    <a
+                                                                        href="{{ route('web_course_description', $item->id) }}">
+                                                                        @if($item->course?->image)
+                                                                            <img class="w-100 mb-3" src="{{ asset('storage/' . $item->course->image) }}" alt="">
+                                                                        @endif
+                                                                    </a>
+                                                                @endif
+
                                                                 <br>
                                                                 <span
                                                                     style="color: #6a4c93;">{{ $item->additional }}</span>
@@ -122,6 +163,17 @@
                                                                 <div class="card">
                                                                     <div class="">
                                                                         <div class="btn-showcase">
+                                                                            @if ($item->url_slug)
+                                                                                <a
+                                                                                    href="{{ route('course_url_slug', $item->url_slug) }}">
+                                                                                    <button
+                                                                                        class="btn btn-pill btn-light btn-air-light btn-sm"
+                                                                                        type="button"
+                                                                                        data-bs-original-title="btn btn-pill btn-light btn-air-light btn-sm">
+                                                                                        Leer Más
+                                                                                    </button>
+                                                                                </a>
+                                                                            @else
                                                                             <a
                                                                                 href="{{ route('web_course_description', $item->id) }}">
                                                                                 <button
@@ -131,6 +183,8 @@
                                                                                     Leer Más
                                                                                 </button>
                                                                             </a>
+                                                                            @endif
+
                                                                             <a
                                                                                 onclick="agregarAlCarrito({ id: {{ $item->id }}, nombre: '{{ $item->name }}', precio: {{ $item->price }} })">
                                                                                 <button

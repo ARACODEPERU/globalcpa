@@ -27,6 +27,7 @@ use App\Models\District;
 use Carbon\Carbon;
 use Modules\Academic\Entities\AcaStudent;
 use Modules\Academic\Entities\AcaCapRegistration;
+use Modules\Academic\Entities\AcaCourseLanding;
 use Illuminate\Support\Facades\DB;
 use Modules\Academic\Entities\AcaStudentCoursesInterest;
 use Modules\CMS\Entities\CmsLanding;
@@ -223,31 +224,46 @@ class WebPageController extends Controller
 
     public function coursedescription($id)
     {
-        $item = OnliItem::find($id);
+        if(is_numeric($id) && $id >0){
+            $item = OnliItem::find($id);
 
-        $course = AcaCourse::with('category')
-            ->with('modality')
-            ->with('modules')
-            ->with('teachers.teacher.person.resumes')
-            ->with('brochure')
-            ->with('agreements')
-            ->where('id', $item->item_id)
-            ->first();
+            $course = AcaCourse::with('category')
+                ->with('modality')
+                ->with('modules')
+                ->with('teachers.teacher.person.resumes')
+                ->with('brochure')
+                ->with('agreements')
+                ->where('id', $item->item_id)
+                ->first();
 
-        $latest_courses = OnliItem::with('course')
-            ->orderBy('id', 'desc')
-            ->where('id', '!=', $id)
-            ->take(10)
-            ->get()
-            ->shuffle()
-            ->take(3);
+            $latest_courses = OnliItem::with('course')
+                ->orderBy('id', 'desc')
+                ->where('id', '!=', $id)
+                ->take(10)
+                ->get()
+                ->shuffle()
+                ->take(3);
 
 
-        return view('pages.course-description', [
-            'course' => $course,
-            'item' => $item,
-            'latest_courses' => $latest_courses
-        ]);
+            return view('pages.course-description', [
+                'course' => $course,
+                'item' => $item,
+                'latest_courses' => $latest_courses
+            ]);
+        }else{
+            return redirect()->route('course_url_slug', $id);
+        }
+
+    }
+
+    public function course_url_slug($id){
+        $landing = AcaCourseLanding::with('course')
+            ->with('course.category')
+            ->with('course.modality')
+            ->where('url_slug', $id)->first();
+            return view ('pages.course-landing', [
+                'landing' => $landing,
+            ]);
     }
 
     public function cursodescripcion($id)
