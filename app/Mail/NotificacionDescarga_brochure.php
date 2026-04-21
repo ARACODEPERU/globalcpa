@@ -18,6 +18,7 @@ class NotificacionDescarga_brochure extends Mailable
     /**
      * Create a new message instance.
      */
+    public $data;
     public function __construct($data)
     {
         //
@@ -30,8 +31,8 @@ class NotificacionDescarga_brochure extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            from: new Address(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME')),
-            subject: 'Alguien Descargó Brochure - '.env('APP_NAME'),
+            from: new Address(config('services.email.mail_from_address'), config('services.email.mail_from_name')),
+            subject: 'Alguien Descargó Brochure - '.config('services.email.app_name'),
         );
     }
 

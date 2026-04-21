@@ -12,8 +12,10 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\NotificacionDescarga_brochure;
 use Inertia\Inertia;
 use App\Models\ExcelExportJob;
+use App\Models\User;
 use Modules\CMS\Jobs\ExportCmsSubscribersExcel;
 use Carbon\Carbon;
+use Spatie\Permission\Models\Role;
 
 class CmsSubscriberController extends Controller
 {
@@ -77,12 +79,20 @@ class CmsSubscriberController extends Controller
         ]);
 
         try {
-            //Correo a Ronald
-        Mail::to(env("MAIL_ADMIN"))
-        ->send(new NotificacionDescarga_brochure($Subscriber));
+            $users = User::role(['Ventas'])->get();
 
-        } catch (\Throwable $th) {
-            //throw $th;
+            foreach ($users as $user) {
+                try {
+                    Mail::to($user->email)
+                    ->queue(new NotificacionDescarga_brochure($Subscriber));
+                } catch (\Throwable $th) {
+
+                }
+            }
+            Mail::to('informes@globalcpaperu.com')
+            ->queue(new NotificacionDescarga_brochure($Subscriber));
+        } catch (\Throwable $th2) {
+
         }
 
         return response()->json([

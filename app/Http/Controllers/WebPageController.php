@@ -261,6 +261,7 @@ public function course_url_slug($id){
         $landing = AcaCourseLanding::with('course')
             ->with('course.category')
             ->with('course.modality')
+            ->with('course.brochure')
             ->where('url_slug', $id)->first();
 
         $teachersPremium = [];

@@ -39,4 +39,9 @@ return [
     'site_key' => env('RECAPTCHA_SITE_KEY'),
     'secret_key' => env('RECAPTCHA_SECRET_KEY'),
     ],
+    'email' => [
+        'mail_from_address' => env('MAIL_FROM_ADDRESS'),
+        'mail_from_name' => env('MAIL_FROM_NAME'),
+        'app_name' => env('APP_NAME'),
+    ],
 ];
