@@ -224,8 +224,11 @@
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label fw-bold" style="color: #002060;">WhatsApp</label>
                                             <div class="input-group shadow-sm">
-                                                <span class="input-group-text bg-white border-end-0"><i
-                                                        class="fa fa-whatsapp text-muted"></i></span>
+                                                <span class="input-group-text bg-white border-end-0">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" style="width: 16px; height: 16px; fill: #6c757d;">
+                                                        <path d="M380.9 97.1c-41.9-42-97.7-65.1-157-65.1-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480 117.7 449.1c32.4 17.7 68.9 27 106.1 27l.1 0c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3 18.6-68.1-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1s56.2 81.2 56.1 130.5c0 101.8-84.9 184.6-186.6 184.6zM325.1 300.5c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8s-14.3 18-17.6 21.8c-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7 .9-6.9-.5-9.7s-12.5-30.1-17.1-41.2c-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2s-9.7 1.4-14.8 6.9c-5.1 5.6-19.4 19-19.4 46.3s19.9 53.7 22.6 57.4c2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4s4.6-24.1 3.2-26.4c-1.3-2.5-5-3.9-10.5-6.6z"/>
+                                                    </svg>
+                                                </span>
                                                 <input type="text" name="phone"
                                                     class="form-control border-start-0 ps-0" placeholder="Ej: 999 888 777"
                                                     required>
@@ -858,60 +861,64 @@
 
                                         <!-- Plan Regular (Pronto pago)  [0] -->
                                         @if (filled($landing->investment_section['items'][0] ?? null))
-                                            <div class="col-md-4" data-aos="zoom-in" data-aos-delay="200">
-                                                <div class="card h-100 border-0 shadow-lg transition-all rounded-4 overflow-hidden bg-white border-top border-warning border-5" style="border-top: 5px solid #ffc107 !important;">
-                                                    <div class="p-4 border-bottom" style="background-color: rgba(255, 193, 7, 0.05);">
-                                                        <span class="badge bg-warning text-dark mb-2">{{ $landing->investment_section['items'][0]['tag'] }}</span>
-                                                        <h4 class="fw-bold mb-0" style="color: #002060;">{{ $landing->investment_section['items'][0]['title'] }}</h4>
-                                                        <small class="text-muted">La mas recomendada</small>
-                                                    </div>
-                                                    <div class="card-body p-4 text-center">
-                                                        <div class="mb-2">
-                                                            <span class="display-4 fw-bold" style="color: #002060;">S/ {{ $landing->investment_section['items'][0]['price_now'] }}</span>
-                                                            <span class="text-muted">/ {{ $landing->investment_section['items'][0]['price_now_text'] ?? "" }}</span>
+                                            @if ($landing->investment_section['items'][0]['price_before_visible'])
+                                                <div class="col-md-4" data-aos="zoom-in" data-aos-delay="200">
+                                                    <div class="card h-100 border-0 shadow-lg transition-all rounded-4 overflow-hidden bg-white border-top border-warning border-5" style="border-top: 5px solid #ffc107 !important;">
+                                                        <div class="p-4 border-bottom" style="background-color: rgba(255, 193, 7, 0.05);">
+                                                            <span class="badge bg-warning text-dark mb-2">{{ $landing->investment_section['items'][0]['tag'] }}</span>
+                                                            <h4 class="fw-bold mb-0" style="color: #002060;">{{ $landing->investment_section['items'][0]['title'] }}</h4>
+                                                            <small class="text-muted">La mas recomendada</small>
                                                         </div>
+                                                        <div class="card-body p-4 text-center">
+                                                            <div class="mb-2">
+                                                                <span class="display-4 fw-bold" style="color: #002060;">S/ {{ $landing->investment_section['items'][0]['price_now'] }}</span>
+                                                                <span class="text-muted">/ {{ $landing->investment_section['items'][0]['price_now_text'] ?? "" }}</span>
+                                                            </div>
 
-                                                        <div class="mb-4">
-                                                            <del class="text-muted fs-4 fw-semibold" style="color: #2d374b;">S/ {{ $landing->investment_section['items'][0]['price_before'] }}</del>
-                                                            <span class="text-muted small">/ {{ $landing->investment_section['items'][0]['price_before_text'] ?? "" }}</span>
+                                                            <div class="mb-4">
+                                                                <del class="text-muted fs-4 fw-semibold" style="color: #2d374b;">S/ {{ $landing->investment_section['items'][0]['price_before'] }}</del>
+                                                                <span class="text-muted small">/ {{ $landing->investment_section['items'][0]['price_before_text'] ?? "" }}</span>
+                                                            </div>
+                                                            <ul class="list-unstyled text-start mb-4">
+                                                                @if (filled($landing->investment_section['items'][0]['features'] ?? null))
+                                                                    @foreach ($landing->investment_section['items'][0]['features'] as $feature)
+                                                                    <li class="mb-2"><i class="fa fa-check text-success me-2"></i> <b>{{ $feature }}</b></li>
+                                                                    @endforeach
+                                                                @endif
+                                                            </ul>
+                                                            <a href="#pageContactForm" class="btn btn-warning w-100 fw-bold py-2 shadow-sm" style="color: #002060; border-radius: 10px;">Inscribirse ahora</a>
                                                         </div>
-                                                        <ul class="list-unstyled text-start mb-4">
-                                                            @if (filled($landing->investment_section['items'][0]['features'] ?? null))
-                                                                @foreach ($landing->investment_section['items'][0]['features'] as $feature)
-                                                                <li class="mb-2"><i class="fa fa-check text-success me-2"></i> <b>{{ $feature }}</b></li>
-                                                                @endforeach
-                                                            @endif
-                                                        </ul>
-                                                        <a href="#pageContactForm" class="btn btn-warning w-100 fw-bold py-2 shadow-sm" style="color: #002060; border-radius: 10px;">Inscribirse ahora</a>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            @endif
                                         @endif
 
                                         <!-- Plan Corporativo -->
                                         @if (filled($landing->investment_section['items'][1] ?? null))
-                                            <div class="col-md-4" data-aos="zoom-in" data-aos-delay="300">
-                                                <div class="card h-100 border-0 shadow-sm transition-all rounded-4 overflow-hidden bg-white text-center">
-                                                    <div class="p-4 border-bottom bg-light">
-                                                        <h4 class="fw-bold mb-0" style="color: #002060;">{{ $landing->investment_section['items'][1]['tag'] }}</h4>
-                                                        <small class="text-muted">{{ $landing->investment_section['items'][1]['title'] }}</small>
-                                                    </div>
-                                                    <div class="card-body p-4">
-                                                        <div class="mb-4">
-                                                            <span class="display-4 fw-bold" style="color: #002060;">S/ {{ $landing->investment_section['items'][1]['price_now'] }}</span>
-                                                            <span class="text-muted">/ {{ $landing->investment_section['items'][1]['price_now_text'] }}</span>
+                                            @if ($landing->investment_section['items'][1]['price_before_visible'])
+                                                <div class="col-md-4" data-aos="zoom-in" data-aos-delay="300">
+                                                    <div class="card h-100 border-0 shadow-sm transition-all rounded-4 overflow-hidden bg-white text-center">
+                                                        <div class="p-4 border-bottom bg-light">
+                                                            <h4 class="fw-bold mb-0" style="color: #002060;">{{ $landing->investment_section['items'][1]['tag'] }}</h4>
+                                                            <small class="text-muted">{{ $landing->investment_section['items'][1]['title'] }}</small>
                                                         </div>
-                                                        <ul class="list-unstyled text-start mb-4">
-                                                            @if (filled($landing->investment_section['items'][1]['features'] ?? null))
-                                                                @foreach ($landing->investment_section['items'][1]['features'] as $feature)
-                                                                <li class="mb-2"><i class="fa fa-check text-success me-2"></i> <b>{{ $feature }}</b></li>
-                                                                @endforeach
-                                                            @endif
-                                                        </ul>
-                                                        <a href="#pageContactForm" class="btn btn-outline-warning w-100 fw-bold py-2" style="color: #002060; border-radius: 10px;">Contactar ventas</a>
+                                                        <div class="card-body p-4">
+                                                            <div class="mb-4">
+                                                                <span class="display-4 fw-bold" style="color: #002060;">S/ {{ $landing->investment_section['items'][1]['price_now'] }}</span>
+                                                                <span class="text-muted">/ {{ $landing->investment_section['items'][1]['price_now_text'] }}</span>
+                                                            </div>
+                                                            <ul class="list-unstyled text-start mb-4">
+                                                                @if (filled($landing->investment_section['items'][1]['features'] ?? null))
+                                                                    @foreach ($landing->investment_section['items'][1]['features'] as $feature)
+                                                                    <li class="mb-2"><i class="fa fa-check text-success me-2"></i> <b>{{ $feature }}</b></li>
+                                                                    @endforeach
+                                                                @endif
+                                                            </ul>
+                                                            <a href="#pageContactForm" class="btn btn-outline-warning w-100 fw-bold py-2" style="color: #002060; border-radius: 10px;">Contactar ventas</a>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            @endif
                                         @endif
                                     </div>
                                 </div>
@@ -921,95 +928,61 @@
                 @endif
 
                 {{-- Propuesta 2: Preguntas Frecuentes (Diseño Moderno de Tarjetas) --}}
-                <div class="container-fluid card aos-animate mt-5" data-aos="fade-up">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="card-body p-4 p-lg-5">
-                                <div class="text-center mb-5">
-                                    <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border"
-                                        style="background-color: rgba(111, 66, 193, 0.1); color: #6f42c1;">
-                                        <i class="fa fa-magic me-1"></i> FAQ - VERSIÓN MODERNA
-                                    </span>
-                                    <h2 class="fw-bold display-6" style="color: #002060;">Preguntas Frecuentes</h2>
-                                    <p class="text-muted fs-5 mx-auto" style="max-width: 700px;">
-                                        Todo lo que necesitas saber sobre la Especialización en IA.
-                                    </p>
-                                </div>
+                @if (filled($landing->faq_section ?? null))
+                    <div class="container-fluid card aos-animate mt-5" data-aos="fade-up">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="card-body p-4 p-lg-5">
+                                    <div class="text-center mb-5">
+                                        <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border"
+                                            style="background-color: rgba(111, 66, 193, 0.1); color: #6f42c1;">
+                                            <i class="fa fa-magic me-1"></i> {{ $landing->faq_section['name'] }}
+                                        </span>
+                                        <h2 class="fw-bold display-6" style="color: #002060;">{{ $landing->faq_section['title'] }}</h2>
+                                        <p class="text-muted fs-5 mx-auto" style="max-width: 700px;">
+                                            {{ $landing->faq_section['description'] }}
+                                        </p>
+                                    </div>
 
-                                <div class="row justify-content-center">
-                                    <div class="col-lg-10">
-                                        <div class="accordion faq-modern" id="modernFaqAccordion">
+                                    <div class="row justify-content-center">
+                                        <div class="col-lg-10">
+                                            <div class="accordion faq-modern" id="modernFaqAccordion">
 
-                                            <!-- Pregunta 1 -->
-                                            <div class="accordion-item shadow-sm" data-aos="fade-up">
-                                                <h2 class="accordion-header">
-                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#mCollapseOne">
-                                                        ¿Cuál es la duración de la especialización?
-                                                    </button>
-                                                </h2>
-                                                <div id="mCollapseOne" class="accordion-collapse collapse" data-bs-parent="#modernFaqAccordion">
-                                                    <div class="accordion-body py-4 text-muted">
-                                                        El programa está diseñado para completarse en <strong>3 meses</strong>. Las sesiones son intensivas y prácticas, asegurando que puedas aplicar lo aprendido inmediatamente.
-                                                    </div>
-                                                </div>
+                                                <!-- Pregunta 1 -->
+                                                @if (filled($landing->faq_section['items'] ?? null))
+                                                        @foreach ($landing->faq_section['items'] as $faq)
+                                                            @if ($faq['visible'])
+                                                                <div class="accordion-item shadow-sm" data-aos="fade-up">
+                                                                    <h2 class="accordion-header">
+                                                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#mCollapseOne">
+                                                                            {{ $faq['question'] }}
+                                                                        </button>
+                                                                    </h2>
+                                                                    <div id="mCollapseOne" class="accordion-collapse collapse" data-bs-parent="#modernFaqAccordion">
+                                                                        <div class="accordion-body py-4 text-muted">
+                                                                            {{ $faq['answer'] }}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            @endif
+                                                        @endforeach
+                                                @endif
+
                                             </div>
 
-                                            <!-- Pregunta 2 -->
-                                            <div class="accordion-item shadow-sm" data-aos="fade-up" data-aos-delay="100">
-                                                <h2 class="accordion-header">
-                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#mCollapseTwo">
-                                                        ¿Necesito conocimientos previos en programación o IA?
-                                                    </button>
-                                                </h2>
-                                                <div id="mCollapseTwo" class="accordion-collapse collapse" data-bs-parent="#modernFaqAccordion">
-                                                    <div class="accordion-body py-4 text-muted">
-                                                        <strong>Absolutamente no.</strong> Esta especialización inicia desde los conceptos más básicos. Está optimizada para contadores y financieros, no para programadores.
-                                                    </div>
-                                                </div>
+                                            <div class="text-center mt-5 p-4 rounded-4" style="background-color: #f8f9fa; border: 1px dashed #dee2e6;">
+                                                <p class="mb-3 fw-bold" style="color: #002060;">¿Aún tienes dudas específicas?</p>
+                                                <a href="https://wa.me/tu-numero" class="btn btn-success rounded-pill px-4 shadow-sm">
+                                                    <i class="fa fa-whatsapp me-2"></i> Hablar con un Asesor
+                                                </a>
                                             </div>
-
-                                            <!-- Pregunta 3 -->
-                                            <div class="accordion-item shadow-sm" data-aos="fade-up" data-aos-delay="200">
-                                                <h2 class="accordion-header">
-                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#mCollapseThree">
-                                                        ¿Qué tipo de certificado obtendré al finalizar?
-                                                    </button>
-                                                </h2>
-                                                <div id="mCollapseThree" class="accordion-collapse collapse" data-bs-parent="#modernFaqAccordion">
-                                                    <div class="accordion-body py-4 text-muted">
-                                                        Obtendrás un <strong>Certificado de Especialización</strong> emitido por Global CPA. Este documento cuenta con un código QR único de verificación para validar tu autenticidad ante cualquier empleador.
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <!-- Pregunta 4 -->
-                                            <div class="accordion-item shadow-sm" data-aos="fade-up" data-aos-delay="300">
-                                                <h2 class="accordion-header">
-                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#mCollapseFour">
-                                                        ¿Hay opciones de pago a plazos?
-                                                    </button>
-                                                </h2>
-                                                <div id="mCollapseFour" class="accordion-collapse collapse" data-bs-parent="#modernFaqAccordion">
-                                                    <div class="accordion-body py-4 text-muted">
-                                                        Sí, contamos con financiamiento directo. Puedes dividir tu inversión en cuotas mensuales sin intereses bancarios. Consulta con un asesor para armar tu plan.
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                        </div>
-
-                                        <div class="text-center mt-5 p-4 rounded-4" style="background-color: #f8f9fa; border: 1px dashed #dee2e6;">
-                                            <p class="mb-3 fw-bold" style="color: #002060;">¿Aún tienes dudas específicas?</p>
-                                            <a href="https://wa.me/tu-numero" class="btn btn-success rounded-pill px-4 shadow-sm">
-                                                <i class="fa fa-whatsapp me-2"></i> Hablar con un Asesor
-                                            </a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                @endif
 
 
 
