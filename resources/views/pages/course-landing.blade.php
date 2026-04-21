@@ -96,9 +96,9 @@
                     <div class="card border-0 overflow-hidden shadow mb-4"
                         style="background: linear-gradient(135deg, #002060 0%, #004080 100%); border-radius: 15px;"
                         data-aos="fade-in">
-                        <div class="card-body p-4 p-lg-5 text-white">
+                        <div class="card-body  text-white">
                             <div class="row align-items-center">
-                                <div class="col-lg-8">
+                                <div class="col-lg-8 p-4 p-lg-5">
                                     <div class="d-flex align-items-center mb-3">
                                         <span class="badge bg-warning text-dark me-2">{{$landing->course->category->description}}</span>
                                         <div class="text-warning small">
@@ -133,10 +133,14 @@
                                     </div>
                                 </div>
                                 <div class="col-lg-4 text-center d-none d-lg-block position-relative"
-                                    style="min-height: 250px;">
+                                    style="height: auto;">
                                     <img src="{{ asset("storage/".$landing->course->image) }}"
                                         alt="{{ $landing->course->description }}" class="img-fluid"
-                                        style="max-height: 250px;">
+                                        style="height: 100%;">
+                                        
+                                    {{-- <img src="{{ asset("themes/webpage/images/cyber.jpg") }}"
+                                        alt="{{ $landing->course->description }}" class="img-fluid"
+                                        style="height: 100%;"> --}}
                                 </div>
                             </div>
                         </div>
