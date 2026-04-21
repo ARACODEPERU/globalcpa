@@ -76,7 +76,8 @@
     <!-- tap on top starts-->
     <div class="tap-top"><i data-feather="chevrons-up"></i></div>
     <!-- tap on tap ends-->
-    {{-- @vite(['resources/css/app.css', 'resources/js/app.js']) va en el LAyout en este caso webpage--}}
+
+
 
     <!-- page-wrapper Start-->
     <div class="page-wrapper" id="pageWrapper">
@@ -260,146 +261,115 @@
 
                 <div class="container-fluid card aos-animate" data-aos="fade-up">
                     <div class="row">
-                        <div class="col-md-12">
-                            <div class="card-body p-4 p-lg-5">
-                                <div class="text-center mb-5">
-                                    <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border"
-                                        style="background-color: rgba(220, 53, 69, 0.1); color: #dc3545;">
-                                        <i class="fa fa-exclamation-triangle me-1"></i> EL PROBLEMA
-                                    </span>
-                                    <h2 class="fw-bold display-6" style="color: #002060;">Tu equipo está saturado y
-                                        pierdes ventas todos los días</h2>
-                                    <p class="text-muted fs-5 mx-auto" style="max-width: 800px;">No es solo traer tráfico,
-                                        es atender rápido sin multiplicar tu equipo.</p>
-                                </div>
+                        @if (filled($landing->problem_section ?? null))
+                            <div class="col-md-12">
+                                <div class="card-body p-4 p-lg-5">
+                                    <div class="text-center mb-5">
+                                        <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border"
+                                            style="background-color: rgba(220, 53, 69, 0.1); color: #dc3545;">
+                                            <i class="fa fa-exclamation-triangle me-1"></i> {{ $landing->problem_section['name'] }}
+                                        </span>
+                                        <h2 class="fw-bold display-6" style="color: #002060;">{{ $landing->problem_section['title'] }}</h2>
+                                        <p class="text-muted fs-5 mx-auto" style="max-width: 800px;">{{ $landing->problem_section['description'] }}</p>
+                                    </div>
 
-                                <div class="row g-4">
-                                    <div class="col-md-4" data-aos="zoom-in" data-aos-delay="100">
-                                        <div
-                                            class="h-100 p-4 rounded-4 border shadow-sm text-center bg-white transition-all">
-                                            <div class="mb-4">
-                                                <i class="fa fa-clock-o text-warning" style="font-size: 3.5rem;"></i>
+                                    <div class="row g-4 justify-content-center">
+                                        @if (filled($landing->problem_section['items'][0] ?? null))
+                                            <div class="col-md-4" data-aos="zoom-in" data-aos-delay="100">
+                                                <div
+                                                    class="h-100 p-4 rounded-4 border shadow-sm text-center bg-white transition-all">
+                                                    <div class="mb-4">
+                                                        <i class="fa {{ $landing->problem_section['items'][0]['icon']  }} text-warning" style="font-size: 3.5rem;"></i>
+                                                    </div>
+                                                    <h4 class="fw-bold mb-3" style="color: #002060;">{{ $landing->problem_section['items'][0]['title']  }}</h4>
+                                                    <p class="text-muted mb-0">{{ $landing->problem_section['items'][0]['description']  }}</p>
+                                                </div>
                                             </div>
-                                            <h4 class="fw-bold mb-3" style="color: #002060;">No ofreces atención 24/7</h4>
-                                            <p class="text-muted mb-0">en canales como WhatsApp e Instagram y eso te hace
-                                                perder ventas todos los días</p>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4" data-aos="zoom-in" data-aos-delay="200">
-                                        <div
-                                            class="h-100 p-4 rounded-4 border shadow-sm text-center bg-white transition-all">
-                                            <div class="mb-4">
-                                                <i class="fa fa-users text-warning" style="font-size: 3.5rem;"></i>
+                                        @endif
+
+                                        @if (filled($landing->problem_section['items'][1] ?? null))
+                                            <div class="col-md-4" data-aos="zoom-in" data-aos-delay="200">
+                                                <div
+                                                    class="h-100 p-4 rounded-4 border shadow-sm text-center bg-white transition-all">
+                                                    <div class="mb-4">
+                                                        <i class="fa {{ $landing->problem_section['items'][1]['icon']  }} text-warning" style="font-size: 3.5rem;"></i>
+                                                    </div>
+                                                    <h4 class="fw-bold mb-3" style="color: #002060;">{{ $landing->problem_section['items'][1]['title']  }}
+                                                    </h4>
+                                                    <p class="text-muted mb-0">{{ $landing->problem_section['items'][1]['description']  }}</p>
+                                                </div>
                                             </div>
-                                            <h4 class="fw-bold mb-3" style="color: #002060;">Equipo saturado en post-venta
-                                            </h4>
-                                            <p class="text-muted mb-0">y eso consume el 70% de su tiempo</p>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4" data-aos="zoom-in" data-aos-delay="300">
-                                        <div
-                                            class="h-100 p-4 rounded-4 border shadow-sm text-center bg-white transition-all">
-                                            <div class="mb-4">
-                                                <i class="fa fa-commenting-o text-warning" style="font-size: 3.5rem;"></i>
+                                        @endif
+
+                                        @if (filled($landing->problem_section['items'][2] ?? null))
+                                            <div class="col-md-4" data-aos="zoom-in" data-aos-delay="300">
+                                                <div
+                                                    class="h-100 p-4 rounded-4 border shadow-sm text-center bg-white transition-all">
+                                                    <div class="mb-4">
+                                                        <i class="fa {{ $landing->problem_section['items'][2]['icon']  }} text-warning" style="font-size: 3.5rem;"></i>
+                                                    </div>
+                                                    <h4 class="fw-bold mb-3" style="color: #002060;">{{ $landing->problem_section['items'][2]['title']  }}</h4>
+                                                    <p class="text-muted mb-0">{{ $landing->problem_section['items'][2]['description']  }}</p>
+                                                </div>
                                             </div>
-                                            <h4 class="fw-bold mb-3" style="color: #002060;">Tu Chatbot no vende</h4>
-                                            <p class="text-muted mb-0">Chatbots básicos que responden, pero no convierten
-                                                ni miden impacto.</p>
-                                        </div>
+                                        @endif
+
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        @endif
                     </div>
                 </div>
 
-
-                <div class="container-fluid card aos-animate" data-aos="fade-up">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="card-body p-4 p-lg-5">
-                                <!-- Header de Sección -->
-                                <div class="text-center mb-5">
-                                    <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border"
-                                        style="background-color: rgba(0, 32, 96, 0.1); color: #002060;">
-                                        <i class="fa fa-list-ul me-1"></i> PLAN DE ESTUDIOS
-                                    </span>
-                                    <h2 class="fw-bold display-6" style="color: #002060;">Lo que vas a aprender</h2>
-                                    <p class="text-muted fs-5 mx-auto" style="max-width: 800px;">Un temario diseñado para
-                                        transformar tu perfil profesional con habilidades prácticas y de alta demanda.</p>
-                                </div>
-
-                                <div class="row align-items-center">
-                                    <!-- Columna de Imagen -->
-                                    <div class="col-lg-5 mb-4 mb-lg-0" data-aos="fade-right">
-                                        <div class="position-relative">
-                                            <img src="https://images.unsplash.com/photo-1591453089816-0fbb971b454c?q=80&w=2070&auto=format&fit=crop"
-                                                alt="Temario Especializado" class="img-fluid rounded-4 shadow-lg"
-                                                style="border: 8px solid #f8f9fa;">
-                                            <div
-                                                class="position-absolute bottom-0 start-0 m-3 p-3 bg-warning rounded-3 shadow d-none d-sm-block">
-                                                <span class="fw-bold text-dark">Módulos 100% Actualizados</span>
-                                            </div>
-                                        </div>
+                @if (filled($landing->study_plan_section ?? null))
+                    <div class="container-fluid card aos-animate" data-aos="fade-up">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="card-body p-4 p-lg-5">
+                                    <!-- Header de Sección -->
+                                    <div class="text-center mb-5">
+                                        <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border"
+                                            style="background-color: rgba(0, 32, 96, 0.1); color: #002060;">
+                                            <i class="fa fa-list-ul me-1"></i> {{ $landing->study_plan_section['name'] }}
+                                        </span>
+                                        <h2 class="fw-bold display-6" style="color: #002060;">{{ $landing->study_plan_section['title'] }}</h2>
+                                        <p class="text-muted fs-5 mx-auto" style="max-width: 800px;">{{ $landing->study_plan_section['description'] }}</p>
                                     </div>
 
-                                    <!-- Columna de Temas -->
-                                    <div class="col-lg-7" data-aos="fade-left">
-                                        <div class="ps-lg-4">
-                                            <div class="d-flex mb-4">
-                                                <div class="flex-shrink-0">
-                                                    <span
-                                                        class="badge rounded-circle bg-primary d-flex align-items-center justify-content-center shadow"
-                                                        style="width: 45px; height: 45px; background-color: #002060 !important; font-size: 1.1rem;">1</span>
-                                                </div>
-                                                <div class="ms-3">
-                                                    <h5 class="fw-bold" style="color: #002060;">Fundamentos de IA y Prompt
-                                                        Engineering</h5>
-                                                    <p class="text-muted">Domina el arte de comunicarte con modelos de
-                                                        lenguaje para generar análisis técnicos precisos.</p>
+                                    <div class="row align-items-center">
+                                        <!-- Columna de Imagen -->
+                                        <div class="col-lg-5 mb-4 mb-lg-0" data-aos="fade-right">
+                                            <div class="position-relative">
+                                                <img src="{{ asset("storage/".$landing->study_plan_section['image']) }}"
+                                                    alt="Temario Especializado" class="img-fluid rounded-4 shadow-lg"
+                                                    style="border: 8px solid #f8f9fa;">
+                                                <div
+                                                    class="position-absolute bottom-0 start-0 m-3 p-3 bg-warning rounded-3 shadow d-none d-sm-block">
+                                                    <span class="fw-bold text-dark">Módulos 100% Actualizados</span>
                                                 </div>
                                             </div>
+                                        </div>
 
-                                            <div class="d-flex mb-4">
-                                                <div class="flex-shrink-0">
-                                                    <span
-                                                        class="badge rounded-circle bg-primary d-flex align-items-center justify-content-center shadow"
-                                                        style="width: 45px; height: 45px; background-color: #002060 !important; font-size: 1.1rem;">2</span>
-                                                </div>
-                                                <div class="ms-3">
-                                                    <h5 class="fw-bold" style="color: #002060;">Automatización de Procesos
-                                                        Financieros</h5>
-                                                    <p class="text-muted">Conecta tus estados financieros con herramientas
-                                                        de IA para detectar errores y tendencias automáticamente.</p>
-                                                </div>
-                                            </div>
+                                        <!-- Columna de Temas -->
+                                        <div class="col-lg-7" data-aos="fade-left">
+                                            <div class="ps-lg-4">
 
-                                            <div class="d-flex mb-4">
-                                                <div class="flex-shrink-0">
-                                                    <span
-                                                        class="badge rounded-circle bg-primary d-flex align-items-center justify-content-center shadow"
-                                                        style="width: 45px; height: 45px; background-color: #002060 !important; font-size: 1.1rem;">3</span>
-                                                </div>
-                                                <div class="ms-3">
-                                                    <h5 class="fw-bold" style="color: #002060;">Análisis Predictivo y
-                                                        Auditoría Inteligente</h5>
-                                                    <p class="text-muted">Aprende a proyectar flujos de caja y realizar
-                                                        auditorías basadas en algoritmos de aprendizaje automático.</p>
-                                                </div>
-                                            </div>
+                                                @if (filled($landing->study_plan_section['items'] ?? null))
+                                                    @foreach ($landing->study_plan_section['items'] as $item)
+                                                        <div class="d-flex mb-4">
+                                                            <div class="flex-shrink-0">
+                                                                <span
+                                                                    class="badge rounded-circle bg-primary d-flex align-items-center justify-content-center shadow"
+                                                                    style="width: 45px; height: 45px; background-color: #002060 !important; font-size: 1.1rem;">{{ $loop->iteration }}</span>
+                                                            </div>
+                                                            <div class="ms-3">
+                                                                <h5 class="fw-bold" style="color: #002060;">{{ $landing->study_plan_section['items'][$loop->index]['title'] }}</h5>
+                                                                <p class="text-muted">{{ $landing->study_plan_section['items'][$loop->index]['description'] }}</p>
+                                                            </div>
+                                                        </div>
+                                                    @endforeach
+                                                @endif
 
-                                            <div class="d-flex">
-                                                <div class="flex-shrink-0">
-                                                    <span
-                                                        class="badge rounded-circle bg-primary d-flex align-items-center justify-content-center shadow"
-                                                        style="width: 45px; height: 45px; background-color: #002060 !important; font-size: 1.1rem;">4</span>
-                                                </div>
-                                                <div class="ms-3">
-                                                    <h5 class="fw-bold" style="color: #002060;">Estrategia y Consultoría
-                                                        de Alto Valor</h5>
-                                                    <p class="text-muted">Transforma tus entregables contables en asesoría
-                                                        estratégica utilizando visualización de datos avanzada.</p>
-                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -407,8 +377,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
-
+                @endif
 
 
                 {{-- <div>
@@ -598,369 +567,358 @@
 
 
                 {{-- Propuesta de Diseño: Carrusel de Expertos Premium (Opción 5) --}}
-                <div class="container-fluid card aos-animate mt-5" data-aos="fade-up">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="card-body p-4 p-lg-5">
-                                <!-- Header de Sección -->
-                                <div class="text-center mb-4">
-                                    <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border"
-                                        style="background-color: rgba(0, 32, 96, 0.05); color: #002060;">
-                                        <i class="fa fa-users me-1"></i> NUESTRO STAFF (DINÁMICO)
-                                    </span>
-                                    <h2 class="fw-bold display-6" style="color: #002060;">Líderes de la Industria</h2>
-                                    <p class="text-muted fs-5 mx-auto" style="max-width: 800px;">
-                                        Desliza para conocer a los profesionales que transformarán tu carrera.
-                                    </p>
-                                </div>
 
-                                <div class="carousel-viewport" style="padding: 40px 0;">
-                                    <div class="carousel-track" style="animation-duration: 50s;">
-                                        @php
-                                            $teachers_premium = [
-                                                ['name' => 'Dr. Julian Arancibia', 'role' => 'Especialista en IA', 'img' => 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=2070&auto=format&fit=crop'],
-                                                ['name' => 'Mag. Carmen Luz', 'role' => 'Auditoría Digital', 'img' => 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1974&auto=format&fit=crop'],
-                                                ['name' => 'Dr. Roberto Mendoza', 'role' => 'Finanzas Tech', 'img' => 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=1974&auto=format&fit=crop'],
-                                                ['name' => 'Dra. Elena Ramos', 'role' => 'Estrategia Fiscal', 'img' => 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=1976&auto=format&fit=crop'],
-                                                ['name' => 'Mag. Luis Torres', 'role' => 'Data Analytics', 'img' => 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1974&auto=format&fit=crop'],
-                                            ];
-                                        @endphp
+                @if (filled($landing->staff_section ?? null))
+                    <div class="container-fluid card aos-animate mt-5" data-aos="fade-up">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="card-body p-4 p-lg-5">
+                                    <!-- Header de Sección -->
+                                    <div class="text-center mb-4">
+                                        <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border"
+                                            style="background-color: rgba(0, 32, 96, 0.05); color: #002060;">
+                                            <i class="fa fa-users me-1"></i> {{ $landing->staff_section['name'] }}
+                                        </span>
+                                        <h2 class="fw-bold display-6" style="color: #002060;">{{ $landing->staff_section['title'] }}</h2>
+                                        <p class="text-muted fs-5 mx-auto" style="max-width: 800px;">
+                                            {{ $landing->staff_section['description'] }}
+                                        </p>
+                                    </div>
 
-                                        {{-- Se duplica el contenido para el loop infinito --}}
-                                        @foreach(array_merge($teachers_premium, $teachers_premium) as $teacher)
-                                            <div class="teacher-carousel-item" style="width: 280px;">
-                                                <div class="card border-0 shadow-sm h-100 transition-all rounded-4 overflow-hidden bg-white mx-2">
-                                                    <div style="height: 240px; overflow: hidden; position: relative;">
-                                                        <img src="{{ $teacher['img'] }}"
-                                                             class="card-img-top h-100 w-100"
-                                                             style="object-fit: cover;"
-                                                             alt="{{ $teacher['name'] }}">
-                                                        <div class="position-absolute bottom-0 start-0 w-100 p-3"
-                                                             style="background: linear-gradient(transparent, rgba(0,32,96,0.8));">
-                                                            <p class="text-white small mb-0 fw-light">Socio Consultor</p>
+                                    <div class="carousel-viewport" style="padding: 40px 0;">
+                                        <div class="carousel-track" style="animation-duration: 50s;">
+                                            {{-- @php
+                                                $teachers_premium = [
+                                                    ['name' => 'Dr. Julian Arancibia', 'role' => 'Especialista en IA', 'img' => 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=2070&auto=format&fit=crop'],
+                                                    ['name' => 'Mag. Carmen Luz', 'role' => 'Auditoría Digital', 'img' => 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1974&auto=format&fit=crop'],
+                                                    ['name' => 'Dr. Roberto Mendoza', 'role' => 'Finanzas Tech', 'img' => 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=1974&auto=format&fit=crop'],
+                                                    ['name' => 'Dra. Elena Ramos', 'role' => 'Estrategia Fiscal', 'img' => 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=1976&auto=format&fit=crop'],
+                                                    ['name' => 'Mag. Luis Torres', 'role' => 'Data Analytics', 'img' => 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1974&auto=format&fit=crop'],
+                                                ];
+                                            @endphp --}}
+
+                                            {{-- Se duplica el contenido para el loop infinito --}}
+                                           @if (filled($teachers_premium ?? null))
+                                                @foreach(array_merge($teachers_premium, $teachers_premium) as $teacher)
+                                                <div class="teacher-carousel-item" style="width: 280px;">
+                                                    <div class="card border-0 shadow-sm h-100 transition-all rounded-4 overflow-hidden bg-white mx-2">
+                                                        <div style="height: 240px; overflow: hidden; position: relative;">
+                                                            <img src="{{ $teacher['img'] }}"
+                                                                class="card-img-top h-100 w-100"
+                                                                style="object-fit: cover;"
+                                                                alt="{{ $teacher['name'] }}">
+                                                            <div class="position-absolute bottom-0 start-0 w-100 p-3"
+                                                                style="background: linear-gradient(transparent, rgba(0,32,96,0.8));">
+                                                                <p class="text-white small mb-0 fw-light">Socio Consultor</p>
+                                                            </div>
+                                                        </div>
+                                                        <div class="card-body text-center p-3">
+                                                            <h5 class="fw-bold mb-1" style="color: #002060; font-size: 1.1rem;">{{ $teacher['name'] }}</h5>
+                                                            <p class="text-warning small fw-bold mb-0" style="font-size: 0.8rem;">{{ $teacher['role'] }}</p>
                                                         </div>
                                                     </div>
-                                                    <div class="card-body text-center p-3">
-                                                        <h5 class="fw-bold mb-1" style="color: #002060; font-size: 1.1rem;">{{ $teacher['name'] }}</h5>
-                                                        <p class="text-warning small fw-bold mb-0" style="font-size: 0.8rem;">{{ $teacher['role'] }}</p>
-                                                    </div>
                                                 </div>
-                                            </div>
-                                        @endforeach
+                                                @endforeach
+                                           @endif
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                @endif
 
 
-                <div class="container-fluid card aos-animate" data-aos="fade-up">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="card-body p-4 p-lg-5">
-                                <div class="text-center mb-5">
-                                    <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border"
-                                        style="background-color: rgba(40, 167, 69, 0.1); color: #28a745;">
-                                        <i class="fa fa-check-circle me-1"></i> RESULTADOS DEL PROGRAMA
-                                    </span>
-                                    <h2 class="fw-bold display-6" style="color: #002060;">
-                                        Transforma tu Práctica Contable
-                                    </h2>
-                                    <p class="text-muted fs-5 mx-auto" style="max-width: 800px;">
-                                        Al finalizar esta especialización, habrás adquirido competencias críticas para liderar departamentos financieros modernos.
-                                    </p>
-                                </div>
+                @if (filled($landing->results_section ?? null))
+                    <div class="container-fluid card aos-animate" data-aos="fade-up">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="card-body p-4 p-lg-5">
+                                    <div class="text-center mb-5">
+                                        <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border"
+                                            style="background-color: rgba(40, 167, 69, 0.1); color: #28a745;">
+                                            <i class="fa fa-check-circle me-1"></i> {{ $landing->results_section['name'] }}
+                                        </span>
+                                        <h2 class="fw-bold display-6" style="color: #002060;">
+                                            {{ $landing->results_section['title'] }}
+                                        </h2>
+                                        <p class="text-muted fs-5 mx-auto" style="max-width: 800px;">
+                                            {{ $landing->results_section['description'] }}
+                                        </p>
+                                    </div>
 
-                                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
-                                    @php
-                                        $achievements = [
-                                            ['title' => 'Automatización Total', 'desc' => 'Reduce hasta un 80% el tiempo en tareas de registro y conciliación bancaria.', 'icon' => 'fa-magic', 'color' => '#6f42c1'],
-                                            ['title' => 'Análisis Predictivo', 'desc' => 'Anticipa flujos de caja y riesgos financieros con modelos de Machine Learning.', 'icon' => 'fa-bar-chart', 'color' => '#007bff'],
-                                            ['title' => 'Auditoría con IA', 'desc' => 'Identifica anomalías y fraudes de manera instantánea en grandes volúmenes de datos.', 'icon' => 'fa-search-plus', 'color' => '#e83e8c'],
-                                            ['title' => 'Consultoría Estratégica', 'desc' => 'Eleva tu valor cobrando por insights estratégicos, no por horas de digitación.', 'icon' => 'fa-rocket', 'color' => '#fd7e14'],
-                                        ];
-                                    @endphp
+                                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 justify-center">
+                                        @php
+                                            $achievements = [
+                                                ['title' => 'Automatización Total', 'desc' => 'Reduce hasta un 80% el tiempo en tareas de registro y conciliación bancaria.', 'icon' => 'fa-magic', 'color' => '#6f42c1'],
+                                                ['title' => 'Análisis Predictivo', 'desc' => 'Anticipa flujos de caja y riesgos financieros con modelos de Machine Learning.', 'icon' => 'fa-bar-chart', 'color' => '#007bff'],
+                                                ['title' => 'Auditoría con IA', 'desc' => 'Identifica anomalías y fraudes de manera instantánea en grandes volúmenes de datos.', 'icon' => 'fa-search-plus', 'color' => '#e83e8c'],
+                                                ['title' => 'Consultoría Estratégica', 'desc' => 'Eleva tu valor cobrando por insights estratégicos, no por horas de digitación.', 'icon' => 'fa-rocket', 'color' => '#fd7e14'],
+                                            ];
+                                        @endphp
 
-                                    @foreach($achievements as $item)
-                                        <div class="col" data-aos="fade-up" data-aos-delay="{{ 100 * ($loop->index + 1) }}">
-                                            <div class="h-100 p-4 rounded-4 border-0 shadow-sm text-center bg-white transition-all position-relative overflow-hidden"
-                                                 style="border-top: 5px solid {{ $item['color'] }} !important;">
+                                       @if (filled($landing->results_section['items'] ?? null))
+                                            @foreach($landing->results_section['items'] as $item)
+                                            <div class="col" data-aos="fade-up" data-aos-delay="{{ 100 * ($loop->index + 1) }}">
+                                                <div class="h-100 p-4 rounded-4 border-0 shadow-sm text-center bg-white transition-all position-relative overflow-hidden"
+                                                    style="border-top: 5px solid {{ $colors[$loop->index] }} !important;">
 
-                                                {{-- Círculo decorativo de fondo --}}
-                                                <div class="position-absolute opacity-0 transition-all"
-                                                     style="width: 100px; height: 100px; background-color: {{ $item['color'] }}; border-radius: 50%; top: -20px; right: -20px; opacity: 0.05 !important;">
+                                                    {{-- Círculo decorativo de fondo --}}
+                                                    <div class="position-absolute opacity-0 transition-all"
+                                                        style="width: 100px; height: 100px; background-color: {{ $colors[$loop->index] }}; border-radius: 50%; top: -20px; right: -20px; opacity: 0.05 !important;">
+                                                    </div>
+
+                                                    <div class="mb-4 d-inline-flex align-items-center justify-content-center rounded-circle shadow-sm"
+                                                        style="width: 70px; height: 70px; background-color: white; border: 1px solid #f1f1f1;">
+                                                        <i class="fa {{ $item['icon'] }}" style="font-size: 2rem; color: {{ $colors[$loop->index] }};"></i>
+                                                    </div>
+
+                                                    <h4 class="fw-bold mb-3" style="color: #002060;">{{ $item['title'] }}</h4>
+                                                    <p class="text-muted mb-0 small" style="line-height: 1.6;">
+                                                        {{ $item['description'] }}
+                                                    </p>
                                                 </div>
-
-                                                <div class="mb-4 d-inline-flex align-items-center justify-content-center rounded-circle shadow-sm"
-                                                     style="width: 70px; height: 70px; background-color: white; border: 1px solid #f1f1f1;">
-                                                    <i class="fa {{ $item['icon'] }}" style="font-size: 2rem; color: {{ $item['color'] }};"></i>
-                                                </div>
-
-                                                <h4 class="fw-bold mb-3" style="color: #002060;">{{ $item['title'] }}</h4>
-                                                <p class="text-muted mb-0 small" style="line-height: 1.6;">
-                                                    {{ $item['desc'] }}
-                                                </p>
                                             </div>
-                                        </div>
-                                    @endforeach
+                                            @endforeach
+                                       @endif
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                @endif
 
 
 
     {{-- Nueva Propuesta: Sección de Testimonios en Carrusel (Opción 6) --}}
-                <div class="container-fluid card aos-animate mt-5" data-aos="fade-up">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="card-body p-4 p-lg-5">
-                                <!-- Header de Sección -->
-                                <div class="text-center mb-4">
-                                    <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border"
-                                        style="background-color: rgba(0, 123, 255, 0.05); color: #007bff;">
-                                        <i class="fa fa-quote-right me-1"></i> TESTIMONIOS
-                                    </span>
-                                    <h2 class="fw-bold display-6" style="color: #002060;">Lo que dicen nuestros alumnos</h2>
-                                    <p class="text-muted fs-5 mx-auto" style="max-width: 800px;">
-                                        Historias de éxito que inspiran y demuestran el impacto de nuestra formación.
-                                    </p>
-                                </div>
+                @if (filled($landing->testimonials_section ?? null))
+                    <div class="container-fluid card aos-animate mt-5" data-aos="fade-up">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="card-body p-4 p-lg-5">
+                                    <!-- Header de Sección -->
+                                    <div class="text-center mb-4">
+                                        <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border"
+                                            style="background-color: rgba(0, 123, 255, 0.05); color: #007bff;">
+                                            <i class="fa fa-quote-right me-1"></i> {{ $landing->testimonials_section['name'] }}
+                                        </span>
+                                        <h2 class="fw-bold display-6" style="color: #002060;">{{ $landing->testimonials_section['title'] }}</h2>
+                                        <p class="text-muted fs-5 mx-auto" style="max-width: 800px;">
+                                            {{ $landing->testimonials_section['description'] }}
+                                        </p>
+                                    </div>
 
-                                <style>
-                                    .testimonial-carousel-viewport {
-                                        overflow: hidden;
-                                        padding: 20px 0; /* Espacio para sombras */
-                                        position: relative;
-                                        width: 100%;
-                                    }
+                                    <style>
+                                        .testimonial-carousel-viewport {
+                                            overflow: hidden;
+                                            padding: 20px 0; /* Espacio para sombras */
+                                            position: relative;
+                                            width: 100%;
+                                        }
 
-                                    .testimonial-carousel-track {
-                                        display: flex;
-                                        gap: 30px;
-                                        width: max-content;
-                                        animation: scroll-infinite-testimonials 60s linear infinite; /* Velocidad ajustada */
-                                    }
+                                        .testimonial-carousel-track {
+                                            display: flex;
+                                            gap: 30px;
+                                            width: max-content;
+                                            animation: scroll-infinite-testimonials 60s linear infinite; /* Velocidad ajustada */
+                                        }
 
-                                    .testimonial-carousel-track:hover {
-                                        animation-play-state: paused;
-                                    }
+                                        .testimonial-carousel-track:hover {
+                                            animation-play-state: paused;
+                                        }
 
-                                    @keyframes scroll-infinite-testimonials {
-                                        0% { transform: translateX(0); }
-                                        100% { transform: translateX(calc(-50%)); }
-                                    }
+                                        @keyframes scroll-infinite-testimonials {
+                                            0% { transform: translateX(0); }
+                                            100% { transform: translateX(calc(-50%)); }
+                                        }
 
-                                    .testimonial-card {
-                                        width: 350px; /* Ancho fijo para las tarjetas de testimonio */
-                                        flex-shrink: 0;
-                                        background: #fff;
-                                        border-radius: 15px;
-                                        padding: 30px;
-                                        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-                                        transition: all 0.3s ease;
-                                        display: flex;
-                                        flex-direction: column;
-                                        justify-content: space-between;
-                                        min-height: 250px; /* Altura mínima para uniformidad */
-                                    }
+                                        .testimonial-card {
+                                            width: 350px; /* Ancho fijo para las tarjetas de testimonio */
+                                            flex-shrink: 0;
+                                            background: #fff;
+                                            border-radius: 15px;
+                                            padding: 30px;
+                                            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+                                            transition: all 0.3s ease;
+                                            display: flex;
+                                            flex-direction: column;
+                                            justify-content: space-between;
+                                            min-height: 250px; /* Altura mínima para uniformidad */
+                                        }
 
-                                    .testimonial-card:hover {
-                                        transform: translateY(-8px);
-                                        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
-                                    }
+                                        .testimonial-card:hover {
+                                            transform: translateY(-8px);
+                                            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+                                        }
 
-                                    .testimonial-quote {
-                                        font-size: 1.1rem;
-                                        line-height: 1.6;
-                                        color: #343a40;
-                                        margin-bottom: 20px;
-                                        font-style: italic;
-                                    }
+                                        .testimonial-quote {
+                                            font-size: 1.1rem;
+                                            line-height: 1.6;
+                                            color: #343a40;
+                                            margin-bottom: 20px;
+                                            font-style: italic;
+                                        }
 
-                                    .testimonial-author-info {
-                                        display: flex;
-                                        align-items: center;
-                                        margin-top: auto; /* Empuja la info del autor hacia abajo */
-                                    }
+                                        .testimonial-author-info {
+                                            display: flex;
+                                            align-items: center;
+                                            margin-top: auto; /* Empuja la info del autor hacia abajo */
+                                        }
 
-                                    .testimonial-avatar {
-                                        width: 60px;
-                                        height: 60px;
-                                        border-radius: 50%;
-                                        object-fit: cover;
-                                        margin-right: 15px;
-                                        border: 3px solid #007bff;
-                                    }
+                                        .testimonial-avatar {
+                                            width: 60px;
+                                            height: 60px;
+                                            border-radius: 50%;
+                                            object-fit: cover;
+                                            margin-right: 15px;
+                                            border: 3px solid #007bff;
+                                        }
 
-                                    .testimonial-name {
-                                        font-weight: 700;
-                                        color: #002060;
-                                        font-size: 1rem;
-                                    }
+                                        .testimonial-name {
+                                            font-weight: 700;
+                                            color: #002060;
+                                            font-size: 1rem;
+                                        }
 
-                                    .testimonial-title {
-                                        font-size: 0.85rem;
-                                        color: #6c757d;
-                                    }
-                                </style>
+                                        .testimonial-title {
+                                            font-size: 0.85rem;
+                                            color: #6c757d;
+                                        }
+                                    </style>
 
-                                <div class="testimonial-carousel-viewport">
-                                    <div class="testimonial-carousel-track">
-                                        @php
-                                            $testimonials = [
-                                                [
-                                                    'quote' => 'La especialización en IA transformó mi forma de trabajar. Ahora puedo automatizar tareas que antes me tomaban horas y enfocarme en el análisis estratégico.',
-                                                    'author' => 'Ana María López',
-                                                    'title' => 'Contadora Senior, Deloitte',
-                                                    'avatar' => 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=2070&auto=format&fit=crop',
-                                                ],
-                                                [
-                                                    'quote' => 'El contenido es de vanguardia y los docentes son expertos reales. Pude aplicar lo aprendido desde la primera semana, generando un impacto directo en mi empresa.',
-                                                    'author' => 'Roberto Carlos Vargas',
-                                                    'title' => 'Gerente de Finanzas, PwC',
-                                                    'avatar' => 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=1974&auto=format&fit=crop',
-                                                ],
-                                                [
-                                                    'quote' => 'Nunca pensé que la IA podría ser tan accesible para el área contable. Este programa me dio las herramientas y la confianza para innovar en mi rol.',
-                                                    'author' => 'Sofía Hernández',
-                                                    'title' => 'Auditora Interna, EY',
-                                                    'avatar' => 'https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=1961&auto=format&fit=crop',
-                                                ],
-                                                [
-                                                    'quote' => 'Una inversión que vale cada centavo. La capacidad de predecir tendencias financieras con IA es un game-changer para cualquier profesional de las finanzas.',
-                                                    'author' => 'Miguel Ángel Quispe',
-                                                    'title' => 'Analista Financiero, KPMG',
-                                                    'avatar' => 'https://images.unsplash.com/photo-1544723795-3fb6469e0453?q=80&w=1974&auto=format&fit=crop',
-                                                ],
-                                                [
-                                                    'quote' => 'La especialización en IA transformó mi forma de trabajar. Ahora puedo automatizar tareas que antes me tomaban horas y enfocarme en el análisis estratégico.',
-                                                    'author' => 'Ana María López',
-                                                    'title' => 'Contadora Senior, Deloitte',
-                                                    'avatar' => 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=2070&auto=format&fit=crop',
-                                                ],
-                                                [
-                                                    'quote' => 'El contenido es de vanguardia y los docentes son expertos reales. Pude aplicar lo aprendido desde la primera semana, generando un impacto directo en mi empresa.',
-                                                    'author' => 'Roberto Carlos Vargas',
-                                                    'title' => 'Gerente de Finanzas, PwC',
-                                                    'avatar' => 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=1974&auto=format&fit=crop',
-                                                ],
-                                            ];
-                                        @endphp
+                                    <div class="testimonial-carousel-viewport">
+                                        <div class="testimonial-carousel-track">
 
-                                        {{-- Duplicamos los testimonios para el efecto de carrusel infinito --}}
-                                        @foreach(array_merge($testimonials, $testimonials) as $testimonial)
-                                            <div class="testimonial-carousel-item">
-                                                <div class="testimonial-card mx-2">
-                                                    <p class="testimonial-quote">"{{ $testimonial['quote'] }}"</p>
-                                                    <div class="testimonial-author-info">
-                                                        <img src="{{ $testimonial['avatar'] }}" alt="{{ $testimonial['author'] }}" class="testimonial-avatar">
-                                                        <div>
-                                                            <h5 class="testimonial-name">{{ $testimonial['author'] }}</h5>
-                                                            <p class="testimonial-title">{{ $testimonial['title'] }}</p>
+                                            {{-- Duplicamos los testimonios para el efecto de carrusel infinito --}}
+                                            @if (filled($landing->testimonials_section['items'] ?? null))
+                                                @foreach($landing->testimonials_section['items'] as $testimonial)
+                                                <div class="testimonial-carousel-item">
+                                                    <div class="testimonial-card mx-2">
+                                                        <p class="testimonial-quote">"{{ $testimonial['description'] }}"</p>
+                                                        <div class="testimonial-author-info">
+                                                            <img src="{{ asset("storage/".$testimonial['image']) }}" alt="{{ $testimonial['name'] }}" class="testimonial-avatar">
+                                                            <div>
+                                                                <h5 class="testimonial-name">{{ $testimonial['name'] }}</h5>
+                                                                <p class="testimonial-title">{{ $testimonial['presentation'] }}</p>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        @endforeach
+                                                @endforeach
+                                            @endif
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                @endif
 
 
                 {{-- Nueva Sección: Planes de Inversión --}}
-                <div class="container-fluid card aos-animate mt-5" data-aos="fade-up">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="card-body p-4 p-lg-5">
-                                <div class="text-center mb-5">
-                                    <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border"
-                                        style="background-color: rgba(255, 193, 7, 0.1); color: #002060;">
-                                        <i class="fa fa-money me-1"></i> INVERSIÓN
-                                    </span>
-                                    <h2 class="fw-bold display-6" style="color: #002060;">Planes de Inversión</h2>
-                                    <p class="text-muted fs-5 mx-auto" style="max-width: 800px;">
-                                        Elige el plan que mejor se adapte a tus necesidades y comienza tu transformación profesional hoy mismo.
-                                    </p>
-                                </div>
 
-                                <div class="row g-4 justify-content-center">
-                                    <!-- Plan Pronto Pago -->
-                                    <div class="col-md-4" data-aos="zoom-in" data-aos-delay="100">
-                                        <div class="card h-100 border-0 shadow-sm transition-all rounded-4 overflow-hidden bg-white text-center">
-                                            <div class="p-4 border-bottom bg-light">
-                                                <h4 class="fw-bold mb-0" style="color: #002060;">Pronto Pago</h4>
-                                                <small class="text-muted">Válido hasta el 15 de abril</small>
-                                            </div>
-                                            <div class="card-body p-4">
-                                                <div class="mb-4">
-                                                    <span class="display-4 fw-bold" style="color: #002060;">S/ 450</span>
-                                                    <span class="text-muted">/ pago único</span>
-                                                </div>
-                                                <ul class="list-unstyled text-start mb-4">
-                                                    <li class="mb-2"><i class="fa fa-check text-success me-2"></i> Acceso total al programa</li>
-                                                    <li class="mb-2"><i class="fa fa-check text-success me-2"></i> Material digital descargable</li>
-                                                    <li class="mb-2"><i class="fa fa-check text-success me-2"></i> Certificado de participación</li>
-                                                </ul>
-                                                <a href="#pageContactForm" class="btn btn-outline-warning w-100 fw-bold py-2" style="color: #002060; border-radius: 10px;">Inscribirse ahora</a>
-                                            </div>
-                                        </div>
+                @if (filled($landing->investment_section ?? null))
+                    <div class="container-fluid card aos-animate mt-5" data-aos="fade-up">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="card-body p-4 p-lg-5">
+                                    <div class="text-center mb-5">
+                                        <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border"
+                                            style="background-color: rgba(255, 193, 7, 0.1); color: #002060;">
+                                            <i class="fa fa-money me-1"></i> {{ $landing->investment_section['name']  }}
+                                        </span>
+                                        <h2 class="fw-bold display-6" style="color: #002060;">{{ $landing->investment_section['title']  }}</h2>
+                                        <p class="text-muted fs-5 mx-auto" style="max-width: 800px;">
+                                            {{ $landing->investment_section['description']  }}
+                                        </p>
                                     </div>
 
-                                    <!-- Plan Regular (Destacado) -->
-                                    <div class="col-md-4" data-aos="zoom-in" data-aos-delay="200">
-                                        <div class="card h-100 border-0 shadow-lg transition-all rounded-4 overflow-hidden bg-white border-top border-warning border-5" style="border-top: 5px solid #ffc107 !important;">
-                                            <div class="p-4 border-bottom" style="background-color: rgba(255, 193, 7, 0.05);">
-                                                <span class="badge bg-warning text-dark mb-2">RECOMENDADO</span>
-                                                <h4 class="fw-bold mb-0" style="color: #002060;">Inversión Regular</h4>
-                                                <small class="text-muted">Precio estándar</small>
-                                            </div>
-                                            <div class="card-body p-4 text-center">
-                                                <div class="mb-4">
-                                                    <span class="display-4 fw-bold" style="color: #002060;">S/ 600</span>
-                                                    <span class="text-muted">/ pago único</span>
+                                    <div class="row g-4 justify-content-center">
+                                        {{-- <!-- Plan Pronto Pago -->
+                                        <div class="col-md-4" data-aos="zoom-in" data-aos-delay="100">
+                                            <div class="card h-100 border-0 shadow-sm transition-all rounded-4 overflow-hidden bg-white text-center">
+                                                <div class="p-4 border-bottom bg-light">
+                                                    <h4 class="fw-bold mb-0" style="color: #002060;">Pronto Pago</h4>
+                                                    <small class="text-muted">Válido hasta el 15 de abril</small>
                                                 </div>
-                                                <ul class="list-unstyled text-start mb-4">
-                                                    <li class="mb-2"><i class="fa fa-check text-success me-2"></i> <b>Todo lo del plan Pronto Pago</b></li>
-                                                    <li class="mb-2"><i class="fa fa-check text-success me-2"></i> Sesiones de Q&A en vivo</li>
-                                                    <li class="mb-2"><i class="fa fa-check text-success me-2"></i> Soporte prioritario vía WhatsApp</li>
-                                                </ul>
-                                                <a href="#pageContactForm" class="btn btn-warning w-100 fw-bold py-2 shadow-sm" style="color: #002060; border-radius: 10px;">Inscribirse ahora</a>
+                                                <div class="card-body p-4">
+                                                    <div class="mb-4">
+                                                        <span class="display-4 fw-bold" style="color: #002060;">S/ 450</span>
+                                                        <span class="text-muted">/ pago único</span>
+                                                    </div>
+                                                    <ul class="list-unstyled text-start mb-4">
+                                                        <li class="mb-2"><i class="fa fa-check text-success me-2"></i> Acceso total al programa</li>
+                                                        <li class="mb-2"><i class="fa fa-check text-success me-2"></i> Material digital descargable</li>
+                                                        <li class="mb-2"><i class="fa fa-check text-success me-2"></i> Certificado de participación</li>
+                                                    </ul>
+                                                    <a href="#pageContactForm" class="btn btn-outline-warning w-100 fw-bold py-2" style="color: #002060; border-radius: 10px;">Inscribirse ahora</a>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </div>
+                                        </div> --}}
 
-                                    <!-- Plan Corporativo -->
-                                    <div class="col-md-4" data-aos="zoom-in" data-aos-delay="300">
-                                        <div class="card h-100 border-0 shadow-sm transition-all rounded-4 overflow-hidden bg-white text-center">
-                                            <div class="p-4 border-bottom bg-light">
-                                                <h4 class="fw-bold mb-0" style="color: #002060;">Corporativo</h4>
-                                                <small class="text-muted">Desde 3 inscritos</small>
-                                            </div>
-                                            <div class="card-body p-4">
-                                                <div class="mb-4">
-                                                    <span class="display-4 fw-bold" style="color: #002060;">S/ 400</span>
-                                                    <span class="text-muted">/ por persona</span>
+                                        <!-- Plan Regular (Pronto pago)  [0] -->
+                                        @if (filled($landing->investment_section['items'][0] ?? null))
+                                            <div class="col-md-4" data-aos="zoom-in" data-aos-delay="200">
+                                                <div class="card h-100 border-0 shadow-lg transition-all rounded-4 overflow-hidden bg-white border-top border-warning border-5" style="border-top: 5px solid #ffc107 !important;">
+                                                    <div class="p-4 border-bottom" style="background-color: rgba(255, 193, 7, 0.05);">
+                                                        <span class="badge bg-warning text-dark mb-2">{{ $landing->investment_section['items'][0]['tag'] }}</span>
+                                                        <h4 class="fw-bold mb-0" style="color: #002060;">{{ $landing->investment_section['items'][0]['title'] }}</h4>
+                                                        <small class="text-muted">La mas recomendada</small>
+                                                    </div>
+                                                    <div class="card-body p-4 text-center">
+                                                        <div class="mb-2">
+                                                            <span class="display-4 fw-bold" style="color: #002060;">S/ {{ $landing->investment_section['items'][0]['price_now'] }}</span>
+                                                            <span class="text-muted">/ {{ $landing->investment_section['items'][0]['price_now_text'] ?? "" }}</span>
+                                                        </div>
+
+                                                        <div class="mb-4">
+                                                            <del class="text-muted fs-4 fw-semibold" style="color: #2d374b;">S/ {{ $landing->investment_section['items'][0]['price_before'] }}</del>
+                                                            <span class="text-muted small">/ {{ $landing->investment_section['items'][0]['price_before_text'] ?? "" }}</span>
+                                                        </div>
+                                                        <ul class="list-unstyled text-start mb-4">
+                                                            @if (filled($landing->investment_section['items'][0]['features'] ?? null))
+                                                                @foreach ($landing->investment_section['items'][0]['features'] as $feature)
+                                                                <li class="mb-2"><i class="fa fa-check text-success me-2"></i> <b>{{ $feature }}</b></li>
+                                                                @endforeach
+                                                            @endif
+                                                        </ul>
+                                                        <a href="#pageContactForm" class="btn btn-warning w-100 fw-bold py-2 shadow-sm" style="color: #002060; border-radius: 10px;">Inscribirse ahora</a>
+                                                    </div>
                                                 </div>
-                                                <ul class="list-unstyled text-start mb-4">
-                                                    <li class="mb-2"><i class="fa fa-check text-success me-2"></i> Beneficios del plan regular</li>
-                                                    <li class="mb-2"><i class="fa fa-check text-success me-2"></i> Sesión privada para el equipo</li>
-                                                    <li class="mb-2"><i class="fa fa-check text-success me-2"></i> Facturación personalizada</li>
-                                                </ul>
-                                                <a href="#pageContactForm" class="btn btn-outline-warning w-100 fw-bold py-2" style="color: #002060; border-radius: 10px;">Contactar ventas</a>
                                             </div>
-                                        </div>
+                                        @endif
+
+                                        <!-- Plan Corporativo -->
+                                        @if (filled($landing->investment_section['items'][1] ?? null))
+                                            <div class="col-md-4" data-aos="zoom-in" data-aos-delay="300">
+                                                <div class="card h-100 border-0 shadow-sm transition-all rounded-4 overflow-hidden bg-white text-center">
+                                                    <div class="p-4 border-bottom bg-light">
+                                                        <h4 class="fw-bold mb-0" style="color: #002060;">{{ $landing->investment_section['items'][1]['tag'] }}</h4>
+                                                        <small class="text-muted">{{ $landing->investment_section['items'][1]['title'] }}</small>
+                                                    </div>
+                                                    <div class="card-body p-4">
+                                                        <div class="mb-4">
+                                                            <span class="display-4 fw-bold" style="color: #002060;">S/ {{ $landing->investment_section['items'][1]['price_now'] }}</span>
+                                                            <span class="text-muted">/ {{ $landing->investment_section['items'][1]['price_now_text'] }}</span>
+                                                        </div>
+                                                        <ul class="list-unstyled text-start mb-4">
+                                                            @if (filled($landing->investment_section['items'][1]['features'] ?? null))
+                                                                @foreach ($landing->investment_section['items'][1]['features'] as $feature)
+                                                                <li class="mb-2"><i class="fa fa-check text-success me-2"></i> <b>{{ $feature }}</b></li>
+                                                                @endforeach
+                                                            @endif
+                                                        </ul>
+                                                        <a href="#pageContactForm" class="btn btn-outline-warning w-100 fw-bold py-2" style="color: #002060; border-radius: 10px;">Contactar ventas</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                @endif
 
                 {{-- Propuesta 2: Preguntas Frecuentes (Diseño Moderno de Tarjetas) --}}
                 <div class="container-fluid card aos-animate mt-5" data-aos="fade-up">
