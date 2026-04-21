@@ -47,11 +47,11 @@ const baseUrl = assetUrl;
 const tabs = [
     { id: 'banner', label: 'Banner', icon: 'fa-image' },
     { id: 'professional', label: 'Actualización Profesional', icon: 'fa-graduation-cap' },
+    { id: 'problem', label: 'El Problema', icon: 'fa-exclamation-triangle' },
+    { id: 'study_plan', label: 'Plan de Estudios', icon: 'fa-book-open' },
     { id: 'staff', label: 'Nuestro Staff', icon: 'fa-users' },
     { id: 'results', label: 'Resultados del Programa', icon: 'fa-chart-line' },
     { id: 'testimonials', label: 'Testimonios', icon: 'fa-comments' },
-    { id: 'study_plan', label: 'Plan de Estudios', icon: 'fa-book-open' },
-    { id: 'problem', label: 'El Problema', icon: 'fa-exclamation-triangle' },
     { id: 'investment', label: 'Inversión', icon: 'fa-microscope' },
     { id: 'faq', label: 'Preguntas Frecuentes', icon: 'fa-question-circle' },
 ];
@@ -174,7 +174,7 @@ const formatIconForVue = (iconName) => {
                             </label>
                             <div class="flex rounded-md shadow-sm">
                                 <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-500 dark:text-gray-400 text-sm">
-                                    {{ baseUrl }}academy/
+                                    {{ baseUrl }}curso/
                                 </span>
                                 <input
                                     type="text"

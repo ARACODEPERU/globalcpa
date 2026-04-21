@@ -2,6 +2,9 @@ import "./bootstrap";
 import "../css/app.css";
 import "../../public/themes/vristo/css/app.css"
 import 'easymde/dist/easymde.min.css';
+// 1. IMPORTACIÓN PARA BLADE (Iconos clásicos con <i>)
+import '@fortawesome/fontawesome-free/css/all.css';
+
 
 import { createApp, h } from "vue";
 import VueGates from "vue-gates";
