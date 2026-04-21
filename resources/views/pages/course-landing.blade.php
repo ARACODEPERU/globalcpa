@@ -886,7 +886,7 @@
                                                                     @endforeach
                                                                 @endif
                                                             </ul>
-                                                            <a href="#pageContactForm" class="btn btn-warning w-100 fw-bold py-2 shadow-sm" style="color: #002060; border-radius: 10px;">Inscribirse ahora</a>
+                                                            <a href="javascript:void(0)" onclick="procederInscripcion()" class="btn btn-warning w-100 fw-bold py-2 shadow-sm" style="color: #002060; border-radius: 10px;">Inscribirse ahora</a>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1050,6 +1050,40 @@
         myModal.addEventListener('shown.bs.modal', () => {
             myInput.focus()
         })
+    </script>
+
+    <script>
+        function procederInscripcion() {
+            Swal.fire({
+                title: '¿Confirmar inscripción?',
+                text: '¿Estás seguro de que deseas proceder con la compra?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, continuar',
+                cancelButtonText: 'Cancelar',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // 1. Limpiar el carrito
+                    localStorage.removeItem('carrito');
+                    
+                    // 2. Crear objeto del producto
+                    var producto = {
+                        id: {{ $onli_item_id ?? 0 }},
+                        nombre: "{{ $landing->course->description }}",
+                        precio: {{ $landing->investment_section['items'][0]['price_now'] ?? 0 }},
+                        image: "{{ $landing->course->image ?? '' }}"
+                    };
+                    
+                    // 3. Agregar directamente al localStorage
+                    var carrito = [];
+                    carrito.push(producto);
+                    localStorage.setItem('carrito', JSON.stringify(carrito));
+                    
+                    // 4. Redireccionar
+                    window.location.href = "{{ route('web_carrito') }}";
+                }
+            });
+        }
     </script>
 
     <script>
