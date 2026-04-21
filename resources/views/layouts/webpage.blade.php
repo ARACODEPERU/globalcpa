@@ -24,7 +24,7 @@
 
     <!-- Meta Pixel Code -->
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite(['resources/js/app.js'])
 
     <script>
         ! function(f, b, e, v, n, t, s) {
