@@ -130,10 +130,6 @@ Route::middleware(['auth', 'verified', 'invalid_updated_information', 'user_acti
     Route::post('students/store', 'AcaStudentController@store')
         ->name('aca_students_store');
 
-    Route::middleware(['auth', 'permission:aca_estudiante_nuevo'])
-        ->get('students/send/accessmail/{personId}', [AcaStudentController::class, 'sendAccessMail'])
-        ->name('aca_students_send_access_mail');
-
     Route::middleware(['middleware' => 'permission:aca_estudiante_editar'])
         ->get('students/edit/{id}', 'AcaStudentController@edit')
         ->name('aca_students_edit');
@@ -354,7 +350,7 @@ Route::middleware(['auth', 'verified', 'invalid_updated_information', 'user_acti
     Route::get('test3', [AcaCertificateController::class, 'test3'])
         ->name('test3');
 
-        // ////////////fin de suscripciones
+    // ////////////fin de suscripciones
 
     Route::get('certificate/list', [AcaCertificateController::class, 'index'])
         ->name('aca_certificate_list');
