@@ -13,6 +13,7 @@ class AcaCourseLanding extends Model
     protected $fillable = [
         'course_id',
         'url_slug',
+        'whatsapp_link',
         'banner_start_date',
         'banner_end_date',
         'banner_duration',
