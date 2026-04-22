@@ -122,7 +122,7 @@
             <!-- Page Sidebar Start-->
             <x-sidebar />
             <!-- Page Sidebar Ends-->
-            <div class="page-body" x-data>
+            <div class="page-body">
 
                 <div class="container-fluid mt-4">
                     {{-- Hero Section --}}
@@ -1058,13 +1058,13 @@
                                                 @if (filled($landing->faq_section['items'] ?? null))
                                                         @foreach ($landing->faq_section['items'] as $faq)
                                                             @if ($faq['visible'])
-                                                                <div class="accordion-item shadow-sm" data-aos="fade-up" data-aos-delay="{{ $loop->index * 40 }}">
-                                                                    <h2 class="accordion-header" id="heading-{{ $loop->index }}">
-                                                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{ $loop->index }}" aria-expanded="false" aria-controls="collapse-{{ $loop->index }}">
+                                                                <div class="accordion-item shadow-sm" data-aos="fade-up" data-aos-delay="{{ $loop->index * 50 }}">
+                                                                    <h2 class="accordion-header" id="faq-mod-head-{{ $loop->index }}">
+                                                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq-mod-col-{{ $loop->index }}" aria-expanded="false" aria-controls="faq-mod-col-{{ $loop->index }}">
                                                                             {{ $faq['question'] }}
                                                                         </button>
                                                                     </h2>
-                                                                    <div id="collapse-{{ $loop->index }}" class="accordion-collapse collapse" aria-labelledby="heading-{{ $loop->index }}" data-bs-parent="#modernFaqAccordion">
+                                                                    <div id="faq-mod-col-{{ $loop->index }}" class="accordion-collapse collapse" aria-labelledby="faq-mod-head-{{ $loop->index }}" data-bs-parent="#modernFaqAccordion">
                                                                         <div class="accordion-body py-4" style="color: #334155; line-height: 1.7; font-size: 0.95rem;">
                                                                             {!! $faq['answer'] !!}
                                                                         </div>
