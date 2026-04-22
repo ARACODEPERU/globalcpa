@@ -3,6 +3,7 @@
 @section('content')
     {{-- Ideally, this CSS should be in the <head> of your main layout file (e.g., layouts/webpage.blade.php) --}}
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
     <style>
         .transition-all {
@@ -19,7 +20,8 @@
         /* Estilos del Carrusel Infinito */
         .carousel-viewport {
             overflow: hidden;
-            padding: 100px 0 50px 0; /* Espacio para que las imágenes y sombras no se corten */
+            padding: 100px 0 50px 0;
+            /* Espacio para que las imágenes y sombras no se corten */
             position: relative;
             width: 100%;
         }
@@ -36,8 +38,13 @@
         }
 
         @keyframes scroll-infinite {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(calc(-50%)); }
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(calc(-50%));
+            }
         }
 
         .teacher-carousel-item {
@@ -53,23 +60,44 @@
             overflow: hidden;
             transition: all 0.3s ease;
         }
+
         .faq-modern .accordion-item:has(.show) {
             border-color: #002060 !important;
-            box-shadow: 0 10px 25px rgba(0,32,96,0.1);
+            box-shadow: 0 10px 25px rgba(0, 32, 96, 0.1);
         }
+
         .faq-modern .accordion-button {
             padding: 1.5rem;
             font-weight: 600;
             background-color: white !important;
             color: #002060;
         }
+
         .faq-modern .accordion-button:not(.collapsed) {
             color: #002060;
             box-shadow: none;
         }
+
         .faq-modern .accordion-button::after {
             background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23002060'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
             transition: transform 0.3s ease;
+        }
+
+        /* Ajustes para Select2 y flags SVG */
+        .select2-container--default .select2-selection--single {
+            border: 1px solid #dee2e6 !important;
+            border-left: 0 !important;
+            height: 38px !important;
+            display: flex;
+            align-items: center;
+        }
+
+        .select2-container {
+            width: 100% !important;
+        }
+
+        .select2-selection__arrow {
+            top: 6px !important;
         }
     </style>
 
@@ -100,7 +128,8 @@
                             <div class="row align-items-center">
                                 <div class="col-lg-8 p-4 p-lg-5">
                                     <div class="d-flex align-items-center mb-3">
-                                        <span class="badge bg-warning text-dark me-2">{{$landing->course->category->description}}</span>
+                                        <span
+                                            class="badge bg-warning text-dark me-2">{{ $landing->course->category->description }}</span>
                                         <div class="text-warning small">
                                             <i class="fa fa-star"></i>
                                             <i class="fa fa-star"></i>
@@ -114,30 +143,32 @@
                                     </h1>
 
                                     @php
-                                            $startDate = \Carbon\Carbon::parse($landing->banner_start_date);
-                                            $endDate = \Carbon\Carbon::parse($landing->banner_end_date);
-                                            $totalDays = $startDate->diffInDays($endDate);
-                                            $totalMonths = $startDate->diffInMonths($endDate);
+                                        $startDate = \Carbon\Carbon::parse($landing->banner_start_date);
+                                        $endDate = \Carbon\Carbon::parse($landing->banner_end_date);
+                                        $totalDays = $startDate->diffInDays($endDate);
+                                        $totalMonths = $startDate->diffInMonths($endDate);
 
-                                            if ($totalDays < 30) {
-                                                $duration = $totalDays . ' día(s)';
-                                            } else {
-                                                $duration = $totalMonths . ' mes(es)';
-                                            }
+                                        if ($totalDays < 30) {
+                                            $duration = $totalDays . ' día(s)';
+                                        } else {
+                                            $duration = $totalMonths . ' mes(es)';
+                                        }
                                     @endphp
 
                                     <div class="d-flex align-items-center text-white-50">
                                         <span class="me-3"><i class="fa fa-clock-o me-1"></i>
-                                           Inicio: {{ \Carbon\Carbon::parse($landing->banner_start_date)->isoFormat('D [de] MMMM', 'es') }} | Duración: {{ $duration }} | Modalidad: {{ $landing->course->modality->description }}</span>
-                                        <span><i class="fa fa-globe me-1"></i> {{ ['es' => 'Español', 'en' => 'Inglés', 'zh' => 'Mandarín'][$landing->banner_language] ?? $landing->banner_language }}</span>
+                                            Inicio:
+                                            {{ \Carbon\Carbon::parse($landing->banner_start_date)->isoFormat('D [de] MMMM', 'es') }}
+                                            | Duración: {{ $duration }} | Modalidad:
+                                            {{ $landing->course->modality->description }}</span>
+                                        <span><i class="fa fa-globe me-1"></i>
+                                            {{ ['es' => 'Español', 'en' => 'Inglés', 'zh' => 'Mandarín'][$landing->banner_language] ?? $landing->banner_language }}</span>
                                     </div>
                                 </div>
-                                <div class="col-lg-4 text-center d-none d-lg-block position-relative"
-                                    style="height: auto;">
-                                    <img src="{{ asset("storage/".$landing->course->image) }}"
-                                        alt="{{ $landing->course->description }}" class="img-fluid"
-                                        style="height: 100%;">
-                                        
+                                <div class="col-lg-4 text-center d-none d-lg-block position-relative" style="height: auto;">
+                                    <img src="{{ asset('storage/' . $landing->course->image) }}"
+                                        alt="{{ $landing->course->description }}" class="img-fluid" style="height: 100%;">
+
                                     {{-- <img src="{{ asset("themes/webpage/images/cyber.jpg") }}"
                                         alt="{{ $landing->course->description }}" class="img-fluid"
                                         style="height: 100%;"> --}}
@@ -172,14 +203,17 @@
                                             <div class="d-flex align-items-center">
                                                 <div class="flex-shrink-0 bg-warning-light p-3 rounded-circle me-3"
                                                     style="background-color: rgba(255, 193, 7, 0.1);">
-                                                    <i class="fa {{ $landing->professional_section['items'][0]['icon']  }} text-warning fs-4"></i>
+                                                    <i
+                                                        class="fa {{ $landing->professional_section['items'][0]['icon'] }} text-warning fs-4"></i>
                                                 </div>
                                                 <div>
-                                                    <h5 class="mb-0 fw-bold" style="color: #002060;">{{ $landing->professional_section['items'][0]['title']  }}</h5>
-                                                    <small class="text-muted">{{ $landing->professional_section['items'][0]['description']  }}</small>
+                                                    <h5 class="mb-0 fw-bold" style="color: #002060;">
+                                                        {{ $landing->professional_section['items'][0]['title'] }}</h5>
+                                                    <small
+                                                        class="text-muted">{{ $landing->professional_section['items'][0]['description'] }}</small>
                                                 </div>
                                             </div>
-                                    </div>
+                                        </div>
                                 @endif
 
                                 @if ($landing->professional_section['items'][1])
@@ -187,207 +221,273 @@
                                         <div class="d-flex align-items-center">
                                             <div class="flex-shrink-0 bg-info-light p-3 rounded-circle me-3"
                                                 style="background-color: rgba(0, 204, 255, 0.1);">
-                                                <i class="fa {{ $landing->professional_section['items'][1]['icon']  }} text-info fs-4"></i>
+                                                <i
+                                                    class="fa {{ $landing->professional_section['items'][1]['icon'] }} text-info fs-4"></i>
                                             </div>
                                             <div>
-                                                <h5 class="mb-0 fw-bold" style="color: #002060;">{{ $landing->professional_section['items'][1]['title']  }}</h5>
-                                                    <small class="text-muted">{{ $landing->professional_section['items'][1]['description']  }}</small>
+                                                <h5 class="mb-0 fw-bold" style="color: #002060;">
+                                                    {{ $landing->professional_section['items'][1]['title'] }}</h5>
+                                                <small
+                                                    class="text-muted">{{ $landing->professional_section['items'][1]['description'] }}</small>
                                             </div>
                                         </div>
                                     </div>
                                 @endif
-                                </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="card-body p-4 p-lg-5">
-                                <div class="mb-4">
-                                    <h2 class="fw-bold" style="color: #002060;">¿Listo para empezar?</h2>
-                                    <p class="text-muted">Completa tus datos para descargar el brochure detallado y recibir
-                                        información sobre promociones exclusivas del programa.</p>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card-body p-4 p-lg-5">
+                            <div class="mb-4">
+                                <h2 class="fw-bold" style="color: #002060;">¿Listo para empezar?</h2>
+                                <p class="text-muted">Completa tus datos para descargar el brochure detallado y recibir
+                                    información sobre promociones exclusivas del programa.</p>
+                            </div>
+
+                            <form id="pageContactForm">
+                                @csrf
+                                <input type="hidden" name="subject" value="{{ $landing->course->description }}">
+                                <input type="hidden" name="message" value="desde Landing - Descargué Brochure">
+
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold" style="color: #002060;">Nombres y
+                                        Apellidos</label>
+                                    <div class="input-group shadow-sm">
+                                        <span class="input-group-text bg-white border-end-0"><i
+                                                class="fa fa-user text-muted"></i></span>
+                                        <input type="text" name="full_name" class="form-control border-start-0 ps-0"
+                                            placeholder="Ingresa tu nombre completo" required>
+                                    </div>
                                 </div>
 
-                                <form id="pageContactForm">
-                                    @csrf
-                                    <input type="hidden" name="subject" value="{{ $landing->course->description }}">
-                                    <input type="hidden" name="message"
-                                        value="desde Landing - Descargué Brochure">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold" style="color: #002060;">País</label>
+                                    <div class="input-group shadow-sm">
+                                        <select name="country" id="countrySelect" class="form-select border-start-0 ps-0"
+                                            style="width: 100%" required>
+                                            <optgroup label="Sudamérica">
+                                                <option value="Perú" data-code="pe" data-prefix="+51" selected>Perú
+                                                </option>
+                                                <option value="Argentina" data-code="ar" data-prefix="+54">Argentina
+                                                </option>
+                                                <option value="Bolivia" data-code="bo" data-prefix="+591">Bolivia
+                                                </option>
+                                                <option value="Brasil" data-code="br" data-prefix="+55">Brasil</option>
+                                                <option value="Chile" data-code="cl" data-prefix="+56">Chile</option>
+                                                <option value="Colombia" data-code="co" data-prefix="+57">Colombia
+                                                </option>
+                                                <option value="Ecuador" data-code="ec" data-prefix="+593">Ecuador
+                                                </option>
+                                                <option value="Guyana" data-code="gy" data-prefix="+592">Guyana</option>
+                                                <option value="Paraguay" data-code="py" data-prefix="+595">Paraguay
+                                                </option>
+                                                <option value="Surinam" data-code="sr" data-prefix="+597">Surinam
+                                                </option>
+                                                <option value="Uruguay" data-code="uy" data-prefix="+598">Uruguay
+                                                </option>
+                                                <option value="Venezuela" data-code="ve" data-prefix="+58">Venezuela
+                                                </option>
+                                            </optgroup>
+                                            <optgroup label="Mundo">
+                                                <option value="España" data-code="es" data-prefix="+34">España</option>
+                                                <option value="México" data-code="mx" data-prefix="+52">México</option>
+                                                <option value="Estados Unidos" data-code="us" data-prefix="+1">Estados
+                                                    Unidos</option>
+                                                <option value="Panamá" data-code="pa" data-prefix="+507">Panamá</option>
+                                                <option value="Costa Rica" data-code="cr" data-prefix="+506">Costa Rica
+                                                </option>
+                                                <option value="Italia" data-code="it" data-prefix="+39">Italia</option>
+                                                <option value="Portugal" data-code="pt" data-prefix="+351">Portugal
+                                                </option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
 
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold" style="color: #002060;">Nombres y
-                                            Apellidos</label>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label fw-bold" style="color: #002060;">WhatsApp</label>
+                                        <div class="input-group shadow-sm">
+                                            <span class="input-group-text bg-white border-end-0">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"
+                                                    style="width: 16px; height: 16px; fill: #6c757d;">
+                                                    <path
+                                                        d="M380.9 97.1c-41.9-42-97.7-65.1-157-65.1-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480 117.7 449.1c32.4 17.7 68.9 27 106.1 27l.1 0c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3 18.6-68.1-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1s56.2 81.2 56.1 130.5c0 101.8-84.9 184.6-186.6 184.6zM325.1 300.5c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8s-14.3 18-17.6 21.8c-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7 .9-6.9-.5-9.7s-12.5-30.1-17.1-41.2c-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2s-9.7 1.4-14.8 6.9c-5.1 5.6-19.4 19-19.4 46.3s19.9 53.7 22.6 57.4c2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4s4.6-24.1 3.2-26.4c-1.3-2.5-5-3.9-10.5-6.6z" />
+                                                </svg>
+                                            </span>
+                                            <span id="phonePrefix"
+                                                class="input-group-text bg-white border-start-0 border-end-0 text-muted fw-bold px-1">+51</span>
+                                            <input type="text" name="phone" class="form-control border-start-0 ps-1"
+                                                placeholder="999 888 777" style="border-left: 0 !important;" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label fw-bold" style="color: #002060;">Correo
+                                            Electrónico</label>
                                         <div class="input-group shadow-sm">
                                             <span class="input-group-text bg-white border-end-0"><i
-                                                    class="fa fa-user text-muted"></i></span>
-                                            <input type="text" name="full_name" class="form-control border-start-0 ps-0"
-                                                placeholder="Ingresa tu nombre completo" required>
+                                                    class="fa fa-envelope text-muted"></i></span>
+                                            <input type="email" name="email" class="form-control border-start-0 ps-0"
+                                                placeholder="ejemplo@correo.com" required>
                                         </div>
                                     </div>
+                                </div>
 
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label fw-bold" style="color: #002060;">WhatsApp</label>
-                                            <div class="input-group shadow-sm">
-                                                <span class="input-group-text bg-white border-end-0">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" style="width: 16px; height: 16px; fill: #6c757d;">
-                                                        <path d="M380.9 97.1c-41.9-42-97.7-65.1-157-65.1-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480 117.7 449.1c32.4 17.7 68.9 27 106.1 27l.1 0c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3 18.6-68.1-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1s56.2 81.2 56.1 130.5c0 101.8-84.9 184.6-186.6 184.6zM325.1 300.5c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8s-14.3 18-17.6 21.8c-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7 .9-6.9-.5-9.7s-12.5-30.1-17.1-41.2c-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2s-9.7 1.4-14.8 6.9c-5.1 5.6-19.4 19-19.4 46.3s19.9 53.7 22.6 57.4c2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4s4.6-24.1 3.2-26.4c-1.3-2.5-5-3.9-10.5-6.6z"/>
-                                                    </svg>
-                                                </span>
-                                                <input type="text" name="phone"
-                                                    class="form-control border-start-0 ps-0" placeholder="Ej: 999 888 777"
-                                                    required>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label fw-bold" style="color: #002060;">Correo
-                                                Electrónico</label>
-                                            <div class="input-group shadow-sm">
-                                                <span class="input-group-text bg-white border-end-0"><i
-                                                        class="fa fa-envelope text-muted"></i></span>
-                                                <input type="email" name="email"
-                                                    class="form-control border-start-0 ps-0"
-                                                    placeholder="ejemplo@correo.com" required>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="mt-4">
-                                        <button type="submit" id="submitPageContactButton"
-                                            class="btn btn-warning btn-lg w-100 fw-bold shadow-sm py-3"
-                                            style="color: #002060; border-radius: 12px; transition: all 0.3s ease;">
-                                            <i class="fa fa-file-pdf-o me-2"></i> DESCARGAR BROCHURE
-                                        </button>
-                                    </div>
-                                    <div id="messagePageContact" class="mt-3"></div>
-                                </form>
-                            </div>
+                                <div class="mt-4">
+                                    <button type="submit" id="submitPageContactButton"
+                                        class="btn btn-warning btn-lg w-100 fw-bold shadow-sm py-3"
+                                        style="color: #002060; border-radius: 12px; transition: all 0.3s ease;">
+                                        <i class="fa fa-file-pdf-o me-2"></i> DESCARGAR BROCHURE
+                                    </button>
+                                </div>
+                                <div id="messagePageContact" class="mt-3"></div>
+                            </form>
                         </div>
                     </div>
-
                 </div>
 
+            </div>
+
+            <div class="container-fluid card aos-animate" data-aos="fade-up">
+                <div class="row">
+                    @if (filled($landing->problem_section ?? null))
+                        <div class="col-md-12">
+                            <div class="card-body p-4 p-lg-5">
+                                <div class="text-center mb-5">
+                                    <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border"
+                                        style="background-color: rgba(220, 53, 69, 0.1); color: #dc3545;">
+                                        <i class="fa fa-exclamation-triangle me-1"></i>
+                                        {{ $landing->problem_section['name'] }}
+                                    </span>
+                                    <h2 class="fw-bold display-6" style="color: #002060;">
+                                        {{ $landing->problem_section['title'] }}</h2>
+                                    <p class="text-muted fs-5 mx-auto" style="max-width: 800px;">
+                                        {{ $landing->problem_section['description'] }}</p>
+                                </div>
+
+                                <div class="row g-4 justify-content-center">
+                                    @if (filled($landing->problem_section['items'][0] ?? null))
+                                        <div class="col-md-4" data-aos="zoom-in" data-aos-delay="100">
+                                            <div
+                                                class="h-100 p-4 rounded-4 border shadow-sm text-center bg-white transition-all">
+                                                <div class="mb-4">
+                                                    <i class="fa {{ $landing->problem_section['items'][0]['icon'] }} text-warning"
+                                                        style="font-size: 3.5rem;"></i>
+                                                </div>
+                                                <h4 class="fw-bold mb-3" style="color: #002060;">
+                                                    {{ $landing->problem_section['items'][0]['title'] }}</h4>
+                                                <p class="text-muted mb-0">
+                                                    {{ $landing->problem_section['items'][0]['description'] }}</p>
+                                            </div>
+                                        </div>
+                                    @endif
+
+                                    @if (filled($landing->problem_section['items'][1] ?? null))
+                                        <div class="col-md-4" data-aos="zoom-in" data-aos-delay="200">
+                                            <div
+                                                class="h-100 p-4 rounded-4 border shadow-sm text-center bg-white transition-all">
+                                                <div class="mb-4">
+                                                    <i class="fa {{ $landing->problem_section['items'][1]['icon'] }} text-warning"
+                                                        style="font-size: 3.5rem;"></i>
+                                                </div>
+                                                <h4 class="fw-bold mb-3" style="color: #002060;">
+                                                    {{ $landing->problem_section['items'][1]['title'] }}
+                                                </h4>
+                                                <p class="text-muted mb-0">
+                                                    {{ $landing->problem_section['items'][1]['description'] }}</p>
+                                            </div>
+                                        </div>
+                                    @endif
+
+                                    @if (filled($landing->problem_section['items'][2] ?? null))
+                                        <div class="col-md-4" data-aos="zoom-in" data-aos-delay="300">
+                                            <div
+                                                class="h-100 p-4 rounded-4 border shadow-sm text-center bg-white transition-all">
+                                                <div class="mb-4">
+                                                    <i class="fa {{ $landing->problem_section['items'][2]['icon'] }} text-warning"
+                                                        style="font-size: 3.5rem;"></i>
+                                                </div>
+                                                <h4 class="fw-bold mb-3" style="color: #002060;">
+                                                    {{ $landing->problem_section['items'][2]['title'] }}</h4>
+                                                <p class="text-muted mb-0">
+                                                    {{ $landing->problem_section['items'][2]['description'] }}</p>
+                                            </div>
+                                        </div>
+                                    @endif
+
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+                </div>
+            </div>
+
+            @if (filled($landing->study_plan_section ?? null))
                 <div class="container-fluid card aos-animate" data-aos="fade-up">
                     <div class="row">
-                        @if (filled($landing->problem_section ?? null))
-                            <div class="col-md-12">
-                                <div class="card-body p-4 p-lg-5">
-                                    <div class="text-center mb-5">
-                                        <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border"
-                                            style="background-color: rgba(220, 53, 69, 0.1); color: #dc3545;">
-                                            <i class="fa fa-exclamation-triangle me-1"></i> {{ $landing->problem_section['name'] }}
-                                        </span>
-                                        <h2 class="fw-bold display-6" style="color: #002060;">{{ $landing->problem_section['title'] }}</h2>
-                                        <p class="text-muted fs-5 mx-auto" style="max-width: 800px;">{{ $landing->problem_section['description'] }}</p>
-                                    </div>
-
-                                    <div class="row g-4 justify-content-center">
-                                        @if (filled($landing->problem_section['items'][0] ?? null))
-                                            <div class="col-md-4" data-aos="zoom-in" data-aos-delay="100">
-                                                <div
-                                                    class="h-100 p-4 rounded-4 border shadow-sm text-center bg-white transition-all">
-                                                    <div class="mb-4">
-                                                        <i class="fa {{ $landing->problem_section['items'][0]['icon']  }} text-warning" style="font-size: 3.5rem;"></i>
-                                                    </div>
-                                                    <h4 class="fw-bold mb-3" style="color: #002060;">{{ $landing->problem_section['items'][0]['title']  }}</h4>
-                                                    <p class="text-muted mb-0">{{ $landing->problem_section['items'][0]['description']  }}</p>
-                                                </div>
-                                            </div>
-                                        @endif
-
-                                        @if (filled($landing->problem_section['items'][1] ?? null))
-                                            <div class="col-md-4" data-aos="zoom-in" data-aos-delay="200">
-                                                <div
-                                                    class="h-100 p-4 rounded-4 border shadow-sm text-center bg-white transition-all">
-                                                    <div class="mb-4">
-                                                        <i class="fa {{ $landing->problem_section['items'][1]['icon']  }} text-warning" style="font-size: 3.5rem;"></i>
-                                                    </div>
-                                                    <h4 class="fw-bold mb-3" style="color: #002060;">{{ $landing->problem_section['items'][1]['title']  }}
-                                                    </h4>
-                                                    <p class="text-muted mb-0">{{ $landing->problem_section['items'][1]['description']  }}</p>
-                                                </div>
-                                            </div>
-                                        @endif
-
-                                        @if (filled($landing->problem_section['items'][2] ?? null))
-                                            <div class="col-md-4" data-aos="zoom-in" data-aos-delay="300">
-                                                <div
-                                                    class="h-100 p-4 rounded-4 border shadow-sm text-center bg-white transition-all">
-                                                    <div class="mb-4">
-                                                        <i class="fa {{ $landing->problem_section['items'][2]['icon']  }} text-warning" style="font-size: 3.5rem;"></i>
-                                                    </div>
-                                                    <h4 class="fw-bold mb-3" style="color: #002060;">{{ $landing->problem_section['items'][2]['title']  }}</h4>
-                                                    <p class="text-muted mb-0">{{ $landing->problem_section['items'][2]['description']  }}</p>
-                                                </div>
-                                            </div>
-                                        @endif
-
-                                    </div>
+                        <div class="col-md-12">
+                            <div class="card-body p-4 p-lg-5">
+                                <!-- Header de Sección -->
+                                <div class="text-center mb-5">
+                                    <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border"
+                                        style="background-color: rgba(0, 32, 96, 0.1); color: #002060;">
+                                        <i class="fa fa-list-ul me-1"></i> {{ $landing->study_plan_section['name'] }}
+                                    </span>
+                                    <h2 class="fw-bold display-6" style="color: #002060;">
+                                        {{ $landing->study_plan_section['title'] }}</h2>
+                                    <p class="text-muted fs-5 mx-auto" style="max-width: 800px;">
+                                        {{ $landing->study_plan_section['description'] }}</p>
                                 </div>
-                            </div>
-                        @endif
-                    </div>
-                </div>
 
-                @if (filled($landing->study_plan_section ?? null))
-                    <div class="container-fluid card aos-animate" data-aos="fade-up">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="card-body p-4 p-lg-5">
-                                    <!-- Header de Sección -->
-                                    <div class="text-center mb-5">
-                                        <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border"
-                                            style="background-color: rgba(0, 32, 96, 0.1); color: #002060;">
-                                            <i class="fa fa-list-ul me-1"></i> {{ $landing->study_plan_section['name'] }}
-                                        </span>
-                                        <h2 class="fw-bold display-6" style="color: #002060;">{{ $landing->study_plan_section['title'] }}</h2>
-                                        <p class="text-muted fs-5 mx-auto" style="max-width: 800px;">{{ $landing->study_plan_section['description'] }}</p>
-                                    </div>
-
-                                    <div class="row align-items-center">
-                                        <!-- Columna de Imagen -->
-                                        <div class="col-lg-5 mb-4 mb-lg-0" data-aos="fade-right">
-                                            <div class="position-relative">
-                                                <img src="{{ asset("storage/".$landing->study_plan_section['image']) }}"
-                                                    alt="Temario Especializado" class="img-fluid rounded-4 shadow-lg"
-                                                    style="border: 8px solid #f8f9fa;">
-                                                <div
-                                                    class="position-absolute bottom-0 start-0 m-3 p-3 bg-warning rounded-3 shadow d-none d-sm-block">
-                                                    <span class="fw-bold text-dark">Módulos 100% Actualizados</span>
-                                                </div>
+                                <div class="row align-items-center">
+                                    <!-- Columna de Imagen -->
+                                    <div class="col-lg-5 mb-4 mb-lg-0" data-aos="fade-right">
+                                        <div class="position-relative">
+                                            <img src="{{ asset('storage/' . $landing->study_plan_section['image']) }}"
+                                                alt="Temario Especializado" class="img-fluid rounded-4 shadow-lg"
+                                                style="border: 8px solid #f8f9fa;">
+                                            <div
+                                                class="position-absolute bottom-0 start-0 m-3 p-3 bg-warning rounded-3 shadow d-none d-sm-block">
+                                                <span class="fw-bold text-dark">Módulos 100% Actualizados</span>
                                             </div>
                                         </div>
+                                    </div>
 
-                                        <!-- Columna de Temas -->
-                                        <div class="col-lg-7" data-aos="fade-left">
-                                            <div class="ps-lg-4">
+                                    <!-- Columna de Temas -->
+                                    <div class="col-lg-7" data-aos="fade-left">
+                                        <div class="ps-lg-4">
 
-                                                @if (filled($landing->study_plan_section['items'] ?? null))
-                                                    @foreach ($landing->study_plan_section['items'] as $item)
-                                                        <div class="d-flex mb-4">
-                                                            <div class="flex-shrink-0">
-                                                                <span
-                                                                    class="badge rounded-circle bg-primary d-flex align-items-center justify-content-center shadow"
-                                                                    style="width: 45px; height: 45px; background-color: #002060 !important; font-size: 1.1rem;">{{ $loop->iteration }}</span>
-                                                            </div>
-                                                            <div class="ms-3">
-                                                                <h5 class="fw-bold" style="color: #002060;">{{ $landing->study_plan_section['items'][$loop->index]['title'] }}</h5>
-                                                                <p class="text-muted">{{ $landing->study_plan_section['items'][$loop->index]['description'] }}</p>
-                                                            </div>
+                                            @if (filled($landing->study_plan_section['items'] ?? null))
+                                                @foreach ($landing->study_plan_section['items'] as $item)
+                                                    <div class="d-flex mb-4">
+                                                        <div class="flex-shrink-0">
+                                                            <span
+                                                                class="badge rounded-circle bg-primary d-flex align-items-center justify-content-center shadow"
+                                                                style="width: 45px; height: 45px; background-color: #002060 !important; font-size: 1.1rem;">{{ $loop->iteration }}</span>
                                                         </div>
-                                                    @endforeach
-                                                @endif
+                                                        <div class="ms-3">
+                                                            <h5 class="fw-bold" style="color: #002060;">
+                                                                {{ $landing->study_plan_section['items'][$loop->index]['title'] }}
+                                                            </h5>
+                                                            <p class="text-muted">
+                                                                {{ $landing->study_plan_section['items'][$loop->index]['description'] }}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            @endif
 
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                @endif
+                </div>
+            @endif
 
 
-                {{-- <div>
+            {{-- <div>
                     <section style="padding: 10px 0px;">
                         <div class="container-fluid">
                             <div class="page-title">
@@ -497,7 +597,7 @@
                                     ];
                                 @endphp
 
-                                @foreach(array_merge($teachers_demo, $teachers_demo) as $teacher)
+                                @foreach (array_merge($teachers_demo, $teachers_demo) as $teacher)
                                     <div class="teacher-carousel-item">
                                         <div class="teacher-card-opt3 m-0">
                                             <div class="teacher-img-wrapper-opt3">
@@ -517,8 +617,8 @@
 
                 </div> --}}
 
-                {{-- Nueva Propuesta: Grilla de Expertos (Opción 4) --}}
-                {{-- <div class="container-fluid card aos-animate mt-5" data-aos="fade-up">
+            {{-- Nueva Propuesta: Grilla de Expertos (Opción 4) --}}
+            {{-- <div class="container-fluid card aos-animate mt-5" data-aos="fade-up">
                     <div class="row">
                         <div class="col-md-12">
                             <div class="card-body p-4 p-lg-5">
@@ -544,7 +644,7 @@
                                         ];
                                     @endphp
 
-                                    @foreach($teachers_grid as $teacher)
+                                    @foreach ($teachers_grid as $teacher)
                                         <div class="col-md-6 col-lg-3" data-aos="zoom-in" data-aos-delay="{{ $loop->index * 100 }}">
                                             <div class="card border-0 shadow-sm h-100 transition-all rounded-4 overflow-hidden bg-white">
                                                 <div style="height: 280px; overflow: hidden; position: relative;">
@@ -573,28 +673,29 @@
                 </div> --}}
 
 
-                {{-- Propuesta de Diseño: Carrusel de Expertos Premium (Opción 5) --}}
+            {{-- Propuesta de Diseño: Carrusel de Expertos Premium (Opción 5) --}}
 
-                @if (filled($landing->staff_section ?? null))
-                    <div class="container-fluid card aos-animate mt-5" data-aos="fade-up">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="card-body p-4 p-lg-5">
-                                    <!-- Header de Sección -->
-                                    <div class="text-center mb-4">
-                                        <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border"
-                                            style="background-color: rgba(0, 32, 96, 0.05); color: #002060;">
-                                            <i class="fa fa-users me-1"></i> {{ $landing->staff_section['name'] }}
-                                        </span>
-                                        <h2 class="fw-bold display-6" style="color: #002060;">{{ $landing->staff_section['title'] }}</h2>
-                                        <p class="text-muted fs-5 mx-auto" style="max-width: 800px;">
-                                            {{ $landing->staff_section['description'] }}
-                                        </p>
-                                    </div>
+            @if (filled($landing->staff_section ?? null))
+                <div class="container-fluid card aos-animate mt-5" data-aos="fade-up">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card-body p-4 p-lg-5">
+                                <!-- Header de Sección -->
+                                <div class="text-center mb-4">
+                                    <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border"
+                                        style="background-color: rgba(0, 32, 96, 0.05); color: #002060;">
+                                        <i class="fa fa-users me-1"></i> {{ $landing->staff_section['name'] }}
+                                    </span>
+                                    <h2 class="fw-bold display-6" style="color: #002060;">
+                                        {{ $landing->staff_section['title'] }}</h2>
+                                    <p class="text-muted fs-5 mx-auto" style="max-width: 800px;">
+                                        {{ $landing->staff_section['description'] }}
+                                    </p>
+                                </div>
 
-                                    <div class="carousel-viewport" style="padding: 40px 0;">
-                                        <div class="carousel-track" style="animation-duration: 50s;">
-                                            {{-- @php
+                                <div class="carousel-viewport" style="padding: 40px 0;">
+                                    <div class="carousel-track" style="animation-duration: 50s;">
+                                        {{-- @php
                                                 $teachers_premium = [
                                                     ['name' => 'Dr. Julian Arancibia', 'role' => 'Especialista en IA', 'img' => 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=2070&auto=format&fit=crop'],
                                                     ['name' => 'Mag. Carmen Luz', 'role' => 'Auditoría Digital', 'img' => 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1974&auto=format&fit=crop'],
@@ -604,69 +705,98 @@
                                                 ];
                                             @endphp --}}
 
-                                            {{-- Se duplica el contenido para el loop infinito --}}
-                                           @if (filled($teachers_premium ?? null))
-                                                @foreach(array_merge($teachers_premium, $teachers_premium) as $teacher)
+                                        {{-- Se duplica el contenido para el loop infinito --}}
+                                        @if (filled($teachers_premium ?? null))
+                                            @foreach (array_merge($teachers_premium, $teachers_premium) as $teacher)
                                                 <div class="teacher-carousel-item" style="width: 280px;">
-                                                    <div class="card border-0 shadow-sm h-100 transition-all rounded-4 overflow-hidden bg-white mx-2">
+                                                    <div
+                                                        class="card border-0 shadow-sm h-100 transition-all rounded-4 overflow-hidden bg-white mx-2">
                                                         <div style="height: 240px; overflow: hidden; position: relative;">
                                                             <img src="{{ $teacher['img'] }}"
                                                                 class="card-img-top h-100 w-100"
-                                                                style="object-fit: cover;"
-                                                                alt="{{ $teacher['name'] }}">
+                                                                style="object-fit: cover;" alt="{{ $teacher['name'] }}">
                                                             <div class="position-absolute bottom-0 start-0 w-100 p-3"
                                                                 style="background: linear-gradient(transparent, rgba(0,32,96,0.8));">
-                                                                <p class="text-white small mb-0 fw-light">Socio Consultor</p>
+                                                                <p class="text-white small mb-0 fw-light">Socio Consultor
+                                                                </p>
                                                             </div>
                                                         </div>
                                                         <div class="card-body text-center p-3">
-                                                            <h5 class="fw-bold mb-1" style="color: #002060; font-size: 1.1rem;">{{ $teacher['name'] }}</h5>
-                                                            <p class="text-warning small fw-bold mb-0" style="font-size: 0.8rem;">{{ $teacher['role'] }}</p>
+                                                            <h5 class="fw-bold mb-1"
+                                                                style="color: #002060; font-size: 1.1rem;">
+                                                                {{ $teacher['name'] }}</h5>
+                                                            <p class="text-warning small fw-bold mb-0"
+                                                                style="font-size: 0.8rem;">{{ $teacher['role'] }}</p>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                @endforeach
-                                           @endif
-                                        </div>
+                                            @endforeach
+                                        @endif
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                @endif
+                </div>
+            @endif
 
 
-                @if (filled($landing->results_section ?? null))
-                    <div class="container-fluid card aos-animate" data-aos="fade-up">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="card-body p-4 p-lg-5">
-                                    <div class="text-center mb-5">
-                                        <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border"
-                                            style="background-color: rgba(40, 167, 69, 0.1); color: #28a745;">
-                                            <i class="fa fa-check-circle me-1"></i> {{ $landing->results_section['name'] }}
-                                        </span>
-                                        <h2 class="fw-bold display-6" style="color: #002060;">
-                                            {{ $landing->results_section['title'] }}
-                                        </h2>
-                                        <p class="text-muted fs-5 mx-auto" style="max-width: 800px;">
-                                            {{ $landing->results_section['description'] }}
-                                        </p>
-                                    </div>
+            @if (filled($landing->results_section ?? null))
+                <div class="container-fluid card aos-animate" data-aos="fade-up">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card-body p-4 p-lg-5">
+                                <div class="text-center mb-5">
+                                    <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border"
+                                        style="background-color: rgba(40, 167, 69, 0.1); color: #28a745;">
+                                        <i class="fa fa-check-circle me-1"></i> {{ $landing->results_section['name'] }}
+                                    </span>
+                                    <h2 class="fw-bold display-6" style="color: #002060;">
+                                        {{ $landing->results_section['title'] }}
+                                    </h2>
+                                    <p class="text-muted fs-5 mx-auto" style="max-width: 800px;">
+                                        {{ $landing->results_section['description'] }}
+                                    </p>
+                                </div>
 
-                                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 justify-center">
-                                        @php
-                                            $achievements = [
-                                                ['title' => 'Automatización Total', 'desc' => 'Reduce hasta un 80% el tiempo en tareas de registro y conciliación bancaria.', 'icon' => 'fa-magic', 'color' => '#6f42c1'],
-                                                ['title' => 'Análisis Predictivo', 'desc' => 'Anticipa flujos de caja y riesgos financieros con modelos de Machine Learning.', 'icon' => 'fa-bar-chart', 'color' => '#007bff'],
-                                                ['title' => 'Auditoría con IA', 'desc' => 'Identifica anomalías y fraudes de manera instantánea en grandes volúmenes de datos.', 'icon' => 'fa-search-plus', 'color' => '#e83e8c'],
-                                                ['title' => 'Consultoría Estratégica', 'desc' => 'Eleva tu valor cobrando por insights estratégicos, no por horas de digitación.', 'icon' => 'fa-rocket', 'color' => '#fd7e14'],
-                                            ];
-                                        @endphp
+                                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 justify-center">
+                                    @php
+                                        $achievements = [
+                                            [
+                                                'title' => 'Automatización Total',
+                                                'desc' =>
+                                                    'Reduce hasta un 80% el tiempo en tareas de registro y conciliación bancaria.',
+                                                'icon' => 'fa-magic',
+                                                'color' => '#6f42c1',
+                                            ],
+                                            [
+                                                'title' => 'Análisis Predictivo',
+                                                'desc' =>
+                                                    'Anticipa flujos de caja y riesgos financieros con modelos de Machine Learning.',
+                                                'icon' => 'fa-bar-chart',
+                                                'color' => '#007bff',
+                                            ],
+                                            [
+                                                'title' => 'Auditoría con IA',
+                                                'desc' =>
+                                                    'Identifica anomalías y fraudes de manera instantánea en grandes volúmenes de datos.',
+                                                'icon' => 'fa-search-plus',
+                                                'color' => '#e83e8c',
+                                            ],
+                                            [
+                                                'title' => 'Consultoría Estratégica',
+                                                'desc' =>
+                                                    'Eleva tu valor cobrando por insights estratégicos, no por horas de digitación.',
+                                                'icon' => 'fa-rocket',
+                                                'color' => '#fd7e14',
+                                            ],
+                                        ];
+                                    @endphp
 
-                                       @if (filled($landing->results_section['items'] ?? null))
-                                            @foreach($landing->results_section['items'] as $item)
-                                            <div class="col" data-aos="fade-up" data-aos-delay="{{ 100 * ($loop->index + 1) }}">
+                                    @if (filled($landing->results_section['items'] ?? null))
+                                        @foreach ($landing->results_section['items'] as $item)
+                                            <div class="col" data-aos="fade-up"
+                                                data-aos-delay="{{ 100 * ($loop->index + 1) }}">
                                                 <div class="h-100 p-4 rounded-4 border-0 shadow-sm text-center bg-white transition-all position-relative overflow-hidden"
                                                     style="border-top: 5px solid {{ $colors[$loop->index] }} !important;">
 
@@ -677,171 +807,191 @@
 
                                                     <div class="mb-4 d-inline-flex align-items-center justify-content-center rounded-circle shadow-sm"
                                                         style="width: 70px; height: 70px; background-color: white; border: 1px solid #f1f1f1;">
-                                                        <i class="fa {{ $item['icon'] }}" style="font-size: 2rem; color: {{ $colors[$loop->index] }};"></i>
+                                                        <i class="fa {{ $item['icon'] }}"
+                                                            style="font-size: 2rem; color: {{ $colors[$loop->index] }};"></i>
                                                     </div>
 
-                                                    <h4 class="fw-bold mb-3" style="color: #002060;">{{ $item['title'] }}</h4>
+                                                    <h4 class="fw-bold mb-3" style="color: #002060;">{{ $item['title'] }}
+                                                    </h4>
                                                     <p class="text-muted mb-0 small" style="line-height: 1.6;">
                                                         {{ $item['description'] }}
                                                     </p>
                                                 </div>
                                             </div>
-                                            @endforeach
-                                       @endif
-                                    </div>
+                                        @endforeach
+                                    @endif
                                 </div>
                             </div>
                         </div>
                     </div>
-                @endif
+                </div>
+            @endif
 
 
 
-    {{-- Nueva Propuesta: Sección de Testimonios en Carrusel (Opción 6) --}}
-                @if (filled($landing->testimonials_section ?? null))
-                    <div class="container-fluid card aos-animate mt-5" data-aos="fade-up">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="card-body p-4 p-lg-5">
-                                    <!-- Header de Sección -->
-                                    <div class="text-center mb-4">
-                                        <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border"
-                                            style="background-color: rgba(0, 123, 255, 0.05); color: #007bff;">
-                                            <i class="fa fa-quote-right me-1"></i> {{ $landing->testimonials_section['name'] }}
-                                        </span>
-                                        <h2 class="fw-bold display-6" style="color: #002060;">{{ $landing->testimonials_section['title'] }}</h2>
-                                        <p class="text-muted fs-5 mx-auto" style="max-width: 800px;">
-                                            {{ $landing->testimonials_section['description'] }}
-                                        </p>
-                                    </div>
+            {{-- Nueva Propuesta: Sección de Testimonios en Carrusel (Opción 6) --}}
+            @if (filled($landing->testimonials_section ?? null))
+                <div class="container-fluid card aos-animate mt-5" data-aos="fade-up">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card-body p-4 p-lg-5">
+                                <!-- Header de Sección -->
+                                <div class="text-center mb-4">
+                                    <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border"
+                                        style="background-color: rgba(0, 123, 255, 0.05); color: #007bff;">
+                                        <i class="fa fa-quote-right me-1"></i>
+                                        {{ $landing->testimonials_section['name'] }}
+                                    </span>
+                                    <h2 class="fw-bold display-6" style="color: #002060;">
+                                        {{ $landing->testimonials_section['title'] }}</h2>
+                                    <p class="text-muted fs-5 mx-auto" style="max-width: 800px;">
+                                        {{ $landing->testimonials_section['description'] }}
+                                    </p>
+                                </div>
 
-                                    <style>
-                                        .testimonial-carousel-viewport {
-                                            overflow: hidden;
-                                            padding: 20px 0; /* Espacio para sombras */
-                                            position: relative;
-                                            width: 100%;
+                                <style>
+                                    .testimonial-carousel-viewport {
+                                        overflow: hidden;
+                                        padding: 20px 0;
+                                        /* Espacio para sombras */
+                                        position: relative;
+                                        width: 100%;
+                                    }
+
+                                    .testimonial-carousel-track {
+                                        display: flex;
+                                        gap: 30px;
+                                        width: max-content;
+                                        animation: scroll-infinite-testimonials 60s linear infinite;
+                                        /* Velocidad ajustada */
+                                    }
+
+                                    .testimonial-carousel-track:hover {
+                                        animation-play-state: paused;
+                                    }
+
+                                    @keyframes scroll-infinite-testimonials {
+                                        0% {
+                                            transform: translateX(0);
                                         }
 
-                                        .testimonial-carousel-track {
-                                            display: flex;
-                                            gap: 30px;
-                                            width: max-content;
-                                            animation: scroll-infinite-testimonials 60s linear infinite; /* Velocidad ajustada */
+                                        100% {
+                                            transform: translateX(calc(-50%));
                                         }
+                                    }
 
-                                        .testimonial-carousel-track:hover {
-                                            animation-play-state: paused;
-                                        }
+                                    .testimonial-card {
+                                        width: 350px;
+                                        /* Ancho fijo para las tarjetas de testimonio */
+                                        flex-shrink: 0;
+                                        background: #fff;
+                                        border-radius: 15px;
+                                        padding: 30px;
+                                        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+                                        transition: all 0.3s ease;
+                                        display: flex;
+                                        flex-direction: column;
+                                        justify-content: space-between;
+                                        min-height: 250px;
+                                        /* Altura mínima para uniformidad */
+                                    }
 
-                                        @keyframes scroll-infinite-testimonials {
-                                            0% { transform: translateX(0); }
-                                            100% { transform: translateX(calc(-50%)); }
-                                        }
+                                    .testimonial-card:hover {
+                                        transform: translateY(-8px);
+                                        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+                                    }
 
-                                        .testimonial-card {
-                                            width: 350px; /* Ancho fijo para las tarjetas de testimonio */
-                                            flex-shrink: 0;
-                                            background: #fff;
-                                            border-radius: 15px;
-                                            padding: 30px;
-                                            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-                                            transition: all 0.3s ease;
-                                            display: flex;
-                                            flex-direction: column;
-                                            justify-content: space-between;
-                                            min-height: 250px; /* Altura mínima para uniformidad */
-                                        }
+                                    .testimonial-quote {
+                                        font-size: 1.1rem;
+                                        line-height: 1.6;
+                                        color: #343a40;
+                                        margin-bottom: 20px;
+                                        font-style: italic;
+                                    }
 
-                                        .testimonial-card:hover {
-                                            transform: translateY(-8px);
-                                            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
-                                        }
+                                    .testimonial-author-info {
+                                        display: flex;
+                                        align-items: center;
+                                        margin-top: auto;
+                                        /* Empuja la info del autor hacia abajo */
+                                    }
 
-                                        .testimonial-quote {
-                                            font-size: 1.1rem;
-                                            line-height: 1.6;
-                                            color: #343a40;
-                                            margin-bottom: 20px;
-                                            font-style: italic;
-                                        }
+                                    .testimonial-avatar {
+                                        width: 60px;
+                                        height: 60px;
+                                        border-radius: 50%;
+                                        object-fit: cover;
+                                        margin-right: 15px;
+                                        border: 3px solid #007bff;
+                                    }
 
-                                        .testimonial-author-info {
-                                            display: flex;
-                                            align-items: center;
-                                            margin-top: auto; /* Empuja la info del autor hacia abajo */
-                                        }
+                                    .testimonial-name {
+                                        font-weight: 700;
+                                        color: #002060;
+                                        font-size: 1rem;
+                                    }
 
-                                        .testimonial-avatar {
-                                            width: 60px;
-                                            height: 60px;
-                                            border-radius: 50%;
-                                            object-fit: cover;
-                                            margin-right: 15px;
-                                            border: 3px solid #007bff;
-                                        }
+                                    .testimonial-title {
+                                        font-size: 0.85rem;
+                                        color: #6c757d;
+                                    }
+                                </style>
 
-                                        .testimonial-name {
-                                            font-weight: 700;
-                                            color: #002060;
-                                            font-size: 1rem;
-                                        }
+                                <div class="testimonial-carousel-viewport">
+                                    <div class="testimonial-carousel-track">
 
-                                        .testimonial-title {
-                                            font-size: 0.85rem;
-                                            color: #6c757d;
-                                        }
-                                    </style>
-
-                                    <div class="testimonial-carousel-viewport">
-                                        <div class="testimonial-carousel-track">
-
-                                            {{-- Duplicamos los testimonios para el efecto de carrusel infinito --}}
-                                            @if (filled($landing->testimonials_section['items'] ?? null))
-                                                @foreach($landing->testimonials_section['items'] as $testimonial)
+                                        {{-- Duplicamos los testimonios para el efecto de carrusel infinito --}}
+                                        @if (filled($landing->testimonials_section['items'] ?? null))
+                                            @foreach ($landing->testimonials_section['items'] as $testimonial)
                                                 <div class="testimonial-carousel-item">
                                                     <div class="testimonial-card mx-2">
-                                                        <p class="testimonial-quote">"{{ $testimonial['description'] }}"</p>
+                                                        <p class="testimonial-quote">"{{ $testimonial['description'] }}"
+                                                        </p>
                                                         <div class="testimonial-author-info">
-                                                            <img src="{{ asset("storage/".$testimonial['image']) }}" alt="{{ $testimonial['name'] }}" class="testimonial-avatar">
+                                                            <img src="{{ asset('storage/' . $testimonial['image']) }}"
+                                                                alt="{{ $testimonial['name'] }}"
+                                                                class="testimonial-avatar">
                                                             <div>
-                                                                <h5 class="testimonial-name">{{ $testimonial['name'] }}</h5>
-                                                                <p class="testimonial-title">{{ $testimonial['presentation'] }}</p>
+                                                                <h5 class="testimonial-name">{{ $testimonial['name'] }}
+                                                                </h5>
+                                                                <p class="testimonial-title">
+                                                                    {{ $testimonial['presentation'] }}</p>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                @endforeach
-                                            @endif
-                                        </div>
+                                            @endforeach
+                                        @endif
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                @endif
+                </div>
+            @endif
 
 
-                {{-- Nueva Sección: Planes de Inversión --}}
+            {{-- Nueva Sección: Planes de Inversión --}}
 
-                @if (filled($landing->investment_section ?? null))
-                    <div class="container-fluid card aos-animate mt-5" data-aos="fade-up">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="card-body p-4 p-lg-5">
-                                    <div class="text-center mb-5">
-                                        <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border"
-                                            style="background-color: rgba(255, 193, 7, 0.1); color: #002060;">
-                                            <i class="fa fa-money me-1"></i> {{ $landing->investment_section['name']  }}
-                                        </span>
-                                        <h2 class="fw-bold display-6" style="color: #002060;">{{ $landing->investment_section['title']  }}</h2>
-                                        <p class="text-muted fs-5 mx-auto" style="max-width: 800px;">
-                                            {{ $landing->investment_section['description']  }}
-                                        </p>
-                                    </div>
+            @if (filled($landing->investment_section ?? null))
+                <div class="container-fluid card aos-animate mt-5" data-aos="fade-up">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card-body p-4 p-lg-5">
+                                <div class="text-center mb-5">
+                                    <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border"
+                                        style="background-color: rgba(255, 193, 7, 0.1); color: #002060;">
+                                        <i class="fa fa-money me-1"></i> {{ $landing->investment_section['name'] }}
+                                    </span>
+                                    <h2 class="fw-bold display-6" style="color: #002060;">
+                                        {{ $landing->investment_section['title'] }}</h2>
+                                    <p class="text-muted fs-5 mx-auto" style="max-width: 800px;">
+                                        {{ $landing->investment_section['description'] }}
+                                    </p>
+                                </div>
 
-                                    <div class="row g-4 justify-content-center">
-                                        {{-- <!-- Plan Pronto Pago -->
+                                <div class="row g-4 justify-content-center">
+                                    {{-- <!-- Plan Pronto Pago -->
                                         <div class="col-md-4" data-aos="zoom-in" data-aos-delay="100">
                                             <div class="card h-100 border-0 shadow-sm transition-all rounded-4 overflow-hidden bg-white text-center">
                                                 <div class="p-4 border-bottom bg-light">
@@ -863,180 +1013,219 @@
                                             </div>
                                         </div> --}}
 
-                                        <!-- Plan Regular (Pronto pago)  [0] -->
-                                        @if (filled($landing->investment_section['items'][0] ?? null))
-                                            @if ($landing->investment_section['items'][0]['price_before_visible'])
-                                                <div class="col-md-4" data-aos="zoom-in" data-aos-delay="200">
-                                                    <div class="card h-100 border-0 shadow-lg transition-all rounded-4 overflow-hidden bg-white border-top border-warning border-5" style="border-top: 5px solid #ffc107 !important;">
-                                                        <div class="p-4 border-bottom" style="background-color: rgba(255, 193, 7, 0.05);">
-                                                            <span class="badge bg-warning text-dark mb-2">{{ $landing->investment_section['items'][0]['tag'] }}</span>
-                                                            <h4 class="fw-bold mb-0" style="color: #002060;">{{ $landing->investment_section['items'][0]['title'] }}</h4>
-                                                            <small class="text-muted">La mas recomendada</small>
-                                                        </div>
-                                                        <div class="card-body p-4 text-center">
-                                                            <div class="mb-2">
-                                                                <span class="display-4 fw-bold" style="color: #002060;">S/ {{ $landing->investment_section['items'][0]['price_now'] }}</span>
-                                                                <span class="text-muted">/ {{ $landing->investment_section['items'][0]['price_now_text'] ?? "" }}</span>
-                                                            </div>
-
-                                                            <div class="mb-4">
-                                                                <del class="text-muted fs-4 fw-semibold" style="color: #2d374b;">S/ {{ $landing->investment_section['items'][0]['price_before'] }}</del>
-                                                                <span class="text-muted small">/ {{ $landing->investment_section['items'][0]['price_before_text'] ?? "" }}</span>
-                                                            </div>
-                                                            <ul class="list-unstyled text-start mb-4">
-                                                                @if (filled($landing->investment_section['items'][0]['features'] ?? null))
-                                                                    @foreach ($landing->investment_section['items'][0]['features'] as $feature)
-                                                                    <li class="mb-2"><i class="fa fa-check text-success me-2"></i> <b>{{ $feature }}</b></li>
-                                                                    @endforeach
-                                                                @endif
-                                                            </ul>
-                                                            <a href="javascript:void(0)" onclick="procederInscripcion()" class="btn btn-warning w-100 fw-bold py-2 shadow-sm" style="color: #002060; border-radius: 10px;">Inscribirse ahora</a>
-                                                        </div>
+                                    <!-- Plan Regular (Pronto pago)  [0] -->
+                                    @if (filled($landing->investment_section['items'][0] ?? null))
+                                        @if ($landing->investment_section['items'][0]['price_before_visible'])
+                                            <div class="col-md-4" data-aos="zoom-in" data-aos-delay="200">
+                                                <div class="card h-100 border-0 shadow-lg transition-all rounded-4 overflow-hidden bg-white border-top border-warning border-5"
+                                                    style="border-top: 5px solid #ffc107 !important;">
+                                                    <div class="p-4 border-bottom"
+                                                        style="background-color: rgba(255, 193, 7, 0.05);">
+                                                        <span
+                                                            class="badge bg-warning text-dark mb-2">{{ $landing->investment_section['items'][0]['tag'] }}</span>
+                                                        <h4 class="fw-bold mb-0" style="color: #002060;">
+                                                            {{ $landing->investment_section['items'][0]['title'] }}</h4>
+                                                        <small class="text-muted">La mas recomendada</small>
                                                     </div>
-                                                </div>
-                                            @endif
-                                        @endif
-
-                                        <!-- Plan Corporativo -->
-                                        @if (filled($landing->investment_section['items'][1] ?? null))
-                                            @if ($landing->investment_section['items'][1]['price_before_visible'])
-                                                <div class="col-md-4" data-aos="zoom-in" data-aos-delay="300">
-                                                    <div class="card h-100 border-0 shadow-sm transition-all rounded-4 overflow-hidden bg-white text-center">
-                                                        <div class="p-4 border-bottom bg-light">
-                                                            <h4 class="fw-bold mb-0" style="color: #002060;">{{ $landing->investment_section['items'][1]['tag'] }}</h4>
-                                                            <small class="text-muted">{{ $landing->investment_section['items'][1]['title'] }}</small>
+                                                    <div class="card-body p-4 text-center">
+                                                        <div class="mb-2">
+                                                            <span class="display-4 fw-bold" style="color: #002060;">S/
+                                                                {{ $landing->investment_section['items'][0]['price_now'] }}</span>
+                                                            <span class="text-muted">/
+                                                                {{ $landing->investment_section['items'][0]['price_now_text'] ?? '' }}</span>
                                                         </div>
-                                                        <div class="card-body p-4">
-                                                            <div class="mb-4">
-                                                                <span class="display-4 fw-bold" style="color: #002060;">S/ {{ $landing->investment_section['items'][1]['price_now'] }}</span>
-                                                                <span class="text-muted">/ {{ $landing->investment_section['items'][1]['price_now_text'] }}</span>
-                                                            </div>
-                                                            <ul class="list-unstyled text-start mb-4">
-                                                                @if (filled($landing->investment_section['items'][1]['features'] ?? null))
-                                                                    @foreach ($landing->investment_section['items'][1]['features'] as $feature)
-                                                                    <li class="mb-2"><i class="fa fa-check text-success me-2"></i> <b>{{ $feature }}</b></li>
-                                                                    @endforeach
-                                                                @endif
-                                                            </ul>
-                                                            <a href="#pageContactForm" class="btn btn-outline-warning w-100 fw-bold py-2" style="color: #002060; border-radius: 10px;">Contactar ventas</a>
+
+                                                        <div class="mb-4">
+                                                            <del class="text-muted fs-4 fw-semibold"
+                                                                style="color: #2d374b;">S/
+                                                                {{ $landing->investment_section['items'][0]['price_before'] }}</del>
+                                                            <span class="text-muted small">/
+                                                                {{ $landing->investment_section['items'][0]['price_before_text'] ?? '' }}</span>
                                                         </div>
-                                                    </div>
-                                                </div>
-                                            @endif
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @endif
-
-                {{-- Propuesta 2: Preguntas Frecuentes (Diseño Moderno de Tarjetas) --}}
-                @if (filled($landing->faq_section ?? null))
-                    <div class="container-fluid card aos-animate mt-5" data-aos="fade-up">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="card-body p-4 p-lg-5">
-                                    <div class="text-center mb-5">
-                                        <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border"
-                                            style="background-color: rgba(111, 66, 193, 0.1); color: #6f42c1;">
-                                            <i class="fa fa-magic me-1"></i> {{ $landing->faq_section['name'] }}
-                                        </span>
-                                        <h2 class="fw-bold display-6" style="color: #002060;">{{ $landing->faq_section['title'] }}</h2>
-                                        <p class="text-muted fs-5 mx-auto" style="max-width: 700px;">
-                                            {{ $landing->faq_section['description'] }}
-                                        </p>
-                                    </div>
-
-                                    <div class="row justify-content-center">
-                                        <div class="col-lg-10">
-                                            <div class="accordion faq-modern" id="modernFaqAccordion">
-
-                                                <!-- Pregunta 1 -->
-                                                @if (filled($landing->faq_section['items'] ?? null))
-                                                        @foreach ($landing->faq_section['items'] as $faq)
-                                                            @if ($faq['visible'])
-                                                                <div class="accordion-item shadow-sm" data-aos="fade-up">
-                                                                    <h2 class="accordion-header">
-                                                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#mCollapseOne">
-                                                                            {{ $faq['question'] }}
-                                                                        </button>
-                                                                    </h2>
-                                                                    <div id="mCollapseOne" class="accordion-collapse collapse" data-bs-parent="#modernFaqAccordion">
-                                                                        <div class="accordion-body py-4 text-muted">
-                                                                            {{ $faq['answer'] }}
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
+                                                        <ul class="list-unstyled text-start mb-4">
+                                                            @if (filled($landing->investment_section['items'][0]['features'] ?? null))
+                                                                @foreach ($landing->investment_section['items'][0]['features'] as $feature)
+                                                                    <li class="mb-2"><i
+                                                                            class="fa fa-check text-success me-2"></i>
+                                                                        <b>{{ $feature }}</b></li>
+                                                                @endforeach
                                                             @endif
-                                                        @endforeach
-                                                @endif
-
+                                                        </ul>
+                                                        <a href="javascript:void(0)" onclick="procederInscripcion()"
+                                                            class="btn btn-warning w-100 fw-bold py-2 shadow-sm"
+                                                            style="color: #002060; border-radius: 10px;">Inscribirse
+                                                            ahora</a>
+                                                    </div>
+                                                </div>
                                             </div>
+                                        @endif
+                                    @endif
 
-                                            <div class="text-center mt-5 p-4 rounded-4" style="background-color: #f8f9fa; border: 1px dashed #dee2e6;">
-                                                <p class="mb-3 fw-bold" style="color: #002060;">¿Aún tienes dudas específicas?</p>
-                                                <a href="https://wa.me/tu-numero" class="btn btn-success rounded-pill px-4 shadow-sm d-inline-flex align-items-center">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" style="width: 18px; height: 18px; fill: white;" class="me-2">
-                                                        <path d="M380.9 97.1c-41.9-42-97.7-65.1-157-65.1-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480 117.7 449.1c32.4 17.7 68.9 27 106.1 27l.1 0c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3 18.6-68.1-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1s56.2 81.2 56.1 130.5c0 101.8-84.9 184.6-186.6 184.6zM325.1 300.5c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8s-14.3 18-17.6 21.8c-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7 .9-6.9-.5-9.7s-12.5-30.1-17.1-41.2c-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2s-9.7 1.4-14.8 6.9c-5.1 5.6-19.4 19-19.4 46.3s19.9 53.7 22.6 57.4c2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4s4.6-24.1 3.2-26.4c-1.3-2.5-5-3.9-10.5-6.6z"/>
-                                                    </svg>
-                                                    Hablar con un Asesor
-                                                </a>
+                                    <!-- Plan Corporativo -->
+                                    @if (filled($landing->investment_section['items'][1] ?? null))
+                                        @if ($landing->investment_section['items'][1]['price_before_visible'])
+                                            <div class="col-md-4" data-aos="zoom-in" data-aos-delay="300">
+                                                <div
+                                                    class="card h-100 border-0 shadow-sm transition-all rounded-4 overflow-hidden bg-white text-center">
+                                                    <div class="p-4 border-bottom bg-light">
+                                                        <h4 class="fw-bold mb-0" style="color: #002060;">
+                                                            {{ $landing->investment_section['items'][1]['tag'] }}</h4>
+                                                        <small
+                                                            class="text-muted">{{ $landing->investment_section['items'][1]['title'] }}</small>
+                                                    </div>
+                                                    <div class="card-body p-4">
+                                                        <div class="mb-4">
+                                                            <span class="display-4 fw-bold" style="color: #002060;">S/
+                                                                {{ $landing->investment_section['items'][1]['price_now'] }}</span>
+                                                            <span class="text-muted">/
+                                                                {{ $landing->investment_section['items'][1]['price_now_text'] }}</span>
+                                                        </div>
+                                                        <ul class="list-unstyled text-start mb-4">
+                                                            @if (filled($landing->investment_section['items'][1]['features'] ?? null))
+                                                                @foreach ($landing->investment_section['items'][1]['features'] as $feature)
+                                                                    <li class="mb-2"><i
+                                                                            class="fa fa-check text-success me-2"></i>
+                                                                        <b>{{ $feature }}</b></li>
+                                                                @endforeach
+                                                            @endif
+                                                        </ul>
+                                                        <a href="#pageContactForm"
+                                                            class="btn btn-outline-warning w-100 fw-bold py-2"
+                                                            style="color: #002060; border-radius: 10px;">Contactar
+                                                            ventas</a>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </div>
+                                        @endif
+                                    @endif
                                 </div>
                             </div>
                         </div>
                     </div>
-                @endif
+                </div>
+            @endif
 
-
-
-
-
-
-
-                <div class="container-fluid card aos-init aos-animate" data-aos="fade-up">
+            {{-- Propuesta 2: Preguntas Frecuentes (Diseño Moderno de Tarjetas) --}}
+            @if (filled($landing->faq_section ?? null))
+                <div class="container-fluid card aos-animate mt-5" data-aos="fade-up">
                     <div class="row">
-                        <div class="col-md-2"></div>
-                        <div class="col-md-4">
-                            <div style="padding: 20px 20px;">
-                                <div class="page-title">
-                                    <div class="row">
-                                        <div class="col-sm-12">
-                                            <h1 class="ara_title">¡Comparte tus logros con un certificado!</h1>
+                        <div class="col-md-12">
+                            <div class="card-body p-4 p-lg-5">
+                                <div class="text-center mb-5">
+                                    <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border"
+                                        style="background-color: rgba(111, 66, 193, 0.1); color: #6f42c1;">
+                                        <i class="fa fa-magic me-1"></i> {{ $landing->faq_section['name'] }}
+                                    </span>
+                                    <h2 class="fw-bold display-6" style="color: #002060;">
+                                        {{ $landing->faq_section['title'] }}</h2>
+                                    <p class="text-muted fs-5 mx-auto" style="max-width: 700px;">
+                                        {{ $landing->faq_section['description'] }}
+                                    </p>
+                                </div>
+
+                                <div class="row justify-content-center">
+                                    <div class="col-lg-10">
+                                        <div class="accordion faq-modern" id="modernFaqAccordion">
+
+                                            <!-- Pregunta 1 -->
+                                            @if (filled($landing->faq_section['items'] ?? null))
+                                                @foreach ($landing->faq_section['items'] as $faq)
+                                                    @if ($faq['visible'])
+                                                        <div class="accordion-item shadow-sm" data-aos="fade-up">
+                                                            <h2 class="accordion-header">
+                                                                <button class="accordion-button collapsed" type="button"
+                                                                    data-bs-toggle="collapse"
+                                                                    data-bs-target="#faq-collapse-{{ $loop->index }}"
+                                                                    aria-expanded="false"
+                                                                    aria-controls="faq-collapse-{{ $loop->index }}">
+                                                                    {{ $faq['question'] }}
+                                                                </button>
+                                                            </h2>
+                                                            <div id="faq-collapse-{{ $loop->index }}"
+                                                                class="accordion-collapse collapse"
+                                                                data-bs-parent="#modernFaqAccordion">
+                                                                <div class="accordion-body py-4" style="color: #4b5563;">
+                                                                    {{ $faq['answer'] }}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    @endif
+                                                @endforeach
+                                            @endif
+
+                                        </div>
+
+                                        <div class="text-center mt-5 p-4 rounded-4"
+                                            style="background-color: #f8f9fa; border: 1px dashed #dee2e6;">
+                                            <p class="mb-3 fw-bold" style="color: #002060;">¿Aún tienes dudas específicas?
+                                            </p>
+                                            <a href="https://wa.me/tu-numero"
+                                                class="btn btn-success rounded-pill px-4 shadow-sm d-inline-flex align-items-center">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"
+                                                    style="width: 18px; height: 18px; fill: white;" class="me-2">
+                                                    <path
+                                                        d="M380.9 97.1c-41.9-42-97.7-65.1-157-65.1-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480 117.7 449.1c32.4 17.7 68.9 27 106.1 27l.1 0c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3 18.6-68.1-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1s56.2 81.2 56.1 130.5c0 101.8-84.9 184.6-186.6 184.6zM325.1 300.5c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8s-14.3 18-17.6 21.8c-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7 .9-6.9-.5-9.7s-12.5-30.1-17.1-41.2c-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2s-9.7 1.4-14.8 6.9c-5.1 5.6-19.4 19-19.4 46.3s19.9 53.7 22.6 57.4c2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4s4.6-24.1 3.2-26.4c-1.3-2.5-5-3.9-10.5-6.6z" />
+                                                </svg>
+                                                Hablar con un Asesor
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
-                                <p style="font-size: 17px; line-height: 1.3; margin-top: 10px;">
-                                    Cuando termines el curso tendrás acceso al certificado digital para
-                                    compartirlo con tu
-                                    familia, amigos, empleadores y la comunidad.
-                                </p>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div style="place-items: center; padding: 40px 20px;">
-                                <img style="width: 100%;"
-                                    src="https://academy.globalcpaperu.com/themes/webpage/images/certificado.jpg"
-                                    alt="">
-                                <p style="font-size: 17px; line-height: 1.3; margin-top: 10px;">
-                                    <b>* IMAGEN REFERENCIAL</b>
-                                </p>
-                            </div>
-                        </div>
-                        <div class="col-md-2"></div>
                     </div>
+                </div>
+            @endif
+
+
+
+
+
+
+
+            <div class="container-fluid card aos-init aos-animate" data-aos="fade-up">
+                <div class="row">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-4">
+                        <div style="padding: 20px 20px;">
+                            <div class="page-title">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <h1 class="ara_title">¡Comparte tus logros con un certificado!</h1>
+                                    </div>
+                                </div>
+                            </div>
+                            <p style="font-size: 17px; line-height: 1.3; margin-top: 10px;">
+                                Cuando termines el curso tendrás acceso al certificado digital para
+                                compartirlo con tu
+                                familia, amigos, empleadores y la comunidad.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div style="place-items: center; padding: 40px 20px;">
+                            <img style="width: 100%;"
+                                src="https://academy.globalcpaperu.com/themes/webpage/images/certificado.jpg"
+                                alt="">
+                            <p style="font-size: 17px; line-height: 1.3; margin-top: 10px;">
+                                <b>* IMAGEN REFERENCIAL</b>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-2"></div>
                 </div>
             </div>
         </div>
-        <!-- footer start-->
-        <x-footer />
+    </div>
+    <!-- footer start-->
+    <x-footer />
     </div>
 
     {{-- Ideally, this JS should be at the end of your <body> in the main layout file --}}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
     <script>
         AOS.init({
             mirror: true, // This makes animations trigger on scroll up as well
@@ -1069,7 +1258,7 @@
                 if (result.isConfirmed) {
                     // 1. Limpiar el carrito
                     localStorage.removeItem('carrito');
-                    
+
                     // 2. Crear objeto del producto
                     var producto = {
                         id: {{ $onli_item_id ?? 0 }},
@@ -1077,12 +1266,12 @@
                         precio: {{ $landing->investment_section['items'][0]['price_now'] ?? 0 }},
                         image: "{{ $landing->course->image ?? '' }}"
                     };
-                    
+
                     // 3. Agregar directamente al localStorage
                     var carrito = [];
                     carrito.push(producto);
                     localStorage.setItem('carrito', JSON.stringify(carrito));
-                    
+
                     // 4. Redireccionar
                     window.location.href = "{{ route('web_carrito') }}";
                 }
@@ -1097,6 +1286,12 @@
 
             var formulario = document.getElementById('pageContactForm');
             var formData = new FormData(formulario);
+
+            // Obtener el prefijo del span y concatenarlo al número antes de enviar
+            const prefix = document.getElementById('phonePrefix').innerText;
+            const phoneValue = formData.get('phone');
+            // Actualizar el valor en el formData para que viaje completo (ej: "+51 999888777")
+            formData.set('phone', prefix + ' ' + phoneValue);
 
             var submitButton = document.getElementById('submitPageContactButton');
             submitButton.disabled = true;
@@ -1143,6 +1338,36 @@
         });
     </script>
 
+    <script>
+        $(document).ready(function() {
+            function formatCountry(country) {
+                if (!country.id) {
+                    return country.text;
+                }
+                var code = $(country.element).data('code');
+                var $country = $(
+                    '<span><img src="https://flagcdn.com/w20/' + code.toLowerCase() +
+                    '.png" class="me-2" style="vertical-align: middle; border: 1px solid #eee; width: 20px;">' +
+                    country.text + '</span>'
+                );
+                return $country;
+            };
+
+            $('#countrySelect').select2({
+                templateResult: formatCountry,
+                templateSelection: formatCountry,
+                dropdownParent: $('#countrySelect').parent()
+            });
+
+            // Lógica reactiva para el código de teléfono
+            $('#countrySelect').on('change select2:select', function() {
+                const prefix = $(this).find(':selected').data('prefix');
+                if (prefix) {
+                    $('#phonePrefix').text(prefix);
+                }
+            }).trigger('change');
+        });
+    </script>
 
 
 @stop
