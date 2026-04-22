@@ -48,21 +48,32 @@
 
         /* Estilos para FAQ Moderna */
         .faq-modern .accordion-item {
-            border: 1px solid #e9ecef !important;
-            margin-bottom: 1.5rem;
-            border-radius: 12px !important;
+            border: 1px solid #edf2f7 !important;
+            margin-bottom: 1rem;
+            border-radius: 15px !important;
             overflow: hidden;
             transition: all 0.3s ease;
+            /* background: #ffffff; */
         }
         .faq-modern .accordion-item:has(.show) {
             border-color: #002060 !important;
-            box-shadow: 0 10px 25px rgba(0,32,96,0.1);
+            box-shadow: 0 15px 30px rgba(0, 32, 96, 0.08);
         }
         .faq-modern .accordion-button {
             padding: 1.5rem;
             font-weight: 600;
-            background-color: white !important;
+            /* background-color: white !important; */
             color: #002060;
+            font-size: 1.05rem;
+        }
+        .faq-modern .accordion-button:focus {
+            box-shadow: none;
+            border-color: transparent;
+        }
+        .faq-modern .accordion-button:not(.collapsed) {
+            background-color: rgba(0, 32, 96, 0.02) !important;
+            color: #002060;
+            border-bottom: 1px solid #f1f5f9;
         }
         .faq-modern .accordion-button:not(.collapsed) {
             color: #002060;
@@ -1000,18 +1011,17 @@
                                         <div class="col-lg-10">
                                             <div class="accordion faq-modern" id="modernFaqAccordion">
 
-                                                <!-- Pregunta 1 -->
                                                 @if (filled($landing->faq_section['items'] ?? null))
                                                         @foreach ($landing->faq_section['items'] as $faq)
                                                             @if ($faq['visible'])
-                                                                <div class="accordion-item shadow-sm" data-aos="fade-up" data-aos-delay="{{ $loop->index * 50 }}">
-                                                                    <h2 class="accordion-header" id="faq-heading-{{ $loop->index }}">
-                                                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq-collapse-{{ $loop->index }}" aria-expanded="false" aria-controls="faq-collapse-{{ $loop->index }}">
+                                                                <div class="accordion-item shadow-sm" data-aos="fade-up" data-aos-delay="{{ $loop->index * 40 }}">
+                                                                    <h2 class="accordion-header" id="heading-{{ $loop->index }}">
+                                                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{ $loop->index }}" aria-expanded="false" aria-controls="collapse-{{ $loop->index }}">
                                                                             {{ $faq['question'] }}
                                                                         </button>
                                                                     </h2>
-                                                                    <div id="faq-collapse-{{ $loop->index }}" class="accordion-collapse collapse" aria-labelledby="faq-heading-{{ $loop->index }}" data-bs-parent="#modernFaqAccordion">
-                                                                        <div class="accordion-body py-4" style="color: #4b5563; line-height: 1.6;">
+                                                                    <div id="collapse-{{ $loop->index }}" class="accordion-collapse collapse" aria-labelledby="heading-{{ $loop->index }}" data-bs-parent="#modernFaqAccordion">
+                                                                        <div class="accordion-body py-4" style="color: #334155; line-height: 1.7; font-size: 0.95rem;">
                                                                             {!! $faq['answer'] !!}
                                                                         </div>
                                                                     </div>
@@ -1039,44 +1049,8 @@
                     </div>
                 @endif
 
+                <x-courselanding.certificatetemplate />
 
-
-
-
-
-
-                <div class="container-fluid card aos-init aos-animate" data-aos="fade-up">
-                    <div class="row">
-                        <div class="col-md-2"></div>
-                        <div class="col-md-4">
-                            <div style="padding: 20px 20px;">
-                                <div class="page-title">
-                                    <div class="row">
-                                        <div class="col-sm-12">
-                                            <h1 class="ara_title">¡Comparte tus logros con un certificado!</h1>
-                                        </div>
-                                    </div>
-                                </div>
-                                <p style="font-size: 17px; line-height: 1.3; margin-top: 10px;">
-                                    Cuando termines el curso tendrás acceso al certificado digital para
-                                    compartirlo con tu
-                                    familia, amigos, empleadores y la comunidad.
-                                </p>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div style="place-items: center; padding: 40px 20px;">
-                                <img style="width: 100%;"
-                                    src="https://academy.globalcpaperu.com/themes/webpage/images/certificado.jpg"
-                                    alt="">
-                                <p style="font-size: 17px; line-height: 1.3; margin-top: 10px;">
-                                    <b>* IMAGEN REFERENCIAL</b>
-                                </p>
-                            </div>
-                        </div>
-                        <div class="col-md-2"></div>
-                    </div>
-                </div>
             </div>
         </div>
         <!-- footer start-->
