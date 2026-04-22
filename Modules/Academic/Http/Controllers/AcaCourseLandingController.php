@@ -74,6 +74,7 @@ class AcaCourseLandingController extends Controller
             $request,
             [
                 'url_slug' => 'required|string|max:500|unique:aca_course_landings,url_slug,'.$courseId.',course_id',
+                'whatsapp_link' => 'nullable|string|max:500',
                 'is_published' => 'boolean',
             ]
         );
@@ -89,6 +90,7 @@ class AcaCourseLandingController extends Controller
 
         $landing->update([
             'url_slug' => $slug,
+            'whatsapp_link' => $request->whatsapp_link ?? '',
             'is_published' => $request->is_published ?? false,
         ]);
     }
