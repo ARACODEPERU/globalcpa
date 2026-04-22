@@ -8,11 +8,13 @@
     <style>
         .transition-all {
             transition: all 0.3s ease-in-out !important;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease !important;
         }
 
         .transition-all:hover {
             transform: translateY(-12px);
             box-shadow: 0 15px 30px rgba(0, 32, 96, 0.15) !important;
+            box-shadow: 0 15px 30px rgba(0, 32, 96, 0.15);
             border-color: #ffc107 !important;
             /* Un sutil borde dorado al resaltar */
         }
@@ -54,6 +56,8 @@
             overflow: hidden;
             transition: all 0.3s ease;
             /* background: #ffffff; */
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            background: #ffffff;
         }
         .faq-modern .accordion-item:has(.show) {
             border-color: #002060 !important;
@@ -63,11 +67,13 @@
             padding: 1.5rem;
             font-weight: 600;
             /* background-color: white !important; */
+            background-color: white !important;
             color: #002060;
             font-size: 1.05rem;
         }
         .faq-modern .accordion-button:focus {
             box-shadow: none;
+            box-shadow: none !important;
             border-color: transparent;
         }
         .faq-modern .accordion-button:not(.collapsed) {
@@ -1088,6 +1094,7 @@
                                         @foreach ($landing->faq_section['items'] as $faq)
                                             @if ($faq['visible'])
                                                 <div class="card border-0 shadow-sm mb-3 rounded-4 overflow-hidden transition-all bg-white" 
+                                                <div class="card border-0 shadow-sm mb-3 rounded-4 overflow-hidden bg-white" 
                                                      style="border: 1px solid #f1f5f9 !important;">
                                                     <div class="card-header bg-white border-0 p-0" id="alt-heading-{{ $loop->index }}">
                                                         <button class="accordion-button collapsed py-4 px-4 fw-bold shadow-none d-flex align-items-center" 
