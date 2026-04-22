@@ -1131,13 +1131,7 @@
                                     @if (filled($landing->faq_section['items'] ?? null))
                                         @foreach ($landing->faq_section['items'] as $faq)
                                             @if ($faq['visible'])
-<<<<<<< HEAD
-                                                <div class="card border-0 shadow-sm mb-3 rounded-4 overflow-hidden transition-all bg-white" 
-                                                <div class="card border-0 shadow-sm mb-3 rounded-4 overflow-hidden bg-white" 
-=======
-                                                <div class="card border-0 shadow-sm mb-3 rounded-4 overflow-hidden transition-all bg-white"
->>>>>>> d196df92e920f889de2da08fa0ccf8e236302b7a
-                                                     style="border: 1px solid #f1f5f9 !important;">
+                                                <div class="card border-0 shadow-sm mb-3 rounded-4 overflow-hidden transition-all bg-white" >
                                                     <div class="card-header bg-white border-0 p-0" id="alt-heading-{{ $loop->index }}">
                                                         <button class="accordion-button collapsed py-4 px-4 fw-bold shadow-none d-flex align-items-center"
                                                                 type="button"
