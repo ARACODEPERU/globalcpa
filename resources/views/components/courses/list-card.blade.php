@@ -47,7 +47,7 @@
                                             <div class="col-xl-4 col-md-6 col-sm-12 box-col-4">
                                                 <div class="card weekend-card">
                                                     <div class="card-body">
-                                                        @if ($item->url_slug)
+                                                        @if (filled( $item->url_slug ?? null))
                                                             <a href="{{ route('course_url_slug', $item->url_slug) }}">
                                                                 <img class="w-100 mb-3"
                                                                     src="{{ asset('storage/' . $item->course->image) }}"
@@ -63,7 +63,7 @@
 
                                                         <span style="color: #e30613;">{{ $item->additional }}</span>
                                                         <br>
-                                                        @if ($item->url_slug)
+                                                        @if (filled( $item->url_slug ?? null))
                                                         <a href="{{ route('course_url_slug', $item->url_slug) }}"
                                                             style="text-decoration: none;">
                                                             <h4 style=" height: 30px;">{{ $item->name }}
@@ -80,7 +80,7 @@
                                                         <div class="card">
                                                             <div class="">
                                                                 <div class="btn-showcase">
-                                                                    @if ($item->url_slug)
+                                                                    @if (filled( $item->url_slug ?? null))
                                                                         <a
                                                                             href="{{ route('course_url_slug', $item->url_slug) }}">
                                                                             <button
@@ -134,7 +134,7 @@
                                                     <div class="col-xl-4 col-md-6 col-sm-12 box-col-4">
                                                         <div class="card weekend-card">
                                                             <div class="card-body">
-                                                                @if ($item->url_slug)
+                                                                @if (filled( $item->url_slug ?? null))
                                                                 <a
                                                                     href="{{ route('course_url_slug', $item->url_slug) }}">
                                                                     @if($item->course?->image)
@@ -163,7 +163,7 @@
                                                                 <div class="card">
                                                                     <div class="">
                                                                         <div class="btn-showcase">
-                                                                            @if ($item->url_slug)
+                                                                            @if (filled( $item->url_slug ?? null))
                                                                                 <a
                                                                                     href="{{ route('course_url_slug', $item->url_slug) }}">
                                                                                     <button
