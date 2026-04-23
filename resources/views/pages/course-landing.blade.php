@@ -184,54 +184,61 @@
 
                 <div class="container-fluid card aos-animate" data-aos="fade-up">
                     <div class="row">
-                        <div class="col-md-6">
-                            <div class="card-body p-4 p-lg-5">
-                                <div class="mb-4">
-                                    <span class="badge rounded-pill bg-light text-primary px-3 py-2 mb-3 shadow-sm border"
-                                        style="color: #002060 !important;">
-                                        <i class="fa fa-refresh me-1"></i> {{ $landing->professional_section['name'] }}
-                                    </span>
-                                    <h2 class="fw-bold display-6" style="color: #002060;">
-                                        {{ $landing->professional_section['title'] }}
-                                    </h2>
-                                    <p class="text-muted fs-5">
-                                        {{ $landing->professional_section['description'] }}
-                                    </p>
-                                </div>
 
-                                @if ($landing->professional_section['items'][0])
-                                    <div class="row g-4 mt-2">
+
+                        @if (filled($landing->professional_section ?? null))
+                            <div class="col-md-6">
+                                <div class="card-body p-4 p-lg-5">
+                                    <div class="mb-4">
+                                        <span class="badge rounded-pill bg-light text-primary px-3 py-2 mb-3 shadow-sm border"
+                                            style="color: #002060 !important;">
+                                            <i class="fa fa-refresh me-1"></i> {{ $landing->professional_section['name'] }}
+                                        </span>
+                                        <h2 class="fw-bold display-6" style="color: #002060;">
+                                            {{ $landing->professional_section['title'] }}
+                                        </h2>
+                                        <p class="text-muted fs-5">
+                                            {{ $landing->professional_section['description'] }}
+                                        </p>
+                                    </div>
+
+                                    @if ($landing->professional_section['items'][0])
+                                        <div class="row g-4 mt-2">
+                                            <div class="col-sm-6">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="flex-shrink-0 bg-warning-light p-3 rounded-circle me-3"
+                                                        style="background-color: rgba(255, 193, 7, 0.1);">
+                                                        <i class="fa {{ $landing->professional_section['items'][0]['icon']  }} text-warning fs-4"></i>
+                                                    </div>
+                                                    <div>
+                                                        <h5 class="mb-0 fw-bold" style="color: #002060;">{{ $landing->professional_section['items'][0]['title']  }}</h5>
+                                                        <small class="text-muted">{{ $landing->professional_section['items'][0]['description']  }}</small>
+                                                    </div>
+                                                </div>
+                                        </div>
+                                    @endif
+
+                                    @if ($landing->professional_section['items'][1])
                                         <div class="col-sm-6">
                                             <div class="d-flex align-items-center">
-                                                <div class="flex-shrink-0 bg-warning-light p-3 rounded-circle me-3"
-                                                    style="background-color: rgba(255, 193, 7, 0.1);">
-                                                    <i class="fa {{ $landing->professional_section['items'][0]['icon']  }} text-warning fs-4"></i>
+                                                <div class="flex-shrink-0 bg-info-light p-3 rounded-circle me-3"
+                                                    style="background-color: rgba(0, 204, 255, 0.1);">
+                                                    <i class="fa {{ $landing->professional_section['items'][1]['icon']  }} text-info fs-4"></i>
                                                 </div>
                                                 <div>
-                                                    <h5 class="mb-0 fw-bold" style="color: #002060;">{{ $landing->professional_section['items'][0]['title']  }}</h5>
-                                                    <small class="text-muted">{{ $landing->professional_section['items'][0]['description']  }}</small>
+                                                    <h5 class="mb-0 fw-bold" style="color: #002060;">{{ $landing->professional_section['items'][1]['title']  }}</h5>
+                                                        <small class="text-muted">{{ $landing->professional_section['items'][1]['description']  }}</small>
                                                 </div>
                                             </div>
-                                    </div>
-                                @endif
-
-                                @if ($landing->professional_section['items'][1])
-                                    <div class="col-sm-6">
-                                        <div class="d-flex align-items-center">
-                                            <div class="flex-shrink-0 bg-info-light p-3 rounded-circle me-3"
-                                                style="background-color: rgba(0, 204, 255, 0.1);">
-                                                <i class="fa {{ $landing->professional_section['items'][1]['icon']  }} text-info fs-4"></i>
-                                            </div>
-                                            <div>
-                                                <h5 class="mb-0 fw-bold" style="color: #002060;">{{ $landing->professional_section['items'][1]['title']  }}</h5>
-                                                    <small class="text-muted">{{ $landing->professional_section['items'][1]['description']  }}</small>
-                                            </div>
                                         </div>
+                                    @endif
                                     </div>
-                                @endif
                                 </div>
                             </div>
-                        </div>
+                        @endif
+
+
+
                         <div class="col-md-6">
                             <div class="card-body p-4 p-lg-5">
                                 <div class="mb-4">
