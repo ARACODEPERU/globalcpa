@@ -17,23 +17,28 @@ class ListCard extends Component
     public function __construct()
     {
         $this->courses = OnliItem::whereHas('course')
-    ->with('course.teacher.person')
-    ->orderBy('id', 'desc')
-    ->get()
-    ->map(function ($onliItem) {
-        // Buscar en AcaCourseLanding si existe un registro con este course_id
-        $acaCourseLanding = AcaCourseLanding::where('course_id', $onliItem->course->id)->first();
+            ->with([
+                'course.teacher.person',
+                // Cargamos la relación de landing de una vez para evitar consultas en el bucle
+                'course.landing'
+            ])
+            ->orderBy('id', 'desc')
+            ->get()
+            ->map(function ($onliItem) {
+                /** * Accedemos a la relación cargada.
+                 * Asumiendo que en el modelo Course definiste: public function landing()
+                 */
+                $landing = $onliItem->course->landing;
 
-        if ($acaCourseLanding && $acaCourseLanding->url_slug && $acaCourseLanding->is_published) {
-            $onliItem->url_slug = $acaCourseLanding->url_slug;
-        }
-        // Si no existe, mantener el id original
+                if ($landing && $landing->url_slug && $landing->is_published) {
+                    $onliItem->url_slug = $landing->url_slug;
+                }
 
-        return $onliItem;
-    });
+                return $onliItem;
+            });
+
         $this->types = getEnumValues('onli_items', 'additional', 0, 1);
     }
-
     public function render(): View|Closure|string
     {
 
