@@ -65,7 +65,7 @@ const form = useForm({
 
 
 const copyToClipboard = async () => {
-    const fullUrl = `${baseUrl}academy/${form.url_slug}`;
+    const fullUrl = `${baseUrl}curso/${form.url_slug}`;
     try {
         await navigator.clipboard.writeText(fullUrl);
         Swal.fire({
