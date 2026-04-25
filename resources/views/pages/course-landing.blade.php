@@ -1060,27 +1060,22 @@
 
                                     <div class="row justify-content-center">
                                         <div class="col-lg-10">
-                                            <div class="accordion faq-modern" id="modernFaqAccordion">
-
+                                            <div class="faq-manual" id="faqManual">
                                                 @if (filled($landing->faq_section['items'] ?? null))
                                                         @foreach ($landing->faq_section['items'] as $faq)
                                                             @if ($faq['visible'])
-                                                                <div class="accordion-item shadow-sm" data-aos="fade-up" data-aos-delay="{{ $loop->index * 50 }}">
-                                                                    <h2 class="accordion-header" id="faq-mod-head-{{ $loop->index }}">
-                                                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq-mod-col-{{ $loop->index }}" aria-expanded="false" aria-controls="faq-mod-col-{{ $loop->index }}">
-                                                                            {{ $faq['question'] }}
-                                                                        </button>
-                                                                    </h2>
-                                                                    <div id="faq-mod-col-{{ $loop->index }}" class="accordion-collapse collapse" aria-labelledby="faq-mod-head-{{ $loop->index }}" data-bs-parent="#modernFaqAccordion">
-                                                                        <div class="accordion-body py-4" style="color: #334155; line-height: 1.7; font-size: 0.95rem;">
-                                                                            {!! $faq['answer'] !!}
-                                                                        </div>
+                                                                <div class="faq-item-card shadow-sm mb-3" style="border: 1px solid #edf2f7; border-radius: 15px; overflow: hidden;" onmouseenter="toggleFaq({{ $loop->index }})" onmouseleave="toggleFaq({{ $loop->index }})">
+                                                                    <div class="faq-question p-3" style="cursor: pointer; background: #fff; color: #002060; font-weight: 600; display: flex; justify-content: space-between; align-items: center;">
+                                                                        <span>{{ $faq['question'] }}</span>
+                                                                        <i id="faq-icon-{{ $loop->index }}" class="fa fa-chevron-down" style="transition: transform 0.3s;"></i>
+                                                                    </div>
+                                                                    <div id="faq-answer-{{ $loop->index }}" class="faq-answer p-3" style="display: none; color: #334155; line-height: 1.7; font-size: 0.95rem; background: #f8f9fa;">
+                                                                        {!! $faq['answer'] !!}
                                                                     </div>
                                                                 </div>
                                                             @endif
                                                         @endforeach
                                                 @endif
-
                                             </div>
 
                                             <div class="text-center mt-5 p-4 rounded-4" style="background-color: #f8f9fa; border: 1px dashed #dee2e6;">
@@ -1094,76 +1089,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @endif
-
-                {{-- PROPUESTA B: Layout Moderno Dividido (Para comparación) --}}
-                @if (filled($landing->faq_section ?? null))
-                    <div class="container-fluid mt-5 mb-5" data-aos="fade-up">
-                        <div class="row g-4">
-                            {{-- Columna Izquierda: Cabecera Estática y Soporte --}}
-                            <div class="col-lg-4">
-                                <div class="sticky-top" style="top: 100px; z-index: 1;">
-                                    <div class="p-2">
-                                        <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border"
-                                            style="background-color: #002060; color: #fff;">
-                                            <i class="fa fa-lightbulb-o me-1"></i> PROPUESTA ALTERNATIVA
-                                        </span>
-                                        <h2 class="fw-bold display-6 mb-4" style="color: #002060;">{{ $landing->faq_section['title'] }}</h2>
-                                        <p class="text-muted fs-5 mb-5">
-                                            {{ $landing->faq_section['description'] }}
-                                        </p>
-
-                                        {{-- Card de contacto rápido --}}
-                                        <div class="p-4 rounded-4 shadow-sm border-0 bg-white position-relative overflow-hidden transition-all" style="border-left: 6px solid #ffc107 !important;">
-                                            <h5 class="fw-bold mb-3" style="color: #002060;">¿Tienes dudas técnicas?</h5>
-                                            <p class="small text-muted mb-4">Nuestro equipo académico está disponible para orientarte sobre el temario y requisitos.</p>
-                                            <a href="{{ $landing->whatsapp_link }}" class="btn btn-warning w-100 fw-bold py-3 shadow-sm rounded-3 d-flex align-items-center justify-content-center" style="color: #002060;">
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" style="width: 18px; height: 18px; fill: #002060;" class="me-2">
-                                                    <path d="M380.9 97.1c-41.9-42-97.7-65.1-157-65.1-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480 117.7 449.1c32.4 17.7 68.9 27 106.1 27l.1 0c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3 18.6-68.1-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1s56.2 81.2 56.1 130.5c0 101.8-84.9 184.6-186.6 184.6z"/>
-                                                </svg>
-                                                HABLAR CON UN ASESOR
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {{-- Columna Derecha: Acordeón de Tarjetas Flotantes --}}
-                            <div class="col-lg-8">
-                                <div class="accordion accordion-flush" id="alternativeFaqAccordion">
-                                    @if (filled($landing->faq_section['items'] ?? null))
-                                        @foreach ($landing->faq_section['items'] as $faq)
-                                            @if ($faq['visible'])
-                                                <div class="card border-0 shadow-sm mb-3 rounded-4 overflow-hidden transition-all bg-white" >
-                                                    <div class="card-header bg-white border-0 p-0" id="alt-heading-{{ $loop->index }}">
-                                                        <button class="accordion-button collapsed py-4 px-4 fw-bold shadow-none d-flex align-items-center"
-                                                                type="button"
-                                                                data-bs-toggle="collapse"
-                                                                data-bs-target="#alt-collapse-{{ $loop->index }}"
-                                                                aria-expanded="false"
-                                                                style="background: transparent !important; color: #002060;">
-                                                            <span class="me-3 d-flex align-items-center justify-content-center rounded-circle bg-light" style="width: 35px; height: 32px; flex-shrink: 0;">
-                                                                <i class="fa fa-question text-warning" style="font-size: 0.9rem;"></i>
-                                                            </span>
-                                                            <span style="font-size: 1.05rem;">{{ $faq['question'] }}</span>
-                                                        </button>
-                                                    </div>
-                                                    <div id="alt-collapse-{{ $loop->index }}"
-                                                         class="accordion-collapse collapse"
-                                                         data-bs-parent="#alternativeFaqAccordion">
-                                                        <div class="card-body px-5 pb-4 pt-0" style="color: #475569; line-height: 1.8; font-size: 0.95rem;">
-                                                            <hr class="mt-0 mb-3 opacity-25">
-                                                            {!! $faq['answer'] !!}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            @endif
-                                        @endforeach
-                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -1313,6 +1238,23 @@
                 dropdownParent: $('#countryPhoneSelect').parent()
             });
         });
+
+        // Toggle FAQ Manual - abrir al entrar, cerrar al salir
+        function toggleFaq(index) {
+            var answer = document.getElementById('faq-answer-' + index);
+            var icon = document.getElementById('faq-icon-' + index);
+            
+            // Verificar si está oculto o tiene display vacío
+            var isHidden = answer.style.display === 'none' || answer.style.display === '';
+            
+            if (isHidden) {
+                answer.style.display = 'block';
+                icon.style.transform = 'rotate(180deg)';
+            } else {
+                answer.style.display = 'none';
+                icon.style.transform = 'rotate(0deg)';
+            }
+        }
     </script>
 
 
