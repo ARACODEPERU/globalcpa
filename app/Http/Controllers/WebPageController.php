@@ -330,33 +330,33 @@ public function course_url_slug($id){
         ]);
     }
 
-    // public function cursodescripcion($id)
-    // {
-    //     $item = OnliItem::find($id);
+    public function cursodescripcion($id)
+    {
+        $item = OnliItem::find($id);
 
-    //     $course = AcaCourse::with('category')
-    //         ->with('modality')
-    //         ->with('modules')
-    //         ->with('teachers.teacher.person.resumes')
-    //         ->with('brochure')
-    //         ->with('agreements')
-    //         ->where('id', $item->item_id)
-    //         ->first();
+        $course = AcaCourse::with('category')
+            ->with('modality')
+            ->with('modules')
+            ->with('teachers.teacher.person.resumes')
+            ->with('brochure')
+            ->with('agreements')
+            ->where('id', $item->item_id)
+            ->first();
 
-    //     $latest_courses = OnliItem::with('course')
-    //         ->orderBy('id', 'desc')
-    //         ->where('id', '!=', $id)
-    //         ->take(10)
-    //         ->get()
-    //         ->shuffle()
-    //         ->take(3);
+        $latest_courses = OnliItem::with('course')
+            ->orderBy('id', 'desc')
+            ->where('id', '!=', $id)
+            ->take(10)
+            ->get()
+            ->shuffle()
+            ->take(3);
 
-    //     return view('pages.course-description', [
-    //         'course' => $course,
-    //         'item' => $item,
-    //         'latest_courses' => $latest_courses
-    //     ]);
-    // }
+        return view('pages.course-description', [
+            'course' => $course,
+            'item' => $item,
+            'latest_courses' => $latest_courses
+        ]);
+    }
 
 
 
