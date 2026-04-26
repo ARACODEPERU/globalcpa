@@ -1,7 +1,15 @@
 @extends('layouts.webpage')
 
 @section('content')
-    {{-- Ideally, this CSS should be in the <head> of your main layout file (e.g., layouts/webpage.blade.php) --}}
+@php
+    // Validar que landing y course existan
+    if (!isset($landing) || empty($landing) || !isset($landing->course) || empty($landing->course)) {
+        echo '<div class="container-fluid py-5 text-center"><div class="alert alert-warning">Landing o curso no encontrado.</div></div>';
+        return;
+    }
+@endphp
+
+{{-- Ideally, this CSS should be in the <head> of your main layout file (e.g., layouts/webpage.blade.php) --}}
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
@@ -133,7 +141,7 @@
                             <div class="row align-items-center">
                                 <div class="col-lg-8 p-4 p-lg-5">
                                     <div class="d-flex align-items-center mb-3">
-                                        <span class="badge bg-warning text-dark me-2">{{$landing->course->category->description}}</span>
+                                        <span class="badge bg-warning text-dark me-2">{{ $landing->course->category->description ?? 'Categoría' }}</span>
                                         <div class="text-warning small">
                                             <i class="fa fa-star"></i>
                                             <i class="fa fa-star"></i>
@@ -143,7 +151,7 @@
                                         </div>
                                     </div>
                                     <h1 class="display-5 fw-bold mb-3" style="color: #fff;">
-                                        {{ $landing->course->description }}
+                                        {{ $landing->course->description ?? 'Curso' }}
                                     </h1>
 
                                     @php
@@ -161,15 +169,17 @@
 
                                     <div class="d-flex align-items-center text-white-50">
                                         <span class="me-3"><i class="fa fa-clock-o me-1"></i>
-                                           Inicio: {{ \Carbon\Carbon::parse($landing->banner_start_date)->isoFormat('D [de] MMMM', 'es') }} | Duración: {{ $duration }} | Modalidad: {{ $landing->course->modality->description }}</span>
+                                           Inicio: {{ \Carbon\Carbon::parse($landing->banner_start_date)->isoFormat('D [de] MMMM', 'es') }} | Duración: {{ $duration }} | Modalidad: {{ $landing->course->modality->description ?? 'Modalidad' }}</span>
                                         <span><i class="fa fa-globe me-1"></i> {{ ['es' => 'Español', 'en' => 'Inglés', 'zh' => 'Mandarín'][$landing->banner_language] ?? $landing->banner_language }}</span>
                                     </div>
                                 </div>
                                 <div class="col-lg-4 text-center d-none d-lg-block position-relative"
                                     style="height: auto;">
+                                    @if($landing->course->image)
                                     <img src="{{ asset("storage/".$landing->course->image) }}"
-                                        alt="{{ $landing->course->description }}" class="img-fluid"
+                                        alt="{{ $landing->course->description ?? 'Curso' }}" class="img-fluid"
                                         style="height: 100%;">
+                                    @endif
 
                                     {{-- <img src="{{ asset("themes/webpage/images/cyber.jpg") }}"
                                         alt="{{ $landing->course->description }}" class="img-fluid"
@@ -249,7 +259,7 @@
 
                                 <form id="pageContactForm">
                                     @csrf
-                                    <input type="hidden" name="subject" value="{{ $landing->course->description }}">
+                                    <input type="hidden" name="subject" value="{{ $landing->course->description ?? 'Curso' }}">
                                     <input type="hidden" name="message" value="desde Landing - Descargué Brochure">
 
                                     <div class="mb-3">
@@ -765,14 +775,6 @@
                                     </div>
 
                                     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 justify-center">
-                                        @php
-                                            $achievements = [
-                                                ['title' => 'Automatización Total', 'desc' => 'Reduce hasta un 80% el tiempo en tareas de registro y conciliación bancaria.', 'icon' => 'fa-magic', 'color' => '#6f42c1'],
-                                                ['title' => 'Análisis Predictivo', 'desc' => 'Anticipa flujos de caja y riesgos financieros con modelos de Machine Learning.', 'icon' => 'fa-bar-chart', 'color' => '#007bff'],
-                                                ['title' => 'Auditoría con IA', 'desc' => 'Identifica anomalías y fraudes de manera instantánea en grandes volúmenes de datos.', 'icon' => 'fa-search-plus', 'color' => '#e83e8c'],
-                                                ['title' => 'Consultoría Estratégica', 'desc' => 'Eleva tu valor cobrando por insights estratégicos, no por horas de digitación.', 'icon' => 'fa-rocket', 'color' => '#fd7e14'],
-                                            ];
-                                        @endphp
 
                                        @if (filled($landing->results_section['items'] ?? null))
                                             @foreach($landing->results_section['items'] as $item)
@@ -846,7 +848,7 @@
 
                                         @keyframes scroll-infinite-testimonials {
                                             0% { transform: translateX(0); }
-                                            100% { transform: translateX(calc(-50%)); }
+                                            50% { transform: translateX(-50%); }
                                         }
 
                                         .testimonial-card {
@@ -911,12 +913,32 @@
                                                 @foreach($landing->testimonials_section['items'] as $testimonial)
                                                 <div class="testimonial-carousel-item">
                                                     <div class="testimonial-card mx-2">
-                                                        <p class="testimonial-quote">"{{ $testimonial['description'] }}"</p>
+                                                        <p class="testimonial-quote">"{{ $testimonial['description'] ?? '' }}"</p>
                                                         <div class="testimonial-author-info">
-                                                            <img src="{{ asset("storage/".$testimonial['image']) }}" alt="{{ $testimonial['name'] }}" class="testimonial-avatar">
+                                                            @if(isset($testimonial['image']) && !empty($testimonial['image']))
+                                                            <img src="{{ asset("storage/".$testimonial['image']) }}" alt="{{ $testimonial['name'] ?? 'Usuario' }}" class="testimonial-avatar">
+                                                            @endif
                                                             <div>
-                                                                <h5 class="testimonial-name">{{ $testimonial['name'] }}</h5>
-                                                                <p class="testimonial-title">{{ $testimonial['presentation'] }}</p>
+                                                                <h5 class="testimonial-name">{{ $testimonial['name'] ?? '' }}</h5>
+                                                                <p class="testimonial-title">{{ $testimonial['presentation'] ?? '' }}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                @endforeach
+
+                                                {{-- Duplicado para efecto infinito --}}
+                                                @foreach($landing->testimonials_section['items'] as $testimonial)
+                                                <div class="testimonial-carousel-item">
+                                                    <div class="testimonial-card mx-2">
+                                                        <p class="testimonial-quote">"{{ $testimonial['description'] ?? '' }}"</p>
+                                                        <div class="testimonial-author-info">
+                                                            @if(isset($testimonial['image']) && !empty($testimonial['image']))
+                                                            <img src="{{ asset("storage/".$testimonial['image']) }}" alt="{{ $testimonial['name'] ?? 'Usuario' }}" class="testimonial-avatar">
+                                                            @endif
+                                                            <div>
+                                                                <h5 class="testimonial-name">{{ $testimonial['name'] ?? '' }}</h5>
+                                                                <p class="testimonial-title">{{ $testimonial['presentation'] ?? '' }}</p>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -1144,8 +1166,8 @@
                     // 2. Crear objeto del producto
                     var producto = {
                         id: {{ $onli_item_id ?? 0 }},
-                        nombre: "{{ $landing->course->description }}",
-                        precio: {{ $landing->investment_section['items'][0]['price_now'] ?? 0 }},
+                        nombre: "{{ $landing->course->description ?? 'Curso' }}",
+                        precio: {{ isset($landing->investment_section['items'][0]['price_now']) ? $landing->investment_section['items'][0]['price_now'] : 0 }},
                         image: "{{ $landing->course->image ?? '' }}"
                     };
 
@@ -1212,7 +1234,7 @@
                 } else {
                     console.error('Error en la solicitud: ' + xhr.status);
                 }
-                const downloadUrl = "{{ $landing->course->brochure->path_file ?? '' }}";
+                const downloadUrl = "{{ isset($landing->course->brochure) ? ($landing->course->brochure->path_file ?? '') : '' }}";
                 window.open(downloadUrl, '_blank');
 
             };
@@ -1243,10 +1265,10 @@
         function toggleFaq(index) {
             var answer = document.getElementById('faq-answer-' + index);
             var icon = document.getElementById('faq-icon-' + index);
-            
+
             // Verificar si está oculto o tiene display vacío
             var isHidden = answer.style.display === 'none' || answer.style.display === '';
-            
+
             if (isHidden) {
                 answer.style.display = 'block';
                 icon.style.transform = 'rotate(180deg)';
