@@ -477,56 +477,61 @@
 
                                     <div class="carousel-viewport" style="padding: 40px 0;">
                                         <div class="carousel-track" style="animation-duration: 50s;">
-                                            {{-- @php
-                                                $teachers_premium = [
-                                                    ['name' => 'Dr. Julian Arancibia', 'role' => 'Especialista en IA', 'img' => 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=2070&auto=format&fit=crop'],
-                                                    ['name' => 'Mag. Carmen Luz', 'role' => 'Auditoría Digital', 'img' => 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1974&auto=format&fit=crop'],
-                                                    ['name' => 'Dr. Roberto Mendoza', 'role' => 'Finanzas Tech', 'img' => 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=1974&auto=format&fit=crop'],
-                                                    ['name' => 'Dra. Elena Ramos', 'role' => 'Estrategia Fiscal', 'img' => 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=1976&auto=format&fit=crop'],
-                                                    ['name' => 'Mag. Luis Torres', 'role' => 'Data Analytics', 'img' => 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1974&auto=format&fit=crop'],
-                                                ];
-                                            @endphp --}}
 
                                             {{-- Se duplica el contenido para el loop infinito --}}
-                                           @if (filled($teachers_premium ?? null))
-                                                @foreach(array_merge($teachers_premium, $teachers_premium) as $teacher)
+                                            @if (filled($teachers_premium ?? null))
+                                                 @foreach(array_merge($teachers_premium, $teachers_premium) as $index => $teacher)
 
-                                                <main style="display:none">
-                                                    <input type="checkbox" id="modal-toggle" />
-                                                    <label for="modal-toggle" class="open-button">
-                                                    Curriculum
-                                                    </label>
-                                                    @if (filled($teacher['resumes'] ?? null))
-                                                            @foreach ($teacher['resumes'] as $resume)
-                                                                @if ($resume->type =="work experience")
-                                                                {{ $resume->description }}
-                                                                @endif
-                                                            @endforeach
-                                                    @endif
-                                                  </main>
-
-                                                <div class="teacher-carousel-item" style="width: 280px;">
-                                                    <div class="card border-0 shadow-sm h-100 transition-all rounded-4 overflow-hidden bg-white mx-2">
-                                                        <div style="height: 240px; overflow: hidden; position: relative;">
-                                                            <img src="{{ $teacher['img'] }}"
-                                                                class="card-img-top h-100 w-100"
-                                                                style="object-fit: cover;"
-                                                                alt="{{ $teacher['name'] }}">
-                                                            <div class="position-absolute bottom-0 start-0 w-100 p-3"
-                                                                style="background: linear-gradient(transparent, rgba(0,32,96,0.8));">
-                                                                <p class="text-white small mb-0 fw-light">Socio Consultor</p>
-                                                            </div>
-                                                        </div>
-                                                        <div class="card-body text-center p-3">
-                                                            <h5 class="fw-bold mb-1" style="color: #002060; font-size: 1.1rem;">{{ $teacher['name'] }}</h5>
-                                                            <p class="text-warning small fw-bold mb-0" style="font-size: 0.8rem;">{{ $teacher['role'] }}</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                @endforeach
-                                           @endif
+                                                 <div class="teacher-carousel-item" style="width: 280px;">
+                                                     <div class="card border-0 shadow-sm h-100 transition-all rounded-4 overflow-hidden bg-white mx-2" style="cursor: pointer;" onclick="openTeacherModal({{ $index }})">
+                                                         <div style="height: 240px; overflow: hidden; position: relative;">
+                                                             <img src="{{ $teacher['img'] }}"
+                                                                 class="card-img-top h-100 w-100"
+                                                                 style="object-fit: cover;"
+                                                                 alt="{{ $teacher['name'] }}">
+                                                             <div class="position-absolute bottom-0 start-0 w-100 p-3"
+                                                                 style="background: linear-gradient(transparent, rgba(0,32,96,0.8));">
+                                                                 <p class="text-white small mb-0 fw-light">Socio Consultor</p>
+                                                             </div>
+                                                         </div>
+                                                         <div class="card-body text-center p-3">
+                                                             <h5 class="fw-bold mb-1" style="color: #002060; font-size: 1.1rem;">{{ $teacher['name'] }}</h5>
+                                                             <p class="text-warning small fw-bold mb-0" style="font-size: 0.8rem;">{{ $teacher['role'] }}</p>
+                                                         </div>
+                                                     </div>
+                                                 </div>
+                                                 @endforeach
+                                            @endif
                                         </div>
                                     </div>
+
+                                    @if (filled($teachers_premium ?? null))
+                                                 @foreach(array_merge($teachers_premium, $teachers_premium) as $index => $teacher)
+                                                    <div id="teacher-modal-{{ $index }}" class="teacher-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 999999; overflow-y: auto;" onclick="closeTeacherModal({{ $index }})">
+                                                        <div style="background: white; max-width: 600px; width: 90%; border-radius: 15px; padding: 30px; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000000;" onclick="event.stopPropagation()">
+                                                        <button type="button" onclick="closeTeacherModal({{ $index }})" style="position: absolute; top: 15px; right: 15px; border: none; background: none; font-size: 24px; cursor: pointer;">&times;</button>
+                                                        <h3 style="color: #002060; margin-bottom: 20px;">{{ $teacher['name'] }}</h3>
+                                                        <img src="{{ $teacher['img'] }}"
+                                                                 class="card-img-top h-100 w-100"
+                                                                 style="object-fit: cover;"
+                                                                 alt="{{ $teacher['name'] }}">
+                                                        <h5 style="color: #ffc107; margin-bottom: 20px;">{{ $teacher['role'] }}</h5>
+                                                        @if (filled($teacher['resumes'] ?? null))
+                                                            @foreach ($teacher['resumes'] as $resume)
+                                                                @if ($resume->type == 'work experience')
+                                                                    <div style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #eee;">
+                                                                        <p style="color: #666; margin-bottom: 0;">{{ $resume->description }}</p>
+                                                                    </div>
+                                                                @endif
+                                                            @endforeach
+                                                        @else
+                                                            <p style="color: #666;">No hay información de experiencia disponible.</p>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                                    @endforeach
+                                    @endif
+
                                 </div>
                             </div>
                         </div>
@@ -958,6 +963,17 @@
                     window.location.href = "{{ route('web_carrito') }}";
                 }
             });
+        }
+
+        // Funciones para el modal de teachers
+        function openTeacherModal(index) {
+            document.getElementById('teacher-modal-' + index).style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeTeacherModal(index) {
+            document.getElementById('teacher-modal-' + index).style.display = 'none';
+            document.body.style.overflow = 'auto';
         }
     </script>
 
