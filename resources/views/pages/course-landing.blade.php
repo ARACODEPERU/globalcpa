@@ -136,7 +136,7 @@
                 <x-courselanding.hero :landing="$landing" />
 
 
-
+                {{-- Professional Development --}}
                 <div class="container-fluid card aos-animate" data-aos="fade-up">
                     <div class="row">
                         @if (filled($landing->professional_section ?? null))
@@ -1079,7 +1079,7 @@
                     </div>
                 @endif
 
-                <x-courselanding.certificatetemplate />
+                <x-courselanding.certificate-template />
 
             </div>
         </div>
