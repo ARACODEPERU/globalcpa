@@ -504,40 +504,44 @@
                                             @endif
                                         </div>
                                     </div>
-                                    @if (filled($landing->staff_section ?? null))
-                                        @if (filled($teachers_premium ?? null))
-                                            @foreach(array_merge($teachers_premium, $teachers_premium) as $index => $teacher)
-                                                <div id="teacher-modal-{{ $index }}" class="teacher-modal" onclick="closeTeacherModal({{ $index }})">
-                                                    <div class="modal-content" onclick="event.stopPropagation()">
-                                                        <button type="button" onclick="closeTeacherModal({{ $index }})" style="position: absolute; top: 15px; right: 15px; border: none; background: none; font-size: 24px; cursor: pointer; z-index: 999999;">&times;</button>
-                                                        <h3 style="color: #002060; margin-bottom: 20px;">{{ $teacher['name'] }}</h3>
-                                                        <img src="{{ $teacher['img'] }}"
-                                                            class="card-img-top h-100 w-100"
-                                                            style="object-fit: cover;"
-                                                            alt="{{ $teacher['name'] }}">
-                                                        <h5 style="color: #ffc107; margin-bottom: 20px;">{{ $teacher['role'] }}</h5>
-                                                        @if (filled($teacher['resumes'] ?? null))
-                                                            @foreach ($teacher['resumes'] as $resume)
-                                                                @if ($resume->type == 'work experience')
-                                                                    <div style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #eee;">
-                                                                        <p style="color: #666; margin-bottom: 0;">{{ $resume->description }}</p>
-                                                                    </div>
-                                                                @endif
-                                                            @endforeach
-                                                        @else
-                                                            <p style="color: #666;">No hay información de experiencia disponible.</p>
-                                                        @endif
-                                                    </div>
-                                                </div>
-                                            @endforeach
-                                        @endif
-                                    @endif
-
                                 </div>
                             </div>
                         </div>
                     </div>
                 @endif
+
+                @if (filled($landing->staff_section ?? null))
+                    @if (filled($teachers_premium ?? null))
+                        @foreach(array_merge($teachers_premium, $teachers_premium) as $index => $teacher)
+                            <div id="teacher-modal-{{ $index }}" class="teacher-modal" onclick="closeTeacherModal({{ $index }})">
+                                <div class="modal-content" onclick="event.stopPropagation()">
+                                    <button type="button" onclick="closeTeacherModal({{ $index }})" style="position: absolute; top: 15px; right: 15px; border: none; background: none; font-size: 24px; cursor: pointer; z-index: 999999;">&times;</button>
+                                    <h3 style="color: #002060; margin-bottom: 20px;">{{ $teacher['name'] }}</h3>
+
+                                    <div class="image-container">
+                                        <img src="{{ $teacher['img'] }}"
+                                            alt="{{ $teacher['name'] }}">
+                                    </div>
+
+                                    <h5 style="color: #ffc107; margin-bottom: 20px;">{{ $teacher['role'] }}</h5>
+                                    @if (filled($teacher['resumes'] ?? null))
+                                        @foreach ($teacher['resumes'] as $resume)
+                                            @if ($resume->type == 'work experience')
+                                                <div style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #eee;">
+                                                    <p style="color: #666; margin-bottom: 0;">{{ $resume->description }}</p>
+                                                </div>
+                                            @endif
+                                        @endforeach
+                                    @else
+                                        <p style="color: #666;">No hay información de experiencia disponible.</p>
+                                    @endif
+                                </div>
+                            </div>
+                        @endforeach
+                    @endif
+                @endif
+
+
 <script>
     function openTeacherModal(index) {
     // Cerrar todos los modales primero
@@ -566,15 +570,20 @@ function closeTeacherModal(index) {
 // Cerrar modal con tecla ESC
 document.addEventListener('keydown', function(event) {
     if (event.key === 'Escape') {
-        document.querySelectorAll('.teacher-modal.active').forEach(modal => {
-            modal.classList.remove('active');
+        const activeModal = document.querySelector('.teacher-modal.active');
+        if (activeModal) {
+            activeModal.classList.remove('active');
             document.body.style.overflow = '';
-        });
+        }
     }
 });
+
+// Opcional: Cerrar modal al hacer clic fuera (ya lo tienes en el div principal)
+// El onclick del div principal con clase .teacher-modal ya maneja el cierre
 </script>
                 <style>
-                /* Fondo oscuro del modal - cerrado por defecto */
+
+/* Fondo oscuro del modal - cerrado por defecto */
 .teacher-modal {
     display: none;
     position: fixed;
@@ -584,28 +593,47 @@ document.addEventListener('keydown', function(event) {
     height: 100%;
     background: rgba(0, 0, 0, 0.8);
     z-index: 999999;
-    overflow-y: auto;
 }
 
-/* Cuando el modal está abierto, mostramos flex para centrar */
+/* Cuando el modal está abierto, lo mostramos */
 .teacher-modal.active {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: block;
 }
 
 /* Contenedor del contenido del modal */
 .teacher-modal .modal-content {
     background: white;
-    max-width: 600px;
+    max-width: 1500px;
     width: 90%;
+    max-height: 90vh;
     border-radius: 15px;
     padding: 30px;
-    position: relative;
-    margin: auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     z-index: 999999;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    overflow-y: auto;
 }
+
+/* Contenedor de la imagen */
+.teacher-modal .image-container {
+    width: 100%;
+    margin: 20px 0;
+    position: relative;
+}
+
+/* Estilos para la imagen - alto = 1/4 del ancho del modal-content */
+.teacher-modal .modal-content img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 1;
+    object-fit: cover;
+    border-radius: 10px;
+    display: block;
+}
+
                 </style>
 
 
