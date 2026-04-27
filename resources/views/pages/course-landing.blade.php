@@ -617,21 +617,39 @@ document.addEventListener('keydown', function(event) {
     overflow-y: auto;
 }
 
-/* Contenedor de la imagen */
+/* Contenedor de la imagen con altura fija proporcional al ancho */
 .teacher-modal .image-container {
     width: 100%;
-    margin: 20px 0;
+    height: 0;
+    padding-bottom: 25%; /* 1/4 = 25% del ancho del contenedor */
     position: relative;
+    margin: 20px 0;
+    background-color: #f5f5f5;
+    border-radius: 10px;
+    overflow: hidden;
 }
 
-/* Estilos para la imagen - alto = 1/4 del ancho del modal-content */
-.teacher-modal .modal-content img {
+/* La imagen se ajusta sin cortarse y manteniendo proporción */
+.teacher-modal .image-container img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: auto;
+    height: 100%;
+    max-width: 100%;
+    object-fit: contain; /* Esto hace que la imagen NO se corte */
+    display: block;
+}
+
+/* Si prefieres que la imagen llene el ancho completo sin cortarse verticalmente */
+.teacher-modal .image-container.img-full-width img {
     width: 100%;
     height: auto;
-    aspect-ratio: 4 / 1;
-    object-fit: cover;
-    border-radius: 10px;
-    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
                 </style>
