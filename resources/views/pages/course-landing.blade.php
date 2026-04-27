@@ -506,38 +506,107 @@
                                     </div>
                                     @if (filled($landing->staff_section ?? null))
                                         @if (filled($teachers_premium ?? null))
-                                                    @foreach(array_merge($teachers_premium, $teachers_premium) as $index => $teacher)
-                                                        <div id="teacher-modal-{{ $index }}" class="teacher-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 999999; overflow-y: auto;" onclick="closeTeacherModal({{ $index }})">
-                                                            <div style="background: white; max-width: 600px; width: 90%; border-radius: 15px; padding: 30px; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 999999;" onclick="event.stopPropagation()">
-                                                            <button type="button" onclick="closeTeacherModal({{ $index }})" style="position: absolute; top: 15px; right: 15px; border: none; background: none; font-size: 24px; cursor: pointer;">&times;</button>
-                                                            <h3 style="color: #002060; margin-bottom: 20px;">{{ $teacher['name'] }}</h3>
-                                                            <img src="{{ $teacher['img'] }}"
-                                                                    class="card-img-top h-100 w-100"
-                                                                    style="object-fit: cover;"
-                                                                    alt="{{ $teacher['name'] }}">
-                                                            <h5 style="color: #ffc107; margin-bottom: 20px;">{{ $teacher['role'] }}</h5>
-                                                            @if (filled($teacher['resumes'] ?? null))
-                                                                @foreach ($teacher['resumes'] as $resume)
-                                                                    @if ($resume->type == 'work experience')
-                                                                        <div style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #eee;">
-                                                                            <p style="color: #666; margin-bottom: 0;">{{ $resume->description }}</p>
-                                                                        </div>
-                                                                    @endif
-                                                                @endforeach
-                                                            @else
-                                                                <p style="color: #666;">No hay información de experiencia disponible.</p>
-                                                            @endif
-                                                        </div>
+                                            @foreach(array_merge($teachers_premium, $teachers_premium) as $index => $teacher)
+                                                <div id="teacher-modal-{{ $index }}" class="teacher-modal" onclick="closeTeacherModal({{ $index }})">
+                                                    <div class="modal-content" onclick="event.stopPropagation()">
+                                                        <button type="button" onclick="closeTeacherModal({{ $index }})" style="position: absolute; top: 15px; right: 15px; border: none; background: none; font-size: 24px; cursor: pointer; z-index: 999999;">&times;</button>
+                                                        <h3 style="color: #002060; margin-bottom: 20px;">{{ $teacher['name'] }}</h3>
+                                                        <img src="{{ $teacher['img'] }}"
+                                                            class="card-img-top h-100 w-100"
+                                                            style="object-fit: cover;"
+                                                            alt="{{ $teacher['name'] }}">
+                                                        <h5 style="color: #ffc107; margin-bottom: 20px;">{{ $teacher['role'] }}</h5>
+                                                        @if (filled($teacher['resumes'] ?? null))
+                                                            @foreach ($teacher['resumes'] as $resume)
+                                                                @if ($resume->type == 'work experience')
+                                                                    <div style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #eee;">
+                                                                        <p style="color: #666; margin-bottom: 0;">{{ $resume->description }}</p>
+                                                                    </div>
+                                                                @endif
+                                                            @endforeach
+                                                        @else
+                                                            <p style="color: #666;">No hay información de experiencia disponible.</p>
+                                                        @endif
                                                     </div>
-                                                        @endforeach
+                                                </div>
+                                            @endforeach
                                         @endif
-                                        @endif
+                                    @endif
 
                                 </div>
                             </div>
                         </div>
                     </div>
                 @endif
+<script>
+    function openTeacherModal(index) {
+    // Cerrar todos los modales primero
+    document.querySelectorAll('.teacher-modal').forEach(modal => {
+        modal.classList.remove('active');
+    });
+
+    // Abrir el modal específico
+    const modal = document.getElementById(`teacher-modal-${index}`);
+    if (modal) {
+        modal.classList.add('active');
+        // Prevenir scroll del body cuando el modal está abierto
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeTeacherModal(index) {
+    const modal = document.getElementById(`teacher-modal-${index}`);
+    if (modal) {
+        modal.classList.remove('active');
+        // Restaurar scroll del body
+        document.body.style.overflow = '';
+    }
+}
+
+// Cerrar modal con tecla ESC
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        document.querySelectorAll('.teacher-modal.active').forEach(modal => {
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+    }
+});
+</script>
+                <style>
+                /* Fondo oscuro del modal - cerrado por defecto */
+.teacher-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 999999;
+    overflow-y: auto;
+}
+
+/* Cuando el modal está abierto, mostramos flex para centrar */
+.teacher-modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Contenedor del contenido del modal */
+.teacher-modal .modal-content {
+    background: white;
+    max-width: 600px;
+    width: 90%;
+    border-radius: 15px;
+    padding: 30px;
+    position: relative;
+    margin: auto;
+    z-index: 999999;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+                </style>
 
 
                 @if (filled($landing->results_section ?? null))
