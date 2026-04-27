@@ -519,7 +519,7 @@
                                     <h3 style="color: #002060; margin-bottom: 20px;">{{ $teacher['name'] }}</h3>
 
                                     <div class="image-container">
-                                        <img src="{{ $teacher['img'] }}"
+                                        <img src="{{ $teacher['img'] }}" style="height: auto;"
                                             alt="{{ $teacher['name'] }}">
                                     </div>
 
