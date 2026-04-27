@@ -496,11 +496,13 @@
                                                     <label for="modal-toggle" class="open-button">
                                                     Curriculum
                                                     </label>
-                                                    {{-- @foreach ($teacher['resumes'] as $resume)
-                                                        @if ($resume->type =="work experience")
-                                                        {{ dump($resume->description) }}
-                                                        @endif
-                                                    @endforeach --}}
+                                                    @if (filled($teacher['resumes'] ?? null))
+                                                            @foreach ($teacher['resumes'] as $resume)
+                                                                @if ($resume->type =="work experience")
+                                                                {{ dump($resume->description) }}
+                                                                @endif
+                                                            @endforeach
+                                                    @endif
                                                   </main>
 
                                                 <div class="teacher-carousel-item" style="width: 280px;">
