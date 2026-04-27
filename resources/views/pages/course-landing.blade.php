@@ -132,80 +132,13 @@
             <!-- Page Sidebar Ends-->
             <div class="page-body">
 
-                <div class="container-fluid mt-4">
-                    {{-- Hero Section --}}
-                    <div class="card border-0 overflow-hidden shadow mb-4"
-                        style="background: linear-gradient(135deg, #002060 0%, #004080 100%); border-radius: 15px;"
-                        data-aos="fade-in">
-                        <div class="card-body  text-white">
-                            <div class="row align-items-center">
-                                <div class="col-lg-8 p-4 p-lg-5">
-                                    <div class="d-flex align-items-center mb-3">
-                                        <span class="badge bg-warning text-dark me-2">{{ $landing->course->category->description ?? 'Categoría' }}</span>
-                                        <div class="text-warning small">
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star-half-o"></i>
-                                        </div>
-                                    </div>
-                                    <h1 class="display-5 fw-bold mb-3" style="color: #fff;">
-                                        {{ $landing->course->description ?? 'Curso' }}
-                                    </h1>
-
-                                    @php
-                                            $startDate = \Carbon\Carbon::parse($landing->banner_start_date);
-                                            $endDate = \Carbon\Carbon::parse($landing->banner_end_date);
-                                            $totalDays = $startDate->diffInDays($endDate) + 1; // +1 para incluir el día de inicio
-
-                                            if ($totalDays < 30) {
-                                                $daysRounded = ceil($totalDays);
-                                                $duration = $daysRounded . ' día(s)';
-                                            } elseif ($totalDays < 365) {
-                                                $totalMonths = $startDate->diffInMonths($endDate);
-                                                $monthsRounded = ceil($totalMonths);
-                                                $duration = $monthsRounded . ' mes(es)';
-                                            } else {
-                                                $totalYears = floor($totalDays / 365);
-                                                $remainingMonths = floor(($totalDays % 365) / 30);
-                                                if ($remainingMonths > 0) {
-                                                    $duration = $totalYears . ' año(s) ' . $remainingMonths . ' mes(es)';
-                                                } else {
-                                                    $duration = $totalYears . ' año(s)';
-                                                }
-                                            }
-                                    @endphp
-
-                                    <div class="d-flex align-items-center text-white-50">
-                                        <span class="me-3"><i class="fa fa-clock-o me-1"></i>
-                                           Inicio: {{ \Carbon\Carbon::parse($landing->banner_start_date)->isoFormat('D [de] MMMM', 'es') }} | Duración: {{ $duration }} | Modalidad: {{ $landing->course->modality->description ?? 'Modalidad' }}</span>
-                                        <span><i class="fa fa-globe me-1"></i> {{ ['es' => 'Español', 'en' => 'Inglés', 'zh' => 'Mandarín'][$landing->banner_language] ?? $landing->banner_language }}</span>
-                                    </div>
-                                </div>
-                                <div class="col-lg-4 text-center d-none d-lg-block position-relative"
-                                    style="height: auto;">
-                                    @if($landing->course->image)
-                                    <img src="{{ asset("storage/".$landing->course->image) }}"
-                                        alt="{{ $landing->course->description ?? 'Curso' }}" class="img-fluid"
-                                        style="height: 100%;">
-                                    @endif
-
-                                    {{-- <img src="{{ asset("themes/webpage/images/cyber.jpg") }}"
-                                        alt="{{ $landing->course->description }}" class="img-fluid"
-                                        style="height: 100%;"> --}}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                {{-- Hero Section --}}
+                <x-courselanding.hero :landing="$landing" />
 
 
 
                 <div class="container-fluid card aos-animate" data-aos="fade-up">
                     <div class="row">
-
-
                         @if (filled($landing->professional_section ?? null))
                             <div class="col-md-6">
                                 <div class="card-body p-4 p-lg-5">
@@ -231,8 +164,12 @@
                                                         <i class="fa {{ $landing->professional_section['items'][0]['icon']  }} text-warning fs-4"></i>
                                                     </div>
                                                     <div>
-                                                        <h5 class="mb-0 fw-bold" style="color: #002060;">{{ $landing->professional_section['items'][0]['title']  }}</h5>
-                                                        <small class="text-muted">{{ $landing->professional_section['items'][0]['description']  }}</small>
+                                                        <h4 class="mb-0 fw-bold" style="color: #002060; font-size: 18px;">
+                                                            {{ $landing->professional_section['items'][0]['title']  }}
+                                                        </h4>
+                                                        <p  style="font-size: 15px;">
+                                                            {{ $landing->professional_section['items'][0]['description']  }}
+                                                        </p>
                                                     </div>
                                                 </div>
                                         </div>
@@ -246,8 +183,12 @@
                                                     <i class="fa {{ $landing->professional_section['items'][1]['icon']  }} text-info fs-4"></i>
                                                 </div>
                                                 <div>
-                                                    <h5 class="mb-0 fw-bold" style="color: #002060;">{{ $landing->professional_section['items'][1]['title']  }}</h5>
-                                                        <small class="text-muted">{{ $landing->professional_section['items'][1]['description']  }}</small>
+                                                    <h4 class="mb-0 fw-bold" style="color: #002060; font-size: 18px;">
+                                                        {{ $landing->professional_section['items'][1]['title']  }}
+                                                    </h4>
+                                                    <p  style="font-size: 15px;">
+                                                        {{ $landing->professional_section['items'][1]['description']  }}
+                                                    </p>
                                                 </div>
                                             </div>
                                         </div>
@@ -256,15 +197,14 @@
                                 </div>
                             </div>
                         @endif
-
-
-
                         <div class="col-md-6">
                             <div class="card-body p-4 p-lg-5">
                                 <div class="mb-4">
-                                    <h2 class="fw-bold" style="color: #002060;">¿Listo para empezar?</h2>
-                                    <p class="text-muted">Completa tus datos para descargar el brochure detallado y recibir
-                                        información sobre promociones exclusivas del programa.</p>
+                                    <h2 class="fw-bold" style="color: #002060; font-size: 20px;">¿Listo para empezar?</h2>
+                                    <p class="text-muted" style="font-size: 15px;">
+                                        Completa tus datos para descargar el brochure detallado y recibir
+                                        información sobre promociones exclusivas del programa.
+                                    </p>
                                 </div>
 
                                 <form id="pageContactForm">
@@ -273,7 +213,7 @@
                                     <input type="hidden" name="message" value="desde Landing - Descargué Brochure">
 
                                     <div class="mb-3">
-                                        <label class="form-label fw-bold" style="color: #002060;">Nombres y Apellidos</label>
+                                        <label class="form-label fw-bold" style="color: #002060; font-size: 15px;">Nombres y Apellidos</label>
                                         <div class="input-group shadow-sm">
                                             <span class="input-group-text bg-white border-end-0">
                                                 <i class="fa fa-user text-muted"></i>
@@ -283,7 +223,7 @@
                                     </div>
 
                                     <div class="mb-3">
-                                        <label class="form-label fw-bold" style="color: #002060;">País</label>
+                                        <label class="form-label fw-bold" style="color: #002060; font-size: 15px;">País</label>
                                         <div class="input-group shadow-sm">
                                             <span class="input-group-text bg-white border-end-0">
                                                 <i class="fa fa-flag text-muted"></i>
@@ -363,7 +303,7 @@
 
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
-                                            <label class="form-label fw-bold" style="color: #002060;">WhatsApp</label>
+                                            <label class="form-label fw-bold" style="color: #002060; font-size: 15px;">WhatsApp</label>
                                             <div class="input-group shadow-sm">
                                                 <span class="input-group-text bg-white border-end-0">
                                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" style="width: 16px; height: 16px; fill: #6c757d;">
@@ -375,7 +315,7 @@
                                         </div>
 
                                         <div class="col-md-6 mb-3">
-                                            <label class="form-label fw-bold" style="color: #002060;">Correo Electrónico</label>
+                                            <label class="form-label fw-bold" style="color: #002060; font-size: 15px;">Correo Electrónico</label>
                                             <div class="input-group shadow-sm">
                                                 <span class="input-group-text bg-white border-end-0">
                                                     <i class="fa fa-envelope text-muted"></i>
@@ -393,7 +333,6 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
 
                 <div class="container-fluid card aos-animate" data-aos="fade-up">
