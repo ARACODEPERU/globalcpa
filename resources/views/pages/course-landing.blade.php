@@ -1,15 +1,15 @@
 @extends('layouts.webpage')
 
 @section('content')
-@php
-    // Validar que landing y course existan
-    if (!isset($landing) || empty($landing) || !isset($landing->course) || empty($landing->course)) {
-        echo '<div class="container-fluid py-5 text-center"><div class="alert alert-warning">Landing o curso no encontrado.</div></div>';
-        return;
-    }
-@endphp
+    @php
+        // Validar que landing y course existan
+        if (!isset($landing) || empty($landing) || !isset($landing->course) || empty($landing->course)) {
+            echo '<div class="container-fluid py-5 text-center"><div class="alert alert-warning">Landing o curso no encontrado.</div></div>';
+            return;
+        }
+    @endphp
 
-{{-- Ideally, this CSS should be in the <head> of your main layout file (e.g., layouts/webpage.blade.php) --}}
+    {{-- Ideally, this CSS should be in the <head> of your main layout file (e.g., layouts/webpage.blade.php) --}}
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
@@ -30,7 +30,8 @@
         /* Estilos del Carrusel Infinito */
         .carousel-viewport {
             overflow: hidden;
-            padding: 100px 0 50px 0; /* Espacio para que las imágenes y sombras no se corten */
+            padding: 100px 0 50px 0;
+            /* Espacio para que las imágenes y sombras no se corten */
             position: relative;
             width: 100%;
         }
@@ -47,8 +48,13 @@
         }
 
         @keyframes scroll-infinite {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(calc(-50%)); }
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(calc(-50%));
+            }
         }
 
         .teacher-carousel-item {
@@ -67,10 +73,12 @@
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
             background: #ffffff;
         }
+
         .faq-modern .accordion-item:has(.show) {
             border-color: #002060 !important;
             box-shadow: 0 15px 30px rgba(0, 32, 96, 0.08);
         }
+
         .faq-modern .accordion-button {
             padding: 1.5rem;
             font-weight: 600;
@@ -79,20 +87,24 @@
             color: #002060;
             font-size: 1.05rem;
         }
+
         .faq-modern .accordion-button:focus {
             box-shadow: none;
             box-shadow: none !important;
             border-color: transparent;
         }
+
         .faq-modern .accordion-button:not(.collapsed) {
             background-color: rgba(0, 32, 96, 0.02) !important;
             color: #002060;
             border-bottom: 1px solid #f1f5f9;
         }
+
         .faq-modern .accordion-button:not(.collapsed) {
             color: #002060;
             box-shadow: none;
         }
+
         .faq-modern .accordion-button::after {
             background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23002060'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
             transition: transform 0.3s ease;
@@ -106,9 +118,11 @@
             display: flex;
             align-items: center;
         }
+
         .select2-container {
             width: 100% !important;
         }
+
         .select2-selection__arrow {
             top: 6px !important;
         }
@@ -145,205 +159,11 @@
                 <x-courselanding.study-plan :landing="$landing" />
 
 
-                {{-- Propuesta de Diseño: Carrusel de Expertos Premium (Opción 5) --}}
+                {{-- Carrusel de Expertos Premium (Opción 5) --}}
+                <x-courselanding.staff :landing="$landing" :teachers-premium="$teachers_premium" />
 
-                @if (filled($landing->staff_section ?? null))
-                    <div class="container-fluid card aos-animate mt-5" data-aos="fade-up">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="card-body p-4 p-lg-5">
-                                    <!-- Header de Sección -->
-                                    <div class="text-center mb-4">
-                                        <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border"
-                                            style="background-color: rgba(0, 32, 96, 0.05); color: #002060;">
-                                            <i class="fa fa-users me-1"></i> {{ $landing->staff_section['name'] }}
-                                        </span>
-                                        <h2 class="fw-bold display-6" style="color: #002060;">{{ $landing->staff_section['title'] }}</h2>
-                                        <p class="text-muted fs-5 mx-auto" style="max-width: 800px;">
-                                            {{ $landing->staff_section['description'] }}
-                                        </p>
-                                    </div>
-
-                                    <div class="carousel-viewport" style="padding: 40px 0;">
-                                        <div class="carousel-track" style="animation-duration: 50s;">
-
-                                            {{-- Se duplica el contenido para el loop infinito --}}
-                                            @if (filled($teachers_premium ?? null))
-                                                 @foreach(array_merge($teachers_premium, $teachers_premium) as $index => $teacher)
-
-                                                 <div class="teacher-carousel-item" style="width: 280px;">
-                                                     <div class="card border-0 shadow-sm h-100 transition-all rounded-4 overflow-hidden bg-white mx-2" style="cursor: pointer;" onclick="openTeacherModal({{ $index }})">
-                                                         <div style="height: 240px; overflow: hidden; position: relative;">
-                                                             <img src="{{ $teacher['img'] }}"
-                                                                 class="card-img-top h-100 w-100"
-                                                                 style="object-fit: cover;"
-                                                                 alt="{{ $teacher['name'] }}">
-                                                             <div class="position-absolute bottom-0 start-0 w-100 p-3"
-                                                                 style="background: linear-gradient(transparent, rgba(0,32,96,0.8));">
-                                                                 <p class="text-white small mb-0 fw-light">Socio Consultor</p>
-                                                             </div>
-                                                         </div>
-                                                         <div class="card-body text-center p-3">
-                                                             <h5 class="fw-bold mb-1" style="color: #002060; font-size: 1.1rem;">{{ $teacher['name'] }}</h5>
-                                                             <p class="text-warning small fw-bold mb-0" style="font-size: 0.8rem;">{{ $teacher['role'] }}</p>
-                                                         </div>
-                                                     </div>
-                                                 </div>
-                                                 @endforeach
-                                            @endif
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @endif
-
-                @if (filled($landing->staff_section ?? null))
-                    @if (filled($teachers_premium ?? null))
-                        @foreach(array_merge($teachers_premium, $teachers_premium) as $index => $teacher)
-                            <div id="teacher-modal-{{ $index }}" class="teacher-modal" onclick="closeTeacherModal({{ $index }})">
-                                <div class="modal-content" onclick="event.stopPropagation()">
-                                    <button type="button" onclick="closeTeacherModal({{ $index }})" style="position: absolute; top: 15px; right: 15px; border: none; background: none; font-size: 24px; cursor: pointer; z-index: 999999;">&times;</button>
-                                    <h3 style="color: #002060; margin-bottom: 20px;">{{ $teacher['name'] }}</h3>
-
-                                    <div class="image-container">
-                                        <img src="{{ $teacher['img'] }}"
-                                            alt="{{ $teacher['name'] }}">
-                                    </div>
-
-                                    <h5 style="color: #ffc107; margin-bottom: 20px;">{{ $teacher['role'] }}</h5>
-                                    @if (filled($teacher['resumes'] ?? null))
-                                        @foreach ($teacher['resumes'] as $resume)
-                                            @if ($resume->type == 'work experience')
-                                                <div style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #eee;">
-                                                    <p style="color: #666; margin-bottom: 0;">{{ $resume->description }}</p>
-                                                </div>
-                                            @endif
-                                        @endforeach
-                                    @else
-                                        <p style="color: #666;">No hay información de experiencia disponible.</p>
-                                    @endif
-                                </div>
-                            </div>
-                        @endforeach
-                    @endif
-                @endif
-
-
-<script>
-    function openTeacherModal(index) {
-    // Cerrar todos los modales primero
-    document.querySelectorAll('.teacher-modal').forEach(modal => {
-        modal.classList.remove('active');
-    });
-
-    // Abrir el modal específico
-    const modal = document.getElementById(`teacher-modal-${index}`);
-    if (modal) {
-        modal.classList.add('active');
-        // Prevenir scroll del body cuando el modal está abierto
-        document.body.style.overflow = 'hidden';
-    }
-}
-
-function closeTeacherModal(index) {
-    const modal = document.getElementById(`teacher-modal-${index}`);
-    if (modal) {
-        modal.classList.remove('active');
-        // Restaurar scroll del body
-        document.body.style.overflow = '';
-    }
-}
-
-// Cerrar modal con tecla ESC
-document.addEventListener('keydown', function(event) {
-    if (event.key === 'Escape') {
-        const activeModal = document.querySelector('.teacher-modal.active');
-        if (activeModal) {
-            activeModal.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-    }
-});
-
-// Opcional: Cerrar modal al hacer clic fuera (ya lo tienes en el div principal)
-// El onclick del div principal con clase .teacher-modal ya maneja el cierre
-</script>
-                <style>
-
-/* Fondo oscuro del modal - cerrado por defecto */
-.teacher-modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    z-index: 999999;
-}
-
-/* Cuando el modal está abierto, lo mostramos */
-.teacher-modal.active {
-    display: block;
-}
-
-/* Contenedor del contenido del modal */
-.teacher-modal .modal-content {
-    background: white;
-    max-width: 1500px;
-    width: 90%;
-    max-height: 90vh;
-    border-radius: 15px;
-    padding: 30px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 999999;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    overflow-y: auto;
-}
-
-/* Contenedor de la imagen con altura fija proporcional al ancho */
-.teacher-modal .image-container {
-    width: 100%;
-    height: 0;
-    padding-bottom: 25%; /* 1/4 = 25% del ancho del contenedor */
-    position: relative;
-    margin: 20px 0;
-    background-color: #f5f5f5;
-    border-radius: 10px;
-    overflow: hidden;
-}
-
-/* La imagen se ajusta sin cortarse y manteniendo proporción */
-.teacher-modal .image-container img {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: auto;
-    height: 100%;
-    max-width: 100%;
-    object-fit: contain; /* Esto hace que la imagen NO se corte */
-    display: block;
-}
-
-/* Si prefieres que la imagen llene el ancho completo sin cortarse verticalmente */
-.teacher-modal .image-container.img-full-width img {
-    width: 100%;
-    height: auto;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-
-                </style>
-
-
+                {{-- Resultados Garantizados --}}  
+              
                 @if (filled($landing->results_section ?? null))
                     <div class="container-fluid card aos-animate" data-aos="fade-up">
                         <div class="row">
@@ -364,30 +184,33 @@ document.addEventListener('keydown', function(event) {
 
                                     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 justify-center">
 
-                                       @if (filled($landing->results_section['items'] ?? null))
-                                            @foreach($landing->results_section['items'] as $item)
-                                            <div class="col" data-aos="fade-up" data-aos-delay="{{ 100 * ($loop->index + 1) }}">
-                                                <div class="h-100 p-4 rounded-4 border-0 shadow-sm text-center bg-white transition-all position-relative overflow-hidden"
-                                                    style="border-top: 5px solid {{ $colors[$loop->index] }} !important;">
+                                        @if (filled($landing->results_section['items'] ?? null))
+                                            @foreach ($landing->results_section['items'] as $item)
+                                                <div class="col" data-aos="fade-up"
+                                                    data-aos-delay="{{ 100 * ($loop->index + 1) }}">
+                                                    <div class="h-100 p-4 rounded-4 border-0 shadow-sm text-center bg-white transition-all position-relative overflow-hidden"
+                                                        style="border-top: 5px solid {{ $colors[$loop->index] }} !important;">
 
-                                                    {{-- Círculo decorativo de fondo --}}
-                                                    <div class="position-absolute opacity-0 transition-all"
-                                                        style="width: 100px; height: 100px; background-color: {{ $colors[$loop->index] }}; border-radius: 50%; top: -20px; right: -20px; opacity: 0.05 !important;">
+                                                        {{-- Círculo decorativo de fondo --}}
+                                                        <div class="position-absolute opacity-0 transition-all"
+                                                            style="width: 100px; height: 100px; background-color: {{ $colors[$loop->index] }}; border-radius: 50%; top: -20px; right: -20px; opacity: 0.05 !important;">
+                                                        </div>
+
+                                                        <div class="mb-4 d-inline-flex align-items-center justify-content-center rounded-circle shadow-sm"
+                                                            style="width: 70px; height: 70px; background-color: white; border: 1px solid #f1f1f1;">
+                                                            <i class="fa {{ $item['icon'] }}"
+                                                                style="font-size: 2rem; color: {{ $colors[$loop->index] }};"></i>
+                                                        </div>
+
+                                                        <h4 class="fw-bold mb-3" style="color: #002060;">
+                                                            {{ $item['title'] }}</h4>
+                                                        <p class="text-muted mb-0 small" style="line-height: 1.6;">
+                                                            {{ $item['description'] }}
+                                                        </p>
                                                     </div>
-
-                                                    <div class="mb-4 d-inline-flex align-items-center justify-content-center rounded-circle shadow-sm"
-                                                        style="width: 70px; height: 70px; background-color: white; border: 1px solid #f1f1f1;">
-                                                        <i class="fa {{ $item['icon'] }}" style="font-size: 2rem; color: {{ $colors[$loop->index] }};"></i>
-                                                    </div>
-
-                                                    <h4 class="fw-bold mb-3" style="color: #002060;">{{ $item['title'] }}</h4>
-                                                    <p class="text-muted mb-0 small" style="line-height: 1.6;">
-                                                        {{ $item['description'] }}
-                                                    </p>
                                                 </div>
-                                            </div>
                                             @endforeach
-                                       @endif
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -407,9 +230,11 @@ document.addEventListener('keydown', function(event) {
                                     <div class="text-center mb-4">
                                         <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border"
                                             style="background-color: rgba(0, 123, 255, 0.05); color: #007bff;">
-                                            <i class="fa fa-quote-right me-1"></i> {{ $landing->testimonials_section['name'] }}
+                                            <i class="fa fa-quote-right me-1"></i>
+                                            {{ $landing->testimonials_section['name'] }}
                                         </span>
-                                        <h2 class="fw-bold display-6" style="color: #002060;">{{ $landing->testimonials_section['title'] }}</h2>
+                                        <h2 class="fw-bold display-6" style="color: #002060;">
+                                            {{ $landing->testimonials_section['title'] }}</h2>
                                         <p class="text-muted fs-5 mx-auto" style="max-width: 800px;">
                                             {{ $landing->testimonials_section['description'] }}
                                         </p>
@@ -418,7 +243,8 @@ document.addEventListener('keydown', function(event) {
                                     <style>
                                         .testimonial-carousel-viewport {
                                             overflow: hidden;
-                                            padding: 20px 0; /* Espacio para sombras */
+                                            padding: 20px 0;
+                                            /* Espacio para sombras */
                                             position: relative;
                                             width: 100%;
                                         }
@@ -427,7 +253,8 @@ document.addEventListener('keydown', function(event) {
                                             display: flex;
                                             gap: 30px;
                                             width: max-content;
-                                            animation: scroll-infinite-testimonials 60s linear infinite; /* Velocidad ajustada */
+                                            animation: scroll-infinite-testimonials 60s linear infinite;
+                                            /* Velocidad ajustada */
                                         }
 
                                         .testimonial-carousel-track:hover {
@@ -435,12 +262,18 @@ document.addEventListener('keydown', function(event) {
                                         }
 
                                         @keyframes scroll-infinite-testimonials {
-                                            0% { transform: translateX(0); }
-                                            50% { transform: translateX(-50%); }
+                                            0% {
+                                                transform: translateX(0);
+                                            }
+
+                                            50% {
+                                                transform: translateX(-50%);
+                                            }
                                         }
 
                                         .testimonial-card {
-                                            width: 350px; /* Ancho fijo para las tarjetas de testimonio */
+                                            width: 350px;
+                                            /* Ancho fijo para las tarjetas de testimonio */
                                             flex-shrink: 0;
                                             background: #fff;
                                             border-radius: 15px;
@@ -450,7 +283,8 @@ document.addEventListener('keydown', function(event) {
                                             display: flex;
                                             flex-direction: column;
                                             justify-content: space-between;
-                                            min-height: 250px; /* Altura mínima para uniformidad */
+                                            min-height: 250px;
+                                            /* Altura mínima para uniformidad */
                                         }
 
                                         .testimonial-card:hover {
@@ -469,7 +303,8 @@ document.addEventListener('keydown', function(event) {
                                         .testimonial-author-info {
                                             display: flex;
                                             align-items: center;
-                                            margin-top: auto; /* Empuja la info del autor hacia abajo */
+                                            margin-top: auto;
+                                            /* Empuja la info del autor hacia abajo */
                                         }
 
                                         .testimonial-avatar {
@@ -498,39 +333,49 @@ document.addEventListener('keydown', function(event) {
 
                                             {{-- Duplicamos los testimonios para el efecto de carrusel infinito --}}
                                             @if (filled($landing->testimonials_section['items'] ?? null))
-                                                @foreach($landing->testimonials_section['items'] as $testimonial)
-                                                <div class="testimonial-carousel-item">
-                                                    <div class="testimonial-card mx-2">
-                                                        <p class="testimonial-quote">"{{ $testimonial['description'] ?? '' }}"</p>
-                                                        <div class="testimonial-author-info">
-                                                            @if(isset($testimonial['image']) && !empty($testimonial['image']))
-                                                            <img src="{{ asset("storage/".$testimonial['image']) }}" alt="{{ $testimonial['name'] ?? 'Usuario' }}" class="testimonial-avatar">
-                                                            @endif
-                                                            <div>
-                                                                <h5 class="testimonial-name">{{ $testimonial['name'] ?? '' }}</h5>
-                                                                <p class="testimonial-title">{{ $testimonial['presentation'] ?? '' }}</p>
+                                                @foreach ($landing->testimonials_section['items'] as $testimonial)
+                                                    <div class="testimonial-carousel-item">
+                                                        <div class="testimonial-card mx-2">
+                                                            <p class="testimonial-quote">
+                                                                "{{ $testimonial['description'] ?? '' }}"</p>
+                                                            <div class="testimonial-author-info">
+                                                                @if (isset($testimonial['image']) && !empty($testimonial['image']))
+                                                                    <img src="{{ asset('storage/' . $testimonial['image']) }}"
+                                                                        alt="{{ $testimonial['name'] ?? 'Usuario' }}"
+                                                                        class="testimonial-avatar">
+                                                                @endif
+                                                                <div>
+                                                                    <h5 class="testimonial-name">
+                                                                        {{ $testimonial['name'] ?? '' }}</h5>
+                                                                    <p class="testimonial-title">
+                                                                        {{ $testimonial['presentation'] ?? '' }}</p>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
                                                 @endforeach
 
                                                 {{-- Duplicado para efecto infinito --}}
-                                                @foreach($landing->testimonials_section['items'] as $testimonial)
-                                                <div class="testimonial-carousel-item">
-                                                    <div class="testimonial-card mx-2">
-                                                        <p class="testimonial-quote">"{{ $testimonial['description'] ?? '' }}"</p>
-                                                        <div class="testimonial-author-info">
-                                                            @if(isset($testimonial['image']) && !empty($testimonial['image']))
-                                                            <img src="{{ asset("storage/".$testimonial['image']) }}" alt="{{ $testimonial['name'] ?? 'Usuario' }}" class="testimonial-avatar">
-                                                            @endif
-                                                            <div>
-                                                                <h5 class="testimonial-name">{{ $testimonial['name'] ?? '' }}</h5>
-                                                                <p class="testimonial-title">{{ $testimonial['presentation'] ?? '' }}</p>
+                                                @foreach ($landing->testimonials_section['items'] as $testimonial)
+                                                    <div class="testimonial-carousel-item">
+                                                        <div class="testimonial-card mx-2">
+                                                            <p class="testimonial-quote">
+                                                                "{{ $testimonial['description'] ?? '' }}"</p>
+                                                            <div class="testimonial-author-info">
+                                                                @if (isset($testimonial['image']) && !empty($testimonial['image']))
+                                                                    <img src="{{ asset('storage/' . $testimonial['image']) }}"
+                                                                        alt="{{ $testimonial['name'] ?? 'Usuario' }}"
+                                                                        class="testimonial-avatar">
+                                                                @endif
+                                                                <div>
+                                                                    <h5 class="testimonial-name">
+                                                                        {{ $testimonial['name'] ?? '' }}</h5>
+                                                                    <p class="testimonial-title">
+                                                                        {{ $testimonial['presentation'] ?? '' }}</p>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
                                                 @endforeach
                                             @endif
                                         </div>
@@ -552,11 +397,12 @@ document.addEventListener('keydown', function(event) {
                                     <div class="text-center mb-5">
                                         <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border"
                                             style="background-color: rgba(255, 193, 7, 0.1); color: #002060;">
-                                            <i class="fa fa-money me-1"></i> {{ $landing->investment_section['name']  }}
+                                            <i class="fa fa-money me-1"></i> {{ $landing->investment_section['name'] }}
                                         </span>
-                                        <h2 class="fw-bold display-6" style="color: #002060;">{{ $landing->investment_section['title']  }}</h2>
+                                        <h2 class="fw-bold display-6" style="color: #002060;">
+                                            {{ $landing->investment_section['title'] }}</h2>
                                         <p class="text-muted fs-5 mx-auto" style="max-width: 800px;">
-                                            {{ $landing->investment_section['description']  }}
+                                            {{ $landing->investment_section['description'] }}
                                         </p>
                                     </div>
 
@@ -587,30 +433,45 @@ document.addEventListener('keydown', function(event) {
                                         @if (filled($landing->investment_section['items'][0] ?? null))
                                             @if ($landing->investment_section['items'][0]['price_before_visible'])
                                                 <div class="col-md-4" data-aos="zoom-in" data-aos-delay="200">
-                                                    <div class="card h-100 border-0 shadow-lg transition-all rounded-4 overflow-hidden bg-white border-top border-warning border-5" style="border-top: 5px solid #ffc107 !important;">
-                                                        <div class="p-4 border-bottom" style="background-color: rgba(255, 193, 7, 0.05);">
-                                                            <span class="badge bg-warning text-dark mb-2">{{ $landing->investment_section['items'][0]['tag'] }}</span>
-                                                            <h4 class="fw-bold mb-0" style="color: #002060;">{{ $landing->investment_section['items'][0]['title'] }}</h4>
+                                                    <div class="card h-100 border-0 shadow-lg transition-all rounded-4 overflow-hidden bg-white border-top border-warning border-5"
+                                                        style="border-top: 5px solid #ffc107 !important;">
+                                                        <div class="p-4 border-bottom"
+                                                            style="background-color: rgba(255, 193, 7, 0.05);">
+                                                            <span
+                                                                class="badge bg-warning text-dark mb-2">{{ $landing->investment_section['items'][0]['tag'] }}</span>
+                                                            <h4 class="fw-bold mb-0" style="color: #002060;">
+                                                                {{ $landing->investment_section['items'][0]['title'] }}
+                                                            </h4>
                                                             <small class="text-muted">La mas recomendada</small>
                                                         </div>
                                                         <div class="card-body p-4 text-center">
                                                             <div class="mb-2">
-                                                                <span class="display-4 fw-bold" style="color: #002060;">S/ {{ $landing->investment_section['items'][0]['price_now'] }}</span>
-                                                                <span class="text-muted">/ {{ $landing->investment_section['items'][0]['price_now_text'] ?? "" }}</span>
+                                                                <span class="display-4 fw-bold" style="color: #002060;">S/
+                                                                    {{ $landing->investment_section['items'][0]['price_now'] }}</span>
+                                                                <span class="text-muted">/
+                                                                    {{ $landing->investment_section['items'][0]['price_now_text'] ?? '' }}</span>
                                                             </div>
 
                                                             <div class="mb-4">
-                                                                <del class="text-muted fs-4 fw-semibold" style="color: #2d374b;">S/ {{ $landing->investment_section['items'][0]['price_before'] }}</del>
-                                                                <span class="text-muted small">/ {{ $landing->investment_section['items'][0]['price_before_text'] ?? "" }}</span>
+                                                                <del class="text-muted fs-4 fw-semibold"
+                                                                    style="color: #2d374b;">S/
+                                                                    {{ $landing->investment_section['items'][0]['price_before'] }}</del>
+                                                                <span class="text-muted small">/
+                                                                    {{ $landing->investment_section['items'][0]['price_before_text'] ?? '' }}</span>
                                                             </div>
                                                             <ul class="list-unstyled text-start mb-4">
                                                                 @if (filled($landing->investment_section['items'][0]['features'] ?? null))
                                                                     @foreach ($landing->investment_section['items'][0]['features'] as $feature)
-                                                                    <li class="mb-2"><i class="fa fa-check text-success me-2"></i> <b>{{ $feature }}</b></li>
+                                                                        <li class="mb-2"><i
+                                                                                class="fa fa-check text-success me-2"></i>
+                                                                            <b>{{ $feature }}</b></li>
                                                                     @endforeach
                                                                 @endif
                                                             </ul>
-                                                            <a href="javascript:void(0)" onclick="procederInscripcion()" class="btn btn-warning w-100 fw-bold py-2 shadow-sm" style="color: #002060; border-radius: 10px;">Inscribirse ahora</a>
+                                                            <a href="javascript:void(0)" onclick="procederInscripcion()"
+                                                                class="btn btn-warning w-100 fw-bold py-2 shadow-sm"
+                                                                style="color: #002060; border-radius: 10px;">Inscribirse
+                                                                ahora</a>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -621,24 +482,34 @@ document.addEventListener('keydown', function(event) {
                                         @if (filled($landing->investment_section['items'][1] ?? null))
                                             @if ($landing->investment_section['items'][1]['price_before_visible'])
                                                 <div class="col-md-4" data-aos="zoom-in" data-aos-delay="300">
-                                                    <div class="card h-100 border-0 shadow-sm transition-all rounded-4 overflow-hidden bg-white text-center">
+                                                    <div
+                                                        class="card h-100 border-0 shadow-sm transition-all rounded-4 overflow-hidden bg-white text-center">
                                                         <div class="p-4 border-bottom bg-light">
-                                                            <h4 class="fw-bold mb-0" style="color: #002060;">{{ $landing->investment_section['items'][1]['tag'] }}</h4>
-                                                            <small class="text-muted">{{ $landing->investment_section['items'][1]['title'] }}</small>
+                                                            <h4 class="fw-bold mb-0" style="color: #002060;">
+                                                                {{ $landing->investment_section['items'][1]['tag'] }}</h4>
+                                                            <small
+                                                                class="text-muted">{{ $landing->investment_section['items'][1]['title'] }}</small>
                                                         </div>
                                                         <div class="card-body p-4">
                                                             <div class="mb-4">
-                                                                <span class="display-4 fw-bold" style="color: #002060;">S/ {{ $landing->investment_section['items'][1]['price_now'] }}</span>
-                                                                <span class="text-muted">/ {{ $landing->investment_section['items'][1]['price_now_text'] }}</span>
+                                                                <span class="display-4 fw-bold" style="color: #002060;">S/
+                                                                    {{ $landing->investment_section['items'][1]['price_now'] }}</span>
+                                                                <span class="text-muted">/
+                                                                    {{ $landing->investment_section['items'][1]['price_now_text'] }}</span>
                                                             </div>
                                                             <ul class="list-unstyled text-start mb-4">
                                                                 @if (filled($landing->investment_section['items'][1]['features'] ?? null))
                                                                     @foreach ($landing->investment_section['items'][1]['features'] as $feature)
-                                                                    <li class="mb-2"><i class="fa fa-check text-success me-2"></i> <b>{{ $feature }}</b></li>
+                                                                        <li class="mb-2"><i
+                                                                                class="fa fa-check text-success me-2"></i>
+                                                                            <b>{{ $feature }}</b></li>
                                                                     @endforeach
                                                                 @endif
                                                             </ul>
-                                                            <a href="#pageContactForm" class="btn btn-outline-warning w-100 fw-bold py-2" style="color: #002060; border-radius: 10px;">Contactar ventas</a>
+                                                            <a href="#pageContactForm"
+                                                                class="btn btn-outline-warning w-100 fw-bold py-2"
+                                                                style="color: #002060; border-radius: 10px;">Contactar
+                                                                ventas</a>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -662,7 +533,8 @@ document.addEventListener('keydown', function(event) {
                                             style="background-color: rgba(111, 66, 193, 0.1); color: #6f42c1;">
                                             <i class="fa fa-magic me-1"></i> {{ $landing->faq_section['name'] }}
                                         </span>
-                                        <h2 class="fw-bold display-6" style="color: #002060;">{{ $landing->faq_section['title'] }}</h2>
+                                        <h2 class="fw-bold display-6" style="color: #002060;">
+                                            {{ $landing->faq_section['title'] }}</h2>
                                         <p class="text-muted fs-5 mx-auto" style="max-width: 700px;">
                                             {{ $landing->faq_section['description'] }}
                                         </p>
@@ -672,27 +544,40 @@ document.addEventListener('keydown', function(event) {
                                         <div class="col-lg-10">
                                             <div class="faq-manual" id="faqManual">
                                                 @if (filled($landing->faq_section['items'] ?? null))
-                                                        @foreach ($landing->faq_section['items'] as $faq)
-                                                            @if ($faq['visible'])
-                                                                <div class="faq-item-card shadow-sm mb-3" style="border: 1px solid #edf2f7; border-radius: 15px; overflow: hidden;" onmouseenter="toggleFaq({{ $loop->index }})" onmouseleave="toggleFaq({{ $loop->index }})">
-                                                                    <div class="faq-question p-3" style="cursor: pointer; background: #fff; color: #002060; font-weight: 600; display: flex; justify-content: space-between; align-items: center;">
-                                                                        <span>{{ $faq['question'] }}</span>
-                                                                        <i id="faq-icon-{{ $loop->index }}" class="fa fa-chevron-down" style="transition: transform 0.3s;"></i>
-                                                                    </div>
-                                                                    <div id="faq-answer-{{ $loop->index }}" class="faq-answer p-3" style="display: none; color: #334155; line-height: 1.7; font-size: 0.95rem; background: #f8f9fa;">
-                                                                        {!! $faq['answer'] !!}
-                                                                    </div>
+                                                    @foreach ($landing->faq_section['items'] as $faq)
+                                                        @if ($faq['visible'])
+                                                            <div class="faq-item-card shadow-sm mb-3"
+                                                                style="border: 1px solid #edf2f7; border-radius: 15px; overflow: hidden;"
+                                                                onmouseenter="toggleFaq({{ $loop->index }})"
+                                                                onmouseleave="toggleFaq({{ $loop->index }})">
+                                                                <div class="faq-question p-3"
+                                                                    style="cursor: pointer; background: #fff; color: #002060; font-weight: 600; display: flex; justify-content: space-between; align-items: center;">
+                                                                    <span>{{ $faq['question'] }}</span>
+                                                                    <i id="faq-icon-{{ $loop->index }}"
+                                                                        class="fa fa-chevron-down"
+                                                                        style="transition: transform 0.3s;"></i>
                                                                 </div>
-                                                            @endif
-                                                        @endforeach
+                                                                <div id="faq-answer-{{ $loop->index }}"
+                                                                    class="faq-answer p-3"
+                                                                    style="display: none; color: #334155; line-height: 1.7; font-size: 0.95rem; background: #f8f9fa;">
+                                                                    {!! $faq['answer'] !!}
+                                                                </div>
+                                                            </div>
+                                                        @endif
+                                                    @endforeach
                                                 @endif
                                             </div>
 
-                                            <div class="text-center mt-5 p-4 rounded-4" style="background-color: #f8f9fa; border: 1px dashed #dee2e6;">
-                                                <p class="mb-3 fw-bold" style="color: #002060;">¿Aún tienes dudas específicas?</p>
-                                                <a href="{{ $landing->whatsapp_link }}" class="btn btn-success rounded-pill px-4 shadow-sm d-inline-flex align-items-center">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" style="width: 18px; height: 18px; fill: white;" class="me-2">
-                                                        <path d="M380.9 97.1c-41.9-42-97.7-65.1-157-65.1-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480 117.7 449.1c32.4 17.7 68.9 27 106.1 27l.1 0c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3 18.6-68.1-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1s56.2 81.2 56.1 130.5c0 101.8-84.9 184.6-186.6 184.6zM325.1 300.5c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8s-14.3 18-17.6 21.8c-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7 .9-6.9-.5-9.7s-12.5-30.1-17.1-41.2c-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2s-9.7 1.4-14.8 6.9c-5.1 5.6-19.4 19-19.4 46.3s19.9 53.7 22.6 57.4c2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4s4.6-24.1 3.2-26.4c-1.3-2.5-5-3.9-10.5-6.6z"/>
+                                            <div class="text-center mt-5 p-4 rounded-4"
+                                                style="background-color: #f8f9fa; border: 1px dashed #dee2e6;">
+                                                <p class="mb-3 fw-bold" style="color: #002060;">¿Aún tienes dudas
+                                                    específicas?</p>
+                                                <a href="{{ $landing->whatsapp_link }}"
+                                                    class="btn btn-success rounded-pill px-4 shadow-sm d-inline-flex align-items-center">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"
+                                                        style="width: 18px; height: 18px; fill: white;" class="me-2">
+                                                        <path
+                                                            d="M380.9 97.1c-41.9-42-97.7-65.1-157-65.1-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480 117.7 449.1c32.4 17.7 68.9 27 106.1 27l.1 0c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3 18.6-68.1-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1s56.2 81.2 56.1 130.5c0 101.8-84.9 184.6-186.6 184.6zM325.1 300.5c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8s-14.3 18-17.6 21.8c-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7 .9-6.9-.5-9.7s-12.5-30.1-17.1-41.2c-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2s-9.7 1.4-14.8 6.9c-5.1 5.6-19.4 19-19.4 46.3s19.9 53.7 22.6 57.4c2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4s4.6-24.1 3.2-26.4c-1.3-2.5-5-3.9-10.5-6.6z" />
                                                     </svg>
                                                     Hablar con un Asesor
                                                 </a>
@@ -769,17 +654,6 @@ document.addEventListener('keydown', function(event) {
                 }
             });
         }
-
-        // Funciones para el modal de teachers
-        function openTeacherModal(index) {
-            document.getElementById('teacher-modal-' + index).style.display = 'block';
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeTeacherModal(index) {
-            document.getElementById('teacher-modal-' + index).style.display = 'none';
-            document.body.style.overflow = 'auto';
-        }
     </script>
 
     <script>
@@ -833,7 +707,8 @@ document.addEventListener('keydown', function(event) {
                 } else {
                     console.error('Error en la solicitud: ' + xhr.status);
                 }
-                const downloadUrl = "{{ isset($landing->course->brochure) ? ($landing->course->brochure->path_file ?? '') : '' }}";
+                const downloadUrl =
+                    "{{ isset($landing->course->brochure) ? $landing->course->brochure->path_file ?? '' : '' }}";
                 window.open(downloadUrl, '_blank');
 
             };
@@ -842,13 +717,17 @@ document.addEventListener('keydown', function(event) {
         });
     </script>
 
-<script>
+    <script>
         $(document).ready(function() {
             function formatCountry(country) {
-                if (!country.id) { return country.text; }
+                if (!country.id) {
+                    return country.text;
+                }
                 var code = $(country.element).data('code');
                 var $country = $(
-                    '<span><img src="https://flagcdn.com/w20/' + code.toLowerCase() + '.png" class="me-2" style="vertical-align: middle; border: 1px solid #eee; width: 20px;">' + country.text + '</span>'
+                    '<span><img src="https://flagcdn.com/w20/' + code.toLowerCase() +
+                    '.png" class="me-2" style="vertical-align: middle; border: 1px solid #eee; width: 20px;">' +
+                    country.text + '</span>'
                 );
                 return $country;
             };
