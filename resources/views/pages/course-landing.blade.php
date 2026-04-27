@@ -499,7 +499,7 @@
                                                     @if (filled($teacher['resumes'] ?? null))
                                                             @foreach ($teacher['resumes'] as $resume)
                                                                 @if ($resume->type =="work experience")
-                                                                {{ dump($resume->description) }}
+                                                                {{ $resume->description }}
                                                                 @endif
                                                             @endforeach
                                                     @endif
