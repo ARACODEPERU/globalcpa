@@ -31,7 +31,7 @@
                                                     style="object-fit: cover;" alt="{{ $teacher['name'] }}">
                                                 <div class="position-absolute bottom-0 start-0 w-100 p-3"
                                                     style="background: linear-gradient(transparent, rgba(0,32,96,0.8));">
-                                                    <p class="text-white small mb-0 fw-light">Socio Consultor</p>
+                                                    <p class="text-white small mb-0 fw-light">{{ "" }}</p>
                                                 </div>
                                             </div>
                                             <div class="card-body text-center p-3">
