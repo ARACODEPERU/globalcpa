@@ -21,7 +21,7 @@
             <div class="col-md-4">
                 <div style="place-items: center; padding: 40px 20px;">
                     <img style="width: 100%;"
-                        src="https://academy.globalcpaperu.com/themes/webpage/images/certificado.jpg" alt="">
+                        src="{{ asset('themes/webpage/images/certificado.jpg') }}" alt="">
                     <p style="font-size: 17px; line-height: 1.3; margin-top: 10px;">
                         <b>* IMAGEN REFERENCIAL</b>
                     </p>
