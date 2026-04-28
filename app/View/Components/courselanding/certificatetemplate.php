@@ -21,6 +21,6 @@ class certificatetemplate extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.courselanding.certificatetemplate');
+        return view('components.courselanding.certificate-template');
     }
 }

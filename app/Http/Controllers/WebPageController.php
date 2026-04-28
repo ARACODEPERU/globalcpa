@@ -275,13 +275,14 @@ public function course_url_slug($id){
                 $teacherIds = array_column($staffData['teachers'], 'teacher_id');
 
                 $teachers = AcaTeacher::whereIn('id', $teacherIds)
-                    ->with('person')
+                    ->with('person', 'resumes')
                     ->get();
 
                 foreach ($teacherIds as $teacherId) {
                     $teacher = $teachers->firstWhere('id', $teacherId);
                     if ($teacher && $teacher->person) {
                         $person = $teacher->person;
+                        $resumes = $teacher->resumes;
                         $imageUrl = $person->image
                             ? asset('storage/' . $person->image)
                             : 'https://ui-avatars.com/api/?name=' . urlencode($person->formatted_name) . '&rounded=true&size=200';
@@ -289,7 +290,8 @@ public function course_url_slug($id){
                         $teachersPremium[] = [
                             'name' => $person->formatted_name,
                             'role' => $person->ocupacion ?? 'Instructor',
-                            'img' => $imageUrl
+                            'img' => $imageUrl,
+                            'resumes' => $resumes,
                         ];
                     }
                 }
@@ -330,33 +332,108 @@ public function course_url_slug($id){
         ]);
     }
 
-    // public function cursodescripcion($id)
-    // {
-    //     $item = OnliItem::find($id);
+    public function course_landing_preview($id){
+        $landing = AcaCourseLanding::with('course')
+            ->with('course.category')
+            ->with('course.modality')
+            ->with('course.brochure')
+            ->where('id', $id)->first();
 
-    //     $course = AcaCourse::with('category')
-    //         ->with('modality')
-    //         ->with('modules')
-    //         ->with('teachers.teacher.person.resumes')
-    //         ->with('brochure')
-    //         ->with('agreements')
-    //         ->where('id', $item->item_id)
-    //         ->first();
+        $teachersPremium = [];
 
-    //     $latest_courses = OnliItem::with('course')
-    //         ->orderBy('id', 'desc')
-    //         ->where('id', '!=', $id)
-    //         ->take(10)
-    //         ->get()
-    //         ->shuffle()
-    //         ->take(3);
+        if ($landing && $landing->staff_section) {
+            $staffData = is_array($landing->staff_section)
+                ? $landing->staff_section
+                : json_decode($landing->staff_section, true);
 
-    //     return view('pages.course-description', [
-    //         'course' => $course,
-    //         'item' => $item,
-    //         'latest_courses' => $latest_courses
-    //     ]);
-    // }
+            if (is_array($staffData) && isset($staffData['teachers']) && is_array($staffData['teachers'])) {
+                $teacherIds = array_column($staffData['teachers'], 'teacher_id');
+
+                $teachers = AcaTeacher::whereIn('id', $teacherIds)
+                    ->with('person', 'resumes')
+                    ->get();
+
+                foreach ($teacherIds as $teacherId) {
+                    $teacher = $teachers->firstWhere('id', $teacherId);
+                    if ($teacher && $teacher->person) {
+                        $person = $teacher->person;
+                        $resumes = $teacher->resumes;
+                        $imageUrl = $person->image
+                            ? asset('storage/' . $person->image)
+                            : 'https://ui-avatars.com/api/?name=' . urlencode($person->formatted_name) . '&rounded=true&size=200';
+
+                        $teachersPremium[] = [
+                            'name' => $person->formatted_name,
+                            'role' => $person->ocupacion ?? 'Instructor',
+                            'img' => $imageUrl,
+                            'resumes' => $resumes,
+                        ];
+                    }
+                }
+            }
+        }
+        $colors = [
+            '#FF0000', // Rojo puro
+            '#00FF00', // Lima
+            '#0000FF', // Azul eléctrico
+            '#FFFF00', // Amarillo neón
+            '#FF00FF', // Magenta
+            '#00FFFF', // Cian
+            '#FF8C00', // Naranja oscuro
+            '#8A2BE2', // Azul violeta
+            '#ADFF2F', // Verde amarillo
+            '#FF1493', // Rosa profundo
+            '#00BFFF', // Azul cielo profundo
+            '#7FFF00', // Chartreuse
+            '#FF4500', // Naranja rojizo
+            '#1E90FF', // Azul esquivador
+            '#FFD700', // Oro
+        ];
+
+        // Mezclamos el arreglo al azar
+        shuffle($colors);
+
+        // Obtener OnliItem asociado al curso
+        $onliItem = null;
+        if ($landing && $landing->course) {
+            $onliItem = OnliItem::where('item_id', $landing->course->id)->first();
+        }
+
+        return view ('pages.course-landing', [
+            'landing' => $landing,
+            'teachers_premium' => $teachersPremium,
+            'colors' => $colors,
+            'onli_item_id' => $onliItem ? $onliItem->id : null,
+        ]);
+    }
+
+    public function cursodescripcion($id)
+    {
+        $item = OnliItem::find($id);
+
+        $course = AcaCourse::with('category')
+            ->with('modality')
+            ->with('modules')
+            ->with('teachers.teacher.person.resumes')
+            ->with('brochure')
+            ->with('agreements')
+            ->where('id', $item->item_id)
+            ->first();
+
+        $latest_courses = OnliItem::with('course')
+            ->orderBy('id', 'desc')
+            ->where('id', '!=', $id)
+            ->take(10)
+            ->get()
+            ->shuffle()
+            ->take(3);
+
+        return view('pages.course-description', [
+            'course' => $course,
+            'item' => $item,
+            'latest_courses' => $latest_courses
+        ]);
+    }
 
 
 
