@@ -132,13 +132,11 @@
     <div class="tap-top"><i data-feather="chevrons-up"></i></div>
     <!-- tap on tap ends-->
 
-
-
     <!-- page-wrapper Start-->
     <div class="page-wrapper" id="pageWrapper">
         <!-- Page Header Start-->
         <x-header />
-        <!-- Page Header Ends-->
+
         <!-- Page Body Start-->
         <div class="page-body-wrapper">
             <!-- Page Sidebar Start-->

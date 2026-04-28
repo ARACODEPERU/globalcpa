@@ -146,9 +146,14 @@
                             </div>
                         </div>
                     </div>
-                    <div class="mt-4">
+                    <div class="mb-3">
+                        <p>
+                            Confirmo mi interés y quedo atento(a) al contacto para avanzar profesionalmente.
+                        </p>
+                    </div>
+                    <div class="mt-1">
                         <button type="submit" id="submitPageContactButton" class="btn btn-warning btn-lg w-100 fw-bold shadow-sm py-3" style="color: #002060; border-radius: 12px;">
-                            <i class="fa fa-file-pdf-o me-2"></i> DESCARGAR BROCHURE
+                            <i class="fa fa-file-pdf-o me-2"></i> CONOCER BENEFICIOS Y ASEGURAR MI VACANTE
                         </button>
                     </div>
                     <div id="messagePageContact" class="mt-3"></div>
