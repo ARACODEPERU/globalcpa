@@ -18,6 +18,7 @@
                         </p>
                     </div>
 
+                    
                     <div class="carousel-viewport" style="padding: 40px 0;">
                         <div class="carousel-track" style="animation-duration: 50s;">
                             {{-- Se duplica el contenido para el loop infinito --}}
