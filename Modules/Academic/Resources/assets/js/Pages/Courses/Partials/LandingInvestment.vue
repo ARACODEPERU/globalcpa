@@ -190,8 +190,7 @@ const saveInvestmentSettings = () => {
                 >
                     <div class="flex items-center justify-between">
                         <span class="text-sm font-bold text-blue-600 dark:text-blue-400 uppercase">
-                            <span v-if="index === 0">Plan Individual</span>
-                            <span v-else>Plan Corporativo</span>
+                            Plan {{ index + 1 }}
                         </span>
                     </div>
 

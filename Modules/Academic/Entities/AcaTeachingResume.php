@@ -35,9 +35,4 @@ class AcaTeachingResume extends Model
     {
         return $this->belongsTo(Person::class, 'person_id');
     }
-
-    public function teacher()
-    {
-        return $this->belongsTo(AcaTeacher::class, 'teacher_id', 'id');
-    }
 }
