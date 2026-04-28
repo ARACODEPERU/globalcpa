@@ -72,7 +72,6 @@
 
     <!-- Javascript Assets -->
     <!-- Carrito JS -->
-    <script src="{{ asset('themes/globalcpa/carrito.js') }}" defer></script>
     <script src="{{ asset('themes/webpage/js/app.js') }}" defer></script>
 
 
@@ -225,7 +224,7 @@
         })
     </script>
 
-
+<script src="{{ asset('themes/globalcpa/carrito.js') }}" defer></script>
     @stack('modals')
 
     <!-- Scripts Globales Comunes (Slider y Acordeón) -->
