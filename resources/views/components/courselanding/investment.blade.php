@@ -28,10 +28,10 @@
                                             style="background-color: rgba(255, 193, 7, 0.05);">
                                             <span
                                                 class="badge bg-warning text-dark mb-2">{{ $landing->investment_section['items'][0]['tag'] }}</span>
-                                            <h4 class="fw-bold mb-0" style="color: #002060;">
+                                            <h4 class="fw-bold mb-0" style="color: #002060; font-size: 22px;">
                                                 {{ $landing->investment_section['items'][0]['title'] }}
                                             </h4>
-                                            <small class="text-muted">La mas recomendada</small>
+                                            <small class="text-muted" style="font-size: 15px;">La mas recomendada</small>
                                         </div>
                                         <div class="card-body p-4 text-center">
                                             <div class="mb-2">
@@ -74,10 +74,11 @@
                                     <div
                                         class="card h-100 border-0 shadow-sm transition-all rounded-4 overflow-hidden bg-white text-center">
                                         <div class="p-4 border-bottom bg-light">
-                                            <h4 class="fw-bold mb-0" style="color: #002060;">
+                                            <h4 class="fw-bold mb-0" style="color: #002060; font-size: 22px;">
                                                 {{ $landing->investment_section['items'][1]['tag'] }}</h4>
                                             <small
-                                                class="text-muted">{{ $landing->investment_section['items'][1]['title'] }}</small>
+                                                class="text-muted" style="font-size: 15px;">
+                                                {{ $landing->investment_section['items'][1]['title'] }}</small>
                                         </div>
                                         <div class="card-body p-4">
                                             <div class="mb-4">

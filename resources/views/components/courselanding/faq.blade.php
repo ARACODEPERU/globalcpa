@@ -10,9 +10,9 @@
                             style="background-color: rgba(111, 66, 193, 0.1); color: #6f42c1;">
                             <i class="fa fa-magic me-1"></i> {{ $landing->faq_section['name'] }}
                         </span>
-                        <h2 class="fw-bold display-6" style="color: #002060;">
+                        <h2 class="fw-bold display-6" style="color: #002060; font-size: 28px;">
                             {{ $landing->faq_section['title'] }}</h2>
-                        <p class="text-muted fs-5 mx-auto" style="max-width: 700px;">
+                        <p class="text-muted fs-5 mx-auto" style="max-width: 700px; font-size: 16px; line-height: 1.7;">
                             {{ $landing->faq_section['description'] }}
                         </p>
                     </div>
@@ -47,10 +47,11 @@
 
                             <div class="text-center mt-5 p-4 rounded-4"
                                 style="background-color: #f8f9fa; border: 1px dashed #dee2e6;">
-                                <p class="mb-3 fw-bold" style="color: #002060;">¿Aún tienes dudas
+                                <p class="mb-3 fw-bold" style="color: #002060; font-size: 20px;">¿Aún tienes dudas
                                     específicas?</p>
                                 <a href="{{ $landing->whatsapp_link }}"
-                                    class="btn btn-success rounded-pill px-4 shadow-sm d-inline-flex align-items-center">
+                                    class="btn rounded-pill px-4 shadow-sm d-inline-flex align-items-center transition-all hover:scale-105"
+                                    style="background-color: #25D366; color: white; border: none; font-weight: 600; padding: 12px 30px;">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"
                                         style="width: 18px; height: 18px; fill: white;" class="me-2">
                                         <path

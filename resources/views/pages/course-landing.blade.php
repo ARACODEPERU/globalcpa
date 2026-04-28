@@ -165,7 +165,6 @@
                 {{-- Testimonials --}}
                 <x-courselanding.testimonials :landing="$landing" />
 
-
                 {{-- Nueva Sección: Planes de Inversión --}}
                 <x-courselanding.investment :landing="$landing" />
 

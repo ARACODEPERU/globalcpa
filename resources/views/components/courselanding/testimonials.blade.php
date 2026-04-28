@@ -125,9 +125,9 @@
                                                         class="testimonial-avatar">
                                                 @endif
                                                 <div>
-                                                    <h5 class="testimonial-name">
+                                                    <h5 class="testimonial-name" style="font-size: 20px;">
                                                         {{ $testimonial['name'] ?? '' }}</h5>
-                                                    <p class="testimonial-title">
+                                                    <p class="testimonial-title" style="font-size: 15px;">
                                                         {{ $testimonial['presentation'] ?? '' }}</p>
                                                 </div>
                                             </div>
