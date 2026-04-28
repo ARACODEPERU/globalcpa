@@ -38,9 +38,9 @@
                                                 style="font-size: 2rem; color: {{ $colors[$loop->index] }};"></i>
                                         </div>
 
-                                        <h4 class="fw-bold mb-3" style="color: #002060;">
+                                        <h4 class="fw-bold mb-2" style="color: #002060; font-size: 20px;">
                                             {{ $item['title'] }}</h4>
-                                        <p class="text-muted mb-0 small" style="line-height: 1.6;">
+                                        <p class="text-muted mb-0 small" style="line-height: 1.6; font-size: 15px;">
                                             {{ $item['description'] }}
                                         </p>
                                     </div>
