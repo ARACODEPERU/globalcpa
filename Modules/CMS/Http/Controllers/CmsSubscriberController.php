@@ -89,7 +89,7 @@ class CmsSubscriberController extends Controller
 
                 }
             }
-            Mail::to('informes@globalcpaperu.com')
+            Mail::to('jsuclupe@globalcpaperu.com')
             ->queue(new NotificacionDescarga_brochure($Subscriber));
         } catch (\Throwable $th2) {
 
