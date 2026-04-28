@@ -163,6 +163,8 @@ class AcaCourseLandingController extends Controller
                 'description' => 'nullable|string',
                 'teachers' => 'nullable|array',
                 'teachers.*.teacher_id' => 'required|integer',
+                'teachers.*.teacher_names' => 'nullable|string|max:255',
+                'teachers.*.teacher_ocupation' => 'nullable|string|max:255',
                 'teachers.*.selected' => 'nullable|boolean',
             ]
         );
