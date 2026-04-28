@@ -83,7 +83,13 @@
         } catch (error) {
             const title = error.response?.status === 404 ? 'Certificado no encontrado' : 'Error al descargar';
             const message = error.response?.data?.message || 'Falta configuración del administrador.';
-            Swal.fire({ icon: 'error', title: title, text: message });
+            Swal.fire({
+                icon: 'error',
+                title: title,
+                text: message,
+                padding: '2em',
+                customClass: 'sweet-alerts',
+            });
         } finally {
             loadingStates.value[certificateId] = false;
         }
