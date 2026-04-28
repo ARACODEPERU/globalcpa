@@ -7,11 +7,13 @@
                     <div class="page-title">
                         <div class="row">
                             <div class="col-sm-12">
-                                <h1 class="ara_title">¡Comparte tus logros con un certificado!</h1>
+                                <h2 class="fw-bold display-6" style="color: #002060; font-size: 28px;">
+                                    ¡Comparte tus logros con un certificado!
+                                </h2>
                             </div>
                         </div>
                     </div>
-                    <p style="font-size: 17px; line-height: 1.3; margin-top: 10px;">
+                    <p style="font-size: 17px; line-height: 1.3; margin-top: 5px;">
                         Cuando termines el curso tendrás acceso al certificado digital para
                         compartirlo con tu
                         familia, amigos, empleadores y la comunidad.
