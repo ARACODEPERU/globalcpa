@@ -61,7 +61,7 @@
                                                 class="btn btn-modern btn-modern-primary w-100 mb-3">
                                                 <i class="fa fa-shopping-cart me-2"></i> Inscribirse ahora
                                             </a>
-                                            <a href="https://wa.me/tu_numero" target="_blank"
+                                            <a href="{{ $landing->payment_facilities_link }}" target="_blank"
                                                 class="btn btn-modern btn-modern-outline w-100">
                                                 <i class="fa fa-whatsapp me-2"></i> Contactar con un Asesor
                                             </a>
@@ -100,8 +100,8 @@
                                                     @endforeach
                                                 @endif
                                             </ul>
-                                            
-                                            <a href="#pageContactForm" target="_blank"
+
+                                            <a href="{{ $landing->corporate_contact_link ?? "#pageContactForm" }}" target="_blank"
                                                 class="btn btn-modern btn-modern-outline w-100">
                                                 <i class="fa fa-whatsapp me-2"></i> Contactar con un Asesor
                                             </a>

@@ -53,8 +53,12 @@
                 </div>
                 <div class="col-lg-4 text-center d-none d-lg-block position-relative"
                     style="height: auto;">
-                    @if($landing->course->image)
-                    <img src="{{ asset("storage/".$landing->course->image) }}"
+                    @if(filled($landing->banner_video_link ?? null))
+                        <div class="ratio ratio-16x9">
+                            {!! $landing->banner_video_link !!}
+                        </div>
+                    @else
+                        <img src="{{ asset("storage/".$landing->course->image) }}"
                         alt="{{ $landing->course->description ?? 'Curso' }}" class="img-fluid"
                         style="height: 100%;">
                     @endif
