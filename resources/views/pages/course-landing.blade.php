@@ -126,6 +126,42 @@
         .select2-selection__arrow {
             top: 6px !important;
         }
+
+        /* Botones Modernos UX */
+        .btn-modern {
+            padding: 12px 28px;
+            font-weight: 700;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            letter-spacing: 0.5px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50px !important;
+        }
+
+        .btn-modern-primary {
+            background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+            color: #002060 !important;
+            border: none;
+            box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
+        }
+
+        .btn-modern-primary:hover {
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 8px 25px rgba(255, 193, 7, 0.5);
+        }
+
+        .btn-modern-outline {
+            background: transparent;
+            color: #002060 !important;
+            border: 2px solid #002060 !important;
+        }
+
+        .btn-modern-outline:hover {
+            background: #002060 !important;
+            color: #ffffff !important;
+            transform: translateY(-2px);
+        }
     </style>
 
     <!-- tap on top starts-->

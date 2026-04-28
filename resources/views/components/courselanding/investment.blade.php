@@ -58,9 +58,13 @@
                                                 @endif
                                             </ul>
                                             <a href="javascript:void(0)" onclick="procederInscripcion()"
-                                                class="btn btn-warning w-100 fw-bold py-2 shadow-sm"
-                                                style="color: #002060; border-radius: 10px;">Inscribirse
-                                                ahora</a>
+                                                class="btn btn-modern btn-modern-primary w-100 mb-3">
+                                                <i class="fa fa-shopping-cart me-2"></i> Inscribirse ahora
+                                            </a>
+                                            <a href="https://wa.me/tu_numero" target="_blank"
+                                                class="btn btn-modern btn-modern-outline w-100">
+                                                <i class="fa fa-whatsapp me-2"></i> Contactar con un Asesor
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
@@ -96,10 +100,11 @@
                                                     @endforeach
                                                 @endif
                                             </ul>
-                                            <a href="#pageContactForm"
-                                                class="btn btn-outline-warning w-100 fw-bold py-2"
-                                                style="color: #002060; border-radius: 10px;">Contactar
-                                                ventas</a>
+                                            
+                                            <a href="#pageContactForm" target="_blank"
+                                                class="btn btn-modern btn-modern-outline w-100">
+                                                <i class="fa fa-whatsapp me-2"></i> Contactar con un Asesor
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
