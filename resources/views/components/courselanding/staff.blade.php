@@ -38,7 +38,7 @@
                                             <div class="card-body text-center p-3">
                                                 <h5 class="fw-bold mb-1" style="color: #002060; font-size: 1.1rem;">
                                                     {{ $teacher['name'] }}</h5>
-                                                <p class="text-warning small fw-bold mb-0" style="font-size: 0.8rem;">
+                                                <p class="text-warning small fw-bold mb-0" style="font-size: 15px;">
                                                     {{ $teacher['role'] }}</p>
                                             </div>
                                         </div>

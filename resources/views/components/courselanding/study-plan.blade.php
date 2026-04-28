@@ -24,7 +24,7 @@
                                     style="border: 8px solid #f8f9fa;">
                                 <div
                                     class="position-absolute bottom-0 start-0 m-3 p-3 bg-warning rounded-3 shadow d-none d-sm-block">
-                                    <span class="fw-bold text-dark">Módulos 100% Actualizados</span>
+                                    <span class="fw-bold text-dark" style="font-size: 15px;">Módulos 100% Actualizados</span>
                                 </div>
                             </div>
                         </div>
@@ -42,8 +42,8 @@
                                                     style="width: 45px; height: 45px; background-color: #002060 !important; font-size: 1.1rem;">{{ $loop->iteration }}</span>
                                             </div>
                                             <div class="ms-3">
-                                                <h5 class="fw-bold" style="color: #002060;">{{ $item['title'] }}</h5>
-                                                <p class="text-muted">{{ $item['description'] }}</p>
+                                                <h5 class="fw-bold" style="color: #002060; font-size: 20px;">{{ $item['title'] }}</h5>
+                                                <p class="text-muted" style="font-size: 15px;">{{ $item['description'] }}</p>
                                             </div>
                                         </div>
                                     @endforeach

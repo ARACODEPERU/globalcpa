@@ -22,8 +22,8 @@
                                     <div class="mb-4">
                                         <i class="fa {{ $landing->problem_section['items'][0]['icon']  }} text-warning" style="font-size: 3.5rem;"></i>
                                     </div>
-                                    <h4 class="fw-bold mb-3" style="color: #002060;">{{ $landing->problem_section['items'][0]['title']  }}</h4>
-                                    <p class="text-muted mb-0">{{ $landing->problem_section['items'][0]['description']  }}</p>
+                                    <h4 class="fw-bold mb-1" style="color: #002060; font-size: 20px;">{{ $landing->problem_section['items'][0]['title']  }}</h4>
+                                    <p class="text-muted mb-0" style="font-size: 15px;">{{ $landing->problem_section['items'][0]['description']  }}</p>
                                 </div>
                             </div>
                         @endif
@@ -35,9 +35,9 @@
                                     <div class="mb-4">
                                         <i class="fa {{ $landing->problem_section['items'][1]['icon']  }} text-warning" style="font-size: 3.5rem;"></i>
                                     </div>
-                                    <h4 class="fw-bold mb-3" style="color: #002060;">{{ $landing->problem_section['items'][1]['title']  }}
+                                    <h4 class="fw-bold mb-1" style="color: #002060; font-size: 20px;">{{ $landing->problem_section['items'][1]['title']  }}
                                     </h4>
-                                    <p class="text-muted mb-0">{{ $landing->problem_section['items'][1]['description']  }}</p>
+                                    <p class="text-muted mb-0" style="font-size: 15px;">{{ $landing->problem_section['items'][1]['description']  }}</p>
                                 </div>
                             </div>
                         @endif
@@ -49,8 +49,8 @@
                                     <div class="mb-4">
                                         <i class="fa {{ $landing->problem_section['items'][2]['icon']  }} text-warning" style="font-size: 3.5rem;"></i>
                                     </div>
-                                    <h4 class="fw-bold mb-3" style="color: #002060;">{{ $landing->problem_section['items'][2]['title']  }}</h4>
-                                    <p class="text-muted mb-0">{{ $landing->problem_section['items'][2]['description']  }}</p>
+                                    <h4 class="fw-bold mb-1" style="color: #002060; font-size: 20px;">{{ $landing->problem_section['items'][2]['title']  }}</h4>
+                                    <p class="text-muted mb-0" style="font-size: 15px;">{{ $landing->problem_section['items'][2]['description']  }}</p>
                                 </div>
                             </div>
                         @endif
