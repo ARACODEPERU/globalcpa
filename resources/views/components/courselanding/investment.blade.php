@@ -23,7 +23,7 @@
                             @if ($landing->investment_section['items'][0]['price_before_visible'])
                                 <div class="col-md-4" data-aos="zoom-in" data-aos-delay="200">
                                     <div class="card h-100 border-0 shadow-lg transition-all rounded-4 overflow-hidden bg-white border-top border-warning border-5"
-                                        style="border-top: 5px solid #ffc107 !important;">
+                                        style="border-top: 5px solid #f8aa4b !important;">
                                         <div class="p-4 border-bottom"
                                             style="background-color: rgba(255, 193, 7, 0.05);">
                                             <span
@@ -179,7 +179,7 @@
                                         </div>
                                     </div>
                                     <button type="submit" id="submitModalContactButton" class="btn btn-warning btn-lg w-100 fw-bold shadow-sm py-3 mt-2" style="color: #002060; border-radius: 12px;">
-                                        SOLICITAR INFORMACIÓN DE FINANCIAMIENTO
+                                        Conocer beneficios y asegurar mi vacante
                                     </button>
                                     <div id="messageModalContact" class="mt-3"></div>
                                 </form>
