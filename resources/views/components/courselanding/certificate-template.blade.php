@@ -13,7 +13,7 @@
                             </div>
                         </div>
                     </div>
-                    <p style="font-size: 17px; line-height: 1.3; margin-top: 5px;">
+                    <p style="font-size: 17px; line-height: 1.3; margin-top: 5px; padding: 0 10px;">
                         Recibe un certificado digital verificable de CPA Academy que respalda tus 
                         competencias y fortalece tu posicionamiento frente a empleadores, clientes 
                         y equipos de trabajo.
