@@ -102,9 +102,9 @@
 
                     // 2. Crear objeto del producto
                     var producto = {
-                        id: {{ $onli_item_id ?? 0 }},
-                        nombre: "{{ $landing->course->description ?? 'Curso' }}",
-                        precio: {{ isset($landing->investment_section['items'][0]['price_now']) ? $landing->investment_section['items'][0]['price_now'] : 0 }},
+                        id: @json($onli_item_id ?? 0),
+                        nombre: @json($landing->course->description ?? 'Curso'),
+                        precio: @json($landing->investment_section['items'][0]['price_now'] ?? 0),
                         image: "{{ $landing->course->image ?? '' }}"
                     };
 
@@ -143,30 +143,49 @@
                 xhr.onload = function() {
                     submitButton.disabled = false;
                     submitButton.style.opacity = 1;
+                    
                     if (xhr.status === 200) {
                         var response = JSON.parse(xhr.responseText);
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Registro exitoso, estas a un paso de asegurar tu vacante',
-                            // text: response.message,
-                            text: 'Hemos recibido tu información. Estamos en etapa final de preventa con condiciones preferenciales activas. Elige como deseas continuar:',
-                            customClass: { container: 'sweet-modal-zindex' }
-                        });
-                        formElement.reset();
-                        // Cerrar modal si existe
-                        var modalElement = document.getElementById('modalFinanciamiento');
-                        var modalInstance = bootstrap.Modal.getInstance(modalElement);
-                        if(modalInstance) modalInstance.hide();
+                        
+                        // Define la función que muestra SweetAlert y las acciones posteriores
+                        const showSweetAlertAndContinue = () => {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Registro exitoso, estas a un paso de asegurar tu vacante',
+                                text: 'Hemos recibido tu información. Estamos en etapa final de preventa con condiciones preferenciales activas. Elige como deseas continuar:',
+                            }).then(() => {
+                                formElement.reset();
+                                const downloadUrl = "{{ isset($landing->course->brochure) ? $landing->course->brochure->path_file ?? '' : '' }}";
+                                if(downloadUrl) window.open(downloadUrl, '_blank');
+                            });
+                        };
+
+                        // 1. Intentar cerrar el modal de Bootstrap de forma segura
+                        const modalElement = document.getElementById('modalFinanciamiento');
+                        if (modalElement) {
+                            const modalInstance = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
+                            modalInstance.hide();
+                        }
+
+                        // 2. LIMPIEZA FORZADA: Eliminamos manualmente el fondo negro y desbloqueamos el scroll
+                        // Esto elimina cualquier "backdrop" huérfano que Bootstrap haya dejado
+                        document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+                        document.body.classList.remove('modal-open');
+                        document.body.style.overflow = '';
+                        document.body.style.paddingRight = '';
+
+                        // 3. Mostrar la alerta
+                        showSweetAlertAndContinue();
+
                     } else if (xhr.status === 422) {
                         var errorResponse = JSON.parse(xhr.responseText);
                         var errorMessageContainer = document.getElementById(messageId);
+                        errorMessageContainer.innerHTML = ''; // Limpiar mensajes anteriores
                         errorMessageContainer.innerHTML = 'Errores de validación:<br>';
                         for (var field in errorResponse.errors) {
                             errorMessageContainer.innerHTML += field + ': ' + errorResponse.errors[field].join(', ') + '<br>';
                         }
                     }
-                    const downloadUrl = "{{ isset($landing->course->brochure) ? $landing->course->brochure->path_file ?? '' : '' }}";
-                    if(downloadUrl) window.open(downloadUrl, '_blank');
                 };
                 xhr.send(formData);
             });
@@ -207,17 +226,19 @@
 
         // Toggle FAQ Manual - abrir al entrar, cerrar al salir
         function toggleFaq(index) {
-            var answer = document.getElementById('faq-answer-' + index);
-            var icon = document.getElementById('faq-icon-' + index);
-
-            // Verificar si está oculto o tiene display vacío
-            var isHidden = answer.style.display === 'none' || answer.style.display === '';
-
-            if (isHidden) {
-                answer.style.display = 'block';
+            const answer = document.getElementById('faq-answer-' + index);
+            const icon = document.getElementById('faq-icon-' + index);
+            
+            // Uso de clases CSS para permitir transiciones suaves en lugar de display:none
+            const isExpanded = answer.classList.contains('show');
+            
+            if (!isExpanded) {
+                $(answer).slideDown();
+                answer.classList.add('show');
                 icon.style.transform = 'rotate(180deg)';
             } else {
-                answer.style.display = 'none';
+                $(answer).slideUp();
+                answer.classList.remove('show');
                 icon.style.transform = 'rotate(0deg)';
             }
         }
