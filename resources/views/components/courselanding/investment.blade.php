@@ -63,7 +63,7 @@
                                             </a>
                                             <a href="{{ $landing->payment_facilities_link }}" target="_blank"
                                                 class="btn btn-modern btn-modern-outline w-100">
-                                                <i class="fa fa-whatsapp me-2"></i> Contactar con un Asesor
+                                                <i class="fa fa-whatsapp me-2"></i> Asegurar vacante y/o financiamiento
                                             </a>
                                         </div>
                                     </div>
