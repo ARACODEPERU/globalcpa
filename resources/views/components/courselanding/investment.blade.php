@@ -127,7 +127,7 @@
                             <div class="modal-body p-4 p-lg-5 pt-0">
                                 <div class="text-center mb-4">
                                     <h2 class="fw-bold" style="color: #002060; font-size: 24px;">Asegurar vacante y/o financiamiento</h2>
-                                    <p class="text-muted">Déjanos tus datos para que un asesor te ayude con el proceso de inscripción y planes de pago.</p>
+                                    <p class="text-muted">Déjanos tus datos para que un asesor te ayude con el proceso de inscripción y opciones de pago.</p>
                                 </div>
                                 <form id="modalContactForm">
                                     @csrf

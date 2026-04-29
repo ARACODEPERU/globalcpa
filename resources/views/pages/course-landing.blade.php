@@ -302,7 +302,8 @@
                         Swal.fire({
                             icon: 'success',
                             title: 'Registro exitoso, estas a un paso de asegurar tu vacante',
-                            text: response.message,
+                            // text: response.message,
+                            text: 'Hemos recibido tu información- Estamos en etapa final de preventa con condiciones preferenciales activas. Elige como deseas continuar:',
                             customClass: { container: 'sweet-modal-zindex' }
                         });
                         formElement.reset();
