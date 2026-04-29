@@ -301,7 +301,7 @@
                         var response = JSON.parse(xhr.responseText);
                         Swal.fire({
                             icon: 'success',
-                            title: 'Enhorabuena',
+                            title: 'Registro exitoso, estas a un paso de asegurar tu vacante',
                             text: response.message,
                             customClass: { container: 'sweet-modal-zindex' }
                         });
