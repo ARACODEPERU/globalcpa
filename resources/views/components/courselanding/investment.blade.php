@@ -61,10 +61,10 @@
                                                 class="btn btn-modern btn-modern-primary w-100 mb-3">
                                                 <i class="fa fa-shopping-cart me-2"></i> Inscribirse ahora
                                             </a>
-                                            <a href="{{ $landing->payment_facilities_link }}" target="_blank"
+                                            <button type="button" data-bs-toggle="modal" data-bs-target="#modalFinanciamiento"
                                                 class="btn btn-modern btn-modern-outline w-100">
                                                 <i class="fa fa-whatsapp me-2"></i> Asegurar vacante y/o financiamiento
-                                            </a>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
