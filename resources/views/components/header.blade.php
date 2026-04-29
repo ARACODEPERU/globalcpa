@@ -194,6 +194,7 @@
         <div class="header-right-group">
             <ul class="nav-menus custom-nav-list">
 
+            @if(Route::is(['course_url_slug', 'landing_preview']))
                 <li>
                     <button type="button" data-bs-toggle="modal" 
                             data-bs-target="#modalFinanciamiento"
@@ -202,6 +203,7 @@
                             Hablar con un experto
                     </button>
                 </li>
+            @endif
                 
                 <!-- Modo Oscuro -->
                 <li class="mode-nav">
