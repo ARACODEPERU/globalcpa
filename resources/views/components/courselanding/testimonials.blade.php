@@ -8,7 +8,7 @@
                     <!-- Header de Sección -->
                     <div class="text-center mb-4">
                         <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border"
-                            style="background-color: rgba(0, 123, 255, 0.05); color: #007bff;">
+                            style="background-color: rgba(0, 123, 255, 0.05); color: #007bff; font-size: 14px; font-weight: 600;">
                             <i class="fa fa-quote-right me-1"></i>
                             {{ $landing->testimonials_section['name'] }}
                         </span>

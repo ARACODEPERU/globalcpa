@@ -193,6 +193,17 @@
         <!-- DERECHA: Menú de Iconos -->
         <div class="header-right-group">
             <ul class="nav-menus custom-nav-list">
+
+            @if(Route::is(['course_url_slug', 'landing_preview']))
+                <li>
+                    <button type="button" data-bs-toggle="modal" 
+                            data-bs-target="#modalFinanciamiento"
+                            class="btn btn-warning btn-lg w-100 fw-bold shadow-sm py-1 mt-2 btn-sm btn-pill"
+                            style="color: #002060; border-radius: 12px;">
+                            Hablar con un experto
+                    </button>
+                </li>
+            @endif
                 
                 <!-- Modo Oscuro -->
                 <li class="mode-nav">

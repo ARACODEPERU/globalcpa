@@ -8,7 +8,7 @@
                     <!-- Header de Sección -->
                     <div class="text-center mb-4">
                         <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border"
-                            style="background-color: rgba(0, 32, 96, 0.05); color: #002060;">
+                            style="background-color: rgba(0, 32, 96, 0.05); color: #002060; font-size: 14px; font-weight: 600;">
                             <i class="fa fa-users me-1"></i> {{ $landing->staff_section['name'] }}
                         </span>
                         <h2 class="fw-bold display-6" style="color: #002060;">
@@ -38,7 +38,7 @@
                                             <div class="card-body text-center p-3">
                                                 <h5 class="fw-bold mb-1" style="color: #002060; font-size: 1.1rem;">
                                                     {{ $teacher['name'] }}</h5>
-                                                <p class="text-warning small fw-bold mb-0" style="font-size: 15px;">
+                                                <p class="text-[#f8aa4b] small fw-bold mb-0" style="font-size: 15px;">
                                                     {{ $teacher['role'] }}</p>
                                             </div>
                                         </div>
@@ -60,7 +60,7 @@
             <button type="button" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-2xl"
                 onclick="closeTeacherDetailsModal()">&times;</button>
             <h3 id="modalTeacherName" class="text-2xl font-bold text-[#002060] mb-2"></h3>
-            <h5 id="modalTeacherRole" class="text-lg font-semibold text-warning mb-4"></h5>
+            <h5 id="modalTeacherRole" class="text-lg font-semibold text-[#f8aa4b] mb-4"></h5>
 
             <div id="modalTeacherImageContainer"
                 class="w-full h-48 relative mb-6 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center">

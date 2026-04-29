@@ -9,160 +9,6 @@
         }
     @endphp
 
-    {{-- Ideally, this CSS should be in the <head> of your main layout file (e.g., layouts/webpage.blade.php) --}}
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-
-    <style>
-        .transition-all {
-            transition: all 0.3s ease-in-out !important;
-            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease !important;
-        }
-
-        .transition-all:hover {
-            transform: translateY(-12px);
-            box-shadow: 0 15px 30px rgba(0, 32, 96, 0.15) !important;
-            box-shadow: 0 15px 30px rgba(0, 32, 96, 0.15);
-            border-color: #ffc107 !important;
-            /* Un sutil borde dorado al resaltar */
-        }
-
-        /* Estilos del Carrusel Infinito */
-        .carousel-viewport {
-            overflow: hidden;
-            padding: 100px 0 50px 0;
-            /* Espacio para que las imágenes y sombras no se corten */
-            position: relative;
-            width: 100%;
-        }
-
-        .carousel-track {
-            display: flex;
-            gap: 30px;
-            width: max-content;
-            animation: scroll-infinite 40s linear infinite;
-        }
-
-        .carousel-track:hover {
-            animation-play-state: paused;
-        }
-
-        @keyframes scroll-infinite {
-            0% {
-                transform: translateX(0);
-            }
-
-            100% {
-                transform: translateX(calc(-50%));
-            }
-        }
-
-        .teacher-carousel-item {
-            width: 300px;
-            flex-shrink: 0;
-        }
-
-        /* Estilos para FAQ Moderna */
-        .faq-modern .accordion-item {
-            border: 1px solid #edf2f7 !important;
-            margin-bottom: 1rem;
-            border-radius: 15px !important;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            /* background: #ffffff; */
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-            background: #ffffff;
-        }
-
-        .faq-modern .accordion-item:has(.show) {
-            border-color: #002060 !important;
-            box-shadow: 0 15px 30px rgba(0, 32, 96, 0.08);
-        }
-
-        .faq-modern .accordion-button {
-            padding: 1.5rem;
-            font-weight: 600;
-            /* background-color: white !important; */
-            background-color: white !important;
-            color: #002060;
-            font-size: 1.05rem;
-        }
-
-        .faq-modern .accordion-button:focus {
-            box-shadow: none;
-            box-shadow: none !important;
-            border-color: transparent;
-        }
-
-        .faq-modern .accordion-button:not(.collapsed) {
-            background-color: rgba(0, 32, 96, 0.02) !important;
-            color: #002060;
-            border-bottom: 1px solid #f1f5f9;
-        }
-
-        .faq-modern .accordion-button:not(.collapsed) {
-            color: #002060;
-            box-shadow: none;
-        }
-
-        .faq-modern .accordion-button::after {
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23002060'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
-            transition: transform 0.3s ease;
-        }
-
-        /* Ajustes para Select2 y flags SVG */
-        .select2-container--default .select2-selection--single {
-            border: 1px solid #dee2e6 !important;
-            border-left: 0 !important;
-            height: 38px !important;
-            display: flex;
-            align-items: center;
-        }
-
-        .select2-container {
-            width: 100% !important;
-        }
-
-        .select2-selection__arrow {
-            top: 6px !important;
-        }
-
-        /* Botones Modernos UX */
-        .btn-modern {
-            padding: 12px 28px;
-            font-weight: 700;
-            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-            letter-spacing: 0.5px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50px !important;
-        }
-
-        .btn-modern-primary {
-            background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
-            color: #002060 !important;
-            border: none;
-            box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
-        }
-
-        .btn-modern-primary:hover {
-            transform: translateY(-3px) scale(1.03);
-            box-shadow: 0 8px 25px rgba(255, 193, 7, 0.5);
-        }
-
-        .btn-modern-outline {
-            background: transparent;
-            color: #002060 !important;
-            border: 2px solid #002060 !important;
-        }
-
-        .btn-modern-outline:hover {
-            background: #002060 !important;
-            color: #ffffff !important;
-            transform: translateY(-2px);
-        }
-    </style>
 
     <!-- tap on top starts-->
     <div class="tap-top"><i data-feather="chevrons-up"></i></div>
@@ -208,6 +54,7 @@
                 <x-courselanding.faq :landing="$landing" />
 
                 <x-courselanding.certificate-template />
+
 
             </div>
         </div>
@@ -255,9 +102,9 @@
 
                     // 2. Crear objeto del producto
                     var producto = {
-                        id: {{ $onli_item_id ?? 0 }},
-                        nombre: "{{ $landing->course->description ?? 'Curso' }}",
-                        precio: {{ isset($landing->investment_section['items'][0]['price_now']) ? $landing->investment_section['items'][0]['price_now'] : 0 }},
+                        id: @json($onli_item_id ?? 0),
+                        nombre: @json($landing->course->description ?? 'Curso'),
+                        precio: @json($landing->investment_section['items'][0]['price_now'] ?? 0),
                         image: "{{ $landing->course->image ?? '' }}"
                     };
 
@@ -274,64 +121,79 @@
     </script>
 
     <script>
-        let form = document.getElementById('pageContactForm');
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
+        function initContactForm(formId, buttonId, messageId, countrySelectId) {
+            let formElement = document.getElementById(formId);
+            if(!formElement) return;
 
-            var formulario = document.getElementById('pageContactForm');
-            var formData = new FormData(formulario);
+            formElement.addEventListener('submit', function(e) {
+                e.preventDefault();
 
-            // Obtener el código del país del select y concatenarlo al número sin punto
-            const countrySelect = document.getElementById('countryPhoneSelect');
-            const prefix = countrySelect.value;
-            const phoneValue = formData.get('phone');
-            // Concatenar sin punto: +51943781600
-            formData.set('phone', prefix + phoneValue);
+                var formData = new FormData(formElement);
+                const countrySelect = document.getElementById(countrySelectId);
+                const prefix = countrySelect.value;
+                formData.set('phone', prefix + formData.get('phone'));
 
-            var submitButton = document.getElementById('submitPageContactButton');
-            submitButton.disabled = true;
-            submitButton.style.opacity = 0.25;
+                var submitButton = document.getElementById(buttonId);
+                submitButton.disabled = true;
+                submitButton.style.opacity = 0.25;
 
-            var xhr = new XMLHttpRequest();
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', "{{ route('apisubscriber') }}", true);
 
-            xhr.open('POST', "{{ route('apisubscriber') }}", true);
+                xhr.onload = function() {
+                    submitButton.disabled = false;
+                    submitButton.style.opacity = 1;
+                    
+                    if (xhr.status === 200) {
+                        var response = JSON.parse(xhr.responseText);
+                        
+                        // Define la función que muestra SweetAlert y las acciones posteriores
+                        const showSweetAlertAndContinue = () => {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Registro exitoso, estas a un paso de asegurar tu vacante',
+                                text: 'Hemos recibido tu información. Estamos en etapa final de preventa con condiciones preferenciales activas. Elige como deseas continuar:',
+                            }).then(() => {
+                                formElement.reset();
+                                const downloadUrl = "{{ isset($landing->course->brochure) ? $landing->course->brochure->path_file ?? '' : '' }}";
+                                if(downloadUrl) window.open(downloadUrl, '_blank');
+                            });
+                        };
 
-            xhr.onload = function() {
-                submitButton.disabled = false;
-                submitButton.style.opacity = 1;
-                if (xhr.status === 200) {
-                    var response = JSON.parse(xhr.responseText);
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Enhorabuena',
-                        text: response.message,
-                        customClass: {
-                            container: 'sweet-modal-zindex'
+                        // 1. Intentar cerrar el modal de Bootstrap de forma segura
+                        const modalElement = document.getElementById('modalFinanciamiento');
+                        if (modalElement) {
+                            const modalInstance = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
+                            modalInstance.hide();
                         }
-                    });
-                    formulario.reset();
-                } else if (xhr.status === 422) {
-                    var errorResponse = JSON.parse(xhr.responseText);
-                    var errorMessages = errorResponse.errors;
-                    var errorMessageContainer = document.getElementById('messagePageContact');
-                    errorMessageContainer.innerHTML = 'Errores de validación:<br>';
-                    for (var field in errorMessages) {
-                        if (errorMessages.hasOwnProperty(field)) {
-                            errorMessageContainer.innerHTML += field + ': ' + errorMessages[field].join(', ') +
-                                '<br>';
+
+                        // 2. LIMPIEZA FORZADA: Eliminamos manualmente el fondo negro y desbloqueamos el scroll
+                        // Esto elimina cualquier "backdrop" huérfano que Bootstrap haya dejado
+                        document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+                        document.body.classList.remove('modal-open');
+                        document.body.style.overflow = '';
+                        document.body.style.paddingRight = '';
+
+                        // 3. Mostrar la alerta
+                        showSweetAlertAndContinue();
+
+                    } else if (xhr.status === 422) {
+                        var errorResponse = JSON.parse(xhr.responseText);
+                        var errorMessageContainer = document.getElementById(messageId);
+                        errorMessageContainer.innerHTML = ''; // Limpiar mensajes anteriores
+                        errorMessageContainer.innerHTML = 'Errores de validación:<br>';
+                        for (var field in errorResponse.errors) {
+                            errorMessageContainer.innerHTML += field + ': ' + errorResponse.errors[field].join(', ') + '<br>';
                         }
                     }
-                } else {
-                    console.error('Error en la solicitud: ' + xhr.status);
-                }
-                const downloadUrl =
-                    "{{ isset($landing->course->brochure) ? $landing->course->brochure->path_file ?? '' : '' }}";
-                window.open(downloadUrl, '_blank');
+                };
+                xhr.send(formData);
+            });
+        }
 
-            };
-
-            xhr.send(formData);
-        });
+        // Inicializar ambos formularios
+        initContactForm('pageContactForm', 'submitPageContactButton', 'messagePageContact', 'countryPhoneSelect');
+        initContactForm('modalContactForm', 'submitModalContactButton', 'messageModalContact', 'modalCountryPhoneSelect');
     </script>
 
     <script>
@@ -354,21 +216,29 @@
                 templateSelection: formatCountry,
                 dropdownParent: $('#countryPhoneSelect').parent()
             });
+
+            $('#modalCountryPhoneSelect').select2({
+                templateResult: formatCountry,
+                templateSelection: formatCountry,
+                dropdownParent: $('#modalFinanciamiento')
+            });
         });
 
         // Toggle FAQ Manual - abrir al entrar, cerrar al salir
         function toggleFaq(index) {
-            var answer = document.getElementById('faq-answer-' + index);
-            var icon = document.getElementById('faq-icon-' + index);
-
-            // Verificar si está oculto o tiene display vacío
-            var isHidden = answer.style.display === 'none' || answer.style.display === '';
-
-            if (isHidden) {
-                answer.style.display = 'block';
+            const answer = document.getElementById('faq-answer-' + index);
+            const icon = document.getElementById('faq-icon-' + index);
+            
+            // Uso de clases CSS para permitir transiciones suaves en lugar de display:none
+            const isExpanded = answer.classList.contains('show');
+            
+            if (!isExpanded) {
+                $(answer).slideDown();
+                answer.classList.add('show');
                 icon.style.transform = 'rotate(180deg)';
             } else {
-                answer.style.display = 'none';
+                $(answer).slideUp();
+                answer.classList.remove('show');
                 icon.style.transform = 'rotate(0deg)';
             }
         }

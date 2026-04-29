@@ -7,7 +7,7 @@
                 <div class="card-body p-4 p-lg-5">
                     <div class="text-center mb-5">
                         <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border"
-                            style="background-color: rgba(40, 167, 69, 0.1); color: #28a745;">
+                            style="background-color: rgba(40, 167, 69, 0.1); color: #28a745; font-size: 14px; font-weight: 600;">
                             <i class="fa fa-check-circle me-1"></i> {{ $landing->results_section['name'] }}
                         </span>
                         <h2 class="fw-bold display-6" style="color: #002060;">

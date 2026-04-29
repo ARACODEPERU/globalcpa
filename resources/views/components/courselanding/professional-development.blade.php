@@ -7,7 +7,7 @@
                 <div class="card-body p-4 p-lg-5">
                     <div class="mb-4">
                         <span class="badge rounded-pill bg-light text-primary px-3 py-2 mb-3 shadow-sm border"
-                            style="color: #002060 !important;">
+                            style="color: #002060 !important; font-size: 14px; font-weight: 600;">
                             <i class="fa fa-refresh me-1"></i> {{ $landing->professional_section['name'] }}
                         </span>
                         <h2 class="fw-bold display-6" style="color: #002060;">
@@ -153,7 +153,8 @@
                     </div>
                     <div class="mt-1">
                         <button type="submit" id="submitPageContactButton" class="btn btn-warning btn-lg w-100 fw-bold shadow-sm py-3" style="color: #002060; border-radius: 12px;">
-                            <i class="fa fa-file-pdf-o me-2"></i> CONOCER BENEFICIOS Y ASEGURAR MI VACANTE
+                            <i class="fa fa-file-pdf-o me-2"></i>
+                            Conocer beneficios y asegurar mi vacante
                         </button>
                     </div>
                     <div id="messagePageContact" class="mt-3"></div>
