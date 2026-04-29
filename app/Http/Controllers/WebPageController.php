@@ -300,21 +300,22 @@ public function course_url_slug($id){
         }
 
         $colors = [
-            '#FF0000', // Rojo puro
-            '#00FF00', // Lima
-            '#0000FF', // Azul eléctrico
-            '#FF0000', // Rojo puro
-            '#00FF00', // Lima
-            '#0000FF', // Azul eléctrico
-            '#FF8C00', // Naranja oscuro
-            '#8A2BE2', // Azul violeta
-            '#ADFF2F', // Verde amarillo
-            '#FF1493', // Rosa profundo
-            '#00BFFF', // Azul cielo profundo
-            '#7FFF00', // Chartreuse
-            '#FF4500', // Naranja rojizo
-            '#1E90FF', // Azul esquivador
-            '#FFD700', // Oro
+            '#ff010b', // Rojo Institucional
+            '#575555', // Gris Institucional
+            '#ff010b', // Rojo Institucional
+            '#575555', // Gris Institucional
+            '#ff010b', // Rojo Institucional
+            '#575555', // Gris Institucional
+            '#ff010b', // Rojo Institucional
+            '#575555', // Gris Institucional
+            '#ff010b', // Rojo Institucional
+            '#575555', // Gris Institucional
+            '#ff010b', // Rojo Institucional
+            '#575555', // Gris Institucional
+            '#ff010b', // Rojo Institucional
+            '#575555', // Gris Institucional
+            '#ff010b', // Rojo Institucional
+            '#575555', // Gris Institucional
         ];
 
 
@@ -374,21 +375,22 @@ public function course_url_slug($id){
             }
         }
         $colors = [
-            '#FF0000', // Rojo puro
-            '#00FF00', // Lima
-            '#0000FF', // Azul eléctrico
-            '#FFFF00', // Amarillo neón
-            '#FF00FF', // Magenta
-            '#00FFFF', // Cian
-            '#FF8C00', // Naranja oscuro
-            '#8A2BE2', // Azul violeta
-            '#ADFF2F', // Verde amarillo
-            '#FF1493', // Rosa profundo
-            '#00BFFF', // Azul cielo profundo
-            '#7FFF00', // Chartreuse
-            '#FF4500', // Naranja rojizo
-            '#1E90FF', // Azul esquivador
-            '#FFD700', // Oro
+            '#ff010b', // Rojo Institucional
+            '#575555', // Gris Institucional
+            '#ff010b', // Rojo Institucional
+            '#575555', // Gris Institucional
+            '#ff010b', // Rojo Institucional
+            '#575555', // Gris Institucional
+            '#ff010b', // Rojo Institucional
+            '#575555', // Gris Institucional
+            '#ff010b', // Rojo Institucional
+            '#575555', // Gris Institucional
+            '#ff010b', // Rojo Institucional
+            '#575555', // Gris Institucional
+            '#ff010b', // Rojo Institucional
+            '#575555', // Gris Institucional
+            '#ff010b', // Rojo Institucional
+            '#575555', // Gris Institucional
         ];
 
 

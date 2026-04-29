@@ -7,7 +7,7 @@
                 <div class="card-body p-4 p-lg-5">
                     <div class="text-center mb-5">
                         <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border"
-                            style="background-color: rgba(111, 66, 193, 0.1); color: #6f42c1;">
+                            style="background-color: rgba(111, 66, 193, 0.1); color: #6f42c1; font-size: 14px; font-weight: 600;">
                             <i class="fa fa-magic me-1"></i> {{ $landing->faq_section['name'] }}
                         </span>
                         <h2 class="fw-bold display-6" style="color: #002060; font-size: 28px;">

@@ -7,7 +7,7 @@
                 <div class="card-body p-4 p-lg-5">
                     <div class="mb-4">
                         <span class="badge rounded-pill bg-light text-primary px-3 py-2 mb-3 shadow-sm border"
-                            style="color: #002060 !important;">
+                            style="color: #002060 !important; font-size: 14px; font-weight: 600;">
                             <i class="fa fa-refresh me-1"></i> {{ $landing->professional_section['name'] }}
                         </span>
                         <h2 class="fw-bold display-6" style="color: #002060;">

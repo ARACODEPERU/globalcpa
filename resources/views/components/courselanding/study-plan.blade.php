@@ -8,7 +8,7 @@
                     <!-- Header de Sección -->
                     <div class="text-center mb-5">
                         <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border"
-                            style="background-color: rgba(0, 32, 96, 0.1); color: #002060;">
+                            style="background-color: rgba(0, 32, 96, 0.1); color: #002060; font-size: 14px; font-weight: 600;">
                             <i class="fa fa-list-ul me-1"></i> {{ $landing->study_plan_section['name'] }}
                         </span>
                         <h2 class="fw-bold display-6" style="color: #002060;">{{ $landing->study_plan_section['title'] }}</h2>

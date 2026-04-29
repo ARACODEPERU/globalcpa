@@ -7,7 +7,7 @@
                 <div class="card-body p-4 p-lg-5">
                     <div class="text-center mb-5">
                         <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border"
-                            style="background-color: rgba(220, 53, 69, 0.1); color: #dc3545;">
+                            style="background-color: rgba(220, 53, 69, 0.1); color: #dc3545; font-size: 14px; font-weight: 600;">
                             <i class="fa fa-exclamation-triangle me-1"></i> {{ $landing->problem_section['name'] }}
                         </span>
                         <h2 class="fw-bold display-6" style="color: #002060;">{{ $landing->problem_section['title'] }}</h2>
