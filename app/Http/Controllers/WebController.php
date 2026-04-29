@@ -263,13 +263,12 @@ class WebController extends Controller
                     ]);
                 } else {
 
+                    $sale->delete();
                     return response()->json([
                         'status' => $payment->status,
                         'message' => $payment->status_detail,
                         'url' => route('web_carrito')
                     ]);
-
-                    $sale->delete();
                 }
             } catch (\MercadoPago\Exceptions\MPApiException $e) {
                 // Manejar la excepción

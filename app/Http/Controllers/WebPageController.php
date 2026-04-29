@@ -771,7 +771,6 @@ public function course_url_slug($id){
             // Manejar la excepción
             DB::rollback();
             $response = $e->getApiResponse();
-            dd($response); // Mostrar la respuesta para obtener más detalles
         }
 
 
@@ -957,7 +956,6 @@ public function course_url_slug($id){
             Auth::logout();
             DB::rollback();
             $response = $e->getApiResponse();
-            dd($response); // Mostrar la respuesta para obtener más detalles
         }
 
         return view('pages/pagar', [
@@ -1083,13 +1081,12 @@ public function course_url_slug($id){
                     ]);
                 } else {
 
+                    $sale->delete();
                     return response()->json([
                         'status' => $payment->status,
                         'message' => $payment->status_detail,
                         'url' => route('web_pagar')
                     ]);
-
-                    $sale->delete();
                 }
             } catch (\MercadoPago\Exceptions\MPApiException $e) {
                 // Manejar la excepción
