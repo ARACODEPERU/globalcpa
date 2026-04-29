@@ -303,9 +303,9 @@ public function course_url_slug($id){
             '#FF0000', // Rojo puro
             '#00FF00', // Lima
             '#0000FF', // Azul eléctrico
-            '#FFFF00', // Amarillo neón
-            '#FF00FF', // Magenta
-            '#00FFFF', // Cian
+            '#FF0000', // Rojo puro
+            '#00FF00', // Lima
+            '#0000FF', // Azul eléctrico
             '#FF8C00', // Naranja oscuro
             '#8A2BE2', // Azul violeta
             '#ADFF2F', // Verde amarillo
@@ -317,8 +317,6 @@ public function course_url_slug($id){
             '#FFD700', // Oro
         ];
 
-        // Mezclamos el arreglo al azar
-        shuffle($colors);
 
         // Obtener OnliItem asociado al curso
         $onliItem = null;
@@ -393,8 +391,6 @@ public function course_url_slug($id){
             '#FFD700', // Oro
         ];
 
-        // Mezclamos el arreglo al azar
-        shuffle($colors);
 
         // Obtener OnliItem asociado al curso
         $onliItem = null;
