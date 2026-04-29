@@ -131,6 +131,184 @@
 
 
 
+    {{-- Ideally, this CSS should be in the <head> of your main layout file (e.g., layouts/webpage.blade.php) --}}
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+    <style>
+        .transition-all {
+            transition: all 0.3s ease-in-out !important;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease !important;
+        }
+
+        .transition-all:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 15px 30px rgba(0, 32, 96, 0.15) !important;
+            box-shadow: 0 15px 30px rgba(0, 32, 96, 0.15);
+            border-color: #ffc107 !important;
+            /* Un sutil borde dorado al resaltar */
+        }
+
+        /* Estilos del Carrusel Infinito */
+        .carousel-viewport {
+            overflow: hidden;
+            padding: 100px 0 50px 0;
+            /* Espacio para que las imágenes y sombras no se corten */
+            position: relative;
+            width: 100%;
+        }
+
+        .carousel-track {
+            display: flex;
+            gap: 30px;
+            width: max-content;
+            animation: scroll-infinite 40s linear infinite;
+        }
+
+        .carousel-track:hover {
+            animation-play-state: paused;
+        }
+
+        @keyframes scroll-infinite {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(calc(-50%));
+            }
+        }
+
+        .teacher-carousel-item {
+            width: 300px;
+            flex-shrink: 0;
+        }
+
+        /* Estilos para FAQ Moderna */
+        .faq-modern .accordion-item {
+            border: 1px solid #edf2f7 !important;
+            margin-bottom: 1rem;
+            border-radius: 15px !important;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            /* background: #ffffff; */
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            background: #ffffff;
+        }
+
+        .faq-modern .accordion-item:has(.show) {
+            border-color: #002060 !important;
+            box-shadow: 0 15px 30px rgba(0, 32, 96, 0.08);
+        }
+
+        .faq-modern .accordion-button {
+            padding: 1.5rem;
+            font-weight: 600;
+            /* background-color: white !important; */
+            background-color: white !important;
+            color: #002060;
+            font-size: 1.05rem;
+        }
+
+        .faq-modern .accordion-button:focus {
+            box-shadow: none;
+            box-shadow: none !important;
+            border-color: transparent;
+        }
+
+        .faq-modern .accordion-button:not(.collapsed) {
+            background-color: rgba(0, 32, 96, 0.02) !important;
+            color: #002060;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .faq-modern .accordion-button:not(.collapsed) {
+            color: #002060;
+            box-shadow: none;
+        }
+
+        .faq-modern .accordion-button::after {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23002060'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+            transition: transform 0.3s ease;
+        }
+
+        /* Ajustes para Select2 y flags SVG */
+        .select2-container--default .select2-selection--single {
+            border: 1px solid #dee2e6 !important;
+            border-left: 0 !important;
+            height: 38px !important;
+            display: flex;
+            align-items: center;
+        }
+
+        .select2-container {
+            width: 100% !important;
+        }
+
+        .select2-selection__arrow {
+            top: 6px !important;
+        }
+
+        /* Botones Modernos UX */
+        .btn-modern {
+            padding: 12px 28px;
+            font-weight: 700;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            letter-spacing: 0.5px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50px !important;
+        }
+
+        .btn-modern-primary {
+            background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+            color: #002060 !important;
+            border: none;
+            box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
+        }
+
+        .btn-modern-primary:hover {
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 8px 25px rgba(255, 193, 7, 0.5);
+        }
+
+        .btn-modern-outline {
+            background: transparent;
+            color: #002060 !important;
+            border: 2px solid #002060 !important;
+        }
+
+        .btn-modern-outline:hover {
+            background: #002060 !important;
+            color: #ffffff !important;
+            transform: translateY(-2px);
+        }
+    </style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
 
     <script>
         /**
