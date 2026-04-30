@@ -74,7 +74,7 @@ class MercadopagoController extends Controller
 
     public function processPayment(Request $request, $id)
     {
-        \MercadoPago\MercadoPagoConfig::setAccessToken(env('MERCADOPAGO_TOKEN'));
+        \MercadoPago\MercadoPagoConfig::setAccessToken(config('services.mercadopago.token'));
 
         $client = new \MercadoPago\Client\Payment\PaymentClient();
         $payment_server = null;
@@ -160,7 +160,7 @@ class MercadopagoController extends Controller
 
     public function createPreference(Request $request)
     {
-        MercadoPagoConfig::setAccessToken(env('MERCADOPAGO_TOKEN'));
+        MercadoPagoConfig::setAccessToken(config('services.mercadopago.token'));
         $client = new PreferenceClient();
         $items = [];
         $msg = null;
@@ -194,7 +194,7 @@ class MercadopagoController extends Controller
 
     public function createItemsPreference(Request $request)
     {
-        MercadoPagoConfig::setAccessToken(env('MERCADOPAGO_TOKEN'));
+        MercadoPagoConfig::setAccessToken(config('services.mercadopago.token'));
         $client = new PreferenceClient();
         $items = [];
         $msg = null;
@@ -233,7 +233,7 @@ class MercadopagoController extends Controller
 
     public function processPaymentCourses(Request $request)
     {
-        \MercadoPago\MercadoPagoConfig::setAccessToken(env('MERCADOPAGO_TOKEN'));
+        \MercadoPago\MercadoPagoConfig::setAccessToken(config('services.mercadopago.token'));
 
         $client = new \MercadoPago\Client\Payment\PaymentClient();
         //dd($request->all());

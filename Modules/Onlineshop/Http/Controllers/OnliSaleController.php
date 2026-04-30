@@ -139,7 +139,7 @@ class OnliSaleController extends Controller
 
     public function formMercadopago(Request $request)
     {
-        MercadoPagoConfig::setAccessToken(env('MERCADOPAGO_TOKEN'));
+        MercadoPagoConfig::setAccessToken(config('services.mercadopago.token'));
         $client = new PreferenceClient();
         $items = [];
         $msg = null;
@@ -310,8 +310,7 @@ class OnliSaleController extends Controller
      */
     public function getPreference($id)
     {
-        //dd(env('MERCADOPAGO_TOKEN'));
-        MercadoPagoConfig::setAccessToken(env('MERCADOPAGO_TOKEN'));
+        MercadoPagoConfig::setAccessToken(config('services.mercadopago.token'));
         try {
             $client = new PreferenceClient();
             $preference = $client->get($id);
