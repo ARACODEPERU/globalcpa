@@ -167,7 +167,7 @@ class WebController extends Controller
     public function processPayment(Request $request, $id, $student_id)
     {
         $data = $request->input('cardFormData');
-        MercadoPagoConfig::setAccessToken(env('MERCADOPAGO_TOKEN'));
+        MercadoPagoConfig::setAccessToken(config('services.mercadopago.token'));
         $products = $data['products'];
         $data = (array)$data;
 
