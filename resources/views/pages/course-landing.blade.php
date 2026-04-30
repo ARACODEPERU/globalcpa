@@ -61,7 +61,7 @@
 @section('javascripts')
     <script>
         $(document).ready(function() {
-            if (typeof AOS !== 'undefined') {
+            if (window.AOS !== undefined) {
                 AOS.init({
                     mirror: true,
                     duration: 800,
@@ -71,6 +71,11 @@
         });
 
         function procederInscripcion() {
+            if (window.Swal === undefined) {
+                console.error("SweetAlert2 (Swal) no está cargado.");
+                return;
+            }
+
             Swal.fire({
                 title: '¿Confirmar inscripción?',
                 text: '¿Estás seguro de que deseas proceder con la compra?',
@@ -130,6 +135,7 @@
                         
                         // Define la función que muestra SweetAlert y las acciones posteriores
                         const showSweetAlertAndContinue = () => {
+                            if (window.Swal === undefined) return;
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Registro exitoso, estas a un paso de asegurar tu vacante',
@@ -143,7 +149,7 @@
 
                         // 1. Intentar cerrar el modal de Bootstrap de forma segura
                         const modalElement = document.getElementById('modalFinanciamiento');
-                        if (modalElement) {
+                        if (modalElement && window.bootstrap !== undefined) {
                             const modalInstance = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
                             modalInstance.hide();
                         }
