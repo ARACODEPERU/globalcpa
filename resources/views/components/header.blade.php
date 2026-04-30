@@ -12,8 +12,9 @@
             justify-content: space-between;
             padding: 10px 20px;
             width: 100%;
+            z-index: 1000 !important;
             box-sizing: border-box;
-            background-color: #ffffff;
+            background-color: #ffffff !important;
         }
 
         /* Sección Izquierda: Logo + Toggle */
@@ -51,9 +52,13 @@
 
         /* Iconos Generales */
         .custom-nav-icon {
-            font-size: 22px;
+            font-size: 26px !important; /* Aumentado para mayor visibilidad */
+            width: 30px;
+            text-align: center;
             color: #2c323f;
             cursor: pointer;
+            font-family: "Font Awesome 6 Free" !important;
+            font-weight: 900 !important;
         }
 
         /* Carrito */
@@ -115,15 +120,47 @@
             /* border-bottom: 1px solid #374558; */
             border-bottom: 1px solid #e30613;
         }
+
+        /* BLOQUE DE FUERZA BRUTA: Evita que el tema oculte el botón */
+        .custom-nav-list li.custom-item-darkmode {
+            display: flex !important;
+            align-items: center !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            position: relative !important;
+            min-width: 45px !important; /* Evita que colapse en Home */
+            justify-content: center !important;
+            z-index: 1001 !important;
+        }
+
+        /* Estilos para el intercambio de iconos Sol/Luna */
+        #darkModeToggle .sun-icon { display: none !important; }
+        #darkModeToggle .moon-icon { display: inline-block !important; }
+
+        /* Cuando está en modo oscuro (detectando clase en HTML o BODY) */
+        html.dark #darkModeToggle .sun-icon,
+        body.dark-only #darkModeToggle .sun-icon { 
+            display: inline-block !important;
+            color: #ffc107 !important; /* Sol amarillo */
+        }
+
+        html.dark #darkModeToggle .moon-icon,
+        body.dark-only #darkModeToggle .moon-icon { 
+            display: none !important; 
+        }
         
+        html.dark .custom-nav-icon,
         body.dark-only .custom-nav-icon {
             color: #b4b7c5;
         }
         
+        .dark .custom-user-info span,
         body.dark-only .custom-user-info span {
             color: #f6f7fb !important;
         }
         
+        .dark .toggle-sidebar svg,
+        .dark .toggle-sidebar svg,
         body.dark-only .toggle-sidebar svg {
             stroke: #b4b7c5 !important;
         }
@@ -144,7 +181,7 @@
             .custom-nav-list { gap: 20px; }
             
             .custom-logo-img { height: 30px; } /* Logo más pequeño */
-            .custom-nav-icon { font-size: 20px; }
+            .custom-nav-icon { font-size: 22px !important; }
 
             /* Login: Cambiar a icono */
             .btn-login-text { display: none; }
@@ -162,7 +199,7 @@
                 max-width: 100px; 
             }
             
-            .custom-nav-icon { font-size: 18px; }
+            .custom-nav-icon { font-size: 20px !important; }
             
             .custom-avatar-img, .custom-initials-box {
                 width: 30px;
@@ -206,17 +243,65 @@
             @endif
                 
                 <!-- Modo Oscuro -->
-                <li class="mode-nav">
-                    <div class="mode">
-                        <i class="fa fa-toggle-on custom-nav-icon"></i>
+                <li class="custom-item-darkmode">
+                    <div style="cursor: pointer;" id="darkModeToggle">
+                        <!-- Luna para modo claro -->
+                        <i class="fa-solid fa-moon custom-nav-icon moon-icon"></i>
+                        <!-- Sol amarillo para modo oscuro -->
+                        <i class="fa-solid fa-sun custom-nav-icon sun-icon"></i>
                     </div>
                 </li>
+
+                <script>
+                    (function() {
+                        const htmlEl = document.documentElement;
+                        const bodyEl = document.body;
+
+                        const syncUI = (isDark) => {
+                            htmlEl.classList.toggle('dark', isDark);
+                            bodyEl.classList.toggle('dark-only', isDark);
+                        };
+
+                        const initToggle = () => {
+                            const toggle = document.getElementById('darkModeToggle');
+                            // Evitar múltiples inicializaciones
+                            if (!toggle || toggle.dataset.initialized) return;
+                            
+                            toggle.dataset.initialized = "true";
+
+                            toggle.addEventListener('click', function() {
+                                const currentlyDark = htmlEl.classList.contains('dark');
+                                const nextState = !currentlyDark;
+                                
+                                syncUI(nextState);
+                                localStorage.setItem("_x_darkMode_on", nextState);
+                            });
+                        };
+
+                        // 1. Aplicar estado visual inmediatamente (evita parpadeo)
+                        const savedState = localStorage.getItem("_x_darkMode_on") === "true";
+                        syncUI(savedState);
+
+                        // 2. Inicializar listeners cuando el DOM esté listo
+                        if (document.readyState === 'loading') {
+                            document.addEventListener('DOMContentLoaded', initToggle);
+                        } else {
+                            initToggle();
+                        }
+
+                        // 3. Refuerzo final en window.load por si el tema sobreescribe clases
+                        window.addEventListener('load', () => {
+                            syncUI(localStorage.getItem("_x_darkMode_on") === "true");
+                            initToggle();
+                        });
+                    })();
+                </script>
 
                 <!-- Carrito -->
                 <li class="cart-nav onhover-dropdown">
                     <div class="cart-box custom-cart-box">
                         <a href="{{ route('web_carrito') }}">
-                            <i class="fa fa-cart-plus custom-nav-icon"></i>
+                            <i class="fa-solid fa-cart-plus custom-nav-icon"></i>
                             <span class="cart-count custom-cart-count contador" id="contadorCarritoWeb">0</span>
                             <span id="contadorCarritoMovil" hidden style="display: none;"></span>
                         </a>
@@ -262,12 +347,12 @@
                     <li>
                         <a href="{{ route('login') }}">
                             <!-- Botón Texto (Escritorio) -->
-                            <button class="btn btn-pill btn-primary btn-air-primary btn-sm btn-login-text" type="button">
+                            <button class="btn btn-pill btn-primary btn-air-primary btn-sm btn-login-text d-none d-md-inline-block" type="button">
                                 Iniciar sesión
                             </button>
                             <!-- Botón Icono (Móvil) -->
-                            <button class="btn btn-pill btn-primary btn-air-primary btn-sm px-2 btn-login-icon" type="button">
-                                <i class="fa fa-key"></i>
+                            <button class="btn btn-pill btn-primary btn-air-primary btn-sm px-2 btn-login-icon d-md-none" type="button">
+                                <i class="fa-solid fa-key"></i>
                             </button>
                         </a>
                     </li>

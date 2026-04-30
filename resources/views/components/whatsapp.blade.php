@@ -5,11 +5,11 @@
 </div>
 
 
-<div id="whatsapp">
+{{-- <div id="whatsapp">
     <a href="https://wa.link/4bu45u" class="wtsapp">
         <i class="fa fa-whatsapp" aria-hidden="true" style="font-size: 28px;"></i>
     </a>
-</div>
+</div> --}}
 
 <style type="text/css">
     /* merchandising Modero -------------------------------------  */

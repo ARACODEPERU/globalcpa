@@ -10,10 +10,6 @@
     @endphp
 
 
-    <!-- tap on top starts-->
-    <div class="tap-top"><i data-feather="chevrons-up"></i></div>
-    <!-- tap on tap ends-->
-
     <!-- page-wrapper Start-->
     <div class="page-wrapper" id="pageWrapper">
         <!-- Page Header Start-->
@@ -62,31 +58,18 @@
         <x-footer />
     </div>
 
-    {{-- Ideally, this JS should be at the end of your <body> in the main layout file --}}
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
+@section('javascripts')
     <script>
-        AOS.init({
-            mirror: true, // This makes animations trigger on scroll up as well
-            duration: 800, // Animation duration
-            once: false // Ensures animation happens every time you scroll to it
+        $(document).ready(function() {
+            if (typeof AOS !== 'undefined') {
+                AOS.init({
+                    mirror: true,
+                    duration: 800,
+                    once: false
+                });
+            }
         });
-    </script>
 
-
-
-    <script>
-        const myModal = document.getElementById('myModal')
-        const myInput = document.getElementById('myInput')
-
-        myModal.addEventListener('shown.bs.modal', () => {
-            myInput.focus()
-        })
-    </script>
-
-    <script>
         function procederInscripcion() {
             Swal.fire({
                 title: '¿Confirmar inscripción?',
@@ -118,9 +101,7 @@
                 }
             });
         }
-    </script>
 
-    <script>
         function initContactForm(formId, buttonId, messageId, countrySelectId) {
             let formElement = document.getElementById(formId);
             if(!formElement) return;
@@ -195,33 +176,34 @@
         initContactForm('pageContactForm', 'submitPageContactButton', 'messagePageContact', 'countryPhoneSelect');
         initContactForm('modalContactForm', 'submitModalContactButton', 'messageModalContact', 'modalCountryPhoneSelect');
     </script>
-
     <script>
         $(document).ready(function() {
-            function formatCountry(country) {
-                if (!country.id) {
-                    return country.text;
-                }
-                var code = $(country.element).data('code');
-                var $country = $(
-                    '<span><img src="https://flagcdn.com/w20/' + code.toLowerCase() +
-                    '.png" class="me-2" style="vertical-align: middle; border: 1px solid #eee; width: 20px;">' +
-                    country.text + '</span>'
-                );
-                return $country;
-            };
+            if ($.fn.select2) {
+                function formatCountry(country) {
+                    if (!country.id) {
+                        return country.text;
+                    }
+                    var code = $(country.element).data('code');
+                    var $country = $(
+                        '<span><img src="https://flagcdn.com/w20/' + (code ? code.toLowerCase() : 'pe') +
+                        '.png" class="me-2" style="vertical-align: middle; border: 1px solid #eee; width: 20px;">' +
+                        country.text + '</span>'
+                    );
+                    return $country;
+                };
 
-            $('#countryPhoneSelect').select2({
-                templateResult: formatCountry,
-                templateSelection: formatCountry,
-                dropdownParent: $('#countryPhoneSelect').parent()
-            });
+                $('#countryPhoneSelect').select2({
+                    templateResult: formatCountry,
+                    templateSelection: formatCountry,
+                    dropdownParent: $('#countryPhoneSelect').parent()
+                });
 
-            $('#modalCountryPhoneSelect').select2({
-                templateResult: formatCountry,
-                templateSelection: formatCountry,
-                dropdownParent: $('#modalFinanciamiento')
-            });
+                $('#modalCountryPhoneSelect').select2({
+                    templateResult: formatCountry,
+                    templateSelection: formatCountry,
+                    dropdownParent: $('#modalFinanciamiento')
+                });
+            }
         });
 
         // Toggle FAQ Manual - abrir al entrar, cerrar al salir
@@ -243,6 +225,4 @@
             }
         }
     </script>
-
-
-@stop
+@endsection
