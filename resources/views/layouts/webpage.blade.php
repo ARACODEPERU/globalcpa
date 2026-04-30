@@ -144,6 +144,7 @@
     <!-- feather icon js-->
     <script src="{{ asset('themes/webpage/assets/js/icons/feather-icon/feather.min.js') }}"></script>
     <script src="{{ asset('themes/webpage/assets/js/icons/feather-icon/feather-icon.js') }}"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <!-- scrollbar js-->
     <script src="{{ asset('themes/webpage/assets/js/scrollbar/simplebar.js') }}"></script>
     <script src="{{ asset('themes/webpage/assets/js/scrollbar/custom.js') }}"></script>

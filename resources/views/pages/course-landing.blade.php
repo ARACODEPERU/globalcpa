@@ -4,11 +4,12 @@
     @php
         // Validar que landing y course existan
         if (!isset($landing) || empty($landing) || !isset($landing->course) || empty($landing->course)) {
-            echo '<div class="container-fluid py-5 text-center"><div class="alert alert-warning">Landing o curso no encontrado.</div></div>';
-            return;
         }
     @endphp
 
+    @if(!isset($landing) || empty($landing) || !isset($landing->course) || empty($landing->course))
+        <div class="container-fluid py-5 text-center"><div class="alert alert-warning">Landing o curso no encontrado.</div></div>
+    @else
 
     <!-- page-wrapper Start-->
     <div class="page-wrapper" id="pageWrapper">
@@ -21,6 +22,7 @@
             <x-sidebar />
             <!-- Page Sidebar Ends-->
             <div class="page-body">
+                <br><br>
 
                 {{-- Hero Section --}}
                 <x-courselanding.hero :landing="$landing" />
@@ -57,6 +59,8 @@
         <!-- footer start-->
         <x-footer />
     </div>
+
+    @endif
 
 @section('javascripts')
     <script>
