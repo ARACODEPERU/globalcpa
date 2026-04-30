@@ -71,7 +71,7 @@
 
                         @if ($preference)
                             <script>
-                                const mp = new MercadoPago("{{ env('MERCADOPAGO_KEY') }}", {
+                                const mp = new MercadoPago("{{ config('services.mercadopago.key') }}", {
                                     locale: 'es-PE'
                                 });
                                 const bricksBuilder = mp.bricks();

@@ -33,7 +33,7 @@ class MercadopagoController extends Controller
     public function formPay(Request $request, $id)
     {
         $personInvoice = $request->get('personInvoice');
-        MercadoPagoConfig::setAccessToken(env('MERCADOPAGO_TOKEN'));
+        MercadoPagoConfig::setAccessToken(config('services.mercadopago.token'));
         $client = new PreferenceClient();
         $items = [];
 
@@ -74,7 +74,7 @@ class MercadopagoController extends Controller
 
     public function processPayment(Request $request, $id)
     {
-        \MercadoPago\MercadoPagoConfig::setAccessToken(env('MERCADOPAGO_TOKEN'));
+        \MercadoPago\MercadoPagoConfig::setAccessToken(config('services.mercadopago.token'));
 
         $client = new \MercadoPago\Client\Payment\PaymentClient();
         $payment_server = null;
@@ -144,7 +144,6 @@ class MercadopagoController extends Controller
             // Manejar la excepción
             $response = $e->getApiResponse();
             $content  = $response->getContent();
-            //dd($content);
             $message = $content['message'];
             return response()->json(['error' => 'Error al procesar el pago: ' . $message], 412);
         }
@@ -161,7 +160,7 @@ class MercadopagoController extends Controller
 
     public function createPreference(Request $request)
     {
-        MercadoPagoConfig::setAccessToken(env('MERCADOPAGO_TOKEN'));
+        MercadoPagoConfig::setAccessToken(config('services.mercadopago.token'));
         $client = new PreferenceClient();
         $items = [];
         $msg = null;
@@ -195,7 +194,7 @@ class MercadopagoController extends Controller
 
     public function createItemsPreference(Request $request)
     {
-        MercadoPagoConfig::setAccessToken(env('MERCADOPAGO_TOKEN'));
+        MercadoPagoConfig::setAccessToken(config('services.mercadopago.token'));
         $client = new PreferenceClient();
         $items = [];
         $msg = null;
@@ -234,7 +233,7 @@ class MercadopagoController extends Controller
 
     public function processPaymentCourses(Request $request)
     {
-        \MercadoPago\MercadoPagoConfig::setAccessToken(env('MERCADOPAGO_TOKEN'));
+        \MercadoPago\MercadoPagoConfig::setAccessToken(config('services.mercadopago.token'));
 
         $client = new \MercadoPago\Client\Payment\PaymentClient();
         //dd($request->all());
@@ -425,7 +424,6 @@ class MercadopagoController extends Controller
 
             $response = $e->getApiResponse();
             $content  = $response->getContent();
-            //dd($content);
             $message = $content['message'];
             return response()->json(['error' => 'Error al procesar el pago: ' . $message], 412);
         } catch (\Exception $e) {
