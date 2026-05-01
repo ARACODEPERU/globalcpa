@@ -1,17 +1,42 @@
 @props(['landing', 'teachersPremium' => []])
 
 @if (filled($landing->staff_section ?? null))
-    <div class="container-fluid card aos-animate mt-5" data-aos="fade-up">
+    <style>
+        .text-navy-custom { color: #002060 !important; }
+        :is(.dark, .dark-only) .text-navy-custom { color: #f6f7fb !important; }
+
+        .bg-item-custom { background-color: #ffffff !important; }
+        :is(.dark, .dark-only) .bg-item-custom {
+            background-color: #1d273a !important;
+            border-color: #374558 !important;
+        }
+
+        .bg-badge-custom { background-color: rgba(0, 32, 96, 0.05) !important; }
+        :is(.dark, .dark-only) .bg-badge-custom { background-color: rgba(246, 247, 251, 0.1) !important; }
+
+        /* Asegurar renderizado de iconos Font Awesome 6 */
+        .fa-solid, .fas {
+            font-family: "Font Awesome 6 Free" !important;
+            font-weight: 900 !important;
+        }
+
+        :is(.dark, .dark-only) #teacherDetailsModal .modal-content-custom {
+            background-color: #1d273a !important;
+            color: #f6f7fb !important;
+        }
+    </style>
+
+    <div class="container-fluid card aos-animate mt-5 border-0 shadow-sm" data-aos="fade-up">
         <div class="row">
             <div class="col-md-12">
                 <div class="card-body p-4 p-lg-5">
                     <!-- Header de Sección -->
                     <div class="text-center mb-4">
-                        <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border"
-                            style="background-color: rgba(0, 32, 96, 0.05); color: #002060; font-size: 14px; font-weight: 600;">
-                            <i class="fa fa-users me-1"></i> {{ $landing->staff_section['name'] }}
+                        <span class="badge rounded-pill bg-badge-custom text-navy-custom px-3 py-2 mb-3 shadow-sm border"
+                            style="font-size: 14px; font-weight: 600;">
+                            <i class="fa-solid fa-users me-1"></i> {{ $landing->staff_section['name'] }}
                         </span>
-                        <h2 class="fw-bold display-6" style="color: #002060;">
+                        <h2 class="fw-bold display-6 text-navy-custom">
                             {{ $landing->staff_section['title'] }}</h2>
                         <p class="text-muted fs-5 mx-auto" style="max-width: 800px;">
                             {{ $landing->staff_section['description'] }}
@@ -25,7 +50,7 @@
                             @if (filled($teachersPremium))
                                 @foreach (array_merge($teachersPremium, $teachersPremium) as $index => $teacher)
                                     <div class="teacher-carousel-item w-[280px]">
-                                        <div class="card border-0 shadow-sm h-full transition-all rounded-4 overflow-hidden bg-white mx-2 cursor-pointer"
+                                        <div class="card border shadow-sm h-full transition-all rounded-4 overflow-hidden bg-item-custom mx-2 cursor-pointer"
                                             onclick="showTeacherDetails({{ json_encode($teacher) }})">
                                             <div style="height: 240px; overflow: hidden; position: relative;">
                                                 <img src="{{ $teacher['img'] }}" class="card-img-top h-100 w-100"
@@ -36,7 +61,7 @@
                                                 </div>
                                             </div>
                                             <div class="card-body text-center p-3">
-                                                <h5 class="fw-bold mb-1" style="color: #002060; font-size: 1.1rem;">
+                                                <h5 class="fw-bold mb-1 text-navy-custom" style="font-size: 1.1rem;">
                                                     {{ $teacher['name'] }}</h5>
                                                 <p class="text-[#f8aa4b] small fw-bold mb-0" style="font-size: 15px;">
                                                     {{ $teacher['role'] }}</p>
@@ -55,11 +80,11 @@
     <!-- Modal de Detalles del Docente (Único y Dinámico) -->
     <div id="teacherDetailsModal"
         class="fixed inset-0 z-[999999] hidden bg-black bg-opacity-70 opacity-0 transition-opacity duration-300 ease-out">
-        <div class="relative w-full max-w-3xl mx-auto my-8 p-6 bg-white rounded-xl shadow-2xl transform translate-y-4 opacity-0 transition-all duration-300 ease-out"
+        <div class="relative modal-content-custom w-full max-w-3xl mx-auto my-8 p-6 bg-white rounded-xl shadow-2xl transform translate-y-4 opacity-0 transition-all duration-300 ease-out"
             onclick="event.stopPropagation()">
             <button type="button" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-2xl"
                 onclick="closeTeacherDetailsModal()">&times;</button>
-            <h3 id="modalTeacherName" class="text-2xl font-bold text-[#002060] mb-2"></h3>
+            <h3 id="modalTeacherName" class="text-2xl font-bold text-navy-custom mb-2"></h3>
             <h5 id="modalTeacherRole" class="text-lg font-semibold text-[#f8aa4b] mb-4"></h5>
 
             <div id="modalTeacherImageContainer"
@@ -142,7 +167,7 @@
                         const resumeDiv = document.createElement('div');
                         resumeDiv.className = 'mb-3 pb-3 border-b border-gray-200 flex items-start';
                         resumeDiv.innerHTML = `
-                            <i class="fa fa-briefcase text-blue-600 text-xl mr-3 mt-1"></i>
+                            <i class="fa-solid fa-briefcase text-blue-600 text-xl mr-3 mt-1"></i>
                             <p class="text-gray-700 leading-relaxed flex-1">${resume.description}</p>
                         `;
                         resumesContainer.appendChild(resumeDiv);
