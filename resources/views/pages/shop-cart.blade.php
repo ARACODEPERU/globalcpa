@@ -134,7 +134,7 @@
                     <section id="step-final" class="checkout-panel d-none">
                         <div class="account-shell">
                             <div class="account-header">
-                                <h2>Cuenta y comprobante</h2>
+                                <h2>Crea tu cuenta en menos de 30 segundos</h2>
                                 <p>Completa tus datos para asociar la compra y emitir el comprobante.</p>
                             </div>
 
