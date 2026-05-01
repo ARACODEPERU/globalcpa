@@ -120,10 +120,11 @@ function eliminarCarrito() {
 
 function getTotal() {
     var elemento = document.getElementById("totalid");
+    var totalProductosElemento = document.getElementById("total_productos");
+    var cartElemento = document.getElementById("cart");
 
-    if (elemento !== null) {
+    if (elemento !== null && (totalProductosElemento !== null || cartElemento !== null)) {
         // El elemento con el ID 'totalid' existe
-        // Puedes realizar operaciones en el elemento aquí
         carritoTemp = JSON.parse(localStorage.getItem("carrito")) || [];
         total = 0;
         for (let i = 0; i < carritoTemp.length; i++) {
@@ -131,8 +132,10 @@ function getTotal() {
         }
         document.getElementById("totalid").textContent = "S/ " + total + ".00";
         total_productos = carritoTemp.length;
-        document.getElementById("total_productos").innerHTML =
-            total_productos + " programas en el carrito.";
+        if (totalProductosElemento !== null) {
+            totalProductosElemento.innerHTML =
+                total_productos + " programas en el carrito.";
+        }
     }
 }
 function cargarContadorCarrito() {

@@ -237,7 +237,7 @@
                 <p style="color: #4f46e5; font-size: 16px; font-weight: 700; margin-top: -10px;">
                     S/. 395.00
                 </p>
-            </div> --}}
+            </div>
         </div> --}}
 
 

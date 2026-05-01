@@ -1,724 +1,1138 @@
 @extends('layouts.webpage')
 
 @section('content')
+    <script src="https://sdk.mercadopago.com/js/v2"></script>
 
-    <!-- Loader starts-->
-    <!-- Loader ends-->
-    <!-- tap on top starts-->
     <div class="tap-top"><i data-feather="chevrons-up"></i></div>
-    <!-- tap on tap ends-->
-
-
-    <!-- page-wrapper Start-->
     <div class="page-wrapper" id="pageWrapper">
-        <!-- Page Header Start-->
         <x-header />
-        <!-- Page Header Ends-->
-        <!-- Page Body Start-->
         <div class="page-body-wrapper">
-            <!-- Page Sidebar Start-->
             <x-sidebar />
 
-            <!-- Page Sidebar Ends-->
-            <div class="page-body" style="padding: 80px 0px;">
+            <div class="page-body" style="padding: 80px 0;">
                 <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-md-8">
-                            <div
-                                class="is-scrollbar-hidden overflow-x-auto rounded-lg bg-slate-200 text-slate-600
-                            dark:bg-navy-800 dark:text-navy-200">
-                                <div class="tabs-list flex p-1">
-                                    <button @click="activeTab = 'tabRecent'"
-                                        :class="activeTab === 'tabRecent' ?
-                                            'bg-white shadow dark:bg-navy-500 dark:text-navy-100' :
-                                            'hover:text-slate-800 focus:text-slate-800 dark:hover:text-navy-100 dark:focus:text-navy-100'"
-                                        class="btn shrink-0 px-3 py-1 text-xs+ font-medium">
-                                        <span id = "total_productos">0 programas en el carrito.</span>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="card mt-4">
-                                <div class="is-scrollbar-hidden min-w-full overflow-x-auto">
-                                    <table class="is-hoverable w-full text-left">
-                                        <thead>
-                                            <tr>
-                                                <th
-                                                    class="whitespace-nowrap rounded-tl-lg bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
-                                                    Producto
-                                                </th>
-                                                <th
-                                                    class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
-                                                    Tipo
-                                                </th>
-                                                <th
-                                                    class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
-                                                    Precio
-                                                </th>
-                                                <th
-                                                    class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
-                                                    Acción
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="cart">
-                                            <tr
-                                                class="border-y border-transparent border-b-slate-200 dark:border-b-navy-500">
-                                                <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                                    <div class="flex items-center space-x-4">
-                                                        <div class="avatar">
-                                                            <img class="rounded-full"
-                                                                src="{{ asset('themes/webpage/images/object/object-15.jpg') }}"
-                                                                alt="avatar" />
-                                                        </div>
-
-                                                        <span class="font-medium text-slate-700 dark:text-navy-100">
-                                                            Título del curso
-                                                        </span>
-                                                    </div>
-                                                </td>
-                                                <td
-                                                    class="whitespace-nowrap px-4 py-3 font-medium text-slate-700 dark:text-navy-100 sm:px-5">
-                                                    Cursos Taller
-                                                </td>
-                                                <td
-                                                    class="whitespace-nowrap px-4 py-3 font-medium text-slate-700 dark:text-navy-100 sm:px-5">
-                                                    S/ 590.00
-                                                </td>
-                                                <td
-                                                    class="whitespace-nowrap px-4 py-3 text-slate-700 dark:text-navy-100 sm:px-5">
-                                                    <button class="boton-degradado-trash">
-                                                        <i class="fa fa-trash" aria-hidden="true"
-                                                            style="font-size: 16px;"></i>
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-
-                                <button
-                                    class="btn mt-1 h-11 justify-between bg-primary font-medium text-white hover:bg-primary-focus focus:bg-primary-focus active:bg-primary-focus/90 dark:bg-accent dark:hover:bg-accent-focus dark:focus:bg-accent-focus dark:active:bg-accent/90">
-                                    <span>TOTAL:</span>
-                                    <span><i class="fa fa-heart" aria-hidden="true"></i>&nbsp; <div id="totalid">S/ 0.00
-                                        </div>
-                                    </span>
-                                </button>
-
-                            </div>
-                            <link rel="stylesheet"
-                                href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-                            <div class="max-w mx-auto bg-white rounded-lg shadow-md overflow-hidden">
-                                <!-- Tabs -->
-                                <div class="flex border-b">
-                                    <button onclick="document_type(2)" id="boleta-tab"
-                                        class="tab-button active py-4 px-6 font-medium text-sm focus:outline-none bg-blue-50 text-blue-600 border-b-2 border-blue-600">
-                                        <i class="fas fa-receipt mr-2"></i>Boleta
-                                    </button>
-                                    <button onclick="document_type(1)" id="factura-tab"
-                                        class="tab-button py-4 px-6 font-medium text-sm focus:outline-none text-gray-500 hover:text-gray-700 hover:bg-gray-50">
-                                        <i class="fas fa-file-invoice mr-2"></i>Factura
-                                    </button>
-                                </div>
-
-                                <!-- Boleta Form -->
-                                <div id="boleta-form" class="tab-content p-6">
-                                    <div class="space-y-4">
-                                        <div>
-                                            <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre
-                                                completo</label>
-                                            <input oninput="actualizarCamposOcultos(2)" type="text" id="nombre"
-                                                name="nombre"
-                                                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                                        </div>
-
-                                        <div>
-                                            <label for="dni"
-                                                class="block text-sm font-medium text-gray-700">DNI</label>
-                                            <input oninput="actualizarCamposOcultos(2)" type="text" id="dni"
-                                                name="dni"
-                                                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                                        </div>
-
-                                        <div>
-                                            <label for="email-boleta"
-                                                class="block text-sm font-medium text-gray-700">Email</label>
-                                            <input oninput="actualizarCamposOcultos(2)" type="email" id="email-dni"
-                                                name="email-boleta"
-                                                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Factura Form -->
-                                <div id="factura-form" class="tab-content p-6 hidden">
-                                    <div class="space-y-4">
-                                        <div>
-                                            <label for="ruc"
-                                                class="block text-sm font-medium text-gray-700">RUC</label>
-                                            <div class="flex mt-1">
-                                                <input oninput="actualizarCamposOcultos(1)" type="text" id="ruc"
-                                                    name="ruc"
-                                                    class="block w-full border border-gray-300 rounded-l-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                                                <button onclick="searchPerson(7, document.getElementById('ruc').value)"
-                                                    id="search-button" type="button"
-                                                    class="inline-flex items-center px-4 py-2 border border-l-0 border-gray-300 rounded-r-md bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                                    <span style="color: black;">Buscar</span>
-                                                </button>
-                                            </div>
-                                        </div>
-
-                                        <div>
-                                            <label for="razon-social" class="block text-sm font-medium text-gray-700">Razón
-                                                Social/Nombre</label>
-                                            <input oninput="actualizarCamposOcultos(1)" type="text" id="razon-social"
-                                                name="razon-social"
-                                                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                                        </div>
-
-                                        <div>
-                                            <label for="email-factura"
-                                                class="block text-sm font-medium text-gray-700">Email</label>
-                                            <input oninput="actualizarCamposOcultos(1)" type="email" id="email-ruc"
-                                                name="email-factura"
-                                                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                                        </div>
-
-                                        <!-- Estados -->
-                                        <div class="p-6 border-t bg-gray-50">
-                                            <div class="flex space-x-6">
-                                                <div class="flex items-center">
-                                                    <input oninput="actualizarCamposOcultos(1)" disabled type="checkbox"
-                                                        id="statusRuc" name="habido"
-                                                        class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded disabled:opacity-100 disabled:cursor-not-allowed appearance-none checked:bg-blue-600 checked:border-blue-600">
-                                                    <label for="habido"
-                                                        class="ml-2 block text-sm text-gray-700">Habido</label>
-                                                </div>
-                                                <div class="flex items-center">
-                                                    <input oninput="actualizarCamposOcultos(1)" disabled type="checkbox"
-                                                        id="conditionRuc" name="activo"
-                                                        class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded disabled:opacity-100 disabled:cursor-not-allowed appearance-none checked:bg-blue-600 checked:border-blue-600">
-                                                    <label for="activo"
-                                                        class="ml-2 block text-sm text-gray-700">Activo</label>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-                            <script></script>
-                            <script>
-                                // Tab functionality
-                                document.querySelectorAll('.tab-button').forEach(button => {
-                                    button.addEventListener('click', () => {
-                                        // Remove active class from all buttons and hide all forms
-                                        document.querySelectorAll('.tab-button').forEach(btn => {
-                                            btn.classList.remove('active', 'bg-blue-50', 'text-blue-600', 'border-b-2',
-                                                'border-blue-600');
-                                            btn.classList.add('text-gray-500', 'hover:text-gray-700', 'hover:bg-gray-50');
-                                        });
-
-                                        document.querySelectorAll('.tab-content').forEach(content => {
-                                            content.classList.add('hidden');
-                                        });
-
-                                        // Add active class to clicked button and show corresponding form
-                                        button.classList.add('active', 'bg-blue-50', 'text-blue-600', 'border-b-2',
-                                            'border-blue-600');
-                                        button.classList.remove('text-gray-500', 'hover:text-gray-700', 'hover:bg-gray-50');
-
-                                        const formId = button.id.replace('-tab', '-form');
-                                        document.getElementById(formId).classList.remove('hidden');
-                                    });
-                                });
-                            </script>
-
-                        </div>
-
-                        <div class="col-md-4">
-                            <div class="card pb-4">
-                                <br>
-                                <div class="px-4 sm:px-5">
-                                    <div class="flex items-center justify-between">
-                                        <h2 class="font-medium tracking-wide text-slate-700 dark:text-navy-100 mt-4">
-                                            Excelente estás a punto de aprender con nosotros, Bienvenido a GlobalCpa Perú.
-                                        </h2>
-                                    </div>
-                                        <br>
-                                        <button class="mt-8 boton-degradado-info" id="btn-login"
-                                            onclick="window.location.href='{{ route('login_shop') }}';">
-                                            <b>YA TENGO UNA CUENTA</b>
-                                        </button>
-                                </div>
-                                <br>
-                                {{-- Formularios según estado de login --}}
-                                <style>
-                                    .form>* {
-                                        margin: 1rem;
-                                    }
-                                </style>
-                                @auth
-                                    <div class="card pb-4">
-                                        <br>
-                                        <div class="px-4 sm:px-5">
-                                            <div class="flex items-center justify-between">
-                                                <h2 class="font-medium tracking-wide text-slate-700 dark:text-navy-100 mt-6">
-                                                    Hola {{ Auth::user()->name }} estas por acceder a la compra de tus cursos,
-                                                    verifica que
-                                                    los cursos que elegiste sean los correctos y procede a hacer el pago
-                                                    haciendo
-                                                    click en
-                                                    "Pagar"
-                                                </h2>
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                    <form class="form" method="POST" action="{{ route('paying_auth') }}" id ="CartForm">
-                                        @csrf
-                                        <meta name="csrf-token" content="{{ csrf_token() }}">
-                                        <input type="hidden" name="recaptcha_token" id="recaptcha_token">
-                                        <input type="text" name="names" value="{{ Auth::user()->name }}"
-                                            style="display: none">
-                                        <div id="divCartHidden" style="display: none"></div>
-                                        <input type="hidden" name="ruc" id="ruc-d" value="">
-                                        <input type="hidden" name="dni" id="dni-d" value="">
-                                        <input type="hidden" name="nombreCompleto" id="nombreCompleto-d" value="">
-                                        <input type="hidden" name="document_type" id="document_type-d" value="1">
-                                        <input type="hidden" name="razonSocial" id="razon-social-d" value="">
-                                        <input type="hidden" name="email" id="email-d" value="">
-                                        <input type="hidden" name="statusRuc" id="statusRuc-d" value="0">
-                                        <input type="hidden" name="conditionRuc" id="conditionRuc-d" value="0">
-
-                                        <div class="row">
-                                            <div class="pt-8 col-md-12">
-                                                <p class="text-xs+">Correo Electrónico</p>
-                                                <div
-                                                    class="mt-1 flex justify-between space-x-2 rounded-2xl bg-slate-150 p-1.5 dark:bg-navy-800">
-                                                    <input
-                                                        class=" h-8 form-input w-full bg-transparent px-2 text-left placeholder:text-slate-400/70"
-                                                        name="email" value="{{ Auth::user()->email }}" placeholder=""
-                                                        type="text" disabled>
-                                                </div>
-                                            </div>
-                                            {{-- <div class="pt-4 col-md-6">
-                                        <p class="text-xs+">Contraseña</p>
-                                        <div class="mt-1 flex justify-between space-x-2 rounded-2xl bg-slate-150 p-1.5 dark:bg-navy-800">
-                                            <input class=" h-8 form-input w-full bg-transparent px-2 text-left placeholder:text-slate-400/70" placeholder="" type="text" disabled>
-                                        </div>
-                                    </div> --}}
-                                        </div>
-
-                                        <div>
-                                            <input type="checkbox" class="" id="acepto_terminos" />
-                                            <label class="flex items-center space-x-2 cursor-pointer">
-                                                <span class="text-sm text-gray-700">Acepto recibir información sobre futuros
-                                                    cursos,
-                                                    programas y promociones de Global CPA.</span>
-                                            </label>
-
-                                        </div>
-
-                                        <button class="mt-8 boton-degradado-courses" id="btn-crear-cuenta">
-                                            <b>Pagar con tarjeta</b>
-                                        </button>
-                                        <br>
-                                    </form>
-                                @else
-                                    <form class="form" method="POST" action="{{ route('paying') }}" id="CartForm">
-                                        @csrf
-                                        <meta name="csrf-token" content="{{ csrf_token() }}">
-                                        <input type="hidden" name="recaptcha_token" id="recaptcha_token">
-                                        <div id="divCartHidden" style="display: none"></div>
-                                        <div class="row">
-                                            <!-- Campo Nombres -->
-                                            <div class="pt-4 col-md-6">
-                                                <p class="text-xs+">Nombres</p>
-                                                <div
-                                                    class="mt-1 flex justify-between space-x-2 rounded-2xl bg-slate-150 p-1.5 dark:bg-navy-800">
-                                                    <input
-                                                        class="h-8 form-input w-full bg-transparent px-2 text-left placeholder:text-slate-400/70"
-                                                        name="names" placeholder="" type="text"
-                                                        value="{{ old('names') }}">
-                                                </div>
-                                                @error('names')
-                                                    <span class="text-sm text-red-500">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-
-                                            <!-- Campo Apellido Paterno -->
-                                            <div class="pt-4 col-md-6">
-                                                <p class="text-xs+">Apellido Paterno</p>
-                                                <div
-                                                    class="mt-1 flex justify-between space-x-2 rounded-2xl bg-slate-150 p-1.5 dark:bg-navy-800">
-                                                    <input
-                                                        class="h-8 form-input w-full bg-transparent px-2 text-left placeholder:text-slate-400/70"
-                                                        name="app" placeholder="" type="text"
-                                                        value="{{ old('app') }}">
-                                                </div>
-                                                @error('app')
-                                                    <span class="text-sm text-red-500">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-
-                                            <!-- Campo Apellido Materno -->
-                                            <div class="pt-4 col-md-6">
-                                                <p class="text-xs+">Apellido Materno</p>
-                                                <div
-                                                    class="mt-1 flex justify-between space-x-2 rounded-2xl bg-slate-150 p-1.5 dark:bg-navy-800">
-                                                    <input
-                                                        class="h-8 form-input w-full bg-transparent px-2 text-left placeholder:text-slate-400/70"
-                                                        name="apm" placeholder="" type="text"
-                                                        value="{{ old('apm') }}">
-                                                </div>
-                                                @error('apm')
-                                                    <span class="text-sm text-red-500">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-
-                                            <!-- Campo Tipo de documento -->
-                                            <div class="pt-4 col-md-6">
-                                                <p class="text-xs+">Tipo de documento</p>
-                                                <div
-                                                    class="mt-1 flex justify-between space-x-2 rounded-2xl bg-slate-150 p-1.5 dark:bg-navy-800">
-                                                    <select
-                                                        class="w-full form-select h-8 rounded-2xl border border-transparent bg-white px-4 py-0 pr-9 text-xs+ hover:border-slate-400 focus:border-primary dark:bg-navy-700 dark:hover:border-navy-400 dark:focus:border-accent"
-                                                        name="type">
-                                                        <option value="DNI" {{ old('type') == 'DNI' ? 'selected' : '' }}>
-                                                            DNI
-                                                        </option>
-                                                        <option value="RUC" {{ old('type') == 'RUC' ? 'selected' : '' }}>
-                                                            RUC
-                                                        </option>
-                                                        <option value="Doc.trib.no.dom.sin.ruc"
-                                                            {{ old('type') == 'Doc.trib.no.dom.sin.ruc' ? 'selected' : '' }}>
-                                                            Doc.trib.no.dom.sin.ruc</option>
-                                                    </select>
-                                                </div>
-                                                @error('type')
-                                                    <span class="text-sm text-red-500">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-
-                                            <!-- Campo N° Documento -->
-                                            <div class="pt-4 col-md-6">
-                                                <p class="text-xs+">N° Documento</p>
-                                                <div
-                                                    class="mt-1 flex justify-between space-x-2 rounded-2xl bg-slate-150 p-1.5 dark:bg-navy-800">
-                                                    <input
-                                                        class="h-8 form-input w-full bg-transparent px-2 text-left placeholder:text-slate-400/70"
-                                                        name="dni" placeholder="" type="number" min="10000000"
-                                                        max="99999999999" value="{{ old('dni') }}">
-                                                </div>
-                                                @error('dni')
-                                                    <span class="text-sm text-red-500">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-
-                                            <!-- Campo Teléfono -->
-                                            <div class="pt-4 col-md-6">
-                                                <p class="text-xs+">Teléfono</p>
-                                                <div
-                                                    class="mt-1 flex justify-between space-x-2 rounded-2xl bg-slate-150 p-1.5 dark:bg-navy-800">
-                                                    <input
-                                                        class="h-8 form-input w-full bg-transparent px-2 text-left placeholder:text-slate-400/70"
-                                                        name="phone" placeholder="" type="text"
-                                                        value="{{ old('phone') }}">
-                                                </div>
-                                                @error('phone')
-                                                    <span class="text-sm text-red-500">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-
-                                            <!-- Campo Correo Electrónico -->
-                                            <div class="pt-4 col-md-12">
-                                                <p class="text-xs+">Correo Electrónico</p>
-                                                <div
-                                                    class="mt-1 flex justify-between space-x-2 rounded-2xl bg-slate-150 p-1.5 dark:bg-navy-800">
-                                                    <input
-                                                        class="h-8 form-input w-full bg-transparent px-2 text-left placeholder:text-slate-400/70"
-                                                        name="email" placeholder="" type="email"
-                                                        value="{{ old('email') }}">
-                                                </div>
-                                                @error('email')
-                                                    <span class="text-sm text-red-500">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-
-                                            <!-- Campo Contraseña -->
-                                            <div class="pt-4 col-md-12">
-                                                <p class="text-xs+">Contraseña:</p>
-                                                <div
-                                                    class="mt-1 flex justify-between space-x-2 rounded-2xl bg-slate-150 p-1.5 dark:bg-navy-800">
-                                                    <input
-                                                        class="h-8 form-input w-full bg-transparent px-2 text-left placeholder:text-slate-400/70"
-                                                        name="password" placeholder="" type="password" required>
-                                                </div>
-                                                @error('password')
-                                                    <span class="text-sm text-red-500">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-
-                                            <!-- Campo Repetir Contraseña -->
-                                            <div class="pt-4 col-md-12">
-                                                <p class="text-xs+">Repetir Contraseña:</p>
-                                                <div
-                                                    class="mt-1 flex justify-between space-x-2 rounded-2xl bg-slate-150 p-1.5 dark:bg-navy-800">
-                                                    <input
-                                                        class="h-8 form-input w-full bg-transparent px-2 text-left placeholder:text-slate-400/70"
-                                                        name="password2" placeholder="" type="password" required>
-                                                </div>
-                                                @error('password2')
-                                                    <span class="text-sm text-red-500">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-                                        </div>
-
-                                        <!-- Botones -->
-                                        <div>
-                                            <input type="checkbox" class="" id="acepto_terminos" />
-                                            <label class="flex items-center space-x-2 cursor-pointer">
-                                                <span class="text-sm text-gray-700">Acepto recibir información sobre futuros
-                                                    cursos,
-                                                    programas y promociones de Global CPA.</span>
-                                            </label>
-
-                                        </div>
-
-                                        <div>
-                                            <button type="submit" class="mt-8 boton-degradado-courses"
-                                                id="btn-crear-cuenta">
-                                                <b>CREAR CUENTA PARA PAGAR</b>
-                                            </button>
-                                            <br>
-                                        </div>
-                                    </form>
-                                @endauth
-
-                                <script>
-                                    document.addEventListener('DOMContentLoaded', function() {
-                                        const checkbox = document.getElementById('acepto_terminos');
-                                        const buttons = document.querySelectorAll(
-                                            '#btn-crear-cuenta, .boton-degradado-transferencia');
-
-                                        // Función para deshabilitar todos los botones
-                                        function disableButtons() {
-                                            buttons.forEach(button => {
-                                                button.disabled = true;
-                                                button.classList.add('opacity-50', 'cursor-not-allowed');
-                                                button.classList.remove('hover:opacity-100');
-                                            });
-                                        }
-
-                                        // Función para habilitar todos los botones
-                                        function enableButtons() {
-                                            buttons.forEach(button => {
-                                                button.disabled = false;
-                                                button.classList.remove('opacity-50', 'cursor-not-allowed');
-                                                button.classList.add('hover:opacity-100');
-                                            });
-                                        }
-
-                                        // Deshabilita los botones al cargar la página
-                                        disableButtons();
-
-                                        // Agrega un evento 'change' al checkbox
-                                        checkbox.addEventListener('change', function() {
-                                            if (this.checked) {
-                                                enableButtons();
-                                            } else {
-                                                disableButtons();
-                                            }
-                                        });
-                                    });
-                                </script>
-                                <div id="loginModal" class="modal">
-                                    <div class="modal-content">
-                                        <!-- Aquí se incrustará la vista de la página de inicio de sesión -->
-                                        <!-- Puedes cargarla utilizando AJAX -->
-                                    </div>
-                                </div>
-                                <script>
-                                    document.getElementById("btn-login").addEventListener("click", function(event) {
-                                        event.preventDefault(); // Evita la acción predeterminada del botón
-                                        // Aquí puedes agregar el código para abrir el modal u realizar otras acciones
-                                    });
-                                </script>
-                            </div>
+                    <div class="card p-4 mb-4">
+                        <div class="checkout-steps">
+                            <button class="checkout-step active" data-step-label="payment">
+                                <span class="checkout-step-number">1</span>
+                                <span class="checkout-step-text">Carrito y pago</span>
+                            </button>
+                            <button class="checkout-step" data-step-label="final">
+                                <span class="checkout-step-number">2</span>
+                                <span class="checkout-step-text">Cuenta y comprobante</span>
+                            </button>
                         </div>
                     </div>
+
+                    <div id="checkout-alert" class="alert alert-danger d-none"></div>
+
+                    <section id="step-payment" class="checkout-panel">
+                        <div class="checkout-wide">
+                            <div class="security-check-grid">
+                                <div class="security-check-card security-check-card-static">
+                                    <img class="security-check-logo-wide" src="{{ asset('img/mercadopago.png') }}" alt="Mercado Pago">
+                                    <span>
+                                        <strong>Mercado Pago</strong>
+                                        <small>Pago seguro</small>
+                                    </span>
+                                </div>
+                                <div class="security-check-card security-check-card-static">
+                                    <span class="security-check-icon-svg" aria-hidden="true">
+                                        <svg viewBox="0 0 64 64" role="img" focusable="false">
+                                            <path d="M32 6 52 14v15c0 13.2-7.8 24.8-20 29.4C19.8 53.8 12 42.2 12 29V14L32 6Z" fill="#dc2626"/>
+                                            <path d="M27.6 38.6 19.8 30.8l4.2-4.2 3.6 3.6L40 17.8l4.2 4.2-16.6 16.6Z" fill="#fff"/>
+                                        </svg>
+                                    </span>
+                                    <span>
+                                        <strong>Pago 100% seguro</strong>
+                                        <small>Procesamos tu pago con los mas altos estandares de seguridad.</small>
+                                    </span>
+                                </div>
+                                <div class="security-check-card security-check-card-static">
+                                    <span class="security-check-icon-svg" aria-hidden="true">
+                                        <svg viewBox="0 0 64 64" role="img" focusable="false">
+                                            <circle cx="32" cy="32" r="26" fill="#dc2626"/>
+                                            <path d="M30 15h5v18H21l18 16-4 4-25-22h20V15Z" fill="#fff" transform="rotate(180 32 34)"/>
+                                        </svg>
+                                    </span>
+                                    <span>
+                                        <strong>Acceso Inmediato</strong>
+                                        <small>Apenas se confirme tu pago, recibir&aacute;s tu accesos al campus virtual.</small>
+                                    </span>
+                                </div>
+                                <div class="security-check-card security-check-card-static">
+                                    <span class="security-check-icon-svg" aria-hidden="true">
+                                        <svg viewBox="0 0 64 64" role="img" focusable="false">
+                                            <path d="M18 8h28a4 4 0 0 1 4 4v40a4 4 0 0 1-4 4H18a4 4 0 0 1-4-4V12a4 4 0 0 1 4-4Z" fill="#dc2626"/>
+                                            <path d="M22 20h20v4H22v-4Zm0 10h20v4H22v-4Zm0 10h12v4H22v-4Z" fill="#fff"/>
+                                            <circle cx="43" cy="43" r="9" fill="#fff"/>
+                                            <path d="m39 43 3 3 6-7" fill="none" stroke="#dc2626" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
+                                    </span>
+                                    <span>
+                                        <strong>Certificaci&oacute;n incluida</strong>
+                                        <small>Al finalizar, obten tu certificado digital de Cpa Academy.</small>
+                                    </span>
+                                </div>
+                                <div class="security-check-card security-check-card-static">
+                                    <span class="security-check-icon-svg" aria-hidden="true">
+                                        <svg viewBox="0 0 64 64" role="img" focusable="false">
+                                            <circle cx="32" cy="32" r="26" fill="#dc2626"/>
+                                            <path d="M20 33a12 12 0 0 1 24 0v8h-5v-8a7 7 0 0 0-14 0v8h-5v-8Z" fill="#fff"/>
+                                            <path d="M17 36h8v10h-4a4 4 0 0 1-4-4v-6Zm22 0h8v6a4 4 0 0 1-4 4h-4V36Z" fill="#fff"/>
+                                            <path d="M36 48h-7a3 3 0 0 1 0-6h7a3 3 0 0 1 0 6Z" fill="#fff"/>
+                                        </svg>
+                                    </span>
+                                    <span>
+                                        <strong>Soporte especializado</strong>
+                                        <small>Te acompa&ntilde;amos durante toda tu formaci&oacute;n.</small>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="row g-4 align-items-start">
+                            <div class="col-xl-7 col-lg-6">
+                                <div class="card">
+                                    <div class="is-scrollbar-hidden min-w-full overflow-x-auto">
+                                        <table class="is-hoverable w-full text-left">
+                                            <thead>
+                                                <tr>
+                                                    <th class="cart-product-column bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 lg:px-5">Producto</th>
+                                                    <th class="cart-type-column bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 lg:px-5">Tipo</th>
+                                                    <th class="cart-price-column bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 lg:px-5">Precio</th>
+                                                    <th class="cart-action-column bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 lg:px-5">Accion</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="cart">
+                                                <tr>
+                                                    <td colspan="4" class="px-4 py-5 text-center">Cargando carrito...</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xl-5 col-lg-6">
+                                <div class="card p-4 checkout-payment-card">
+                                    <h2 class="font-medium tracking-wide text-slate-700 mb-2">Pago con tarjeta</h2>
+                                    <div id="payment-products" class="checkout-products-list"></div>
+                                    <hr>
+                                    <div class="d-flex justify-content-between mb-4">
+                                        <span>Total</span>
+                                        <strong id="totalid">S/ 0.00</strong>
+                                    </div>
+                                    <div class="mercadopago-shell">
+                                        <div id="cardPaymentBrick_container"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="step-final" class="checkout-panel d-none">
+                        <div class="account-shell">
+                            <div class="account-header">
+                                <h2>Crea tu cuenta en menos de 30 segundos</h2>
+                                <p>Completa tus datos para asociar la compra y emitir el comprobante.</p>
+                            </div>
+
+                            <div class="account-choice-grid">
+                                <button type="button" class="account-tab active" data-account-mode="create">
+                                    <span class="account-choice-icon">+</span>
+                                    <span>
+                                        <strong>Crear cuenta</strong>
+                                        <small>Con los datos del pago</small>
+                                    </span>
+                                </button>
+                                <button type="button" class="account-tab" data-account-mode="login">
+                                    <span class="account-choice-icon">-&gt;</span>
+                                    <span>
+                                        <strong>Iniciar sesion</strong>
+                                        <small>Usar una cuenta existente</small>
+                                    </span>
+                                </button>
+                            </div>
+
+                            <input type="hidden" id="account_mode" value="create">
+                            <input type="hidden" id="invoice_type" value="boleta">
+
+                            <div id="create-account-panel" class="account-form-grid">
+                                <div class="checkout-field">
+                                    <label>DNI</label>
+                                    <input id="create_dni" type="text" placeholder="Numero de documento">
+                                </div>
+                                <div class="checkout-field">
+                                    <label>Email</label>
+                                    <input id="create_email" type="email" placeholder="correo@dominio.com">
+                                </div>
+                                <div class="checkout-field">
+                                    <label>Nombres</label>
+                                    <input id="create_names" type="text" placeholder="Nombres completos">
+                                </div>
+                                <div class="checkout-field">
+                                    <label>Contrasena</label>
+                                    <input id="create_password" type="password" placeholder="Opcional, por defecto tu DNI">
+                                </div>
+                            </div>
+
+                            <div id="login-account-panel" class="account-form-grid compact d-none">
+                                <div class="checkout-field">
+                                    <label>Email</label>
+                                    <input id="login_email" type="email" placeholder="correo@dominio.com">
+                                </div>
+                                <div class="checkout-field">
+                                    <label>Contrasena</label>
+                                    <input id="login_password" type="password" placeholder="Tu contrasena">
+                                </div>
+                            </div>
+
+                            <div class="invoice-block">
+                                <h3>Datos de comprobante</h3>
+                                <div class="flex border-b mb-4">
+                                    <button type="button" class="invoice-tab active" data-invoice-type="boleta">Boleta</button>
+                                    <button type="button" class="invoice-tab" data-invoice-type="factura">Factura</button>
+                                </div>
+
+                                <div id="boleta-panel" class="invoice-form-grid">
+                                    <div class="checkout-field">
+                                        <label>Nombre completo</label>
+                                        <input id="invoice_name" type="text" placeholder="Nombre completo">
+                                    </div>
+                                    <div class="checkout-field">
+                                        <label>DNI</label>
+                                        <input id="invoice_dni" type="text" placeholder="Numero de documento">
+                                    </div>
+                                    <div class="checkout-field">
+                                        <label>Email</label>
+                                        <input id="invoice_email" type="email" placeholder="correo@dominio.com">
+                                    </div>
+                                </div>
+
+                                <div id="factura-panel" class="invoice-form-grid d-none">
+                                    <div class="checkout-field">
+                                        <label>RUC</label>
+                                        <input id="invoice_ruc" type="text" placeholder="Numero de RUC">
+                                    </div>
+                                    <div class="checkout-field">
+                                        <label>Razon social</label>
+                                        <input id="invoice_business_name" type="text" placeholder="Razon social">
+                                    </div>
+                                    <div class="checkout-field">
+                                        <label>Direccion</label>
+                                        <input id="invoice_address" type="text" placeholder="Direccion fiscal">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="invoice-actions">
+                                <button type="button" id="btn-finalize" class="boton-degradado-courses">
+                                    <b>FINALIZAR COMPRA</b>
+                                </button>
+                            </div>
+                        </div>
+                    </section>
                 </div>
             </div>
         </div>
-        <!-- footer start-->
         <x-footer />
     </div>
 
+    <style>
+        .checkout-steps {
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            gap: 96px;
+            max-width: 560px;
+            margin: 0 auto;
+        }
 
-    <script>
-    </script>
+        .checkout-steps::before {
+            content: "";
+            position: absolute;
+            top: 23px;
+            left: 72px;
+            right: 72px;
+            height: 2px;
+            background: #cbd5e1;
+        }
 
+        .checkout-step {
+            position: relative;
+            z-index: 1;
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            width: 132px;
+            border: 0;
+            background: transparent;
+            color: #475569;
+            padding: 0;
+            font-weight: 700;
+            text-align: center;
+        }
 
-    <script>
-        const headers = document.querySelectorAll('.accordion-header-aracode');
-        headers.forEach(header => {
-            header.addEventListener('click', function() {
-                const content = this.nextElementSibling;
-                const isVisible = content.style.maxHeight;
+        .checkout-step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: #dc2626;
+            border: 3px solid #fff;
+            color: #fff;
+            box-shadow: 0 0 0 2px #dc2626, 0 8px 18px rgba(220, 38, 38, 0.24);
+            font-size: 18px;
+            line-height: 1;
+        }
 
-                // Ocultar todos los contenidos y resetear iconos
-                document.querySelectorAll('.accordion-content-aracode').forEach(item => {
-                    item.style.maxHeight = null;
-                    item.style.padding = '0';
-                    item.setAttribute('aria-hidden', 'true');
-                });
-                headers.forEach(h => {
-                    h.classList.remove('active');
-                    h.querySelector('.accordion-icon-aracode').textContent =
-                        '►'; // Restablecer icono
-                    h.setAttribute('aria-expanded', 'false');
-                });
+        .checkout-step-text {
+            color: #334155;
+            font-size: 13px;
+            line-height: 1.25;
+        }
 
-                // Mostrar el contenido del header clicado
-                if (!isVisible) {
-                    content.style.maxHeight = content.scrollHeight + "px";
-                    content.style.padding = '15px';
-                    this.classList.add('active'); // Añadir clase activa al encabezado clicado
-                    this.querySelector('.accordion-icon-aracode').textContent =
-                        '▼'; // Cambiar icono al expandido
-                    this.setAttribute('aria-expanded', 'true');
-                    content.setAttribute('aria-hidden', 'false');
-                }
-            });
-        });
-    </script>
+        .invoice-tab {
+            border: 1px solid #d6dee9;
+            background: #fff;
+            color: #334155;
+            padding: 10px 14px;
+            font-weight: 600;
+        }
+
+        .invoice-tab.active {
+            background: #0f766e;
+            border-color: #0f766e;
+            color: #fff;
+        }
+
+        .checkout-step.active .checkout-step-number,
+        .checkout-step.done {
+            color: #fff;
+        }
+
+        .checkout-step.active .checkout-step-text,
+        .checkout-step.done .checkout-step-text {
+            color: #dc2626;
+        }
+
+        .checkout-wide {
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
+        .security-check-grid {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .security-check-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            max-width: 360px;
+            min-height: 82px;
+            padding: 16px;
+            background: #fff;
+            border: 1px solid #dce5ef;
+            border-radius: 8px;
+            color: #334155;
+            text-decoration: none;
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+            transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+        }
+
+        .security-check-card:hover {
+            color: #0f766e;
+            border-color: #0f766e;
+            text-decoration: none;
+            transform: translateY(-2px);
+            box-shadow: 0 14px 30px rgba(15, 23, 42, 0.1);
+        }
+
+        .security-check-card-static:hover {
+            color: #334155;
+            border-color: #dce5ef;
+            transform: none;
+        }
+
+        .security-check-card img {
+            width: 38px;
+            height: 38px;
+            object-fit: contain;
+            flex: 0 0 auto;
+        }
+
+        .security-check-card img.security-check-logo-wide {
+            width: 132px;
+            height: 64px;
+        }
+
+        .security-check-icon-svg {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 64px;
+            height: 64px;
+            flex: 0 0 auto;
+        }
+
+        .security-check-icon-svg svg {
+            width: 64px;
+            height: 64px;
+            display: block;
+        }
+
+        .security-check-card strong,
+        .security-check-card small {
+            display: block;
+        }
+
+        .security-check-card strong {
+            color: #0f172a;
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .security-check-card small {
+            margin-top: 3px;
+            color: #64748b;
+            font-size: 12px;
+            line-height: 1.35;
+        }
+
+        #step-payment .card:first-child {
+            overflow: hidden;
+        }
+
+        #cart .avatar {
+            flex: 0 0 auto;
+        }
+
+        .cart-product-column {
+            width: 48%;
+            min-width: 320px;
+        }
+
+        .cart-type-column {
+            width: 24%;
+            min-width: 170px;
+        }
+
+        .cart-price-column {
+            width: 16%;
+            min-width: 110px;
+            white-space: nowrap;
+        }
+
+        .cart-action-column {
+            width: 12%;
+            min-width: 88px;
+            white-space: nowrap;
+        }
+
+        .cart-product-name,
+        .cart-type-text {
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            white-space: normal;
+            line-height: 1.35;
+        }
+
+        .cart-product-name {
+            -webkit-line-clamp: 3;
+            line-clamp: 3;
+            max-width: 100%;
+        }
+
+        .cart-type-text {
+            -webkit-line-clamp: 3;
+            line-clamp: 3;
+        }
+
+        .checkout-payment-card {
+            position: sticky;
+            top: 96px;
+        }
+
+        .mercadopago-shell {
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        .checkout-products-list {
+            max-height: 180px;
+            overflow: auto;
+        }
+
+        .account-shell {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 28px;
+            background: #fff;
+            border: 1px solid #dce5ef;
+            border-radius: 8px;
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+        }
+
+        .account-header {
+            margin-bottom: 20px;
+        }
+
+        .account-header h2 {
+            margin: 0;
+            color: #0f172a;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .account-header p {
+            margin: 6px 0 0;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .account-choice-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            margin-bottom: 22px;
+        }
+
+        .account-tab {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            padding: 16px;
+            background: #f8fafc;
+            border: 1px solid #dce5ef;
+            border-radius: 8px;
+            color: #334155;
+            text-align: left;
+            transition: border-color .2s ease, background .2s ease, box-shadow .2s ease;
+        }
+
+        .account-tab strong,
+        .account-tab small {
+            display: block;
+        }
+
+        .account-tab strong {
+            color: #0f172a;
+            font-size: 15px;
+        }
+
+        .account-tab small {
+            color: #64748b;
+            font-size: 12px;
+        }
+
+        .account-tab.active {
+            background: #eef9f6;
+            border-color: #0f766e;
+            box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
+        }
+
+        .account-choice-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: #0f766e;
+            color: #fff;
+            font-weight: 700;
+            flex: 0 0 auto;
+        }
+
+        .account-form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+            padding: 18px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+        }
+
+        .account-form-grid.compact {
+            max-width: 720px;
+        }
+
+        .invoice-block {
+            margin-top: 24px;
+            padding-top: 22px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .invoice-block h3 {
+            margin: 0 0 14px;
+            color: #0f172a;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .checkout-field label {
+            display: block;
+            margin-bottom: 7px;
+            color: #334155;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .checkout-field input {
+            width: 100%;
+            height: 44px;
+            padding: 10px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            background: #fff;
+            color: #0f172a;
+            outline: none;
+            transition: border-color .2s ease, box-shadow .2s ease;
+        }
+
+        .checkout-field input:focus {
+            border-color: #0f766e;
+            box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
+        }
+
+        .account-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .checkout-invoice-card {
+            max-width: 860px;
+            margin: 0 auto;
+            border: 1px solid #dce5ef;
+            border-radius: 8px;
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+        }
+
+        .invoice-form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+            padding: 18px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+        }
+
+        .invoice-form-grid .checkout-field:first-child,
+        #factura-panel .checkout-field:nth-child(2) {
+            grid-column: span 2;
+        }
+
+        .invoice-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .checkout-steps {
+                gap: 48px;
+                max-width: 420px;
+            }
+
+            .checkout-steps::before {
+                left: 64px;
+                right: 64px;
+            }
+
+            .security-check-grid {
+                justify-content: flex-end;
+                flex-wrap: wrap;
+            }
+
+            .security-check-card {
+                max-width: 100%;
+            }
+
+            .checkout-payment-card {
+                position: static;
+            }
+
+            .cart-product-column,
+            .cart-type-column {
+                min-width: 220px;
+            }
+
+            .account-shell {
+                padding: 18px;
+            }
+
+            .account-choice-grid,
+            .account-form-grid,
+            .invoice-form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .invoice-form-grid .checkout-field:first-child,
+            #factura-panel .checkout-field:nth-child(2) {
+                grid-column: span 1;
+            }
+
+            .mercadopago-shell {
+                max-width: 100%;
+            }
+        }
+    </style>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        function cargarItemsCarritoBD() {
-            let cartElement = document.getElementById('cart');
-            if (cartElement) cartElement.innerHTML = "";
-            
-            let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
-            let myIds = [];
-            carrito.forEach(function(item) {
-                myIds.push(parseInt(item.id));
+        const csrfToken = "{{ csrf_token() }}";
+        const routes = {
+            items: "{{ route('onlineshop_get_item_carrito') }}",
+            preference: "{{ route('web_cart_preference') }}",
+            payment: "{{ route('web_cart_process_payment') }}",
+            finalize: "{{ route('web_cart_finalize') }}",
+            description: "{{ url('curso-descripcion') }}"
+        };
+
+        let cartIds = [];
+        let cartItems = [];
+        let checkoutTotal = 0;
+        let preferenceId = null;
+        let mercadoPublicKey = null;
+        let paidSaleId = null;
+        let paymentInitializing = false;
+        let paymentVersion = 0;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadCart();
+            document.getElementById('btn-finalize').addEventListener('click', finalizeCheckout);
+
+            document.querySelectorAll('.account-tab').forEach(button => {
+                button.addEventListener('click', () => selectAccountMode(button.dataset.accountMode));
             });
 
-            let btnCrear = document.getElementById("btn-crear-cuenta");
-            if (btnCrear) btnCrear.setAttribute("disabled", "disabled");
-            
-            if (myIds.length > 0) {
-                realizarConsulta(myIds);
+            document.querySelectorAll('.invoice-tab').forEach(button => {
+                button.addEventListener('click', () => selectInvoiceType(button.dataset.invoiceType));
+            });
+        });
+
+        function loadCart() {
+            const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+            cartIds = carrito.map(item => parseInt(item.id)).filter(Boolean);
+
+            if (!cartIds.length) {
+                renderEmptyCart();
+                return;
             }
-        }
 
-        function realizarConsulta(ids) {
-            let token_csrf = $('meta[name="csrf-token"]').attr('content');
-            if (!token_csrf) token_csrf = "{{ csrf_token() }}";
-
-            $.ajax({
-                url: "{{ route('onlineshop_get_item_carrito') }}",
-                type: 'POST',
-                data: { ids: ids },
-                dataType: 'json',
-                headers: { 'X-CSRF-TOKEN': token_csrf },
-                success: function(respuesta) {
-                    let divCartHidden = document.getElementById("divCartHidden");
-                    
-                    respuesta.items.forEach(function(item) {
-                        renderProducto(item);
-                        if (divCartHidden) {
-                            let inputHidden = document.createElement("input");
-                            inputHidden.type = "hidden";
-                            inputHidden.name = "item_id[]";
-                            inputHidden.value = item.id;
-                            divCartHidden.appendChild(inputHidden);
-                        }
-                    });
-
-                    let btnCrear = document.getElementById("btn-crear-cuenta");
-                    if (btnCrear) btnCrear.removeAttribute("disabled");
+            fetch(routes.items, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
                 },
-                error: function(xhr) {
-                    console.log('Error cargando carrito:', xhr.responseText);
-                }
-            });
+                body: JSON.stringify({ ids: cartIds })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.items) throw new Error(data.error || 'No se pudo cargar el carrito.');
+                    cartItems = data.items;
+                    checkoutTotal = cartItems.reduce((sum, item) => sum + Number(item.price), 0);
+                    renderCart();
+                    resetPaymentState();
+                    startCardPayment();
+                })
+                .catch(error => showAlert(error.message));
         }
 
-        function renderProducto(respuesta) {
-            let cart = document.getElementById('cart');
-            if (cart) {
-                let id = respuesta.id;
-                let image = respuesta.image;
-                let name = respuesta.name;
-                let price = respuesta.price;
-                let modalidad = respuesta.additional;
-                let url_descripcion_programa = "{{ url('curso-descripcion') }}/" + id;
+        function renderCart() {
+            const tbody = document.getElementById('cart');
+            tbody.innerHTML = '';
 
-                cart.innerHTML += `
-                    <tr class="border-y border-transparent border-b-slate-200 dark:border-b-navy-500" id="${id}_pc">
-                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                            <div class="flex items-center space-x-4">
-                                <div class="avatar">
-                                    <img class="rounded-full" src="${image}" alt="avatar" />
-                                </div>
-                                <span class="font-medium text-slate-700 dark:text-navy-100">
-                                    <a href="${url_descripcion_programa}" target="_blank">${name}</a>
-                                </span>
-                            </div>
-                        </td>
-                        <td class="whitespace-nowrap px-4 py-3 font-medium text-slate-700 dark:text-navy-100 sm:px-5">
-                            <b>${modalidad}</b>
-                        </td>
-                        <td class="whitespace-nowrap px-4 py-3 font-medium text-slate-700 dark:text-navy-100 sm:px-5">
-                            <b>S/ ${price}</b>
-                        </td>
-                        <td class="whitespace-nowrap px-4 py-3 text-slate-700 dark:text-navy-100 sm:px-5">
-                            <button class="boton-degradado-trash" onclick="eliminarproducto({ id: ${id}, nombre: '${name}', precio: ${price} });">
-                                <i class="fa fa-trash" aria-hidden="true" style="font-size: 16px;">
-                                    <a title="Eliminar este Curso" class="remove"></a>
-                                </i>
-                            </button>
-                        </td>
-                    </tr>
+            cartItems.forEach(item => {
+                const row = document.createElement('tr');
+                row.className = 'border-y border-transparent border-b-slate-200';
+                row.id = `${item.id}_pc`;
+                row.innerHTML = `
+                    <td class="px-4 py-3 sm:px-5">
+                        <div class="flex items-center space-x-4">
+                            <div class="avatar"><img class="rounded-full" src="${item.image}" alt="curso"></div>
+                            <span class="cart-product-name font-medium text-slate-700">
+                                <a href="${routes.description}/${item.id}" target="_blank">${item.name}</a>
+                            </span>
+                        </div>
+                    </td>
+                    <td class="px-4 py-3 font-medium text-slate-700 sm:px-5"><b class="cart-type-text">${item.additional || ''}</b></td>
+                    <td class="whitespace-nowrap px-4 py-3 font-medium text-slate-700 sm:px-5"><b>S/ ${money(item.price)}</b></td>
+                    <td class="whitespace-nowrap px-4 py-3 text-slate-700 sm:px-5">
+                        <button class="boton-degradado-trash" type="button" onclick="removeProduct(${item.id})">
+                            <i class="fa fa-trash" aria-hidden="true" style="font-size: 16px;"></i>
+                        </button>
+                    </td>
                 `;
-            }
-        }
-
-        function confirmSubmit(event) {
-            event.preventDefault();
-            let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
-            if (carrito.length > 0) {
-                event.target.form.submit();
-            } else {
-                alert("No has elegido ningún curso");
-            }
-        }
-
-        function onSubmit(token) {
-            let form = document.getElementById("CartForm");
-            if(form) form.submit();
-        }
-
-        document.addEventListener("DOMContentLoaded", function() {
-            cargarItemsCarritoBD();
-        });
-    </script>
-
-    <script src="https://www.google.com/recaptcha/api.js?render=<?php echo config('services.recaptcha.site_key'); ?>"></script>
-    <script>
-        document.getElementById('CartForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            grecaptcha.ready(function() {
-                grecaptcha.execute('<?php echo config('services.recaptcha.site_key'); ?>', {
-                    action: 'submit'
-                }).then(function(token) {
-                    document.getElementById('recaptcha_token').value = token;
-                    document.getElementById('CartForm').submit();
-                });
+                tbody.appendChild(row);
             });
-        });
-    </script>
 
+            document.getElementById('totalid').textContent = `S/ ${money(checkoutTotal)}`;
+            renderPaymentSummary();
+        }
+
+        function renderPaymentSummary() {
+            document.getElementById('payment-products').innerHTML = cartItems.map(item => `
+                <div class="d-flex justify-content-between mb-2">
+                    <span>${item.name}</span>
+                    <strong>S/ ${money(item.price)}</strong>
+                </div>
+            `).join('');
+        }
+
+        function renderEmptyCart() {
+            resetPaymentState();
+            document.getElementById('cart').innerHTML = '<tr><td colspan="4" class="px-4 py-5 text-center">No has elegido ningun curso.</td></tr>';
+            document.getElementById('payment-products').innerHTML = '';
+            document.getElementById('totalid').textContent = 'S/ 0.00';
+            document.getElementById('cardPaymentBrick_container').innerHTML = '<div class="mp-loading-message p-4 text-center">Agrega cursos para cargar el pago.</div>';
+        }
+
+        function removeProduct(id) {
+            if (paidSaleId) {
+                showAlert('El pago ya fue aprobado. Continua con cuenta y comprobante para finalizar.');
+                return;
+            }
+
+            const carrito = (JSON.parse(localStorage.getItem('carrito')) || []).filter(item => parseInt(item.id) !== id);
+            localStorage.setItem('carrito', JSON.stringify(carrito));
+            loadCart();
+        }
+
+        function startCardPayment() {
+            hideAlert();
+            if (paymentInitializing) {
+                return;
+            }
+
+            if (!cartIds.length) {
+                showAlert('No has elegido ningun curso.');
+                return;
+            }
+
+            paymentInitializing = true;
+            const currentPaymentVersion = paymentVersion;
+            document.getElementById('cardPaymentBrick_container').innerHTML = '<div class="mp-loading-message p-4 text-center">Preparando pago seguro...</div>';
+
+            requestJson(routes.preference, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                body: JSON.stringify({ item_id: cartIds })
+            }, 20000)
+                .then(async (data) => {
+                    if (currentPaymentVersion !== paymentVersion) {
+                        return;
+                    }
+
+                    preferenceId = data.preference;
+                    mercadoPublicKey = data.public_key;
+                    checkoutTotal = Number(data.total);
+                    cartItems = data.products;
+                    document.getElementById('totalid').textContent = `S/ ${money(checkoutTotal)}`;
+                    renderPaymentSummary();
+                    await renderMercadoPago(currentPaymentVersion);
+                })
+                .catch(error => {
+                    if (currentPaymentVersion === paymentVersion) {
+                        showAlert(error.message);
+                    }
+                })
+                .finally(() => {
+                    if (currentPaymentVersion !== paymentVersion) {
+                        return;
+                    }
+
+                    paymentInitializing = false;
+                });
+        }
+
+        async function renderMercadoPago(currentPaymentVersion) {
+            const container = document.getElementById('cardPaymentBrick_container');
+            container.innerHTML = '<div class="mp-loading-message p-4 text-center">Cargando formulario seguro de MercadoPago...</div>';
+
+            if (!window.MercadoPago) {
+                throw new Error('No se pudo cargar el SDK de MercadoPago. Revisa la conexion o bloqueadores del navegador.');
+            }
+
+            try {
+                const mp = new MercadoPago(mercadoPublicKey, { locale: 'es-PE' });
+                const bricksBuilder = mp.bricks();
+
+                const brickPromise = bricksBuilder.create('cardPayment', 'cardPaymentBrick_container', {
+                    initialization: {
+                        preferenceId,
+                        amount: checkoutTotal,
+                    },
+                    customization: {
+                        visual: {
+                            style: {
+                                customVariables: { theme: 'bootstrap' }
+                            }
+                        },
+                        paymentMethods: { maxInstallments: 1 }
+                    },
+                    callbacks: {
+                        onReady: () => {
+                            container.querySelectorAll('.mp-loading-message').forEach(message => message.remove());
+                            hideAlert();
+                        },
+                        onSubmit: (cardFormData) => {
+                            hideAlert();
+                            cardFormData = normalizeCardFormData(cardFormData);
+
+                            return requestJson(routes.payment, {
+                                method: 'PUT',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': csrfToken
+                                },
+                                body: JSON.stringify({
+                                    item_id: cartIds,
+                                    cardFormData
+                                })
+                            }, 30000)
+                                .then((data) => {
+                                    paidSaleId = data.sale_id;
+                                    fillPayerData(data.payer || {});
+                                    showStep('final');
+                                })
+                                .catch(error => {
+                                    showAlert(error.message);
+                                    throw error;
+                                });
+                        },
+                        onError: (error) => {
+                            console.log(error);
+                            showAlert('MercadoPago no pudo renderizar el formulario. Intenta recargar la pagina.');
+                        },
+                    },
+                });
+
+                const controller = await withTimeout(
+                    brickPromise,
+                    15000,
+                    'MercadoPago esta tardando demasiado en cargar. Intenta nuevamente o recarga la pagina.'
+                );
+
+                if (currentPaymentVersion !== paymentVersion) {
+                    if (controller && typeof controller.unmount === 'function') {
+                        controller.unmount();
+                    }
+                    return;
+                }
+
+                window.cardPaymentBrickController = controller;
+            } catch (error) {
+                container.innerHTML = '';
+                throw error;
+            }
+        }
+
+        function withTimeout(promise, milliseconds, message) {
+            let timer;
+            const timeout = new Promise((_, reject) => {
+                timer = setTimeout(() => reject(new Error(message)), milliseconds);
+            });
+
+            return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
+        }
+
+        function normalizeCardFormData(cardFormData) {
+            const payer = cardFormData.payer || {};
+            payer.email = (payer.email || '').trim().toLowerCase();
+
+            if (!isValidEmail(payer.email)) {
+                throw new Error('Ingresa un correo valido en el formulario de MercadoPago.');
+            }
+
+            cardFormData.payer = payer;
+            return cardFormData;
+        }
+
+        function isValidEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+
+        function fillPayerData(payer) {
+            const names = payer.names || '';
+            const email = payer.email || '';
+            const dni = payer.document_number || '';
+
+            document.getElementById('create_names').value = names;
+            document.getElementById('create_email').value = email;
+            document.getElementById('create_dni').value = dni;
+            document.getElementById('login_email').value = email;
+            document.getElementById('invoice_name').value = names;
+            document.getElementById('invoice_dni').value = dni;
+            document.getElementById('invoice_email').value = email;
+        }
+
+        function selectAccountMode(mode) {
+            document.getElementById('account_mode').value = mode;
+            document.querySelectorAll('.account-tab').forEach(button => button.classList.toggle('active', button.dataset.accountMode === mode));
+            document.getElementById('create-account-panel').classList.toggle('d-none', mode !== 'create');
+            document.getElementById('login-account-panel').classList.toggle('d-none', mode !== 'login');
+        }
+
+        function selectInvoiceType(type) {
+            document.getElementById('invoice_type').value = type;
+            document.querySelectorAll('.invoice-tab').forEach(button => button.classList.toggle('active', button.dataset.invoiceType === type));
+            document.getElementById('boleta-panel').classList.toggle('d-none', type !== 'boleta');
+            document.getElementById('factura-panel').classList.toggle('d-none', type !== 'factura');
+        }
+
+        function finalizeCheckout() {
+            hideAlert();
+            if (!paidSaleId) {
+                showAlert('Primero debes completar el pago con tarjeta.');
+                return;
+            }
+
+            setBusy('btn-finalize', true);
+            const accountMode = document.getElementById('account_mode').value;
+            const payload = {
+                sale_id: paidSaleId,
+                account_mode: accountMode,
+                email: accountMode === 'login' ? value('login_email') : value('create_email'),
+                password: accountMode === 'login' ? value('login_password') : value('create_password'),
+                names: value('create_names'),
+                dni: value('create_dni'),
+                invoice_type: value('invoice_type'),
+                invoice_name: value('invoice_name'),
+                invoice_dni: value('invoice_dni'),
+                invoice_email: value('invoice_email'),
+                invoice_ruc: value('invoice_ruc'),
+                invoice_business_name: value('invoice_business_name'),
+                invoice_address: value('invoice_address')
+            };
+
+            requestJson(routes.finalize, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                body: JSON.stringify(payload)
+            }, 30000)
+                .then((data) => {
+                    localStorage.removeItem('carrito');
+                    window.location.href = data.url;
+                })
+                .catch(error => showAlert(error.message))
+                .finally(() => setBusy('btn-finalize', false));
+        }
+
+        function showStep(step) {
+            document.querySelectorAll('.checkout-panel').forEach(panel => panel.classList.add('d-none'));
+            document.getElementById(`step-${step}`).classList.remove('d-none');
+
+            const order = ['payment', 'final'];
+            const index = order.indexOf(step);
+            document.querySelectorAll('.checkout-step').forEach(button => {
+                const buttonIndex = order.indexOf(button.dataset.stepLabel);
+                button.classList.toggle('active', buttonIndex === index);
+                button.classList.toggle('done', buttonIndex < index);
+            });
+        }
+
+        function showAlert(message) {
+            const alert = document.getElementById('checkout-alert');
+            alert.textContent = message;
+            alert.classList.remove('d-none');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function hideAlert() {
+            const alert = document.getElementById('checkout-alert');
+            alert.textContent = '';
+            alert.classList.add('d-none');
+        }
+
+        function setBusy(id, busy) {
+            const button = document.getElementById(id);
+            button.disabled = busy;
+            button.classList.toggle('opacity-50', busy);
+        }
+
+        function resetPaymentState() {
+            paymentVersion += 1;
+            paymentInitializing = false;
+            paidSaleId = null;
+            preferenceId = null;
+            mercadoPublicKey = null;
+            showStep('payment');
+
+            if (window.cardPaymentBrickController && typeof window.cardPaymentBrickController.unmount === 'function') {
+                try {
+                    window.cardPaymentBrickController.unmount();
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+
+            window.cardPaymentBrickController = null;
+        }
+
+        function requestJson(url, options, timeoutMs) {
+            const controller = new AbortController();
+            const timer = setTimeout(() => controller.abort(), timeoutMs);
+            const headers = {
+                'Accept': 'application/json',
+                ...(options.headers || {})
+            };
+
+            return fetch(url, { ...options, headers, signal: controller.signal })
+                .then(async response => {
+                    const text = await response.text();
+                    let data = {};
+
+                    try {
+                        data = text ? JSON.parse(text) : {};
+                    } catch (error) {
+                        console.log(text);
+                        throw new Error('El servidor no devolvio una respuesta valida.');
+                    }
+
+                    if (!response.ok) {
+                        throw new Error(data.error || data.message || 'No se pudo completar la solicitud.');
+                    }
+
+                    return data;
+                })
+                .catch(error => {
+                    if (error.name === 'AbortError') {
+                        throw new Error('La solicitud esta tardando demasiado. Intenta nuevamente.');
+                    }
+
+                    throw error;
+                })
+                .finally(() => clearTimeout(timer));
+        }
+
+        function value(id) {
+            return document.getElementById(id).value.trim();
+        }
+
+        function money(value) {
+            return Number(value || 0).toFixed(2);
+        }
+    </script>
 @stop
