@@ -1,17 +1,39 @@
 @props(['landing'])
 
 @if (filled($landing->study_plan_section ?? null))
-    <div class="container-fluid card aos-animate" data-aos="fade-up">
+    <style>
+        .text-navy-custom { color: #002060 !important; }
+        :is(.dark, .dark-only) .text-navy-custom { color: #f6f7fb !important; }
+
+        .bg-badge-custom { background-color: rgba(0, 32, 96, 0.1) !important; }
+        :is(.dark, .dark-only) .bg-badge-custom { background-color: rgba(246, 247, 251, 0.1) !important; }
+
+        .img-border-custom { border: 8px solid #f8f9fa !important; }
+        :is(.dark, .dark-only) .img-border-custom { border: 8px solid #1d273a !important; }
+
+        .iteration-badge {
+            width: 45px;
+            height: 45px;
+            background-color: #002060 !important;
+            font-size: 1.1rem;
+        }
+        :is(.dark, .dark-only) .iteration-badge {
+            background-color: #ffc107 !important;
+            color: #002060 !important;
+        }
+    </style>
+
+    <div class="container-fluid card aos-animate border-0 shadow-sm" data-aos="fade-up">
         <div class="row">
             <div class="col-md-12">
                 <div class="card-body p-4 p-lg-5">
                     <!-- Header de Sección -->
                     <div class="text-center mb-5">
-                        <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border"
-                            style="background-color: rgba(0, 32, 96, 0.1); color: #002060; font-size: 14px; font-weight: 600;">
-                            <i class="fa fa-list-ul me-1"></i> {{ $landing->study_plan_section['name'] }}
+                        <span class="badge rounded-pill bg-badge-custom text-navy-custom px-3 py-2 mb-3 shadow-sm border"
+                            style="font-size: 14px; font-weight: 600;">
+                            <i class="fa-solid fa-list-ul me-1"></i> {{ $landing->study_plan_section['name'] }}
                         </span>
-                        <h2 class="fw-bold display-6" style="color: #002060;">{{ $landing->study_plan_section['title'] }}</h2>
+                        <h2 class="fw-bold display-6 text-navy-custom">{{ $landing->study_plan_section['title'] }}</h2>
                         <p class="text-muted fs-5 mx-auto" style="max-width: 800px;">{{ $landing->study_plan_section['description'] }}</p>
                     </div>
 
@@ -20,8 +42,7 @@
                         <div class="col-lg-5 mb-4 mb-lg-0" data-aos="fade-right">
                             <div class="position-relative">
                                 <img src="{{ asset("storage/".$landing->study_plan_section['image']) }}"
-                                    alt="Temario Especializado" class="img-fluid rounded-4 shadow-lg"
-                                    style="border: 8px solid #f8f9fa;">
+                                    alt="Temario Especializado" class="img-fluid rounded-4 shadow-lg img-border-custom">
                                 <div
                                     class="position-absolute bottom-0 start-0 m-3 p-3 bg-warning rounded-3 shadow d-none d-sm-block">
                                     <span class="fw-bold text-dark" style="font-size: 15px;">Módulos 100% Actualizados</span>
@@ -38,11 +59,10 @@
                                         <div class="d-flex mb-4">
                                             <div class="flex-shrink-0">
                                                 <span
-                                                    class="badge rounded-circle bg-primary d-flex align-items-center justify-content-center shadow"
-                                                    style="width: 45px; height: 45px; background-color: #002060 !important; font-size: 1.1rem;">{{ $loop->iteration }}</span>
+                                                    class="badge rounded-circle d-flex align-items-center justify-content-center shadow iteration-badge">{{ $loop->iteration }}</span>
                                             </div>
                                             <div class="ms-3">
-                                                <h5 class="fw-bold" style="color: #002060; font-size: 20px;">{{ $item['title'] }}</h5>
+                                                <h5 class="fw-bold text-navy-custom" style="font-size: 20px;">{{ $item['title'] }}</h5>
                                                 <p class="text-muted" style="font-size: 15px;">{{ $item['description'] }}</p>
                                             </div>
                                         </div>
