@@ -91,7 +91,7 @@
                         @if (filled($landing->investment_section['items'][1] ?? null))
                             @if ($landing->investment_section['items'][1]['price_before_visible'])
                                 <div class="col-md-4" data-aos="zoom-in" data-aos-delay="300"> {{-- Removed inline style for border-top --}}
-                                    <div class="card h-100 border-0 shadow-sm transition-all rounded-4 overflow-hidden text-center dark:border-gray-700"
+                                    <div class="card h-100 border-0 shadow-sm transition-all rounded-4 overflow-hidden bg-item-custom text-center border dark:border-gray-700"
                                     style="border-top: 5px solid #c8c8c8 !important;">
                                         <div class="p-4 border-bottom bg-yellow-50/50 dark:bg-gray-800/50">
                                             <h4 class="fw-bold mb-0 text-navy-custom text-[22px]">

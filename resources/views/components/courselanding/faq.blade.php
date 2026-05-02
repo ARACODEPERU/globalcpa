@@ -1,7 +1,20 @@
 @props(['landing'])
 
 @if (filled($landing->faq_section ?? null))
-    <div class="container-fluid card aos-animate mt-5 dark:bg-gray-800 border-none shadow-none" data-aos="fade-up">
+    <style>
+        /* Mantenemos consistencia con la sección de inversión */
+        .faq-bg-custom { background-color: #ffffff !important; }
+        :is(.dark, .dark-only) .faq-bg-custom {
+            background-color: #1d273a !important;
+        }
+        .faq-item-custom { background-color: #ffffff !important; }
+        :is(.dark, .dark-only) .faq-item-custom {
+            background-color: #1d273a !important;
+            border-color: #374558 !important;
+        }
+    </style>
+
+    <div class="container-fluid card aos-animate mt-5 faq-bg-custom border-none shadow-none" data-aos="fade-up">
         <div class="row">
             <div class="col-md-12">
                 <div class="card-body p-4 p-lg-5">
@@ -12,7 +25,7 @@
                         </span>
                         <h2 class="fw-bold display-6 text-[#002060] dark:text-white" style="font-size: 28px;">
                             {{ $landing->faq_section['title'] }}</h2>
-                        <p class="text-gray-600 dark:text-gray-400 fs-5 mx-auto" style="max-width: 700px; font-size: 16px; line-height: 1.7;">
+                        <p class="text-gray-600 dark:text-gray-400 fs-5 mx-auto" style="max-width: 800px; font-size: 16px; line-height: 1.7;">
                             {{ $landing->faq_section['description'] }}
                         </p>
                     </div>
@@ -23,19 +36,19 @@
                                 @if (filled($landing->faq_section['items'] ?? null))
                                     @foreach ($landing->faq_section['items'] as $faq)
                                         @if ($faq['visible'])
-                                            <div class="faq-item-card shadow-sm mb-3 border border-[#edf2f7] dark:border-gray-700 dark:bg-gray-800"
+                                            <div class="faq-item-card shadow-sm mb-3 border border-[#edf2f7] faq-item-custom"
                                                 style="border-radius: 15px; overflow: hidden;"
                                                 onmouseenter="toggleFaq({{ $loop->index }})"
                                                 onmouseleave="toggleFaq({{ $loop->index }})">
-                                                <div class="faq-question p-3 flex justify-between items-center cursor-pointer text-[#002060] dark:text-blue-400 font-semibold dark:bg-gray-800">
+                                                <div class="faq-question p-3 flex justify-between items-center cursor-pointer text-[#002060] dark:text-blue-300 font-semibold faq-item-custom">
                                                     <span>{{ $faq['question'] }}</span>
                                                     <i id="faq-icon-{{ $loop->index }}"
                                                         class="fa fa-chevron-down"
                                                         style="transition: transform 0.3s;"></i>
                                                 </div>
                                                 <div id="faq-answer-{{ $loop->index }}"
-                                                    class="faq-answer p-3 text-[#334155] dark:text-gray-300 bg-[#f8f9fa] dark:bg-gray-700/50"
-                                                    style="display: none; line-height: 1.7; font-size: 0.95rem;">
+                                                    class="faq-answer p-3 text-[#334155] dark:text-gray-400 bg-[#f8f9fa] dark:bg-slate-800/40"
+                                                    style="display: none; line-height: 1.7; font-size: 0.95rem; border-top: 1px solid rgba(0,0,0,0.03);">
                                                     {!! $faq['answer'] !!}
                                                 </div>
                                             </div>
@@ -44,7 +57,7 @@
                                 @endif
                             </div>
 
-                            <div class="text-center mt-5 p-4 rounded-4 bg-[#f8f9fa] dark:bg-gray-900/20 border border-dashed border-[#dee2e6] dark:border-gray-700">
+                            <div class="text-center mt-5 p-4 rounded-4 bg-[#f8f9fa] dark:bg-white/5 border border-dashed border-[#dee2e6] dark:border-gray-700">
                                 <p class="mb-3 fw-bold text-[#002060] dark:text-white" style="font-size: 20px;">¿Aún tienes dudas
                                     específicas?</p>
                                 <a href="{{ $landing->whatsapp_link }}"
