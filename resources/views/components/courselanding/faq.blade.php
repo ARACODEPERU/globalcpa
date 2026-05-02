@@ -19,7 +19,7 @@
             <div class="col-md-12">
                 <div class="card-body p-4 p-lg-5">
                     <div class="text-center mb-5">
-                        <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border border-purple-100 dark:border-purple-900 bg-purple-500/10 text-purple-700 dark:text-purple-400"
+                        <span class="badge rounded-pill bg-badge-custom text-navy-custom px-3 py-2 mb-3 shadow-sm border"
                             style="font-size: 14px; font-weight: 600;">
                             <i class="fa fa-magic me-1"></i> {{ $landing->faq_section['name'] }}
                         </span>

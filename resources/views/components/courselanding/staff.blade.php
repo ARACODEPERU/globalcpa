@@ -179,26 +179,33 @@
         }
 
         function closeTeacherDetailsModal() {
+            const teacherDetailsModal = document.getElementById('teacherDetailsModal');
+            if(!teacherDetailsModal) return;
+            const modalContent = teacherDetailsModal.querySelector('.modal-content-custom');
+
             teacherDetailsModal.classList.remove('opacity-100');
-            modalContent.classList.add('translate-y-4', 'opacity-0');
+            if(modalContent) modalContent.classList.add('translate-y-4', 'opacity-0');
+            
             // Esperar a que termine la transición de opacidad antes de ocultar completamente
             teacherDetailsModal.addEventListener('transitionend', function handler() {
                 teacherDetailsModal.classList.add('hidden');
                 teacherDetailsModal.removeEventListener('transitionend', handler);
-            });
+            }, { once: true });
             document.body.style.overflow = ''; // Restaurar scroll del body
         }
 
         // Cerrar modal con la tecla Escape
         document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape' && !teacherDetailsModal.classList.contains('hidden')) {
+            const modal = document.getElementById('teacherDetailsModal');
+            if (event.key === 'Escape' && modal && !modal.classList.contains('hidden')) {
                 closeTeacherDetailsModal();
             }
         });
 
         // Cerrar modal al hacer clic en el overlay
-        teacherDetailsModal.addEventListener('click', function(event) {
-            if (event.target === teacherDetailsModal) {
+        document.addEventListener('click', function(event) {
+            const modal = document.getElementById('teacherDetailsModal');
+            if (event.target === modal) {
                 closeTeacherDetailsModal();
             }
         });
