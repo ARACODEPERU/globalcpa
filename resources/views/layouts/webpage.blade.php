@@ -5,9 +5,6 @@
     <!-- Meta tags  -->
     <meta name="facebook-domain-verification" content="3qhwpfunszdc5ag3cwum3r70v123vo" />
 
-
-
-
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-WXX1QVD5Y0"></script>
     <script>
@@ -23,7 +20,6 @@
 
 
     <!-- Meta Pixel Code -->
-
     @vite(['resources/js/webpage.js'])
 
     <script>
@@ -51,9 +47,6 @@
     <noscript><img height="1" width="1" style="display:none"
             src="https://www.facebook.com/tr?id=791233956872790&ev=PageView&noscript=1" /></noscript>
     <!-- End Meta Pixel Code -->
-
-
-
 
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -110,9 +103,6 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
 
-
-
-
     <script>
         /**
          * PREVENCIÓN DE PARPADEO Y SINCRONIZACIÓN DE MODO OSCURO
@@ -132,8 +122,6 @@
 
     @yield('content')
     <x-whatsapp />
-
-
 
     <div id="x-teleport-target"></div>
 
@@ -173,7 +161,6 @@
     @yield('javascripts')
 
     <script src="{{ asset('themes/webpage/assets/js/modalpage/validation-modal.js') }}"></script>
-
     <script src="{{ asset('themes/globalcpa/carrito.js') }}" defer></script>
     @stack('modals')
 

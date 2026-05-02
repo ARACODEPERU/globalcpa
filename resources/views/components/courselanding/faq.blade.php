@@ -1,18 +1,18 @@
 @props(['landing'])
 
 @if (filled($landing->faq_section ?? null))
-    <div class="container-fluid card aos-animate mt-5" data-aos="fade-up">
+    <div class="container-fluid card aos-animate mt-5 dark:bg-gray-800 border-none shadow-none" data-aos="fade-up">
         <div class="row">
             <div class="col-md-12">
                 <div class="card-body p-4 p-lg-5">
                     <div class="text-center mb-5">
-                        <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border"
-                            style="background-color: rgba(111, 66, 193, 0.1); color: #6f42c1; font-size: 14px; font-weight: 600;">
+                        <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border border-purple-100 dark:border-purple-900 bg-purple-500/10 text-purple-700 dark:text-purple-400"
+                            style="font-size: 14px; font-weight: 600;">
                             <i class="fa fa-magic me-1"></i> {{ $landing->faq_section['name'] }}
                         </span>
-                        <h2 class="fw-bold display-6" style="color: #002060; font-size: 28px;">
+                        <h2 class="fw-bold display-6 text-[#002060] dark:text-white" style="font-size: 28px;">
                             {{ $landing->faq_section['title'] }}</h2>
-                        <p class="text-muted fs-5 mx-auto" style="max-width: 700px; font-size: 16px; line-height: 1.7;">
+                        <p class="text-gray-600 dark:text-gray-400 fs-5 mx-auto" style="max-width: 700px; font-size: 16px; line-height: 1.7;">
                             {{ $landing->faq_section['description'] }}
                         </p>
                     </div>
@@ -23,20 +23,19 @@
                                 @if (filled($landing->faq_section['items'] ?? null))
                                     @foreach ($landing->faq_section['items'] as $faq)
                                         @if ($faq['visible'])
-                                            <div class="faq-item-card shadow-sm mb-3"
-                                                style="border: 1px solid #edf2f7; border-radius: 15px; overflow: hidden;"
+                                            <div class="faq-item-card shadow-sm mb-3 border border-[#edf2f7] dark:border-gray-700 dark:bg-gray-800"
+                                                style="border-radius: 15px; overflow: hidden;"
                                                 onmouseenter="toggleFaq({{ $loop->index }})"
                                                 onmouseleave="toggleFaq({{ $loop->index }})">
-                                                <div class="faq-question p-3"
-                                                    style="cursor: pointer; background: #fff; color: #002060; font-weight: 600; display: flex; justify-content: space-between; align-items: center;">
+                                                <div class="faq-question p-3 flex justify-between items-center cursor-pointer text-[#002060] dark:text-blue-400 font-semibold dark:bg-gray-800">
                                                     <span>{{ $faq['question'] }}</span>
                                                     <i id="faq-icon-{{ $loop->index }}"
                                                         class="fa fa-chevron-down"
                                                         style="transition: transform 0.3s;"></i>
                                                 </div>
                                                 <div id="faq-answer-{{ $loop->index }}"
-                                                    class="faq-answer p-3"
-                                                    style="display: none; color: #334155; line-height: 1.7; font-size: 0.95rem; background: #f8f9fa;">
+                                                    class="faq-answer p-3 text-[#334155] dark:text-gray-300 bg-[#f8f9fa] dark:bg-gray-700/50"
+                                                    style="display: none; line-height: 1.7; font-size: 0.95rem;">
                                                     {!! $faq['answer'] !!}
                                                 </div>
                                             </div>
@@ -45,9 +44,8 @@
                                 @endif
                             </div>
 
-                            <div class="text-center mt-5 p-4 rounded-4"
-                                style="background-color: #f8f9fa; border: 1px dashed #dee2e6;">
-                                <p class="mb-3 fw-bold" style="color: #002060; font-size: 20px;">¿Aún tienes dudas
+                            <div class="text-center mt-5 p-4 rounded-4 bg-[#f8f9fa] dark:bg-gray-900/20 border border-dashed border-[#dee2e6] dark:border-gray-700">
+                                <p class="mb-3 fw-bold text-[#002060] dark:text-white" style="font-size: 20px;">¿Aún tienes dudas
                                     específicas?</p>
                                 <a href="{{ $landing->whatsapp_link }}"
                                     class="btn rounded-pill px-4 shadow-sm d-inline-flex align-items-center transition-all hover:scale-105"
@@ -66,4 +64,18 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function toggleFaq(index) {
+            const answer = document.getElementById(`faq-answer-${index}`);
+            const icon = document.getElementById(`faq-icon-${index}`);
+            if (answer.style.display === "none") {
+                answer.style.display = "block";
+                icon.style.transform = "rotate(180deg)";
+            } else {
+                answer.style.display = "none";
+                icon.style.transform = "rotate(0deg)";
+            }
+        }
+    </script>
 @endif

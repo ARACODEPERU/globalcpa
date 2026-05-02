@@ -7,7 +7,7 @@
                     <div class="page-title">
                         <div class="row">
                             <div class="col-sm-12">
-                                <h2 class="fw-bold display-6" style="color: #002060; font-size: 28px;">
+                                <h2 class="fw-bold display-6 text-[#002060] dark:text-white" style="font-size: 28px;">
                                     Certifica tu conocimiento y eleva tu perfil profesional
                                 </h2>
                             </div>
