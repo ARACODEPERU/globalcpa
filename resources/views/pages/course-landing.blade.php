@@ -1,12 +1,7 @@
 @extends('layouts.webpage')
 
 @section('content')
-    @php
-        // Validar que landing y course existan
-        if (!isset($landing) || empty($landing) || !isset($landing->course) || empty($landing->course)) {
-        }
-    @endphp
-
+    
     @if(!isset($landing) || empty($landing) || !isset($landing->course) || empty($landing->course))
         <div class="container-fluid py-5 text-center"><div class="alert alert-warning">Landing o curso no encontrado.</div></div>
     @else
@@ -21,9 +16,8 @@
             <!-- Page Sidebar Start-->
             <x-sidebar />
             <!-- Page Sidebar Ends-->
-            <div class="page-body">
-                <br><br>
-
+            <div class="page-body dark:bg-[#111c2d] transition-colors duration-300">
+                
                 {{-- Hero Section --}}
                 <x-courselanding.hero :landing="$landing" />
 
@@ -217,22 +211,17 @@
         });
 
         // Toggle FAQ Manual - abrir al entrar, cerrar al salir
-        function toggleFaq(index) {
-            const answer = document.getElementById('faq-answer-' + index);
-            const icon = document.getElementById('faq-icon-' + index);
-            
-            // Uso de clases CSS para permitir transiciones suaves en lugar de display:none
-            const isExpanded = answer.classList.contains('show');
-            
-            if (!isExpanded) {
-                $(answer).slideDown();
-                answer.classList.add('show');
-                icon.style.transform = 'rotate(180deg)';
+        window.toggleFaq = function(index) {
+            const $answer = $('#faq-answer-' + index);
+            const $icon = $('#faq-icon-' + index);
+
+            if (!$answer.is(':visible')) {
+                $answer.slideDown(300);
+                $icon.css('transform', 'rotate(180deg)');
             } else {
-                $(answer).slideUp();
-                answer.classList.remove('show');
-                icon.style.transform = 'rotate(0deg)';
+                $answer.slideUp(300);
+                $icon.css('transform', 'rotate(0deg)');
             }
-        }
+        };
     </script>
 @endsection

@@ -20,13 +20,25 @@
             font-weight: 900 !important;
         }
 
+        #teacherDetailsModal .modal-content-custom {
+            background-color: #ffffff;
+            color: #334155;
+        }
+
         :is(.dark, .dark-only) #teacherDetailsModal .modal-content-custom {
             background-color: #1d273a !important;
-            color: #f6f7fb !important;
+            color: #cbd5e1 !important;
+            border: 1px solid #374558;
+        }
+
+        /* Scrollbar personalizado para el modal */
+        .modal-content-custom::-webkit-scrollbar { width: 6px; }
+        .modal-content-custom::-webkit-scrollbar-thumb {
+            background: #cbd5e1; border-radius: 10px;
         }
     </style>
 
-    <div class="container-fluid card aos-animate mt-5 border-0 shadow-sm" data-aos="fade-up">
+    <div class="container-fluid card aos-animate mt-5 border-0 shadow-none bg-transparent" data-aos="fade-up">
         <div class="row">
             <div class="col-md-12">
                 <div class="card-body p-4 p-lg-5">
@@ -36,9 +48,9 @@
                             style="font-size: 14px; font-weight: 600;">
                             <i class="fa-solid fa-users me-1"></i> {{ $landing->staff_section['name'] }}
                         </span>
-                        <h2 class="fw-bold display-6 text-navy-custom">
+                        <h2 class="fw-bold display-6 text-navy-custom dark:text-white">
                             {{ $landing->staff_section['title'] }}</h2>
-                        <p class="text-muted fs-5 mx-auto" style="max-width: 800px;">
+                        <p class="text-gray-600 dark:text-gray-400 fs-5 mx-auto" style="max-width: 800px;">
                             {{ $landing->staff_section['description'] }}
                         </p>
                     </div>
@@ -50,8 +62,9 @@
                             @if (filled($teachersPremium))
                                 @foreach (array_merge($teachersPremium, $teachersPremium) as $index => $teacher)
                                     <div class="teacher-carousel-item w-[280px]">
-                                        <div class="card border shadow-sm h-full transition-all rounded-4 overflow-hidden bg-item-custom mx-2 cursor-pointer"
-                                            onclick="showTeacherDetails({{ json_encode($teacher) }})">
+                                        <div class="card teacher-card border shadow-sm h-full transition-all rounded-4 overflow-hidden bg-item-custom mx-2 cursor-pointer"
+                                            data-teacher="{{ base64_encode(json_encode($teacher)) }}"
+                                            onclick="openTeacherModal(this)">
                                             <div style="height: 240px; overflow: hidden; position: relative;">
                                                 <img src="{{ $teacher['img'] }}" class="card-img-top h-100 w-100"
                                                     style="object-fit: cover;" alt="{{ $teacher['name'] }}">
@@ -77,79 +90,59 @@
         </div>
     </div>
 
-    <!-- Modal de Detalles del Docente (Único y Dinámico) -->
+    {{-- Usamos @push para enviar el modal al final del layout y evitar problemas de stacking context --}}
+    @push('content_after')
     <div id="teacherDetailsModal"
-        class="fixed inset-0 z-[999999] hidden bg-black bg-opacity-70 opacity-0 transition-opacity duration-300 ease-out">
-        <div class="relative modal-content-custom w-full max-w-3xl mx-auto my-8 p-6 bg-white rounded-xl shadow-2xl transform translate-y-4 opacity-0 transition-all duration-300 ease-out"
+        class="fixed inset-0 z-[10000000] hidden bg-gray-900/60 backdrop-blur-[2px] opacity-0 transition-opacity duration-300 ease-out flex items-center justify-center p-4"
+        style="z-index: 10000000 !important;">
+        <div class="relative modal-content-custom w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl shadow-2xl transform translate-y-4 opacity-0 transition-all duration-300 ease-out"
             onclick="event.stopPropagation()">
-            <button type="button" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-2xl"
+            
+            <button type="button" class="absolute top-4 right-4 text-gray-400 hover:text-navy-custom dark:hover:text-white text-3xl z-10"
                 onclick="closeTeacherDetailsModal()">&times;</button>
-            <h3 id="modalTeacherName" class="text-2xl font-bold text-navy-custom mb-2"></h3>
-            <h5 id="modalTeacherRole" class="text-lg font-semibold text-[#f8aa4b] mb-4"></h5>
-
-            <div id="modalTeacherImageContainer"
-                class="w-full h-48 relative mb-6 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center">
-                <img id="modalTeacherImage" src="" alt="" class="max-h-full max-w-full object-contain">
+            
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-0">
+                <!-- Imagen del Docente -->
+                <div class="md:col-span-5 bg-gray-50 dark:bg-slate-800/50">
+                    <div class="h-64 md:h-full w-full">
+                        <img id="modalTeacherImage" src="" alt="" class="w-full h-full object-cover">
+                    </div>
+                </div>
+                
+                <!-- Información -->
+                <div class="md:col-span-7 p-6 md:p-8">
+                    <h3 id="modalTeacherName" class="text-3xl font-bold text-navy-custom dark:text-white mb-1"></h3>
+                    <h5 id="modalTeacherRole" class="text-xl font-semibold text-[#f8aa4b] mb-6"></h5>
+                    
+                    <div id="modalTeacherResumes" class="space-y-4"></div>
+                    <p id="modalNoExperience" class="text-gray-500 italic mt-4 hidden">No hay información disponible.</p>
+                </div>
             </div>
-
-            <div id="modalTeacherResumes" class="space-y-4">
-                <!-- Resumes will be dynamically inserted here -->
-            </div>
-            <p id="modalNoExperience" class="text-gray-600 mt-4 hidden">No hay información de experiencia disponible.
-            </p>
         </div>
     </div>
+    @endpush
 
     <style>
-        /* Estilos para el modal */
-        #teacherDetailsModal.opacity-100 .relative {
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-        /* Estilos para el carrusel (si no están ya en el CSS global) */
-        .carousel-viewport {
-            overflow: hidden;
-            padding: 40px 0;
-            /* Ajustado para el carrusel */
-            position: relative;
-            width: 100%;
-        }
-
-        .carousel-track {
-            display: flex;
-            gap: 30px;
-            width: max-content;
-            animation: scroll-infinite 50s linear infinite;
-            /* Duración de la animación */
-        }
-
-        .carousel-track:hover {
-            animation-play-state: paused;
-        }
-
-        @keyframes scroll-infinite {
-            0% {
-                transform: translateX(0);
-            }
-
-            100% {
-                transform: translateX(calc(-50% - 15px));
-            }
-
-            /* Ajuste para el gap */
-        }
-
-        .teacher-carousel-item {
-            flex-shrink: 0;
-        }
+        #teacherDetailsModal.opacity-100 .modal-content-custom { transform: translateY(0); opacity: 1; }
+        .carousel-viewport { overflow: hidden; padding: 40px 0; position: relative; width: 100%; }
+        .carousel-track { display: flex; gap: 30px; width: max-content; animation: scroll-infinite 50s linear infinite; }
+        .carousel-track:hover { animation-play-state: paused; }
+        @keyframes scroll-infinite { 0% { transform: translateX(0); } 100% { transform: translateX(calc(-50% - 15px)); } }
+        .teacher-carousel-item { flex-shrink: 0; }
     </style>
 
     <script>
-        const teacherDetailsModal = document.getElementById('teacherDetailsModal');
-        const modalContent = teacherDetailsModal.querySelector('.relative'); // El div interno del modal
+        function openTeacherModal(element) {
+            const teacherData = JSON.parse(atob(element.getAttribute('data-teacher')));
+            showTeacherDetails(teacherData);
+        }
 
         function showTeacherDetails(teacher) {
+            const teacherDetailsModal = document.getElementById('teacherDetailsModal');
+            if(!teacherDetailsModal) return;
+            
+            const modalContent = teacherDetailsModal.querySelector('.modal-content-custom');
+
             document.getElementById('modalTeacherName').textContent = teacher.name;
             document.getElementById('modalTeacherRole').textContent = teacher.role;
 
@@ -165,10 +158,10 @@
                 teacher.resumes.forEach(resume => {
                     if (resume.type === 'work experience') {
                         const resumeDiv = document.createElement('div');
-                        resumeDiv.className = 'mb-3 pb-3 border-b border-gray-200 flex items-start';
+                        resumeDiv.className = 'flex items-start bg-gray-50 dark:bg-white/5 p-3 rounded-lg border border-gray-100 dark:border-gray-700';
                         resumeDiv.innerHTML = `
-                            <i class="fa-solid fa-briefcase text-blue-600 text-xl mr-3 mt-1"></i>
-                            <p class="text-gray-700 leading-relaxed flex-1">${resume.description}</p>
+                            <i class="fa-solid fa-circle-check text-blue-500 mt-1 mr-3"></i>
+                            <p class="text-sm md:text-base leading-relaxed flex-1">${resume.description}</p>
                         `;
                         resumesContainer.appendChild(resumeDiv);
                     }
@@ -210,101 +203,4 @@
             }
         });
     </script>
-
-
-<script>
-    function openTeacherModal(index) {
-        document.querySelectorAll('.teacher-modal').forEach(modal => {
-            modal.classList.remove('active');
-        });
-        const modal = document.getElementById(`teacher-modal-${index}`);
-        if (modal) {
-            modal.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-    }
-
-    function closeTeacherModal(index) {
-        const modal = document.getElementById(`teacher-modal-${index}`);
-        if (modal) {
-            modal.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-    }
-
-    document.addEventListener('keydown', function(event) {
-        if (event.key === 'Escape') {
-            const activeModal = document.querySelector('.teacher-modal.active');
-            if (activeModal) {
-                activeModal.classList.remove('active');
-                document.body.style.overflow = '';
-            }
-        }
-    });
-</script>
-
-<style>
-    .teacher-modal {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.8);
-        z-index: 999999;
-    }
-
-    .teacher-modal.active {
-        display: block;
-    }
-
-    .teacher-modal .modal-content {
-        background: white;
-        max-width: 1500px;
-        width: 90%;
-        max-height: 90vh;
-        border-radius: 15px;
-        padding: 30px;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        z-index: 999999;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        overflow-y: auto;
-    }
-
-    .teacher-modal .image-container {
-        width: 100%;
-        height: 0;
-        padding-bottom: 25%;
-        position: relative;
-        margin: 20px 0;
-        background-color: #f5f5f5;
-        border-radius: 10px;
-        overflow: hidden;
-    }
-
-    .teacher-modal .image-container img {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: auto;
-        height: 100%;
-        max-width: 100%;
-        object-fit: contain;
-        display: block;
-    }
-
-    .teacher-modal .image-container.img-full-width img {
-        width: 100%;
-        height: auto;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-    }
-</style>
 @endif

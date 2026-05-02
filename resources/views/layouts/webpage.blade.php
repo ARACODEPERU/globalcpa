@@ -157,7 +157,7 @@
     <!-- Theme js-->
     <script src="{{ asset('themes/webpage/assets/js/script.js') }}"></script>
 
-
+    @stack('content_after')
     @yield('javascripts')
 
     <script src="{{ asset('themes/webpage/assets/js/modalpage/validation-modal.js') }}"></script>
