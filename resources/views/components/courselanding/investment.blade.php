@@ -5,9 +5,26 @@
         .text-navy-custom { color: #002060 !important; }
         :is(.dark, .dark-only) .text-navy-custom { color: #f6f7fb !important; }
 
-        /* Ajuste de contraste para el hover de los botones con texto personalizado */
-        .btn.text-navy-custom:hover { color: #ffffff !important; }
-        :is(.dark, .dark-only) .btn.text-navy-custom:hover { color: #002060 !important; }
+        .bg-badge-custom { background-color: rgba(0, 32, 96, 0.05) !important; }
+        :is(.dark, .dark-only) .bg-badge-custom { background-color: rgba(246, 247, 251, 0.1) !important; }
+
+        /* Ajuste de contraste y forma para botones outline */
+        .btn-modern-outline.text-navy-custom {
+            border: 1px solid #002060 !important;
+            background-color: transparent !important;
+            transition: all 0.3s ease;
+        }
+        .btn-modern-outline.text-navy-custom:hover {
+            background-color: #002060 !important;
+            color: #ffffff !important;
+        }
+        :is(.dark, .dark-only) .btn-modern-outline.text-navy-custom {
+            border-color: #f6f7fb !important;
+        }
+        :is(.dark, .dark-only) .btn-modern-outline.text-navy-custom:hover {
+            background-color: #f6f7fb !important;
+            color: #002060 !important;
+        }
 
         .bg-item-custom { background-color: #ffffff !important; }
         :is(.dark, .dark-only) .bg-item-custom {
