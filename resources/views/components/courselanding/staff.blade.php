@@ -55,33 +55,47 @@
                         </p>
                     </div>
 
-                    
+
                     <div class="carousel-viewport" style="padding: 40px 0;">
                         <div class="carousel-track" style="animation-duration: 50s;">
-                            {{-- Se duplica el contenido para el loop infinito --}}
+                            {{-- Se duplica el contenido solo si hay menos de 6 docentes --}}
+                            @php
+                            $teachersToShow = count($teachersPremium) < 6
+                                ? array_merge($teachersPremium, $teachersPremium)
+                                : $teachersPremium;
+                            @endphp
+
                             @if (filled($teachersPremium))
-                                @foreach (array_merge($teachersPremium, $teachersPremium) as $index => $teacher)
-                                    <div class="teacher-carousel-item w-[280px]">
-                                        <div class="card teacher-card border shadow-sm h-full transition-all rounded-4 overflow-hidden bg-item-custom mx-2 cursor-pointer"
-                                            data-teacher="{{ base64_encode(json_encode($teacher)) }}"
-                                            onclick="openTeacherModal(this)">
-                                            <div style="height: 240px; overflow: hidden; position: relative;">
-                                                <img src="{{ $teacher['img'] }}" class="card-img-top h-100 w-100"
-                                                    style="object-fit: cover;" alt="{{ $teacher['name'] }}">
-                                                <div class="position-absolute bottom-0 start-0 w-100 p-3"
-                                                    style="background: linear-gradient(transparent, rgba(0,32,96,0.8));">
-                                                    <p class="text-white small mb-0 fw-light">{{ "" }}</p>
-                                                </div>
-                                            </div>
-                                            <div class="card-body text-center p-3">
-                                                <h5 class="fw-bold mb-1 text-navy-custom" style="font-size: 1.1rem;">
-                                                    {{ $teacher['name'] }}</h5>
-                                                <p class="text-[#f8aa4b] small fw-bold mb-0" style="font-size: 15px;">
-                                                    {{ $teacher['role'] }}</p>
+                            @foreach ($teachersToShow as $index => $teacher)
+                                <div class="teacher-carousel-item w-[280px]">
+                                    <div class="card teacher-card border shadow-sm h-full transition-all rounded-4 overflow-hidden bg-item-custom mx-2 cursor-pointer"
+                                        data-teacher="{{ base64_encode(json_encode($teacher)) }}"
+                                        onclick="openTeacherModal(this)">
+
+                                        <div style="height: 240px; overflow: hidden; position: relative;">
+                                            <img src="{{ $teacher['img'] }}"
+                                                class="card-img-top h-100 w-100"
+                                                style="object-fit: cover;"
+                                                alt="{{ $teacher['name'] }}">
+
+                                            <div class="position-absolute bottom-0 start-0 w-100 p-3"
+                                                style="background: linear-gradient(transparent, rgba(0,32,96,0.8));">
+                                                <p class="text-white small mb-0 fw-light">{{ "" }}</p>
                                             </div>
                                         </div>
+
+                                        <div class="card-body text-center p-3">
+                                            <h5 class="fw-bold mb-1 text-navy-custom" style="font-size: 1.1rem;">
+                                                {{ $teacher['name'] }}
+                                            </h5>
+
+                                            <p class="text-[#f8aa4b] small fw-bold mb-0" style="font-size: 15px;">
+                                                {{ $teacher['role'] }}
+                                            </p>
+                                        </div>
                                     </div>
-                                @endforeach
+                                </div>
+                            @endforeach
                             @endif
                         </div>
                     </div>
@@ -97,10 +111,10 @@
         style="z-index: 10000000 !important;">
         <div class="relative modal-content-custom w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl shadow-2xl transform translate-y-4 opacity-0 transition-all duration-300 ease-out"
             onclick="event.stopPropagation()">
-            
+
             <button type="button" class="absolute top-4 right-4 text-gray-400 hover:text-navy-custom dark:hover:text-white text-3xl z-10"
                 onclick="closeTeacherDetailsModal()">&times;</button>
-            
+
             <div class="grid grid-cols-1 md:grid-cols-12 gap-0">
                 <!-- Imagen del Docente -->
                 <div class="md:col-span-5 bg-gray-50 dark:bg-slate-800/50">
@@ -108,12 +122,12 @@
                         <img id="modalTeacherImage" src="" alt="" class="w-full h-full object-cover">
                     </div>
                 </div>
-                
+
                 <!-- Información -->
                 <div class="md:col-span-7 p-6 md:p-8">
                     <h3 id="modalTeacherName" class="text-3xl font-bold text-navy-custom dark:text-white mb-1"></h3>
                     <h5 id="modalTeacherRole" class="text-xl font-semibold text-[#f8aa4b] mb-6"></h5>
-                    
+
                     <div id="modalTeacherResumes" class="space-y-4"></div>
                     <p id="modalNoExperience" class="text-gray-500 italic mt-4 hidden">No hay información disponible.</p>
                 </div>
@@ -140,7 +154,7 @@
         function showTeacherDetails(teacher) {
             const teacherDetailsModal = document.getElementById('teacherDetailsModal');
             if(!teacherDetailsModal) return;
-            
+
             const modalContent = teacherDetailsModal.querySelector('.modal-content-custom');
 
             document.getElementById('modalTeacherName').textContent = teacher.name;
@@ -185,7 +199,7 @@
 
             teacherDetailsModal.classList.remove('opacity-100');
             if(modalContent) modalContent.classList.add('translate-y-4', 'opacity-0');
-            
+
             // Esperar a que termine la transición de opacidad antes de ocultar completamente
             teacherDetailsModal.addEventListener('transitionend', function handler() {
                 teacherDetailsModal.classList.add('hidden');
