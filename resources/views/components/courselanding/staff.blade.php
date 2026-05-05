@@ -118,7 +118,7 @@
             <div class="grid grid-cols-1 md:grid-cols-12 gap-0">
                 <!-- Imagen del Docente -->
                 <div class="md:col-span-5 bg-gray-50 dark:bg-slate-800/50 flex items-center justify-center p-4">
-                    <img id="modalTeacherImage" src="" alt="" class="w-full h-auto max-h-[70vh] object-contain rounded-lg">
+                    <img id="modalTeacherImage" src="" alt="" class="w-full max-w-[300px] h-auto max-h-[300px] object-contain rounded-lg mx-auto">
                 </div>
 
                 <!-- Información -->
