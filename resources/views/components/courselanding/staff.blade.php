@@ -106,7 +106,7 @@
 
     {{-- Usamos @push para enviar el modal al final del layout y evitar problemas de stacking context --}}
     @push('content_after')
-    <div id="teacherDetailsModal"
+        <div id="teacherDetailsModal"
         class="fixed inset-0 z-[10000000] hidden bg-gray-900/60 backdrop-blur-[2px] opacity-0 transition-opacity duration-300 ease-out flex items-center justify-center p-4"
         style="z-index: 10000000 !important;">
         <div class="relative modal-content-custom w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl shadow-2xl transform translate-y-4 opacity-0 transition-all duration-300 ease-out"
@@ -118,7 +118,7 @@
             <div class="grid grid-cols-1 md:grid-cols-12 gap-0">
                 <!-- Imagen del Docente -->
                 <div class="md:col-span-5 bg-gray-50 dark:bg-slate-800/50 flex items-center justify-center p-4">
-                    <img id="modalTeacherImage" src="" alt="" class="w-full max-w-[300px] h-auto max-h-[300px] object-contain rounded-lg mx-auto">
+                    <img id="modalTeacherImage" src="" alt="" class="rounded-lg mx-auto" style="width: 100% !important; max-width: 300px !important; height: auto !important; max-height: 300px !important; object-fit: contain !important;">
                 </div>
 
                 <!-- Información -->
