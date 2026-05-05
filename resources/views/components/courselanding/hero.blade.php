@@ -94,7 +94,7 @@
 
                 </div>
 
-                <div class="col-lg-4 d-none d-lg-flex align-items-stretch">
+                <div class="col-lg-4 d-none d-lg-flex align-items-center justify-content-center p-3">
 
                     @if(filled($landing->banner_video_link ?? null))
 
@@ -106,23 +106,18 @@
 
                     @else
 
-                        <div class="w-100 h-100 d-flex align-items-center justify-content-center"
-                             style="min-height: 320px;">
-
-                            <img
-                                src="{{ asset('storage/'.$landing->course->image) }}"
-                                alt="{{ $landing->course->description ?? 'Curso' }}"
-                                class="img-fluid rounded"
-                                style="
-                                    width: 100%;
-                                    height: 100%;
-                                    max-height: 320px;
-                                    object-fit: cover;
-                                    object-position: center;
-                                "
-                            >
-
-                        </div>
+                        <img
+                            src="{{ asset('storage/'.$landing->course->image) }}"
+                            alt="{{ $landing->course->description ?? 'Curso' }}"
+                            class="img-fluid rounded"
+                            style="
+                                width: 100%;
+                                height: auto;
+                                max-width: 100%;
+                                object-fit: contain;
+                                display: block;
+                            "
+                        >
 
                     @endif
 
