@@ -117,14 +117,12 @@
 
             <div class="grid grid-cols-1 md:grid-cols-12 gap-0">
                 <!-- Imagen del Docente -->
-                <div class="md:col-span-5 bg-gray-50 dark:bg-slate-800/50">
-                    <div class="h-64 md:h-full w-full">
-                        <img id="modalTeacherImage" src="" alt="" class="w-full h-full object-cover">
-                    </div>
+                <div class="md:col-span-5 bg-gray-50 dark:bg-slate-800/50 flex items-center justify-center p-4">
+                    <img id="modalTeacherImage" src="" alt="" class="w-full h-auto max-h-[70vh] object-contain rounded-lg">
                 </div>
 
                 <!-- Información -->
-                <div class="md:col-span-7 p-6 md:p-8">
+                <div class="md:col-span-7 p-6 md:p-8 overflow-y-auto max-h-[80vh]">
                     <h3 id="modalTeacherName" class="text-3xl font-bold text-navy-custom dark:text-white mb-1"></h3>
                     <h5 id="modalTeacherRole" class="text-xl font-semibold text-[#f8aa4b] mb-6"></h5>
 
