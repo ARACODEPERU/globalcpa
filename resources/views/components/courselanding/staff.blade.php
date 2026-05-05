@@ -61,8 +61,8 @@
                             {{-- Se duplica el contenido solo si hay menos de 6 docentes --}}
                             @php
                             $teachersToShow = count($teachersPremium) < 6
-                                ? array_merge($teachersPremium, $teachersPremium)
-                                : $teachersPremium;
+                                ? $teachersPremium
+                                : array_merge($teachersPremium, $teachersPremium);
                             @endphp
 
                             @if (filled($teachersPremium))
