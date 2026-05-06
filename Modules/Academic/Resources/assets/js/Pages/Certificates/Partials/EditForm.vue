@@ -583,6 +583,27 @@
         form[item.y] = Math.round(event.target.y());
     };
 
+    const openSidebarSection = (tab, section) => {
+        activeTab.value = tab;
+        accordians3.value = section;
+        isShowChatMenu.value = true;
+    };
+
+    const textSectionByAction = {
+        1: { tab: 'front', section: 1 },
+        2: { tab: 'front', section: 2 },
+        3: { tab: 'front', section: 3 },
+        5: { tab: 'front', section: 5 },
+        11: { tab: 'front', section: 11 },
+        6: { tab: 'back', section: 21 },
+        7: { tab: 'back', section: 22 },
+        8: { tab: 'back', section: 23 },
+        9: { tab: 'back', section: 24 },
+        12: { tab: 'back', section: 25 },
+        13: { tab: 'back', section: 26 },
+        15: { tab: 'back', section: 28 },
+    };
+
     const attachTransformer = (event) => {
         if (event.cancelBubble !== undefined) {
             event.cancelBubble = true;
@@ -599,6 +620,25 @@
             transformer.forceUpdate();
             transformer.getLayer()?.batchDraw();
         });
+    };
+
+    const selectTextElement = (item, event) => {
+        const section = textSectionByAction[item.action];
+        if (section) {
+            openSidebarSection(section.tab, section.section);
+        }
+
+        attachTransformer(event);
+    };
+
+    const selectQrElement = (event) => {
+        if (previewQr.value?.isBack) {
+            openSidebarSection('back', 27);
+        } else {
+            openSidebarSection('front', 4);
+        }
+
+        attachTransformer(event);
     };
 
     const clearSelection = (event) => {
@@ -1327,9 +1367,11 @@
 
                         <!-- Descripción del Módulo (solo para for_module) -->
                         <div v-if="form.for_module" class="col-span-2">
-                            <vue-collapsible isOpen="false">
+                            <vue-collapsible :isOpen="accordians3 === 11">
                                 <div
                                     class="p-2.5 w-full flex items-center text-white-dark dark:bg-[#1b2e4b] border border-[#d3d3d3] dark:border-[#1b2e4b] rounded-t-lg"
+                                    :class="{ '!text-primary': accordians3 === 11 }"
+                                    @click="accordians3 === 11 ? (accordians3 = null) : (accordians3 = 11)"
                                     slot="trigger"
                                 >
                                     <icon-info-circle-two class="w-4 h-4 mr-2" />
@@ -2196,13 +2238,16 @@
                                         v-if="activeBaseImage"
                                         :config="{ image: activeBaseImage, x: 0, y: 0, width: canvasWidth, height: canvasHeight }"
                                     />
+                                    <v-rect
+                                        :config="{ x: 0, y: 0, width: canvasWidth, height: canvasHeight, stroke: '#000000', strokeWidth: 1, listening: false }"
+                                    />
                                     <v-image
                                         v-if="previewQr"
                                         :config="previewQr.config"
-                                        @mousedown="attachTransformer"
-                                        @touchstart="attachTransformer"
-                                        @click="attachTransformer"
-                                        @tap="attachTransformer"
+                                        @mousedown="selectQrElement"
+                                        @touchstart="selectQrElement"
+                                        @click="selectQrElement"
+                                        @tap="selectQrElement"
                                         @dragend="onQrDragEnd"
                                         @transformend="onQrTransformEnd"
                                     />
@@ -2210,10 +2255,10 @@
                                         v-for="item in previewTexts"
                                         :key="item.id"
                                         :config="item.config"
-                                        @mousedown="attachTransformer"
-                                        @touchstart="attachTransformer"
-                                        @click="attachTransformer"
-                                        @tap="attachTransformer"
+                                        @mousedown="(event) => selectTextElement(item, event)"
+                                        @touchstart="(event) => selectTextElement(item, event)"
+                                        @click="(event) => selectTextElement(item, event)"
+                                        @tap="(event) => selectTextElement(item, event)"
                                         @dragend="(event) => onTextDragEnd(item, event)"
                                         @transformend="(event) => onTextTransformEnd(item, event)"
                                     />
