@@ -123,6 +123,10 @@
                                         <strong id="totalid">S/ 0.00</strong>
                                     </div>
                                     <div class="mercadopago-shell">
+                                        <div class="checkout-field mb-3">
+                                            <label>Telefono</label>
+                                            <input id="payment_phone" type="tel" placeholder="Numero de telefono">
+                                        </div>
                                         <div id="cardPaymentBrick_container"></div>
                                     </div>
                                 </div>
@@ -1027,11 +1031,21 @@
 
         function normalizeCardFormData(cardFormData) {
             const payer = cardFormData.payer || {};
+            const phone = value('payment_phone');
             payer.email = (payer.email || '').trim().toLowerCase();
 
             if (!isValidEmail(payer.email)) {
                 throw new Error('Ingresa un correo valido en el formulario de MercadoPago.');
             }
+
+            if (!phone) {
+                throw new Error('Ingresa un numero de telefono.');
+            }
+
+            payer.phone = {
+                ...(payer.phone || {}),
+                number: phone
+            };
 
             cardFormData.payer = payer;
             return cardFormData;
