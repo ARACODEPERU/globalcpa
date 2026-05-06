@@ -1270,7 +1270,7 @@
 
             const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
 
-            fetch("{{ route('web_send_password_recovery') }}", {
+            fetch("{{ url('/send-password-recovery') }}", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
