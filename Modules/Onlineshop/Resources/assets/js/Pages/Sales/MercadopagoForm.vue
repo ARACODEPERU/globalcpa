@@ -36,6 +36,7 @@
         if(localStorage.getItem("shoppingCart")){
             itemsCart.value = JSON.parse(localStorage.getItem("shoppingCart"));
             calculateTotals();
+            console.log('MercadoPago public key:', publicKey.value);
             // Carga el SDK de MercadoPago
             // Carga el SDK de MercadoPago
             await loadMercadoPago();

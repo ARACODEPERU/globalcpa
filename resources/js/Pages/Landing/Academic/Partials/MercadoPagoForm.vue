@@ -31,6 +31,7 @@ const props = defineProps({
 let mp;
 
 onMounted(async () => {
+    console.log('MercadoPago public key:', props.publicKey);
     // Carga el SDK de MercadoPago
     await loadMercadoPago();
 
