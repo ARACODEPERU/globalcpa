@@ -116,8 +116,6 @@
                             <div class="col-xl-5 col-lg-6">
                                 <div class="card p-4 checkout-payment-card">
                                     <h2 class="font-medium tracking-wide text-slate-700 mb-2" id="payment-card-title">Pago con tarjeta</h2>
-                                    <div id="payment-products" class="checkout-products-list"></div>
-                                    <hr>
                                     <div class="checkout-total-row d-flex justify-content-between align-items-center mb-4">
                                         <span>Total</span>
                                         <strong id="totalid">S/ 0.00</strong>
@@ -818,11 +816,6 @@
             margin: 0 auto;
         }
 
-        .checkout-products-list {
-            max-height: 180px;
-            overflow: auto;
-        }
-
         .checkout-total-row {
             padding: 14px 0 2px;
             color: #0f172a;
@@ -1188,23 +1181,12 @@
             });
 
             document.getElementById('totalid').textContent = `S/ ${money(checkoutTotal)}`;
-            renderPaymentSummary();
             updateFreeCheckoutView();
-        }
-
-        function renderPaymentSummary() {
-            document.getElementById('payment-products').innerHTML = cartItems.map(item => `
-                <div class="d-flex justify-content-between mb-2">
-                    <span>${item.name}</span>
-                    <strong>${priceLabel(item.price)}</strong>
-                </div>
-            `).join('');
         }
 
         function renderEmptyCart() {
             resetPaymentState();
             document.getElementById('cart').innerHTML = '<tr><td colspan="4" class="px-4 py-5 text-center">No has elegido ningun curso.</td></tr>';
-            document.getElementById('payment-products').innerHTML = '';
             document.getElementById('totalid').textContent = 'S/ 0.00';
             document.getElementById('cardPaymentBrick_container').innerHTML = '<div class="mp-loading-message p-4 text-center">Agrega cursos para cargar el pago.</div>';
             updateFreeCheckoutView();
@@ -1254,7 +1236,6 @@
                     checkoutTotal = Number(data.total);
                     cartItems = data.products;
                     document.getElementById('totalid').textContent = `S/ ${money(checkoutTotal)}`;
-                    renderPaymentSummary();
                     await renderMercadoPago(currentPaymentVersion);
                 })
                 .catch(error => {
