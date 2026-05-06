@@ -61,9 +61,7 @@
             { totalPrice: 0, totalQty: 0 }
         );
 
-        // Asegura que totalSale tenga dos decimales
-        // totalSale.value = parseFloat(totalPrice.toFixed(2));
-        totalSale.value = totalPrice.toFixed(2);
+        totalSale.value = Number(totalPrice.toFixed(2));
         totalQuantity.value = totalQty;
     };
 
@@ -114,7 +112,7 @@
                                 reloadPageFormMercadoPago();
                             }
                         }).catch((error) => {
-                            let msxg = error.message || "Error al procesar el pago.";
+                            let msxg = error.response?.data?.error || error.message || "Error al procesar el pago.";
                             showAlertToast(msxg, "error");
                             reloadPageFormMercadoPago();
                         });

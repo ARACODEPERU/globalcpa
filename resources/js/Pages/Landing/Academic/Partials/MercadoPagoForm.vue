@@ -88,7 +88,7 @@ const renderCardPaymentBrick = async (bricksBuilder) => {
                             });
                         }
                     }).catch((error) => {
-                        alert(error.message || "Error al procesar el pago.");
+                        alert(error.response?.data?.error || error.message || "Error al procesar el pago.");
                         router.visit(route('academic_step_verification',props.subscription.id), {
                             method: 'get',
                         });

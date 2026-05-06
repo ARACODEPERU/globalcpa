@@ -548,6 +548,12 @@ public function course_url_slug($id){
             return response()->json(['error' => 'Ingresa un correo valido en el formulario de MercadoPago.'], 422);
         }
 
+        if (empty($cardData['token'])) {
+            return response()->json([
+                'error' => 'Mercado Pago no genero el token de tarjeta. Recarga el formulario y vuelve a ingresar los datos de la tarjeta.'
+            ], 422);
+        }
+
         try {
             $payment = (new PaymentClient())->create([
                 'token' => $cardData['token'] ?? null,
@@ -560,8 +566,15 @@ public function course_url_slug($id){
         } catch (\MercadoPago\Exceptions\MPApiException $e) {
             $response = $e->getApiResponse();
             $content = $response ? $response->getContent() : [];
+
+            $message = $content['message'] ?? $e->getMessage();
+
+            if ($message === 'Invalid card_token_id') {
+                $message .= '. Verifica que MERCADOPAGO_KEY y MERCADOPAGO_TOKEN sean de prueba y pertenezcan a la misma cuenta, y recarga el formulario para generar un token nuevo.';
+            }
+
             return response()->json([
-                'error' => 'Error al procesar el pago: ' . ($content['message'] ?? $e->getMessage())
+                'error' => 'Error al procesar el pago: ' . $message
             ], 412);
         }
 
