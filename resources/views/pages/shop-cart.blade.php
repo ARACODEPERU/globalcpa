@@ -263,6 +263,7 @@
                                 <div class="checkout-field">
                                     <label>DNI</label>
                                     <input id="create_dni" type="text" placeholder="Numero de documento">
+                                    <small id="create_dni_lookup_status" class="document-lookup-status"></small>
                                 </div>
                                 <div class="checkout-field">
                                     <label>Email</label>
@@ -307,9 +308,10 @@
                                         <input id="invoice_name" type="text" placeholder="Nombre completo">
                                     </div>
                                     <div class="checkout-field">
-                                        <label>DNI</label>
-                                        <input id="invoice_dni" type="text" placeholder="Numero de documento">
-                                    </div>
+                                    <label>DNI</label>
+                                    <input id="invoice_dni" type="text" placeholder="Numero de documento">
+                                    <small id="invoice_dni_lookup_status" class="document-lookup-status"></small>
+                                </div>
                                     <div class="checkout-field">
                                         <label>Email</label>
                                         <input id="invoice_email" type="email" placeholder="correo@dominio.com">
@@ -318,9 +320,10 @@
 
                                 <div id="factura-panel" class="invoice-form-grid d-none">
                                     <div class="checkout-field">
-                                        <label>RUC</label>
-                                        <input id="invoice_ruc" type="text" placeholder="Numero de RUC">
-                                    </div>
+                                    <label>RUC</label>
+                                    <input id="invoice_ruc" type="text" placeholder="Numero de RUC">
+                                    <small id="invoice_ruc_lookup_status" class="document-lookup-status"></small>
+                                </div>
                                     <div class="checkout-field">
                                         <label>Razon social</label>
                                         <input id="invoice_business_name" type="text" placeholder="Razon social">
@@ -1348,6 +1351,24 @@
             box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
         }
 
+        .document-lookup-status {
+            display: block;
+            min-height: 17px;
+            margin-top: 6px;
+            color: #64748b;
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 1.35;
+        }
+
+        .document-lookup-status.success {
+            color: #15803d;
+        }
+
+        .document-lookup-status.error {
+            color: #b91c1c;
+        }
+
         .phone-input-group {
             display: grid;
             grid-template-columns: minmax(142px, 170px) minmax(0, 1fr);
@@ -1621,6 +1642,7 @@
             preference: "{{ route('web_cart_preference') }}",
             payment: "{{ route('web_cart_process_payment') }}",
             finalize: "{{ route('web_cart_finalize') }}",
+            documentLookup: "{{ route('web_cart_document_lookup') }}",
             description: "{{ url('curso-descripcion') }}"
         };
         const pendingPaidCartKey = 'pending_paid_cart_checkout';
@@ -1636,6 +1658,8 @@
         let freeCheckout = false;
         let lastCardholderName = '';
         let phoneGuardAttached = false;
+        let documentLookupTimers = {};
+        let documentLookupCache = {};
 
         document.addEventListener('DOMContentLoaded', () => {
             loadCart();
@@ -1648,6 +1672,8 @@
             document.querySelectorAll('.invoice-tab').forEach(button => {
                 button.addEventListener('click', () => selectInvoiceType(button.dataset.invoiceType));
             });
+
+            attachDocumentLookupHandlers();
         });
 
         function loadCart() {
@@ -2019,6 +2045,120 @@
             document.querySelectorAll('.invoice-tab').forEach(button => button.classList.toggle('active', button.dataset.invoiceType === type));
             document.getElementById('boleta-panel').classList.toggle('d-none', type !== 'boleta');
             document.getElementById('factura-panel').classList.toggle('d-none', type !== 'factura');
+        }
+
+        function attachDocumentLookupHandlers() {
+            bindDocumentLookup('create_dni', 1, 8, (person) => {
+                const fullName = person.razon_social || [person.names, person.father_lastname, person.mother_lastname].filter(Boolean).join(' ');
+
+                if (fullName) {
+                    document.getElementById('create_names').value = fullName;
+
+                    if (!value('invoice_name') || value('invoice_dni') === value('create_dni')) {
+                        document.getElementById('invoice_name').value = fullName;
+                    }
+                }
+
+                if (!value('invoice_dni')) {
+                    document.getElementById('invoice_dni').value = value('create_dni');
+                }
+            });
+
+            bindDocumentLookup('invoice_dni', 1, 8, (person) => {
+                const fullName = person.razon_social || [person.names, person.father_lastname, person.mother_lastname].filter(Boolean).join(' ');
+
+                if (fullName) {
+                    document.getElementById('invoice_name').value = fullName;
+                }
+            });
+
+            bindDocumentLookup('invoice_ruc', 6, 11, (person) => {
+                document.getElementById('invoice_business_name').value = person.razon_social || '';
+                document.getElementById('invoice_address').value = person.direccion || '';
+            });
+        }
+
+        function bindDocumentLookup(inputId, documentType, expectedLength, onSuccess) {
+            const input = document.getElementById(inputId);
+
+            if (!input) {
+                return;
+            }
+
+            input.addEventListener('input', () => {
+                input.value = input.value.replace(/\D/g, '').slice(0, expectedLength);
+                scheduleDocumentLookup(inputId, documentType, expectedLength, onSuccess);
+            });
+
+            input.addEventListener('blur', () => lookupDocumentFromInput(inputId, documentType, expectedLength, onSuccess));
+        }
+
+        function scheduleDocumentLookup(inputId, documentType, expectedLength, onSuccess) {
+            clearTimeout(documentLookupTimers[inputId]);
+            documentLookupTimers[inputId] = setTimeout(() => {
+                lookupDocumentFromInput(inputId, documentType, expectedLength, onSuccess);
+            }, 550);
+        }
+
+        function lookupDocumentFromInput(inputId, documentType, expectedLength, onSuccess) {
+            const number = value(inputId).replace(/\D/g, '');
+            const statusId = `${inputId}_lookup_status`;
+
+            if (number.length === 0) {
+                setDocumentLookupStatus(statusId, '');
+                return;
+            }
+
+            if (number.length !== expectedLength) {
+                setDocumentLookupStatus(statusId, documentType === 6 ? 'Ingresa un RUC valido de 11 digitos.' : 'Ingresa un DNI valido de 8 digitos.', 'error');
+                return;
+            }
+
+            const cacheKey = `${documentType}:${number}`;
+
+            if (documentLookupCache[cacheKey]) {
+                onSuccess(documentLookupCache[cacheKey]);
+                setDocumentLookupStatus(statusId, 'Datos encontrados correctamente.', 'success');
+                return;
+            }
+
+            setDocumentLookupStatus(statusId, 'Consultando datos...');
+
+            requestJson(routes.documentLookup, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                body: JSON.stringify({
+                    document_type: documentType,
+                    number
+                })
+            }, 10000)
+                .then((data) => {
+                    if (!data.success || !data.person) {
+                        throw new Error(data.error || 'No encontramos datos para ese documento.');
+                    }
+
+                    documentLookupCache[cacheKey] = data.person;
+                    onSuccess(data.person);
+                    setDocumentLookupStatus(statusId, 'Datos encontrados correctamente.', 'success');
+                })
+                .catch((error) => {
+                    setDocumentLookupStatus(statusId, error.message || 'No pudimos consultar el documento en este momento.', 'error');
+                });
+        }
+
+        function setDocumentLookupStatus(statusId, message, type = '') {
+            const status = document.getElementById(statusId);
+
+            if (!status) {
+                return;
+            }
+
+            status.textContent = message;
+            status.classList.toggle('success', type === 'success');
+            status.classList.toggle('error', type === 'error');
         }
 
         function finalizeCheckout() {
