@@ -921,7 +921,7 @@ class AcaCertificateController extends Controller
             'base_image' => $this->certificateStorageUrl($imagePath),
             'texts' => $this->certificateTextItems($certificate, $student, $parameter, $course, $side),
             'contents' => $this->certificateContentItems($parameter, $course, $side),
-            'qr' => $this->certificateQrItem($certificate, $parameter, $side),
+            'qr' => $this->certificateQrItem($certificate, $student, $parameter, $side),
         ];
     }
 
@@ -1028,15 +1028,20 @@ class AcaCertificateController extends Controller
         ];
     }
 
-    private function certificateQrItem(AcaCertificate $certificate, AcaCertificateParameter $parameter, string $side): ?array
+    private function certificateQrItem(AcaCertificate $certificate, AcaStudent $student, AcaCertificateParameter $parameter, string $side): ?array
     {
+        $validationUrl = route('certificado_validar', [
+            'dni' => $student?->person?->number ?: 0,
+            'course_id' => $certificate->course_id ?: 0,
+        ]);
+
         if ($side === 'front') {
             if (! $parameter->visible_image_qr || ! $parameter->size_qr) {
                 return null;
             }
 
             return [
-                'text' => route('aca_image_download', ['id' => $certificate->id]),
+                'text' => $validationUrl,
                 'x' => (float) ($parameter->position_qr_x ?? 0),
                 'y' => (float) ($parameter->position_qr_y ?? 0),
                 'size' => (float) ($parameter->size_qr ?? 120),
@@ -1049,7 +1054,7 @@ class AcaCertificateController extends Controller
         }
 
         return [
-            'text' => route('aca_image_download', ['id' => $certificate->id]),
+            'text' => $validationUrl,
             'x' => (float) ($parameter->back_position_qr_x ?? 0),
             'y' => (float) ($parameter->back_position_qr_y ?? 0),
             'size' => (float) ($parameter->back_size_qr ?? 120),

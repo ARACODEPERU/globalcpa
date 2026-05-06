@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
 use Modules\Academic\Entities\AcaCapRegistration;
-use Modules\Academic\Entities\AcaCertificate;
 use Modules\Academic\Entities\AcaCertificateGradeConfig;
 use Modules\Academic\Entities\AcaCertificateParameter;
 use Modules\Academic\Entities\AcaCourse;
@@ -483,14 +482,9 @@ class CertificateImage
 
         // QR solo para anverso
         if ($type === 'front') {
-            $certificate = AcaCertificate::where('course_id', $course_id)
-                ->where('student_id', $student_id)
-                ->first();
-
-            $certificate_id = $certificate ? $certificate->id : '1';
             $generator = new QrCodeGenerator(300);
             $dir = public_path().DIRECTORY_SEPARATOR.'storage'.DIRECTORY_SEPARATOR.'tmp_qr';
-            $cadenaqr = route('aca_image_download', ['id' => $certificate_id]);
+            $cadenaqr = $this->certificateValidationUrl($student_id, $course_id);
 
             $qr_path = $generator->generateQR($cadenaqr, $dir, Str::random(10).'.png', 8, 2);
             $qr = Image::make($qr_path);
@@ -510,11 +504,9 @@ class CertificateImage
 
         // QR del reverso (cuando type es back)
         if ($this->type === 'back' && $this->getField('back_visible_qr')) {
-            $certificate = null;
-            $certificate_id = $certificate ? $certificate->id : '1';
             $generator = new QrCodeGenerator(300);
             $dir = public_path().DIRECTORY_SEPARATOR.'storage'.DIRECTORY_SEPARATOR.'tmp_qr';
-            $cadenaqr = route('aca_image_download', ['id' => $certificate_id]);
+            $cadenaqr = $this->certificateValidationUrl($student_id, $course_id);
 
             $qr_path = $generator->generateQR($cadenaqr, $dir, Str::random(10).'.png', 8, 2);
             $qr = Image::make($qr_path);
@@ -587,6 +579,21 @@ class CertificateImage
         }
 
         return $this->certificates_param->{$field} ?? null;
+    }
+
+    private function certificateValidationUrl($student_id, $course_id): string
+    {
+        $dni = 0;
+
+        if ($student_id) {
+            $student = AcaStudent::with('person')->find($student_id);
+            $dni = $student?->person?->number ?: 0;
+        }
+
+        return route('certificado_validar', [
+            'dni' => $dni,
+            'course_id' => $course_id ?: 0,
+        ]);
     }
 
     /**
