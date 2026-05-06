@@ -84,6 +84,9 @@ Route::get('/stories/policies', [BlogController::class, 'storiesPolicies'])->nam
 Route::get('/stories/contact-us', [BlogController::class, 'storiesContactUs'])->name('blog_stories_contact_us');
 Route::put('/process_payment/{id}/{student_id}', [WebController::class, 'processPayment'])->name('web_process_payment');
 
+// Password Recovery Routes (public)
+Route::post('/send-password-recovery', [WebPageController::class, 'sendPasswordRecovery'])->name('web_send_password_recovery');
+Route::get('/get-csrf-token', function() { return response()->json(['token' => csrf_token()]); })->name('web_get_csrf_token');
 
 Route::get('/mipais', function () {
     $ip = $_SERVER['REMOTE_ADDR']; // Esto contendrá la ip de la solicitud.

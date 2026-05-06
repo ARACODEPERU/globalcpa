@@ -28,6 +28,7 @@ use App\Models\Country;
 use App\Models\Department;
 use App\Models\District;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\URL;
 use Modules\Academic\Entities\AcaStudent;
 use Modules\Academic\Entities\AcaCapRegistration;
 use Modules\Academic\Entities\AcaCourseLanding;
@@ -718,7 +719,7 @@ public function course_url_slug($id){
             if ($validated['account_mode'] === 'login') {
                 if (!Auth::attempt(['email' => $validated['email'], 'password' => $validated['password'] ?? ''])) {
                     DB::rollBack();
-                    return response()->json(['error' => 'El email o la contrasena no son correctos.'], 422);
+                    return response()->json(['error' => 'El email o la contraseña no son correctos.'], 422);
                 }
 
                 $request->session()->regenerate();
@@ -1817,8 +1818,42 @@ public function course_url_slug($id){
              // 5. REVERSIÓN (ROLLBACK) si algo falla
              DB::rollBack();
              dd($th);
-            return redirect()->back()->with('fail', 'Registro fallido Reintentar.');
+            return redirect()->back()->with('fail', 'Registro fallido. Reintentar.');
         }
 
     }
+
+    // ==================== PASSWORD RECOVERY ====================
+
+    public function sendPasswordRecovery(Request $request)
+    {
+        $request->validate(['email' => 'required|email']);
+
+        $person = Person::where('email', $request->email)->first();
+
+        if (!$person) {
+            return response()->json(['error' => 'Correo no encontrado'], 404);
+        }
+
+        $user = User::where('person_id', $person->id)->first();
+        if (!$user) {
+            return response()->json(['error' => 'Usuario no encontrado'], 404);
+        }
+
+        try {
+            // Use academic module route to align with /academic/students recovery
+            $resetUrl = URL::temporarySignedRoute(
+                'aca_students_password_recovery_form',
+                now()->addMinutes(60),
+                ['personId' => $person->id]
+            );
+
+            Mail::to($person->email)->send(new \App\Mail\StudentPasswordRecoveryMail($person, $resetUrl));
+
+            return response()->json(['status' => 'success', 'message' => 'Correo enviado']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error: ' . $e->getMessage()], 500);
+        }
+    }
+
 }

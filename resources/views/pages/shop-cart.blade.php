@@ -172,7 +172,7 @@
                                     <input id="create_names" type="text" placeholder="Nombres completos">
                                 </div>
                                 <div class="checkout-field">
-                                    <label>Contrasena</label>
+                                    <label>Contraseña</label>
                                     <input id="create_password" type="password" placeholder="Opcional, por defecto tu DNI">
                                 </div>
                             </div>
@@ -183,8 +183,13 @@
                                     <input id="login_email" type="email" placeholder="correo@dominio.com">
                                 </div>
                                 <div class="checkout-field">
-                                    <label>Contrasena</label>
-                                    <input id="login_password" type="password" placeholder="Tu contrasena">
+                                    <label>Contraseña</label>
+                                    <input id="login_password" type="password" placeholder="Tu contraseña">
+                                </div>
+                                <div class="mt-2 text-center">
+                                    <a href="#" onclick="showPasswordRecovery(); return false;" class="text-sm text-blue-600 hover:underline">
+                                        ¿Olvidaste tu contraseña?
+                                    </a>
                                 </div>
                             </div>
 
@@ -226,13 +231,26 @@
                                 </div>
                             </div>
 
-                            <div class="invoice-actions">
-                                <button type="button" id="btn-finalize" class="boton-degradado-courses">
-                                    <b id="btn-finalize-text">FINALIZAR COMPRA</b>
-                                </button>
-                            </div>
-                        </div>
-                    </section>
+                             <div class="invoice-actions">
+                                 <button type="button" id="btn-finalize" class="boton-degradado-courses">
+                                     <b id="btn-finalize-text">FINALIZAR COMPRA</b>
+                                 </button>
+                             </div>
+                         </div>
+                     </section>
+
+                     <!-- Password Recovery Modal -->
+                     <div id="password-recovery-modal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
+                         <div class="bg-white p-6 rounded-lg shadow-xl max-w-md w-full">
+                             <h3 class="text-lg font-medium mb-4">Recuperar Contraseña</h3>
+                             <input type="email" id="recovery-email" placeholder="Tu correo electrónico" class="w-full border rounded p-2 mb-4">
+                             <div class="flex gap-2">
+                                 <button onclick="sendPasswordRecovery()" class="btn boton-degradado-courses">Enviar</button>
+                                 <button onclick="hidePasswordRecovery()" class="btn btn-secondary">Cancelar</button>
+                             </div>
+                             <div id="recovery-message" class="mt-2 text-sm"></div>
+                         </div>
+                     </div>
                 </div>
             </div>
         </div>
@@ -1086,6 +1104,9 @@
                 body: JSON.stringify(payload)
             }, 30000)
                 .then((data) => {
+                    // Refresh CSRF token after login/register
+                    refreshCsrfToken();
+
                     localStorage.removeItem('carrito');
                     window.location.href = data.url;
                 })
@@ -1206,7 +1227,78 @@
         }
 
         function priceLabel(value) {
-            return Number(value || 0) <= 0 ? 'Gratis' : `S/ ${money(value)}`;
+            return Number(value || 0) <=0 ? 'Gratis' : `S/ ${money(value)}`;
+        }
+
+        // Refresh CSRF token after login/register
+        function refreshCsrfToken() {
+            fetch("{{ route('web_get_csrf_token') }}", {
+                method: "GET",
+                headers: { "X-Requested-With": "XMLHttpRequest" }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.token) {
+                    const meta = document.querySelector('meta[name="csrf-token"]');
+                    if (meta) {
+                        meta.content = data.token;
+                        console.log('CSRF token refreshed');
+                    }
+                }
+            })
+            .catch(err => console.error('Failed to refresh CSRF token:', err));
+        }
+
+        // ==================== PASSWORD RECOVERY ====================
+        function showPasswordRecovery() {
+            document.getElementById('password-recovery-modal').classList.remove('hidden');
+            document.getElementById('recovery-message').innerHTML = '';
+        }
+
+        function hidePasswordRecovery() {
+            document.getElementById('password-recovery-modal').classList.add('hidden');
+        }
+
+        function sendPasswordRecovery() {
+            const email = document.getElementById('recovery-email').value;
+            const msgDiv = document.getElementById('recovery-message');
+
+            if (!email) {
+                msgDiv.innerHTML = '<span class="text-red-600">Ingresa tu correo</span>';
+                return;
+            }
+
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
+
+            fetch("{{ route('web_send_password_recovery') }}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": csrfToken
+                },
+                body: JSON.stringify({email: email})
+            })
+            .then(response => {
+                if (response.status === 419) {
+                    msgDiv.innerHTML = '<span class="text-red-600">Sesión expirada. Recargando página...</span>';
+                    setTimeout(() => location.reload(), 2000);
+                    throw new Error('Session expired');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.status === 'success') {
+                    msgDiv.innerHTML = '<span class="text-green-600">Correo enviado. Revisa tu bandeja de entrada.</span>';
+                    setTimeout(() => hidePasswordRecovery(), 3000);
+                } else {
+                    msgDiv.innerHTML = '<span class="text-red-600">' + (data.error || 'Error') + '</span>';
+                }
+            })
+            .catch(err => {
+                if (err.message !== 'Session expired') {
+                    msgDiv.innerHTML = '<span class="text-red-600">Error al enviar correo</span>';
+                }
+            });
         }
     </script>
 @stop
