@@ -645,21 +645,33 @@ public function course_url_slug($id){
 
     public function cartFinalize(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'sale_id' => 'required|integer|exists:onli_sales,id',
+        $freeCheckout = ! $request->filled('sale_id');
+
+        $rules = [
             'account_mode' => 'required|in:login,create',
             'email' => 'required|email',
             'password' => 'nullable|string|min:6',
             'names' => 'required_if:account_mode,create|nullable|string|max:255',
             'dni' => 'required_if:account_mode,create|nullable|string|max:20',
-            'invoice_type' => 'required|in:boleta,factura',
-            'invoice_name' => 'required_if:invoice_type,boleta|nullable|string|max:255',
-            'invoice_dni' => 'required_if:invoice_type,boleta|nullable|string|max:20',
-            'invoice_email' => 'nullable|email',
-            'invoice_ruc' => 'required_if:invoice_type,factura|nullable|string|max:20',
-            'invoice_business_name' => 'required_if:invoice_type,factura|nullable|string|max:255',
-            'invoice_address' => 'nullable|string|max:255',
-        ]);
+        ];
+
+        if ($freeCheckout) {
+            $rules['item_id'] = 'required|array|min:1';
+            $rules['item_id.*'] = 'integer|distinct';
+        } else {
+            $rules = array_merge($rules, [
+                'sale_id' => 'required|integer|exists:onli_sales,id',
+                'invoice_type' => 'required|in:boleta,factura',
+                'invoice_name' => 'required_if:invoice_type,boleta|nullable|string|max:255',
+                'invoice_dni' => 'required_if:invoice_type,boleta|nullable|string|max:20',
+                'invoice_email' => 'nullable|email',
+                'invoice_ruc' => 'required_if:invoice_type,factura|nullable|string|max:20',
+                'invoice_business_name' => 'required_if:invoice_type,factura|nullable|string|max:255',
+                'invoice_address' => 'nullable|string|max:255',
+            ]);
+        }
+
+        $validator = Validator::make($request->all(), $rules);
 
         if ($validator->fails()) {
             return response()->json([
@@ -669,14 +681,25 @@ public function course_url_slug($id){
         }
 
         $validated = $validator->validated();
-        $onliSale = OnliSale::with('details.item')->findOrFail($validated['sale_id']);
+        $onliSale = null;
+        $freeItems = null;
 
-        if ($onliSale->response_status !== 'approved') {
-            return response()->json(['error' => 'El pago aun no fue aprobado.'], 422);
-        }
+        if ($freeCheckout) {
+            $freeItems = $this->cartItemsFromIds($validated['item_id']);
 
-        if ($onliSale->nota_sale_id) {
-            return response()->json(['error' => 'Esta venta ya fue finalizada.'], 422);
+            if ($this->cartTotal($freeItems) > 0) {
+                return response()->json(['error' => 'El carrito no es gratuito. Completa el pago con tarjeta.'], 422);
+            }
+        } else {
+            $onliSale = OnliSale::with('details.item')->findOrFail($validated['sale_id']);
+
+            if ($onliSale->response_status !== 'approved') {
+                return response()->json(['error' => 'El pago aun no fue aprobado.'], 422);
+            }
+
+            if ($onliSale->nota_sale_id) {
+                return response()->json(['error' => 'Esta venta ya fue finalizada.'], 422);
+            }
         }
 
         if ($validated['account_mode'] === 'create') {
@@ -746,6 +769,14 @@ public function course_url_slug($id){
                 ['student_code' => $person->number ?: $person->id, 'new_student' => true]
             );
 
+            if ($freeCheckout) {
+                $onliSale = $this->createFreeCartSale($freeItems, $person);
+                $validated['invoice_type'] = 'boleta';
+                $validated['invoice_name'] = $person->full_name;
+                $validated['invoice_dni'] = $person->number;
+                $validated['invoice_email'] = $person->email;
+            }
+
             $saleNote = $this->createCartSaleNote($onliSale, $person, $validated);
             $onliSale->person_id = $person->id;
             $onliSale->email = $onliSale->email ?: $person->email;
@@ -759,7 +790,7 @@ public function course_url_slug($id){
                     continue;
                 }
 
-                AcaCapRegistration::firstOrCreate(
+                AcaCapRegistration::updateOrCreate(
                     ['student_id' => $student->id, 'course_id' => $item->item_id],
                     [
                         'status' => true,
@@ -797,16 +828,18 @@ public function course_url_slug($id){
             return response()->json(['error' => 'No se pudo finalizar la compra.'], 500);
         }
 
-        try {
-            Mail::to($onliSale->email ?: $person->email)
-                ->send(new ConfirmPurchaseMail(OnliSale::with('details.item')->where('id', $onliSale->id)->first()));
-        } catch (\Throwable $e) {
-            $onliSale->email_sent = false;
-            $onliSale->save();
+        if (! $freeCheckout) {
+            try {
+                Mail::to($onliSale->email ?: $person->email)
+                    ->send(new ConfirmPurchaseMail(OnliSale::with('details.item')->where('id', $onliSale->id)->first()));
+            } catch (\Throwable $e) {
+                $onliSale->email_sent = false;
+                $onliSale->save();
+            }
         }
 
         return response()->json([
-            'url' => route('web_thanks', $onliSale->id)
+            'url' => $freeCheckout ? route('aca_mycourses') : route('web_thanks', $onliSale->id)
         ]);
     }
 
@@ -839,6 +872,39 @@ public function course_url_slug($id){
         $payer['email'] = $email;
 
         return $payer;
+    }
+
+    private function createFreeCartSale($items, Person $person): OnliSale
+    {
+        $sale = OnliSale::create([
+            'module_name' => 'Onlineshop',
+            'person_id' => $person->id,
+            'clie_full_name' => $person->full_name,
+            'phone' => $person->telephone,
+            'email' => $person->email,
+            'total' => 0,
+            'transaction_amount' => 0,
+            'installments' => 1,
+            'identification_type' => $person->document_type_id,
+            'identification_number' => $person->number,
+            'response_status' => 'approved',
+            'response_status_detail' => 'free_checkout',
+            'response_date_approved' => Carbon::now()->format('Y-m-d'),
+            'response_payment_method_id' => 'free',
+        ]);
+
+        foreach ($items as $item) {
+            OnliSaleDetail::create([
+                'sale_id' => $sale->id,
+                'item_id' => $item->item_id,
+                'entitie' => $item->entitie,
+                'price' => 0,
+                'quantity' => 1,
+                'onli_item_id' => $item->id,
+            ]);
+        }
+
+        return $sale->load('details.item');
     }
 
     private function createCartSaleNote(OnliSale $onliSale, Person $person, array $data): Sale

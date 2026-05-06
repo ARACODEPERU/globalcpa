@@ -15,7 +15,7 @@
                         <div class="checkout-steps">
                             <button class="checkout-step active" data-step-label="payment">
                                 <span class="checkout-step-number">1</span>
-                                <span class="checkout-step-text">Carrito y pago</span>
+                                <span class="checkout-step-text" id="payment-step-text">Carrito y pago</span>
                             </button>
                             <button class="checkout-step" data-step-label="final">
                                 <span class="checkout-step-number">2</span>
@@ -115,10 +115,10 @@
 
                             <div class="col-xl-5 col-lg-6">
                                 <div class="card p-4 checkout-payment-card">
-                                    <h2 class="font-medium tracking-wide text-slate-700 mb-2">Pago con tarjeta</h2>
+                                    <h2 class="font-medium tracking-wide text-slate-700 mb-2" id="payment-card-title">Pago con tarjeta</h2>
                                     <div id="payment-products" class="checkout-products-list"></div>
                                     <hr>
-                                    <div class="d-flex justify-content-between mb-4">
+                                    <div class="checkout-total-row d-flex justify-content-between align-items-center mb-4">
                                         <span>Total</span>
                                         <strong id="totalid">S/ 0.00</strong>
                                     </div>
@@ -134,8 +134,8 @@
                     <section id="step-final" class="checkout-panel d-none">
                         <div class="account-shell">
                             <div class="account-header">
-                                <h2>Crea tu cuenta en menos de 30 segundos</h2>
-                                <p>Completa tus datos para asociar la compra y emitir el comprobante.</p>
+                                <h2 id="account-title">Crea tu cuenta en menos de 30 segundos</h2>
+                                <p id="account-subtitle">Completa tus datos para asociar la compra y emitir el comprobante.</p>
                             </div>
 
                             <div class="account-choice-grid">
@@ -188,7 +188,7 @@
                                 </div>
                             </div>
 
-                            <div class="invoice-block">
+                            <div class="invoice-block" id="invoice-block">
                                 <h3>Datos de comprobante</h3>
                                 <div class="flex border-b mb-4">
                                     <button type="button" class="invoice-tab active" data-invoice-type="boleta">Boleta</button>
@@ -228,7 +228,7 @@
 
                             <div class="invoice-actions">
                                 <button type="button" id="btn-finalize" class="boton-degradado-courses">
-                                    <b>FINALIZAR COMPRA</b>
+                                    <b id="btn-finalize-text">FINALIZAR COMPRA</b>
                                 </button>
                             </div>
                         </div>
@@ -438,6 +438,23 @@
             white-space: nowrap;
         }
 
+        .boton-degradado-trash {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            padding: 0;
+            line-height: 1;
+            text-align: center;
+        }
+
+        .boton-degradado-trash i {
+            display: block;
+            margin: 0;
+            line-height: 1;
+        }
+
         .cart-product-name,
         .cart-type-text {
             display: -webkit-box;
@@ -471,6 +488,20 @@
         .checkout-products-list {
             max-height: 180px;
             overflow: auto;
+        }
+
+        .checkout-total-row {
+            padding: 14px 0 2px;
+            color: #0f172a;
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .checkout-total-row strong {
+            color: #dc2626;
+            font-size: 24px;
+            font-weight: 900;
+            line-height: 1;
         }
 
         .account-shell {
@@ -711,6 +742,7 @@
         let paidSaleId = null;
         let paymentInitializing = false;
         let paymentVersion = 0;
+        let freeCheckout = false;
 
         document.addEventListener('DOMContentLoaded', () => {
             loadCart();
@@ -749,7 +781,11 @@
                     checkoutTotal = cartItems.reduce((sum, item) => sum + Number(item.price), 0);
                     renderCart();
                     resetPaymentState();
-                    startCardPayment();
+                    if (checkoutTotal <= 0) {
+                        startFreeCheckout();
+                    } else {
+                        startCardPayment();
+                    }
                 })
                 .catch(error => showAlert(error.message));
         }
@@ -772,7 +808,7 @@
                         </div>
                     </td>
                     <td class="px-4 py-3 font-medium text-slate-700 sm:px-5"><b class="cart-type-text">${item.additional || ''}</b></td>
-                    <td class="whitespace-nowrap px-4 py-3 font-medium text-slate-700 sm:px-5"><b>S/ ${money(item.price)}</b></td>
+                    <td class="whitespace-nowrap px-4 py-3 font-medium text-slate-700 sm:px-5"><b>${priceLabel(item.price)}</b></td>
                     <td class="whitespace-nowrap px-4 py-3 text-slate-700 sm:px-5">
                         <button class="boton-degradado-trash" type="button" onclick="removeProduct(${item.id})">
                             <i class="fa fa-trash" aria-hidden="true" style="font-size: 16px;"></i>
@@ -784,13 +820,14 @@
 
             document.getElementById('totalid').textContent = `S/ ${money(checkoutTotal)}`;
             renderPaymentSummary();
+            updateFreeCheckoutView();
         }
 
         function renderPaymentSummary() {
             document.getElementById('payment-products').innerHTML = cartItems.map(item => `
                 <div class="d-flex justify-content-between mb-2">
                     <span>${item.name}</span>
-                    <strong>S/ ${money(item.price)}</strong>
+                    <strong>${priceLabel(item.price)}</strong>
                 </div>
             `).join('');
         }
@@ -801,6 +838,7 @@
             document.getElementById('payment-products').innerHTML = '';
             document.getElementById('totalid').textContent = 'S/ 0.00';
             document.getElementById('cardPaymentBrick_container').innerHTML = '<div class="mp-loading-message p-4 text-center">Agrega cursos para cargar el pago.</div>';
+            updateFreeCheckoutView();
         }
 
         function removeProduct(id) {
@@ -862,6 +900,20 @@
 
                     paymentInitializing = false;
                 });
+        }
+
+        function startFreeCheckout() {
+            hideAlert();
+            freeCheckout = true;
+            paidSaleId = null;
+            preferenceId = null;
+            mercadoPublicKey = null;
+            paymentInitializing = false;
+            unmountMercadoPago();
+            document.getElementById('cardPaymentBrick_container').innerHTML = '<div class="mp-loading-message p-4 text-center">Este curso es gratis. Completa tus datos para acceder.</div>';
+            updateFreeCheckoutView();
+            fillPayerData({});
+            showStep('final');
         }
 
         async function renderMercadoPago(currentPaymentVersion) {
@@ -1001,7 +1053,7 @@
 
         function finalizeCheckout() {
             hideAlert();
-            if (!paidSaleId) {
+            if (!freeCheckout && !paidSaleId) {
                 showAlert('Primero debes completar el pago con tarjeta.');
                 return;
             }
@@ -1009,7 +1061,8 @@
             setBusy('btn-finalize', true);
             const accountMode = document.getElementById('account_mode').value;
             const payload = {
-                sale_id: paidSaleId,
+                sale_id: freeCheckout ? null : paidSaleId,
+                item_id: freeCheckout ? cartIds : undefined,
                 account_mode: accountMode,
                 email: accountMode === 'login' ? value('login_email') : value('create_email'),
                 password: accountMode === 'login' ? value('login_password') : value('create_password'),
@@ -1078,8 +1131,14 @@
             paidSaleId = null;
             preferenceId = null;
             mercadoPublicKey = null;
+            freeCheckout = false;
             showStep('payment');
+            updateFreeCheckoutView();
 
+            unmountMercadoPago();
+        }
+
+        function unmountMercadoPago() {
             if (window.cardPaymentBrickController && typeof window.cardPaymentBrickController.unmount === 'function') {
                 try {
                     window.cardPaymentBrickController.unmount();
@@ -1089,6 +1148,17 @@
             }
 
             window.cardPaymentBrickController = null;
+        }
+
+        function updateFreeCheckoutView() {
+            document.getElementById('payment-step-text').textContent = freeCheckout ? 'Carrito gratis' : 'Carrito y pago';
+            document.getElementById('payment-card-title').textContent = freeCheckout ? 'Curso gratuito' : 'Pago con tarjeta';
+            document.getElementById('account-title').textContent = freeCheckout ? 'Completa tus datos para acceder' : 'Crea tu cuenta en menos de 30 segundos';
+            document.getElementById('account-subtitle').textContent = freeCheckout
+                ? 'Crea una cuenta o inicia sesion para registrar el curso en tu dashboard.'
+                : 'Completa tus datos para asociar la compra y emitir el comprobante.';
+            document.getElementById('invoice-block').classList.toggle('d-none', freeCheckout);
+            document.getElementById('btn-finalize-text').textContent = freeCheckout ? 'ACCEDER A TU CUENTA' : 'FINALIZAR COMPRA';
         }
 
         function requestJson(url, options, timeoutMs) {
@@ -1133,6 +1203,10 @@
 
         function money(value) {
             return Number(value || 0).toFixed(2);
+        }
+
+        function priceLabel(value) {
+            return Number(value || 0) <= 0 ? 'Gratis' : `S/ ${money(value)}`;
         }
     </script>
 @stop
