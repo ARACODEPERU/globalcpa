@@ -125,7 +125,89 @@
                                     <div class="mercadopago-shell">
                                         <div class="checkout-field mb-3">
                                             <label>Telefono</label>
-                                            <input id="payment_phone" type="tel" placeholder="Numero de telefono">
+                                            <div class="phone-input-group">
+                                                <select id="payment_phone_country" aria-label="Codigo de pais">
+                                                    <option value="+51" data-area-code="51" selected>Peru +51</option>
+                                                    <option value="+54" data-area-code="54">Argentina +54</option>
+                                                    <option value="+591" data-area-code="591">Bolivia +591</option>
+                                                    <option value="+55" data-area-code="55">Brasil +55</option>
+                                                    <option value="+56" data-area-code="56">Chile +56</option>
+                                                    <option value="+57" data-area-code="57">Colombia +57</option>
+                                                    <option value="+506" data-area-code="506">Costa Rica +506</option>
+                                                    <option value="+53" data-area-code="53">Cuba +53</option>
+                                                    <option value="+593" data-area-code="593">Ecuador +593</option>
+                                                    <option value="+503" data-area-code="503">El Salvador +503</option>
+                                                    <option value="+34" data-area-code="34">Espana +34</option>
+                                                    <option value="+1" data-area-code="1">Estados Unidos +1</option>
+                                                    <option value="+1" data-area-code="1">Canada +1</option>
+                                                    <option value="+502" data-area-code="502">Guatemala +502</option>
+                                                    <option value="+504" data-area-code="504">Honduras +504</option>
+                                                    <option value="+52" data-area-code="52">Mexico +52</option>
+                                                    <option value="+505" data-area-code="505">Nicaragua +505</option>
+                                                    <option value="+507" data-area-code="507">Panama +507</option>
+                                                    <option value="+595" data-area-code="595">Paraguay +595</option>
+                                                    <option value="+1" data-area-code="1">Puerto Rico +1</option>
+                                                    <option value="+1" data-area-code="1">Republica Dominicana +1</option>
+                                                    <option value="+598" data-area-code="598">Uruguay +598</option>
+                                                    <option value="+58" data-area-code="58">Venezuela +58</option>
+                                                    <option value="+49" data-area-code="49">Alemania +49</option>
+                                                    <option value="+376" data-area-code="376">Andorra +376</option>
+                                                    <option value="+244" data-area-code="244">Angola +244</option>
+                                                    <option value="+966" data-area-code="966">Arabia Saudita +966</option>
+                                                    <option value="+213" data-area-code="213">Argelia +213</option>
+                                                    <option value="+61" data-area-code="61">Australia +61</option>
+                                                    <option value="+43" data-area-code="43">Austria +43</option>
+                                                    <option value="+32" data-area-code="32">Belgica +32</option>
+                                                    <option value="+501" data-area-code="501">Belice +501</option>
+                                                    <option value="+229" data-area-code="229">Benin +229</option>
+                                                    <option value="+359" data-area-code="359">Bulgaria +359</option>
+                                                    <option value="+237" data-area-code="237">Camerun +237</option>
+                                                    <option value="+86" data-area-code="86">China +86</option>
+                                                    <option value="+357" data-area-code="357">Chipre +357</option>
+                                                    <option value="+82" data-area-code="82">Corea del Sur +82</option>
+                                                    <option value="+225" data-area-code="225">Costa de Marfil +225</option>
+                                                    <option value="+385" data-area-code="385">Croacia +385</option>
+                                                    <option value="+45" data-area-code="45">Dinamarca +45</option>
+                                                    <option value="+971" data-area-code="971">Emiratos Arabes Unidos +971</option>
+                                                    <option value="+421" data-area-code="421">Eslovaquia +421</option>
+                                                    <option value="+386" data-area-code="386">Eslovenia +386</option>
+                                                    <option value="+372" data-area-code="372">Estonia +372</option>
+                                                    <option value="+63" data-area-code="63">Filipinas +63</option>
+                                                    <option value="+358" data-area-code="358">Finlandia +358</option>
+                                                    <option value="+33" data-area-code="33">Francia +33</option>
+                                                    <option value="+30" data-area-code="30">Grecia +30</option>
+                                                    <option value="+852" data-area-code="852">Hong Kong +852</option>
+                                                    <option value="+36" data-area-code="36">Hungria +36</option>
+                                                    <option value="+91" data-area-code="91">India +91</option>
+                                                    <option value="+62" data-area-code="62">Indonesia +62</option>
+                                                    <option value="+353" data-area-code="353">Irlanda +353</option>
+                                                    <option value="+354" data-area-code="354">Islandia +354</option>
+                                                    <option value="+972" data-area-code="972">Israel +972</option>
+                                                    <option value="+39" data-area-code="39">Italia +39</option>
+                                                    <option value="+81" data-area-code="81">Japon +81</option>
+                                                    <option value="+371" data-area-code="371">Letonia +371</option>
+                                                    <option value="+370" data-area-code="370">Lituania +370</option>
+                                                    <option value="+352" data-area-code="352">Luxemburgo +352</option>
+                                                    <option value="+60" data-area-code="60">Malasia +60</option>
+                                                    <option value="+212" data-area-code="212">Marruecos +212</option>
+                                                    <option value="+31" data-area-code="31">Paises Bajos +31</option>
+                                                    <option value="+64" data-area-code="64">Nueva Zelanda +64</option>
+                                                    <option value="+47" data-area-code="47">Noruega +47</option>
+                                                    <option value="+48" data-area-code="48">Polonia +48</option>
+                                                    <option value="+351" data-area-code="351">Portugal +351</option>
+                                                    <option value="+44" data-area-code="44">Reino Unido +44</option>
+                                                    <option value="+420" data-area-code="420">Republica Checa +420</option>
+                                                    <option value="+40" data-area-code="40">Rumania +40</option>
+                                                    <option value="+7" data-area-code="7">Rusia +7</option>
+                                                    <option value="+65" data-area-code="65">Singapur +65</option>
+                                                    <option value="+27" data-area-code="27">Sudafrica +27</option>
+                                                    <option value="+46" data-area-code="46">Suecia +46</option>
+                                                    <option value="+41" data-area-code="41">Suiza +41</option>
+                                                    <option value="+66" data-area-code="66">Tailandia +66</option>
+                                                    <option value="+90" data-area-code="90">Turquia +90</option>
+                                                </select>
+                                                <input id="payment_phone" type="tel" placeholder="Numero de telefono">
+                                            </div>
                                         </div>
                                         <div id="cardPaymentBrick_container"></div>
                                     </div>
@@ -265,6 +347,24 @@
                                  <button type="button" onclick="hidePaymentWarningModal()" class="payment-warning-button">Entendido</button>
                              </div>
                              <small class="payment-warning-note">*descuida tus datos estan protegidos y ningun cobro se ha realizado.</small>
+                         </div>
+                     </div>
+
+                     <div id="account-conflict-modal" class="hidden account-conflict-backdrop fixed inset-0 flex items-center justify-center z-50">
+                         <div class="account-conflict-dialog">
+                             <button type="button" onclick="hideAccountConflictModal()" class="account-conflict-close" aria-label="Cerrar">x</button>
+                             <div class="account-conflict-icon">!</div>
+                             <span class="account-conflict-kicker">Tu compra esta protegida</span>
+                             <h3 id="account-conflict-title">Revisemos tus datos</h3>
+                             <p id="account-conflict-message"></p>
+                             <div class="account-conflict-support">
+                                 <a href="mailto:informes@globalcpaperu.com">informes@globalcpaperu.com</a>
+                                 <a href="tel:+51967052506">+51 967052506</a>
+                             </div>
+                             <div class="account-conflict-actions">
+                                 <button type="button" onclick="hideAccountConflictModal()" class="account-conflict-secondary">Cerrar</button>
+                                 <button type="button" onclick="goToLoginFromConflictModal()" class="account-conflict-primary">Iniciar sesion</button>
+                             </div>
                          </div>
                      </div>
                 </div>
@@ -589,6 +689,130 @@
             line-height: 1.4;
         }
 
+        .account-conflict-backdrop {
+            padding: 20px;
+            background: rgba(15, 23, 42, 0.72);
+            backdrop-filter: blur(5px);
+        }
+
+        .account-conflict-dialog {
+            position: relative;
+            width: min(540px, 100%);
+            padding: 34px;
+            border: 2px solid #fecaca;
+            border-top: 6px solid #dc2626;
+            border-radius: 12px;
+            background: #fff;
+            box-shadow: 0 28px 76px rgba(15, 23, 42, 0.36);
+            text-align: center;
+        }
+
+        .account-conflict-close {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            width: 32px;
+            height: 32px;
+            border: 0;
+            border-radius: 50%;
+            background: #f1f5f9;
+            color: #475569;
+            font-size: 20px;
+            line-height: 1;
+            cursor: pointer;
+        }
+
+        .account-conflict-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 68px;
+            height: 68px;
+            margin-bottom: 16px;
+            border-radius: 50%;
+            background: #dc2626;
+            color: #fff;
+            font-size: 36px;
+            font-weight: 900;
+            box-shadow: 0 0 0 9px #fee2e2;
+        }
+
+        .account-conflict-kicker {
+            display: block;
+            margin-bottom: 8px;
+            color: #15803d;
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: .04em;
+            text-transform: uppercase;
+        }
+
+        .account-conflict-dialog h3 {
+            margin: 0 28px 12px;
+            color: #0f172a;
+            font-size: 24px;
+            font-weight: 800;
+        }
+
+        .account-conflict-dialog p {
+            margin: 0;
+            color: #334155;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        .account-conflict-support {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .account-conflict-support a {
+            display: inline-flex;
+            align-items: center;
+            min-height: 36px;
+            padding: 8px 12px;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            background: #fff7f7;
+            color: #b91c1c;
+            font-size: 14px;
+            font-weight: 800;
+        }
+
+        .account-conflict-actions {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr);
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .account-conflict-secondary,
+        .account-conflict-primary {
+            min-height: 46px;
+            border-radius: 8px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .account-conflict-secondary {
+            border: 1px solid #cbd5e1;
+            background: #fff;
+            color: #334155;
+        }
+
+        .account-conflict-primary {
+            border: 0;
+            background: #dc2626;
+            color: #fff;
+        }
+
+        .account-conflict-primary:hover {
+            background: #b91c1c;
+        }
+
         .mercadopago-shell {
             max-width: 480px;
             margin: 0 auto;
@@ -747,6 +971,29 @@
             box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
         }
 
+        .phone-input-group {
+            display: grid;
+            grid-template-columns: minmax(142px, 170px) minmax(0, 1fr);
+            gap: 8px;
+        }
+
+        .phone-input-group select {
+            width: 100%;
+            height: 44px;
+            padding: 10px 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            background: #fff;
+            color: #0f172a;
+            outline: none;
+            font-weight: 700;
+        }
+
+        .phone-input-group select:focus {
+            border-color: #0f766e;
+            box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
+        }
+
         .account-actions {
             display: flex;
             justify-content: flex-end;
@@ -829,6 +1076,18 @@
             .mercadopago-shell {
                 max-width: 100%;
             }
+
+            .phone-input-group {
+                grid-template-columns: 1fr;
+            }
+
+            .account-conflict-dialog {
+                padding: 28px 20px;
+            }
+
+            .account-conflict-actions {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 
@@ -852,6 +1111,7 @@
         let paymentInitializing = false;
         let paymentVersion = 0;
         let freeCheckout = false;
+        let lastCardholderName = '';
 
         document.addEventListener('DOMContentLoaded', () => {
             loadCart();
@@ -1058,6 +1318,7 @@
                         onSubmit: (cardFormData) => {
                             hideAlert();
                             cardFormData = normalizeCardFormData(cardFormData);
+                            lastCardholderName = getCardholderName(cardFormData);
 
                             return requestJson(routes.payment, {
                                 method: 'PUT',
@@ -1072,7 +1333,11 @@
                             }, 30000)
                                 .then((data) => {
                                     paidSaleId = data.sale_id;
-                                    fillPayerData(data.payer || {});
+                                    const payer = data.payer || {};
+                                    if (!payer.names && lastCardholderName) {
+                                        payer.names = lastCardholderName;
+                                    }
+                                    fillPayerData(payer);
                                     showStep('final');
                                 })
                                 .catch(error => {
@@ -1129,6 +1394,9 @@
         function normalizeCardFormData(cardFormData) {
             const payer = cardFormData.payer || {};
             const phone = value('payment_phone');
+            const phoneCountry = document.getElementById('payment_phone_country');
+            const areaCode = phoneCountry.selectedOptions[0]?.dataset.areaCode || phoneCountry.value.replace(/\D/g, '');
+            const cardholderName = getCardholderName(cardFormData);
             payer.email = (payer.email || '').trim().toLowerCase();
 
             if (!isValidEmail(payer.email)) {
@@ -1141,11 +1409,59 @@
 
             payer.phone = {
                 ...(payer.phone || {}),
+                area_code: areaCode,
                 number: phone
             };
 
+            if (cardholderName) {
+                const nameParts = cardholderName.split(/\s+/);
+                payer.first_name = payer.first_name || nameParts.shift() || '';
+                payer.last_name = payer.last_name || nameParts.join(' ');
+                cardFormData.cardholderName = cardholderName;
+            }
+
             cardFormData.payer = payer;
             return cardFormData;
+        }
+
+        function getCardholderName(cardFormData) {
+            const possibleNames = [
+                cardFormData.cardholderName,
+                cardFormData.cardholder_name,
+                cardFormData.cardholder?.name,
+                cardFormData.cardholder?.cardholderName,
+                cardFormData.payer?.names,
+                `${cardFormData.payer?.first_name || ''} ${cardFormData.payer?.last_name || ''}`,
+                getCardholderNameFromBrick()
+            ];
+
+            return (possibleNames.find(name => String(name || '').trim()) || '').trim();
+        }
+
+        function getCardholderNameFromBrick() {
+            const container = document.getElementById('cardPaymentBrick_container');
+            if (!container) {
+                return '';
+            }
+
+            const inputs = Array.from(container.querySelectorAll('input'));
+            const holderInput = inputs.find(input => {
+                const attributes = [
+                    input.id,
+                    input.name,
+                    input.getAttribute('aria-label'),
+                    input.getAttribute('placeholder'),
+                    input.closest('label')?.textContent,
+                    input.parentElement?.textContent
+                ].join(' ').toLowerCase();
+
+                return attributes.includes('titular') ||
+                    attributes.includes('cardholder') ||
+                    attributes.includes('nombre') ||
+                    attributes.includes('name');
+            });
+
+            return holderInput ? holderInput.value.trim() : '';
         }
 
         function isValidEmail(email) {
@@ -1221,7 +1537,14 @@
                     localStorage.removeItem('carrito');
                     window.location.href = data.url;
                 })
-                .catch(error => showAlert(error.message))
+                .catch(error => {
+                    if (error.conflictType === 'dni' || error.conflictType === 'email') {
+                        showAccountConflictModal(error.message, error.conflictType);
+                        return;
+                    }
+
+                    showAlert(error.message);
+                })
                 .finally(() => setBusy('btn-finalize', false));
         }
 
@@ -1249,6 +1572,27 @@
             const alert = document.getElementById('checkout-alert');
             alert.textContent = '';
             alert.classList.add('d-none');
+        }
+
+        function showAccountConflictModal(message, conflictType) {
+            const title = conflictType === 'email'
+                ? 'Este email ya esta registrado'
+                : 'Este numero de identificacion ya esta registrado';
+
+            document.getElementById('account-conflict-title').textContent = title;
+            document.getElementById('account-conflict-message').textContent = message;
+            document.getElementById('account-conflict-modal').classList.remove('hidden');
+        }
+
+        function hideAccountConflictModal() {
+            document.getElementById('account-conflict-modal').classList.add('hidden');
+            document.getElementById('account-conflict-message').textContent = '';
+        }
+
+        function goToLoginFromConflictModal() {
+            hideAccountConflictModal();
+            selectAccountMode('login');
+            document.getElementById('login_email').focus();
         }
 
         function showPaymentWarningModal(message) {
@@ -1370,7 +1714,9 @@
                     }
 
                     if (!response.ok) {
-                        throw new Error(data.error || data.message || 'No se pudo completar la solicitud.');
+                        const requestError = new Error(data.error || data.message || 'No se pudo completar la solicitud.');
+                        requestError.conflictType = data.conflict_type || null;
+                        throw requestError;
                     }
 
                     return data;

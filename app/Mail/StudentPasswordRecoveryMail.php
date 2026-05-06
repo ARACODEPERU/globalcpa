@@ -30,7 +30,7 @@ class StudentPasswordRecoveryMail extends Mailable
                 env('MAIL_FROM_ADDRESS', 'informes@globalcpaperu.com'),
                 env('MAIL_FROM_NAME', 'CPA Academy')
             ),
-            subject: 'Recuperar contraseña - ' . env('APP_NAME', 'Global CPA'),
+            subject: 'Recuperar contraseña - ' . env('APP_NAME', 'CPA Academy'),
         );
     }
 

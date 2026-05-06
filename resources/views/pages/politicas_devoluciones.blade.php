@@ -45,7 +45,7 @@
                                 </h2>
                                 <h1
                                     style="color: #1a1a1a; border-bottom: 2px solid #ddd; padding-bottom: 5px; margin-top: 25px;">
-                                    Política de Devoluciones - Global CPA</h1>
+                                    Política de Devoluciones - CPA Academy</h1>
 
                                 <div class="section">
                                     <h2
@@ -66,7 +66,7 @@
                                         2. Cursos ya iniciados</h2>
                                     <p style="margin-bottom: 10px;">Una vez iniciado el curso o si el usuario ha accedido a
                                         los materiales digitales, no procederá la devolución, salvo en casos de cancelación
-                                        o reprogramación atribuibles a Global CPA.</p>
+                                        o reprogramación atribuibles a CPA Academy.</p>
                                 </div>
 
                                 <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
@@ -76,7 +76,7 @@
                                         style="color: #1a1a1a; border-bottom: 2px solid #ddd; padding-bottom: 5px; margin-top: 25px;">
                                         3. Cancelación o reprogramación del curso</h2>
                                     <p style="margin-bottom: 10px;">Si por causas de fuerza mayor o decisión institucional
-                                        el curso no pudiera dictarse en la fecha programada, Global CPA ofrecerá al usuario:
+                                        el curso no pudiera dictarse en la fecha programada, CPA Academy ofrecerá al usuario:
                                     </p>
                                     <ul style="margin-top: 5px; margin-bottom: 15px; padding-left: 25px;">
                                         <li style="margin-bottom: 5px;">La reprogramación del curso en nuevas fechas, o</li>

@@ -46,7 +46,7 @@
                                     Última actualización: 06/07/2025
                                 </h2>
                                 <p>
-                                    En <b>GLOBAL CPA </b> (en adelante, "nosotros", "nuestro" o "la empresa"), valoramos tu
+                                    En <b>CPA ACADEMY </b> (en adelante, "nosotros", "nuestro" o "la empresa"), valoramos tu
                                     privacidad y
                                     nos comprometemos a proteger la información personal que compartes con nosotros. Esta
                                     política de privacidad

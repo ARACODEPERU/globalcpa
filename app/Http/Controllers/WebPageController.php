@@ -587,14 +587,19 @@ public function course_url_slug($id){
         }
 
         $identification = $payer['identification'] ?? [];
+        $payerName = trim($payer['names'] ?? trim(($payer['first_name'] ?? '') . ' ' . ($payer['last_name'] ?? '')));
+        $payerName = $payerName ?: trim($cardData['cardholderName'] ?? ($cardData['cardholder']['name'] ?? ''));
+        $phoneCode = $payer['phone']['area_code'] ?? null;
+        $phoneNumber = $payer['phone']['number'] ?? null;
+        $phone = trim(($phoneCode ? '+' . ltrim($phoneCode, '+') . ' ' : '') . ($phoneNumber ?? ''));
 
         DB::beginTransaction();
         try {
             $sale = OnliSale::create([
                 'module_name' => 'Onlineshop',
                 'person_id' => null,
-                'clie_full_name' => trim(($payer['first_name'] ?? '') . ' ' . ($payer['last_name'] ?? '')),
-                'phone' => $payer['phone']['number'] ?? null,
+                'clie_full_name' => $payerName,
+                'phone' => $phone ?: null,
                 'email' => $payer['email'] ?? null,
                 'total' => $expectedTotal,
                 'transaction_amount' => $expectedTotal,
@@ -704,14 +709,28 @@ public function course_url_slug($id){
         }
 
         if ($validated['account_mode'] === 'create') {
-            if (User::where('email', $validated['email'])->exists()) {
-                return response()->json(['error' => 'Este email ya tiene una cuenta. Elige iniciar sesion.'], 422);
+            $email = strtolower(trim($validated['email']));
+            $dni = trim($validated['dni']);
+
+            if (Person::where('number', $dni)->exists()) {
+                return response()->json([
+                    'error' => 'Tranquilo, tu compra esta protegida. El numero de identificacion ingresado ya esta registrado en CPA Academy, por eso no podemos crear otra cuenta con el mismo documento. Inicia sesion con tu cuenta para continuar. Si necesitas ayuda, escribenos a informes@globalcpaperu.com o comunicate al +51 967052506.',
+                    'conflict_type' => 'dni',
+                ], 409);
             }
 
-            $existingPerson = Person::where('number', $validated['dni'])->first();
-            if ($existingPerson && User::where('person_id', $existingPerson->id)->exists()) {
-                return response()->json(['error' => 'Este DNI ya tiene una cuenta. Elige iniciar sesion.'], 422);
+            if (
+                User::where('email', $email)->exists()
+                || Person::whereRaw('LOWER(email) = ?', [$email])->exists()
+            ) {
+                return response()->json([
+                    'error' => 'Tranquilo, tu compra esta protegida. El email ingresado ya esta registrado en CPA Academy. Para cuidar tu acceso, inicia sesion con esa cuenta y continua desde aqui. Si necesitas ayuda, escribenos a informes@globalcpaperu.com o comunicate al +51 967052506.',
+                    'conflict_type' => 'email',
+                ], 409);
             }
+
+            $validated['email'] = $email;
+            $validated['dni'] = $dni;
         }
 
         DB::beginTransaction();
