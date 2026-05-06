@@ -1232,7 +1232,7 @@
 
         // Refresh CSRF token after login/register
         function refreshCsrfToken() {
-            fetch("{{ route('web_get_csrf_token') }}", {
+            fetch("{{ url('/get-csrf-token') }}", {
                 method: "GET",
                 headers: { "X-Requested-With": "XMLHttpRequest" }
             })
