@@ -16,7 +16,6 @@ use App\Http\Controllers\LandingController;
 use App\Http\Controllers\MetaController;
 use App\Http\Controllers\ModuloController;
 use App\Http\Controllers\WebPageController;
-use App\Http\Controllers\ApisnetPeController;
 use App\Mail\StudentRegistrationMailable;
 use App\Models\District;
 use App\Models\Person;
@@ -52,7 +51,6 @@ Route::get('/carrito', [WebPageController::class, 'shopcart'])->name('web_carrit
 Route::post('/carrito/preference', [WebPageController::class, 'cartPreference'])->name('web_cart_preference');
 Route::put('/carrito/payment', [WebPageController::class, 'cartProcessPayment'])->name('web_cart_process_payment');
 Route::post('/carrito/finalize', [WebPageController::class, 'cartFinalize'])->name('web_cart_finalize');
-Route::post('/carrito/documento/consultar', [ApisnetPeController::class, 'consultMigo'])->name('web_cart_document_lookup');
 Route::get('/metodos-de-pago', [WebPageController::class, 'accounts'])->name('web_accounts');
 Route::get('/pagar', [WebPageController::class, 'pay'])->name('web_pay');
 Route::post('/safe_pay', [WebPageController::class, 'pagar'])->name('paying');
