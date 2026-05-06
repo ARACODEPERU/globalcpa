@@ -233,6 +233,8 @@
     const qrImage = ref(null);
     const stageWidth = ref(1000);
     const stageScale = ref(1);
+    const transformerRef = ref(null);
+    const selectedNode = ref(null);
 
     const frontTemplateUrl = computed(() => getImage(props.certificate.certificate_img));
     const backTemplateUrl = computed(() => {
@@ -271,6 +273,29 @@
         scaleX: stageScale.value,
         scaleY: stageScale.value,
     }));
+    const transformerConfig = {
+        rotateEnabled: false,
+        keepRatio: true,
+        enabledAnchors: ['top-left', 'top-right', 'bottom-left', 'bottom-right'],
+        borderEnabled: true,
+        borderStroke: '#0f62fe',
+        borderStrokeWidth: 2,
+        borderDash: [6, 4],
+        anchorStroke: '#0f62fe',
+        anchorStrokeWidth: 2,
+        anchorFill: '#ffffff',
+        anchorSize: 14,
+        anchorCornerRadius: 0,
+        padding: 6,
+        centeredScaling: false,
+        boundBoxFunc: (oldBox, newBox) => {
+            if (newBox.width < 20 || newBox.height < 20) {
+                return oldBox;
+            }
+
+            return newBox;
+        },
+    };
 
     const loadKonvaImage = (url, targetRef) => {
         if (!url || typeof window === 'undefined') {
@@ -558,6 +583,50 @@
         form[item.y] = Math.round(event.target.y());
     };
 
+    const attachTransformer = (event) => {
+        if (event.cancelBubble !== undefined) {
+            event.cancelBubble = true;
+        }
+
+        selectedNode.value = event.target;
+
+        nextTick(() => {
+            const transformer = transformerRef.value?.getNode?.();
+            if (!transformer || !selectedNode.value) return;
+
+            transformer.nodes([selectedNode.value]);
+            transformer.moveToTop();
+            transformer.forceUpdate();
+            transformer.getLayer()?.batchDraw();
+        });
+    };
+
+    const clearSelection = (event) => {
+        if (event.target !== event.target.getStage()) return;
+
+        selectedNode.value = null;
+        const transformer = transformerRef.value?.getNode?.();
+        transformer?.nodes([]);
+        transformer?.getLayer()?.batchDraw();
+    };
+
+    const onTextTransformEnd = (item, event) => {
+        const node = event.target;
+        const scale = Math.max(node.scaleX(), node.scaleY());
+        const currentSize = toNumber(form[item.size], item.defaultSize || 24);
+
+        form[item.x] = Math.round(node.x());
+        form[item.y] = Math.round(node.y());
+        form[item.size] = Math.max(6, Math.round(currentSize * scale));
+
+        if (item.width) {
+            form[item.width] = Math.max(40, Math.round(toNumber(form[item.width], item.defaultWidth || 600) * node.scaleX()));
+        }
+
+        node.scaleX(1);
+        node.scaleY(1);
+    };
+
     const onQrDragEnd = (event) => {
         if (!previewQr.value) return;
 
@@ -576,6 +645,34 @@
 
         form.position_qr_x = position.x;
         form.position_qr_y = position.y;
+    };
+
+    const onQrTransformEnd = (event) => {
+        if (!previewQr.value) return;
+
+        const node = event.target;
+        const size = Math.max(20, Math.round(previewQr.value.size * Math.max(node.scaleX(), node.scaleY())));
+        const position = qrPositionToAnchor(
+            previewQr.value.align,
+            node.x(),
+            node.y(),
+            size
+        );
+
+        if (previewQr.value.isBack) {
+            form.back_size_qr = size;
+            form.back_position_qr_x = position.x;
+            form.back_position_qr_y = position.y;
+        } else {
+            form.size_qr = size;
+            form.position_qr_x = position.x;
+            form.position_qr_y = position.y;
+        }
+
+        node.scaleX(1);
+        node.scaleY(1);
+        node.width(size);
+        node.height(size);
     };
 
     const loadQrPreview = async () => {
@@ -2091,9 +2188,9 @@
                         <image-png v-if="imagePreviewLoading" :alt="'Maximizar'" />
                         <div v-else ref="previewWrap" class="w-full overflow-auto rounded border border-gray-200 bg-gray-100 p-3 dark:border-gray-700 dark:bg-gray-900">
                             <div class="mb-2 text-xs text-gray-500 dark:text-gray-400">
-                                Arrastra los textos o el QR para actualizar sus posiciones X/Y antes de guardar.
+                                Arrastra para mover. Selecciona un texto o QR y usa las esquinas para cambiar su tamaÃ±o antes de guardar.
                             </div>
-                            <v-stage :config="stageConfig">
+                            <v-stage :config="stageConfig" @mousedown="clearSelection" @touchstart="clearSelection">
                                 <v-layer :config="layerConfig">
                                     <v-image
                                         v-if="activeBaseImage"
@@ -2102,14 +2199,25 @@
                                     <v-image
                                         v-if="previewQr"
                                         :config="previewQr.config"
+                                        @mousedown="attachTransformer"
+                                        @touchstart="attachTransformer"
+                                        @click="attachTransformer"
+                                        @tap="attachTransformer"
                                         @dragend="onQrDragEnd"
+                                        @transformend="onQrTransformEnd"
                                     />
                                     <v-text
                                         v-for="item in previewTexts"
                                         :key="item.id"
                                         :config="item.config"
+                                        @mousedown="attachTransformer"
+                                        @touchstart="attachTransformer"
+                                        @click="attachTransformer"
+                                        @tap="attachTransformer"
                                         @dragend="(event) => onTextDragEnd(item, event)"
+                                        @transformend="(event) => onTextTransformEnd(item, event)"
                                     />
+                                    <v-transformer ref="transformerRef" :config="transformerConfig" />
                                 </v-layer>
                             </v-stage>
                         </div>

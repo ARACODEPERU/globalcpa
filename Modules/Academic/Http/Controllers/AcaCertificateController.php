@@ -194,7 +194,9 @@ class AcaCertificateController extends Controller
             }
         }
 
-        $certificate = AcaCertificateParameter::create([
+        $layoutDefaults = $this->defaultCertificateLayout($imgWidth, $imgHeight, $backImgWidth, $backImgHeight);
+
+        $certificate = AcaCertificateParameter::create(array_merge($layoutDefaults, [
             'course_id' => $request->get('course_id') ?? null,
             'certificate_img' => $path,
             'certificate_img_width' => $imgWidth,
@@ -212,9 +214,123 @@ class AcaCertificateController extends Controller
             'back_content_type' => $request->get('back_content_type'),
             'back_content_type_module' => $request->get('back_content_type_module'),
             'has_reverse' => $request->get('has_reverse') ? true : false,
-        ]);
+        ]));
+
+        if ($certificate->for_module) {
+            AcaCertificateModuleConfig::create([
+                'certificate_id' => $certificate->id,
+                'fontfamily_module_description' => 'Poppins-Light.ttf',
+                'font_align_module_description' => 'center',
+                'font_vertical_module_description' => 'top',
+                'position_module_description_x' => (int) round(($imgWidth ?: 1550) / 2),
+                'position_module_description_y' => (int) round(($imgHeight ?: 1096) * 0.56),
+                'font_size_module_description' => 22,
+                'max_width_module_description' => (int) round(($imgWidth ?: 1550) * 0.70),
+                'text_align_module_description' => 'center',
+                'color_module_description' => '#000000',
+                'visible_module_description' => true,
+            ]);
+        }
 
         return redirect()->route('aca_certificate_edit', $certificate->id);
+    }
+
+    private function defaultCertificateLayout(?int $width, ?int $height, ?int $backWidth = null, ?int $backHeight = null): array
+    {
+        $width = $width ?: 1550;
+        $height = $height ?: 1096;
+        $backWidth = $backWidth ?: $width;
+        $backHeight = $backHeight ?: $height;
+
+        $centerX = (int) round($width / 2);
+        $backCenterX = (int) round($backWidth / 2);
+        $frontQrSize = 150;
+        $backQrSize = 150;
+
+        return [
+            'fontfamily_date' => 'Poppins-Light.ttf',
+            'font_align_date' => 'center',
+            'font_vertical_align_date' => 'top',
+            'position_date_x' => $centerX,
+            'position_date_y' => (int) round($height * 0.18),
+            'font_size_date' => 28,
+            'color_date' => '#000000',
+            'visible_date' => true,
+            'fontfamily_names' => 'Poppins-Light.ttf',
+            'font_align_names' => 'center',
+            'font_vertical_align_names' => 'top',
+            'position_names_x' => $centerX,
+            'position_names_y' => (int) round($height * 0.30),
+            'font_size_names' => 42,
+            'color_names' => '#000000',
+            'visible_names' => true,
+            'fontfamily_title' => 'Poppins-Light.ttf',
+            'font_align_title' => 'center',
+            'font_vertical_align_title' => 'top',
+            'position_title_x' => $centerX,
+            'position_title_y' => (int) round($height * 0.42),
+            'font_size_title' => 32,
+            'max_width_title' => (int) round($width * 0.68),
+            'color_title' => '#000000',
+            'visible_title' => true,
+            'position_qr_x' => 0,
+            'position_qr_y' => (int) round($height * 0.72),
+            'size_qr' => $frontQrSize,
+            'font_align_qr' => 'top-center',
+            'visible_image_qr' => true,
+            'fontfamily_description' => 'Poppins-Light.ttf',
+            'font_align_description' => 'center',
+            'font_vertical_align_description' => 'top',
+            'position_description_x' => $centerX,
+            'position_description_y' => (int) round($height * 0.56),
+            'font_size_description' => 22,
+            'max_width_description' => (int) round($width * 0.70),
+            'text_align_description' => 'center',
+            'content_type' => 'description',
+            'color_description' => '#000000',
+            'visible_description' => true,
+            'interspace_description' => 6,
+            'back_fontfamily_date' => 'Poppins-Light.ttf',
+            'back_font_align_date' => 'center',
+            'back_font_vertical_align_date' => 'top',
+            'back_position_date_x' => $backCenterX,
+            'back_position_date_y' => (int) round($backHeight * 0.16),
+            'back_font_size_date' => 24,
+            'back_color_date' => '#000000',
+            'back_visible_date' => true,
+            'back_fontfamily_names' => 'Poppins-Light.ttf',
+            'back_font_align_names' => 'center',
+            'back_font_vertical_align_names' => 'top',
+            'back_position_names_x' => $backCenterX,
+            'back_position_names_y' => (int) round($backHeight * 0.28),
+            'back_font_size_names' => 34,
+            'back_color_names' => '#000000',
+            'back_visible_names' => true,
+            'back_fontfamily_title' => 'Poppins-Light.ttf',
+            'back_font_align_title' => 'center',
+            'back_font_vertical_align_title' => 'top',
+            'back_position_title_x' => $backCenterX,
+            'back_position_title_y' => (int) round($backHeight * 0.40),
+            'back_font_size_title' => 28,
+            'back_max_width_title' => (int) round($backWidth * 0.68),
+            'back_color_title' => '#000000',
+            'back_visible_title' => true,
+            'back_fontfamily_description' => 'Poppins-Light.ttf',
+            'back_font_align_description' => 'center',
+            'back_font_vertical_align_description' => 'top',
+            'back_position_description_x' => $backCenterX,
+            'back_position_description_y' => (int) round($backHeight * 0.52),
+            'back_font_size_description' => 20,
+            'back_max_width_description' => (int) round($backWidth * 0.70),
+            'back_text_align_description' => 'center',
+            'back_color_description' => '#000000',
+            'back_visible_description' => true,
+            'back_position_qr_x' => (int) round(($backWidth - $backQrSize) / 2),
+            'back_position_qr_y' => (int) round($backHeight * 0.72),
+            'back_size_qr' => $backQrSize,
+            'back_font_align_qr' => 'top-left',
+            'back_visible_qr' => true,
+        ];
     }
 
     public function edit($id)
