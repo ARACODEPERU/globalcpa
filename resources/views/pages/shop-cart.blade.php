@@ -255,6 +255,18 @@
                              <div id="recovery-message" class="mt-2 text-sm"></div>
                          </div>
                      </div>
+
+                     <div id="payment-warning-modal" class="hidden payment-warning-backdrop fixed inset-0 flex items-center justify-center z-50">
+                         <div class="payment-warning-dialog">
+                             <div class="payment-warning-icon">!</div>
+                             <h3>Pago no aprobado</h3>
+                             <p id="payment-warning-message"></p>
+                             <div class="payment-warning-actions">
+                                 <button type="button" onclick="hidePaymentWarningModal()" class="payment-warning-button">Entendido</button>
+                             </div>
+                             <small class="payment-warning-note">*descuida tus datos estan protegidos y ningun cobro se ha realizado.</small>
+                         </div>
+                     </div>
                 </div>
             </div>
         </div>
@@ -500,6 +512,81 @@
         .checkout-payment-card {
             position: sticky;
             top: 96px;
+        }
+
+        .payment-warning-backdrop {
+            padding: 20px;
+            background: rgba(15, 23, 42, 0.72);
+            backdrop-filter: blur(5px);
+        }
+
+        .payment-warning-dialog {
+            width: min(430px, 100%);
+            padding: 28px;
+            border: 2px solid #fca5a5;
+            border-radius: 12px;
+            background: #fff;
+            box-shadow: 0 24px 70px rgba(15, 23, 42, 0.34);
+            text-align: center;
+        }
+
+        .payment-warning-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 68px;
+            height: 68px;
+            margin-bottom: 16px;
+            border-radius: 50%;
+            background: #dc2626;
+            color: #fff;
+            font-size: 42px;
+            font-weight: 800;
+            line-height: 1;
+            box-shadow: 0 10px 24px rgba(220, 38, 38, 0.28);
+        }
+
+        .payment-warning-dialog h3 {
+            margin: 0 0 10px;
+            color: #991b1b;
+            font-size: 22px;
+            font-weight: 800;
+        }
+
+        .payment-warning-dialog p {
+            margin: 0 0 22px;
+            color: #334155;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .payment-warning-actions {
+            display: flex;
+            justify-content: center;
+        }
+
+        .payment-warning-button {
+            min-width: 150px;
+            padding: 11px 22px;
+            border: 0;
+            border-radius: 8px;
+            background: #dc2626;
+            color: #fff;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 10px 22px rgba(220, 38, 38, 0.22);
+        }
+
+        .payment-warning-button:hover {
+            background: #b91c1c;
+        }
+
+        .payment-warning-note {
+            display: block;
+            margin-top: 16px;
+            color: #64748b;
+            font-size: 12px;
+            line-height: 1.4;
         }
 
         .mercadopago-shell {
@@ -989,13 +1076,23 @@
                                     showStep('final');
                                 })
                                 .catch(error => {
-                                    showAlert(error.message);
+                                    const paymentWarning = paymentWarningFromMercadoPagoError(error.message);
+                                    if (paymentWarning) {
+                                        showPaymentWarningModal(paymentWarning);
+                                    } else {
+                                        showAlert(error.message);
+                                    }
                                     throw error;
                                 });
                         },
                         onError: (error) => {
                             console.log(error);
-                            showAlert('MercadoPago no pudo renderizar el formulario. Intenta recargar la pagina.');
+                            const paymentWarning = paymentWarningFromMercadoPagoError(error);
+                            if (paymentWarning) {
+                                showPaymentWarningModal(paymentWarning);
+                            } else {
+                                showAlert('MercadoPago no pudo renderizar el formulario. Intenta recargar la pagina.');
+                            }
                         },
                     },
                 });
@@ -1152,6 +1249,62 @@
             const alert = document.getElementById('checkout-alert');
             alert.textContent = '';
             alert.classList.add('d-none');
+        }
+
+        function showPaymentWarningModal(message) {
+            document.getElementById('payment-warning-message').textContent = message;
+            document.getElementById('payment-warning-modal').classList.remove('hidden');
+        }
+
+        function hidePaymentWarningModal() {
+            document.getElementById('payment-warning-modal').classList.add('hidden');
+            document.getElementById('payment-warning-message').textContent = '';
+        }
+
+        function paymentWarningFromMercadoPagoError(error) {
+            let detail = '';
+
+            try {
+                detail = typeof error === 'string' ? error : JSON.stringify(error || {});
+            } catch (exception) {
+                detail = String(error || '');
+            }
+
+            const normalized = detail.toLowerCase();
+
+            if (normalized.includes('cc_rejected_insufficient_amount')) {
+                return 'Tu Tarjeta no cuenta con saldo suficiente';
+            }
+
+            if (normalized.includes('cc_rejected_bad_filled_date')) {
+                return 'Rechazado debido a un problema de fecha de vencimiento';
+            }
+
+            if (normalized.includes('cc_rejected_card_disabled')) {
+                return 'Pago rechazado por Tarjeta Bloqueada/Apagada';
+            }
+
+            if (
+                normalized.includes('cc_rejected_bad_filled_security_code') ||
+                normalized.includes('cc_rejected_bad_filled_date') ||
+                normalized.includes('expiration') ||
+                normalized.includes('security_code') ||
+                normalized.includes('cvv')
+            ) {
+                return 'Algun dato es erroneo en su tarjeta';
+            }
+
+            if (
+                normalized.includes('cc_rejected_bad_filled_card_number') ||
+                normalized.includes('invalid_card') ||
+                normalized.includes('invalid card') ||
+                normalized.includes('invalid_card_number') ||
+                normalized.includes('invalid card_token_id')
+            ) {
+                return 'Tarjeta invalida';
+            }
+
+            return null;
         }
 
         function setBusy(id, busy) {
