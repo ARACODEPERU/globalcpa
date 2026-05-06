@@ -9,9 +9,15 @@
         <div class="page-body-wrapper">
             <x-sidebar />
 
-            <div class="page-body" style="padding: 80px 0;">
-                <div class="container-fluid">
-                    <div class="card p-4 mb-4">
+            <div class="page-body checkout-page-body">
+                <div class="container-fluid checkout-container">
+                    <div class="checkout-page-heading">
+                        <span>Compra segura</span>
+                        <h1>Finaliza tu inscripcion</h1>
+                        <p>Revisa tus cursos, completa el pago y activa tu acceso en pocos pasos.</p>
+                    </div>
+
+                    <div class="card p-4 mb-4 checkout-progress-card">
                         <div class="checkout-steps">
                             <button class="checkout-step active" data-step-label="payment">
                                 <span class="checkout-step-number">1</span>
@@ -71,7 +77,7 @@
                                     </span>
                                     <span>
                                         <strong>Certificaci&oacute;n incluida</strong>
-                                        <small>Al finalizar, obten tu certificado digital de Cpa Academy.</small>
+                                        <small>Al finalizar, obten tu certificado digital de CPA Academy.</small>
                                     </span>
                                 </div>
                                 <div class="security-check-card security-check-card-static">
@@ -90,9 +96,16 @@
                                 </div>
                             </div>
 
-                            <div class="row g-4 align-items-start">
+                            <div class="row g-4 align-items-start checkout-main-grid">
                             <div class="col-xl-7 col-lg-6">
-                                <div class="card">
+                                <div class="card cart-table-card">
+                                    <div class="cart-table-header">
+                                        <div>
+                                            <span>Resumen</span>
+                                            <h2>Tu carrito</h2>
+                                        </div>
+                                        <small id="total_productos">Cursos seleccionados</small>
+                                    </div>
                                     <div class="is-scrollbar-hidden min-w-full overflow-x-auto">
                                         <table class="is-hoverable w-full text-left">
                                             <thead>
@@ -115,17 +128,21 @@
 
                             <div class="col-xl-5 col-lg-6">
                                 <div class="card p-4 checkout-payment-card">
-                                    <h2 class="font-medium tracking-wide text-slate-700 mb-2" id="payment-card-title">Pago con tarjeta</h2>
+                                    <div class="checkout-payment-header">
+                                        <span>Metodo de pago</span>
+                                        <h2 id="payment-card-title">Pago con tarjeta</h2>
+                                    </div>
                                     <div class="checkout-total-row d-flex justify-content-between align-items-center mb-4">
                                         <span>Total</span>
                                         <strong id="totalid">S/ 0.00</strong>
                                     </div>
                                     <div class="mercadopago-shell">
-                                        <div class="checkout-field mb-3">
+                                        <div id="payment-phone-field" class="checkout-field mb-3">
                                             <label>Telefono</label>
                                             <div class="phone-input-group">
                                                 <select id="payment_phone_country" aria-label="Codigo de pais">
-                                                    <option value="+51" data-area-code="51" selected>Peru +51</option>
+                                                    <option value="" data-area-code="" selected>Selecciona codigo</option>
+                                                    <option value="+51" data-area-code="51">Peru +51</option>
                                                     <option value="+54" data-area-code="54">Argentina +54</option>
                                                     <option value="+591" data-area-code="591">Bolivia +591</option>
                                                     <option value="+55" data-area-code="55">Brasil +55</option>
@@ -348,6 +365,17 @@
                          </div>
                      </div>
 
+                     <div id="phone-required-modal" class="hidden phone-required-backdrop fixed inset-0 flex items-center justify-center z-50">
+                         <div class="phone-required-dialog">
+                             <button type="button" onclick="hidePhoneRequiredModal()" class="phone-required-close" aria-label="Cerrar">x</button>
+                             <div class="phone-required-icon">!</div>
+                             <span class="phone-required-kicker">Dato requerido por seguridad</span>
+                             <h3>Ingresa tu numero de telefono</h3>
+                             <p id="phone-required-message">Para continuar con el pago necesitamos que selecciones el codigo de pais e ingreses tu numero de telefono. Esto nos ayuda a proteger tu compra y contactarte si hubiera algun inconveniente.</p>
+                             <button type="button" onclick="hidePhoneRequiredModal()" class="phone-required-primary">Entendido</button>
+                         </div>
+                     </div>
+
                      <div id="account-conflict-modal" class="hidden account-conflict-backdrop fixed inset-0 flex items-center justify-center z-50">
                          <div class="account-conflict-dialog">
                              <button type="button" onclick="hideAccountConflictModal()" class="account-conflict-close" aria-label="Cerrar">x</button>
@@ -365,6 +393,18 @@
                              </div>
                          </div>
                      </div>
+
+                     <div id="pending-paid-modal" class="hidden pending-paid-backdrop fixed inset-0 flex items-center justify-center z-50">
+                         <div class="pending-paid-dialog">
+                             <button type="button" onclick="hidePendingPaidModal()" class="pending-paid-close" aria-label="Cerrar">x</button>
+                             <div class="pending-paid-icon">✓</div>
+                             <span class="pending-paid-kicker">Tu pago esta protegido</span>
+                             <h3>Tus cursos estan esperando por ti</h3>
+                             <p>Tranquilo, encontramos una compra aprobada por MercadoPago que aun falta finalizar. Completa el proceso creando tu cuenta o iniciando sesion para activar tus cursos.</p>
+                             <div id="pending-paid-courses" class="pending-paid-courses"></div>
+                             <button type="button" onclick="hidePendingPaidModal()" class="pending-paid-primary">Completar ahora</button>
+                         </div>
+                     </div>
                 </div>
             </div>
         </div>
@@ -372,6 +412,59 @@
     </div>
 
     <style>
+        .checkout-page-body {
+            padding: 88px 0 64px;
+            background: #f6f8fb;
+        }
+
+        .checkout-container {
+            max-width: 1360px;
+        }
+
+        .checkout-page-heading {
+            margin: 0 auto 18px;
+            max-width: 1280px;
+        }
+
+        .checkout-page-heading span,
+        .cart-table-header span,
+        .checkout-payment-header span {
+            display: block;
+            margin-bottom: 5px;
+            color: #dc2626;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: .04em;
+            text-transform: uppercase;
+        }
+
+        .checkout-page-heading h1 {
+            margin: 0;
+            color: #0f172a;
+            font-size: 30px;
+            font-weight: 900;
+            line-height: 1.15;
+        }
+
+        .checkout-page-heading p {
+            margin: 8px 0 0;
+            color: #64748b;
+            font-size: 15px;
+        }
+
+        .checkout-progress-card,
+        .cart-table-card,
+        .checkout-payment-card,
+        .account-shell {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            box-shadow: 0 16px 40px rgba(15, 23, 42, 0.07);
+        }
+
+        .checkout-progress-card {
+            background: #fff;
+        }
+
         .checkout-steps {
             position: relative;
             display: flex;
@@ -388,7 +481,7 @@
             left: 72px;
             right: 72px;
             height: 2px;
-            background: #cbd5e1;
+            background: #e2e8f0;
         }
 
         .checkout-step {
@@ -458,10 +551,10 @@
         }
 
         .security-check-grid {
-            display: flex;
-            justify-content: flex-end;
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
             gap: 12px;
-            margin-bottom: 18px;
+            margin-bottom: 22px;
         }
 
         .security-check-card {
@@ -469,15 +562,14 @@
             align-items: center;
             gap: 12px;
             width: 100%;
-            max-width: 360px;
-            min-height: 82px;
-            padding: 16px;
+            min-height: 96px;
+            padding: 14px;
             background: #fff;
-            border: 1px solid #dce5ef;
+            border: 1px solid #e2e8f0;
             border-radius: 8px;
             color: #334155;
             text-decoration: none;
-            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
             transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
         }
 
@@ -503,22 +595,22 @@
         }
 
         .security-check-card img.security-check-logo-wide {
-            width: 132px;
-            height: 64px;
+            width: 116px;
+            height: 54px;
         }
 
         .security-check-icon-svg {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 64px;
-            height: 64px;
+            width: 48px;
+            height: 48px;
             flex: 0 0 auto;
         }
 
         .security-check-icon-svg svg {
-            width: 64px;
-            height: 64px;
+            width: 48px;
+            height: 48px;
             display: block;
         }
 
@@ -538,6 +630,67 @@
             color: #64748b;
             font-size: 12px;
             line-height: 1.35;
+        }
+
+        .checkout-main-grid {
+            align-items: flex-start;
+        }
+
+        .cart-table-card {
+            overflow: hidden;
+            background: #fff;
+        }
+
+        .cart-table-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 22px 24px 16px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .cart-table-header h2,
+        .checkout-payment-header h2 {
+            margin: 0;
+            color: #0f172a;
+            font-size: 22px;
+            font-weight: 900;
+            line-height: 1.2;
+        }
+
+        .cart-table-header small {
+            display: inline-flex;
+            align-items: center;
+            min-height: 34px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: #fef2f2;
+            color: #b91c1c;
+            font-size: 12px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .cart-table-card table {
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .cart-table-card thead th {
+            border-bottom: 1px solid #e2e8f0;
+            background: #f8fafc !important;
+            color: #475569 !important;
+            font-size: 12px;
+            letter-spacing: .03em;
+        }
+
+        .cart-table-card tbody tr {
+            transition: background .18s ease;
+        }
+
+        .cart-table-card tbody tr:hover {
+            background: #fff7f7;
         }
 
         #step-payment .card:first-child {
@@ -610,6 +763,24 @@
         .checkout-payment-card {
             position: sticky;
             top: 96px;
+            overflow: hidden;
+            background: #fff;
+        }
+
+        .checkout-payment-card::before {
+            content: "";
+            display: block;
+            height: 4px;
+            margin: -24px -24px 20px;
+            background: #dc2626;
+        }
+
+        .checkout-payment-header {
+            margin-bottom: 14px;
+        }
+
+        .checkout-payment-header h2 {
+            font-size: 24px;
         }
 
         .payment-warning-backdrop {
@@ -685,6 +856,88 @@
             color: #64748b;
             font-size: 12px;
             line-height: 1.4;
+        }
+
+        .phone-required-backdrop {
+            padding: 20px;
+            background: rgba(15, 23, 42, 0.72);
+            backdrop-filter: blur(5px);
+        }
+
+        .phone-required-dialog {
+            position: relative;
+            width: min(500px, 100%);
+            padding: 34px;
+            border: 2px solid #bfdbfe;
+            border-top: 6px solid #2563eb;
+            border-radius: 12px;
+            background: #fff;
+            box-shadow: 0 26px 80px rgba(15, 23, 42, 0.35);
+            text-align: center;
+        }
+
+        .phone-required-close {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            width: 34px;
+            height: 34px;
+            border: 0;
+            border-radius: 50%;
+            background: #eff6ff;
+            color: #1d4ed8;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .phone-required-icon {
+            display: inline-flex;
+            width: 58px;
+            height: 58px;
+            margin-bottom: 14px;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #dbeafe;
+            color: #1d4ed8;
+            font-size: 30px;
+            font-weight: 900;
+        }
+
+        .phone-required-kicker {
+            display: block;
+            margin-bottom: 8px;
+            color: #2563eb;
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: .04em;
+            text-transform: uppercase;
+        }
+
+        .phone-required-dialog h3 {
+            margin: 0 28px 12px;
+            color: #0f172a;
+            font-size: 24px;
+            font-weight: 800;
+        }
+
+        .phone-required-dialog p {
+            margin: 0 0 24px;
+            color: #334155;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        .phone-required-primary {
+            width: 100%;
+            border: 0;
+            border-radius: 8px;
+            padding: 13px 18px;
+            background: #2563eb;
+            color: #fff;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 12px 28px rgba(37, 99, 235, 0.24);
         }
 
         .account-conflict-backdrop {
@@ -811,13 +1064,147 @@
             background: #b91c1c;
         }
 
+        .pending-paid-backdrop {
+            padding: 20px;
+            background: rgba(15, 23, 42, 0.72);
+            backdrop-filter: blur(5px);
+        }
+
+        .pending-paid-dialog {
+            position: relative;
+            width: min(620px, 100%);
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
+            padding: 34px;
+            border: 2px solid #bbf7d0;
+            border-top: 6px solid #16a34a;
+            border-radius: 12px;
+            background: #fff;
+            box-shadow: 0 28px 76px rgba(15, 23, 42, 0.36);
+            text-align: center;
+        }
+
+        .pending-paid-close {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            width: 32px;
+            height: 32px;
+            border: 0;
+            border-radius: 50%;
+            background: #f1f5f9;
+            color: #475569;
+            font-size: 20px;
+            line-height: 1;
+            cursor: pointer;
+        }
+
+        .pending-paid-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 68px;
+            height: 68px;
+            margin-bottom: 16px;
+            border-radius: 50%;
+            background: #16a34a;
+            color: #fff;
+            font-size: 34px;
+            font-weight: 900;
+            box-shadow: 0 0 0 9px #dcfce7;
+        }
+
+        .pending-paid-kicker {
+            display: block;
+            margin-bottom: 8px;
+            color: #15803d;
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: .04em;
+            text-transform: uppercase;
+        }
+
+        .pending-paid-dialog h3 {
+            margin: 0 28px 12px;
+            color: #0f172a;
+            font-size: 24px;
+            font-weight: 900;
+        }
+
+        .pending-paid-dialog p {
+            margin: 0 auto;
+            max-width: 500px;
+            color: #334155;
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        .pending-paid-courses {
+            display: grid;
+            gap: 10px;
+            margin-top: 22px;
+            text-align: left;
+        }
+
+        .pending-paid-course {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            gap: 12px;
+            align-items: center;
+            padding: 12px 14px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            background: #f8fafc;
+        }
+
+        .pending-paid-course strong {
+            display: block;
+            color: #0f172a;
+            font-size: 14px;
+            line-height: 1.35;
+        }
+
+        .pending-paid-course small {
+            display: block;
+            margin-top: 3px;
+            color: #64748b;
+            font-size: 12px;
+        }
+
+        .pending-paid-course-price {
+            color: #16a34a;
+            font-size: 13px;
+            font-weight: 900;
+            white-space: nowrap;
+        }
+
+        .pending-paid-primary {
+            width: 100%;
+            min-height: 46px;
+            margin-top: 24px;
+            border: 0;
+            border-radius: 8px;
+            background: #dc2626;
+            color: #fff;
+            font-weight: 900;
+            cursor: pointer;
+            box-shadow: 0 10px 22px rgba(220, 38, 38, 0.22);
+        }
+
+        .pending-paid-primary:hover {
+            background: #b91c1c;
+        }
+
         .mercadopago-shell {
             max-width: 480px;
             margin: 0 auto;
         }
 
         .checkout-total-row {
-            padding: 14px 0 2px;
+            padding: 16px;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            background: #fff7f7;
             color: #0f172a;
             font-size: 18px;
             font-weight: 800;
@@ -833,11 +1220,8 @@
         .account-shell {
             max-width: 1280px;
             margin: 0 auto;
-            padding: 28px;
+            padding: 30px;
             background: #fff;
-            border: 1px solid #dce5ef;
-            border-radius: 8px;
-            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
         }
 
         .account-header {
@@ -987,6 +1371,60 @@
             box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
         }
 
+        .free-checkout-message {
+            padding: 24px;
+            border: 1px solid #bbf7d0;
+            border-radius: 8px;
+            background: #f0fdf4;
+            text-align: center;
+        }
+
+        .free-checkout-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 58px;
+            height: 58px;
+            margin-bottom: 14px;
+            border-radius: 50%;
+            background: #16a34a;
+            color: #fff;
+            font-size: 30px;
+            font-weight: 900;
+            box-shadow: 0 0 0 8px #dcfce7;
+        }
+
+        .free-checkout-message h3 {
+            margin: 0 0 8px;
+            color: #14532d;
+            font-size: 21px;
+            font-weight: 900;
+        }
+
+        .free-checkout-message p {
+            margin: 0 auto 18px;
+            max-width: 360px;
+            color: #166534;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .free-checkout-button {
+            min-height: 44px;
+            padding: 11px 22px;
+            border: 0;
+            border-radius: 8px;
+            background: #dc2626;
+            color: #fff;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 10px 22px rgba(220, 38, 38, 0.22);
+        }
+
+        .free-checkout-button:hover {
+            background: #b91c1c;
+        }
+
         .account-actions {
             display: flex;
             justify-content: flex-end;
@@ -1022,7 +1460,29 @@
             margin-top: 20px;
         }
 
+        @media (max-width: 1199px) {
+            .security-check-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+
+            .checkout-payment-card {
+                position: static;
+            }
+        }
+
         @media (max-width: 768px) {
+            .checkout-page-body {
+                padding-top: 76px;
+            }
+
+            .checkout-page-heading h1 {
+                font-size: 25px;
+            }
+
+            .checkout-page-heading p {
+                font-size: 14px;
+            }
+
             .checkout-steps {
                 gap: 48px;
                 max-width: 420px;
@@ -1034,16 +1494,17 @@
             }
 
             .security-check-grid {
-                justify-content: flex-end;
-                flex-wrap: wrap;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
             }
 
             .security-check-card {
-                max-width: 100%;
+                min-height: 88px;
             }
 
-            .checkout-payment-card {
-                position: static;
+            .cart-table-header {
+                align-items: flex-start;
+                flex-direction: column;
+                padding: 20px;
             }
 
             .cart-product-column,
@@ -1078,8 +1539,76 @@
                 padding: 28px 20px;
             }
 
+            .phone-required-dialog {
+                padding: 28px 20px;
+            }
+
             .account-conflict-actions {
                 grid-template-columns: 1fr;
+            }
+
+            .pending-paid-dialog {
+                padding: 28px 20px;
+            }
+
+            .pending-paid-course {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 575px) {
+            .checkout-container {
+                padding-left: 14px;
+                padding-right: 14px;
+            }
+
+            .checkout-progress-card {
+                padding: 18px !important;
+            }
+
+            .checkout-steps {
+                gap: 24px;
+            }
+
+            .checkout-steps::before {
+                left: 56px;
+                right: 56px;
+            }
+
+            .checkout-step {
+                width: 112px;
+            }
+
+            .checkout-step-number {
+                width: 42px;
+                height: 42px;
+                font-size: 16px;
+            }
+
+            .security-check-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .checkout-payment-card {
+                padding: 20px !important;
+            }
+
+            .checkout-payment-card::before {
+                margin: -20px -20px 18px;
+            }
+
+            .checkout-total-row {
+                align-items: flex-start !important;
+                flex-direction: column;
+                gap: 6px;
+            }
+
+            .invoice-actions {
+                justify-content: stretch;
+            }
+
+            .invoice-actions .boton-degradado-courses {
+                width: 100%;
             }
         }
     </style>
@@ -1094,6 +1623,7 @@
             finalize: "{{ route('web_cart_finalize') }}",
             description: "{{ url('curso-descripcion') }}"
         };
+        const pendingPaidCartKey = 'pending_paid_cart_checkout';
 
         let cartIds = [];
         let cartItems = [];
@@ -1105,6 +1635,7 @@
         let paymentVersion = 0;
         let freeCheckout = false;
         let lastCardholderName = '';
+        let phoneGuardAttached = false;
 
         document.addEventListener('DOMContentLoaded', () => {
             loadCart();
@@ -1145,6 +1676,8 @@
                     resetPaymentState();
                     if (checkoutTotal <= 0) {
                         startFreeCheckout();
+                    } else if (restorePendingPaidCheckout()) {
+                        return;
                     } else {
                         startCardPayment();
                     }
@@ -1260,8 +1793,18 @@
             mercadoPublicKey = null;
             paymentInitializing = false;
             unmountMercadoPago();
-            document.getElementById('cardPaymentBrick_container').innerHTML = '<div class="mp-loading-message p-4 text-center">Este curso es gratis. Completa tus datos para acceder.</div>';
+            document.getElementById('cardPaymentBrick_container').innerHTML = `
+                <div class="free-checkout-message">
+                    <div class="free-checkout-icon">0</div>
+                    <h3>Tus cursos son gratis</h3>
+                    <p>El o los cursos que escogiste no requieren pago. Haz click en continuar para crear tu cuenta o iniciar sesion y registrarlos en tu dashboard.</p>
+                    <button type="button" class="free-checkout-button" onclick="continueFreeCheckout()">Continuar</button>
+                </div>
+            `;
             updateFreeCheckoutView();
+        }
+
+        function continueFreeCheckout() {
             fillPayerData({});
             showStep('final');
         }
@@ -1294,6 +1837,7 @@
                     callbacks: {
                         onReady: () => {
                             container.querySelectorAll('.mp-loading-message').forEach(message => message.remove());
+                            attachMercadoPagoPhoneGuard();
                             hideAlert();
                         },
                         onSubmit: (cardFormData) => {
@@ -1318,6 +1862,7 @@
                                     if (!payer.names && lastCardholderName) {
                                         payer.names = lastCardholderName;
                                     }
+                                    savePendingPaidCheckout(data.sale_id, payer);
                                     fillPayerData(payer);
                                     showStep('final');
                                 })
@@ -1374,9 +1919,7 @@
 
         function normalizeCardFormData(cardFormData) {
             const payer = cardFormData.payer || {};
-            const phone = value('payment_phone');
-            const phoneCountry = document.getElementById('payment_phone_country');
-            const areaCode = phoneCountry.selectedOptions[0]?.dataset.areaCode || phoneCountry.value.replace(/\D/g, '');
+            const phoneState = getPaymentPhoneState();
             const cardholderName = getCardholderName(cardFormData);
             payer.email = (payer.email || '').trim().toLowerCase();
 
@@ -1384,14 +1927,15 @@
                 throw new Error('Ingresa un correo valido en el formulario de MercadoPago.');
             }
 
-            if (!phone) {
-                throw new Error('Ingresa un numero de telefono.');
+            if (!phoneState.isComplete) {
+                notifyPaymentPhoneRequired(phoneState, true);
+                throw new Error('Ingresa tu codigo de pais y numero de telefono.');
             }
 
             payer.phone = {
                 ...(payer.phone || {}),
-                area_code: areaCode,
-                number: phone
+                area_code: phoneState.areaCode,
+                number: phoneState.phone
             };
 
             if (cardholderName) {
@@ -1515,6 +2059,7 @@
                     // Refresh CSRF token after login/register
                     refreshCsrfToken();
 
+                    clearPendingPaidCheckout();
                     localStorage.removeItem('carrito');
                     window.location.href = data.url;
                 })
@@ -1586,6 +2131,86 @@
             document.getElementById('payment-warning-message').textContent = '';
         }
 
+        function attachMercadoPagoPhoneGuard() {
+            const container = document.getElementById('cardPaymentBrick_container');
+
+            if (phoneGuardAttached || !container) {
+                return;
+            }
+
+            container.addEventListener('click', (event) => {
+                if (freeCheckout) {
+                    return;
+                }
+
+                const submitControl = event.target?.closest?.('button, [role="button"], input[type="submit"]');
+
+                if (!submitControl) {
+                    return;
+                }
+
+                const phoneState = getPaymentPhoneState();
+
+                if (phoneState.isComplete) {
+                    return;
+                }
+
+                event.preventDefault();
+                event.stopPropagation();
+                event.stopImmediatePropagation();
+                notifyPaymentPhoneRequired(phoneState, false);
+            }, true);
+
+            phoneGuardAttached = true;
+        }
+
+        function getPaymentPhoneState() {
+            const phoneCountry = document.getElementById('payment_phone_country');
+            const phone = value('payment_phone');
+            const areaCode = phoneCountry?.selectedOptions[0]?.dataset.areaCode || phoneCountry?.value.replace(/\D/g, '') || '';
+
+            return {
+                areaCode,
+                phone,
+                isComplete: Boolean(areaCode && phone),
+                focusTargetId: !areaCode ? 'payment_phone_country' : 'payment_phone'
+            };
+        }
+
+        function notifyPaymentPhoneRequired(phoneState, reloadOnClose = false) {
+            const phoneMessage = !phoneState.areaCode && !phoneState.phone
+                ? 'Por seguridad necesitamos validar tu telefono antes de procesar el pago. Selecciona el codigo de pais e ingresa tu numero de telefono para continuar con tranquilidad.'
+                : (!phoneState.areaCode
+                    ? 'Por seguridad necesitamos que selecciones el codigo de pais de tu telefono antes de continuar con el pago.'
+                    : 'Por seguridad necesitamos que ingreses tu numero de telefono antes de continuar con el pago.');
+
+            showPhoneRequiredModal(phoneMessage, phoneState.focusTargetId, reloadOnClose);
+        }
+
+        function showPhoneRequiredModal(message, focusTargetId = 'payment_phone_country', reloadOnClose = false) {
+            const messageElement = document.getElementById('phone-required-message');
+            messageElement.textContent = message || 'Para continuar con el pago necesitamos que selecciones el codigo de pais e ingreses tu numero de telefono. Esto nos ayuda a proteger tu compra y contactarte si hubiera algun inconveniente.';
+            messageElement.dataset.focusTarget = focusTargetId;
+            messageElement.dataset.reloadOnClose = reloadOnClose ? '1' : '0';
+            document.getElementById('phone-required-modal').classList.remove('hidden');
+        }
+
+        function hidePhoneRequiredModal() {
+            const messageElement = document.getElementById('phone-required-message');
+            const focusTarget = document.getElementById(messageElement.dataset.focusTarget || 'payment_phone_country');
+            const shouldReload = messageElement.dataset.reloadOnClose === '1';
+            document.getElementById('phone-required-modal').classList.add('hidden');
+
+            if (shouldReload) {
+                window.location.reload();
+                return;
+            }
+
+            if (focusTarget) {
+                focusTarget.focus();
+            }
+        }
+
         function paymentWarningFromMercadoPagoError(error) {
             let detail = '';
 
@@ -1651,6 +2276,79 @@
             unmountMercadoPago();
         }
 
+        function savePendingPaidCheckout(saleId, payer) {
+            localStorage.setItem(pendingPaidCartKey, JSON.stringify({
+                sale_id: saleId,
+                payer: payer || {},
+                cart_ids: cartIds,
+                total: checkoutTotal,
+                saved_at: Date.now()
+            }));
+        }
+
+        function getPendingPaidCheckout() {
+            try {
+                return JSON.parse(localStorage.getItem(pendingPaidCartKey)) || null;
+            } catch (error) {
+                clearPendingPaidCheckout();
+                return null;
+            }
+        }
+
+        function clearPendingPaidCheckout() {
+            localStorage.removeItem(pendingPaidCartKey);
+        }
+
+        function restorePendingPaidCheckout() {
+            const pending = getPendingPaidCheckout();
+
+            if (!pending || !pending.sale_id || !Array.isArray(pending.cart_ids)) {
+                return false;
+            }
+
+            const currentIds = cartIds.map(Number).sort((a, b) => a - b).join(',');
+            const pendingIds = pending.cart_ids.map(Number).sort((a, b) => a - b).join(',');
+
+            if (currentIds !== pendingIds) {
+                clearPendingPaidCheckout();
+                return false;
+            }
+
+            hideAlert();
+            freeCheckout = false;
+            paidSaleId = pending.sale_id;
+            preferenceId = null;
+            mercadoPublicKey = null;
+            paymentInitializing = false;
+            unmountMercadoPago();
+            updateFreeCheckoutView();
+            document.getElementById('cardPaymentBrick_container').innerHTML = '<div class="mp-loading-message p-4 text-center">Tu pago ya fue aprobado. Completa tu cuenta o inicia sesion para finalizar tu compra.</div>';
+            fillPayerData(pending.payer || {});
+            showStep('final');
+            showPendingPaidModal();
+
+            return true;
+        }
+
+        function showPendingPaidModal() {
+            const coursesContainer = document.getElementById('pending-paid-courses');
+            coursesContainer.innerHTML = cartItems.map(item => `
+                <div class="pending-paid-course">
+                    <div>
+                        <strong>${item.name}</strong>
+                        <small>${item.additional || 'Curso seleccionado'}</small>
+                    </div>
+                    <span class="pending-paid-course-price">${priceLabel(item.price)}</span>
+                </div>
+            `).join('');
+
+            document.getElementById('pending-paid-modal').classList.remove('hidden');
+        }
+
+        function hidePendingPaidModal() {
+            document.getElementById('pending-paid-modal').classList.add('hidden');
+        }
+
         function unmountMercadoPago() {
             if (window.cardPaymentBrickController && typeof window.cardPaymentBrickController.unmount === 'function') {
                 try {
@@ -1665,12 +2363,13 @@
 
         function updateFreeCheckoutView() {
             document.getElementById('payment-step-text').textContent = freeCheckout ? 'Carrito gratis' : 'Carrito y pago';
-            document.getElementById('payment-card-title').textContent = freeCheckout ? 'Curso gratuito' : 'Pago con tarjeta';
+            document.getElementById('payment-card-title').textContent = freeCheckout ? 'Cursos gratuitos' : 'Pago con tarjeta';
             document.getElementById('account-title').textContent = freeCheckout ? 'Completa tus datos para acceder' : 'Crea tu cuenta en menos de 30 segundos';
             document.getElementById('account-subtitle').textContent = freeCheckout
                 ? 'Crea una cuenta o inicia sesion para registrar el curso en tu dashboard.'
                 : 'Completa tus datos para asociar la compra y emitir el comprobante.';
             document.getElementById('invoice-block').classList.toggle('d-none', freeCheckout);
+            document.getElementById('payment-phone-field').classList.toggle('d-none', freeCheckout);
             document.getElementById('btn-finalize-text').textContent = freeCheckout ? 'ACCEDER A TU CUENTA' : 'FINALIZAR COMPRA';
         }
 
