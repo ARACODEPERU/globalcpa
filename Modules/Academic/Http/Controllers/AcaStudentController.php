@@ -825,6 +825,19 @@ class AcaStudentController extends Controller
         $course = AcaCourse::with('teacher.person')->where('id', $module->course_id)
             ->first();
 
+        $courseModules = AcaModule::where('course_id', $module->course_id)
+            ->orderByRaw('position IS NULL')
+            ->orderBy('position')
+            ->orderBy('id')
+            ->get(['id', 'description', 'position']);
+        $currentModuleIndex = $courseModules->search(function ($courseModule) use ($module) {
+            return (int) $courseModule->id === (int) $module->id;
+        });
+        $previousModule = $currentModuleIndex !== false && $currentModuleIndex > 0
+            ? $courseModules->get($currentModuleIndex - 1)
+            : null;
+        $nextModule = $currentModuleIndex !== false ? $courseModules->get($currentModuleIndex + 1) : null;
+
         $isEnrolled = false;
 
         $user = Auth::user();
@@ -844,7 +857,9 @@ class AcaStudentController extends Controller
 
         return Inertia::render('Academic::Students/Themes', [
             'course' => $course,
-            'module' => $module
+            'module' => $module,
+            'previousModule' => $previousModule,
+            'nextModule' => $nextModule
         ]);
     }
 
