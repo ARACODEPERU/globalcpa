@@ -1621,6 +1621,7 @@
             preference: "{{ route('web_cart_preference') }}",
             payment: "{{ route('web_cart_process_payment') }}",
             finalize: "{{ route('web_cart_finalize') }}",
+            searchPerson: "{{ route('sales_search_person_apies') }}",
             description: "{{ url('curso-descripcion') }}"
         };
         const pendingPaidCartKey = 'pending_paid_cart_checkout';
@@ -1636,10 +1637,13 @@
         let freeCheckout = false;
         let lastCardholderName = '';
         let phoneGuardAttached = false;
+        let invoiceLookupTimer = null;
+        let lastInvoiceLookupKey = '';
 
         document.addEventListener('DOMContentLoaded', () => {
             loadCart();
             document.getElementById('btn-finalize').addEventListener('click', finalizeCheckout);
+            attachInvoiceLookupEvents();
 
             document.querySelectorAll('.account-tab').forEach(button => {
                 button.addEventListener('click', () => selectAccountMode(button.dataset.accountMode));
@@ -2005,6 +2009,10 @@
             document.getElementById('invoice_name').value = names;
             document.getElementById('invoice_dni').value = dni;
             document.getElementById('invoice_email').value = email;
+
+            if (onlyDigits(dni).length === 8) {
+                lookupInvoicePerson('boleta', dni, false);
+            }
         }
 
         function selectAccountMode(mode) {
@@ -2019,6 +2027,112 @@
             document.querySelectorAll('.invoice-tab').forEach(button => button.classList.toggle('active', button.dataset.invoiceType === type));
             document.getElementById('boleta-panel').classList.toggle('d-none', type !== 'boleta');
             document.getElementById('factura-panel').classList.toggle('d-none', type !== 'factura');
+
+            if (type === 'boleta') {
+                lookupInvoicePerson('boleta', value('invoice_dni') || value('create_dni'), false);
+            } else {
+                document.getElementById('invoice_ruc').focus();
+                lookupInvoicePerson('factura', value('invoice_ruc'), false);
+            }
+        }
+
+        function attachInvoiceLookupEvents() {
+            const createDni = document.getElementById('create_dni');
+            const invoiceDni = document.getElementById('invoice_dni');
+            const invoiceRuc = document.getElementById('invoice_ruc');
+
+            [createDni, invoiceDni].forEach(input => {
+                input.maxLength = 8;
+                input.addEventListener('input', () => {
+                    input.value = onlyDigits(input.value).slice(0, 8);
+                    const dni = input.value;
+
+                    if (input.id === 'create_dni' && invoiceDni.value !== dni) {
+                        invoiceDni.value = dni;
+                    }
+
+                    if (input.id === 'invoice_dni' && createDni.value !== dni) {
+                        createDni.value = dni;
+                    }
+
+                    queueInvoiceLookup('boleta', dni);
+                });
+            });
+
+            invoiceRuc.maxLength = 11;
+            invoiceRuc.addEventListener('input', () => {
+                invoiceRuc.value = onlyDigits(invoiceRuc.value).slice(0, 11);
+                queueInvoiceLookup('factura', invoiceRuc.value);
+            });
+        }
+
+        function queueInvoiceLookup(type, number) {
+            clearTimeout(invoiceLookupTimer);
+            invoiceLookupTimer = setTimeout(() => lookupInvoicePerson(type, number, true), 450);
+        }
+
+        function lookupInvoicePerson(type, number, showErrors = true) {
+            const cleanNumber = onlyDigits(number);
+            const expectedLength = type === 'factura' ? 11 : 8;
+            const lookupKey = `${type}:${cleanNumber}`;
+
+            if (cleanNumber.length !== expectedLength || lookupKey === lastInvoiceLookupKey) {
+                return;
+            }
+
+            lastInvoiceLookupKey = lookupKey;
+
+            requestJson(routes.searchPerson, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                body: JSON.stringify({
+                    document_type: type === 'factura' ? 6 : 1,
+                    number: cleanNumber
+                })
+            }, 15000)
+                .then((data) => {
+                    if (!data.success) {
+                        throw new Error(data.error || 'No se encontraron datos para el documento ingresado.');
+                    }
+
+                    fillInvoicePerson(type, data.person || {}, cleanNumber);
+                })
+                .catch(error => {
+                    lastInvoiceLookupKey = '';
+                    if (showErrors) {
+                        showAlert(error.message);
+                    }
+                });
+        }
+
+        function fillInvoicePerson(type, person, number) {
+            hideAlert();
+
+            if (type === 'factura') {
+                document.getElementById('invoice_ruc').value = person.numero_documento || number;
+                document.getElementById('invoice_business_name').value = person.razon_social || '';
+                document.getElementById('invoice_address').value = person.direccion === '-' ? '' : (person.direccion || '');
+                return;
+            }
+
+            const fullName = person.razon_social || [
+                person.names,
+                person.father_lastname,
+                person.mother_lastname
+            ].filter(Boolean).join(' ');
+            const dni = person.document_number || number;
+
+            document.getElementById('create_dni').value = dni;
+            document.getElementById('invoice_dni').value = dni;
+            document.getElementById('create_names').value = fullName;
+            document.getElementById('invoice_name').value = fullName;
+        }
+
+        function onlyDigits(value) {
+            return String(value || '').replace(/\D/g, '');
         }
 
         function finalizeCheckout() {
