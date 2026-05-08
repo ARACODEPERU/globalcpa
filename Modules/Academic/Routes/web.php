@@ -446,6 +446,9 @@ Route::middleware(['auth', 'verified', 'invalid_updated_information', 'user_acti
         ->name('aca_student_exam_review_exams');
 
     Route::get('student/review/exams/table', [AcaExamController::class, 'getAlumnsExam'])->name('aca_student_exam_review_exams_table');
+    Route::middleware(['middleware' => 'permission:aca_cursos_revisar_examenes'])
+        ->post('student/review/exams/{id}/mark-qualified', [AcaExamController::class, 'markStudentExamAsQualified'])
+        ->name('aca_student_exam_mark_qualified');
     Route::post('student/grade/exam/response/store', [AcaExamAnswerController::class, 'gradeExamResponse'])->name('aca_student_grade_exam_response_store');
     // //////////////verificar datos///////////////////////////
     Route::post('buy/course/mercadopago', [MercadopagoController::class, 'createPreference'])->name('academic_create_preference_course');
