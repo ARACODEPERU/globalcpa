@@ -94,7 +94,10 @@ function agregarAlCarrito(producto) {
                 localStorage.setItem("carrito", JSON.stringify(carrito));
                 getTotal();
                 cargarContadorCarrito();
-                cargarItemsCarritoBD();
+                if (typeof cargarItemsCarritoBD === "function") {
+                    cargarItemsCarritoBD();
+                }
+                preguntarIrAlCarrito(producto);
             } else if (result.dismiss === Swal.DismissReason.cancel) {
                 // Acción a realizar si el usuario hace clic en "No" o cierra el diálogo
                 console.log("El usuario ha cancelado.");
@@ -104,6 +107,22 @@ function agregarAlCarrito(producto) {
             console.error("Se produjo un error al mostrar la alerta: ", error);
         });
     }
+}
+
+function preguntarIrAlCarrito(producto) {
+    Swal.fire({
+        title: "Curso agregado al carrito",
+        text: 'Quieres ir al carrito para pagar "' + producto.nombre + '"?',
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "Pagar Ahora",
+        cancelButtonText: "Seguir navegando",
+        reverseButtons: true,
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = "/carrito";
+        }
+    });
 }
 
 // Obtener el carrito actual

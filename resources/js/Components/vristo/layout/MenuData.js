@@ -17,6 +17,7 @@ import menuCRM from 'Modules/CRM/Resources/assets/js/Menu.js';
 import menuOnlineshop from 'Modules/Onlineshop/Resources/assets/js/Menu.js';
 //import menuCiglesia from 'Modules/Churchcommunity/Resources/assets/js/Menu.js'
 import menuBibliodata from 'Modules/Bibliodata/Resources/assets/js/Menu.js';
+import menuApiConnector from 'Modules/ApiConnector/Resources/assets/js/Menu.js';
 
 const MenuData = ref([
     {
@@ -43,6 +44,7 @@ const MenuData = ref([
         // ]
     },
     menuConfig,
+    menuApiConnector,
     //menuPurchases,
     menuSales[0],
     menuSales[1],
