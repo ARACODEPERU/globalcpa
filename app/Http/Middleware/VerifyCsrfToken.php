@@ -15,5 +15,6 @@ class VerifyCsrfToken extends Middleware
         '/webhook',
         '/ai/*',
         '/send-password-recovery',
+        '/api-connector/test/*',
     ];
 }
