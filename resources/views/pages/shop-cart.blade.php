@@ -1637,7 +1637,9 @@
         let freeCheckout = false;
         let lastCardholderName = '';
         let phoneGuardAttached = false;
+        let accountLookupTimer = null;
         let invoiceLookupTimer = null;
+        let lastAccountLookupKey = '';
         let lastInvoiceLookupKey = '';
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -2006,13 +2008,6 @@
             document.getElementById('create_email').value = email;
             document.getElementById('create_dni').value = dni;
             document.getElementById('login_email').value = email;
-            document.getElementById('invoice_name').value = names;
-            document.getElementById('invoice_dni').value = dni;
-            document.getElementById('invoice_email').value = email;
-
-            if (onlyDigits(dni).length === 8) {
-                lookupInvoicePerson('boleta', dni, false);
-            }
         }
 
         function selectAccountMode(mode) {
@@ -2029,7 +2024,7 @@
             document.getElementById('factura-panel').classList.toggle('d-none', type !== 'factura');
 
             if (type === 'boleta') {
-                lookupInvoicePerson('boleta', value('invoice_dni') || value('create_dni'), false);
+                lookupInvoicePerson('boleta', value('invoice_dni'), false);
             } else {
                 document.getElementById('invoice_ruc').focus();
                 lookupInvoicePerson('factura', value('invoice_ruc'), false);
@@ -2041,22 +2036,16 @@
             const invoiceDni = document.getElementById('invoice_dni');
             const invoiceRuc = document.getElementById('invoice_ruc');
 
-            [createDni, invoiceDni].forEach(input => {
-                input.maxLength = 8;
-                input.addEventListener('input', () => {
-                    input.value = onlyDigits(input.value).slice(0, 8);
-                    const dni = input.value;
+            createDni.maxLength = 8;
+            createDni.addEventListener('input', () => {
+                createDni.value = onlyDigits(createDni.value).slice(0, 8);
+                queueAccountLookup(createDni.value);
+            });
 
-                    if (input.id === 'create_dni' && invoiceDni.value !== dni) {
-                        invoiceDni.value = dni;
-                    }
-
-                    if (input.id === 'invoice_dni' && createDni.value !== dni) {
-                        createDni.value = dni;
-                    }
-
-                    queueInvoiceLookup('boleta', dni);
-                });
+            invoiceDni.maxLength = 8;
+            invoiceDni.addEventListener('input', () => {
+                invoiceDni.value = onlyDigits(invoiceDni.value).slice(0, 8);
+                queueInvoiceLookup('boleta', invoiceDni.value);
             });
 
             invoiceRuc.maxLength = 11;
@@ -2066,9 +2055,50 @@
             });
         }
 
+        function queueAccountLookup(number) {
+            clearTimeout(accountLookupTimer);
+            accountLookupTimer = setTimeout(() => lookupAccountPerson(number, true), 450);
+        }
+
         function queueInvoiceLookup(type, number) {
             clearTimeout(invoiceLookupTimer);
             invoiceLookupTimer = setTimeout(() => lookupInvoicePerson(type, number, true), 450);
+        }
+
+        function lookupAccountPerson(number, showErrors = true) {
+            const cleanNumber = onlyDigits(number);
+            const lookupKey = `account:${cleanNumber}`;
+
+            if (cleanNumber.length !== 8 || lookupKey === lastAccountLookupKey) {
+                return;
+            }
+
+            lastAccountLookupKey = lookupKey;
+
+            requestJson(routes.searchPerson, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                body: JSON.stringify({
+                    document_type: 1,
+                    number: cleanNumber
+                })
+            }, 15000)
+                .then((data) => {
+                    if (!data.success) {
+                        throw new Error(data.error || 'No se encontraron datos para el documento ingresado.');
+                    }
+
+                    fillAccountPerson(data.person || {}, cleanNumber);
+                })
+                .catch(error => {
+                    lastAccountLookupKey = '';
+                    if (showErrors) {
+                        showAlert(error.message);
+                    }
+                });
         }
 
         function lookupInvoicePerson(type, number, showErrors = true) {
@@ -2125,10 +2155,21 @@
             ].filter(Boolean).join(' ');
             const dni = person.document_number || number;
 
-            document.getElementById('create_dni').value = dni;
             document.getElementById('invoice_dni').value = dni;
-            document.getElementById('create_names').value = fullName;
             document.getElementById('invoice_name').value = fullName;
+        }
+
+        function fillAccountPerson(person, number) {
+            hideAlert();
+
+            const fullName = person.razon_social || [
+                person.names,
+                person.father_lastname,
+                person.mother_lastname
+            ].filter(Boolean).join(' ');
+
+            document.getElementById('create_dni').value = person.document_number || number;
+            document.getElementById('create_names').value = fullName;
         }
 
         function onlyDigits(value) {
