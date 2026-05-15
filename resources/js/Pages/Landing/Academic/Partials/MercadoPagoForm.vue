@@ -31,7 +31,6 @@ const props = defineProps({
 let mp;
 
 onMounted(async () => {
-    console.log('MercadoPago public key:', props.publicKey);
     // Carga el SDK de MercadoPago
     await loadMercadoPago();
 
@@ -89,7 +88,7 @@ const renderCardPaymentBrick = async (bricksBuilder) => {
                             });
                         }
                     }).catch((error) => {
-                        alert(error.response?.data?.error || error.message || "Error al procesar el pago.");
+                        alert(error.message || "Error al procesar el pago.");
                         router.visit(route('academic_step_verification',props.subscription.id), {
                             method: 'get',
                         });

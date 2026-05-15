@@ -20,9 +20,6 @@ use Modules\Academic\Entities\AcaStudent;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\URL;
-use Illuminate\Support\Str;
-use Illuminate\Validation\Rules\Password;
 use Modules\Academic\Entities\AcaCapRegistration;
 use Modules\Academic\Entities\AcaCourse;
 use Modules\Academic\Entities\AcaModule;
@@ -828,19 +825,6 @@ class AcaStudentController extends Controller
         $course = AcaCourse::with('teacher.person')->where('id', $module->course_id)
             ->first();
 
-        $courseModules = AcaModule::where('course_id', $module->course_id)
-            ->orderByRaw('position IS NULL')
-            ->orderBy('position')
-            ->orderBy('id')
-            ->get(['id', 'description', 'position']);
-        $currentModuleIndex = $courseModules->search(function ($courseModule) use ($module) {
-            return (int) $courseModule->id === (int) $module->id;
-        });
-        $previousModule = $currentModuleIndex !== false && $currentModuleIndex > 0
-            ? $courseModules->get($currentModuleIndex - 1)
-            : null;
-        $nextModule = $currentModuleIndex !== false ? $courseModules->get($currentModuleIndex + 1) : null;
-
         $isEnrolled = false;
 
         $user = Auth::user();
@@ -860,9 +844,7 @@ class AcaStudentController extends Controller
 
         return Inertia::render('Academic::Students/Themes', [
             'course' => $course,
-            'module' => $module,
-            'previousModule' => $previousModule,
-            'nextModule' => $nextModule
+            'module' => $module
         ]);
     }
 
@@ -1695,88 +1677,5 @@ class AcaStudentController extends Controller
                 'message' => 'Error al enviar correo: ' . $e->getMessage()
             ], 500);
         }
-    }
-
-    public function sendPasswordRecoveryMail($personId)
-    {
-        $person = Person::findOrFail($personId);
-        $user = User::where('person_id', $person->id)->first();
-
-        if (!$person->email || !$user) {
-            return response()->json([
-                'success' => false,
-                'message' => 'La persona no tiene correo electrÃ³nico o usuario registrado'
-            ], 422);
-        }
-
-        try {
-            $resetUrl = URL::temporarySignedRoute(
-                'aca_students_password_recovery_form',
-                now()->addMinutes(60),
-                ['personId' => $person->id]
-            );
-
-            \Mail::to($person->email)->send(new \App\Mail\StudentPasswordRecoveryMail($person, $resetUrl));
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Correo de recuperaciÃ³n enviado correctamente'
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error al enviar correo: ' . $e->getMessage()
-            ], 500);
-        }
-    }
-
-    public function passwordRecoveryForm(Request $request, $personId)
-    {
-        return Inertia::render('Academic::Students/PasswordRecovery', [
-            'personId' => (int) $personId,
-            'resetUrl' => URL::temporarySignedRoute(
-                'aca_students_password_recovery_update',
-                now()->addMinutes(60),
-                ['personId' => $personId]
-            ),
-        ]);
-    }
-
-    public function updateRecoveredPassword(Request $request, $personId)
-    {
-        $request->validate([
-            'email' => ['required', 'email'],
-            'number' => ['required', 'string'],
-            'password' => ['required', 'confirmed', Password::defaults()],
-        ]);
-
-        $person = Person::where('id', $personId)
-            ->where('email', trim($request->get('email')))
-            ->where('number', trim($request->get('number')))
-            ->first();
-
-        if (!$person) {
-            return back()->withErrors([
-                'email' => 'Los datos ingresados no coinciden con el alumno.',
-                'number' => 'Verifica el email y el nÃºmero de identificaciÃ³n.',
-            ]);
-        }
-
-        $user = User::where('person_id', $person->id)
-            ->where('email', $person->email)
-            ->first();
-
-        if (!$user) {
-            return back()->withErrors([
-                'email' => 'No se encontrÃ³ un usuario asociado a estos datos.',
-            ]);
-        }
-
-        $user->forceFill([
-            'password' => Hash::make($request->get('password')),
-            'remember_token' => Str::random(60),
-        ])->save();
-
-        return redirect()->route('login')->with('status', 'ContraseÃ±a actualizada correctamente. Ahora puedes iniciar sesiÃ³n.');
     }
 }

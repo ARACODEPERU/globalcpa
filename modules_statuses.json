@@ -12,6 +12,5 @@
     "Restaurant": true,
     "Socialevents": true,
     "CRM": true,
-    "Bibliodata": true,
-    "ApiConnector": true
+	"Bibliodata": true
 }

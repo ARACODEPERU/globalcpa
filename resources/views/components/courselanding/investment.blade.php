@@ -91,18 +91,14 @@
                                         </div>
                                         <div class="card-body p-4 text-center">
                                             <div class="mb-2">
-                                                @if ((float) ($landing->investment_section['items'][0]['price_now'] ?? 0) <= 0)
-                                                    <span class="display-4 fw-bold text-success">Gratis</span>
-                                                @else
-                                                    <span class="text-navy-custom text-2xl fw-bold">S/</span>
-                                                    <span class="display-4 fw-bold text-navy-custom">
-                                                        {{ $landing->investment_section['items'][0]['price_now'] }}</span>
-                                                    <span class="text-muted">/
-                                                        {{ $landing->investment_section['items'][0]['price_now_text'] ?? '' }}</span>
-                                                @endif
+                                                <span class="text-navy-custom text-2xl fw-bold">S/</span>
+                                                <span class="display-4 fw-bold text-navy-custom">
+                                                    {{ $landing->investment_section['items'][0]['price_now'] }}</span>
+                                                <span class="text-muted">/
+                                                    {{ $landing->investment_section['items'][0]['price_now_text'] ?? '' }}</span>
                                             </div>
 
-                                            <div class="mb-4" @if ((float) ($landing->investment_section['items'][0]['price_now'] ?? 0) <= 0) style="display:none;" @endif>
+                                            <div class="mb-4">
                                                 <del class="text-gray-600 dark:text-gray-400 fs-4 fw-semibold">S/
                                                     {{ $landing->investment_section['items'][0]['price_before'] }}</del>
                                                 <span class="text-gray-600 dark:text-gray-400 small">/
@@ -148,15 +144,11 @@
                                         </div>
                                         <div class="card-body p-4">
                                             <div class="mb-4">
-                                                @if ((float) ($landing->investment_section['items'][1]['price_now'] ?? 0) <= 0)
-                                                    <span class="display-4 fw-bold text-success">Gratis</span>
-                                                @else
-                                                    <span class="text-navy-custom text-2xl fw-bold">S/</span>
-                                                    <span class="display-4 fw-bold text-navy-custom">
-                                                        {{ $landing->investment_section['items'][1]['price_now'] }}</span>
-                                                    <span class="text-muted">/
-                                                        {{ $landing->investment_section['items'][1]['price_now_text'] }}</span>
-                                                @endif
+                                                <span class="text-navy-custom text-2xl fw-bold">S/</span>
+                                                <span class="display-4 fw-bold text-navy-custom">
+                                                    {{ $landing->investment_section['items'][1]['price_now'] }}</span>
+                                                <span class="text-muted">/
+                                                    {{ $landing->investment_section['items'][1]['price_now_text'] }}</span>
                                             </div>
                                             <ul class="list-unstyled text-start mb-4">
                                                 @if (filled($landing->investment_section['items'][1]['features'] ?? null))

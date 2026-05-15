@@ -8,7 +8,6 @@ use Modules\Academic\Entities\AcaCourse;
 use Modules\Academic\Entities\AcaStudent;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Response;
-use Illuminate\Support\Str;
 use App\Helpers\Invoice\QrCodeGenerator;
 use Carbon\Carbon;
 
@@ -90,10 +89,7 @@ class GenerateCertificate
                 // //QR GENERATOR
                 $generator = new QrCodeGenerator(300);
                 $dir = public_path() . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . 'tmp_qr';
-                $cadenaqr = route('certificado_validar', [
-                    'dni' => $student?->person?->number ?: 0,
-                    'course_id' => $course_id ?: 0,
-                ]);
+                $cadenaqr = env('APP_URL') . '/test-image/' . $student_id . '/' . $course_id;
 
                 $qr_path = $generator->generateQR($cadenaqr, $dir, Str::random(10) . '.png', 8, 2);
                 $qr = Image::make($qr_path);
