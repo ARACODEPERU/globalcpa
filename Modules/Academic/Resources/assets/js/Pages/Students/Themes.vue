@@ -23,14 +23,6 @@
             type: Object,
             default: () => ({}),
         },
-        previousModule: {
-            type: Object,
-            default: null,
-        },
-        nextModule: {
-            type: Object,
-            default: null,
-        },
     });
 
     const themeSelected = ref([]);
@@ -443,37 +435,11 @@
             <div class="bg-gradient-to-r from-blue-100 via-indigo-100 to-purple-100 dark:from-gray-800 dark:via-gray-700 dark:to-gray-800 rounded-2xl p-6 text-center shadow-xl border border-gray-100 dark:border-gray-700">
                 <div class="max-w-4xl mx-auto">
                     <!-- Badge y Título -->
-                    <div class="grid grid-cols-1 sm:grid-cols-[1fr_auto_1fr] items-center justify-center gap-3 mb-4">
-                        <div class="flex justify-center sm:justify-end min-w-[150px]">
-                            <Link
-                                v-if="previousModule"
-                                :href="route('aca_mycourses_lesson_themes', previousModule.id)"
-                                class="inline-flex items-center gap-2 px-4 py-1.5 bg-white text-blue-700 border border-blue-200 rounded-full font-bold shadow-lg transition hover:bg-blue-50 hover:border-blue-300 dark:bg-gray-900 dark:text-blue-300 dark:border-blue-700 dark:hover:bg-gray-800"
-                            >
-                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M9.707 4.293a1 1 0 010 1.414L6.414 9H16a1 1 0 110 2H6.414l3.293 3.293a1 1 0 01-1.414 1.414l-5-5a1 1 0 010-1.414l5-5a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                                </svg>
-                                Modulo anterior
-                            </Link>
-                        </div>
-                        <div class="inline-flex items-center gap-3 px-6 py-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-full shadow-lg">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385V4.804zM10.5 4c1.255 0 2.443.29 3.5.804v10A7.968 7.968 0 0014.5 14c-1.255 0-2.443-.29-3.5-.804V4.804z"/>
-                            </svg>
-                            <span class="font-bold text-lg tracking-wide">TEMAS DEL MÓDULO</span>
-                        </div>
-                        <div class="flex justify-center sm:justify-start min-w-[150px]">
-                            <Link
-                                v-if="nextModule"
-                                :href="route('aca_mycourses_lesson_themes', nextModule.id)"
-                                class="inline-flex items-center gap-2 px-4 py-1.5 bg-white text-blue-700 border border-blue-200 rounded-full font-bold shadow-lg transition hover:bg-blue-50 hover:border-blue-300 dark:bg-gray-900 dark:text-blue-300 dark:border-blue-700 dark:hover:bg-gray-800"
-                            >
-                                Modulo siguiente
-                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10.293 15.707a1 1 0 010-1.414L13.586 11H4a1 1 0 110-2h9.586l-3.293-3.293a1 1 0 111.414-1.414l5 5a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
-                                </svg>
-                            </Link>
-                        </div>
+                    <div class="inline-flex items-center gap-3 px-6 py-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-full shadow-lg mb-4">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385V4.804zM10.5 4c1.255 0 2.443.29 3.5.804v10A7.968 7.968 0 0014.5 14c-1.255 0-2.443-.29-3.5-.804V4.804z"/>
+                        </svg>
+                        <span class="font-bold text-lg tracking-wide">TEMAS DEL MÓDULO</span>
                     </div>
 
                     <h1 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3">
@@ -1225,29 +1191,6 @@
                 </div>
             </div>
 
-            <div v-if="previousModule || nextModule" class="flex flex-wrap justify-center gap-3">
-                <Link
-                    v-if="previousModule"
-                    :href="route('aca_mycourses_lesson_themes', previousModule.id)"
-                    class="inline-flex items-center gap-2 px-5 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-full font-bold shadow-lg transition hover:from-blue-700 hover:to-indigo-700 hover:shadow-xl"
-                >
-                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M9.707 4.293a1 1 0 010 1.414L6.414 9H16a1 1 0 110 2H6.414l3.293 3.293a1 1 0 01-1.414 1.414l-5-5a1 1 0 010-1.414l5-5a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                    </svg>
-                    Modulo anterior
-                </Link>
-                <Link
-                    v-if="nextModule"
-                    :href="route('aca_mycourses_lesson_themes', nextModule.id)"
-                    class="inline-flex items-center gap-2 px-5 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-full font-bold shadow-lg transition hover:from-blue-700 hover:to-indigo-700 hover:shadow-xl"
-                >
-                    Modulo siguiente
-                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10.293 15.707a1 1 0 010-1.414L13.586 11H4a1 1 0 110-2h9.586l-3.293-3.293a1 1 0 111.414-1.414l5 5a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
-                    </svg>
-                </Link>
-            </div>
-
         </div>
          <!-- Modal -->
         <TransitionRoot appear :show="displayModalVideo" as="template">
@@ -1281,3 +1224,4 @@
 
     </AppLayout>
 </template>
+

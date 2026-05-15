@@ -36,7 +36,6 @@
         if(localStorage.getItem("shoppingCart")){
             itemsCart.value = JSON.parse(localStorage.getItem("shoppingCart"));
             calculateTotals();
-            console.log('MercadoPago public key:', publicKey.value);
             // Carga el SDK de MercadoPago
             // Carga el SDK de MercadoPago
             await loadMercadoPago();
@@ -62,11 +61,11 @@
             { totalPrice: 0, totalQty: 0 }
         );
 
-        totalSale.value = Number(totalPrice.toFixed(2));
+        // Asegura que totalSale tenga dos decimales
+        // totalSale.value = parseFloat(totalPrice.toFixed(2));
+        totalSale.value = totalPrice.toFixed(2);
         totalQuantity.value = totalQty;
     };
-
-    const priceLabel = (value) => Number(value || 0) <= 0 ? 'Gratis' : `S./ ${Number(value || 0).toFixed(2)}`;
 
     const renderCardPaymentBrick = async (bricksBuilder, preference) => {
         const settings = {
@@ -115,7 +114,7 @@
                                 reloadPageFormMercadoPago();
                             }
                         }).catch((error) => {
-                            let msxg = error.response?.data?.error || error.message || "Error al procesar el pago.";
+                            let msxg = error.message || "Error al procesar el pago.";
                             showAlertToast(msxg, "error");
                             reloadPageFormMercadoPago();
                         });
@@ -203,7 +202,7 @@
                                         </button>
                                     </div>
                                     <div class="text-end md:order-4 md:w-32">
-                                        <p class="text-base font-bold text-gray-900 dark:text-white">{{ priceLabel(item.price) }}</p>
+                                        <p class="text-base font-bold text-gray-900 dark:text-white">S./ {{ item.price }}</p>
                                     </div>
                                 </div>
 
@@ -254,7 +253,7 @@
                             <div class="space-y-2">
                                 <dl class="flex items-center justify-between gap-4">
                                     <dt class="text-base font-normal text-gray-500 dark:text-gray-400">Precio original</dt>
-                                    <dd class="text-base font-medium text-gray-900 dark:text-white">{{ priceLabel(totalSale) }}</dd>
+                                    <dd class="text-base font-medium text-gray-900 dark:text-white">S./ {{ totalSale }}</dd>
                                 </dl>
 
                                 <!-- <dl class="flex items-center justify-between gap-4">
@@ -275,7 +274,7 @@
 
                             <dl class="flex items-center justify-between gap-4 border-t border-gray-200 pt-2 dark:border-gray-700">
                                 <dt class="text-base font-bold text-gray-900 dark:text-white">Total</dt>
-                                <dd class="text-base font-bold text-gray-900 dark:text-white">{{ priceLabel(totalSale) }}</dd>
+                                <dd class="text-base font-bold text-gray-900 dark:text-white">S./ {{ totalSale }}</dd>
                             </dl>
                         </div>
 

@@ -29,7 +29,7 @@
                         Última actualización: 06/07/2025
                     </h2>
                     <p>
-                        Bienvenido a nuestra <b>CPA ACADEMY</b> (en adelante, "nosotros", "nuestro" o "la
+                        Bienvenido a nuestra <b>GLOBAL CPA</b> (en adelante, "nosotros", "nuestro" o "la
                         plataforma"). A través de nuestro sitio web ofrecemos servicios de formación virtual y presencial,
                         cursos, programas de especialización, acceso a contenidos educativos y herramientas digitales de
                         aprendizaje.

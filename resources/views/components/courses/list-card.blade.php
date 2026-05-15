@@ -111,7 +111,7 @@
                                                                             <i class="fa fa-cart-plus"
                                                                                 aria-hidden="true"
                                                                                 style="font-size: 18px;"></i>
-                                                                            &nbsp; {{ (float) $item->price <= 0 ? 'Gratis' : 'S/ ' . $item->price }}
+                                                                            &nbsp; S/ {{ $item->price }}
                                                                         </button>
                                                                     </a>
                                                                 </div>
@@ -194,7 +194,7 @@
                                                                                     <i class="fa fa-cart-plus"
                                                                                         aria-hidden="true"
                                                                                         style="font-size: 18px;"></i>
-                                                                                    &nbsp; {{ (float) $item->price <= 0 ? 'Gratis' : 'S/ ' . $item->price }}
+                                                                                    &nbsp; S/ {{ $item->price }}
                                                                                 </button>
                                                                             </a>
                                                                         </div>
