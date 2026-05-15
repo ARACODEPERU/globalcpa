@@ -43,6 +43,10 @@
                                     <br>
                                     <div class="row widget-grid">
                                         @foreach ($courses->take($p) as $item)
+                                            @php
+                                                $price = (float) ($item->price ?? 0);
+                                                $priceLabel = $price <= 0 ? 'Gratis' : 'S/ ' . number_format($price, 2);
+                                            @endphp
 
                                             <div class="col-xl-4 col-md-6 col-sm-12 box-col-4">
                                                 <div class="card weekend-card">
@@ -111,7 +115,7 @@
                                                                             <i class="fa fa-cart-plus"
                                                                                 aria-hidden="true"
                                                                                 style="font-size: 18px;"></i>
-                                                                            &nbsp; {{ (float) $item->price <= 0 ? 'Gratis' : 'S/ ' . $item->price }}
+                                                                            &nbsp; {{ $priceLabel }}
                                                                         </button>
                                                                     </a>
                                                                 </div>
@@ -131,6 +135,10 @@
                                         <div class="row widget-grid">
                                             @foreach ($courses as $item)
                                                 @if (strtolower($item->additional) == strtolower($type))
+                                                    @php
+                                                        $price = (float) ($item->price ?? 0);
+                                                        $priceLabel = $price <= 0 ? 'Gratis' : 'S/ ' . number_format($price, 2);
+                                                    @endphp
                                                     <div class="col-xl-4 col-md-6 col-sm-12 box-col-4">
                                                         <div class="card weekend-card">
                                                             <div class="card-body">
@@ -194,7 +202,7 @@
                                                                                     <i class="fa fa-cart-plus"
                                                                                         aria-hidden="true"
                                                                                         style="font-size: 18px;"></i>
-                                                                                    &nbsp; {{ (float) $item->price <= 0 ? 'Gratis' : 'S/ ' . $item->price }}
+                                                                                    &nbsp; {{ $priceLabel }}
                                                                                 </button>
                                                                             </a>
                                                                         </div>

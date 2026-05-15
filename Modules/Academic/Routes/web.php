@@ -372,6 +372,9 @@ Route::middleware(['auth', 'verified', 'invalid_updated_information', 'user_acti
     Route::get('certificate/{id}/edit', [AcaCertificateController::class, 'edit'])
         ->name('aca_certificate_edit');
 
+    Route::delete('certificate/{id}/destroy', [AcaCertificateController::class, 'destroy'])
+        ->name('aca_certificate_destroy');
+
     Route::post('certificate/update/info', [AcaCertificateController::class, 'updateInfo'])
         ->name('aca_certificate_update_info');
 

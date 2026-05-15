@@ -13,6 +13,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Intervention\Image\Facades\Image;
@@ -88,7 +89,13 @@ class AcaCertificateController extends Controller
     public function index()
     {
         $certificates = AcaCertificateParameter::with(['course'])
-            ->orderBy('created_at', 'desc')
+            ->leftJoin('aca_courses', 'aca_certificates_parameters.course_id', '=', 'aca_courses.id')
+            ->select('aca_certificates_parameters.*')
+            ->orderByRaw("COALESCE(aca_courses.description, 'General') asc")
+            ->orderBy('aca_certificates_parameters.course_id')
+            ->orderByDesc('aca_certificates_parameters.state')
+            ->orderBy('aca_certificates_parameters.for_module')
+            ->orderBy('aca_certificates_parameters.created_at', 'desc')
             ->paginate(10);
 
         // Formatear la fecha antes de devolver los datos
@@ -342,6 +349,40 @@ class AcaCertificateController extends Controller
         return Inertia::render('Academic::Certificates/Edit', [
             'certificate' => $certificate,
             'gradeConfig' => $gradeConfig,
+        ]);
+    }
+
+    public function destroy(Request $request, $id)
+    {
+        $request->validate([
+            'password' => 'required|string',
+        ]);
+
+        if (! Hash::check($request->password, Auth::user()->password)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'La contraseña es incorrecta.',
+            ], 422);
+        }
+
+        $certificate = AcaCertificateParameter::findOrFail($id);
+
+        foreach ([
+            $certificate->certificate_img,
+            $certificate->back_certificate_img,
+            $certificate->certificate_img_finished,
+            $certificate->back_certificate_img_finished,
+        ] as $path) {
+            if ($path) {
+                Storage::disk('public')->delete(ltrim(str_replace('\\', '/', $path), '/'));
+            }
+        }
+
+        $certificate->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Certificado eliminado correctamente.',
         ]);
     }
 

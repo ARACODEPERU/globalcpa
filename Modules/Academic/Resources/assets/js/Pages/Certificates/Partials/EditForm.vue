@@ -1285,7 +1285,6 @@
                                                 <option value="left">left</option>
                                                 <option value="center">center</option>
                                                 <option value="right">right</option>
-                                                <option value="justify">justify</option>
                                             </select>
                                         </div>
                                         <div class="col-span-2">

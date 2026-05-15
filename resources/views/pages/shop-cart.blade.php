@@ -27,11 +27,11 @@
                                     <div class="checkout-steps">
                                         <button class="checkout-step active" data-step-label="payment">
                                             <span class="checkout-step-number">1</span>
-                                            <span class="checkout-step-text" id="payment-step-text">Carrito y pago</span>
+                                            <span class="checkout-step-text" id="payment-step-text">Comprar</span>
                                         </button>
                                         <button class="checkout-step" data-step-label="final">
                                             <span class="checkout-step-number">2</span>
-                                            <span class="checkout-step-text">Cuenta y comprobante</span>
+                                            <span class="checkout-step-text">Crear cuenta y comprobante</span>
                                         </button>
                                     </div>
                                 </div>
@@ -66,8 +66,17 @@
                             <div class="col-xl-5 col-lg-6">
                                 <div class="card p-4 checkout-payment-card">
                                     <div class="checkout-payment-header">
-                                        <span>Metodo de pago</span>
-                                        <h2 id="payment-card-title">Pago con tarjeta</h2>
+                                        <span class="secure-payment-icon" aria-hidden="true">
+                                            <svg viewBox="0 0 24 24" fill="none" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg">
+                                                <path opacity="0.5" d="M2 16C2 13.1716 2 11.7574 2.87868 10.8787C3.75736 10 5.17157 10 8 10H16C18.8284 10 20.2426 10 21.1213 10.8787C22 11.7574 22 13.1716 22 16C22 18.8284 22 20.2426 21.1213 21.1213C20.2426 22 18.8284 22 16 22H8C5.17157 22 3.75736 22 2.87868 21.1213C2 20.2426 2 18.8284 2 16Z" fill="#1C274C"/>
+                                                <path d="M12.75 14C12.75 13.5858 12.4142 13.25 12 13.25C11.5858 13.25 11.25 13.5858 11.25 14V18C11.25 18.4142 11.5858 18.75 12 18.75C12.4142 18.75 12.75 18.4142 12.75 18V14Z" fill="#1C274C"/>
+                                                <path d="M6.75 8C6.75 5.10051 9.10051 2.75 12 2.75C14.8995 2.75 17.25 5.10051 17.25 8V10.0036C17.8174 10.0089 18.3135 10.022 18.75 10.0546V8C18.75 4.27208 15.7279 1.25 12 1.25C8.27208 1.25 5.25 4.27208 5.25 8V10.0546C5.68651 10.022 6.18264 10.0089 6.75 10.0036V8Z" fill="#1C274C"/>
+                                            </svg>
+                                        </span>
+                                        <span class="secure-payment-copy">
+                                            <strong>Finaliza tu Inscripci&oacute;n</strong>
+                                            <small>Pago 100% seguro con Mercado Pago</small>
+                                        </span>
                                     </div>
                                     <div class="checkout-total-row d-flex justify-content-between align-items-center mb-4">
                                         <span>Total</span>
@@ -162,6 +171,16 @@
                                             </div>
                                         </div>
                                         <div id="cardPaymentBrick_container"></div>
+                                        <div class="secure-payment-note">
+                                            <span class="secure-payment-icon" aria-hidden="true">
+                                                <svg viewBox="0 0 24 24" fill="none" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg">
+                                                    <path opacity="0.5" d="M2 16C2 13.1716 2 11.7574 2.87868 10.8787C3.75736 10 5.17157 10 8 10H16C18.8284 10 20.2426 10 21.1213 10.8787C22 11.7574 22 13.1716 22 16C22 18.8284 22 20.2426 21.1213 21.1213C20.2426 22 18.8284 22 16 22H8C5.17157 22 3.75736 22 2.87868 21.1213C2 20.2426 2 18.8284 2 16Z" fill="#1C274C"/>
+                                                    <path d="M12.75 14C12.75 13.5858 12.4142 13.25 12 13.25C11.5858 13.25 11.25 13.5858 11.25 14V18C11.25 18.4142 11.5858 18.75 12 18.75C12.4142 18.75 12.75 18.4142 12.75 18V14Z" fill="#1C274C"/>
+                                                    <path d="M6.75 8C6.75 5.10051 9.10051 2.75 12 2.75C14.8995 2.75 17.25 5.10051 17.25 8V10.0036C17.8174 10.0089 18.3135 10.022 18.75 10.0546V8C18.75 4.27208 15.7279 1.25 12 1.25C8.27208 1.25 5.25 4.27208 5.25 8V10.0546C5.68651 10.022 6.18264 10.0089 6.75 10.0036V8Z" fill="#1C274C"/>
+                                                </svg>
+                                            </span>
+                                            <span>Al continuar, aceptas nuestros <a href="{{ route('terms_main') }}" target="_blank" rel="noopener noreferrer">t&eacute;rminos y condiciones</a> y confirmas que los datos ingresados son correctos.</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -201,6 +220,20 @@
                     </section>
 
                     <section id="step-final" class="checkout-panel d-none">
+                        <div class="checkout-wide">
+                            <div class="card checkout-progress-card">
+                                <div class="checkout-steps">
+                                    <button class="checkout-step done" data-step-label="payment">
+                                        <span class="checkout-step-number">1</span>
+                                        <span class="checkout-step-text">Comprar</span>
+                                    </button>
+                                    <button class="checkout-step active" data-step-label="final">
+                                        <span class="checkout-step-number">2</span>
+                                        <span class="checkout-step-text">Crear cuenta y comprobante</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                         <div class="account-shell">
                             <div class="account-header">
                                 <h2 id="account-title">Crea tu cuenta en menos de 30 segundos</h2>
@@ -477,10 +510,10 @@
             width: 38px;
             height: 38px;
             border-radius: 50%;
-            background: #dc2626;
+            background: #fff;
             border: 3px solid #fff;
-            color: #fff;
-            box-shadow: 0 0 0 2px #dc2626, 0 8px 18px rgba(220, 38, 38, 0.24);
+            color: #0f172a;
+            box-shadow: 0 0 0 2px #d6dee9, 0 8px 18px rgba(15, 23, 42, 0.1);
             font-size: 16px;
             line-height: 1;
         }
@@ -505,13 +538,23 @@
             color: #fff;
         }
 
-        .checkout-step.active .checkout-step-number,
-        .checkout-step.done {
+        .checkout-step.active .checkout-step-number {
+            background: #dc2626;
+            color: #fff;
+            box-shadow: 0 0 0 2px #dc2626, 0 8px 18px rgba(220, 38, 38, 0.24);
+        }
+
+        .checkout-step.done .checkout-step-number {
+            background: #fff;
+            color: #0f172a;
+            box-shadow: 0 0 0 2px #d6dee9, 0 8px 18px rgba(15, 23, 42, 0.1);
+        }
+
+        .checkout-step.active {
             color: #fff;
         }
 
-        .checkout-step.active .checkout-step-text,
-        .checkout-step.done .checkout-step-text {
+        .checkout-step.active .checkout-step-text {
             color: #dc2626;
         }
 
@@ -1199,6 +1242,99 @@
         .mercadopago-shell {
             max-width: 480px;
             margin: 0 auto;
+        }
+
+        .checkout-payment-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .checkout-payment-header .secure-payment-icon,
+        .secure-payment-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 34px;
+            height: 34px;
+            flex: 0 0 34px;
+            margin-bottom: 0;
+            color: inherit;
+            letter-spacing: 0;
+            text-transform: none;
+        }
+
+        .secure-payment-icon svg {
+            display: block;
+            width: 34px;
+            height: 34px;
+        }
+
+        .checkout-payment-header .secure-payment-copy,
+        .secure-payment-copy {
+            display: block;
+            margin-bottom: 0;
+            color: inherit;
+            font-size: inherit;
+            font-weight: inherit;
+            letter-spacing: 0;
+            text-transform: none;
+        }
+
+        .secure-payment-copy strong,
+        .secure-payment-copy small {
+            display: block;
+        }
+
+        .secure-payment-copy strong {
+            color: #0f172a;
+            font-size: 24px;
+            font-weight: 900;
+            letter-spacing: 0;
+            line-height: 1.15;
+            text-transform: none;
+        }
+
+        .secure-payment-copy small {
+            margin-top: 3px;
+            color: #64748b;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0;
+            line-height: 1.35;
+            text-transform: none;
+        }
+
+        .secure-payment-note {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-top: 14px;
+            color: #475569;
+            font-size: 13px;
+            font-weight: 600;
+            line-height: 1.45;
+        }
+
+        .secure-payment-note .secure-payment-icon {
+            position: relative;
+            width: 26px;
+            height: 26px;
+            flex-basis: 26px;
+            margin-top: 4px;
+            z-index: 999999;
+        }
+
+        .secure-payment-note .secure-payment-icon svg {
+            width: 26px;
+            height: 26px;
+        }
+
+        .secure-payment-note a {
+            color: #dc2626;
+            font-weight: 800;
+            text-decoration: underline;
+            text-underline-offset: 2px;
         }
 
         #cardPaymentBrick_container {
@@ -2559,8 +2695,7 @@
         }
 
         function updateFreeCheckoutView() {
-            document.getElementById('payment-step-text').textContent = freeCheckout ? 'Carrito gratis' : 'Carrito y pago';
-            document.getElementById('payment-card-title').textContent = freeCheckout ? 'Cursos gratuitos' : 'Pago con tarjeta';
+            document.getElementById('payment-step-text').textContent = 'Comprar';
             document.getElementById('account-title').textContent = freeCheckout ? 'Completa tus datos para acceder' : 'Crea tu cuenta en menos de 30 segundos';
             document.getElementById('account-subtitle').textContent = freeCheckout
                 ? 'Crea una cuenta o inicia sesion para registrar el curso en tu dashboard.'
