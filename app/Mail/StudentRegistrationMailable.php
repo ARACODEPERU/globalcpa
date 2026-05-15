@@ -32,7 +32,7 @@ class StudentRegistrationMailable extends Mailable
     {
         return new Envelope(
             from: new Address(env('MAIL_FROM_ADDRESS', 'capacitacion@globalcpaperu.com'), env('MAIL_FROM_NAME', 'GlobalCpa')),
-            subject: 'Bienvenido a Global CPA',
+            subject: 'Bienvenido a CPA Academy',
         );
     }
 
