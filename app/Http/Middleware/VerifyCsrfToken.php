@@ -14,5 +14,7 @@ class VerifyCsrfToken extends Middleware
     protected $except = [
         '/webhook',
         '/ai/*',
+        '/send-password-recovery',
+        '/api-connector/test/*',
     ];
 }

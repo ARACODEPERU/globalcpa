@@ -130,7 +130,7 @@
 
     <section class="bienvenida">
         <h6 class="subTitle">Bienvenido a</h6>
-        <h1 class="title">Global Cpa Academy</h1>
+        <h1 class="title">CPA Academy</h1>
         <hr class="linea">
     </section>
 
