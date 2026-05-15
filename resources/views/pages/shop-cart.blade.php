@@ -17,24 +17,87 @@
                         <p>Revisa tus cursos, completa el pago y activa tu acceso en pocos pasos.</p>
                     </div>
 
+                    <div class="card p-4 mb-4 checkout-progress-card">
+                        <div class="checkout-steps">
+                            <button class="checkout-step active" data-step-label="payment">
+                                <span class="checkout-step-number">1</span>
+                                <span class="checkout-step-text" id="payment-step-text">Carrito y pago</span>
+                            </button>
+                            <button class="checkout-step" data-step-label="final">
+                                <span class="checkout-step-number">2</span>
+                                <span class="checkout-step-text">Cuenta y comprobante</span>
+                            </button>
+                        </div>
+                    </div>
+
                     <div id="checkout-alert" class="alert alert-danger d-none"></div>
 
                     <section id="step-payment" class="checkout-panel">
                         <div class="checkout-wide">
+                            <div class="security-check-grid">
+                                <div class="security-check-card security-check-card-static">
+                                    <img class="security-check-logo-wide" src="{{ asset('img/mercadopago.png') }}" alt="Mercado Pago">
+                                    <span>
+                                        <strong>Mercado Pago</strong>
+                                        <small>Pago seguro</small>
+                                    </span>
+                                </div>
+                                <div class="security-check-card security-check-card-static">
+                                    <span class="security-check-icon-svg" aria-hidden="true">
+                                        <svg viewBox="0 0 64 64" role="img" focusable="false">
+                                            <path d="M32 6 52 14v15c0 13.2-7.8 24.8-20 29.4C19.8 53.8 12 42.2 12 29V14L32 6Z" fill="#dc2626"/>
+                                            <path d="M27.6 38.6 19.8 30.8l4.2-4.2 3.6 3.6L40 17.8l4.2 4.2-16.6 16.6Z" fill="#fff"/>
+                                        </svg>
+                                    </span>
+                                    <span>
+                                        <strong>Pago 100% seguro</strong>
+                                        <small>Procesamos tu pago con los mas altos estandares de seguridad.</small>
+                                    </span>
+                                </div>
+                                <div class="security-check-card security-check-card-static">
+                                    <span class="security-check-icon-svg" aria-hidden="true">
+                                        <svg viewBox="0 0 64 64" role="img" focusable="false">
+                                            <circle cx="32" cy="32" r="26" fill="#dc2626"/>
+                                            <path d="M30 15h5v18H21l18 16-4 4-25-22h20V15Z" fill="#fff" transform="rotate(180 32 34)"/>
+                                        </svg>
+                                    </span>
+                                    <span>
+                                        <strong>Acceso Inmediato</strong>
+                                        <small>Apenas se confirme tu pago, recibir&aacute;s tu accesos al campus virtual.</small>
+                                    </span>
+                                </div>
+                                <div class="security-check-card security-check-card-static">
+                                    <span class="security-check-icon-svg" aria-hidden="true">
+                                        <svg viewBox="0 0 64 64" role="img" focusable="false">
+                                            <path d="M18 8h28a4 4 0 0 1 4 4v40a4 4 0 0 1-4 4H18a4 4 0 0 1-4-4V12a4 4 0 0 1 4-4Z" fill="#dc2626"/>
+                                            <path d="M22 20h20v4H22v-4Zm0 10h20v4H22v-4Zm0 10h12v4H22v-4Z" fill="#fff"/>
+                                            <circle cx="43" cy="43" r="9" fill="#fff"/>
+                                            <path d="m39 43 3 3 6-7" fill="none" stroke="#dc2626" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
+                                    </span>
+                                    <span>
+                                        <strong>Certificaci&oacute;n incluida</strong>
+                                        <small>Al finalizar, obten tu certificado digital de CPA Academy.</small>
+                                    </span>
+                                </div>
+                                <div class="security-check-card security-check-card-static">
+                                    <span class="security-check-icon-svg" aria-hidden="true">
+                                        <svg viewBox="0 0 64 64" role="img" focusable="false">
+                                            <circle cx="32" cy="32" r="26" fill="#dc2626"/>
+                                            <path d="M20 33a12 12 0 0 1 24 0v8h-5v-8a7 7 0 0 0-14 0v8h-5v-8Z" fill="#fff"/>
+                                            <path d="M17 36h8v10h-4a4 4 0 0 1-4-4v-6Zm22 0h8v6a4 4 0 0 1-4 4h-4V36Z" fill="#fff"/>
+                                            <path d="M36 48h-7a3 3 0 0 1 0-6h7a3 3 0 0 1 0 6Z" fill="#fff"/>
+                                        </svg>
+                                    </span>
+                                    <span>
+                                        <strong>Soporte especializado</strong>
+                                        <small>Te acompa&ntilde;amos durante toda tu formaci&oacute;n.</small>
+                                    </span>
+                                </div>
+                            </div>
+
                             <div class="row g-4 align-items-start checkout-main-grid">
                             <div class="col-xl-7 col-lg-6">
-                                <div class="card checkout-progress-card">
-                                    <div class="checkout-steps">
-                                        <button class="checkout-step active" data-step-label="payment">
-                                            <span class="checkout-step-number">1</span>
-                                            <span class="checkout-step-text" id="payment-step-text">Carrito y pago</span>
-                                        </button>
-                                        <button class="checkout-step" data-step-label="final">
-                                            <span class="checkout-step-number">2</span>
-                                            <span class="checkout-step-text">Cuenta y comprobante</span>
-                                        </button>
-                                    </div>
-                                </div>
                                 <div class="card cart-table-card">
                                     <div class="cart-table-header">
                                         <div>
@@ -165,37 +228,6 @@
                                     </div>
                                 </div>
                             </div>
-                            </div>
-                            <div class="security-check-grid">
-                                <div class="security-check-card security-check-card-static">
-                                    <span class="security-check-icon-svg" aria-hidden="true">
-                                        <svg viewBox="0 0 64 64" role="img" focusable="false">
-                                            <path d="M32 6 52 14v15c0 13.2-7.8 24.8-20 29.4C19.8 53.8 12 42.2 12 29V14L32 6Z" fill="#dc2626"/>
-                                            <path d="M27.6 38.6 19.8 30.8l4.2-4.2 3.6 3.6L40 17.8l4.2 4.2-16.6 16.6Z" fill="#fff"/>
-                                        </svg>
-                                    </span>
-                                    <span>
-                                        <strong>Pago 100% seguro</strong>
-                                        <small>Tu informaci&oacute;n est&aacute; protegida</small>
-                                    </span>
-                                </div>
-                                <div class="security-check-card security-check-card-static security-check-card-mercado">
-                                    <span>
-                                        <strong>Con el respaldo de</strong>
-                                        <img class="security-check-logo-wide" src="{{ asset('img/mercadopago.png') }}" alt="Mercado Pago">
-                                    </span>
-                                </div>
-                                <div class="security-check-card security-check-card-static">
-                                    <span class="security-check-icon-svg security-check-icon-whatsapp" aria-hidden="true">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" role="img" focusable="false">
-                                            <path d="M380.9 97.1c-41.9-42-97.7-65.1-157-65.1-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480 117.7 449.1c32.4 17.7 68.9 27 106.1 27l.1 0c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3 18.6-68.1-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1s56.2 81.2 56.1 130.5c0 101.8-84.9 184.6-186.6 184.6zM325.1 300.5c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8s-14.3 18-17.6 21.8c-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7 .9-6.9-.5-9.7s-12.5-30.1-17.1-41.2c-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2s-9.7 1.4-14.8 6.9c-5.1 5.6-19.4 19-19.4 46.3s19.9 53.7 22.6 57.4c2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4s4.6-24.1 3.2-26.4c-1.3-2.5-5-3.9-10.5-6.6z"/>
-                                        </svg>
-                                    </span>
-                                    <span>
-                                        <strong>Asistencia Inmediata</strong>
-                                        <small>Te ayudamos en todo el proceso</small>
-                                    </span>
-                                </div>
                             </div>
                         </div>
                     </section>
@@ -381,7 +413,7 @@
 
     <style>
         .checkout-page-body {
-            padding: 72px 0 48px;
+            padding: 88px 0 64px;
             background: #f6f8fb;
         }
 
@@ -390,7 +422,7 @@
         }
 
         .checkout-page-heading {
-            margin: 0 auto 12px;
+            margin: 0 auto 18px;
             max-width: 1280px;
         }
 
@@ -409,15 +441,15 @@
         .checkout-page-heading h1 {
             margin: 0;
             color: #0f172a;
-            font-size: 28px;
+            font-size: 30px;
             font-weight: 900;
             line-height: 1.15;
         }
 
         .checkout-page-heading p {
-            margin: 6px 0 0;
+            margin: 8px 0 0;
             color: #64748b;
-            font-size: 14px;
+            font-size: 15px;
         }
 
         .checkout-progress-card,
@@ -431,8 +463,6 @@
 
         .checkout-progress-card {
             background: #fff;
-            padding: 12px 16px !important;
-            margin-bottom: 8px !important;
         }
 
         .checkout-steps {
@@ -447,7 +477,7 @@
         .checkout-steps::before {
             content: "";
             position: absolute;
-            top: 18px;
+            top: 23px;
             left: 72px;
             right: 72px;
             height: 2px;
@@ -460,7 +490,7 @@
             display: inline-flex;
             flex-direction: column;
             align-items: center;
-            gap: 5px;
+            gap: 8px;
             width: 132px;
             border: 0;
             background: transparent;
@@ -474,14 +504,14 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 38px;
-            height: 38px;
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
             background: #dc2626;
             border: 3px solid #fff;
             color: #fff;
             box-shadow: 0 0 0 2px #dc2626, 0 8px 18px rgba(220, 38, 38, 0.24);
-            font-size: 16px;
+            font-size: 18px;
             line-height: 1;
         }
 
@@ -522,9 +552,9 @@
 
         .security-check-grid {
             display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
+            grid-template-columns: repeat(5, minmax(0, 1fr));
             gap: 12px;
-            margin-top: 10px;
+            margin-bottom: 22px;
         }
 
         .security-check-card {
@@ -532,8 +562,8 @@
             align-items: center;
             gap: 12px;
             width: 100%;
-            min-height: 72px;
-            padding: 10px 12px;
+            min-height: 96px;
+            padding: 14px;
             background: #fff;
             border: 1px solid #e2e8f0;
             border-radius: 8px;
@@ -565,21 +595,8 @@
         }
 
         .security-check-card img.security-check-logo-wide {
-            width: 154px;
-            height: 44px;
-        }
-
-        .security-check-card-mercado {
-            justify-content: center;
-        }
-
-        .security-check-card-mercado span {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            flex-wrap: wrap;
-            width: 100%;
+            width: 116px;
+            height: 54px;
         }
 
         .security-check-icon-svg {
@@ -613,14 +630,6 @@
             color: #64748b;
             font-size: 12px;
             line-height: 1.35;
-        }
-
-        .security-check-icon-whatsapp {
-            color: #25D366;
-        }
-
-        .security-check-icon-whatsapp svg {
-            fill: currentColor;
         }
 
         .checkout-main-grid {
@@ -676,12 +685,6 @@
             letter-spacing: .03em;
         }
 
-        .cart-table-card thead th,
-        .cart-table-card tbody td {
-            padding-left: 10px !important;
-            padding-right: 10px !important;
-        }
-
         .cart-table-card tbody tr {
             transition: background .18s ease;
         }
@@ -698,29 +701,25 @@
             flex: 0 0 auto;
         }
 
-        #cart .flex.items-center.space-x-4 > :not([hidden]) ~ :not([hidden]) {
-            margin-left: 10px;
-        }
-
         .cart-product-column {
-            width: 46%;
-            min-width: 250px;
+            width: 48%;
+            min-width: 320px;
         }
 
         .cart-type-column {
-            width: 26%;
-            min-width: 120px;
+            width: 24%;
+            min-width: 170px;
         }
 
         .cart-price-column {
             width: 16%;
-            min-width: 82px;
+            min-width: 110px;
             white-space: nowrap;
         }
 
         .cart-action-column {
             width: 12%;
-            min-width: 58px;
+            min-width: 88px;
             white-space: nowrap;
         }
 
@@ -1201,29 +1200,6 @@
             margin: 0 auto;
         }
 
-        #cardPaymentBrick_container {
-            margin-bottom: -18px;
-            overflow: hidden;
-        }
-
-        #cardPaymentBrick_container > div,
-        #cardPaymentBrick_container form {
-            margin-bottom: 0 !important;
-            padding-bottom: 0 !important;
-        }
-
-        #cardPaymentBrick_container .mp-checkout-container,
-        #cardPaymentBrick_container .mp-card-form,
-        #cardPaymentBrick_container .mp-form,
-        #cardPaymentBrick_container .mp-brick-container {
-            margin-bottom: 0 !important;
-            padding-bottom: 0 !important;
-        }
-
-        #cardPaymentBrick_container button[type="submit"] {
-            margin-bottom: 0 !important;
-        }
-
         .checkout-total-row {
             padding: 16px;
             border: 1px solid #fecaca;
@@ -1496,15 +1472,15 @@
 
         @media (max-width: 768px) {
             .checkout-page-body {
-                padding-top: 64px;
+                padding-top: 76px;
             }
 
             .checkout-page-heading h1 {
-                font-size: 23px;
+                font-size: 25px;
             }
 
             .checkout-page-heading p {
-                font-size: 13px;
+                font-size: 14px;
             }
 
             .checkout-steps {
@@ -1522,7 +1498,7 @@
             }
 
             .security-check-card {
-                min-height: 68px;
+                min-height: 88px;
             }
 
             .cart-table-header {
@@ -1531,20 +1507,9 @@
                 padding: 20px;
             }
 
-            .cart-product-column {
-                min-width: 210px;
-            }
-
+            .cart-product-column,
             .cart-type-column {
-                min-width: 105px;
-            }
-
-            .cart-price-column {
-                min-width: 78px;
-            }
-
-            .cart-action-column {
-                min-width: 54px;
+                min-width: 220px;
             }
 
             .account-shell {
@@ -1598,7 +1563,7 @@
             }
 
             .checkout-progress-card {
-                padding: 10px 12px !important;
+                padding: 18px !important;
             }
 
             .checkout-steps {
@@ -1606,9 +1571,8 @@
             }
 
             .checkout-steps::before {
-                top: 17px;
-                left: 52px;
-                right: 52px;
+                left: 56px;
+                right: 56px;
             }
 
             .checkout-step {
@@ -1616,19 +1580,13 @@
             }
 
             .checkout-step-number {
-                width: 36px;
-                height: 36px;
-                font-size: 15px;
+                width: 42px;
+                height: 42px;
+                font-size: 16px;
             }
 
             .security-check-grid {
                 grid-template-columns: 1fr;
-                margin-top: 8px;
-            }
-
-            .security-check-card {
-                min-height: 64px;
-                padding: 9px 10px;
             }
 
             .checkout-payment-card {
@@ -1679,9 +1637,7 @@
         let freeCheckout = false;
         let lastCardholderName = '';
         let phoneGuardAttached = false;
-        let accountLookupTimer = null;
         let invoiceLookupTimer = null;
-        let lastAccountLookupKey = '';
         let lastInvoiceLookupKey = '';
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -2050,6 +2006,13 @@
             document.getElementById('create_email').value = email;
             document.getElementById('create_dni').value = dni;
             document.getElementById('login_email').value = email;
+            document.getElementById('invoice_name').value = names;
+            document.getElementById('invoice_dni').value = dni;
+            document.getElementById('invoice_email').value = email;
+
+            if (onlyDigits(dni).length === 8) {
+                lookupInvoicePerson('boleta', dni, false);
+            }
         }
 
         function selectAccountMode(mode) {
@@ -2066,7 +2029,7 @@
             document.getElementById('factura-panel').classList.toggle('d-none', type !== 'factura');
 
             if (type === 'boleta') {
-                lookupInvoicePerson('boleta', value('invoice_dni'), false);
+                lookupInvoicePerson('boleta', value('invoice_dni') || value('create_dni'), false);
             } else {
                 document.getElementById('invoice_ruc').focus();
                 lookupInvoicePerson('factura', value('invoice_ruc'), false);
@@ -2078,16 +2041,22 @@
             const invoiceDni = document.getElementById('invoice_dni');
             const invoiceRuc = document.getElementById('invoice_ruc');
 
-            createDni.maxLength = 8;
-            createDni.addEventListener('input', () => {
-                createDni.value = onlyDigits(createDni.value).slice(0, 8);
-                queueAccountLookup(createDni.value);
-            });
+            [createDni, invoiceDni].forEach(input => {
+                input.maxLength = 8;
+                input.addEventListener('input', () => {
+                    input.value = onlyDigits(input.value).slice(0, 8);
+                    const dni = input.value;
 
-            invoiceDni.maxLength = 8;
-            invoiceDni.addEventListener('input', () => {
-                invoiceDni.value = onlyDigits(invoiceDni.value).slice(0, 8);
-                queueInvoiceLookup('boleta', invoiceDni.value);
+                    if (input.id === 'create_dni' && invoiceDni.value !== dni) {
+                        invoiceDni.value = dni;
+                    }
+
+                    if (input.id === 'invoice_dni' && createDni.value !== dni) {
+                        createDni.value = dni;
+                    }
+
+                    queueInvoiceLookup('boleta', dni);
+                });
             });
 
             invoiceRuc.maxLength = 11;
@@ -2097,50 +2066,9 @@
             });
         }
 
-        function queueAccountLookup(number) {
-            clearTimeout(accountLookupTimer);
-            accountLookupTimer = setTimeout(() => lookupAccountPerson(number, true), 450);
-        }
-
         function queueInvoiceLookup(type, number) {
             clearTimeout(invoiceLookupTimer);
             invoiceLookupTimer = setTimeout(() => lookupInvoicePerson(type, number, true), 450);
-        }
-
-        function lookupAccountPerson(number, showErrors = true) {
-            const cleanNumber = onlyDigits(number);
-            const lookupKey = `account:${cleanNumber}`;
-
-            if (cleanNumber.length !== 8 || lookupKey === lastAccountLookupKey) {
-                return;
-            }
-
-            lastAccountLookupKey = lookupKey;
-
-            requestJson(routes.searchPerson, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken
-                },
-                body: JSON.stringify({
-                    document_type: 1,
-                    number: cleanNumber
-                })
-            }, 15000)
-                .then((data) => {
-                    if (!data.success) {
-                        throw new Error(data.error || 'No se encontraron datos para el documento ingresado.');
-                    }
-
-                    fillAccountPerson(data.person || {}, cleanNumber);
-                })
-                .catch(error => {
-                    lastAccountLookupKey = '';
-                    if (showErrors) {
-                        showAlert(error.message);
-                    }
-                });
         }
 
         function lookupInvoicePerson(type, number, showErrors = true) {
@@ -2197,21 +2125,10 @@
             ].filter(Boolean).join(' ');
             const dni = person.document_number || number;
 
+            document.getElementById('create_dni').value = dni;
             document.getElementById('invoice_dni').value = dni;
-            document.getElementById('invoice_name').value = fullName;
-        }
-
-        function fillAccountPerson(person, number) {
-            hideAlert();
-
-            const fullName = person.razon_social || [
-                person.names,
-                person.father_lastname,
-                person.mother_lastname
-            ].filter(Boolean).join(' ');
-
-            document.getElementById('create_dni').value = person.document_number || number;
             document.getElementById('create_names').value = fullName;
+            document.getElementById('invoice_name').value = fullName;
         }
 
         function onlyDigits(value) {
