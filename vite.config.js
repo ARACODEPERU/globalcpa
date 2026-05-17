@@ -8,7 +8,8 @@ export default defineConfig({
         laravel({
             input: [
                 "resources/js/app.js",
-                "resources/js/webpage.js"
+                "resources/js/webpage.js",
+                "resources/css/website/shop-cart.css"
             ],
             ssr: "resources/js/ssr.js",
             refresh: true,

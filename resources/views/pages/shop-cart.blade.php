@@ -1,9 +1,15 @@
 @extends('layouts.webpage')
-
+@vite('resources/css/website/shop-cart.css')
 @section('content')
+
     <script src="https://sdk.mercadopago.com/js/v2"></script>
 
     <div class="tap-top"><i data-feather="chevrons-up"></i></div>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+
+
     <div class="page-wrapper" id="pageWrapper">
         <x-header />
         <div class="page-body-wrapper">
@@ -22,175 +28,207 @@
                     <section id="step-payment" class="checkout-panel">
                         <div class="checkout-wide">
                             <div class="row g-4 align-items-start checkout-main-grid">
-                            <div class="col-xl-7 col-lg-6">
-                                <div class="card checkout-progress-card">
-                                    <div class="checkout-steps">
-                                        <button class="checkout-step active" data-step-label="payment">
-                                            <span class="checkout-step-number">1</span>
-                                            <span class="checkout-step-text" id="payment-step-text">Comprar</span>
-                                        </button>
-                                        <button class="checkout-step" data-step-label="final">
-                                            <span class="checkout-step-number">2</span>
-                                            <span class="checkout-step-text">Crear cuenta y comprobante</span>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="card cart-table-card">
-                                    <div class="cart-table-header">
-                                        <div>
-                                            <span>Resumen</span>
-                                            <h2>Tu carrito</h2>
+                                <div class="col-xl-7 col-lg-6">
+                                    <div class="card checkout-progress-card">
+                                        <div class="checkout-steps">
+                                            <button class="checkout-step active" data-step-label="payment">
+                                                <span class="checkout-step-number">1</span>
+                                                <span class="checkout-step-text" id="payment-step-text">Comprar</span>
+                                            </button>
+                                            <button class="checkout-step" data-step-label="final">
+                                                <span class="checkout-step-number">2</span>
+                                                <span class="checkout-step-text">Crear cuenta y comprobante</span>
+                                            </button>
                                         </div>
-                                        <small id="total_productos">Cursos seleccionados</small>
                                     </div>
-                                    <div class="is-scrollbar-hidden min-w-full overflow-x-auto">
-                                        <table class="is-hoverable w-full text-left">
-                                            <thead>
-                                                <tr>
-                                                    <th class="cart-product-column bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 lg:px-5">Producto</th>
-                                                    <th class="cart-type-column bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 lg:px-5">Tipo</th>
-                                                    <th class="cart-price-column bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 lg:px-5">Precio</th>
-                                                    <th class="cart-action-column bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 lg:px-5">Accion</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="cart">
-                                                <tr>
-                                                    <td colspan="4" class="px-4 py-5 text-center">Cargando carrito...</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-xl-5 col-lg-6">
-                                <div class="card p-4 checkout-payment-card">
-                                    <div class="checkout-payment-header">
-                                        <span class="secure-payment-icon" aria-hidden="true">
-                                            <svg viewBox="0 0 24 24" fill="none" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg">
-                                                <path opacity="0.5" d="M2 16C2 13.1716 2 11.7574 2.87868 10.8787C3.75736 10 5.17157 10 8 10H16C18.8284 10 20.2426 10 21.1213 10.8787C22 11.7574 22 13.1716 22 16C22 18.8284 22 20.2426 21.1213 21.1213C20.2426 22 18.8284 22 16 22H8C5.17157 22 3.75736 22 2.87868 21.1213C2 20.2426 2 18.8284 2 16Z" fill="#1C274C"/>
-                                                <path d="M12.75 14C12.75 13.5858 12.4142 13.25 12 13.25C11.5858 13.25 11.25 13.5858 11.25 14V18C11.25 18.4142 11.5858 18.75 12 18.75C12.4142 18.75 12.75 18.4142 12.75 18V14Z" fill="#1C274C"/>
-                                                <path d="M6.75 8C6.75 5.10051 9.10051 2.75 12 2.75C14.8995 2.75 17.25 5.10051 17.25 8V10.0036C17.8174 10.0089 18.3135 10.022 18.75 10.0546V8C18.75 4.27208 15.7279 1.25 12 1.25C8.27208 1.25 5.25 4.27208 5.25 8V10.0546C5.68651 10.022 6.18264 10.0089 6.75 10.0036V8Z" fill="#1C274C"/>
-                                            </svg>
-                                        </span>
-                                        <span class="secure-payment-copy">
-                                            <strong>Finaliza tu Inscripci&oacute;n</strong>
-                                            <small>Pago 100% seguro con Mercado Pago</small>
-                                        </span>
-                                    </div>
-                                    <div class="checkout-total-row d-flex justify-content-between align-items-center mb-4">
-                                        <span>Total</span>
-                                        <strong id="totalid">S/ 0.00</strong>
-                                    </div>
-                                    <div class="mercadopago-shell">
-                                        <div id="payment-phone-field" class="checkout-field mb-3">
-                                            <label>Telefono</label>
-                                            <div class="phone-input-group">
-                                                <select id="payment_phone_country" aria-label="Codigo de pais">
-                                                    <option value="" data-area-code="" selected>Selecciona codigo</option>
-                                                    <option value="+51" data-area-code="51">Peru +51</option>
-                                                    <option value="+54" data-area-code="54">Argentina +54</option>
-                                                    <option value="+591" data-area-code="591">Bolivia +591</option>
-                                                    <option value="+55" data-area-code="55">Brasil +55</option>
-                                                    <option value="+56" data-area-code="56">Chile +56</option>
-                                                    <option value="+57" data-area-code="57">Colombia +57</option>
-                                                    <option value="+506" data-area-code="506">Costa Rica +506</option>
-                                                    <option value="+53" data-area-code="53">Cuba +53</option>
-                                                    <option value="+593" data-area-code="593">Ecuador +593</option>
-                                                    <option value="+503" data-area-code="503">El Salvador +503</option>
-                                                    <option value="+34" data-area-code="34">Espana +34</option>
-                                                    <option value="+1" data-area-code="1">Estados Unidos +1</option>
-                                                    <option value="+1" data-area-code="1">Canada +1</option>
-                                                    <option value="+502" data-area-code="502">Guatemala +502</option>
-                                                    <option value="+504" data-area-code="504">Honduras +504</option>
-                                                    <option value="+52" data-area-code="52">Mexico +52</option>
-                                                    <option value="+505" data-area-code="505">Nicaragua +505</option>
-                                                    <option value="+507" data-area-code="507">Panama +507</option>
-                                                    <option value="+595" data-area-code="595">Paraguay +595</option>
-                                                    <option value="+1" data-area-code="1">Puerto Rico +1</option>
-                                                    <option value="+1" data-area-code="1">Republica Dominicana +1</option>
-                                                    <option value="+598" data-area-code="598">Uruguay +598</option>
-                                                    <option value="+58" data-area-code="58">Venezuela +58</option>
-                                                    <option value="+49" data-area-code="49">Alemania +49</option>
-                                                    <option value="+376" data-area-code="376">Andorra +376</option>
-                                                    <option value="+244" data-area-code="244">Angola +244</option>
-                                                    <option value="+966" data-area-code="966">Arabia Saudita +966</option>
-                                                    <option value="+213" data-area-code="213">Argelia +213</option>
-                                                    <option value="+61" data-area-code="61">Australia +61</option>
-                                                    <option value="+43" data-area-code="43">Austria +43</option>
-                                                    <option value="+32" data-area-code="32">Belgica +32</option>
-                                                    <option value="+501" data-area-code="501">Belice +501</option>
-                                                    <option value="+229" data-area-code="229">Benin +229</option>
-                                                    <option value="+359" data-area-code="359">Bulgaria +359</option>
-                                                    <option value="+237" data-area-code="237">Camerun +237</option>
-                                                    <option value="+86" data-area-code="86">China +86</option>
-                                                    <option value="+357" data-area-code="357">Chipre +357</option>
-                                                    <option value="+82" data-area-code="82">Corea del Sur +82</option>
-                                                    <option value="+225" data-area-code="225">Costa de Marfil +225</option>
-                                                    <option value="+385" data-area-code="385">Croacia +385</option>
-                                                    <option value="+45" data-area-code="45">Dinamarca +45</option>
-                                                    <option value="+971" data-area-code="971">Emiratos Arabes Unidos +971</option>
-                                                    <option value="+421" data-area-code="421">Eslovaquia +421</option>
-                                                    <option value="+386" data-area-code="386">Eslovenia +386</option>
-                                                    <option value="+372" data-area-code="372">Estonia +372</option>
-                                                    <option value="+63" data-area-code="63">Filipinas +63</option>
-                                                    <option value="+358" data-area-code="358">Finlandia +358</option>
-                                                    <option value="+33" data-area-code="33">Francia +33</option>
-                                                    <option value="+30" data-area-code="30">Grecia +30</option>
-                                                    <option value="+852" data-area-code="852">Hong Kong +852</option>
-                                                    <option value="+36" data-area-code="36">Hungria +36</option>
-                                                    <option value="+91" data-area-code="91">India +91</option>
-                                                    <option value="+62" data-area-code="62">Indonesia +62</option>
-                                                    <option value="+353" data-area-code="353">Irlanda +353</option>
-                                                    <option value="+354" data-area-code="354">Islandia +354</option>
-                                                    <option value="+972" data-area-code="972">Israel +972</option>
-                                                    <option value="+39" data-area-code="39">Italia +39</option>
-                                                    <option value="+81" data-area-code="81">Japon +81</option>
-                                                    <option value="+371" data-area-code="371">Letonia +371</option>
-                                                    <option value="+370" data-area-code="370">Lituania +370</option>
-                                                    <option value="+352" data-area-code="352">Luxemburgo +352</option>
-                                                    <option value="+60" data-area-code="60">Malasia +60</option>
-                                                    <option value="+212" data-area-code="212">Marruecos +212</option>
-                                                    <option value="+31" data-area-code="31">Paises Bajos +31</option>
-                                                    <option value="+64" data-area-code="64">Nueva Zelanda +64</option>
-                                                    <option value="+47" data-area-code="47">Noruega +47</option>
-                                                    <option value="+48" data-area-code="48">Polonia +48</option>
-                                                    <option value="+351" data-area-code="351">Portugal +351</option>
-                                                    <option value="+44" data-area-code="44">Reino Unido +44</option>
-                                                    <option value="+420" data-area-code="420">Republica Checa +420</option>
-                                                    <option value="+40" data-area-code="40">Rumania +40</option>
-                                                    <option value="+7" data-area-code="7">Rusia +7</option>
-                                                    <option value="+65" data-area-code="65">Singapur +65</option>
-                                                    <option value="+27" data-area-code="27">Sudafrica +27</option>
-                                                    <option value="+46" data-area-code="46">Suecia +46</option>
-                                                    <option value="+41" data-area-code="41">Suiza +41</option>
-                                                    <option value="+66" data-area-code="66">Tailandia +66</option>
-                                                    <option value="+90" data-area-code="90">Turquia +90</option>
-                                                </select>
-                                                <input id="payment_phone" type="tel" placeholder="Numero de telefono">
+                                    <div class="card cart-table-card">
+                                        <div class="cart-table-header">
+                                            <div>
+                                                <span>Resumen</span>
+                                                <h2>Tu carrito</h2>
                                             </div>
+                                            <small id="total_productos">Cursos seleccionados</small>
                                         </div>
-                                        <div id="cardPaymentBrick_container"></div>
-                                        <div class="secure-payment-note">
+                                        <div class="is-scrollbar-hidden min-w-full overflow-x-auto">
+                                            <table class="is-hoverable w-full text-left">
+                                                <thead>
+                                                    <tr>
+                                                        <th
+                                                            class="cart-product-column bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 lg:px-5">
+                                                            Producto</th>
+                                                        <th
+                                                            class="cart-type-column bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 lg:px-5">
+                                                            Tipo</th>
+                                                        <th
+                                                            class="cart-price-column bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 lg:px-5">
+                                                            Precio</th>
+                                                        <th
+                                                            class="cart-action-column bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 lg:px-5">
+                                                            Accion</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="cart">
+                                                    <tr>
+                                                        <td colspan="4" class="px-4 py-5 text-center">Cargando carrito...
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xl-5 col-lg-6">
+                                    <div class="card p-4 checkout-payment-card">
+                                        <div class="checkout-payment-header">
                                             <span class="secure-payment-icon" aria-hidden="true">
-                                                <svg viewBox="0 0 24 24" fill="none" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg">
-                                                    <path opacity="0.5" d="M2 16C2 13.1716 2 11.7574 2.87868 10.8787C3.75736 10 5.17157 10 8 10H16C18.8284 10 20.2426 10 21.1213 10.8787C22 11.7574 22 13.1716 22 16C22 18.8284 22 20.2426 21.1213 21.1213C20.2426 22 18.8284 22 16 22H8C5.17157 22 3.75736 22 2.87868 21.1213C2 20.2426 2 18.8284 2 16Z" fill="#1C274C"/>
-                                                    <path d="M12.75 14C12.75 13.5858 12.4142 13.25 12 13.25C11.5858 13.25 11.25 13.5858 11.25 14V18C11.25 18.4142 11.5858 18.75 12 18.75C12.4142 18.75 12.75 18.4142 12.75 18V14Z" fill="#1C274C"/>
-                                                    <path d="M6.75 8C6.75 5.10051 9.10051 2.75 12 2.75C14.8995 2.75 17.25 5.10051 17.25 8V10.0036C17.8174 10.0089 18.3135 10.022 18.75 10.0546V8C18.75 4.27208 15.7279 1.25 12 1.25C8.27208 1.25 5.25 4.27208 5.25 8V10.0546C5.68651 10.022 6.18264 10.0089 6.75 10.0036V8Z" fill="#1C274C"/>
+                                                <svg viewBox="0 0 24 24" fill="none" role="img" focusable="false"
+                                                    xmlns="http://www.w3.org/2000/svg">
+                                                    <path opacity="0.5"
+                                                        d="M2 16C2 13.1716 2 11.7574 2.87868 10.8787C3.75736 10 5.17157 10 8 10H16C18.8284 10 20.2426 10 21.1213 10.8787C22 11.7574 22 13.1716 22 16C22 18.8284 22 20.2426 21.1213 21.1213C20.2426 22 18.8284 22 16 22H8C5.17157 22 3.75736 22 2.87868 21.1213C2 20.2426 2 18.8284 2 16Z"
+                                                        fill="#1C274C" />
+                                                    <path
+                                                        d="M12.75 14C12.75 13.5858 12.4142 13.25 12 13.25C11.5858 13.25 11.25 13.5858 11.25 14V18C11.25 18.4142 11.5858 18.75 12 18.75C12.4142 18.75 12.75 18.4142 12.75 18V14Z"
+                                                        fill="#1C274C" />
+                                                    <path
+                                                        d="M6.75 8C6.75 5.10051 9.10051 2.75 12 2.75C14.8995 2.75 17.25 5.10051 17.25 8V10.0036C17.8174 10.0089 18.3135 10.022 18.75 10.0546V8C18.75 4.27208 15.7279 1.25 12 1.25C8.27208 1.25 5.25 4.27208 5.25 8V10.0546C5.68651 10.022 6.18264 10.0089 6.75 10.0036V8Z"
+                                                        fill="#1C274C" />
                                                 </svg>
                                             </span>
-                                            <span>Al continuar, aceptas nuestros <a href="{{ route('terms_main') }}" target="_blank" rel="noopener noreferrer">t&eacute;rminos y condiciones</a> y confirmas que los datos ingresados son correctos.</span>
+                                            <span class="secure-payment-copy">
+                                                <strong>Finaliza tu Inscripci&oacute;n</strong>
+                                                <small>Pago 100% seguro con Mercado Pago</small>
+                                            </span>
+                                        </div>
+                                        <div
+                                            class="checkout-total-row d-flex justify-content-between align-items-center mb-4">
+                                            <span>Total</span>
+                                            <strong id="totalid">S/ 0.00</strong>
+                                        </div>
+                                        <div class="mercadopago-shell">
+                                            <div id="payment-phone-field" class="checkout-field mb-3">
+                                                <label>Telefono</label>
+                                                <div class="phone-input-group">
+                                                    <select id="payment_phone_country" aria-label="Codigo de pais">
+                                                        <option value="" data-area-code="" selected>Selecciona codigo
+                                                        </option>
+                                                            <option value="+51" data-code="pe">Perú (+51)</option>
+                                                            <option value="+54" data-code="ar">Argentina (+54)</option>
+                                                            <option value="+591" data-code="bo">Bolivia (+591)</option>
+                                                            <option value="+55" data-code="br">Brasil (+55)</option>
+                                                            <option value="+56" data-code="cl">Chile (+56)</option>
+                                                            <option value="+57" data-code="co">Colombia (+57)</option>
+                                                            <option value="+506" data-code="cr">Costa Rica (+506)</option>
+                                                            <option value="+53" data-code="cu">Cuba (+53)</option>
+                                                            <option value="+593" data-code="ec">Ecuador (+593)</option>
+                                                            <option value="+503" data-code="sv">El Salvador (+503)</option>
+                                                            <option value="+34" data-code="es">España (+34)</option>
+                                                            <option value="+1" data-code="us">Estados Unidos (+1)</option>
+                                                            <option value="+1" data-code="ca">Canadá (+1)</option>
+                                                            <option value="+502" data-code="gt">Guatemala (+502)</option>
+                                                            <option value="+504" data-code="hn">Honduras (+504)</option>
+                                                            <option value="+52" data-code="mx">México (+52)</option>
+                                                            <option value="+505" data-code="ni">Nicaragua (+505)</option>
+                                                            <option value="+507" data-code="pa">Panamá (+507)</option>
+                                                            <option value="+595" data-code="py">Paraguay (+595)</option>
+                                                            <option value="+1" data-code="pr">Puerto Rico (+1)</option>
+                                                            <option value="+1" data-code="do">República Dominicana (+1)</option>
+                                                            <option value="+598" data-code="uy">Uruguay (+598)</option>
+                                                            <option value="+58" data-code="ve">Venezuela (+58)</option>
+                                                            <option value="+49" data-code="de">Alemania (+49)</option>
+                                                            <option value="+376" data-code="ad">Andorra (+376)</option>
+                                                            <option value="+244" data-code="ao">Angola (+244)</option>
+                                                            <option value="+966" data-code="sa">Arabia Saudita (+966)</option>
+                                                            <option value="+213" data-code="dz">Argelia (+213)</option>
+                                                            <option value="+61" data-code="au">Australia (+61)</option>
+                                                            <option value="+43" data-code="at">Austria (+43)</option>
+                                                            <option value="+32" data-code="be">Bélgica (+32)</option>
+                                                            <option value="+501" data-code="bz">Belice (+501)</option>
+                                                            <option value="+229" data-code="bj">Benín (+229)</option>
+                                                            <option value="+359" data-code="bg">Bulgaria (+359)</option>
+                                                            <option value="+237" data-code="cm">Camerún (+237)</option>
+                                                            <option value="+86" data-code="cn">China (+86)</option>
+                                                            <option value="+357" data-code="cy">Chipre (+357)</option>
+                                                            <option value="+82" data-code="kr">Corea del Sur (+82)</option>
+                                                            <option value="+225" data-code="ci">Costa de Marfil (+225)</option>
+                                                            <option value="+385" data-code="hr">Croacia (+385)</option>
+                                                            <option value="+45" data-code="dk">Dinamarca (+45)</option>
+                                                            <option value="+971" data-code="ae">Emiratos Árabes Unidos (+971)</option>
+                                                            <option value="+421" data-code="sk">Eslovaquia (+421)</option>
+                                                            <option value="+386" data-code="si">Eslovenia (+386)</option>
+                                                            <option value="+372" data-code="ee">Estonia (+372)</option>
+                                                            <option value="+63" data-code="ph">Filipinas (+63)</option>
+                                                            <option value="+358" data-code="fi">Finlandia (+358)</option>
+                                                            <option value="+33" data-code="fr">Francia (+33)</option>
+                                                            <option value="+30" data-code="gr">Grecia (+30)</option>
+                                                            <option value="+852" data-code="hk">Hong Kong (+852)</option>
+                                                            <option value="+36" data-code="hu">Hungría (+36)</option>
+                                                            <option value="+91" data-code="in">India (+91)</option>
+                                                            <option value="+62" data-code="id">Indonesia (+62)</option>
+                                                            <option value="+353" data-code="ie">Irlanda (+353)</option>
+                                                            <option value="+354" data-code="is">Islandia (+354)</option>
+                                                            <option value="+972" data-code="il">Israel (+972)</option>
+                                                            <option value="+39" data-code="it">Italia (+39)</option>
+                                                            <option value="+81" data-code="jp">Japón (+81)</option>
+                                                            <option value="+371" data-code="lv">Letonia (+371)</option>
+                                                            <option value="+370" data-code="lt">Lituania (+370)</option>
+                                                            <option value="+352" data-code="lu">Luxemburgo (+352)</option>
+                                                            <option value="+60" data-code="my">Malasia (+60)</option>
+                                                            <option value="+212" data-code="ma">Marruecos (+212)</option>
+                                                            <option value="+31" data-code="nl">Países Bajos (+31)</option>
+                                                            <option value="+64" data-code="nz">Nueva Zelanda (+64)</option>
+                                                            <option value="+47" data-code="no">Noruega (+47)</option>
+                                                            <option value="+48" data-code="pl">Polonia (+48)</option>
+                                                            <option value="+351" data-code="pt">Portugal (+351)</option>
+                                                            <option value="+44" data-code="gb">Reino Unido (+44)</option>
+                                                            <option value="+420" data-code="cz">República Checa (+420)</option>
+                                                            <option value="+40" data-code="ro">Rumanía (+40)</option>
+                                                            <option value="+7" data-code="ru">Rusia (+7)</option>
+                                                            <option value="+65" data-code="sg">Singapur (+65)</option>
+                                                            <option value="+27" data-code="za">Sudáfrica (+27)</option>
+                                                            <option value="+46" data-code="se">Suecia (+46)</option>
+                                                            <option value="+41" data-code="ch">Suiza (+41)</option>
+                                                            <option value="+66" data-code="th">Tailandia (+66)</option>
+                                                            <option value="+90" data-code="tr">Turquía (+90)</option>
+                                                    </select>
+                                                    <input id="payment_phone" type="tel"
+                                                        placeholder="Numero de telefono">
+                                                </div>
+                                            </div>
+                                            <div id="cardPaymentBrick_container"></div>
+                                            <div class="secure-payment-note">
+                                                <span class="secure-payment-icon" aria-hidden="true">
+                                                    <svg viewBox="0 0 24 24" fill="none" role="img"
+                                                        focusable="false" xmlns="http://www.w3.org/2000/svg">
+                                                        <path opacity="0.5"
+                                                            d="M2 16C2 13.1716 2 11.7574 2.87868 10.8787C3.75736 10 5.17157 10 8 10H16C18.8284 10 20.2426 10 21.1213 10.8787C22 11.7574 22 13.1716 22 16C22 18.8284 22 20.2426 21.1213 21.1213C20.2426 22 18.8284 22 16 22H8C5.17157 22 3.75736 22 2.87868 21.1213C2 20.2426 2 18.8284 2 16Z"
+                                                            fill="#1C274C" />
+                                                        <path
+                                                            d="M12.75 14C12.75 13.5858 12.4142 13.25 12 13.25C11.5858 13.25 11.25 13.5858 11.25 14V18C11.25 18.4142 11.5858 18.75 12 18.75C12.4142 18.75 12.75 18.4142 12.75 18V14Z"
+                                                            fill="#1C274C" />
+                                                        <path
+                                                            d="M6.75 8C6.75 5.10051 9.10051 2.75 12 2.75C14.8995 2.75 17.25 5.10051 17.25 8V10.0036C17.8174 10.0089 18.3135 10.022 18.75 10.0546V8C18.75 4.27208 15.7279 1.25 12 1.25C8.27208 1.25 5.25 4.27208 5.25 8V10.0546C5.68651 10.022 6.18264 10.0089 6.75 10.0036V8Z"
+                                                            fill="#1C274C" />
+                                                    </svg>
+                                                </span>
+                                                <span>Al continuar, aceptas nuestros <a href="{{ route('terms_main') }}"
+                                                        target="_blank" rel="noopener noreferrer">t&eacute;rminos y
+                                                        condiciones</a> y confirmas que los datos ingresados son
+                                                    correctos.</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
                             </div>
                             <div class="security-check-grid">
                                 <div class="security-check-card security-check-card-static">
                                     <span class="security-check-icon-svg" aria-hidden="true">
                                         <svg viewBox="0 0 64 64" role="img" focusable="false">
-                                            <path d="M32 6 52 14v15c0 13.2-7.8 24.8-20 29.4C19.8 53.8 12 42.2 12 29V14L32 6Z" fill="#dc2626"/>
-                                            <path d="M27.6 38.6 19.8 30.8l4.2-4.2 3.6 3.6L40 17.8l4.2 4.2-16.6 16.6Z" fill="#fff"/>
+                                            <path
+                                                d="M32 6 52 14v15c0 13.2-7.8 24.8-20 29.4C19.8 53.8 12 42.2 12 29V14L32 6Z"
+                                                fill="#dc2626" />
+                                            <path d="M27.6 38.6 19.8 30.8l4.2-4.2 3.6 3.6L40 17.8l4.2 4.2-16.6 16.6Z"
+                                                fill="#fff" />
                                         </svg>
                                     </span>
                                     <span>
@@ -201,13 +239,16 @@
                                 <div class="security-check-card security-check-card-static security-check-card-mercado">
                                     <span>
                                         <strong>Con el respaldo de</strong>
-                                        <img class="security-check-logo-wide" src="{{ asset('img/mercadopago.png') }}" alt="Mercado Pago">
+                                        <img class="security-check-logo-wide" src="{{ asset('img/mercadopago.png') }}"
+                                            alt="Mercado Pago">
                                     </span>
                                 </div>
                                 <div class="security-check-card security-check-card-static">
                                     <span class="security-check-icon-svg security-check-icon-whatsapp" aria-hidden="true">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" role="img" focusable="false">
-                                            <path d="M380.9 97.1c-41.9-42-97.7-65.1-157-65.1-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480 117.7 449.1c32.4 17.7 68.9 27 106.1 27l.1 0c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3 18.6-68.1-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1s56.2 81.2 56.1 130.5c0 101.8-84.9 184.6-186.6 184.6zM325.1 300.5c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8s-14.3 18-17.6 21.8c-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7 .9-6.9-.5-9.7s-12.5-30.1-17.1-41.2c-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2s-9.7 1.4-14.8 6.9c-5.1 5.6-19.4 19-19.4 46.3s19.9 53.7 22.6 57.4c2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4s4.6-24.1 3.2-26.4c-1.3-2.5-5-3.9-10.5-6.6z"/>
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" role="img"
+                                            focusable="false">
+                                            <path
+                                                d="M380.9 97.1c-41.9-42-97.7-65.1-157-65.1-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480 117.7 449.1c32.4 17.7 68.9 27 106.1 27l.1 0c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3 18.6-68.1-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1s56.2 81.2 56.1 130.5c0 101.8-84.9 184.6-186.6 184.6zM325.1 300.5c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8s-14.3 18-17.6 21.8c-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7 .9-6.9-.5-9.7s-12.5-30.1-17.1-41.2c-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2s-9.7 1.4-14.8 6.9c-5.1 5.6-19.4 19-19.4 46.3s19.9 53.7 22.6 57.4c2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4s4.6-24.1 3.2-26.4c-1.3-2.5-5-3.9-10.5-6.6z" />
                                         </svg>
                                     </span>
                                     <span>
@@ -237,7 +278,8 @@
                         <div class="account-shell">
                             <div class="account-header">
                                 <h2 id="account-title">Crea tu cuenta en menos de 30 segundos</h2>
-                                <p id="account-subtitle">Completa tus datos para asociar la compra y emitir el comprobante.</p>
+                                <p id="account-subtitle">Completa tus datos para asociar la compra y emitir el comprobante.
+                                </p>
                             </div>
 
                             <div class="account-choice-grid">
@@ -275,7 +317,8 @@
                                 </div>
                                 <div class="checkout-field">
                                     <label>Contraseña</label>
-                                    <input id="create_password" type="password" placeholder="Opcional, por defecto tu DNI">
+                                    <input id="create_password" type="password"
+                                        placeholder="Opcional, por defecto tu DNI">
                                 </div>
                             </div>
 
@@ -289,7 +332,8 @@
                                     <input id="login_password" type="password" placeholder="Tu contraseña">
                                 </div>
                                 <div class="mt-2 text-center">
-                                    <a href="#" onclick="showPasswordRecovery(); return false;" class="text-sm text-blue-600 hover:underline">
+                                    <a href="#" onclick="showPasswordRecovery(); return false;"
+                                        class="text-sm text-blue-600 hover:underline">
                                         ¿Olvidaste tu contraseña?
                                     </a>
                                 </div>
@@ -298,8 +342,10 @@
                             <div class="invoice-block" id="invoice-block">
                                 <h3>Datos de comprobante</h3>
                                 <div class="flex border-b mb-4">
-                                    <button type="button" class="invoice-tab active" data-invoice-type="boleta">Boleta</button>
-                                    <button type="button" class="invoice-tab" data-invoice-type="factura">Factura</button>
+                                    <button type="button" class="invoice-tab active"
+                                        data-invoice-type="boleta">Boleta</button>
+                                    <button type="button" class="invoice-tab"
+                                        data-invoice-type="factura">Factura</button>
                                 </div>
 
                                 <div id="boleta-panel" class="invoice-form-grid">
@@ -333,1465 +379,478 @@
                                 </div>
                             </div>
 
-                             <div class="invoice-actions">
-                                 <button type="button" id="btn-finalize" class="boton-degradado-courses">
-                                     <b id="btn-finalize-text">FINALIZAR COMPRA</b>
-                                 </button>
-                             </div>
-                         </div>
-                     </section>
+                            <div class="invoice-actions">
+                                <button type="button" id="btn-finalize" class="shop-action-pay-red mt-4">
+                                    <b id="btn-finalize-text"><i class="fa fa-check-circle me-2"></i> FINALIZAR COMPRA</b>
+                                </button>
+                            </div>
+                        </div>
+                    </section>
 
-                     <!-- Password Recovery Modal -->
-                     <div id="password-recovery-modal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
-                         <div class="bg-white p-6 rounded-lg shadow-xl max-w-md w-full">
-                             <h3 class="text-lg font-medium mb-4">Recuperar Contraseña</h3>
-                             <input type="email" id="recovery-email" placeholder="Tu correo electrónico" class="w-full border rounded p-2 mb-4">
-                             <div class="flex gap-2">
-                                 <button onclick="sendPasswordRecovery()" class="btn boton-degradado-courses">Enviar</button>
-                                 <button onclick="hidePasswordRecovery()" class="btn btn-secondary">Cancelar</button>
-                             </div>
-                             <div id="recovery-message" class="mt-2 text-sm"></div>
-                         </div>
-                     </div>
+                    <!-- Password Recovery Modal -->
+                    <div id="password-recovery-modal"
+                        class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
+                        <div class="bg-white p-6 rounded-lg shadow-xl max-w-md w-full">
+                            <h3 class="text-lg font-medium mb-4">Recuperar Contraseña</h3>
+                            <input type="email" id="recovery-email" placeholder="Tu correo electrónico"
+                                class="w-full border rounded p-2 mb-4">
+                            <div class="flex gap-2">
+                                <button onclick="sendPasswordRecovery()"
+                                    class="btn boton-degradado-courses">Enviar</button>
+                                <button onclick="hidePasswordRecovery()" class="btn btn-secondary">Cancelar</button>
+                            </div>
+                            <div id="recovery-message" class="mt-2 text-sm"></div>
+                        </div>
+                    </div>
 
-                     <div id="payment-warning-modal" class="hidden payment-warning-backdrop fixed inset-0 flex items-center justify-center z-50">
-                         <div class="payment-warning-dialog">
-                             <div class="payment-warning-icon">!</div>
-                             <h3>Pago no aprobado</h3>
-                             <p id="payment-warning-message"></p>
-                             <div class="payment-warning-actions">
-                                 <button type="button" onclick="hidePaymentWarningModal()" class="payment-warning-button">Entendido</button>
-                             </div>
-                             <small class="payment-warning-note">*descuida tus datos estan protegidos y ningun cobro se ha realizado.</small>
-                         </div>
-                     </div>
+                    <div id="payment-warning-modal"
+                        class="hidden payment-warning-backdrop fixed inset-0 flex items-center justify-center z-50">
+                        <div class="payment-warning-dialog">
+                            <div class="payment-warning-icon">!</div>
+                            <h3>Pago no aprobado</h3>
+                            <p id="payment-warning-message"></p>
+                            <div class="payment-warning-actions">
+                                <button type="button" onclick="hidePaymentWarningModal()"
+                                    class="payment-warning-button">Entendido</button>
+                            </div>
+                            <small class="payment-warning-note">*descuida tus datos estan protegidos y ningun cobro se ha
+                                realizado.</small>
+                        </div>
+                    </div>
 
-                     <div id="phone-required-modal" class="hidden phone-required-backdrop fixed inset-0 flex items-center justify-center z-50">
-                         <div class="phone-required-dialog">
-                             <button type="button" onclick="hidePhoneRequiredModal()" class="phone-required-close" aria-label="Cerrar">x</button>
-                             <div class="phone-required-icon">!</div>
-                             <span class="phone-required-kicker">Dato requerido por seguridad</span>
-                             <h3>Ingresa tu numero de telefono</h3>
-                             <p id="phone-required-message">Para continuar con el pago necesitamos que selecciones el codigo de pais e ingreses tu numero de telefono. Esto nos ayuda a proteger tu compra y contactarte si hubiera algun inconveniente.</p>
-                             <button type="button" onclick="hidePhoneRequiredModal()" class="phone-required-primary">Entendido</button>
-                         </div>
-                     </div>
+                    <div id="phone-required-modal"
+                        class="hidden phone-required-backdrop fixed inset-0 flex items-center justify-center z-50">
+                        <div class="phone-required-dialog">
+                            <button type="button" onclick="hidePhoneRequiredModal()" class="phone-required-close"
+                                aria-label="Cerrar">x</button>
+                            <div class="phone-required-icon">!</div>
+                            <span class="phone-required-kicker">Dato requerido por seguridad</span>
+                            <h3>Ingresa tu numero de telefono</h3>
+                            <p id="phone-required-message">Para continuar con el pago necesitamos que selecciones el codigo
+                                de pais e ingreses tu numero de telefono. Esto nos ayuda a proteger tu compra y contactarte
+                                si hubiera algun inconveniente.</p>
+                            <button type="button" onclick="hidePhoneRequiredModal()"
+                                class="phone-required-primary">Entendido</button>
+                        </div>
+                    </div>
 
-                     <div id="account-conflict-modal" class="hidden account-conflict-backdrop fixed inset-0 flex items-center justify-center z-50">
-                         <div class="account-conflict-dialog">
-                             <button type="button" onclick="hideAccountConflictModal()" class="account-conflict-close" aria-label="Cerrar">x</button>
-                             <div class="account-conflict-icon">!</div>
-                             <span class="account-conflict-kicker">Tu compra esta protegida</span>
-                             <h3 id="account-conflict-title">Revisemos tus datos</h3>
-                             <p id="account-conflict-message"></p>
-                             <div class="account-conflict-support">
-                                 <a href="mailto:informes@globalcpaperu.com">informes@globalcpaperu.com</a>
-                                 <a href="tel:+51967052506">+51 967052506</a>
-                             </div>
-                             <div class="account-conflict-actions">
-                                 <button type="button" onclick="hideAccountConflictModal()" class="account-conflict-secondary">Cerrar</button>
-                                 <button type="button" onclick="goToLoginFromConflictModal()" class="account-conflict-primary">Iniciar sesion</button>
-                             </div>
-                         </div>
-                     </div>
+                    <div id="account-conflict-modal"
+                        class="hidden account-conflict-backdrop fixed inset-0 flex items-center justify-center z-50">
+                        <div class="account-conflict-dialog">
+                            <button type="button" onclick="hideAccountConflictModal()" class="account-conflict-close"
+                                aria-label="Cerrar">x</button>
+                            <div class="account-conflict-icon">!</div>
+                            <span class="account-conflict-kicker">Tu compra esta protegida</span>
+                            <h3 id="account-conflict-title">Revisemos tus datos</h3>
+                            <p id="account-conflict-message"></p>
+                            <div class="account-conflict-support">
+                                <a href="mailto:informes@globalcpaperu.com">informes@globalcpaperu.com</a>
+                                <a href="tel:+51967052506">+51 967052506</a>
+                            </div>
+                            <div class="account-conflict-actions">
+                                <button type="button" onclick="hideAccountConflictModal()"
+                                    class="account-conflict-secondary">Cerrar</button>
+                                <button type="button" onclick="goToLoginFromConflictModal()"
+                                    class="account-conflict-primary">Iniciar sesion</button>
+                            </div>
+                        </div>
+                    </div>
 
-                     <div id="pending-paid-modal" class="hidden pending-paid-backdrop fixed inset-0 flex items-center justify-center z-50">
-                         <div class="pending-paid-dialog">
-                             <button type="button" onclick="hidePendingPaidModal()" class="pending-paid-close" aria-label="Cerrar">x</button>
-                             <div class="pending-paid-icon">✓</div>
-                             <span class="pending-paid-kicker">Tu pago esta protegido</span>
-                             <h3>Tus cursos estan esperando por ti</h3>
-                             <p>Tranquilo, encontramos una compra aprobada por MercadoPago que aun falta finalizar. Completa el proceso creando tu cuenta o iniciando sesion para activar tus cursos.</p>
-                             <div id="pending-paid-courses" class="pending-paid-courses"></div>
-                             <button type="button" onclick="hidePendingPaidModal()" class="pending-paid-primary">Completar ahora</button>
-                         </div>
-                     </div>
+                    <div id="pending-paid-modal"
+                        class="hidden pending-paid-backdrop fixed inset-0 flex items-center justify-center z-50">
+                        <div class="pending-paid-dialog">
+                            <button type="button" onclick="hidePendingPaidModal()" class="pending-paid-close"
+                                aria-label="Cerrar">x</button>
+                            <div class="pending-paid-icon">✓</div>
+                            <span class="pending-paid-kicker">Tu pago esta protegido</span>
+                            <h3>Tus cursos estan esperando por ti</h3>
+                            <p>Tranquilo, encontramos una compra aprobada por MercadoPago que aun falta finalizar. Completa
+                                el proceso creando tu cuenta o iniciando sesion para activar tus cursos.</p>
+                            <div id="pending-paid-courses" class="pending-paid-courses"></div>
+                            <button type="button" onclick="hidePendingPaidModal()"
+                                class="pending-paid-primary">Completar ahora</button>
+                        </div>
+                    </div>
+                </div>
+            </div> 
+            
+            <div class="page-body">
+
+                {{-- NUEVO DISEÑO DE CHECKOUT - SOLO FRONTEND, FALTA CONECTAR CON BACKEND Y MERCADOPAGO --}}
+                <div style="width: 95%; margin: 0 auto; padding: 40px 20px;">
+                    <div class="checkout-grid">
+
+                        <!-- LEFT -->
+                        <div class="card">
+                            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+                                <div class="logo d-flex align-items-center gap-3">
+                                    <div class="logo-icon fs-3">🛡️</div>
+                                    <div>
+                                        <h2 class="mb-0 fw-bolder" style="font-size: 1.15rem;">CPA ACADEMY</h2>
+                                        <p class="mb-0 small text-muted" style="font-size: 0.8rem;">Formación que impulsa tu futuro</p>
+                                    </div>
+                                </div>
+
+                                <div class="steps d-flex align-items-center gap-2">
+                                    <div class="step-circle">1</div>
+                                    <div class="step-line" style="width: 150px; height: 2px; background: #cbd5e1;"></div>
+                                    <div class="step-circle gray">2</div>
+                                </div>
+                            </div>
+
+                            <div class="small-text">Paso 1 de 2</div>
+
+                            <h1 class="title-pago">Finaliza tu inscripción</h1>
+
+                            <div class="subtitle">
+                                Pago 100% seguro con Mercado Pago
+                            </div>
+
+                            <div class="course-box d-flex align-items-center justify-content-between gap-4 p-4 mb-1 rounded-3 border bg-light shadow-sm">
+                                <div class="course-left d-flex align-items-center gap-4 flex-grow-1">
+                                    <div class="course-image rounded flex-shrink-0 shadow-sm" style="width: 100px; height: 75px; background: #cbd5e1; background-size: cover; background-position: center;"></div>
+                                    <div class="flex-grow-1">
+                                        <div class="course-title fw-bolder mb-1" style="font-size: 1.15rem; color: #0f172a; line-height: 1.3;">
+                                            Inteligencia Artificial Aplicada
+                                            a la Gestión Contable y Financiera
+                                        </div>
+                                        <div class="course-meta small text-muted d-flex gap-3 flex-wrap fw-bold">
+                                            <span class="d-flex align-items-center gap-1">📅 Modalidad: En vivo</span>
+                                            <span class="d-flex align-items-center gap-1">⏱️ Duración: 3 meses</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="price text-end flex-shrink-0 ms-sm-auto">
+                                    <small class="d-block fw-bold text-muted text-uppercase" style="font-size: 0.5rem; margin-bottom: 2px;">Total a pagar</small>
+                                    <h2 class="mb-0 fw-bolder" style="color: #dc2626; font-size: 1.25rem; line-height: 1;">S/ 2773.00</h2>
+                                </div>
+                            </div>
+
+                            <div class="section-title">
+                                Ingresa los datos de tu tarjeta
+                            </div>
+
+                            <div class="section-sub">
+                                Usamos esta información para procesar tu pago y contactarte.
+                            </div>
+
+                            <div class="form-grid">
+                                
+                                <div class="input-group full">
+                                    <label>Número de tarjeta</label>
+                                    <div class="input-with-icon">
+                                        <i class="fa fa-credit-card"></i>
+                                        <input type="text" placeholder="1234 1234 1234 1234">
+                                    </div>
+                                </div>
+
+                                <div class="input-group">
+                                    <label>Vencimiento</label>
+                                    <div class="input-with-icon">
+                                        <i class="fa fa-calendar"></i>
+                                        <input type="text" placeholder="MM / AA">
+                                    </div>
+                                </div>
+
+                                <div class="input-group">
+                                    <label>Código de seguridad</label>
+                                    <div class="input-with-icon">
+                                        <i class="fa fa-lock"></i>
+                                        <input type="text" placeholder="CVV">
+                                    </div>
+                                </div>
+
+                                <div class="input-group full">
+                                    <label>Nombre del titular (como aparece en la tarjeta)</label>
+                                    <div class="input-with-icon">
+                                        <i class="fa fa-user"></i>
+                                        <input type="text" placeholder="Nombre completo">
+                                    </div>
+                                </div>
+
+                                <div class="input-group">
+                                    <label>Documento de identidad</label>
+                                    <div class="document-group">
+                                        <select>
+                                            <option value="1">DNI</option>
+                                            <option value="6">RUC</option>
+                                            <option value="4">C.E.</option>
+                                            <option value="7">PASAPORTE</option>
+                                        </select>
+                                        <div class="input-with-icon flex-grow-1">
+                                            <i class="fa fa-id-card-o"></i>
+                                            <input type="text" placeholder="99999999">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="input-group">
+                                    <label>E-mail</label>
+                                    <div class="input-with-icon">
+                                        <i class="fa fa-envelope"></i>
+                                        <input type="email" placeholder="ejemplo@email.com">
+                                    </div>
+                                </div>
+
+                                <div class="input-group full">
+                                    <label>Teléfono / WhatsApp</label>
+                                    <div class="phone-group">
+                                        <select id="checkout_phone_country_code">
+                                            <option value="+51" data-code="pe">Perú (+51)</option>
+                                            <option value="+52" data-code="mx">México (+52)</option>
+                                            <option value="+57" data-code="co">Colombia (+57)</option>
+                                        </select>
+                                        <div class="input-with-icon flex-grow-1">
+                                            <i class="fa fa-whatsapp"></i>
+                                            <input type="text" placeholder="987 654 321">
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="info-boxes">
+
+                                <div class="mini-box d-flex align-items-center gap-3">
+                                    <div class="mini-box-icon">
+                                        <i class="fa fa-shield"></i>
+                                    </div>
+                                    <div class="d-flex flex-column">
+                                        <span class="mini-box-title">Pago 100% seguro</span>
+                                        <span class="mini-box-text">Tu información está <br> protegida</span>
+                                    </div>
+                                </div>
+
+                                <div class="mini-box d-flex align-items-center">
+                                    <div class="d-flex flex-column">
+                                        <span class="mini-box-text" style="font-size: 0.7rem;">Con el respaldo de</span>
+                                        <img src="{{ asset('img/mercadopago.png') }}" alt="Mercado Pago" class="mini-box-logo">
+                                    </div>
+                                </div>
+
+                               
+                                <div class="mini-box d-flex align-items-center gap-3">
+                                    <div class="mini-box-icon">
+                                        <i class="fab fa-whatsapp"></i>
+                                    </div>
+                                    <div class="d-flex flex-column">
+                                        <span class="mini-box-title">Asistencia inmediata</span>
+                                        <span class="mini-box-text">Te ayudamos en todo <br> el proceso.</span>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <button class="shop-action-pay-red mt-4">
+                                <i class="fa fa-lock me-2"></i> Pagar ahora
+                            </button>
+
+                            <div class="terms">
+                                Al continuar, aceptas nuestros Términos y Condiciones.
+                            </div>
+
+                        </div>
+
+                        <!-- RIGHT -->
+                        <div class="card">
+
+                            <div class="small-text">Paso 2 de 2</div>
+
+                            <h1 class="title-pago">
+                                Crea tu cuenta y elige tu comprobante
+                            </h1>
+
+                            <div class="success-box d-flex align-items-center gap-3">
+                                <div class="success-icon-circle">
+                                    <i class="fa fa-check"></i>
+                                </div>
+                                <div class="d-flex flex-column">
+                                    <span class="success-title">¡Pago recibido con éxito!</span>
+                                    <span class="success-text">Ahora solo falta crear tu cuenta y generar tu comprobante.</span>
+                                </div>
+                            </div>
+
+                            <div class="section-title d-flex align-items-center gap-2">
+                                <i class="fa fa-user text-primary"></i> 1. Crea tu cuenta
+                            </div>
+
+                            <div class="section-sub">
+                                Usaremos estos datos para tu acceso al campus virtual.
+                            </div>
+
+                            {{-- Campos de control para el envío del formulario --}}
+                            <input type="hidden" id="account_mode" value="create">
+                            <input type="hidden" id="invoice_type" value="boleta">
+
+                            <div class="account-box">
+                                <div class="account-item">
+                                    <div class="account-item-icon"><i class="fa fa-user"></i></div>
+                                    <div class="account-item-info">
+                                        <span class="account-label">Nombre completo</span>
+                                        <span class="account-value">Mario López</span>
+                                        <input type="text" id="create_names" class="edit-input-field d-none" value="Mario López">
+                                    </div>
+                                    <button type="button" class="btn-edit-inline" onclick="toggleEditField(this)">
+                                        <i class="fa fa-pencil me-1"></i> Editar datos
+                                    </button>
+                                </div>
+
+                                <div class="account-item">
+                                    <div class="account-item-icon"><i class="fa fa-envelope"></i></div>
+                                    <div class="account-item-info">
+                                        <span class="account-label">E-mail</span>
+                                        <span class="account-value">ejemplo@email.com</span>
+                                        <input type="email" id="create_email" class="edit-input-field d-none" value="ejemplo@email.com">
+                                    </div>
+                                    <button type="button" class="btn-edit-inline" onclick="toggleEditField(this)">
+                                        <i class="fa fa-pencil me-1"></i> Editar datos
+                                    </button>
+                                </div>
+
+                                <div class="account-item">
+                                    <div class="account-item-icon"><i class="fa fa-id-card"></i></div>
+                                    <div class="account-item-info">
+                                        <span class="account-label">DNI</span>
+                                        <span class="account-value">99999999</span>
+                                        <input type="text" id="create_dni" class="edit-input-field d-none" value="99999999">
+                                    </div>
+                                    <button type="button" class="btn-edit-inline" onclick="toggleEditField(this)">
+                                        <i class="fa fa-pencil me-1"></i> Editar datos
+                                    </button>
+                                </div>
+
+                            </div>
+                            <br>
+
+                            <div class="section-title d-flex align-items-center gap-2">
+                                <i class="fa fa-file-text text-primary"></i> 2. Elige tu comprobante
+                            </div>
+
+                            <div class="section-sub">
+                                Selecciona el tipo de comprobante que deseas.
+                            </div>
+
+                            <div class="voucher-grid">
+
+                                <div class="voucher active" data-invoice-type="boleta" onclick="selectInvoiceType('boleta')">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h3 class="mb-1" style="font-size: 1rem;">📄 Boleta de venta</h3>
+                                            <p class="mb-0 text-muted" style="font-size: 0.8rem;">Para personas naturales</p>
+                                        </div>
+                                        <div class="voucher-selector"></div>
+                                    </div>
+                                </div>
+
+                                <div class="voucher" data-invoice-type="factura" onclick="selectInvoiceType('factura')">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h3 class="mb-1" style="font-size: 1rem;">🧾 Factura</h3>
+                                            <p class="mb-0 text-muted" style="font-size: 0.8rem;">Para empresas</p>
+                                        </div>
+                                        <div class="voucher-selector"></div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            
+                            {{-- Paneles de datos adicionales para el comprobante --}}
+                            <div id="boleta-panel" class="d-none">
+                                <input type="hidden" id="invoice_name">
+                                <input type="hidden" id="invoice_dni">
+                                <input type="hidden" id="invoice_email">
+                            </div>
+
+                            <div id="factura-panel" class="invoice-form-grid d-none mt-3">
+                                <div class="checkout-field">
+                                    <label class="small-text">RUC para la factura</label>
+                                    <div class="input-with-icon">
+                                        <i class="fa fa-building"></i>
+                                        <input id="invoice_ruc" type="text" class="form-control" placeholder="Ingresa el RUC de tu empresa">
+                                    </div>
+                                </div>
+                                <input type="hidden" id="invoice_business_name">
+                                <input type="hidden" id="invoice_address">
+                            </div>
+
+                            <div class="notice">
+                                <div class="notice-icon-stack">
+                                    <i class="fa fa-shield"></i>
+                                    <i class="fa fa-check" style="position: absolute; font-size: 0.6rem; color: #f1f5f9; margin-top: 1px;"></i>
+                                </div>
+                                <span>Al finalizar te enviaremos tu comprobante de pago por correo.</span>
+                            </div>
+
+                            <button type="button" id="btn-finalize" class="shop-action-pay-red mt-4">
+                                <i class="fa fa-check-circle me-2"></i> Finalizar compra
+                            </button>
+
+                            <div class="secure">
+                                🔒 Tu información está protegida y solo será utilizada para tu acceso al campus.
+                            </div>
+
+                        </div>
+
+                    </div>
                 </div>
             </div>
         </div>
         <x-footer />
+
     </div>
 
-    <style>
-        .checkout-page-body {
-            padding: 72px 0 48px;
-            background: #f6f8fb;
-        }
 
-        .checkout-container {
-            max-width: 1360px;
-        }
+    
+    
 
-        .checkout-page-heading {
-            margin: 0 auto 12px;
-            max-width: 1280px;
-        }
 
-        .checkout-page-heading span,
-        .cart-table-header span,
-        .checkout-payment-header span {
-            display: block;
-            margin-bottom: 5px;
-            color: #dc2626;
-            font-size: 12px;
-            font-weight: 800;
-            letter-spacing: .04em;
-            text-transform: uppercase;
-        }
 
-        .checkout-page-heading h1 {
-            margin: 0;
-            color: #0f172a;
-            font-size: 28px;
-            font-weight: 900;
-            line-height: 1.15;
-        }
 
-        .checkout-page-heading p {
-            margin: 6px 0 0;
-            color: #64748b;
-            font-size: 14px;
-        }
 
-        .checkout-progress-card,
-        .cart-table-card,
-        .checkout-payment-card,
-        .account-shell {
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            box-shadow: 0 16px 40px rgba(15, 23, 42, 0.07);
-        }
 
-        .checkout-progress-card {
-            background: #fff;
-            padding: 12px 16px !important;
-            margin-bottom: 8px !important;
-        }
 
-        .checkout-steps {
-            position: relative;
-            display: flex;
-            justify-content: space-between;
-            gap: 96px;
-            max-width: 560px;
-            margin: 0 auto;
-        }
 
-        .checkout-steps::before {
-            content: "";
-            position: absolute;
-            top: 18px;
-            left: 72px;
-            right: 72px;
-            height: 2px;
-            background: #e2e8f0;
-        }
 
-        .checkout-step {
-            position: relative;
-            z-index: 1;
-            display: inline-flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 5px;
-            width: 132px;
-            border: 0;
-            background: transparent;
-            color: #475569;
-            padding: 0;
-            font-weight: 700;
-            text-align: center;
-        }
 
-        .checkout-step-number {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            background: #fff;
-            border: 3px solid #fff;
-            color: #0f172a;
-            box-shadow: 0 0 0 2px #d6dee9, 0 8px 18px rgba(15, 23, 42, 0.1);
-            font-size: 16px;
-            line-height: 1;
-        }
-
-        .checkout-step-text {
-            color: #334155;
-            font-size: 13px;
-            line-height: 1.25;
-        }
-
-        .invoice-tab {
-            border: 1px solid #d6dee9;
-            background: #fff;
-            color: #334155;
-            padding: 10px 14px;
-            font-weight: 600;
-        }
-
-        .invoice-tab.active {
-            background: #0f766e;
-            border-color: #0f766e;
-            color: #fff;
-        }
-
-        .checkout-step.active .checkout-step-number {
-            background: #dc2626;
-            color: #fff;
-            box-shadow: 0 0 0 2px #dc2626, 0 8px 18px rgba(220, 38, 38, 0.24);
-        }
-
-        .checkout-step.done .checkout-step-number {
-            background: #fff;
-            color: #0f172a;
-            box-shadow: 0 0 0 2px #d6dee9, 0 8px 18px rgba(15, 23, 42, 0.1);
-        }
-
-        .checkout-step.active {
-            color: #fff;
-        }
-
-        .checkout-step.active .checkout-step-text {
-            color: #dc2626;
-        }
-
-        .checkout-wide {
-            max-width: 1280px;
-            margin: 0 auto;
-        }
-
-        .security-check-grid {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 12px;
-            margin-top: 10px;
-        }
-
-        .security-check-card {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            width: 100%;
-            min-height: 72px;
-            padding: 10px 12px;
-            background: #fff;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            color: #334155;
-            text-decoration: none;
-            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
-            transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
-        }
-
-        .security-check-card:hover {
-            color: #0f766e;
-            border-color: #0f766e;
-            text-decoration: none;
-            transform: translateY(-2px);
-            box-shadow: 0 14px 30px rgba(15, 23, 42, 0.1);
-        }
-
-        .security-check-card-static:hover {
-            color: #334155;
-            border-color: #dce5ef;
-            transform: none;
-        }
-
-        .security-check-card img {
-            width: 38px;
-            height: 38px;
-            object-fit: contain;
-            flex: 0 0 auto;
-        }
-
-        .security-check-card img.security-check-logo-wide {
-            width: 154px;
-            height: 44px;
-        }
-
-        .security-check-card-mercado {
-            justify-content: center;
-        }
-
-        .security-check-card-mercado span {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            flex-wrap: wrap;
-            width: 100%;
-        }
-
-        .security-check-icon-svg {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 48px;
-            height: 48px;
-            flex: 0 0 auto;
-        }
-
-        .security-check-icon-svg svg {
-            width: 48px;
-            height: 48px;
-            display: block;
-        }
-
-        .security-check-card strong,
-        .security-check-card small {
-            display: block;
-        }
-
-        .security-check-card strong {
-            color: #0f172a;
-            font-size: 15px;
-            font-weight: 700;
-        }
-
-        .security-check-card small {
-            margin-top: 3px;
-            color: #64748b;
-            font-size: 12px;
-            line-height: 1.35;
-        }
-
-        .security-check-icon-whatsapp {
-            color: #25D366;
-        }
-
-        .security-check-icon-whatsapp svg {
-            fill: currentColor;
-        }
-
-        .checkout-main-grid {
-            align-items: flex-start;
-        }
-
-        .cart-table-card {
-            overflow: hidden;
-            background: #fff;
-        }
-
-        .cart-table-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-            padding: 22px 24px 16px;
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        .cart-table-header h2,
-        .checkout-payment-header h2 {
-            margin: 0;
-            color: #0f172a;
-            font-size: 22px;
-            font-weight: 900;
-            line-height: 1.2;
-        }
-
-        .cart-table-header small {
-            display: inline-flex;
-            align-items: center;
-            min-height: 34px;
-            padding: 8px 12px;
-            border-radius: 999px;
-            background: #fef2f2;
-            color: #b91c1c;
-            font-size: 12px;
-            font-weight: 800;
-            white-space: nowrap;
-        }
-
-        .cart-table-card table {
-            border-collapse: separate;
-            border-spacing: 0;
-        }
-
-        .cart-table-card thead th {
-            border-bottom: 1px solid #e2e8f0;
-            background: #f8fafc !important;
-            color: #475569 !important;
-            font-size: 12px;
-            letter-spacing: .03em;
-        }
-
-        .cart-table-card thead th,
-        .cart-table-card tbody td {
-            padding-left: 10px !important;
-            padding-right: 10px !important;
-        }
-
-        .cart-table-card tbody tr {
-            transition: background .18s ease;
-        }
-
-        .cart-table-card tbody tr:hover {
-            background: #fff7f7;
-        }
-
-        #step-payment .card:first-child {
-            overflow: hidden;
-        }
-
-        #cart .avatar {
-            flex: 0 0 auto;
-        }
-
-        #cart .flex.items-center.space-x-4 > :not([hidden]) ~ :not([hidden]) {
-            margin-left: 10px;
-        }
-
-        .cart-product-column {
-            width: 46%;
-            min-width: 250px;
-        }
-
-        .cart-type-column {
-            width: 26%;
-            min-width: 120px;
-        }
-
-        .cart-price-column {
-            width: 16%;
-            min-width: 82px;
-            white-space: nowrap;
-        }
-
-        .cart-action-column {
-            width: 12%;
-            min-width: 58px;
-            white-space: nowrap;
-        }
-
-        .boton-degradado-trash {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 36px;
-            height: 36px;
-            padding: 0;
-            line-height: 1;
-            text-align: center;
-        }
-
-        .boton-degradado-trash i {
-            display: block;
-            margin: 0;
-            line-height: 1;
-        }
-
-        .cart-product-name,
-        .cart-type-text {
-            display: -webkit-box;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            white-space: normal;
-            line-height: 1.35;
-        }
-
-        .cart-product-name {
-            -webkit-line-clamp: 3;
-            line-clamp: 3;
-            max-width: 100%;
-        }
-
-        .cart-type-text {
-            -webkit-line-clamp: 3;
-            line-clamp: 3;
-        }
-
-        .checkout-payment-card {
-            position: sticky;
-            top: 96px;
-            overflow: hidden;
-            background: #fff;
-        }
-
-        .checkout-payment-card::before {
-            content: "";
-            display: block;
-            height: 4px;
-            margin: -24px -24px 20px;
-            background: #dc2626;
-        }
-
-        .checkout-payment-header {
-            margin-bottom: 14px;
-        }
-
-        .checkout-payment-header h2 {
-            font-size: 24px;
-        }
-
-        .payment-warning-backdrop {
-            padding: 20px;
-            background: rgba(15, 23, 42, 0.72);
-            backdrop-filter: blur(5px);
-        }
-
-        .payment-warning-dialog {
-            width: min(430px, 100%);
-            padding: 28px;
-            border: 2px solid #fca5a5;
-            border-radius: 12px;
-            background: #fff;
-            box-shadow: 0 24px 70px rgba(15, 23, 42, 0.34);
-            text-align: center;
-        }
-
-        .payment-warning-icon {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 68px;
-            height: 68px;
-            margin-bottom: 16px;
-            border-radius: 50%;
-            background: #dc2626;
-            color: #fff;
-            font-size: 42px;
-            font-weight: 800;
-            line-height: 1;
-            box-shadow: 0 10px 24px rgba(220, 38, 38, 0.28);
-        }
-
-        .payment-warning-dialog h3 {
-            margin: 0 0 10px;
-            color: #991b1b;
-            font-size: 22px;
-            font-weight: 800;
-        }
-
-        .payment-warning-dialog p {
-            margin: 0 0 22px;
-            color: #334155;
-            font-size: 16px;
-            font-weight: 600;
-        }
-
-        .payment-warning-actions {
-            display: flex;
-            justify-content: center;
-        }
-
-        .payment-warning-button {
-            min-width: 150px;
-            padding: 11px 22px;
-            border: 0;
-            border-radius: 8px;
-            background: #dc2626;
-            color: #fff;
-            font-weight: 800;
-            cursor: pointer;
-            box-shadow: 0 10px 22px rgba(220, 38, 38, 0.22);
-        }
-
-        .payment-warning-button:hover {
-            background: #b91c1c;
-        }
-
-        .payment-warning-note {
-            display: block;
-            margin-top: 16px;
-            color: #64748b;
-            font-size: 12px;
-            line-height: 1.4;
-        }
-
-        .phone-required-backdrop {
-            padding: 20px;
-            background: rgba(15, 23, 42, 0.72);
-            backdrop-filter: blur(5px);
-        }
-
-        .phone-required-dialog {
-            position: relative;
-            width: min(500px, 100%);
-            padding: 34px;
-            border: 2px solid #bfdbfe;
-            border-top: 6px solid #2563eb;
-            border-radius: 12px;
-            background: #fff;
-            box-shadow: 0 26px 80px rgba(15, 23, 42, 0.35);
-            text-align: center;
-        }
-
-        .phone-required-close {
-            position: absolute;
-            top: 14px;
-            right: 14px;
-            width: 34px;
-            height: 34px;
-            border: 0;
-            border-radius: 50%;
-            background: #eff6ff;
-            color: #1d4ed8;
-            font-weight: 800;
-            cursor: pointer;
-        }
-
-        .phone-required-icon {
-            display: inline-flex;
-            width: 58px;
-            height: 58px;
-            margin-bottom: 14px;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            background: #dbeafe;
-            color: #1d4ed8;
-            font-size: 30px;
-            font-weight: 900;
-        }
-
-        .phone-required-kicker {
-            display: block;
-            margin-bottom: 8px;
-            color: #2563eb;
-            font-size: 13px;
-            font-weight: 800;
-            letter-spacing: .04em;
-            text-transform: uppercase;
-        }
-
-        .phone-required-dialog h3 {
-            margin: 0 28px 12px;
-            color: #0f172a;
-            font-size: 24px;
-            font-weight: 800;
-        }
-
-        .phone-required-dialog p {
-            margin: 0 0 24px;
-            color: #334155;
-            font-size: 16px;
-            line-height: 1.7;
-        }
-
-        .phone-required-primary {
-            width: 100%;
-            border: 0;
-            border-radius: 8px;
-            padding: 13px 18px;
-            background: #2563eb;
-            color: #fff;
-            font-weight: 800;
-            cursor: pointer;
-            box-shadow: 0 12px 28px rgba(37, 99, 235, 0.24);
-        }
-
-        .account-conflict-backdrop {
-            padding: 20px;
-            background: rgba(15, 23, 42, 0.72);
-            backdrop-filter: blur(5px);
-        }
-
-        .account-conflict-dialog {
-            position: relative;
-            width: min(540px, 100%);
-            padding: 34px;
-            border: 2px solid #fecaca;
-            border-top: 6px solid #dc2626;
-            border-radius: 12px;
-            background: #fff;
-            box-shadow: 0 28px 76px rgba(15, 23, 42, 0.36);
-            text-align: center;
-        }
-
-        .account-conflict-close {
-            position: absolute;
-            top: 14px;
-            right: 14px;
-            width: 32px;
-            height: 32px;
-            border: 0;
-            border-radius: 50%;
-            background: #f1f5f9;
-            color: #475569;
-            font-size: 20px;
-            line-height: 1;
-            cursor: pointer;
-        }
-
-        .account-conflict-icon {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 68px;
-            height: 68px;
-            margin-bottom: 16px;
-            border-radius: 50%;
-            background: #dc2626;
-            color: #fff;
-            font-size: 36px;
-            font-weight: 900;
-            box-shadow: 0 0 0 9px #fee2e2;
-        }
-
-        .account-conflict-kicker {
-            display: block;
-            margin-bottom: 8px;
-            color: #15803d;
-            font-size: 13px;
-            font-weight: 800;
-            letter-spacing: .04em;
-            text-transform: uppercase;
-        }
-
-        .account-conflict-dialog h3 {
-            margin: 0 28px 12px;
-            color: #0f172a;
-            font-size: 24px;
-            font-weight: 800;
-        }
-
-        .account-conflict-dialog p {
-            margin: 0;
-            color: #334155;
-            font-size: 16px;
-            line-height: 1.7;
-        }
-
-        .account-conflict-support {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .account-conflict-support a {
-            display: inline-flex;
-            align-items: center;
-            min-height: 36px;
-            padding: 8px 12px;
-            border: 1px solid #fecaca;
-            border-radius: 8px;
-            background: #fff7f7;
-            color: #b91c1c;
-            font-size: 14px;
-            font-weight: 800;
-        }
-
-        .account-conflict-actions {
-            display: grid;
-            grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr);
-            gap: 12px;
-            margin-top: 24px;
-        }
-
-        .account-conflict-secondary,
-        .account-conflict-primary {
-            min-height: 46px;
-            border-radius: 8px;
-            font-weight: 800;
-            cursor: pointer;
-        }
-
-        .account-conflict-secondary {
-            border: 1px solid #cbd5e1;
-            background: #fff;
-            color: #334155;
-        }
-
-        .account-conflict-primary {
-            border: 0;
-            background: #dc2626;
-            color: #fff;
-        }
-
-        .account-conflict-primary:hover {
-            background: #b91c1c;
-        }
-
-        .pending-paid-backdrop {
-            padding: 20px;
-            background: rgba(15, 23, 42, 0.72);
-            backdrop-filter: blur(5px);
-        }
-
-        .pending-paid-dialog {
-            position: relative;
-            width: min(620px, 100%);
-            max-height: calc(100vh - 40px);
-            overflow-y: auto;
-            padding: 34px;
-            border: 2px solid #bbf7d0;
-            border-top: 6px solid #16a34a;
-            border-radius: 12px;
-            background: #fff;
-            box-shadow: 0 28px 76px rgba(15, 23, 42, 0.36);
-            text-align: center;
-        }
-
-        .pending-paid-close {
-            position: absolute;
-            top: 14px;
-            right: 14px;
-            width: 32px;
-            height: 32px;
-            border: 0;
-            border-radius: 50%;
-            background: #f1f5f9;
-            color: #475569;
-            font-size: 20px;
-            line-height: 1;
-            cursor: pointer;
-        }
-
-        .pending-paid-icon {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 68px;
-            height: 68px;
-            margin-bottom: 16px;
-            border-radius: 50%;
-            background: #16a34a;
-            color: #fff;
-            font-size: 34px;
-            font-weight: 900;
-            box-shadow: 0 0 0 9px #dcfce7;
-        }
-
-        .pending-paid-kicker {
-            display: block;
-            margin-bottom: 8px;
-            color: #15803d;
-            font-size: 13px;
-            font-weight: 800;
-            letter-spacing: .04em;
-            text-transform: uppercase;
-        }
-
-        .pending-paid-dialog h3 {
-            margin: 0 28px 12px;
-            color: #0f172a;
-            font-size: 24px;
-            font-weight: 900;
-        }
-
-        .pending-paid-dialog p {
-            margin: 0 auto;
-            max-width: 500px;
-            color: #334155;
-            font-size: 15px;
-            line-height: 1.7;
-        }
-
-        .pending-paid-courses {
-            display: grid;
-            gap: 10px;
-            margin-top: 22px;
-            text-align: left;
-        }
-
-        .pending-paid-course {
-            display: grid;
-            grid-template-columns: minmax(0, 1fr) auto;
-            gap: 12px;
-            align-items: center;
-            padding: 12px 14px;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            background: #f8fafc;
-        }
-
-        .pending-paid-course strong {
-            display: block;
-            color: #0f172a;
-            font-size: 14px;
-            line-height: 1.35;
-        }
-
-        .pending-paid-course small {
-            display: block;
-            margin-top: 3px;
-            color: #64748b;
-            font-size: 12px;
-        }
-
-        .pending-paid-course-price {
-            color: #16a34a;
-            font-size: 13px;
-            font-weight: 900;
-            white-space: nowrap;
-        }
-
-        .pending-paid-primary {
-            width: 100%;
-            min-height: 46px;
-            margin-top: 24px;
-            border: 0;
-            border-radius: 8px;
-            background: #dc2626;
-            color: #fff;
-            font-weight: 900;
-            cursor: pointer;
-            box-shadow: 0 10px 22px rgba(220, 38, 38, 0.22);
-        }
-
-        .pending-paid-primary:hover {
-            background: #b91c1c;
-        }
-
-        .mercadopago-shell {
-            max-width: 480px;
-            margin: 0 auto;
-        }
-
-        .checkout-payment-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .checkout-payment-header .secure-payment-icon,
-        .secure-payment-icon {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 34px;
-            height: 34px;
-            flex: 0 0 34px;
-            margin-bottom: 0;
-            color: inherit;
-            letter-spacing: 0;
-            text-transform: none;
-        }
-
-        .secure-payment-icon svg {
-            display: block;
-            width: 34px;
-            height: 34px;
-        }
-
-        .checkout-payment-header .secure-payment-copy,
-        .secure-payment-copy {
-            display: block;
-            margin-bottom: 0;
-            color: inherit;
-            font-size: inherit;
-            font-weight: inherit;
-            letter-spacing: 0;
-            text-transform: none;
-        }
-
-        .secure-payment-copy strong,
-        .secure-payment-copy small {
-            display: block;
-        }
-
-        .secure-payment-copy strong {
-            color: #0f172a;
-            font-size: 24px;
-            font-weight: 900;
-            letter-spacing: 0;
-            line-height: 1.15;
-            text-transform: none;
-        }
-
-        .secure-payment-copy small {
-            margin-top: 3px;
-            color: #64748b;
-            font-size: 14px;
-            font-weight: 600;
-            letter-spacing: 0;
-            line-height: 1.35;
-            text-transform: none;
-        }
-
-        .secure-payment-note {
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-            margin-top: 14px;
-            color: #475569;
-            font-size: 13px;
-            font-weight: 600;
-            line-height: 1.45;
-        }
-
-        .secure-payment-note .secure-payment-icon {
-            position: relative;
-            width: 26px;
-            height: 26px;
-            flex-basis: 26px;
-            margin-top: 4px;
-            z-index: 999999;
-        }
-
-        .secure-payment-note .secure-payment-icon svg {
-            width: 26px;
-            height: 26px;
-        }
-
-        .secure-payment-note a {
-            color: #dc2626;
-            font-weight: 800;
-            text-decoration: underline;
-            text-underline-offset: 2px;
-        }
-
-        #cardPaymentBrick_container {
-            margin-bottom: -18px;
-            overflow: hidden;
-        }
-
-        #cardPaymentBrick_container > div,
-        #cardPaymentBrick_container form {
-            margin-bottom: 0 !important;
-            padding-bottom: 0 !important;
-        }
-
-        #cardPaymentBrick_container .mp-checkout-container,
-        #cardPaymentBrick_container .mp-card-form,
-        #cardPaymentBrick_container .mp-form,
-        #cardPaymentBrick_container .mp-brick-container {
-            margin-bottom: 0 !important;
-            padding-bottom: 0 !important;
-        }
-
-        #cardPaymentBrick_container button[type="submit"] {
-            margin-bottom: 0 !important;
-        }
-
-        .checkout-total-row {
-            padding: 16px;
-            border: 1px solid #fecaca;
-            border-radius: 8px;
-            background: #fff7f7;
-            color: #0f172a;
-            font-size: 18px;
-            font-weight: 800;
-        }
-
-        .checkout-total-row strong {
-            color: #dc2626;
-            font-size: 24px;
-            font-weight: 900;
-            line-height: 1;
-        }
-
-        .account-shell {
-            max-width: 1280px;
-            margin: 0 auto;
-            padding: 30px;
-            background: #fff;
-        }
-
-        .account-header {
-            margin-bottom: 20px;
-        }
-
-        .account-header h2 {
-            margin: 0;
-            color: #0f172a;
-            font-size: 24px;
-            font-weight: 700;
-        }
-
-        .account-header p {
-            margin: 6px 0 0;
-            color: #64748b;
-            font-size: 14px;
-        }
-
-        .account-choice-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 12px;
-            margin-bottom: 22px;
-        }
-
-        .account-tab {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            width: 100%;
-            padding: 16px;
-            background: #f8fafc;
-            border: 1px solid #dce5ef;
-            border-radius: 8px;
-            color: #334155;
-            text-align: left;
-            transition: border-color .2s ease, background .2s ease, box-shadow .2s ease;
-        }
-
-        .account-tab strong,
-        .account-tab small {
-            display: block;
-        }
-
-        .account-tab strong {
-            color: #0f172a;
-            font-size: 15px;
-        }
-
-        .account-tab small {
-            color: #64748b;
-            font-size: 12px;
-        }
-
-        .account-tab.active {
-            background: #eef9f6;
-            border-color: #0f766e;
-            box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
-        }
-
-        .account-choice-icon {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 34px;
-            height: 34px;
-            border-radius: 50%;
-            background: #0f766e;
-            color: #fff;
-            font-weight: 700;
-            flex: 0 0 auto;
-        }
-
-        .account-form-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 16px;
-            padding: 18px;
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-        }
-
-        .account-form-grid.compact {
-            max-width: 720px;
-        }
-
-        .invoice-block {
-            margin-top: 24px;
-            padding-top: 22px;
-            border-top: 1px solid #e2e8f0;
-        }
-
-        .invoice-block h3 {
-            margin: 0 0 14px;
-            color: #0f172a;
-            font-size: 18px;
-            font-weight: 700;
-        }
-
-        .checkout-field label {
-            display: block;
-            margin-bottom: 7px;
-            color: #334155;
-            font-size: 13px;
-            font-weight: 700;
-        }
-
-        .checkout-field input {
-            width: 100%;
-            height: 44px;
-            padding: 10px 12px;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            background: #fff;
-            color: #0f172a;
-            outline: none;
-            transition: border-color .2s ease, box-shadow .2s ease;
-        }
-
-        .checkout-field input:focus {
-            border-color: #0f766e;
-            box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
-        }
-
-        .phone-input-group {
-            display: grid;
-            grid-template-columns: minmax(142px, 170px) minmax(0, 1fr);
-            gap: 8px;
-        }
-
-        .phone-input-group select {
-            width: 100%;
-            height: 44px;
-            padding: 10px 10px;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            background: #fff;
-            color: #0f172a;
-            outline: none;
-            font-weight: 700;
-        }
-
-        .phone-input-group select:focus {
-            border-color: #0f766e;
-            box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
-        }
-
-        .free-checkout-message {
-            padding: 24px;
-            border: 1px solid #bbf7d0;
-            border-radius: 8px;
-            background: #f0fdf4;
-            text-align: center;
-        }
-
-        .free-checkout-icon {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 58px;
-            height: 58px;
-            margin-bottom: 14px;
-            border-radius: 50%;
-            background: #16a34a;
-            color: #fff;
-            font-size: 30px;
-            font-weight: 900;
-            box-shadow: 0 0 0 8px #dcfce7;
-        }
-
-        .free-checkout-message h3 {
-            margin: 0 0 8px;
-            color: #14532d;
-            font-size: 21px;
-            font-weight: 900;
-        }
-
-        .free-checkout-message p {
-            margin: 0 auto 18px;
-            max-width: 360px;
-            color: #166534;
-            font-size: 14px;
-            line-height: 1.6;
-        }
-
-        .free-checkout-button {
-            min-height: 44px;
-            padding: 11px 22px;
-            border: 0;
-            border-radius: 8px;
-            background: #dc2626;
-            color: #fff;
-            font-weight: 800;
-            cursor: pointer;
-            box-shadow: 0 10px 22px rgba(220, 38, 38, 0.22);
-        }
-
-        .free-checkout-button:hover {
-            background: #b91c1c;
-        }
-
-        .account-actions {
-            display: flex;
-            justify-content: flex-end;
-            margin-top: 20px;
-        }
-
-        .checkout-invoice-card {
-            max-width: 860px;
-            margin: 0 auto;
-            border: 1px solid #dce5ef;
-            border-radius: 8px;
-            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
-        }
-
-        .invoice-form-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 16px;
-            padding: 18px;
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-        }
-
-        .invoice-form-grid .checkout-field:first-child,
-        #factura-panel .checkout-field:nth-child(2) {
-            grid-column: span 2;
-        }
-
-        .invoice-actions {
-            display: flex;
-            justify-content: flex-end;
-            margin-top: 20px;
-        }
-
-        @media (max-width: 1199px) {
-            .security-check-grid {
-                grid-template-columns: repeat(3, minmax(0, 1fr));
-            }
-
-            .checkout-payment-card {
-                position: static;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .checkout-page-body {
-                padding-top: 64px;
-            }
-
-            .checkout-page-heading h1 {
-                font-size: 23px;
-            }
-
-            .checkout-page-heading p {
-                font-size: 13px;
-            }
-
-            .checkout-steps {
-                gap: 48px;
-                max-width: 420px;
-            }
-
-            .checkout-steps::before {
-                left: 64px;
-                right: 64px;
-            }
-
-            .security-check-grid {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
-
-            .security-check-card {
-                min-height: 68px;
-            }
-
-            .cart-table-header {
-                align-items: flex-start;
-                flex-direction: column;
-                padding: 20px;
-            }
-
-            .cart-product-column {
-                min-width: 210px;
-            }
-
-            .cart-type-column {
-                min-width: 105px;
-            }
-
-            .cart-price-column {
-                min-width: 78px;
-            }
-
-            .cart-action-column {
-                min-width: 54px;
-            }
-
-            .account-shell {
-                padding: 18px;
-            }
-
-            .account-choice-grid,
-            .account-form-grid,
-            .invoice-form-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .invoice-form-grid .checkout-field:first-child,
-            #factura-panel .checkout-field:nth-child(2) {
-                grid-column: span 1;
-            }
-
-            .mercadopago-shell {
-                max-width: 100%;
-            }
-
-            .phone-input-group {
-                grid-template-columns: 1fr;
-            }
-
-            .account-conflict-dialog {
-                padding: 28px 20px;
-            }
-
-            .phone-required-dialog {
-                padding: 28px 20px;
-            }
-
-            .account-conflict-actions {
-                grid-template-columns: 1fr;
-            }
-
-            .pending-paid-dialog {
-                padding: 28px 20px;
-            }
-
-            .pending-paid-course {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 575px) {
-            .checkout-container {
-                padding-left: 14px;
-                padding-right: 14px;
-            }
-
-            .checkout-progress-card {
-                padding: 10px 12px !important;
-            }
-
-            .checkout-steps {
-                gap: 24px;
-            }
-
-            .checkout-steps::before {
-                top: 17px;
-                left: 52px;
-                right: 52px;
-            }
-
-            .checkout-step {
-                width: 112px;
-            }
-
-            .checkout-step-number {
-                width: 36px;
-                height: 36px;
-                font-size: 15px;
-            }
-
-            .security-check-grid {
-                grid-template-columns: 1fr;
-                margin-top: 8px;
-            }
-
-            .security-check-card {
-                min-height: 64px;
-                padding: 9px 10px;
-            }
-
-            .checkout-payment-card {
-                padding: 20px !important;
-            }
-
-            .checkout-payment-card::before {
-                margin: -20px -20px 18px;
-            }
-
-            .checkout-total-row {
-                align-items: flex-start !important;
-                flex-direction: column;
-                gap: 6px;
-            }
-
-            .invoice-actions {
-                justify-content: stretch;
-            }
-
-            .invoice-actions .boton-degradado-courses {
-                width: 100%;
-            }
-        }
-    </style>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.full.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Function to format the option with a flag
+            function formatCountry(country) {
+                if (!country.id) {
+                    return country.text;
+                }
+                var code = $(country.element).data('code');
+                if (!code) {
+                    return country.text;
+                }
+                var $country = $(
+                    '<span><img src="https://flagcdn.com/w20/' + code.toLowerCase() + '.png" class="select2-flag-img">' + country.text + '</span>'
+                );
+                return $country;
+            };
+
+            // Initialize Select2 for the new phone select
+            $('#checkout_phone_country_code').select2({
+                templateResult: formatCountry,
+                templateSelection: formatCountry,
+                minimumResultsForSearch: Infinity, // Hide search box for small lists
+                theme: 'bootstrap-5',
+                width: '140px'
+            });
+
+            // Initialize Select2 for the Mercado Pago phone select
+            $('#payment_phone_country').select2({
+                templateResult: formatCountry,
+                templateSelection: formatCountry,
+                minimumResultsForSearch: Infinity,
+                theme: 'bootstrap-5',
+                width: '140px'
+            });
+        });
+    </script>
     <script>
         const csrfToken = "{{ csrf_token() }}";
         const routes = {
@@ -1844,13 +903,15 @@
             }
 
             fetch(routes.items, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken
-                },
-                body: JSON.stringify({ ids: cartIds })
-            })
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    body: JSON.stringify({
+                        ids: cartIds
+                    })
+                })
                 .then(response => response.json())
                 .then(data => {
                     if (!data.items) throw new Error(data.error || 'No se pudo cargar el carrito.');
@@ -1903,9 +964,11 @@
 
         function renderEmptyCart() {
             resetPaymentState();
-            document.getElementById('cart').innerHTML = '<tr><td colspan="4" class="px-4 py-5 text-center">No has elegido ningun curso.</td></tr>';
+            document.getElementById('cart').innerHTML =
+                '<tr><td colspan="4" class="px-4 py-5 text-center">No has elegido ningun curso.</td></tr>';
             document.getElementById('totalid').textContent = 'S/ 0.00';
-            document.getElementById('cardPaymentBrick_container').innerHTML = '<div class="mp-loading-message p-4 text-center">Agrega cursos para cargar el pago.</div>';
+            document.getElementById('cardPaymentBrick_container').innerHTML =
+                '<div class="mp-loading-message p-4 text-center">Agrega cursos para cargar el pago.</div>';
             updateFreeCheckoutView();
         }
 
@@ -1933,16 +996,19 @@
 
             paymentInitializing = true;
             const currentPaymentVersion = paymentVersion;
-            document.getElementById('cardPaymentBrick_container').innerHTML = '<div class="mp-loading-message p-4 text-center">Preparando pago seguro...</div>';
+            document.getElementById('cardPaymentBrick_container').innerHTML =
+                '<div class="mp-loading-message p-4 text-center">Preparando pago seguro...</div>';
 
             requestJson(routes.preference, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken
-                },
-                body: JSON.stringify({ item_id: cartIds })
-            }, 20000)
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    body: JSON.stringify({
+                        item_id: cartIds
+                    })
+                }, 20000)
                 .then(async (data) => {
                     if (currentPaymentVersion !== paymentVersion) {
                         return;
@@ -1995,14 +1061,18 @@
 
         async function renderMercadoPago(currentPaymentVersion) {
             const container = document.getElementById('cardPaymentBrick_container');
-            container.innerHTML = '<div class="mp-loading-message p-4 text-center">Cargando formulario seguro de MercadoPago...</div>';
+            container.innerHTML =
+                '<div class="mp-loading-message p-4 text-center">Cargando formulario seguro de MercadoPago...</div>';
 
             if (!window.MercadoPago) {
-                throw new Error('No se pudo cargar el SDK de MercadoPago. Revisa la conexion o bloqueadores del navegador.');
+                throw new Error(
+                    'No se pudo cargar el SDK de MercadoPago. Revisa la conexion o bloqueadores del navegador.');
             }
 
             try {
-                const mp = new MercadoPago(mercadoPublicKey, { locale: 'es-PE' });
+                const mp = new MercadoPago(mercadoPublicKey, {
+                    locale: 'es-PE'
+                });
                 const bricksBuilder = mp.bricks();
 
                 const brickPromise = bricksBuilder.create('cardPayment', 'cardPaymentBrick_container', {
@@ -2013,14 +1083,19 @@
                     customization: {
                         visual: {
                             style: {
-                                customVariables: { theme: 'bootstrap' }
+                                customVariables: {
+                                    theme: 'bootstrap'
+                                }
                             }
                         },
-                        paymentMethods: { maxInstallments: 1 }
+                        paymentMethods: {
+                            maxInstallments: 1
+                        }
                     },
                     callbacks: {
                         onReady: () => {
-                            container.querySelectorAll('.mp-loading-message').forEach(message => message.remove());
+                            container.querySelectorAll('.mp-loading-message').forEach(message => message
+                                .remove());
                             attachMercadoPagoPhoneGuard();
                             hideAlert();
                         },
@@ -2030,16 +1105,16 @@
                             lastCardholderName = getCardholderName(cardFormData);
 
                             return requestJson(routes.payment, {
-                                method: 'PUT',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'X-CSRF-TOKEN': csrfToken
-                                },
-                                body: JSON.stringify({
-                                    item_id: cartIds,
-                                    cardFormData
-                                })
-                            }, 30000)
+                                    method: 'PUT',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'X-CSRF-TOKEN': csrfToken
+                                    },
+                                    body: JSON.stringify({
+                                        item_id: cartIds,
+                                        cardFormData
+                                    })
+                                }, 30000)
                                 .then((data) => {
                                     paidSaleId = data.sale_id;
                                     const payer = data.payer || {};
@@ -2051,7 +1126,8 @@
                                     showStep('final');
                                 })
                                 .catch(error => {
-                                    const paymentWarning = paymentWarningFromMercadoPagoError(error.message);
+                                    const paymentWarning = paymentWarningFromMercadoPagoError(error
+                                        .message);
                                     if (paymentWarning) {
                                         showPaymentWarningModal(paymentWarning);
                                     } else {
@@ -2066,7 +1142,9 @@
                             if (paymentWarning) {
                                 showPaymentWarningModal(paymentWarning);
                             } else {
-                                showAlert('MercadoPago no pudo renderizar el formulario. Intenta recargar la pagina.');
+                                showAlert(
+                                    'MercadoPago no pudo renderizar el formulario. Intenta recargar la pagina.'
+                                );
                             }
                         },
                     },
@@ -2190,14 +1268,16 @@
 
         function selectAccountMode(mode) {
             document.getElementById('account_mode').value = mode;
-            document.querySelectorAll('.account-tab').forEach(button => button.classList.toggle('active', button.dataset.accountMode === mode));
+            document.querySelectorAll('.account-tab').forEach(button => button.classList.toggle('active', button.dataset
+                .accountMode === mode));
             document.getElementById('create-account-panel').classList.toggle('d-none', mode !== 'create');
             document.getElementById('login-account-panel').classList.toggle('d-none', mode !== 'login');
         }
 
         function selectInvoiceType(type) {
             document.getElementById('invoice_type').value = type;
-            document.querySelectorAll('.invoice-tab').forEach(button => button.classList.toggle('active', button.dataset.invoiceType === type));
+            document.querySelectorAll('.invoice-tab').forEach(button => button.classList.toggle('active', button.dataset
+                .invoiceType === type));
             document.getElementById('boleta-panel').classList.toggle('d-none', type !== 'boleta');
             document.getElementById('factura-panel').classList.toggle('d-none', type !== 'factura');
 
@@ -2254,16 +1334,16 @@
             lastAccountLookupKey = lookupKey;
 
             requestJson(routes.searchPerson, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken
-                },
-                body: JSON.stringify({
-                    document_type: 1,
-                    number: cleanNumber
-                })
-            }, 15000)
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    body: JSON.stringify({
+                        document_type: 1,
+                        number: cleanNumber
+                    })
+                }, 15000)
                 .then((data) => {
                     if (!data.success) {
                         throw new Error(data.error || 'No se encontraron datos para el documento ingresado.');
@@ -2291,16 +1371,16 @@
             lastInvoiceLookupKey = lookupKey;
 
             requestJson(routes.searchPerson, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken
-                },
-                body: JSON.stringify({
-                    document_type: type === 'factura' ? 6 : 1,
-                    number: cleanNumber
-                })
-            }, 15000)
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    body: JSON.stringify({
+                        document_type: type === 'factura' ? 6 : 1,
+                        number: cleanNumber
+                    })
+                }, 15000)
                 .then((data) => {
                     if (!data.success) {
                         throw new Error(data.error || 'No se encontraron datos para el documento ingresado.');
@@ -2381,13 +1461,13 @@
             };
 
             requestJson(routes.finalize, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken
-                },
-                body: JSON.stringify(payload)
-            }, 30000)
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    body: JSON.stringify(payload)
+                }, 30000)
                 .then((data) => {
                     // Refresh CSRF token after login/register
                     refreshCsrfToken();
@@ -2424,7 +1504,10 @@
             const alert = document.getElementById('checkout-alert');
             alert.textContent = message;
             alert.classList.remove('d-none');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
         }
 
         function hideAlert() {
@@ -2434,9 +1517,9 @@
         }
 
         function showAccountConflictModal(message, conflictType) {
-            const title = conflictType === 'email'
-                ? 'Este email ya esta registrado'
-                : 'Este numero de identificacion ya esta registrado';
+            const title = conflictType === 'email' ?
+                'Este email ya esta registrado' :
+                'Este numero de identificacion ya esta registrado';
 
             document.getElementById('account-conflict-title').textContent = title;
             document.getElementById('account-conflict-message').textContent = message;
@@ -2500,7 +1583,8 @@
         function getPaymentPhoneState() {
             const phoneCountry = document.getElementById('payment_phone_country');
             const phone = value('payment_phone');
-            const areaCode = phoneCountry?.selectedOptions[0]?.dataset.areaCode || phoneCountry?.value.replace(/\D/g, '') || '';
+            const areaCode = phoneCountry?.selectedOptions[0]?.dataset.areaCode || phoneCountry?.value.replace(/\D/g, '') ||
+                '';
 
             return {
                 areaCode,
@@ -2511,18 +1595,19 @@
         }
 
         function notifyPaymentPhoneRequired(phoneState, reloadOnClose = false) {
-            const phoneMessage = !phoneState.areaCode && !phoneState.phone
-                ? 'Por seguridad necesitamos validar tu telefono antes de procesar el pago. Selecciona el codigo de pais e ingresa tu numero de telefono para continuar con tranquilidad.'
-                : (!phoneState.areaCode
-                    ? 'Por seguridad necesitamos que selecciones el codigo de pais de tu telefono antes de continuar con el pago.'
-                    : 'Por seguridad necesitamos que ingreses tu numero de telefono antes de continuar con el pago.');
+            const phoneMessage = !phoneState.areaCode && !phoneState.phone ?
+                'Por seguridad necesitamos validar tu telefono antes de procesar el pago. Selecciona el codigo de pais e ingresa tu numero de telefono para continuar con tranquilidad.' :
+                (!phoneState.areaCode ?
+                    'Por seguridad necesitamos que selecciones el codigo de pais de tu telefono antes de continuar con el pago.' :
+                    'Por seguridad necesitamos que ingreses tu numero de telefono antes de continuar con el pago.');
 
             showPhoneRequiredModal(phoneMessage, phoneState.focusTargetId, reloadOnClose);
         }
 
         function showPhoneRequiredModal(message, focusTargetId = 'payment_phone_country', reloadOnClose = false) {
             const messageElement = document.getElementById('phone-required-message');
-            messageElement.textContent = message || 'Para continuar con el pago necesitamos que selecciones el codigo de pais e ingreses tu numero de telefono. Esto nos ayuda a proteger tu compra y contactarte si hubiera algun inconveniente.';
+            messageElement.textContent = message ||
+                'Para continuar con el pago necesitamos que selecciones el codigo de pais e ingreses tu numero de telefono. Esto nos ayuda a proteger tu compra y contactarte si hubiera algun inconveniente.';
             messageElement.dataset.focusTarget = focusTargetId;
             messageElement.dataset.reloadOnClose = reloadOnClose ? '1' : '0';
             document.getElementById('phone-required-modal').classList.remove('hidden');
@@ -2655,7 +1740,8 @@
             paymentInitializing = false;
             unmountMercadoPago();
             updateFreeCheckoutView();
-            document.getElementById('cardPaymentBrick_container').innerHTML = '<div class="mp-loading-message p-4 text-center">Tu pago ya fue aprobado. Completa tu cuenta o inicia sesion para finalizar tu compra.</div>';
+            document.getElementById('cardPaymentBrick_container').innerHTML =
+                '<div class="mp-loading-message p-4 text-center">Tu pago ya fue aprobado. Completa tu cuenta o inicia sesion para finalizar tu compra.</div>';
             fillPayerData(pending.payer || {});
             showStep('final');
             showPendingPaidModal();
@@ -2696,13 +1782,15 @@
 
         function updateFreeCheckoutView() {
             document.getElementById('payment-step-text').textContent = 'Comprar';
-            document.getElementById('account-title').textContent = freeCheckout ? 'Completa tus datos para acceder' : 'Crea tu cuenta en menos de 30 segundos';
-            document.getElementById('account-subtitle').textContent = freeCheckout
-                ? 'Crea una cuenta o inicia sesion para registrar el curso en tu dashboard.'
-                : 'Completa tus datos para asociar la compra y emitir el comprobante.';
+            document.getElementById('account-title').textContent = freeCheckout ? 'Completa tus datos para acceder' :
+                'Crea tu cuenta en menos de 30 segundos';
+            document.getElementById('account-subtitle').textContent = freeCheckout ?
+                'Crea una cuenta o inicia sesion para registrar el curso en tu dashboard.' :
+                'Completa tus datos para asociar la compra y emitir el comprobante.';
             document.getElementById('invoice-block').classList.toggle('d-none', freeCheckout);
             document.getElementById('payment-phone-field').classList.toggle('d-none', freeCheckout);
-            document.getElementById('btn-finalize-text').textContent = freeCheckout ? 'ACCEDER A TU CUENTA' : 'FINALIZAR COMPRA';
+            document.getElementById('btn-finalize-text').textContent = freeCheckout ? 'ACCEDER A TU CUENTA' :
+                'FINALIZAR COMPRA';
         }
 
         function requestJson(url, options, timeoutMs) {
@@ -2713,7 +1801,11 @@
                 ...(options.headers || {})
             };
 
-            return fetch(url, { ...options, headers, signal: controller.signal })
+            return fetch(url, {
+                    ...options,
+                    headers,
+                    signal: controller.signal
+                })
                 .then(async response => {
                     const text = await response.text();
                     let data = {};
@@ -2726,7 +1818,8 @@
                     }
 
                     if (!response.ok) {
-                        const requestError = new Error(data.error || data.message || 'No se pudo completar la solicitud.');
+                        const requestError = new Error(data.error || data.message ||
+                            'No se pudo completar la solicitud.');
                         requestError.conflictType = data.conflict_type || null;
                         throw requestError;
                     }
@@ -2752,26 +1845,28 @@
         }
 
         function priceLabel(value) {
-            return Number(value || 0) <=0 ? 'Gratis' : `S/ ${money(value)}`;
+            return Number(value || 0) <= 0 ? 'Gratis' : `S/ ${money(value)}`;
         }
 
         // Refresh CSRF token after login/register
         function refreshCsrfToken() {
             fetch("{{ url('/get-csrf-token') }}", {
-                method: "GET",
-                headers: { "X-Requested-With": "XMLHttpRequest" }
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.token) {
-                    const meta = document.querySelector('meta[name="csrf-token"]');
-                    if (meta) {
-                        meta.content = data.token;
-                        console.log('CSRF token refreshed');
+                    method: "GET",
+                    headers: {
+                        "X-Requested-With": "XMLHttpRequest"
                     }
-                }
-            })
-            .catch(err => console.error('Failed to refresh CSRF token:', err));
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.token) {
+                        const meta = document.querySelector('meta[name="csrf-token"]');
+                        if (meta) {
+                            meta.content = data.token;
+                            console.log('CSRF token refreshed');
+                        }
+                    }
+                })
+                .catch(err => console.error('Failed to refresh CSRF token:', err));
         }
 
         // ==================== PASSWORD RECOVERY ====================
@@ -2796,34 +1891,56 @@
             const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
 
             fetch("{{ url('/send-password-recovery') }}", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": csrfToken
-                },
-                body: JSON.stringify({email: email})
-            })
-            .then(response => {
-                if (response.status === 419) {
-                    msgDiv.innerHTML = '<span class="text-red-600">Sesión expirada. Recargando página...</span>';
-                    setTimeout(() => location.reload(), 2000);
-                    throw new Error('Session expired');
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.status === 'success') {
-                    msgDiv.innerHTML = '<span class="text-green-600">Correo enviado. Revisa tu bandeja de entrada.</span>';
-                    setTimeout(() => hidePasswordRecovery(), 3000);
-                } else {
-                    msgDiv.innerHTML = '<span class="text-red-600">' + (data.error || 'Error') + '</span>';
-                }
-            })
-            .catch(err => {
-                if (err.message !== 'Session expired') {
-                    msgDiv.innerHTML = '<span class="text-red-600">Error al enviar correo</span>';
-                }
-            });
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": csrfToken
+                    },
+                    body: JSON.stringify({
+                        email: email
+                    })
+                })
+                .then(response => {
+                    if (response.status === 419) {
+                        msgDiv.innerHTML = '<span class="text-red-600">Sesión expirada. Recargando página...</span>';
+                        setTimeout(() => location.reload(), 2000);
+                        throw new Error('Session expired');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.status === 'success') {
+                        msgDiv.innerHTML =
+                            '<span class="text-green-600">Correo enviado. Revisa tu bandeja de entrada.</span>';
+                        setTimeout(() => hidePasswordRecovery(), 3000);
+                    } else {
+                        msgDiv.innerHTML = '<span class="text-red-600">' + (data.error || 'Error') + '</span>';
+                    }
+                })
+                .catch(err => {
+                    if (err.message !== 'Session expired') {
+                        msgDiv.innerHTML = '<span class="text-red-600">Error al enviar correo</span>';
+                    }
+                });
+        }
+    </script>
+    <script>
+        function toggleEditField(btn) {
+            const itemInfo = btn.closest('.account-item').querySelector('.account-item-info');
+            const displayValue = itemInfo.querySelector('.account-value');
+            const inputField = itemInfo.querySelector('.edit-input-field');
+            
+            if (inputField.classList.contains('d-none')) {
+                displayValue.classList.add('d-none');
+                inputField.classList.remove('d-none');
+                inputField.focus();
+                btn.innerHTML = '<i class="fa fa-save me-1"></i> Listo';
+            } else {
+                displayValue.textContent = inputField.value;
+                displayValue.classList.remove('d-none');
+                inputField.classList.add('d-none');
+                btn.innerHTML = '<i class="fa fa-pencil me-1"></i> Editar';
+            }
         }
     </script>
 @stop
