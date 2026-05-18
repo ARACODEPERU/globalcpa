@@ -2685,7 +2685,7 @@
                     callbacks: {
                         onReady: () => {
                             container.querySelectorAll('.mp-loading-message').forEach(message => message.remove());
-                            movePaymentPhoneFieldBeforePayButton();
+                            parkPaymentPhoneField();
                             attachMercadoPagoPhoneGuard();
                             hideAlert();
                         },
