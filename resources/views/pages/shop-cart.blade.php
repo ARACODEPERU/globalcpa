@@ -13,7 +13,7 @@
                 <div class="container-fluid checkout-container">
                     <div class="checkout-page-heading">
                         <span>Compra segura</span>
-                        <h1>Finaliza tu inscripcion</h1>
+                        <h1>Finaliza tu inscripción</h1>
                         <p>Revisa tus cursos, completa el pago y activa tu acceso en pocos pasos.</p>
                     </div>
 
@@ -23,15 +23,11 @@
                         <div class="checkout-wide">
                             <div class="payment-checkout-topbar">
                                 <div class="payment-brand">
-                                    <span class="payment-brand-shield" aria-hidden="true">
-                                        <svg viewBox="0 0 24 24" fill="none" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M12 3 19 6v5c0 4.8-2.8 8.9-7 10.5C7.8 19.9 5 15.8 5 11V6l7-3Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
-                                            <path d="m9 12 2 2 4-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-                                        </svg>
-                                    </span>
                                     <span>
-                                        <strong>CPA Academy</strong>
-                                        <small>Formacion que impulsa tu futuro</small>
+                                        <strong>
+                                            <img class="payment-brand-logo" src="https://academy.globalcpaperu.com/themes/webpage/images/Logo_cpa_modificado.png" alt="CPA Academy">
+                                        </strong>
+                                        <small>Formación que impulsa tu futuro</small>
                                     </span>
                                 </div>
                                 <div class="card checkout-progress-card">
@@ -53,7 +49,7 @@
                                     <div class="cart-table-header">
                                         <div>
                                             <span>Paso 1 de 2</span>
-                                            <h2>Finaliza tu inscripcion</h2>
+                                            <h2>Finaliza tu inscripción</h2>
                                             <p>Pago 100% seguro con Mercado Pago</p>
                                         </div>
                                         <small id="total_productos">Cursos seleccionados</small>
@@ -100,10 +96,10 @@
                                     <div class="mercadopago-shell">
                                         <div id="payment-phone-field-home">
                                         <div id="payment-phone-field" class="checkout-field mb-3">
-                                            <label>Telefono</label>
+                                            <label>Teléfono</label>
                                             <div class="phone-input-group">
-                                                <select id="payment_phone_country" aria-label="Codigo de pais">
-                                                    <option value="" data-area-code="" selected>Selecciona codigo</option>
+                                                <select id="payment_phone_country" aria-label="Código de país">
+                                                    <option value="" data-area-code="" selected>Selecciona código</option>
                                                     <option value="+51" data-area-code="51">Peru +51</option>
                                                     <option value="+54" data-area-code="54">Argentina +54</option>
                                                     <option value="+591" data-area-code="591">Bolivia +591</option>
@@ -183,7 +179,7 @@
                                                     <option value="+66" data-area-code="66">Tailandia +66</option>
                                                     <option value="+90" data-area-code="90">Turquia +90</option>
                                                 </select>
-                                                <input id="payment_phone" type="tel" placeholder="Numero de telefono">
+                                                <input id="payment_phone" type="tel" placeholder="Agrega tu número de teléfono">
                                             </div>
                                         </div>
                                         </div>
@@ -206,7 +202,7 @@
                                 <div class="security-check-card security-check-card-static">
                                     <span class="security-check-icon-svg" aria-hidden="true">
                                         <svg viewBox="0 0 64 64" role="img" focusable="false">
-                                            <path d="M32 6 52 14v15c0 13.2-7.8 24.8-20 29.4C19.8 53.8 12 42.2 12 29V14L32 6Z" fill="#dc2626"/>
+                                            <path d="M32 6 52 14v15c0 13.2-7.8 24.8-20 29.4C19.8 53.8 12 42.2 12 29V14L32 6Z" fill="#25D366"/>
                                             <path d="M27.6 38.6 19.8 30.8l4.2-4.2 3.6 3.6L40 17.8l4.2 4.2-16.6 16.6Z" fill="#fff"/>
                                         </svg>
                                     </span>
@@ -237,7 +233,7 @@
                     </section>
 
                     <section id="step-final" class="checkout-panel d-none">
-                        <div class="checkout-wide">
+                        <div class="account-shell">
                             <div class="card checkout-progress-card">
                                 <div class="checkout-steps">
                                     <button class="checkout-step done" data-step-label="payment">
@@ -250,8 +246,6 @@
                                     </button>
                                 </div>
                             </div>
-                        </div>
-                        <div class="account-shell">
                             <div class="account-header">
                                 <span class="final-step-kicker">Paso 2 de 2</span>
                                 <h2 id="account-title">Crea tu cuenta y elige tu comprobante</h2>
@@ -299,7 +293,7 @@
                             <div id="create-account-panel" class="account-form-grid">
                                 <div class="checkout-field">
                                     <label>DNI</label>
-                                    <input id="create_dni" type="text" placeholder="Numero de documento">
+                                    <input id="create_dni" type="text" placeholder="Número de documento">
                                 </div>
                                 <div class="checkout-field">
                                     <label>Email</label>
@@ -362,12 +356,12 @@
 
                                 <div id="boleta-panel" class="invoice-form-grid">
                                     <div class="checkout-field">
-                                        <label>Nombre completo</label>
-                                        <input id="invoice_name" type="text" placeholder="Nombre completo">
+                                        <label>DNI</label>
+                                        <input id="invoice_dni" type="text" placeholder="Número de documento">
                                     </div>
                                     <div class="checkout-field">
-                                        <label>DNI</label>
-                                        <input id="invoice_dni" type="text" placeholder="Numero de documento">
+                                        <label>Nombre completo</label>
+                                        <input id="invoice_name" type="text" placeholder="Nombre completo">
                                     </div>
                                     <div class="checkout-field">
                                         <label>Email</label>
@@ -378,15 +372,15 @@
                                 <div id="factura-panel" class="invoice-form-grid d-none">
                                     <div class="checkout-field">
                                         <label>RUC</label>
-                                        <input id="invoice_ruc" type="text" placeholder="Numero de RUC">
+                                        <input id="invoice_ruc" type="text" placeholder="Número de RUC">
                                     </div>
                                     <div class="checkout-field">
-                                        <label>Razon social</label>
-                                        <input id="invoice_business_name" type="text" placeholder="Razon social">
+                                        <label>Razón social</label>
+                                        <input id="invoice_business_name" type="text" placeholder="Razón social">
                                     </div>
                                     <div class="checkout-field">
-                                        <label>Direccion</label>
-                                        <input id="invoice_address" type="text" placeholder="Direccion fiscal">
+                                        <label>Dirección</label>
+                                        <input id="invoice_address" type="text" placeholder="Dirección fiscal">
                                     </div>
                                 </div>
                             </div>
@@ -403,7 +397,7 @@
                                  </button>
                                  <small class="final-secure-note">
                                      <i class="fa fa-lock" aria-hidden="true"></i>
-                                     Tu informacion esta protegida y solo sera utilizada para tu acceso al campus.
+                                     Tu información esta protegida y solo será utilizada para tu acceso al campus.
                                  </small>
                              </div>
                          </div>
@@ -439,8 +433,8 @@
                              <button type="button" onclick="hidePhoneRequiredModal()" class="phone-required-close" aria-label="Cerrar">x</button>
                              <div class="phone-required-icon">!</div>
                              <span class="phone-required-kicker">Dato requerido por seguridad</span>
-                             <h3>Ingresa tu numero de telefono</h3>
-                             <p id="phone-required-message">Para continuar con el pago necesitamos que selecciones el codigo de pais e ingreses tu numero de telefono. Esto nos ayuda a proteger tu compra y contactarte si hubiera algun inconveniente.</p>
+                             <h3>Ingresa tu número de teléfono</h3>
+                             <p id="phone-required-message">Para continuar con el pago necesitamos que selecciones el código de país e ingreses tu número de teléfono. Esto nos ayuda a proteger tu compra y contactarte si hubiera algún inconveniente.</p>
                              <button type="button" onclick="hidePhoneRequiredModal()" class="phone-required-primary">Entendido</button>
                          </div>
                      </div>
@@ -570,15 +564,16 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 38px;
-            height: 38px;
-            flex: 0 0 38px;
+            width: auto;
+            height: 20px;
+            flex: 0 0 auto;
         }
 
-        .payment-brand-shield svg {
+        .payment-brand-shield img {
             display: block;
-            width: 38px;
-            height: 38px;
+            width: auto;
+            height: 20px;
+            object-fit: contain;
         }
 
         .payment-brand strong,
@@ -594,6 +589,13 @@
             text-transform: uppercase;
         }
 
+        .payment-brand-logo {
+            display: block;
+            width: auto;
+            height: 40px;
+            object-fit: contain;
+        }
+
         .payment-brand small {
             margin-top: 4px;
             color: #64748b;
@@ -603,6 +605,14 @@
 
         #step-payment .checkout-progress-card {
             margin: 0 !important;
+            padding: 0 !important;
+            border: 0;
+            background: transparent;
+            box-shadow: none;
+        }
+
+        #step-final .checkout-progress-card {
+            margin: 0 0 30px !important;
             padding: 0 !important;
             border: 0;
             background: transparent;
@@ -1649,7 +1659,7 @@
         }
 
         .secure-payment-note a {
-            color: #dc2626;
+            color: #2563eb;
             font-weight: 800;
             text-decoration: underline;
             text-underline-offset: 2px;
@@ -1700,10 +1710,6 @@
             margin: 0 auto;
             padding: 38px;
             background: #fff;
-        }
-
-        #step-final > .checkout-wide {
-            display: none;
         }
 
         .account-header {
@@ -2131,7 +2137,10 @@
             justify-content: center;
             width: 100%;
             min-height: 64px;
+            border: 0;
             border-radius: 8px;
+            background: #dc2626 !important;
+            background-image: none !important;
             font-size: 18px;
             box-shadow: 0 14px 28px rgba(220, 38, 38, 0.22);
         }
@@ -2147,10 +2156,7 @@
         }
 
         #step-final #btn-finalize b::before {
-            content: "\f15b";
-            font-family: "FontAwesome";
-            font-weight: normal;
-            font-size: 20px;
+            content: none;
         }
 
         .final-secure-note {
@@ -2677,7 +2683,14 @@
                     customization: {
                         visual: {
                             style: {
-                                customVariables: { theme: 'bootstrap' }
+                                customVariables: {
+                                    theme: 'bootstrap',
+                                    baseColor: '#dc2626',
+                                    baseColorFirstVariant: '#b91c1c',
+                                    baseColorSecondVariant: '#991b1b',
+                                    buttonTextColor: '#ffffff',
+                                    outlinePrimaryColor: '#dc2626',
+                                }
                             }
                         },
                         paymentMethods: { maxInstallments: 1 }
@@ -2773,12 +2786,12 @@
             payer.email = (payer.email || '').trim().toLowerCase();
 
             if (!isValidEmail(payer.email)) {
-                throw new Error('Ingresa un correo valido en el formulario de MercadoPago.');
+                throw new Error('Ingresa un correo válido en el formulario de MercadoPago.');
             }
 
             if (!phoneState.isComplete) {
                 notifyPaymentPhoneRequired(phoneState, true);
-                throw new Error('Ingresa tu codigo de pais y numero de telefono.');
+                throw new Error('Ingresa tu código de país y número de teléfono.');
             }
 
             payer.phone = {
@@ -3101,7 +3114,7 @@
         function showAccountConflictModal(message, conflictType) {
             const title = conflictType === 'email'
                 ? 'Este email ya esta registrado'
-                : 'Este numero de identificacion ya esta registrado';
+                : 'Este número de identificación ya esta registrado';
 
             document.getElementById('account-conflict-title').textContent = title;
             document.getElementById('account-conflict-message').textContent = message;
@@ -3206,17 +3219,17 @@
 
         function notifyPaymentPhoneRequired(phoneState, reloadOnClose = false) {
             const phoneMessage = !phoneState.areaCode && !phoneState.phone
-                ? 'Por seguridad necesitamos validar tu telefono antes de procesar el pago. Selecciona el codigo de pais e ingresa tu numero de telefono para continuar con tranquilidad.'
+                ? 'Por seguridad necesitamos validar tu teléfono antes de procesar el pago. Selecciona el código de país e ingresa tu número de teléfono para continuar con tranquilidad.'
                 : (!phoneState.areaCode
-                    ? 'Por seguridad necesitamos que selecciones el codigo de pais de tu telefono antes de continuar con el pago.'
-                    : 'Por seguridad necesitamos que ingreses tu numero de telefono antes de continuar con el pago.');
+                    ? 'Por seguridad necesitamos que selecciones el código de país de tu teléfono antes de continuar con el pago.'
+                    : 'Por seguridad necesitamos que ingreses tu número de teléfono antes de continuar con el pago.');
 
             showPhoneRequiredModal(phoneMessage, phoneState.focusTargetId, reloadOnClose);
         }
 
         function showPhoneRequiredModal(message, focusTargetId = 'payment_phone_country', reloadOnClose = false) {
             const messageElement = document.getElementById('phone-required-message');
-            messageElement.textContent = message || 'Para continuar con el pago necesitamos que selecciones el codigo de pais e ingreses tu numero de telefono. Esto nos ayuda a proteger tu compra y contactarte si hubiera algun inconveniente.';
+            messageElement.textContent = message || 'Para continuar con el pago necesitamos que selecciones el código de país e ingreses tu número de teléfono. Esto nos ayuda a proteger tu compra y contactarte si hubiera algún inconveniente.';
             messageElement.dataset.focusTarget = focusTargetId;
             messageElement.dataset.reloadOnClose = reloadOnClose ? '1' : '0';
             document.getElementById('phone-required-modal').classList.remove('hidden');
