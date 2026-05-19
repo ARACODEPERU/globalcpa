@@ -2,9 +2,6 @@ import "./bootstrap";
 import "../css/app.css";
 import "../../public/themes/vristo/css/app.css"
 import 'easymde/dist/easymde.min.css';
-// 1. IMPORTACIÓN PARA BLADE (Iconos clásicos con <i>)
-import '@fortawesome/fontawesome-free/css/all.css';
-
 
 import { createApp, h } from "vue";
 import VueGates from "vue-gates";
@@ -56,7 +53,7 @@ createInertiaApp({
             .use(ZiggyVue, Ziggy)
             .use(VueTheMask)
             .use(VueGates)
-            .use(Permissions)
+            .use(Permissions, props.initialPage?.props)
             .use(pinia)
             .use(i18n)
             .use(head)
@@ -102,4 +99,3 @@ createInertiaApp({
         showSpinner: false,
     },
 });
-
