@@ -218,7 +218,10 @@
                                             ></span>
                                             <span
                                                 class="certificate-name-tooltip"
-                                                :class="{ 'certificate-module-name': hasActiveBaseCertificate(certificate) }"
+                                                :class="{
+                                                    'certificate-module-name': hasActiveBaseCertificate(certificate),
+                                                    'certificate-name-tooltip-first': index === 0,
+                                                }"
                                                 tabindex="0"
                                             >
                                                 <span class="certificate-name-text">{{ certificate.name_certificate }}</span>
@@ -407,6 +410,18 @@
         top: 100%;
         border: 6px solid transparent;
         border-top-color: #111827;
+    }
+
+    .certificate-name-tooltip-first .certificate-course-popup {
+        top: calc(100% + 10px);
+        bottom: auto;
+    }
+
+    .certificate-name-tooltip-first .certificate-course-popup::after {
+        top: auto;
+        bottom: 100%;
+        border-top-color: transparent;
+        border-bottom-color: #111827;
     }
 
     .certificate-name-tooltip:hover .certificate-course-popup,
