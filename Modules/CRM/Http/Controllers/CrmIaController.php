@@ -123,14 +123,14 @@ class CrmIaController extends Controller
         if (is_null($senderName) || trim($senderName) === '') {
             $senderName = 'Alumno';
         }
-
+//////aqui sucede error
         $data = [
             'fullName'      => $senderName,
             'message'       => $request->get('text'),
             'recipients'    => $recipientNames ?: 'Administración',
             'created_at'    => $message->created_at->format('d/m/Y h:i A'),
         ];
-
+//////////aqui termina
         $P000013 = Parameter::where('parameter_code', 'P000013')->value('value_default');
         $P000017 = Parameter::where('parameter_code', 'P000017')->value('value_default');
 
