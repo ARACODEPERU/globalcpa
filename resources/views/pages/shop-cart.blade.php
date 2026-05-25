@@ -1138,6 +1138,10 @@
             margin-bottom: 14px;
         }
 
+        #step-payment .checkout-payment-card.is-free-checkout .checkout-payment-header {
+            display: none;
+        }
+
         #step-payment .secure-payment-copy strong {
             font-size: 18px;
         }
@@ -1644,6 +1648,10 @@
             line-height: 1.45;
         }
 
+        .checkout-payment-card.is-free-checkout .secure-payment-note {
+            margin-top: 28px;
+        }
+
         .secure-payment-note .secure-payment-icon {
             position: relative;
             width: 26px;
@@ -1656,6 +1664,10 @@
         .secure-payment-note .secure-payment-icon svg {
             width: 26px;
             height: 26px;
+        }
+
+        .secure-payment-note .secure-payment-icon svg path {
+            fill: #60a5fa;
         }
 
         .secure-payment-note a {
@@ -2019,6 +2031,7 @@
         }
 
         .free-checkout-message {
+            margin-bottom: 8px;
             padding: 24px;
             border: 1px solid #bbf7d0;
             border-radius: 8px;
@@ -2036,7 +2049,7 @@
             border-radius: 50%;
             background: #16a34a;
             color: #fff;
-            font-size: 30px;
+            font-size: 26px;
             font-weight: 900;
             box-shadow: 0 0 0 8px #dcfce7;
         }
@@ -2057,6 +2070,7 @@
         }
 
         .free-checkout-button {
+            margin-bottom: 8px;
             min-height: 44px;
             padding: 11px 22px;
             border: 0;
@@ -2169,6 +2183,10 @@
             font-size: 13px;
             font-weight: 700;
             text-align: center;
+        }
+
+        .final-secure-note i {
+            color: #60a5fa;
         }
 
         @media (max-width: 1199px) {
@@ -2648,9 +2666,9 @@
             parkPaymentPhoneField();
             document.getElementById('cardPaymentBrick_container').innerHTML = `
                 <div class="free-checkout-message">
-                    <div class="free-checkout-icon">0</div>
-                    <h3>Tus cursos son gratis</h3>
-                    <p>El o los cursos que escogiste no requieren pago. Haz click en continuar para crear tu cuenta o iniciar sesion y registrarlos en tu dashboard.</p>
+                    <div class="free-checkout-icon"><i class="fa fa-shopping-cart" aria-hidden="true"></i></div>
+                    <h3>¡Estás a un paso de registrarte!</h3>
+                    <p>Has agregado tu curso al carrito correctamente para continuar con tu registro gratuito, haz click en el botón "Continuar" y crea tu cuenta en nuestra plataforma.</p>
                     <button type="button" class="free-checkout-button" onclick="continueFreeCheckout()">Continuar</button>
                 </div>
             `;
@@ -3403,6 +3421,7 @@
         }
 
         function updateFreeCheckoutView() {
+            document.querySelector('#step-payment .checkout-payment-card')?.classList.toggle('is-free-checkout', freeCheckout);
             document.getElementById('payment-step-text').textContent = 'Comprar';
             document.getElementById('account-title').textContent = freeCheckout ? 'Completa tus datos para acceder' : 'Crea tu cuenta y elige tu comprobante';
             document.getElementById('account-subtitle').textContent = freeCheckout
