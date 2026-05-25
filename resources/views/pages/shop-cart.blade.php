@@ -38,7 +38,7 @@
                                         </button>
                                         <button class="checkout-step" data-step-label="final">
                                             <span class="checkout-step-number">2</span>
-                                            <span class="checkout-step-text">Crear cuenta y comprobante</span>
+                                            <span class="checkout-step-text" id="final-step-text">Crear cuenta y comprobante</span>
                                         </button>
                                     </div>
                                 </div>
@@ -491,6 +491,7 @@
             border-radius: 8px;
             background: #fff;
             box-shadow: 0 18px 50px rgba(15, 23, 42, 0.08);
+            font-family: "Poppins", sans-serif;
         }
 
         #step-payment .checkout-page-heading {
@@ -1140,6 +1141,27 @@
 
         #step-payment .checkout-payment-card.is-free-checkout .checkout-payment-header {
             display: none;
+        }
+
+        #step-payment .checkout-wide.is-free-checkout .cart-table-header span {
+            color: #e11d48;
+            font-size: 14px;
+            font-weight: 800;
+            letter-spacing: .5px;
+        }
+
+        #step-payment .checkout-wide.is-free-checkout .cart-table-header h2 {
+            color: #0f172a;
+            font-size: 32px;
+            font-weight: 800;
+            line-height: 40px;
+        }
+
+        #step-payment .checkout-wide.is-free-checkout .cart-table-header p {
+            color: #64748b;
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 20px;
         }
 
         #step-payment .secure-payment-copy strong {
@@ -2032,9 +2054,9 @@
 
         .free-checkout-message {
             margin-bottom: 8px;
-            padding: 24px;
+            padding: 24px 28px 30px;
             border: 1px solid #bbf7d0;
-            border-radius: 8px;
+            border-radius: 12px;
             background: #f0fdf4;
             text-align: center;
         }
@@ -2043,47 +2065,84 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 58px;
-            height: 58px;
-            margin-bottom: 14px;
+            width: 64px;
+            height: 64px;
+            margin-bottom: 18px;
             border-radius: 50%;
             background: #16a34a;
             color: #fff;
-            font-size: 26px;
+            font-size: 28px;
             font-weight: 900;
             box-shadow: 0 0 0 8px #dcfce7;
         }
 
         .free-checkout-message h3 {
-            margin: 0 0 8px;
-            color: #14532d;
-            font-size: 21px;
-            font-weight: 900;
+            margin: 0 0 16px;
+            color: #065f46;
+            font-size: 22px;
+            font-weight: 800;
+            line-height: 30px;
         }
 
         .free-checkout-message p {
-            margin: 0 auto 18px;
-            max-width: 360px;
-            color: #166534;
+            margin: 0 auto 10px;
+            max-width: 560px;
+            color: #334155;
+            font-size: 15px;
+            font-weight: 400;
+            line-height: 24px;
+        }
+
+        .free-checkout-message p.free-checkout-main-copy {
+            margin-bottom: 12px;
+        }
+
+        .free-checkout-message p.free-checkout-action-copy {
+            margin-bottom: 18px;
+        }
+
+        .free-checkout-message .free-checkout-emphasis {
+            font-weight: 800;
+        }
+
+        .free-checkout-email-note {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 0 0 20px;
+            color: #065f46;
             font-size: 14px;
-            line-height: 1.6;
+            font-weight: 500;
+            line-height: 22px;
+        }
+
+        .free-checkout-email-note i {
+            color: #16a34a;
+            font-size: 18px;
         }
 
         .free-checkout-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 18px;
             margin-bottom: 8px;
             min-height: 44px;
-            padding: 11px 22px;
+            padding: 12px 28px;
             border: 0;
             border-radius: 8px;
-            background: #dc2626;
+            background: #e11d48;
             color: #fff;
+            font-size: 16px;
             font-weight: 800;
+            line-height: 24px;
             cursor: pointer;
-            box-shadow: 0 10px 22px rgba(220, 38, 38, 0.22);
+            box-shadow: 0 10px 22px rgba(225, 29, 72, 0.22);
         }
 
         .free-checkout-button:hover {
-            background: #b91c1c;
+            background: #be123c;
         }
 
         .account-actions {
@@ -2251,6 +2310,15 @@
 
             #step-payment .cart-table-header {
                 padding: 0 0 14px;
+            }
+
+            #step-payment .checkout-wide.is-free-checkout .cart-table-header h2 {
+                font-size: 26px;
+                line-height: 34px;
+            }
+
+            .free-checkout-message {
+                padding: 22px 18px 28px;
             }
 
             .cart-summary-item {
@@ -2432,6 +2500,15 @@
 
             .cart-total-summary strong {
                 font-size: 24px;
+            }
+
+            #step-payment .checkout-wide.is-free-checkout .cart-table-header h2 {
+                font-size: 24px;
+                line-height: 31px;
+            }
+
+            .free-checkout-button {
+                width: 100%;
             }
 
             .checkout-payment-card::before {
@@ -2668,8 +2745,16 @@
                 <div class="free-checkout-message">
                     <div class="free-checkout-icon"><i class="fa fa-shopping-cart" aria-hidden="true"></i></div>
                     <h3>¡Estás a un paso de registrarte!</h3>
-                    <p>Has agregado tu curso al carrito correctamente para continuar con tu registro gratuito, haz click en el botón "Continuar" y crea tu cuenta en nuestra plataforma.</p>
-                    <button type="button" class="free-checkout-button" onclick="continueFreeCheckout()">Continuar</button>
+                    <p class="free-checkout-main-copy">Has agregado tu curso al carrito correctamente.</p>
+                    <p class="free-checkout-action-copy">Para continuar con tu registro gratuito, haz clic en el botón <span class="free-checkout-emphasis">"Confirmar mi acceso"</span> y crea tu cuenta en nuestra plataforma.</p>
+                    <div class="free-checkout-email-note">
+                        <i class="fa fa-envelope-o" aria-hidden="true"></i>
+                        <span>Te enviaremos los accesos a tu correo electrónico.</span>
+                    </div>
+                    <button type="button" class="free-checkout-button" onclick="continueFreeCheckout()">
+                        <span>Confirmar mi acceso</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </button>
                 </div>
             `;
             updateFreeCheckoutView();
@@ -3422,7 +3507,12 @@
 
         function updateFreeCheckoutView() {
             document.querySelector('#step-payment .checkout-payment-card')?.classList.toggle('is-free-checkout', freeCheckout);
-            document.getElementById('payment-step-text').textContent = 'Comprar';
+            document.querySelector('#step-payment .checkout-wide')?.classList.toggle('is-free-checkout', freeCheckout);
+            document.getElementById('payment-step-text').textContent = freeCheckout ? 'Registro' : 'Comprar';
+            document.getElementById('final-step-text').textContent = freeCheckout ? 'Acceso al webinar' : 'Crear cuenta y comprobante';
+            document.querySelector('.cart-table-header span').textContent = 'PASO 1 DE 2';
+            document.querySelector('.cart-table-header h2').textContent = 'Finaliza tu inscripción';
+            document.querySelector('.cart-table-header p').textContent = freeCheckout ? '100% seguro con Mercado Pago' : 'Pago 100% seguro con Mercado Pago';
             document.getElementById('account-title').textContent = freeCheckout ? 'Completa tus datos para acceder' : 'Crea tu cuenta y elige tu comprobante';
             document.getElementById('account-subtitle').textContent = freeCheckout
                 ? 'Crea una cuenta o inicia sesion para registrar el curso en tu dashboard.'
