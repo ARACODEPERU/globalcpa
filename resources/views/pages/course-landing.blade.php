@@ -61,9 +61,9 @@
         $(document).ready(function() {
             if (window.AOS !== undefined) {
                 AOS.init({
-                    mirror: true,
+                    mirror: false,
                     duration: 800,
-                    once: false
+                    once: true
                 });
             }
         });

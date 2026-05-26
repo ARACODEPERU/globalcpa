@@ -176,7 +176,11 @@
 
         /* Móvil (< 575px) */
         @media only screen and (max-width: 575px) {
-            .custom-page-header { padding: 10px 15px; }
+            .custom-page-header { 
+                padding: 10px 15px; 
+                flex-wrap: wrap !important;
+                height: auto !important;
+            }
             .header-left-group { gap: 10px; }
             .custom-nav-list { gap: 20px; }
             
@@ -232,7 +236,7 @@
             <ul class="nav-menus custom-nav-list">
 
             @if(Route::is(['course_url_slug', 'landing_preview']))
-                <li>
+                <li class="d-none d-md-block">
                     <button type="button" data-bs-toggle="modal" 
                             data-bs-target="#modalFinanciamiento"
                             class="btn btn-warning btn-lg w-100 fw-bold shadow-sm py-1 mt-2 btn-sm btn-pill"
@@ -360,7 +364,19 @@
 
             </ul>
         </div>
-                        
+
+        {{-- Botón Móvil: Se muestra solo en Landing y debajo del contenido principal del header --}}
+        @if(Route::is(['course_url_slug', 'landing_preview']))
+            <div class="d-md-none w-100 pt-2 pb-1">
+                <button type="button" data-bs-toggle="modal" 
+                        data-bs-target="#modalFinanciamiento"
+                        class="btn btn-warning btn-sm w-100 fw-bold shadow-sm py-2 btn-pill"
+                        style="color: #002060; border-radius: 12px; font-size: 14px;">
+                        <i class="fa-solid fa-headset me-2"></i> Hablar con un experto
+                </button>
+            </div>
+        @endif
+
     </div>
 
 

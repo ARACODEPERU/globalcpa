@@ -59,6 +59,9 @@
     <link rel="icon" type="image/png" href="{{ asset('themes/webpage/images/Logo_isotipo.png') }}" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
+    <!-- latest jquery-->
+    <script src="{{ asset('themes/webpage/assets/js/jquery.min.js') }}"></script>
+
     <link rel="stylesheet" href="{{ asset('themes/webpage/css/app.css') }}" />
 
     <!-- Javascript Assets -->
@@ -126,8 +129,6 @@
 
     <div id="x-teleport-target"></div>
 
-    <!-- latest jquery-->
-    <script src="{{ asset('themes/webpage/assets/js/jquery.min.js') }}"></script>
     <!-- Bootstrap js-->
     <script src="{{ asset('themes/webpage/assets/js/bootstrap/bootstrap.bundle.min.js') }}"></script>
     <!-- feather icon js-->
@@ -141,6 +142,8 @@
     <script src="{{ asset('themes/webpage/assets/js/config.js') }}"></script>
     <!-- Plugins JS start-->
     <script src="{{ asset('themes/webpage/assets/js/sidebar-menu.js') }}"></script>
+    {{-- Requerido por custom-card.js --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script>
     <script src="{{ asset('themes/webpage/assets/js/slick/slick.min.js') }}"></script>
     <script src="{{ asset('themes/webpage/assets/js/slick/slick.js') }}"></script>
     <script src="{{ asset('themes/webpage/assets/js/header-slick.js') }}"></script>

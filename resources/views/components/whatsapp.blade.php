@@ -15,10 +15,12 @@
     /* merchandising Modero -------------------------------------  */
     #merchandising .mer {
         position: fixed;
-        transform: all .5s ease;
+        transition: all .3s ease;
         background-color: #e30613;
-        display: block;
-        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
         border-radius: 50px;
         border-right: none;
@@ -31,7 +33,16 @@
         z-index: 9999;
         width: 50px;
         height: 50px;
-        line-height: 50px;
+    }
+
+    #merchandising .mer i {
+        margin: 0;
+        padding: 0;
+    }
+
+    #merchandising .mer:hover {
+        transform: scale(1.1);
+        background-color: #c00510;
     }
 
     #merchandising .mer:before {
@@ -57,10 +68,12 @@
 
     #whatsapp .wtsapp {
         position: fixed;
-        transform: all .5s ease;
+        transition: all .3s ease;
         background-color: #25D366;
-        display: block;
-        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
         border-radius: 50px;
         border-right: none;
@@ -73,7 +86,10 @@
         z-index: 9999;
         width: 50px;
         height: 50px;
-        line-height: 50px;
+    }
+
+    #whatsapp .wtsapp:hover {
+        transform: scale(1.1);
     }
 
     #whatsapp .wtsapp:before {

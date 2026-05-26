@@ -1,7 +1,8 @@
 @props(['landing'])
 
+<br>
 {{-- Hero Section --}}
-<div class="container-fluid mt-4">
+<div class="container-fluid mt-8">
     <div class="card border-0 overflow-hidden shadow mb-4"
         style="background: linear-gradient(135deg, #002060 0%, #004080 100%); border-radius: 15px;"
         data-aos="fade-in">
