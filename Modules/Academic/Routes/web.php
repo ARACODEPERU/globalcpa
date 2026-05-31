@@ -318,6 +318,9 @@ Route::middleware(['auth', 'verified', 'invalid_updated_information', 'user_acti
         ->get('dashboard/courses/registration/student/genero', 'AcademicController@getStudentsCourses')
         ->name('aca_student_registration_courses');
 
+    Route::post('update_tour_user', [AcademicController::class, 'updateTourUser'])
+        ->name('update_tour_user');
+
     // //subscriptions/////
     Route::middleware(['middleware' => 'permission:aca_suscripciones'])
         ->get('subscriptions/list', 'AcaSubscriptionTypeController@index')
