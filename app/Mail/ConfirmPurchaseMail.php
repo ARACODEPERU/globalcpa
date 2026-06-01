@@ -36,7 +36,7 @@ class ConfirmPurchaseMail extends Mailable
                 env('MAIL_FROM_ADDRESS', 'informes@globalcpaperu.com'),
                 env('MAIL_FROM_NAME', 'CPA Academy')
             ),
-            subject: 'Gracias por estar con nosotros - ' . env('APP_NAME', 'Global CPA'),
+            subject: 'Gracias por estar con nosotros - ' . env('APP_NAME', 'CPA Academy'),
         );
     }
 

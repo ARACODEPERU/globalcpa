@@ -5,9 +5,6 @@
     <!-- Meta tags  -->
     <meta name="facebook-domain-verification" content="3qhwpfunszdc5ag3cwum3r70v123vo" />
 
-
-
-
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-WXX1QVD5Y0"></script>
     <script>
@@ -23,8 +20,7 @@
 
 
     <!-- Meta Pixel Code -->
-
-    @vite(['resources/js/app.js'])
+    @vite(['resources/js/webpage.js'])
 
     <script>
         ! function(f, b, e, v, n, t, s) {
@@ -52,22 +48,20 @@
             src="https://www.facebook.com/tr?id=791233956872790&ev=PageView&noscript=1" /></noscript>
     <!-- End Meta Pixel Code -->
 
-
-
-
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
 
     <title>CPA Academy @yield('title')</title>
     <link rel="icon" type="image/png" href="{{ asset('themes/webpage/images/Logo_isotipo.png') }}" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
+    <!-- latest jquery-->
+    <script src="{{ asset('themes/webpage/assets/js/jquery.min.js') }}"></script>
 
-    <link rel="stylesheet" href="{{ asset('themes/webpage/bootstrap-5.3.3/css/bootstrap.css') }}" />
-    <!-- CSS Assets -->
     <link rel="stylesheet" href="{{ asset('themes/webpage/css/app.css') }}" />
 
     <!-- Javascript Assets -->
@@ -83,26 +77,13 @@
         rel="stylesheet" />
 
 
-    <link rel="stylesheet" href="{{ asset('themes/webpage/font-awesome-4.7.0/css/font-awesome.min.css') }}">
-
-
-
-
-
-
-
-
-
-
-
-
-
     <!-- Themify icon-->
     <link rel="stylesheet" type="text/css" href="{{ asset('themes/webpage/assets/css/vendors/themify.css') }}">
     <!-- Flag icon-->
     <link rel="stylesheet" type="text/css" href="{{ asset('themes/webpage/assets/css/vendors/flag-icon.css') }}">
     <!-- Feather icon-->
     <link rel="stylesheet" type="text/css" href="{{ asset('themes/webpage/assets/css/vendors/feather-icon.css') }}">
+
     <!-- Plugins css start-->
     <link rel="stylesheet" type="text/css" href="{{ asset('themes/webpage/assets/css/vendors/slick.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('themes/webpage/assets/css/vendors/slick-theme.css') }}">
@@ -111,8 +92,7 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('themes/webpage/assets/css/vendors/datatables.css') }}">
     <link rel="stylesheet" type="text/css"
         href="{{ asset('themes/webpage/assets/css/vendors/datatable/select.dataTables.min.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ asset('themes/webpage/assets/css/vendors/prism.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ asset('themes/webpage/assets/css/vendors/vector-map.css') }}">
+
     <!-- Plugins css Ends-->
 
     <!-- Bootstrap css-->
@@ -123,21 +103,21 @@
     <!-- Responsive css-->
     <link rel="stylesheet" type="text/css" href="{{ asset('themes/webpage/assets/css/responsive.css') }}">
 
-
-
-
-    {{-- ARACODE --}}
-    <link rel="stylesheet" href="{{ asset('themes/webpage/css/aracode.css') }}" />
-
-
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
 
     <script>
         /**
-         * THIS SCRIPT REQUIRED FOR PREVENT FLICKERING IN SOME BROWSERS
+         * PREVENCIÓN DE PARPADEO Y SINCRONIZACIÓN DE MODO OSCURO
          */
-        localStorage.getItem("_x_darkMode_on") === "true" &&
-            document.documentElement.classList.add("dark");
+        (function() {
+            if (localStorage.getItem("_x_darkMode_on") === "true") {
+                document.documentElement.classList.add("dark");
+                // Aplicamos al body inmediatamente si ya existe, si no, lo haremos en un listener
+                window.addEventListener('DOMContentLoaded', () => document.body.classList.add("dark-only"));
+            }
+        })();
     </script>
     @yield('etiquetasmeta')
 </head>
@@ -147,31 +127,14 @@
     @yield('content')
     <x-whatsapp />
 
-
-
-
     <div id="x-teleport-target"></div>
-    <script>
-        window.addEventListener("DOMContentLoaded", () => Alpine.start());
-    </script>
 
-
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
-    </script>
-
-    <script src="{{ asset('themes/webpage/bootstrap-5.3.3/js/bootstrap.js') }}"></script>
-
-
-
-    <!-- latest jquery-->
-    <script src="{{ asset('themes/webpage/assets/js/jquery.min.js') }}"></script>
     <!-- Bootstrap js-->
     <script src="{{ asset('themes/webpage/assets/js/bootstrap/bootstrap.bundle.min.js') }}"></script>
     <!-- feather icon js-->
     <script src="{{ asset('themes/webpage/assets/js/icons/feather-icon/feather.min.js') }}"></script>
     <script src="{{ asset('themes/webpage/assets/js/icons/feather-icon/feather-icon.js') }}"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <!-- scrollbar js-->
     <script src="{{ asset('themes/webpage/assets/js/scrollbar/simplebar.js') }}"></script>
     <script src="{{ asset('themes/webpage/assets/js/scrollbar/custom.js') }}"></script>
@@ -179,107 +142,32 @@
     <script src="{{ asset('themes/webpage/assets/js/config.js') }}"></script>
     <!-- Plugins JS start-->
     <script src="{{ asset('themes/webpage/assets/js/sidebar-menu.js') }}"></script>
+    {{-- Requerido por custom-card.js --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script>
     <script src="{{ asset('themes/webpage/assets/js/slick/slick.min.js') }}"></script>
     <script src="{{ asset('themes/webpage/assets/js/slick/slick.js') }}"></script>
     <script src="{{ asset('themes/webpage/assets/js/header-slick.js') }}"></script>
-    <script src="{{ asset('themes/webpage/assets/js/chart/apex-chart/apex-chart.js') }}"></script>
-    <script src="{{ asset('themes/webpage/assets/js/chart/apex-chart/stock-prices.js') }}"></script>
-    <script src="{{ asset('themes/webpage/assets/js/prism/prism.min.js') }}"></script>
-    <script src="{{ asset('themes/webpage/assets/js/clipboard/clipboard.min.js') }}"></script>
+
     <script src="{{ asset('themes/webpage/assets/js/custom-card/custom-card.js') }}"></script>
     <script src="{{ asset('themes/webpage/assets/js/notify/bootstrap-notify.min.js') }}"></script>
-    <script src="{{ asset('themes/webpage/assets/js/vector-map/jquery-jvectormap-2.0.2.min.js') }}"></script>
-    <script src="{{ asset('themes/webpage/assets/js/vector-map/map/jquery-jvectormap-world-mill-en.js') }}"></script>
-    <script src="{{ asset('themes/webpage/assets/js/vector-map/map/jquery-jvectormap-us-aea-en.js') }}"></script>
-    <script src="{{ asset('themes/webpage/assets/js/vector-map/map/jquery-jvectormap-uk-mill-en.js') }}"></script>
-    <script src="{{ asset('themes/webpage/assets/js/vector-map/map/jquery-jvectormap-au-mill.js') }}"></script>
-    <script src="{{ asset('themes/webpage/assets/js/vector-map/map/jquery-jvectormap-chicago-mill-en.js') }}"></script>
-    <script src="{{ asset('themes/webpage/assets/js/vector-map/map/jquery-jvectormap-in-mill.js') }}"></script>
-    <script src="{{ asset('themes/webpage/assets/js/vector-map/map/jquery-jvectormap-asia-mill.js') }}"></script>
-    <script src="{{ asset('themes/webpage/assets/js/dashboard/default.js') }}"></script>
-    <script src="{{ asset('themes/webpage/assets/js/datatable/datatables/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('themes/webpage/assets/js/datatable/datatables/datatable.custom.js') }}"></script>
-    <script src="{{ asset('themes/webpage/assets/js/datatable/datatables/dataTables.select.min.js') }}"></script>
-    <script src="{{ asset('themes/webpage/assets/js/typeahead/handlebars.js') }}"></script>
-    <script src="{{ asset('themes/webpage/assets/js/typeahead/typeahead.bundle.js') }}"></script>
-    <script src="{{ asset('themes/webpage/assets/js/typeahead/typeahead.custom.js') }}"></script>
-    <script src="{{ asset('themes/webpage/assets/js/typeahead-search/handlebars.js') }}"></script>
-    <script src="{{ asset('themes/webpage/assets/js/typeahead-search/typeahead-custom.js') }}"></script>
-    <script src="{{ asset('themes/webpage/assets/js/animation/wow/wow.min.js') }}"></script>
+
+    {{-- Carga condicional recomendada para scripts de Datatables y Typeahead --}}
+    @if (!Route::is(['course_url_slug', 'landing_preview']))
+        <script src="{{ asset('themes/webpage/assets/js/datatable/datatables/jquery.dataTables.min.js') }}"></script>
+        <script src="{{ asset('themes/webpage/assets/js/animation/wow/wow.min.js') }}"></script>
+    @endif
+
     <!-- Plugins JS Ends-->
     <!-- Theme js-->
     <script src="{{ asset('themes/webpage/assets/js/script.js') }}"></script>
 
-
+    @stack('content_after')
     @yield('javascripts')
 
     <script src="{{ asset('themes/webpage/assets/js/modalpage/validation-modal.js') }}"></script>
-
-    <script>
-        var myModal = document.getElementById('myModal')
-        var myInput = document.getElementById('myInput')
-
-        myModal.addEventListener('shown.bs.modal', function() {
-            myInput.focus()
-        })
-    </script>
-
-<script src="{{ asset('themes/globalcpa/carrito.js') }}" defer></script>
+    <script src="{{ asset('themes/globalcpa/carrito.js') }}" defer></script>
     @stack('modals')
 
-    <!-- Scripts Globales Comunes (Slider y Acordeón) -->
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            // Lógica del Slider
-            const slides = document.querySelector('.slides');
-            if (slides) {
-                let currentIndex = 0;
-                const totalSlides = document.querySelectorAll('.slide').length;
-
-                function showNextSlide() {
-                    currentIndex = (currentIndex + 1) % totalSlides;
-                    const offset = -currentIndex * 100;
-                    slides.style.transform = `translateX(${offset}%)`;
-                }
-                setInterval(showNextSlide, 3000);
-            }
-
-            // Lógica del Acordeón
-            const headers = document.querySelectorAll('.accordion-header-aracode');
-            if (headers.length > 0) {
-                headers.forEach(header => {
-                    header.addEventListener('click', function() {
-                        const content = this.nextElementSibling;
-                        const isVisible = content.style.maxHeight;
-
-                        // Ocultar todos los contenidos y resetear iconos
-                        document.querySelectorAll('.accordion-content-aracode').forEach(item => {
-                            item.style.maxHeight = null;
-                            item.style.padding = '0';
-                            item.setAttribute('aria-hidden', 'true');
-                        });
-                        headers.forEach(h => {
-                            h.classList.remove('active');
-                            const icon = h.querySelector('.accordion-icon-aracode');
-                            if(icon) icon.textContent = '►';
-                            h.setAttribute('aria-expanded', 'false');
-                        });
-
-                        // Mostrar el contenido del header clicado
-                        if (!isVisible) {
-                            content.style.maxHeight = content.scrollHeight + "px";
-                            content.style.padding = '15px';
-                            this.classList.add('active');
-                            const icon = this.querySelector('.accordion-icon-aracode');
-                            if(icon) icon.textContent = '▼';
-                            this.setAttribute('aria-expanded', 'true');
-                            content.setAttribute('aria-hidden', 'false');
-                        }
-                    });
-                });
-            }
-        });
-    </script>
 </body>
 
 

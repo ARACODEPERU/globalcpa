@@ -94,7 +94,10 @@ function agregarAlCarrito(producto) {
                 localStorage.setItem("carrito", JSON.stringify(carrito));
                 getTotal();
                 cargarContadorCarrito();
-                cargarItemsCarritoBD();
+                if (typeof cargarItemsCarritoBD === "function") {
+                    cargarItemsCarritoBD();
+                }
+                preguntarIrAlCarrito(producto);
             } else if (result.dismiss === Swal.DismissReason.cancel) {
                 // Acción a realizar si el usuario hace clic en "No" o cierra el diálogo
                 console.log("El usuario ha cancelado.");
@@ -104,6 +107,22 @@ function agregarAlCarrito(producto) {
             console.error("Se produjo un error al mostrar la alerta: ", error);
         });
     }
+}
+
+function preguntarIrAlCarrito(producto) {
+    Swal.fire({
+        title: "Curso agregado al carrito",
+        text: 'Quieres ir al carrito para pagar "' + producto.nombre + '"?',
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "Pagar Ahora",
+        cancelButtonText: "Seguir navegando",
+        reverseButtons: true,
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = "/carrito";
+        }
+    });
 }
 
 // Obtener el carrito actual
@@ -120,10 +139,11 @@ function eliminarCarrito() {
 
 function getTotal() {
     var elemento = document.getElementById("totalid");
+    var totalProductosElemento = document.getElementById("total_productos");
+    var cartElemento = document.getElementById("cart");
 
-    if (elemento !== null) {
+    if (elemento !== null && (totalProductosElemento !== null || cartElemento !== null)) {
         // El elemento con el ID 'totalid' existe
-        // Puedes realizar operaciones en el elemento aquí
         carritoTemp = JSON.parse(localStorage.getItem("carrito")) || [];
         total = 0;
         for (let i = 0; i < carritoTemp.length; i++) {
@@ -131,8 +151,10 @@ function getTotal() {
         }
         document.getElementById("totalid").textContent = "S/ " + total + ".00";
         total_productos = carritoTemp.length;
-        document.getElementById("total_productos").innerHTML =
-            total_productos + " programas en el carrito.";
+        if (totalProductosElemento !== null) {
+            totalProductosElemento.innerHTML =
+                total_productos + " programas en el carrito.";
+        }
     }
 }
 function cargarContadorCarrito() {

@@ -306,7 +306,7 @@
                                     </div>
                                     <div class="card-body p-4">
                                         <div class="mb-4">
-                                            @if ($item->price)
+                                            @if ((float) $item->price > 0)
                                                 <h2 class="fw-bold mb-0 display-6"
                                                     :class="$store.global.isDarkModeEnabled ? 'text-gray-100' : 'text-gray-800'">
                                                     S/ {{ $item->price }}</h2>
@@ -319,7 +319,7 @@
                                         </div>
 
                                         <div class="d-grid gap-2 mb-4">
-                                            @if ($item->price)
+                                            @if ((float) $item->price > 0)
                                                 <button class="btn btn-primary btn-lg fw-bold shadow-sm py-3"
                                                     onclick="agregarAlCarrito({ id: {{ $item->id }}, nombre: '{{ $item->name }}', precio: {{ $item->price }} })">
                                                     Añadir al Carrito
@@ -421,7 +421,7 @@
                         <div>
                             <span class="d-block small"
                                 :class="$store.global.isDarkModeEnabled ? 'text-gray-400' : 'text-muted'">Precio:</span>
-                            @if ($item->price)
+                            @if ((float) $item->price > 0)
                                 <span class="fw-bold fs-4"
                                     :class="$store.global.isDarkModeEnabled ? 'text-white' : 'text-dark'">S/
                                     {{ $item->price }}</span>
@@ -430,7 +430,7 @@
                             @endif
                         </div>
                         <div>
-                            @if ($item->price)
+                            @if ((float) $item->price > 0)
                                 <button class="btn btn-primary fw-bold px-4"
                                     onclick="agregarAlCarrito({ id: {{ $item->id }}, nombre: '{{ $item->name }}', precio: {{ $item->price }} })">
                                     Comprar

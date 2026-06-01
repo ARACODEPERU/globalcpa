@@ -9,7 +9,7 @@
                 Canales
             </h3>
             <p class="mt-3 grow">
-                🚀 ¡No te pierdas lo mejor de Global CPA! <br>
+                🚀 ¡No te pierdas lo mejor de CPA Academy! <br>
                 Síguenos en nuestras redes sociales y forma parte de nuestra comunidad.
             </p>
         </div>

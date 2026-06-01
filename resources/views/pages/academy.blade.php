@@ -1002,7 +1002,7 @@
                                                 </h2>
                                                 <div id="mCollapseThree" class="accordion-collapse collapse" data-bs-parent="#modernFaqAccordion">
                                                     <div class="accordion-body py-4 text-muted">
-                                                        Obtendrás un <strong>Certificado de Especialización</strong> emitido por Global CPA. Este documento cuenta con un código QR único de verificación para validar tu autenticidad ante cualquier empleador.
+                                            Obtendrás un <strong>Certificado de Especialización</strong> emitido por CPA Academy. Este documento cuenta con un código QR único de verificación para validar tu autenticidad ante cualquier empleador.
                                                     </div>
                                                 </div>
                                             </div>

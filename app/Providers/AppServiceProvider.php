@@ -33,7 +33,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         Inertia::share([
-            'MERCADOPAGO_KEY' => env('MERCADOPAGO_KEY'), // Comparte la clave con el frontend
+            'MERCADOPAGO_KEY' => config('services.mercadopago.key'),
         ]);
 
     }

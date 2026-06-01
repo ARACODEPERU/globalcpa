@@ -48,6 +48,11 @@ module.exports = {
         },
         extend: {
             colors: {
+                brand: {
+                    navy: '#002060',
+                    orange: '#f8aa4b',
+                    'navy-light': '#f6f7fb',
+                },
                 primary: {
                     DEFAULT: '#4361ee',
                     light: '#eaf1ff',

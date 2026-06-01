@@ -48,6 +48,9 @@ Route::get('/curso-descripcion/{id}', [WebPageController::class, 'coursedescript
 Route::get('/curso/{id}', [WebPageController::class, 'course_url_slug'])->name('course_url_slug'); // ruta de cursos landing
 
 Route::get('/carrito', [WebPageController::class, 'shopcart'])->name('web_carrito');
+Route::post('/carrito/preference', [WebPageController::class, 'cartPreference'])->name('web_cart_preference');
+Route::put('/carrito/payment', [WebPageController::class, 'cartProcessPayment'])->name('web_cart_process_payment');
+Route::post('/carrito/finalize', [WebPageController::class, 'cartFinalize'])->name('web_cart_finalize');
 Route::get('/metodos-de-pago', [WebPageController::class, 'accounts'])->name('web_accounts');
 Route::get('/pagar', [WebPageController::class, 'pay'])->name('web_pay');
 Route::post('/safe_pay', [WebPageController::class, 'pagar'])->name('paying');
@@ -81,6 +84,9 @@ Route::get('/stories/policies', [BlogController::class, 'storiesPolicies'])->nam
 Route::get('/stories/contact-us', [BlogController::class, 'storiesContactUs'])->name('blog_stories_contact_us');
 Route::put('/process_payment/{id}/{student_id}', [WebController::class, 'processPayment'])->name('web_process_payment');
 
+// Password Recovery Routes (public)
+Route::post('/send-password-recovery', [WebPageController::class, 'sendPasswordRecovery'])->name('web_send_password_recovery');
+Route::get('/get-csrf-token', function() { return response()->json(['token' => csrf_token()]); })->name('web_get_csrf_token');
 
 Route::get('/mipais', function () {
     $ip = $_SERVER['REMOTE_ADDR']; // Esto contendrá la ip de la solicitud.

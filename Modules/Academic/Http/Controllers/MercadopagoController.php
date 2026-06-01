@@ -33,7 +33,7 @@ class MercadopagoController extends Controller
     public function formPay(Request $request, $id)
     {
         $personInvoice = $request->get('personInvoice');
-        MercadoPagoConfig::setAccessToken(env('MERCADOPAGO_TOKEN'));
+        MercadoPagoConfig::setAccessToken(config('services.mercadopago.token'));
         $client = new PreferenceClient();
         $items = [];
 
@@ -74,7 +74,7 @@ class MercadopagoController extends Controller
 
     public function processPayment(Request $request, $id)
     {
-        \MercadoPago\MercadoPagoConfig::setAccessToken(env('MERCADOPAGO_TOKEN'));
+        \MercadoPago\MercadoPagoConfig::setAccessToken(config('services.mercadopago.token'));
 
         $client = new \MercadoPago\Client\Payment\PaymentClient();
         $payment_server = null;
@@ -82,6 +82,11 @@ class MercadopagoController extends Controller
         $sus = AcaSubscriptionType::find($id);
         //dd($request->all());
         try {
+            if ($request->get('payment_method_id') !== 'yape' && ! $request->filled('token')) {
+                return response()->json([
+                    'error' => 'Mercado Pago no genero el token de tarjeta. Recarga el formulario y vuelve a ingresar los datos de la tarjeta.'
+                ], 422);
+            }
 
             if ($request->get('payment_method_id') == 'yape') {
 
@@ -143,9 +148,13 @@ class MercadopagoController extends Controller
         } catch (\MercadoPago\Exceptions\MPApiException $e) {
             // Manejar la excepción
             $response = $e->getApiResponse();
-            $content  = $response->getContent();
-            //dd($content);
-            $message = $content['message'];
+            $content = $response ? $response->getContent() : [];
+            $message = $content['message'] ?? $e->getMessage();
+
+            if ($message === 'Invalid card_token_id') {
+                $message .= '. Verifica que MERCADOPAGO_KEY y MERCADOPAGO_TOKEN sean de prueba y pertenezcan a la misma cuenta, y recarga el formulario para generar un token nuevo.';
+            }
+
             return response()->json(['error' => 'Error al procesar el pago: ' . $message], 412);
         }
     }
@@ -161,7 +170,7 @@ class MercadopagoController extends Controller
 
     public function createPreference(Request $request)
     {
-        MercadoPagoConfig::setAccessToken(env('MERCADOPAGO_TOKEN'));
+        MercadoPagoConfig::setAccessToken(config('services.mercadopago.token'));
         $client = new PreferenceClient();
         $items = [];
         $msg = null;
@@ -195,7 +204,7 @@ class MercadopagoController extends Controller
 
     public function createItemsPreference(Request $request)
     {
-        MercadoPagoConfig::setAccessToken(env('MERCADOPAGO_TOKEN'));
+        MercadoPagoConfig::setAccessToken(config('services.mercadopago.token'));
         $client = new PreferenceClient();
         $items = [];
         $msg = null;
@@ -234,7 +243,7 @@ class MercadopagoController extends Controller
 
     public function processPaymentCourses(Request $request)
     {
-        \MercadoPago\MercadoPagoConfig::setAccessToken(env('MERCADOPAGO_TOKEN'));
+        \MercadoPago\MercadoPagoConfig::setAccessToken(config('services.mercadopago.token'));
 
         $client = new \MercadoPago\Client\Payment\PaymentClient();
         //dd($request->all());
@@ -246,6 +255,12 @@ class MercadopagoController extends Controller
         $amount = (float) $request->get('transaction_amount');
 
         try {
+            if ($request->get('payment_method_id') !== 'yape' && ! $request->filled('token')) {
+                return response()->json([
+                    'error' => 'Mercado Pago no genero el token de tarjeta. Recarga el formulario y vuelve a ingresar los datos de la tarjeta.'
+                ], 422);
+            }
+
             $res = DB::transaction(function () use ($request, $client, $amount, $products, $student, $personInvoice) {
 
                 if ($request->get('payment_method_id') == 'yape') {
@@ -424,9 +439,13 @@ class MercadopagoController extends Controller
             // Manejar la excepción
 
             $response = $e->getApiResponse();
-            $content  = $response->getContent();
-            //dd($content);
-            $message = $content['message'];
+            $content = $response ? $response->getContent() : [];
+            $message = $content['message'] ?? $e->getMessage();
+
+            if ($message === 'Invalid card_token_id') {
+                $message .= '. Verifica que MERCADOPAGO_KEY y MERCADOPAGO_TOKEN sean de prueba y pertenezcan a la misma cuenta, y recarga el formulario para generar un token nuevo.';
+            }
+
             return response()->json(['error' => 'Error al procesar el pago: ' . $message], 412);
         } catch (\Exception $e) {
             // Manejar cualquier otro error

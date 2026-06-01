@@ -38,7 +38,7 @@ const store = useAppStore();
                 <div class="panel">
                     <div class="mt-16 mx-16">
                         <p class="mb-8 dark:text-white text-lg">
-                            Bienvenido a ARACODE S.A.C. ("nosotros", "nuestro" o "la empresa"). Nuestro sitio web (aracodeperu.com) ofrece servicios digitales, incluyendo alquiler de sistemas, facturación electrónica, desarrollo a medida, soporte y mantenimiento de software, marketing digital, diseño gráfico, venta de repuestos de cómputo y desarrollo de aplicaciones móviles. Al acceder o usar nuestro sitio, aceptas estar sujeto a estos términos y condiciones.
+                            Bienvenido a CPA Academy. ("nosotros", "nuestro" o "la empresa"). Nuestro sitio web (academy.globalcpaperu.com) ofrece servicios digitales como Capacitaciones y cursos virtuales, Al acceder o usar nuestro sitio, aceptas estar sujeto a estos términos y condiciones.
                         </p>
                         <p class="mb-8 dark:text-white text-lg">
                             El propósito principal de este sitio es proporcionar información sobre nuestros servicios y productos. También incluye un formulario de contacto donde los usuarios pueden realizar consultas relacionadas con nuestros servicios.
