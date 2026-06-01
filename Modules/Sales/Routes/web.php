@@ -15,6 +15,7 @@ use App\Http\Controllers\ApisnetPeController;
 use App\Http\Controllers\LocalSaleController;
 use Illuminate\Support\Facades\Route;
 use Modules\Sales\Http\Controllers\AccountsReceivableController;
+use Modules\Sales\Http\Controllers\AccountsReceivableDashboardController;
 use Modules\Sales\Http\Controllers\InvoiceReportsController;
 use Modules\Sales\Http\Controllers\PettyCashController;
 use Modules\Sales\Http\Controllers\ProductController;
@@ -29,9 +30,12 @@ use Modules\Sales\Http\Controllers\SalePhysicalDocumentController;
 use Modules\Sales\Http\Controllers\SaleProductBrandController;
 use Modules\Sales\Http\Controllers\SaleProductCategoryController;
 use Modules\Sales\Http\Controllers\SalesController;
+use Modules\Sales\Http\Controllers\SalesPrintTemplateController;
 use Modules\Sales\Http\Controllers\SaleSummaryController;
 use Modules\Sales\Http\Controllers\SerieController;
 use Modules\Sales\Http\Controllers\ServicesController;
+use Modules\Sales\Http\Controllers\QuickSaleController;
+use Modules\Sales\Http\Controllers\QuickSaleStoreController;
 
 Route::middleware(['auth', 'verified', 'user_activity_log'])->prefix('sales')->group(function () {
     route::get('dashboard', [SalesController::class, 'index'])->name('sales_dashboard');
@@ -54,6 +58,10 @@ Route::middleware(['auth', 'verified', 'user_activity_log'])->prefix('sales')->g
 
     Route::post('search/products/all', [ProductController::class, 'searchProductAll'])->name('search_product_all');
 
+    // TPV - Punto de Venta Rápido
+    Route::get('quick-sale', [QuickSaleController::class, 'index'])->name('sales_quick_sale');
+    Route::post('quick-sale', [QuickSaleStoreController::class, 'store'])->name('sales_quick_sale_store');
+
     Route::post('get/product/local/', [ProductController::class, 'getProductByLocal'])->name('get_product_by_local');
 
     Route::post('search/scaner/products', [ProductController::class, 'searchScanerProduct'])->name('search_scaner_product');
@@ -63,6 +71,13 @@ Route::middleware(['auth', 'verified', 'user_activity_log'])->prefix('sales')->g
     Route::post('showdetails/products/{id}', [ProductController::class, 'showdetails'])->name('showdetails');
 
     Route::post('input/products', [ProductController::class, 'saveInput'])->name('input_products');
+
+    Route::middleware(['middleware' => 'permission:productos'])
+        ->get('administration/print-templates', [SalesPrintTemplateController::class, 'index'])
+        ->name('sales_print_templates_index');
+    Route::middleware(['middleware' => 'permission:productos'])
+        ->post('administration/print-templates', [SalesPrintTemplateController::class, 'update'])
+        ->name('sales_print_templates_update');
 
     Route::post('local/series', [LocalSaleController::class, 'series'])->name('localseriesbyid');
 
@@ -133,6 +148,7 @@ Route::middleware(['auth', 'verified', 'user_activity_log'])->prefix('sales')->g
     Route::get('salesummary/check/{id}/{ticket}', [SaleSummaryController::class, 'checkSummary'])->name('salesummaries_store_check');
     Route::get('salesummary/destroy/{id}', [SaleSummaryController::class, 'destroySummary'])->name('salesummaries_destroy');
     Route::get('salesummary/download/{id}/{type}', [SaleSummaryController::class, 'downloadFile'])->name('salesummaries_download');
+    Route::get('salesummary/retry/{id}', [SaleSummaryController::class, 'retrySummary'])->name('salesummaries_retry');
 
     // //rutas de comunicacion de baja
     Route::get('lowcommunication/list', [SaleLowCommunicationController::class, 'index'])->name('low_communication_list');
@@ -196,8 +212,13 @@ Route::middleware(['auth', 'verified', 'user_activity_log'])->prefix('sales')->g
     Route::post('dashboard/total/summary/document', [SalesController::class, 'getSummaryTotals'])->name('sales_dashboard_total_summary');
     Route::post('netapies/search/person', [ApisnetPeController::class, 'consultMigo'])->name('sales_search_person_apies');
 
-    Route::get('reports/invoice', [InvoiceReportsController::class, 'index'])->name('reports_invoice');
+    Route::middleware(['middleware' => 'permission:invo_dashboard'])
+        ->get('reports/invoice', [InvoiceReportsController::class, 'index'])
+        ->name('reports_invoice');
 
+    Route::middleware(['middleware' => 'permission:acco_dashboard'])
+        ->get('accountsreceivable/dashboard', [AccountsReceivableDashboardController::class, 'index'])
+        ->name('acco_dashboard');
     Route::middleware(['middleware' => 'permission:acco_dashboard'])
         ->get('accountsreceivable/document/list', [AccountsReceivableController::class, 'index'])
         ->name('acco_document_list');

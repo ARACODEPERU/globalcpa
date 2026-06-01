@@ -1,4 +1,5 @@
 import {
+    faGauge,
     faCashRegister,
     faFileInvoiceDollar,
     faScrewdriverWrench,
@@ -24,6 +25,14 @@ const menuSales = [
         route: 'module',
         permissions: "sale_dashboard",
         items: [
+            {
+                route: route("sales_dashboard"),
+                status: false,
+                text: "Dashboard",
+                permissions: "sale_dashboard",
+                icom: faGauge,
+                dashboard: true,
+            },
 
             {
                 status: false,
@@ -62,6 +71,13 @@ const menuSales = [
                         text: "Servicios",
                         permissions: "sale_servicios",
                     },
+                    {
+                        status: false,
+                        route: route("sales_print_templates_index"),
+                        text: "Plantillas A4",
+                        permissions: "productos",
+                        badge: "Nuevo",
+                    },
                 ]
             },
             {
@@ -81,7 +97,14 @@ const menuSales = [
             {
                 route: route("sales.index"),
                 status: false,
-                text: "Punto de venta (POS)",
+                text: "Notas de venta",
+                permissions: "punto_ventas",
+                icom: faCashRegister,
+            },
+            {
+                route: route("sales_quick_sale"),
+                status: false,
+                text: "Punto de venta rápido",
                 permissions: "punto_ventas",
                 icom: faCashRegister,
             },
@@ -109,6 +132,14 @@ const menuSales = [
         route: 'module',
         permissions: 'invo_dashboard',
         items: [
+            {
+                route: route('reports_invoice'),
+                status: false,
+                text: 'Dashboard',
+                permissions: 'invo_dashboard',
+                icom: faGauge,
+                dashboard: true,
+            },
             {
                 route: route('saledocuments_create'),
                 status: false,
@@ -160,6 +191,14 @@ const menuSales = [
         route: 'module',
         permissions: 'acco_dashboard',
         items: [
+            {
+                route: route('acco_dashboard'),
+                status: false,
+                text: 'Dashboard',
+                permissions: 'acco_dashboard',
+                icom: faGauge,
+                dashboard: true,
+            },
             {
                 route: route('acco_document_list'),
                 status: false,
