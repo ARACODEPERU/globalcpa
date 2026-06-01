@@ -2,7 +2,9 @@
     "private": true,
     "scripts": {
         "dev": "vite",
-        "build": "vite build && vite build --ssr"
+        "build": "vite build && vite build --ssr",
+        "editor:build": "npm run build --prefix ../editor-aracode",
+        "prebuild": "npm run editor:build"
     },
     "name": "aracode",
     "version": "3.0",
@@ -10,17 +12,20 @@
     "devDependencies": {
         "@inertiajs/vue3": "^1.0.0",
         "@tailwindcss/forms": "^0.5.3",
+        "@vitejs/plugin-basic-ssl": "^1.2.0",
         "@vitejs/plugin-vue": "^4.6.0",
         "@vue/server-renderer": "^3.3.13",
         "autoprefixer": "^10.4.12",
         "axios": "^1.7.9",
         "postcss": "^8.4.18",
+        "sass-embedded": "^1.99.0",
         "tailwindcss": "^3.4.1",
         "vite": "^5.2.12",
         "vue": "^3.4.27"
     },
     "dependencies": {
         "@bhplugin/vue3-datatable": "^1.1.4",
+        "@elmerrodriguez/editor-aracode": "github:ARACODEPERU/editor-aracode",
         "@fortawesome/fontawesome-free": "^6.4.0",
         "@fortawesome/fontawesome-svg-core": "^6.2.1",
         "@fortawesome/free-solid-svg-icons": "^6.2.1",
@@ -42,6 +47,7 @@
         "@vueup/vue-quill": "^1.2.0",
         "@vueuse/head": "^2.0.0",
         "@websitebeaver/vue-magnifier": "^1.1.0",
+        "animejs": "^4.4.1",
         "ant-design-vue": "^4.0.8",
         "aracode": "file:",
         "compressorjs": "^1.2.1",
