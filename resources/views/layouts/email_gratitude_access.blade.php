@@ -170,7 +170,7 @@
                 <p>
                     👤 Usuario: {{ $person->email }}
                     <br>
-                    🔑 Tu contraseña de acceso
+                    🔑 Tu contraseña de acceso o tu N° de DNI.
                 </p>
                 <a href="https://academy.globalcpaperu.com/login" style="margin-top: 20px;">
                     <button class="boton-degradado-campus">Ingresar a la plataforma</button>

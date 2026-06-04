@@ -217,6 +217,7 @@
     };
 
     // Verificar si puede descargar certificado del módulo
+
     const canDownloadCertificate = () => {
         return (props.module.allow_certificate_download === true || props.module.allow_certificate_download == 1) &&
                studentExam.value &&
@@ -816,7 +817,7 @@
                                     </div>
 
                                     <!-- Botón Descargar Certificado del Módulo -->
-                                    <div v-if="canDownloadCertificate()" class="mt-2">
+                                   <div v-if="canDownloadCertificate()" class="mt-2">
                                         <button
                                             @click="downloadModuleCertificate()"
                                             class="w-full bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white py-2.5 px-4 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2"
@@ -826,7 +827,7 @@
                                             </svg>
                                             Descargar Certificado
                                         </button>
-                                    </div>
+                                   </div>
                                 </div>
                             </div>
 

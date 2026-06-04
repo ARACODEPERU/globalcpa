@@ -249,7 +249,7 @@
                 <p>
                     👤 Usuario:  {{ $data->email}}
                     <br>
-                    🔑 {{ $dni }}
+                    🔑 {{ $dni ?? "tu Contraseña de Acceso" }}
                 </p>
                 <a href="https://academy.globalcpaperu.com/login" style="margin-top: 20px;">
                     <button class="boton-degradado-campus">Ingresar a la plataforma</button>
