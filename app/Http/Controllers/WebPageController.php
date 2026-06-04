@@ -450,7 +450,8 @@ public function course_url_slug($id){
 
     public function shopcart()
     {
-        return view('pages.shop-cart');
+        $documentTypes = DB::table('identity_document_type')->get();
+        return view('pages.shop-cart', ['documentTypes' => $documentTypes]);
     }
 
     public function cartPreference(Request $request)
@@ -658,7 +659,8 @@ public function course_url_slug($id){
             'email' => 'required|email',
             'password' => 'nullable|string|min:6',
             'names' => 'required_if:account_mode,create|nullable|string|max:255',
-            'dni' => 'required_if:account_mode,create|nullable|string|max:20',
+            'create_document_type' => 'required_if:account_mode,create|nullable|integer',
+            'number' => 'required_if:account_mode,create|nullable|string|max:20',
         ];
 
         if ($freeCheckout) {
@@ -710,9 +712,15 @@ public function course_url_slug($id){
 
         if ($validated['account_mode'] === 'create') {
             $email = strtolower(trim($validated['email']));
-            $dni = trim($validated['dni']);
+            $number = trim($validated['number']);
+            $documentType = $validated['create_document_type'] ?? 1;
 
-            if (Person::where('number', $dni)->exists()) {
+            // Verificar duplicado por tipo documento + número (combo único)
+            $existingPerson = Person::where('document_type_id', $documentType)
+                ->where('number', $number)
+                ->first();
+
+            if ($existingPerson) {
                 return response()->json([
                     'error' => 'Tranquilo, tu compra esta protegida. El numero de identificacion ingresado ya esta registrado en CPA Academy, por eso no podemos crear otra cuenta con el mismo documento. Inicia sesion con tu cuenta para continuar. Si necesitas ayuda, escribenos a informes@globalcpaperu.com o comunicate al +51 967052506.',
                     'conflict_type' => 'dni',
@@ -730,7 +738,8 @@ public function course_url_slug($id){
             }
 
             $validated['email'] = $email;
-            $validated['dni'] = $dni;
+            $validated['number'] = $number;
+            $validated['create_document_type'] = $documentType;
         }
 
         DB::beginTransaction();
@@ -746,12 +755,15 @@ public function course_url_slug($id){
                 $person = Person::findOrFail($user->person_id);
             } else {
                 $person = Person::firstOrCreate(
-                    ['number' => $validated['dni']],
                     [
-                        'document_type_id' => 1,
+                        'document_type_id' => $validated['create_document_type'],
+                        'number' => $validated['number'],
+                    ],
+                    [
+                        'document_type_id' => $validated['create_document_type'],
                         'short_name' => $validated['names'],
                         'full_name' => $validated['names'],
-                        'number' => $validated['dni'],
+                        'number' => $validated['number'],
                         'telephone' => null,
                         'email' => $validated['email'],
                         'is_provider' => false,
@@ -770,7 +782,7 @@ public function course_url_slug($id){
                 $user = User::create([
                     'name' => $person->names ?: $person->full_name,
                     'email' => $validated['email'],
-                    'password' => Hash::make($validated['password'] ?: $validated['dni']),
+                    'password' => Hash::make($validated['password'] ?: $validated['number']),
                     'person_id' => $person->id
                 ]);
 

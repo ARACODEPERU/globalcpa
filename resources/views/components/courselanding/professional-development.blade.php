@@ -3,7 +3,7 @@
 <style>
     .text-navy-custom { color: #002060 !important; }
     :is(.dark, .dark-only) .text-navy-custom:not(button) { color: #f6f7fb !important; }
-    
+
     /* Estilos para los campos del formulario */
     .input-group-text-custom {
         background-color: #ffffff;
@@ -103,6 +103,7 @@
 
                 <form id="pageContactForm">
                     @csrf
+                    <input type="hidden" name="flow_id" value="{{ $landing->flow_id ?? null}}">
                     <input type="hidden" name="subject" value="{{ $landing->course->description ?? 'Curso' }}">
                     <input type="hidden" name="message" value="desde Landing - Descargué Brochure">
 

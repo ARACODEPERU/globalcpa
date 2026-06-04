@@ -18,6 +18,7 @@
                     </div>
 
                     <div id="checkout-alert" class="alert alert-danger d-none"></div>
+                    <div id="doc-type-toast" class="doc-type-toast d-none"></div>
 
                     <section id="step-payment" class="checkout-panel">
                         <div class="checkout-wide">
@@ -252,7 +253,7 @@
                                 <p id="account-subtitle">Completa tus datos para asociar la compra y emitir el comprobante.</p>
                             </div>
 
-                            <div class="final-success-card">
+                            <div id="final-success-card" class="final-success-card">
                                 <span class="final-success-icon" aria-hidden="true">✓</span>
                                 <span>
                                     <strong>Pago recibido con exito!</strong>
@@ -292,7 +293,15 @@
 
                             <div id="create-account-panel" class="account-form-grid">
                                 <div class="checkout-field">
-                                    <label>DNI</label>
+                                    <label>Tipo de Documento</label>
+                                    <select id="create_document_type" class="checkout-select">
+                                        @foreach($documentTypes as $docType)
+                                            <option value="{{ $docType->id }}" {{ $docType->id == '1' ? 'selected' : '' }}>{{ $docType->description }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="checkout-field">
+                                    <label>Número de Documento</label>
                                     <input id="create_dni" type="text" placeholder="Número de documento">
                                 </div>
                                 <div class="checkout-field">
@@ -305,7 +314,7 @@
                                 </div>
                                 <div class="checkout-field">
                                     <label>Contraseña</label>
-                                    <input id="create_password" type="password" placeholder="Opcional, por defecto tu DNI">
+                                    <input id="create_password" type="password" placeholder="Opcional, por defecto tu número de documento">
                                 </div>
                             </div>
 
@@ -356,7 +365,7 @@
 
                                 <div id="boleta-panel" class="invoice-form-grid">
                                     <div class="checkout-field">
-                                        <label>DNI</label>
+                                        <label>Número de Documento</label>
                                         <input id="invoice_dni" type="text" placeholder="Número de documento">
                                     </div>
                                     <div class="checkout-field">
@@ -2029,6 +2038,49 @@
             box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
         }
 
+        .checkout-select {
+            width: 100%;
+            height: 44px;
+            padding: 10px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            background: #fff;
+            color: #0f172a;
+            outline: none;
+            font-weight: 600;
+            transition: border-color .2s ease, box-shadow .2s ease;
+            cursor: pointer;
+        }
+
+        .checkout-select:focus {
+            border-color: #0f766e;
+            box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
+        }
+
+        .doc-type-toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            padding: 12px 24px;
+            border-radius: 8px;
+            background: #0f172a;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.25);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            opacity: 0;
+            transform: translateX(-50%) translateY(12px);
+            pointer-events: none;
+        }
+
+        .doc-type-toast-visible {
+            opacity: 1 !important;
+            transform: translateX(-50%) translateY(0) !important;
+        }
+
         .phone-input-group {
             display: grid;
             grid-template-columns: minmax(142px, 170px) minmax(0, 1fr);
@@ -2572,6 +2624,14 @@
             document.querySelectorAll('.invoice-tab').forEach(button => {
                 button.addEventListener('click', () => selectInvoiceType(button.dataset.invoiceType));
             });
+
+            const docTypeSelect = document.getElementById('create_document_type');
+            if (docTypeSelect) {
+                docTypeSelect.addEventListener('change', () => {
+                    const selectedText = docTypeSelect.options[docTypeSelect.selectedIndex].text;
+                    showDocTypeToast('Tipo de documento: ' + selectedText);
+                });
+            }
         });
 
         function loadCart() {
@@ -2990,30 +3050,45 @@
             }
         }
 
+        function updateCreateDniMaxLength() {
+            const el = document.getElementById("create_document_type");
+            const dni = document.getElementById("create_dni");
+            if (!el || !dni) return;
+            const val = parseInt(el.value, 10);
+            if (val === 1) dni.maxLength = 8;
+            else if (val === 6) dni.maxLength = 11;
+            else dni.maxLength = 20;
+            dni.value = dni.value.slice(0, dni.maxLength);
+        }
         function attachInvoiceLookupEvents() {
-            const createDni = document.getElementById('create_dni');
-            const invoiceDni = document.getElementById('invoice_dni');
-            const invoiceRuc = document.getElementById('invoice_ruc');
+            const createDocType = document.getElementById("create_document_type");
+            const createDni = document.getElementById("create_dni");
+            const invoiceDni = document.getElementById("invoice_dni");
+            const invoiceRuc = document.getElementById("invoice_ruc");
 
-            createDni.maxLength = 8;
-            createDni.addEventListener('input', () => {
-                createDni.value = onlyDigits(createDni.value).slice(0, 8);
+            createDni.maxLength = 20;
+            createDni.addEventListener("input", () => {
                 queueAccountLookup(createDni.value);
             });
+            createDocType.addEventListener("change", () => {
+                updateCreateDniMaxLength();
+                const sel = createDocType.options[createDocType.selectedIndex];
+                showDocTypeToast("Documento: " + sel.text);
+            });
 
-            invoiceDni.maxLength = 8;
-            invoiceDni.addEventListener('input', () => {
-                invoiceDni.value = onlyDigits(invoiceDni.value).slice(0, 8);
-                queueInvoiceLookup('boleta', invoiceDni.value);
+            invoiceDni.maxLength = 20;
+            invoiceDni.addEventListener("input", () => {
+                queueInvoiceLookup("boleta", invoiceDni.value);
             });
 
             invoiceRuc.maxLength = 11;
-            invoiceRuc.addEventListener('input', () => {
+            invoiceRuc.addEventListener("input", () => {
                 invoiceRuc.value = onlyDigits(invoiceRuc.value).slice(0, 11);
-                queueInvoiceLookup('factura', invoiceRuc.value);
+                queueInvoiceLookup("factura", invoiceRuc.value);
             });
-        }
 
+            updateCreateDniMaxLength();
+        }
         function queueAccountLookup(number) {
             clearTimeout(accountLookupTimer);
             accountLookupTimer = setTimeout(() => lookupAccountPerson(number, true), 450);
@@ -3025,41 +3100,39 @@
         }
 
         function lookupAccountPerson(number, showErrors = true) {
-            const cleanNumber = onlyDigits(number);
-            const lookupKey = `account:${cleanNumber}`;
+            const docType = document.getElementById("create_document_type").value || "1";
+            const lookupKey = `account:${docType}:${number}`;
 
-            if (cleanNumber.length !== 8 || lookupKey === lastAccountLookupKey) {
+            if (!number.trim() || number.trim().length < 3 || lookupKey === lastAccountLookupKey) {
                 return;
             }
 
             lastAccountLookupKey = lookupKey;
 
             requestJson(routes.searchPerson, {
-                method: 'POST',
+                method: "POST",
                 headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": csrfToken
                 },
                 body: JSON.stringify({
-                    document_type: 1,
-                    number: cleanNumber
+                    document_type: docType,
+                    number: number
                 })
             }, 15000)
                 .then((data) => {
                     if (!data.success) {
-                        throw new Error(data.error || 'No se encontraron datos para el documento ingresado.');
+                        throw new Error(data.error || "No se encontraron datos para el documento ingresado.");
                     }
-
-                    fillAccountPerson(data.person || {}, cleanNumber);
+                    fillAccountPerson(data.person || {}, number);
                 })
                 .catch(error => {
-                    lastAccountLookupKey = '';
+                    lastAccountLookupKey = "";
                     if (showErrors) {
                         showAlert(error.message);
                     }
                 });
         }
-
         function lookupInvoicePerson(type, number, showErrors = true) {
             const cleanNumber = onlyDigits(number);
             const expectedLength = type === 'factura' ? 11 : 8;
@@ -3125,12 +3198,22 @@
                 person.names,
                 person.father_lastname,
                 person.mother_lastname
-            ].filter(Boolean).join(' ');
+            ].filter(Boolean).join(" ");
 
-            document.getElementById('create_dni').value = person.document_number || number;
-            document.getElementById('create_names').value = fullName;
+            document.getElementById("create_dni").value = person.document_number || number;
+            document.getElementById("create_names").value = fullName;
+
+            if (person.document_type_id) {
+                document.getElementById("create_document_type").value = person.document_type_id;
+                updateCreateDniMaxLength();
+
+                if (person.document_type_id == 1 || person.document_type_id == 6) {
+                    const docSelect = document.getElementById("create_document_type");
+                    const docText = docSelect.options[docSelect.selectedIndex].text;
+                    showDocTypeToast("Documento autocompletado: " + docText);
+                }
+            }
         }
-
         function onlyDigits(value) {
             return String(value || '').replace(/\D/g, '');
         }
@@ -3142,23 +3225,24 @@
                 return;
             }
 
-            setBusy('btn-finalize', true);
-            const accountMode = document.getElementById('account_mode').value;
+            setBusy("btn-finalize", true);
+            const accountMode = document.getElementById("account_mode").value;
             const payload = {
+                account_mode: accountMode,
                 sale_id: freeCheckout ? null : paidSaleId,
                 item_id: freeCheckout ? cartIds : undefined,
-                account_mode: accountMode,
-                email: accountMode === 'login' ? value('login_email') : value('create_email'),
-                password: accountMode === 'login' ? value('login_password') : value('create_password'),
-                names: value('create_names'),
-                dni: value('create_dni'),
-                invoice_type: value('invoice_type'),
-                invoice_name: value('invoice_name'),
-                invoice_dni: value('invoice_dni'),
-                invoice_email: value('invoice_email'),
-                invoice_ruc: value('invoice_ruc'),
-                invoice_business_name: value('invoice_business_name'),
-                invoice_address: value('invoice_address')
+                email: accountMode === "login" ? value("login_email") : value("create_email"),
+                password: accountMode === "login" ? value("login_password") : value("create_password"),
+                names: value("create_names"),
+                create_document_type: accountMode === "create" ? parseInt(value("create_document_type"), 10) : undefined,
+                number: value("create_dni"),
+                invoice_type: value("invoice_type"),
+                invoice_name: value("invoice_name"),
+                invoice_dni: value("invoice_dni"),
+                invoice_email: value("invoice_email"),
+                invoice_ruc: value("invoice_ruc"),
+                invoice_business_name: value("invoice_business_name"),
+                invoice_address: value("invoice_address")
             };
 
             requestJson(routes.finalize, {
@@ -3214,6 +3298,18 @@
             alert.classList.add('d-none');
         }
 
+        function showDocTypeToast(message) {
+            const toast = document.getElementById("doc-type-toast");
+            if (!toast) return;
+            toast.textContent = message;
+            toast.classList.remove("d-none");
+            toast.classList.add("doc-type-toast-visible");
+            clearTimeout(toast._hideTimer);
+            toast._hideTimer = setTimeout(() => {
+                toast.classList.remove("doc-type-toast-visible");
+                toast.classList.add("d-none");
+            }, 2200);
+        }
         function showAccountConflictModal(message, conflictType) {
             const title = conflictType === 'email'
                 ? 'Este email ya esta registrado'
@@ -3517,6 +3613,7 @@
             document.getElementById('account-subtitle').textContent = freeCheckout
                 ? 'Crea una cuenta o inicia sesion para registrar el curso en tu dashboard.'
                 : 'Completa tus datos para asociar la compra y emitir el comprobante.';
+            document.getElementById("final-success-card").classList.toggle("d-none", freeCheckout);
             document.getElementById('invoice-block').classList.toggle('d-none', freeCheckout);
             document.getElementById('payment-phone-field').classList.toggle('d-none', freeCheckout);
             document.getElementById('btn-finalize-text').textContent = freeCheckout ? 'ACCEDER A TU CUENTA' : 'FINALIZAR COMPRA';

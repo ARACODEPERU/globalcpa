@@ -59,6 +59,7 @@ const tabs = [
 const form = useForm({
     url_slug: props.landing.url_slug || '',
     whatsapp_link: props.landing.whatsapp_link || '',
+    flow_id: props.landing.flow_id || '',
     payment_facilities_link: props.landing.payment_facilities_link || '',
     corporate_contact_link: props.landing.corporate_contact_link || '',
     is_published: props.landing.is_published || false,
@@ -221,6 +222,26 @@ const formatIconForVue = (iconName) => {
                                 class="form-input"
                             >
                             <InputError :message="form.errors.whatsapp_link" class="mt-2" />
+                        </div>
+
+                        <!-- Flow ID (ChatLvl) -->
+                        <div class="lg:col-span-3">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-0">
+                                <span class="inline-flex items-center gap-1">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                                    </svg>
+                                    Flow ID (ChatLvl)
+                                </span>
+                            </label>
+                            <input
+                                type="text"
+                                v-model="form.flow_id"
+                                placeholder="ID del flujo o plantilla de WhatsApp"
+                                class="form-input"
+                            >
+                            <p class="mt-1 text-xs text-gray-500">ID de ChatLvl o similar que inicia el flujo o envía plantilla de WhatsApp</p>
+                            <InputError :message="form.errors.flow_id" class="mt-2" />
                         </div>
 
                         <!-- Payment Facilities Link -->
