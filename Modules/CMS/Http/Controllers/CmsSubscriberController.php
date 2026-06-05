@@ -18,6 +18,7 @@ use Carbon\Carbon;
 use Spatie\Permission\Models\Role;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Cache;
+use Modules\Integrationhub\Entities\IntegrationError;
 use Modules\Integrationhub\Http\Controllers\IntegrationhubController;
 
 class CmsSubscriberController extends Controller
@@ -110,7 +111,10 @@ class CmsSubscriberController extends Controller
                 ]);
             }
         } catch (\Throwable $th) {
-            //dd($th);
+            IntegrationError::create([
+                'message' => (string) $th,
+                'source' => 'CmsSubscriberController::apiStore - WhatsApp flow',
+            ]);
         }
 
         try {
