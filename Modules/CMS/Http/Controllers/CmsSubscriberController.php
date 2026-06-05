@@ -16,6 +16,9 @@ use App\Models\User;
 use Modules\CMS\Jobs\ExportCmsSubscribersExcel;
 use Carbon\Carbon;
 use Spatie\Permission\Models\Role;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Cache;
+use Modules\Integrationhub\Http\Controllers\IntegrationhubController;
 
 class CmsSubscriberController extends Controller
 {
@@ -77,6 +80,38 @@ class CmsSubscriberController extends Controller
             'subject'       => $request->get('subject') ?? null,
             'message'       => $request->get('message') ?? null,
         ]);
+
+        //envio a API chatLvl o similares para WASACS (Whatsapp)
+        //primero crear contacto, si ya existe no pasa nada y luego enviar plantilla del curso
+        //Solo 1 envio por dia por combinación phone + flow_id
+        try {
+            $cleanPhone = preg_replace('/\s+/', '', (string) $request->get('phone'));
+            $flowId = $request->get('flow_id');
+            $cacheKey = 'integrationhub_whatsapp_' . $cleanPhone . '_' . $flowId;
+
+            $cacheStore = Cache::store('database');
+
+            if (!$cacheStore->has($cacheKey)) {
+                $hub = app(IntegrationhubController::class);
+
+                // Marcar ANTES de ejecutar para evitar carrera
+                $cacheStore->put($cacheKey, true, Carbon::now()->endOfDay());
+
+                // 1. Crear contacto
+                $hub->runEndpoint('create_contact', [
+                    'phone' => $cleanPhone,
+                    'email' => $request->get('email'),
+                ]);
+
+                // 2. Iniciar contacto con flow_id
+                $hub->runEndpoint('Inicio_contacto_con_flow_id', [
+                    'flow_id'    => $flowId,
+                    'contact_id' => substr($cleanPhone, 1),
+                ]);
+            }
+        } catch (\Throwable $th) {
+            //dd($th);
+        }
 
         try {
             $users = User::role(['Ventas'])->get();
