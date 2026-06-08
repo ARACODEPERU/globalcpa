@@ -179,6 +179,38 @@
             formElement.addEventListener('submit', function(e) {
                 e.preventDefault();
 
+                // --- Validación Frontend ---
+                var errorMessageContainer = document.getElementById(messageId);
+                errorMessageContainer.innerHTML = '';
+
+                var phoneInput = formElement.querySelector('input[name="phone"]');
+                var emailInput = formElement.querySelector('input[name="email"]');
+                var errors = [];
+
+                // Validar teléfono: solo dígitos y mínimo 8
+                if (phoneInput) {
+                    var phoneValue = phoneInput.value.replace(/\s/g, '');
+                    if (phoneValue && !/^[0-9]+$/.test(phoneValue)) {
+                        errors.push('El teléfono solo debe contener números.');
+                    } else if (phoneValue.length < 8) {
+                        errors.push('El teléfono debe tener al menos 8 dígitos.');
+                    }
+                }
+
+                // Validar correo electrónico
+                if (emailInput) {
+                    var emailValue = emailInput.value.trim();
+                    if (emailValue && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue)) {
+                        errors.push('Ingresa un correo electrónico válido.');
+                    }
+                }
+
+                if (errors.length > 0) {
+                    errorMessageContainer.innerHTML = '<div class="alert alert-danger py-2">' + errors.join('<br>') + '</div>';
+                    return;
+                }
+                // --- Fin Validación Frontend ---
+
                 var formData = new FormData(formElement);
                 const countrySelect = document.getElementById(countrySelectId);
                 const prefix = countrySelect.value;

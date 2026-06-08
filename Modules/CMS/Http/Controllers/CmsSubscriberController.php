@@ -71,11 +71,33 @@ class CmsSubscriberController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
+        $country_phone = $request->get('country_phone');
+
+        // Limpiar y validar teléfono según el país
+        $countryCode = ltrim((string) $country_phone, '+');
+        $phoneRaw = preg_replace('/[^0-9]/', '', (string) $request->get('phone') ?? '');
+
+        if ($countryCode === '51') {
+            // Perú: debe empezar con 9 y tener exactamente 9 dígitos
+            $firstNine = strpos($phoneRaw, '9');
+            if ($firstNine === false) {
+                return response()->json(['errors' => ['phone' => ['El teléfono peruano debe empezar con el dígito 9.']]], 422);
+            }
+            $phoneBody = substr($phoneRaw, $firstNine);
+            if (strlen($phoneBody) !== 9) {
+                return response()->json(['errors' => ['phone' => ['El teléfono peruano debe tener exactamente 9 dígitos. no debes agregar el código']]], 422);
+            }
+        } else {
+            // Otros países: usar el número limpio tal cual
+            $phoneBody = $phoneRaw;
+        }
+
+        $cleanPhone = '+' . $countryCode . $phoneBody;
 
         $Subscriber = CmsSubscriber::create([
             'full_name'     => $request->get('full_name') ?? null,
             'email'         => $request->get('email'),
-            'phone'         => $request->get('phone') ?? null,
+            'phone'         => $cleanPhone,
             'client_ip'     => $request->ip(),
             'read'          => 0,
             'subject'       => $request->get('subject') ?? null,
@@ -86,7 +108,7 @@ class CmsSubscriberController extends Controller
         //primero crear contacto, si ya existe no pasa nada y luego enviar plantilla del curso
         //Solo 1 envio por dia por combinación phone + flow_id
         try {
-            $cleanPhone = preg_replace('/\s+/', '', (string) $request->get('phone'));
+            // $cleanPhone ya fue limpiado arriba (con deduplicación de prefijo)
             $flowId = $request->get('flow_id');
             $cacheKey = 'integrationhub_whatsapp_' . $cleanPhone . '_' . $flowId;
 
