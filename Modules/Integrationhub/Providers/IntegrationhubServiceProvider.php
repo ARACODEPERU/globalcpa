@@ -57,9 +57,9 @@ class IntegrationhubServiceProvider extends ServiceProvider
                      ->everyFifteenMinutes()
                      ->timezone('America/Lima');
 
-            // Ejecuta envío de WhatsApp de cumpleaños a las 7:00 AM
+            // Ejecuta envío de WhatsApp de cumpleaños a las 9:09 AM
             $schedule->command('integrationhub:birthday-whatsapp-send')
-                     ->dailyAt('07:00')
+                     ->dailyAt('09:09')
                      ->timezone('America/Lima');
         });
     }
