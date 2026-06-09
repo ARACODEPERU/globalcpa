@@ -46,13 +46,14 @@
                                             @php
                                                 $price = (float) ($item->price ?? 0);
                                                 $priceLabel = $price <= 0 ? 'Gratis' : 'S/ ' . number_format($price, 2);
+                                                $hasPublishedLanding = filled($item->course?->landing?->url_slug) && ($item->course?->landing?->is_published ?? false);
                                             @endphp
 
                                             <div class="col-xl-4 col-md-6 col-sm-12 box-col-4">
                                                 <div class="card weekend-card">
                                                     <div class="card-body">
-                                                        @if (filled( $item->url_slug ?? null))
-                                                            <a href="{{ route('course_url_slug', $item->url_slug) }}">
+                                                        @if ($hasPublishedLanding)
+                                                            <a href="{{ route('course_url_slug', $item->course?->landing?->url_slug) }}">
                                                                 <img class="w-100 mb-3"
                                                                     src="{{ asset('storage/' . $item->course->image) }}"
                                                                     alt="">
@@ -67,8 +68,8 @@
 
                                                         <span style="color: #e30613;">{{ $item->additional }}</span>
                                                         <br>
-                                                        @if (filled( $item->url_slug ?? null))
-                                                        <a href="{{ route('course_url_slug', $item->url_slug) }}"
+                                                        @if ($hasPublishedLanding)
+                                                        <a href="{{ route('course_url_slug', $item->course?->landing?->url_slug) }}"
                                                             style="text-decoration: none;">
                                                             <h4 style=" height: 30px;">{{ $item->name }}
                                                             </h4>
@@ -84,9 +85,9 @@
                                                         <div class="card">
                                                             <div class="">
                                                                 <div class="btn-showcase">
-                                                                    @if (filled( $item->url_slug ?? null))
+                                                                    @if ($hasPublishedLanding)
                                                                         <a
-                                                                            href="{{ route('course_url_slug', $item->url_slug) }}">
+                                                                            href="{{ route('course_url_slug', $item->course?->landing?->url_slug) }}">
                                                                             <button
                                                                                 class="btn btn-pill btn-light btn-air-light btn-sm"
                                                                                 type="button"
@@ -138,13 +139,14 @@
                                                     @php
                                                         $price = (float) ($item->price ?? 0);
                                                         $priceLabel = $price <= 0 ? 'Gratis' : 'S/ ' . number_format($price, 2);
+                                                        $hasPublishedLanding = filled($item->course?->landing?->url_slug) && ($item->course?->landing?->is_published ?? false);
                                                     @endphp
                                                     <div class="col-xl-4 col-md-6 col-sm-12 box-col-4">
                                                         <div class="card weekend-card">
                                                             <div class="card-body">
-                                                                @if (filled( $item->url_slug ?? null))
+                                                                @if ($hasPublishedLanding)
                                                                 <a
-                                                                    href="{{ route('course_url_slug', $item->url_slug) }}">
+                                                                    href="{{ route('course_url_slug', $item->course?->landing?->url_slug) }}">
                                                                     @if($item->course?->image)
                                                                         <img class="w-100 mb-3" src="{{ asset('storage/' . $item->course->image) }}" alt="">
                                                                     @endif
@@ -171,9 +173,9 @@
                                                                 <div class="card">
                                                                     <div class="">
                                                                         <div class="btn-showcase">
-                                                                            @if (filled( $item->url_slug ?? null))
+                                                                            @if ($hasPublishedLanding)
                                                                                 <a
-                                                                                    href="{{ route('course_url_slug', $item->url_slug) }}">
+                                                                                    href="{{ route('course_url_slug', $item->course?->landing?->url_slug) }}">
                                                                                     <button
                                                                                         class="btn btn-pill btn-light btn-air-light btn-sm"
                                                                                         type="button"
