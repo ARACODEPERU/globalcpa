@@ -62,8 +62,12 @@
                                             @foreach ($courses as $course)
                                                 @if (strtolower($course->additional) == strtolower($type) && $x < $p)
                                                     <li>
+                                                        @php
+                                                            $landing = $course->course?->landing;
+                                                            $hasPublishedLanding = filled($landing?->url_slug) && ($landing?->is_published ?? false);
+                                                        @endphp
                                                         <a class="truncated-link"
-                                                            href="{{ route('web_course_description', $course->id) }}"
+                                                            href="{{ $hasPublishedLanding ? route('course_url_slug', $landing->url_slug) : route('web_course_description', $course->id) }}"
                                                             title="{{ $course->name }}">{{ $course->name }}</a>
                                                     </li>
                                                     @php
@@ -97,7 +101,7 @@
                                     Empresas
                                 </span>
                             </a>
-                        </li> 
+                        </li>
                         <li class="sidebar-list" style="padding: 15px 0px;">
                             <a class="sidebar-link sidebar-title" href="{{ route('web_book_amauta') }}">
                                 <span>

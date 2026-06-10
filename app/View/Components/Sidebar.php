@@ -40,9 +40,9 @@ class Sidebar extends Component
         //     ->get();
 
         //$this->courses = OnliItem::with('course')->orderBy('id','desc')->get();
-        $this->courses = OnliItem::select('id', 'name', 'additional')
-        ->whereHas('course') // Esta es la clave: filtra a nivel de base de datos
-        ->with('course')     // Carga la relación para que puedas usar $item->course->image
+        $this->courses = OnliItem::select('id', 'name', 'additional', 'item_id')
+        ->whereHas('course')
+        ->with(['course', 'course.landing'])
         ->latest()
         ->get();
         $this->types = getEnumValues('onli_items', 'additional', 0, 1);
