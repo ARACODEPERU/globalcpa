@@ -1,7 +1,7 @@
 @extends('layouts.webpage')
 
 @section('content')
-    
+
     @if(!isset($landing) || empty($landing) || !isset($landing->course) || empty($landing->course))
         <div class="container-fluid py-5 text-center"><div class="alert alert-warning">Landing o curso no encontrado.</div></div>
     @else
@@ -73,7 +73,7 @@
             <x-sidebar />
             <!-- Page Sidebar Ends-->
             <div class="page-body dark:bg-[#111c2d] transition-colors duration-300">
-                
+
                 {{-- Hero Section --}}
                 <x-courselanding.hero :landing="$landing" />
 
@@ -89,9 +89,9 @@
                 {{-- Carrusel de Expertos Premium (Opción 5) --}}
                 <x-courselanding.staff :landing="$landing" :teachers-premium="$teachers_premium" />
 
-                {{-- Results --}}  
+                {{-- Results --}}
                 <x-courselanding.results :landing="$landing" :colors="$colors" />
-                
+
                 {{-- Testimonials --}}
                 <x-courselanding.testimonials :landing="$landing" />
 
@@ -226,21 +226,21 @@
                 xhr.onload = function() {
                     submitButton.disabled = false;
                     submitButton.style.opacity = 1;
-                    
+
                     if (xhr.status === 200) {
                         var response = JSON.parse(xhr.responseText);
-                        
+
                         // Define la función que muestra SweetAlert y las acciones posteriores
                         const showSweetAlertAndContinue = () => {
                             if (window.Swal === undefined) return;
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Registro exitoso, estas a un paso de asegurar tu vacante',
-                                text: 'Hemos recibido tu información. Estamos en etapa final de preventa con condiciones preferenciales activas. Elige como deseas continuar:',
+                                text: 'Hemos recibido tu información y enviado el brochure a tu Whatsapp. Estamos en etapa final de preventa con condiciones preferenciales activas. Elige como deseas continuar:',
                             }).then(() => {
-                                formElement.reset();
-                                const downloadUrl = "{{ isset($landing->course->brochure) ? $landing->course->brochure->path_file ?? '' : '' }}";
-                                if(downloadUrl) window.open(downloadUrl, '_blank');
+                                // formElement.reset();
+                                // const downloadUrl = "{{ isset($landing->course->brochure) ? $landing->course->brochure->path_file ?? '' : '' }}";
+                                // if(downloadUrl) window.open(downloadUrl, '_blank');
                             });
                         };
 

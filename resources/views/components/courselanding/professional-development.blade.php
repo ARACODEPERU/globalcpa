@@ -96,7 +96,7 @@
                 <div class="mb-4">
                     <h2 class="fw-bold text-navy-custom" style="font-size: 20px;">¿Listo para empezar?</h2>
                     <p class="text-muted" style="font-size: 15px;">
-                        Completa tus datos para descargar el brochure detallado y recibir
+                        Completa tus datos para enviarte por whatsapp el brochure detallado y recibir
                         información sobre promociones exclusivas del programa.
                     </p>
                 </div>
