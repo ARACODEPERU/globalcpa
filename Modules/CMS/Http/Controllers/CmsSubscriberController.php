@@ -129,7 +129,7 @@ class CmsSubscriberController extends Controller
         } catch (\Throwable $th) {
             IntegrationError::create([
                 'message' => (string) $th,
-                'source' => 'CmsSubscriberController::apiStore - WhatsApp flow',
+                'source' => 'CmsSubscriberController::apiStore - WhatsApp flow -> curso'. $request->get('subject'),
             ]);
         }
 
