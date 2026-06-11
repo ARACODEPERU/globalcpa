@@ -237,10 +237,17 @@
                                 icon: 'success',
                                 title: 'Registro exitoso, estas a un paso de asegurar tu vacante',
                                 text: 'Hemos recibido tu información y enviado el brochure a tu Whatsapp. Estamos en etapa final de preventa con condiciones preferenciales activas. Elige como deseas continuar:',
-                            }).then(() => {
-                                // formElement.reset();
-                                // const downloadUrl = "{{ isset($landing->course->brochure) ? $landing->course->brochure->path_file ?? '' : '' }}";
-                                // if(downloadUrl) window.open(downloadUrl, '_blank');
+                            }).then(() =>{
+                                    //Solo descargar brochure si NO hay flow_id (si está vacío, descarga directa)
+                                const flowIdInput = formElement.querySelector('input[name="flow_id"]');
+                                const flowIdValue = flowIdInput ? flowIdInput.value.trim() : '';
+                                if (!flowIdValue) {
+                                    const downloadUrl = "{{ isset($landing->course->brochure) ? $landing->course->brochure->path_file ?? '' : '' }}";
+                                    if (downloadUrl) {
+                                        window.open(downloadUrl, '_blank');
+                                    }
+                                }
+
                             });
                         };
 
@@ -260,6 +267,8 @@
 
                         // 3. Mostrar la alerta
                         showSweetAlertAndContinue();
+
+
 
                     } else if (xhr.status === 422) {
                         var errorResponse = JSON.parse(xhr.responseText);

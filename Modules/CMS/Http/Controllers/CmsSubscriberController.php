@@ -104,33 +104,35 @@ class CmsSubscriberController extends Controller
             'message'       => $request->get('message') ?? null,
         ]);
 
-        //envio a API chatLvl o similares para WASACS (Whatsapp)
-        //primero crear contacto, si ya existe no pasa nada y luego enviar plantilla del curso
-        //Solo 1 envio por dia por combinación phone + flow_id
-        try {
-            // $cleanPhone ya fue limpiado arriba (con deduplicación de prefijo)
-            $flowId = $request->get('flow_id');
-            $cacheKey = 'integrationhub_whatsapp_' . $cleanPhone . '_' . $flowId;
+        // Solo enviar a WhatsApp si hay un flow_id definido
+        $flowId = $request->get('flow_id');
 
-            $cacheStore = Cache::store('database');
+        if (!empty($flowId)) {
+            try {
+                $cacheKey = 'integrationhub_whatsapp_' . $cleanPhone . '_' . $flowId;
 
-            if (!$cacheStore->has($cacheKey)) {
-                // Marcar ANTES de ejecutar para evitar carrera
-                $cacheStore->put($cacheKey, true, Carbon::now()->endOfDay());
+                $cacheStore = Cache::store('database');
 
-                // Encolar la ejecución de los endpoints al queue:work
-                ProcessWhatsappFlow::dispatch(
-                    $request->get('full_name'),
-                    $cleanPhone,
-                    $request->get('email'),
-                    $flowId
-                );
+                if (!$cacheStore->has($cacheKey)) {
+                    // Marcar ANTES de ejecutar para evitar carrera
+                    $cacheStore->put($cacheKey, true, Carbon::now()->endOfDay());
+
+                    // Encolar la ejecución de los endpoints al queue:work
+                    // Solo se envía la primera palabra del nombre (primer nombre)
+                    $firstName = explode(' ', trim($request->get('full_name')))[0];
+                    ProcessWhatsappFlow::dispatch(
+                        $firstName,
+                        $cleanPhone,
+                        $request->get('email'),
+                        $flowId
+                    );
+                }
+            } catch (\Throwable $th) {
+                IntegrationError::create([
+                    'message' => (string) $th,
+                    'source' => 'CmsSubscriberController::apiStore - WhatsApp flow -> curso'. $request->get('subject'),
+                ]);
             }
-        } catch (\Throwable $th) {
-            IntegrationError::create([
-                'message' => (string) $th,
-                'source' => 'CmsSubscriberController::apiStore - WhatsApp flow -> curso'. $request->get('subject'),
-            ]);
         }
 
         try {

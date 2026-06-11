@@ -41,29 +41,33 @@ class ProcessBirthdayWhatsapp implements ShouldQueue
         try {
             // 1. Enviar correo de felicitación de cumpleaños
             //Mail::to($this->email)->send(new BirthdayGreetingMail($this->name));
-
-            // 2. Crear contacto en la API externa
+            $flowId = IntegrationFlowId::where('key', 'birthday_greeting')->value('flow_id') ?? '1780844285916';
+            // 2. Crear contacto en la API externa e Iniciar flujo de WhatsApp de cumpleaños
             $hub->runEndpoint('create_contact', [
                 'phone' => $this->phone,
                 'email' => $this->email,
                 'first_name' => $this->name,
+                'actions' => [
+                    [
+                        'action' => 'set_field_value',
+                        'field_name' => 'Correo_electronico',
+                        'value' => $this->email,
+                    ],
+                    [
+                        ,
+                        "action": "send_flow",
+                        "flow_id": $flowId
+                    ],
+                ],
             ], [], true);
 
-            $hub->runEndpoint(
-                "set_value_in_custom_fields_for_contact_id",
-                [
-                    // Valores requeridos
-                "contact_id" => $this->phone,
-                "custom_field_id" => "539161", //el id de custom_field "Correo_electronico"
-                "value" => $this->email
-                ], [], true);
 
             // 3. Iniciar flujo de WhatsApp de cumpleaños
-            $flowId = IntegrationFlowId::where('key', 'birthday_greeting')->value('flow_id') ?? '1780844285916';
-            $hub->runEndpoint('Inicio_contacto_con_flow_id', [
-                'flow_id'    => $flowId,
-                'contact_id' => ltrim($this->phone, '+'),
-            ], [], false);
+
+            // $hub->runEndpoint('Inicio_contacto_con_flow_id', [
+            //     'flow_id'    => $flowId,
+            //     'contact_id' => ltrim($this->phone, '+'),
+            // ], [], false);
         } catch (\Throwable $th) {
             IntegrationError::create([
                 'message' => 'ProcessBirthdayWhatsapp: ' . $th->getMessage(),
