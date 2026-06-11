@@ -35,6 +35,7 @@ use Modules\Academic\Entities\AcaCourseLanding;
 use Illuminate\Support\Facades\DB;
 use Modules\Academic\Entities\AcaStudentCoursesInterest;
 use Modules\CMS\Entities\CmsLanding;
+use Modules\Onlineshop\Entities\OnliCarritoAbandonado;
 use Spatie\Permission\Models\Role;
 
 class WebPageController extends Controller
@@ -631,6 +632,21 @@ public function course_url_slug($id){
             }
 
             $sale->save();
+
+            OnliCarritoAbandonado::where('paid', false)
+                ->where(function ($q) use ($phoneCode, $phoneNumber, $payer) {
+                    if (!empty($phoneNumber)) {
+                        $q->where('phone', $phoneNumber);
+                        if (!empty($phoneCode)) {
+                            $q->where('phone_country', ltrim($phoneCode, '+'));
+                        }
+                    }
+                    if (!empty($payer['email'])) {
+                        $q->orWhere('email', $payer['email']);
+                    }
+                })
+                ->update(['paid' => true]);
+
             DB::commit();
         } catch (\Throwable $e) {
             DB::rollBack();
@@ -1852,6 +1868,60 @@ public function course_url_slug($id){
             return redirect()->back()->with('fail', 'Registro fallido. Reintentar.');
         }
 
+    }
+
+    // ==================== ABANDONED CART ====================
+
+    public function saveAbandonedCart(Request $request)
+    {
+        $validated = $request->validate([
+            'client_id' => 'nullable|string|max:100',
+            'phone_country' => 'nullable|string|max:10',
+            'phone' => 'nullable|string|max:20',
+            'name' => 'nullable|string|max:255',
+            'email' => 'nullable|email|max:255',
+            'cart_items' => 'nullable|array',
+            'cart_total' => 'nullable|numeric',
+        ]);
+
+        if (empty($validated['client_id'])) {
+            return response()->json(['status' => 'ignored']);
+        }
+
+        $existing = OnliCarritoAbandonado::where('client_id', $validated['client_id'])->first();
+
+        $data = [];
+        if (isset($validated['phone'])) {
+            $data['phone'] = $validated['phone'];
+        }
+        if (isset($validated['phone_country'])) {
+            $data['phone_country'] = $validated['phone_country'];
+        }
+        if (isset($validated['name'])) {
+            $data['name'] = $validated['name'];
+        }
+        if (isset($validated['email'])) {
+            $data['email'] = $validated['email'];
+        }
+        if (isset($validated['cart_items'])) {
+            $data['cart_items'] = json_encode($validated['cart_items']);
+        }
+        if (isset($validated['cart_total'])) {
+            $data['cart_total'] = $validated['cart_total'];
+        }
+
+        if ($existing) {
+            if (!empty($data)) {
+                $data['paid'] = false;
+                $existing->update($data);
+            }
+        } else {
+            $data['client_id'] = $validated['client_id'];
+            $data['paid'] = false;
+            OnliCarritoAbandonado::create($data);
+        }
+
+        return response()->json(['status' => 'ok']);
     }
 
     // ==================== PASSWORD RECOVERY ====================

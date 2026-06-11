@@ -54,7 +54,8 @@ class IntegrationhubServiceProvider extends ServiceProvider
 
             // Ejecuta carrito abandonado cada 15 minutos
             $schedule->command('integrationhub:carrito-abandonado')
-                     ->everyFifteenMinutes()
+                    // ->everyFifteenMinutes()
+                    ->everyMinute()
                      ->timezone('America/Lima');
 
             // Ejecuta envío de WhatsApp de cumpleaños a las 9:09 AM

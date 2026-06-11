@@ -19,7 +19,7 @@ use Spatie\Permission\Models\Role;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Cache;
 use Modules\Integrationhub\Entities\IntegrationError;
-use Modules\Integrationhub\Http\Controllers\IntegrationhubController;
+use Modules\Integrationhub\Jobs\ProcessWhatsappFlow;
 
 class CmsSubscriberController extends Controller
 {
@@ -92,7 +92,7 @@ class CmsSubscriberController extends Controller
             $phoneBody = $phoneRaw;
         }
 
-        $cleanPhone = '+' . $countryCode . $phoneBody;
+        $cleanPhone = $countryCode . $phoneBody;
 
         $Subscriber = CmsSubscriber::create([
             'full_name'     => $request->get('full_name') ?? null,
@@ -115,22 +115,16 @@ class CmsSubscriberController extends Controller
             $cacheStore = Cache::store('database');
 
             if (!$cacheStore->has($cacheKey)) {
-                $hub = app(IntegrationhubController::class);
-
                 // Marcar ANTES de ejecutar para evitar carrera
                 $cacheStore->put($cacheKey, true, Carbon::now()->endOfDay());
 
-                // 1. Crear contacto
-                $hub->runEndpoint('create_contact', [
-                    'phone' => $cleanPhone,
-                    'email' => $request->get('email'),
-                ]);
-
-                // 2. Iniciar contacto con flow_id
-                $hub->runEndpoint('Inicio_contacto_con_flow_id', [
-                    'flow_id'    => $flowId,
-                    'contact_id' => substr($cleanPhone, 1),
-                ]);
+                // Encolar la ejecución de los endpoints al queue:work
+                ProcessWhatsappFlow::dispatch(
+                    $request->get('full_name'),
+                    $cleanPhone,
+                    $request->get('email'),
+                    $flowId
+                );
             }
         } catch (\Throwable $th) {
             IntegrationError::create([

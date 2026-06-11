@@ -51,6 +51,7 @@ Route::get('/carrito', [WebPageController::class, 'shopcart'])->name('web_carrit
 Route::post('/carrito/preference', [WebPageController::class, 'cartPreference'])->name('web_cart_preference');
 Route::put('/carrito/payment', [WebPageController::class, 'cartProcessPayment'])->name('web_cart_process_payment');
 Route::post('/carrito/finalize', [WebPageController::class, 'cartFinalize'])->name('web_cart_finalize');
+Route::post('/carrito/abandoned', [WebPageController::class, 'saveAbandonedCart'])->name('web_cart_abandoned');
 Route::get('/metodos-de-pago', [WebPageController::class, 'accounts'])->name('web_accounts');
 Route::get('/pagar', [WebPageController::class, 'pay'])->name('web_pay');
 Route::post('/safe_pay', [WebPageController::class, 'pagar'])->name('paying');

@@ -2591,6 +2591,7 @@
             preference: "{{ route('web_cart_preference') }}",
             payment: "{{ route('web_cart_process_payment') }}",
             finalize: "{{ route('web_cart_finalize') }}",
+            abandoned: "{{ route('web_cart_abandoned') }}",
             searchPerson: "{{ route('sales_search_person_apies') }}",
             description: "{{ url('curso-descripcion') }}"
         };
@@ -3687,6 +3688,58 @@
             })
             .catch(err => console.error('Failed to refresh CSRF token:', err));
         }
+
+        // ==================== ABANDONED CART TRACKING ====================
+        const ABANDONED_CLIENT_ID_KEY = 'abandoned_client_id';
+        let abandonedClientId = localStorage.getItem(ABANDONED_CLIENT_ID_KEY);
+        if (!abandonedClientId) {
+            abandonedClientId = 'cid_' + Date.now() + '_' + Math.random().toString(36).slice(2, 10);
+            localStorage.setItem(ABANDONED_CLIENT_ID_KEY, abandonedClientId);
+        }
+
+        let abandonedTimer = null;
+
+        function trackAbandonedCart() {
+            const phoneState = getPaymentPhoneState();
+
+            if (!phoneState.isComplete) {
+                return;
+            }
+
+            const payload = {
+                client_id: abandonedClientId,
+                phone_country: phoneState.areaCode,
+                phone: phoneState.phone,
+                cart_items: cartIds.length ? cartIds.map(id => ({ id })) : undefined,
+                cart_total: checkoutTotal || undefined,
+            };
+
+            const names = document.getElementById('create_names')?.value?.trim();
+            const email = document.getElementById('create_email')?.value?.trim();
+            if (names) payload.name = names;
+            if (email) payload.email = email;
+
+            fetch(routes.abandoned, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
+                body: JSON.stringify(payload),
+            }).catch(() => {});
+        }
+
+        function scheduleAbandonedTracking() {
+            clearTimeout(abandonedTimer);
+            abandonedTimer = setTimeout(trackAbandonedCart, 800);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.addEventListener('input', (e) => {
+                if (e.target.id === 'payment_phone' || e.target.id === 'payment_phone_country') {
+                    scheduleAbandonedTracking();
+                }
+            });
+            document.getElementById('create_names')?.addEventListener('input', scheduleAbandonedTracking);
+            document.getElementById('create_email')?.addEventListener('input', scheduleAbandonedTracking);
+        });
 
         // ==================== PASSWORD RECOVERY ====================
         function showPasswordRecovery() {
