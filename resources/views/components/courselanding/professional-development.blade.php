@@ -186,7 +186,7 @@
                     <div class="mt-1">
                         <button type="submit" id="submitPageContactButton" class="btn btn-warning btn-lg w-100 fw-bold shadow-sm py-3" style="border-radius: 12px; color: #002060 !important;">
                             <i class="fa-solid fa-file-pdf me-2"></i>
-                            Conocer beneficios y asegurar mi vacante
+                            Recibir información e inscribirme
                         </button>
                     </div>
                     <div id="messagePageContact" class="mt-3"></div>
