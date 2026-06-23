@@ -115,6 +115,12 @@
         return null;
     };
 
+    // Verificar si un módulo tiene simulacro configurado
+    const moduleHasMockExam = (moduleId) => {
+        const mod = modulesData.value.find(m => m.id === moduleId);
+        return mod?.has_mock_exam ?? false;
+    };
+
     // Calcular promedio final del estudiante (se recalcula cuando cambian las notas)
     const calculateFinalAverage = (student) => {
         // Filtrar solo módulos que tienen PROM válido (no null)
@@ -399,20 +405,21 @@
                                     <th class="pl-4 pr-2 py-3 sticky left-0 z-20 min-w-[220px] border-r" rowspan="2">
                                         Nombre del Estudiante
                                     </th>
-                                    <th v-for="module in modulesData" :key="module.id" :colspan="4"
-                                        class="px-1 py-3 text-center border-r min-w-[360px]">
+                                    <th v-for="module in modulesData" :key="module.id" :colspan="module.has_mock_exam ? 4 : 3"
+                                        class="px-1 py-3 text-center border-r"
+                                        :class="module.has_mock_exam ? 'min-w-[360px]' : 'min-w-[280px]'">
                                         {{ module.description }}
                                     </th>
                                     <th class="pl-2 pr-4 py-3 text-center sticky right-0 z-20 min-w-[100px] border-l" rowspan="2">
                                         Promedio Final
                                     </th>
                                 </tr>
-                                <!-- Fila de headers: E, A, P, Sim, Prom -->
+                                <!-- Fila de headers: A y P, E, Sim, Prom -->
                                 <tr>
                                     <template v-for="module in modulesData" :key="'h-'+module.id">
                                         <th class="px-1 py-1 text-center text-[10px] border-l">A y P (40%)</th>
                                         <th class="px-1 py-1 text-center text-[10px] border-l">E (60%)</th>
-                                        <th class="px-1 py-1 text-center text-[10px] border-l">Simulacro</th>
+                                        <th v-if="module.has_mock_exam" class="px-1 py-1 text-center text-[10px] border-l bg-green-50 dark:bg-green-900/20">Simulacro</th>
                                         <th class="px-1 py-1 text-center text-[10px] font-bold border-l">Prom</th>
                                     </template>
                                 </tr>
@@ -463,7 +470,7 @@
                                             />
                                         </td>
                                         <!-- Simulacro (solo informativo, no promedia) -->
-                                        <td class="px-1 py-2 border-l text-center">
+                                        <td v-if="moduleHasMockExam(module.module_id)" class="px-1 py-2 border-l text-center bg-green-50 dark:bg-green-900/10">
                                             <div v-if="module.mock_exam_score !== null && module.mock_exam_score !== undefined"
                                                 class="flex flex-col items-center">
                                                 <span class="text-xs"

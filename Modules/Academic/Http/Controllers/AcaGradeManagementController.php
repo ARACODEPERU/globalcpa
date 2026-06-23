@@ -40,7 +40,7 @@ class AcaGradeManagementController extends Controller
 
         $courseId = $request->input('course_id');
 
-        $course = AcaCourse::with(['modules'])->findOrFail($courseId);
+        $course = AcaCourse::with(['modules.mockExam'])->findOrFail($courseId);
 
         // Obtener estudiantes registrados en el curso con filtro de fechas
         $query = AcaCapRegistration::with(['student.person'])
@@ -65,6 +65,7 @@ class AcaGradeManagementController extends Controller
             return [
                 'id' => $module->id,
                 'description' => $module->description,
+                'has_mock_exam' => $module->mockExam !== null,
             ];
         });
 
