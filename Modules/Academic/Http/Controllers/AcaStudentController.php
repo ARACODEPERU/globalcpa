@@ -806,6 +806,11 @@ class AcaStudentController extends Controller
                 // Filtramos para que dentro del examen solo cargue los del alumno logueado
                 $query->where('student_id', $studentId);
             },
+            'mockExam.questions',
+            'mockExam.student_exams' => function ($query) use ($studentId) {
+                // Cargar también los simulacros del alumno logueado
+                $query->where('student_id', $studentId);
+            },
             'themes' => function ($query) use ($personId) {
                 $query->orderBy('position')
                     ->with(['contents', 'comments.user'])

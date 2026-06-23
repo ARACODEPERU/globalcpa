@@ -613,7 +613,10 @@ class CertificateImage
         $index = 0;
 
         foreach ($modules as $module) {
-            $exam = AcaExam::where('module_id', $module->id)->first();
+            // Solo exámenes regulares (no simulacros)
+            $exam = AcaExam::where('module_id', $module->id)
+                ->where('is_mock', false)
+                ->first();
             if ($exam) {
                 $studentExam = AcaStudentExam::where('exam_id', $exam->id)
                     ->where('student_id', $this->student_id)

@@ -399,19 +399,20 @@
                                     <th class="pl-4 pr-2 py-3 sticky left-0 z-20 min-w-[220px] border-r" rowspan="2">
                                         Nombre del Estudiante
                                     </th>
-                                    <th v-for="module in modulesData" :key="module.id" :colspan="3"
-                                        class="px-1 py-3 text-center border-r min-w-[280px]">
+                                    <th v-for="module in modulesData" :key="module.id" :colspan="4"
+                                        class="px-1 py-3 text-center border-r min-w-[360px]">
                                         {{ module.description }}
                                     </th>
                                     <th class="pl-2 pr-4 py-3 text-center sticky right-0 z-20 min-w-[100px] border-l" rowspan="2">
                                         Promedio Final
                                     </th>
                                 </tr>
-                                <!-- Fila de headers: E, A, P, Prom -->
+                                <!-- Fila de headers: E, A, P, Sim, Prom -->
                                 <tr>
                                     <template v-for="module in modulesData" :key="'h-'+module.id">
                                         <th class="px-1 py-1 text-center text-[10px] border-l">A y P (40%)</th>
                                         <th class="px-1 py-1 text-center text-[10px] border-l">E (60%)</th>
+                                        <th class="px-1 py-1 text-center text-[10px] border-l">Simulacro</th>
                                         <th class="px-1 py-1 text-center text-[10px] font-bold border-l">Prom</th>
                                     </template>
                                 </tr>
@@ -434,7 +435,7 @@
                                     <!-- Notas por módulo (horizontal) -->
                                     <template v-for="(module, index) in student.modules" :key="module.module_id">
                                         <!-- Participación -->
-                                        <td class="px-1 py-2 border-l text-center w-[33%]">
+                                        <td class="px-1 py-2 border-l text-center">
                                             <input
                                                 v-model="module.participation_score"
                                                 type="text"
@@ -448,7 +449,7 @@
                                             />
                                         </td>
                                         <!-- Examen -->
-                                        <td class="px-1 py-2 border-l text-center w-[33%]">
+                                        <td class="px-1 py-2 border-l text-center">
                                             <input
                                                 v-model="module.exam_score"
                                                 type="text"
@@ -460,6 +461,21 @@
                                                 placeholder="-"
                                                 v-mask="'##.##'"
                                             />
+                                        </td>
+                                        <!-- Simulacro (solo informativo, no promedia) -->
+                                        <td class="px-1 py-2 border-l text-center">
+                                            <div v-if="module.mock_exam_score !== null && module.mock_exam_score !== undefined"
+                                                class="flex flex-col items-center">
+                                                <span class="text-xs"
+                                                    :class="module.mock_passed ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'">
+                                                    {{ module.mock_exam_score }}
+                                                </span>
+                                                <span class="text-[9px] text-gray-500 dark:text-gray-400 mt-0.5"
+                                                    :class="module.mock_passed ? 'text-emerald-500' : 'text-red-500'">
+                                                    {{ module.mock_passed ? '✓ Aprobado' : '✗ Desaprobado' }}
+                                                </span>
+                                            </div>
+                                            <span v-else class="text-xs text-gray-400">-</span>
                                         </td>
                                         <!-- Promedio del módulo -->
                                         <td class="px-1 py-2 border-l text-center">
