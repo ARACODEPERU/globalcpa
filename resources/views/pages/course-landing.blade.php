@@ -77,8 +77,11 @@
                 {{-- Hero Section --}}
                 <x-courselanding.hero :landing="$landing" />
 
-                {{-- Professional Development --}}
-                <x-courselanding.professional-development :landing="$landing" />
+                {{-- Professional Development - ORIGINAL --}}
+                {{-- <x-courselanding.professional-development :landing="$landing" /> --}}
+                
+                {{-- Professional Development - INFORMACIÓN --}}
+                <x-courselanding.professional-development-info :landing="$landing" />
 
                 {{-- The Problem --}}
                 <x-courselanding.the-problem :landing="$landing" />
@@ -100,6 +103,9 @@
 
                 {{-- Propuesta 2: Preguntas Frecuentes (Diseño Moderno de Tarjetas) --}}
                 <x-courselanding.faq :landing="$landing" />
+
+                {{-- Professional Development - FORMULARIO --}}
+                <x-courselanding.professional-development-form :landing="$landing" />
 
                 <x-courselanding.certificate-template />
 
