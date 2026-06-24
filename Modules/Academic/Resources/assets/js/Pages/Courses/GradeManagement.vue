@@ -452,7 +452,6 @@
                                                 class="form-input text-center text-xs"
                                                 :class="getScoreClass(module.participation_score)"
                                                 placeholder="-"
-                                                v-mask="'##.##'"
                                             />
                                         </td>
                                         <!-- Examen -->
@@ -466,7 +465,6 @@
                                                 class="form-input text-center text-xs"
                                                 :class="getScoreClass(module.exam_score)"
                                                 placeholder="-"
-                                                v-mask="'##.##'"
                                             />
                                         </td>
                                         <!-- Simulacro (solo informativo, no promedia) -->
