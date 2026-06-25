@@ -45,17 +45,37 @@
     const moduleExam = ref(null);
     const studentExam = ref(null);
 
+    // Datos del simulacro del módulo
+    const moduleMockExam = ref(null);
+    const studentMockExam = ref(null);
+
     // Tiempo transcurrido en tiempo real (para exámenes en progreso)
     const elapsedTime = ref(0);
     const elapsedTimeInterval = ref(null);
 
-    // Cargar datos del examen
+    // Calcular nota mínima aprobatoria para el simulacro (según preguntas)
+    const mockMaxScore = computed(() => {
+        if (!moduleMockExam.value?.questions) return 0;
+        return moduleMockExam.value.questions.reduce((sum, q) => sum + (parseFloat(q.score) || 0), 0);
+    });
+    const mockMinPassing = computed(() => {
+        if (mockMaxScore.value === 0) return 11; // fallback
+        return Math.floor(mockMaxScore.value / 2) + 1;
+    });
+
+    // Cargar datos del examen y simulacro
     const loadExamData = () => {
         if (props.module.exam) {
             moduleExam.value = props.module.exam;
             // Cargar el examen del estudiante si existe
             if (props.module.exam.student_exams && props.module.exam.student_exams.length > 0) {
                 studentExam.value = props.module.exam.student_exams[0];
+            }
+        }
+        if (props.module.mock_exam) {
+            moduleMockExam.value = props.module.mock_exam;
+            if (props.module.mock_exam.student_exams && props.module.mock_exam.student_exams.length > 0) {
+                studentMockExam.value = props.module.mock_exam.student_exams[0];
             }
         }
     };
@@ -94,8 +114,8 @@
     // Verificar si puede repetir el examen
     const canRetakeExam = () => {
         if (!studentExam.value || !moduleExam.value) return false;
-        // Puede repetir si tiene intentos disponibles
-        const hasAttempts = moduleExam.value.attempts > 1;
+        // Puede repetir si tiene intentos disponibles (0 = ilimitado)
+        const hasAttempts = moduleExam.value.attempts === 0 || moduleExam.value.attempts > 1;
         // Y si ya terminó o hay un error
         const isFinished = studentExam.value.status === 'completado' ||
                           studentExam.value.status === 'revision_pendiente' ||
@@ -686,7 +706,7 @@
                                     </div>
                                     <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
                                         <p class="text-xs text-gray-500 dark:text-gray-400">Intentos permitidos</p>
-                                        <p class="text-sm font-medium text-gray-900 dark:text-white">{{ moduleExam.attempts }}</p>
+                                        <p class="text-sm font-medium text-gray-900 dark:text-white">{{ moduleExam.attempts === 0 ? 'Ilimitados' : moduleExam.attempts }}</p>
                                     </div>
                                 </div>
 
@@ -781,7 +801,7 @@
                                         :href="route('aca_student_module_exam_solve', moduleExam.id)"
                                         class="w-full bg-blue-500 hover:bg-blue-600 text-white text-center py-2.5 px-4 rounded-lg text-sm font-medium transition-colors"
                                     >
-                                        Repetir Examen ({{ moduleExam.attempts - studentExam.attempts_used }} intentos)
+                                        Repetir Examen {{ moduleExam.attempts === 0 ? '(Ilimitados)' : '(' + (moduleExam.attempts - studentExam.attempts_used) + ' intentos)' }}
                                     </Link>
 
                                     <!-- PRIORIDAD 5: Examen completado sin intentos disponibles -->
@@ -816,23 +836,11 @@
                                         </button>
                                     </div>
 
-                                    <!-- Botón Descargar Certificado del Módulo -->
-                                   <div v-if="canDownloadCertificate()" class="mt-2">
-                                        <button
-                                            @click="downloadModuleCertificate()"
-                                            class="w-full bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white py-2.5 px-4 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2"
-                                        >
-                                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clip-rule="evenodd"/>
-                                            </svg>
-                                            Descargar Certificado
-                                        </button>
-                                   </div>
                                 </div>
                             </div>
 
-                            <!-- Sin Examen -->
-                            <div v-else class="text-center py-8">
+                            <!-- Sin Examen Regular (pero puede tener simulacro) -->
+                            <div v-if="!moduleExam && !moduleMockExam" class="text-center py-8">
                                 <div class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
                                     <svg class="w-8 h-8 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
                                         <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/>
@@ -842,9 +850,111 @@
                                 <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-1">No hay examen disponible</h3>
                                 <p class="text-xs text-gray-500 dark:text-gray-400">El módulo aún no tiene un examen asignado</p>
                             </div>
+
+                            <!-- Sección de Simulacro (Mock Exam) - siempre visible si existe -->
+                            <div v-if="moduleMockExam" class="mt-4 pt-4 border-t-2 border-dashed border-amber-300 dark:border-amber-700">
+                                    <!-- Header del Simulacro -->
+                                    <div class="flex items-center justify-between pb-3">
+                                        <div class="flex items-center gap-3">
+                                            <div class="bg-amber-500 text-white p-2 rounded-lg">
+                                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 640 512">
+                                                    <path d="M256 0C256 68.4 200.4 124 132 132C132 200.4 76.4 256 8 256C76.4 256 132 311.6 132 380C200.4 380 256 435.6 256 504C256 435.6 311.6 380 380 380C380 311.6 435.6 256 504 256C435.6 256 380 200.4 380 132C311.6 132 256 68.4 256 0z"/>
+                                                </svg>
+                                            </div>
+                                            <div>
+                                                <h3 class="text-sm font-bold text-amber-700 dark:text-amber-300">SIMULACRO</h3>
+                                                <p class="text-xs text-gray-500 dark:text-gray-400">Práctica - No afecta tu promedio</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Información del Simulacro -->
+                                    <div class="grid grid-cols-2 gap-3 py-2">
+                                        <div class="bg-amber-50 dark:bg-amber-900/20 rounded-lg p-3">
+                                            <p class="text-xs text-gray-500 dark:text-gray-400">Fecha de inicio</p>
+                                            <p class="text-sm font-medium text-gray-900 dark:text-white">{{ moduleMockExam.date_start }}</p>
+                                        </div>
+                                        <div class="bg-amber-50 dark:bg-amber-900/20 rounded-lg p-3">
+                                            <p class="text-xs text-gray-500 dark:text-gray-400">Fecha de fin</p>
+                                            <p class="text-sm font-medium text-gray-900 dark:text-white">{{ moduleMockExam.date_end }}</p>
+                                        </div>
+                                        <div class="bg-amber-50 dark:bg-amber-900/20 rounded-lg p-3">
+                                            <p class="text-xs text-gray-500 dark:text-gray-400">Duración</p>
+                                            <p class="text-sm font-medium text-gray-900 dark:text-white">{{ moduleMockExam.duration_minutes }} minutos</p>
+                                        </div>
+                                        <div class="bg-amber-50 dark:bg-amber-900/20 rounded-lg p-3">
+                                            <p class="text-xs text-gray-500 dark:text-gray-400">Intentos</p>
+                                            <p class="text-sm font-medium text-gray-900 dark:text-white">{{ moduleMockExam.attempts === 0 ? 'Ilimitados' : moduleMockExam.attempts }}</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Descripción -->
+                                    <div class="bg-amber-50 dark:bg-amber-900/20 rounded-lg p-3 border border-amber-200 dark:border-amber-800">
+                                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Descripción</p>
+                                        <p class="text-sm text-gray-900 dark:text-white">{{ moduleMockExam.description }}</p>
+                                    </div>
+
+                                    <!-- Resultado del Simulacro (si existe) -->
+                                    <div v-if="studentMockExam" class="mt-3">
+                                        <div class="bg-amber-50 dark:bg-amber-900/20 rounded-lg p-3 border border-amber-300 dark:border-amber-700">
+                                            <div class="flex items-center justify-between mb-2">
+                                                <span class="text-xs font-medium px-2 py-1 rounded"
+                                                    :class="studentMockExam.punctuation >= mockMinPassing ? 'bg-green-500 text-white' : 'bg-red-500 text-white'">
+                                                    {{ studentMockExam.punctuation >= mockMinPassing ? '✅ Aprobado' : '❌ Desaprobado' }}
+                                                </span>
+                                                <span class="text-xs text-gray-500">
+                                                    (Mín: {{ mockMinPassing }} pts)
+                                                </span>
+                                            </div>
+                                            <div class="flex items-center justify-between">
+                                                <div>
+                                                    <p class="text-xs text-gray-500 dark:text-gray-400">Tu nota</p>
+                                                    <p class="text-3xl font-bold" :class="studentMockExam.punctuation >= mockMinPassing ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'">
+                                                        {{ studentMockExam.punctuation }}
+                                                    </p>
+                                                </div>
+                                                <div v-if="studentMockExam.finished_at" class="text-right">
+                                                    <p class="text-xs text-gray-500 dark:text-gray-400">Tiempo utilizado</p>
+                                                    <p class="text-sm font-medium text-gray-900 dark:text-white">
+                                                        {{ formatTime(studentMockExam.time_spent_seconds) }}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <p class="text-xs text-amber-600 dark:text-amber-400 mt-2 italic">
+                                                * Esta nota es solo informativa y no afecta tu promedio final
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Botón para resolver simulacro -->
+                                    <div class="mt-3">
+                                        <Link
+                                            :href="route('aca_student_module_exam_solve', moduleMockExam.id)"
+                                            class="w-full bg-amber-500 hover:bg-amber-600 text-white text-center py-2.5 px-4 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2"
+                                        >
+                                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 640 512">
+                                                <path d="M256 0C256 68.4 200.4 124 132 132C132 200.4 76.4 256 8 256C76.4 256 132 311.6 132 380C200.4 380 256 435.6 256 504C256 435.6 311.6 380 380 380C380 311.6 435.6 256 504 256C435.6 256 380 200.4 380 132C311.6 132 256 68.4 256 0z"/>
+                                            </svg>
+                                            {{ studentMockExam ? 'Repetir Simulacro' : 'Resolver Simulacro' }}
+                                        </Link>
+                                    </div>
+                                </div>
+
+                                <!-- Botón Descargar Certificado del Módulo -->
+                                   <div v-if="canDownloadCertificate()" class="mt-2">
+                                        <button
+                                            @click="downloadModuleCertificate()"
+                                            class="w-full bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white py-2.5 px-4 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2"
+                                        >
+                                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clip-rule="evenodd"/>
+                                            </svg>
+                                            Descargar Certificado
+                                        </button>                                   </div>
                         </div>
                     </div>
                 </div>
+
                 <!-- Panel de Contenidos Moderno -->
                 <div class="col-span-6 sm:col-span-4">
                     <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
