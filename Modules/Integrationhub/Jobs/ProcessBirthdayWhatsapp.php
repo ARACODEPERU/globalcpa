@@ -54,9 +54,8 @@ class ProcessBirthdayWhatsapp implements ShouldQueue
                         'value' => $this->email,
                     ],
                     [
-                        ,
-                        "action": "send_flow",
-                        "flow_id": $flowId
+                        'action' => 'send_flow',
+                        'flow_id' => $flowId
                     ],
                 ],
             ], [], true);
