@@ -1,6 +1,5 @@
 <script setup>
 import { Link } from '@inertiajs/vue3';
-import { onUnmounted, nextTick } from 'vue';
 import iconHome from '../icon/icon-home.vue';
 import { Tooltip, Dropdown, Menu, MenuItem } from 'ant-design-vue';
 
@@ -9,28 +8,6 @@ const props = defineProps({
     titleModule: { type: String, default: null },
     data: { type: Array, default: () => [] },
     maxChars: { type: Number, default: 40 }
-});
-
-// Cleanup function para componentes de Ant Design
-const cleanupAntDesign = () => {
-    nextTick(() => {
-        document.querySelectorAll('.ant-tooltip-open').forEach(el => {
-            el.classList.remove('ant-tooltip-open');
-        });
-        document.querySelectorAll('.ant-popover-open').forEach(el => {
-            el.classList.remove('ant-popover-open');
-        });
-        document.querySelectorAll('.ant-dropdown-open').forEach(el => {
-            el.classList.remove('ant-dropdown-open');
-        });
-        document.querySelectorAll('.ant-tooltip').forEach(el => el.remove());
-        document.querySelectorAll('.ant-popover').forEach(el => el.remove());
-        document.querySelectorAll('.ant-dropdown').forEach(el => el.remove());
-    });
-};
-
-onUnmounted(() => {
-    cleanupAntDesign();
 });
 
 const truncate = (text) => {
@@ -69,7 +46,7 @@ const fontTitleTooltip = 'text-xs text-white';
                         /
                     </span>
                     <div class="flex items-center">
-                        <Tooltip v-if="item && item.title" :title="item.title.length > maxChars ? item.title : ''" :color="colorTooltip" placement="bottom">
+                        <Tooltip :title="item.title.length > maxChars ? item.title : ''" :color="colorTooltip" placement="bottom">
 
                             <Link v-if="item.route && index !== data.length - 1"
                                 :href="item.route"
