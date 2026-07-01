@@ -55,5 +55,6 @@ const MenuData = ref([
     menuSocialevents,
     menuCRM,
     menuBibliodata
+
 ]);
 export default MenuData;
