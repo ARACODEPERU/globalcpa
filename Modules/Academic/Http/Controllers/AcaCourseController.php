@@ -655,28 +655,38 @@ class AcaCourseController extends Controller
         $userId = Auth::user()->id;
         $savedCount = 0;
 
-        foreach ($request->participations as $participationData) {
-            $existingParticipation = AcaStudentParticipation::where('student_id', $participationData['student_id'])
-                ->where('course_id', $participationData['course_id'])
-                ->where('module_id', $participationData['module_id'])
-                ->where('theme_id', $participationData['theme_id'])
-                ->where('content_id', $participationData['content_id'])
-                ->first();
+        $participations = $request->participations;
+        if (empty($participations)) {
+            return response()->json(['success' => true, 'message' => 'No hay participaciones para guardar']);
+        }
 
-            if ($existingParticipation) {
-                $existingParticipation->participation_score = $participationData['participation_score'];
-                $existingParticipation->teacher_comment = $participationData['teacher_comment'];
+        $first = $participations[0];
 
-                $history = $existingParticipation->edited_by ?? [];
+        $existingParticipations = AcaStudentParticipation::where('course_id', $first['course_id'])
+            ->where('module_id', $first['module_id'])
+            ->where('theme_id', $first['theme_id'])
+            ->where('content_id', $first['content_id'])
+            ->get()
+            ->keyBy('student_id');
+
+        foreach ($participations as $participationData) {
+            $studentId = $participationData['student_id'];
+            $existing = $existingParticipations->get($studentId);
+
+            if ($existing) {
+                $existing->participation_score = $participationData['participation_score'];
+                $existing->teacher_comment = $participationData['teacher_comment'];
+
+                $history = $existing->edited_by ?? [];
                 $history[] = [
                     'user_id' => $userId,
                     'updated_at' => now()->toISOString(),
                 ];
-                $existingParticipation->edited_by = $history;
-                $existingParticipation->save();
+                $existing->edited_by = $history;
+                $existing->save();
             } else {
                 AcaStudentParticipation::create([
-                    'student_id' => $participationData['student_id'],
+                    'student_id' => $studentId,
                     'course_id' => $participationData['course_id'],
                     'module_id' => $participationData['module_id'],
                     'theme_id' => $participationData['theme_id'],
