@@ -510,30 +510,32 @@ class AcaCourseController extends Controller
         }
 
         $participations = $participationsQuery->get();
-        // dd($registrations);
+        $participationsByStudent = $participations->keyBy('student_id');
+
+        // Obtener ASISTENCIAS en UNA SOLA CONSULTA (elimina N+1)
+        $attendanceQuery = AcaStudentAttendance::where('course_id', $courseId)
+            ->whereIn('student_id', $registrations->pluck('student.id'));
+
+        if ($request->module_id) {
+            $attendanceQuery->where('module_id', $request->module_id);
+        }
+
+        if ($request->content_id) {
+            $attendanceQuery->where('content_id', $request->content_id);
+        }
+
+        $attendanceStudentIds = $attendanceQuery->pluck('student_id')->toArray();
+
         // Combinar estudiantes con sus participaciones
-        $students = $registrations->map(function ($reg) use ($participations, $request, $courseId) {
-            $participation = $participations->first(function ($p) use ($reg) {
-                return $p->student_id === $reg->student->id;
-            });
+        $students = $registrations->map(function ($reg) use ($participationsByStudent, $attendanceStudentIds) {
+            $participation = $participationsByStudent->get($reg->student->id);
 
             // Si no existe participación, verificar asistencia
             $participationScore = null;
             $hasAttendance = false;
             if (! $participation) {
-                // Buscar si existe registro de asistencia
-                $attendanceQuery = AcaStudentAttendance::where('student_id', $reg->student->id)
-                    ->where('course_id', $courseId);
-
-                if ($request->module_id) {
-                    $attendanceQuery->where('module_id', $request->module_id);
-                }
-
-                if ($request->content_id) {
-                    $attendanceQuery->where('content_id', $request->content_id);
-                }
-
-                $hasAttendance = $attendanceQuery->exists();
+                // Verificar si el estudiante tiene asistencia (usando el array precargado)
+                $hasAttendance = in_array($reg->student->id, $attendanceStudentIds);
 
                 if ($hasAttendance) {
                     $participationScore = 12; // Nota por haber asistido
