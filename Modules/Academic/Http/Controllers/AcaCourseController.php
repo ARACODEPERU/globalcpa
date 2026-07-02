@@ -572,6 +572,7 @@ class AcaCourseController extends Controller
      */
     public function storeParticipation(Request $request)
     {
+        // 1. Validación de datos
         $request->validate([
             'student_id' => 'required|exists:aca_students,id',
             'course_id' => 'nullable|exists:aca_courses,id',
@@ -582,6 +583,9 @@ class AcaCourseController extends Controller
             'teacher_comment' => 'nullable|string',
         ]);
 
+        $userId = Auth::user()->id;
+
+        // 2. Primero buscamos si ya existe para armar el historial de cambios
         $existingParticipation = AcaStudentParticipation::where('student_id', $request->student_id)
             ->where('course_id', $request->course_id)
             ->where('module_id', $request->module_id)
@@ -589,43 +593,43 @@ class AcaCourseController extends Controller
             ->where('content_id', $request->content_id)
             ->first();
 
-        $userId = Auth::user()->id;
-
+        // 3. Preparamos el array de historial solo si ya existía el registro
+        $history = null;
         if ($existingParticipation) {
-            $existingParticipation->participation_score = $request->participation_score;
-            $existingParticipation->teacher_comment = $request->teacher_comment;
-
             $history = $existingParticipation->edited_by ?? [];
             $history[] = [
                 'user_id' => $userId,
                 'updated_at' => now()->toISOString(),
             ];
-            $existingParticipation->edited_by = $history;
-
-            $existingParticipation->save();
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Participación actualizada correctamente',
-                'participation' => $existingParticipation,
-            ]);
         }
 
-        $participation = AcaStudentParticipation::create([
-            'student_id' => $request->student_id,
-            'course_id' => $request->course_id,
-            'module_id' => $request->module_id,
-            'theme_id' => $request->theme_id,
-            'content_id' => $request->content_id,
-            'participation_score' => $request->participation_score,
-            'teacher_comment' => $request->teacher_comment,
-            'created_by' => $userId,
-            'edited_by' => null,
-        ]);
+        // 4. El "Upsert" mágico de Laravel
+        $participation = AcaStudentParticipation::updateOrCreate(
+            // Condición para buscar el registro (Claves únicas de negocio)
+            [
+                'student_id' => $request->student_id,
+                'course_id' => $request->course_id,
+                'module_id' => $request->module_id,
+                'theme_id' => $request->theme_id,
+                'content_id' => $request->content_id,
+            ],
+            // Valores que se van a insertar o actualizar
+            [
+                'participation_score' => $request->participation_score,
+                'teacher_comment' => $request->teacher_comment,
+                // Si es nuevo, se usa "created_by". Si ya existe, se mantiene el que estaba.
+                'created_by' => $existingParticipation ? $existingParticipation->created_by : $userId,
+                // Si es nuevo queda en null, si es edición se guarda el historial que armamos arriba
+                'edited_by' => $history,
+            ]
+        );
+
+        // 5. Respuesta única (Laravel sabrá si fue "creado" o "actualizado")
+        $wasRecentlyCreated = $participation->wasRecentlyCreated;
 
         return response()->json([
             'success' => true,
-            'message' => 'Participación guardada correctamente',
+            'message' => $wasRecentlyCreated ? 'Participación guardada correctamente' : 'Participación actualizada correctamente',
             'participation' => $participation,
         ]);
     }
