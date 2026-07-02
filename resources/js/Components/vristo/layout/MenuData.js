@@ -16,6 +16,7 @@ import menuHealth from 'Modules/Health/Resources/assets/js/Menu.js';
 import menuCRM from 'Modules/CRM/Resources/assets/js/Menu.js';
 import menuOnlineshop from 'Modules/Onlineshop/Resources/assets/js/Menu.js';
 import menuBibliodata from 'Modules/Bibliodata/Resources/assets/js/Menu.js';
+import menuIntegrationhub from 'Modules/Integrationhub/Resources/assets/js/Menu.js';
 
 const MenuData = ref([
     {
@@ -54,7 +55,8 @@ const MenuData = ref([
     menuRestaurant,
     menuSocialevents,
     menuCRM,
-    menuBibliodata
+    menuBibliodata,
+    menuIntegrationhub
 
 ]);
 export default MenuData;
