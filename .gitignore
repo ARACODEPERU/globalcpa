@@ -20,4 +20,4 @@ yarn-error.log
 /.vscode
 /graphify-out
 classify_files.py
-/app/Helpers/Invoices/Certificates/*.pem
+/app/Helpers/Invoices/Certificates/
