@@ -77,6 +77,11 @@ class CmsSubscriberController extends Controller
         $countryCode = ltrim((string) $country_phone, '+');
         $phoneRaw = preg_replace('/[^0-9]/', '', (string) $request->get('phone') ?? '');
 
+        // Si el número ya contiene el código de país al inicio, quitarlo para evitar duplicación
+        while (str_starts_with($phoneRaw, $countryCode)) {
+            $phoneRaw = substr($phoneRaw, strlen($countryCode));
+        }
+
         if ($countryCode === '51') {
             // Perú: debe empezar con 9 y tener exactamente 9 dígitos
             $firstNine = strpos($phoneRaw, '9');
@@ -88,7 +93,7 @@ class CmsSubscriberController extends Controller
                 return response()->json(['errors' => ['phone' => ['El teléfono peruano debe tener exactamente 9 dígitos. no debes agregar el código']]], 422);
             }
         } else {
-            // Otros países: usar el número limpio tal cual
+            // Otros países: usar el número limpio (ya sin código repetido)
             $phoneBody = $phoneRaw;
         }
 

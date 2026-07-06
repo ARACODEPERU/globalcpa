@@ -219,8 +219,24 @@
 
                 var formData = new FormData(formElement);
                 const countrySelect = document.getElementById(countrySelectId);
-                const prefix = countrySelect.value;
-                formData.set('phone', prefix + formData.get('phone'));
+                const prefix = countrySelect.value; // Ej: "+51"
+
+                // Obtener el valor del teléfono del input
+                var rawPhone = formData.get('phone') || '';
+
+                // Extraer el código numérico del prefijo (ej: "+51" → "51", "+591" → "591")
+                var numericCode = prefix.replace(/[^0-9]/g, '');
+
+                // Limpiar el número: eliminar todo lo que no sean dígitos
+                var cleanedPhone = rawPhone.replace(/[^0-9]/g, '');
+
+                // Si el número ya contiene el código de país al inicio, quitarlo para evitar duplicación
+                while (cleanedPhone.startsWith(numericCode)) {
+                    cleanedPhone = cleanedPhone.substring(numericCode.length);
+                }
+
+                // Asignar el teléfono completo: prefijo + número limpio (sin código duplicado)
+                formData.set('phone', prefix + cleanedPhone);
 
                 var submitButton = document.getElementById(buttonId);
                 submitButton.disabled = true;
