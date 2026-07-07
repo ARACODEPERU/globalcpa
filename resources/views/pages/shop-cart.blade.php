@@ -3710,7 +3710,7 @@
                 client_id: abandonedClientId,
                 phone_country: phoneState.areaCode,
                 phone: phoneState.phone,
-                cart_items: cartIds.length ? cartIds.map(id => ({ id })) : undefined,
+                cart_items: cartItems.length ? cartItems.map(item => ({ id: item.id, name: item.name, image: item.image, price: item.price, additional: item.additional })) : (cartIds.length ? cartIds.map(id => ({ id })) : undefined),
                 cart_total: checkoutTotal || undefined,
             };
 
