@@ -58,9 +58,6 @@ const renderCardPaymentBrick = async (bricksBuilder) => {
                     },
                 },
             },
-            paymentMethods: {
-                maxInstallments: 1,
-            },
         },
         callbacks: {
             onReady: () => {

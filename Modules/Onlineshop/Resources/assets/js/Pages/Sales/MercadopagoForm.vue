@@ -82,9 +82,6 @@
                         },
                     },
                 },
-                paymentMethods: {
-                    maxInstallments: 1,
-                },
             },
             callbacks: {
                 onReady: () => {
