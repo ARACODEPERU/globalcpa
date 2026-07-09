@@ -59,7 +59,7 @@ const renderCardPaymentBrick = async (bricksBuilder) => {
                 },
             },
             paymentMethods: {
-                maxInstallments: 1,
+                maxInstallments: 12,
             },
         },
         callbacks: {

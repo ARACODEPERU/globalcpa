@@ -2857,7 +2857,7 @@
                                 }
                             }
                         },
-                        paymentMethods: { maxInstallments: 1 }
+                        paymentMethods: { maxInstallments: 12 }
                     },
                     callbacks: {
                         onReady: () => {

@@ -90,7 +90,7 @@
                                                 }
                                             },
                                             paymentMethods: {
-                                                maxInstallments: 1,
+                                                maxInstallments: 12,
                                             }
                                         },
                                         callbacks: {
