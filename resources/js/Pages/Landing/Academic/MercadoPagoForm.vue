@@ -55,7 +55,7 @@ onMounted(() => {
             atm: "all",
             onboarding_credits: "all",
             wallet_purchase: "all",
-            maxInstallments: 12,
+            maxInstallments: 1,
             },
         },
         callbacks: {

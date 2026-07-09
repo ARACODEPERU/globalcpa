@@ -83,7 +83,7 @@
                     },
                 },
                 paymentMethods: {
-                    maxInstallments: 12,
+                    maxInstallments: 1,
                 },
             },
             callbacks: {
