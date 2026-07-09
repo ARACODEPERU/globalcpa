@@ -48,7 +48,12 @@ class OnliPaymentProblemController extends Controller
             ->get()
             ->map(function ($item) use (&$abandonedCartItemIds) {
                 // Collect item IDs for enrichment
-                $cartItems = $item->cart_items ?? [];
+                $cartItems = $item->cart_items;
+                if (is_string($cartItems)) {
+                    $cartItems = json_decode($cartItems, true) ?? [];
+                } elseif (!is_array($cartItems)) {
+                    $cartItems = [];
+                }
                 foreach ($cartItems as $cartItem) {
                     if (isset($cartItem['id']) && empty($cartItem['name'])) {
                         $abandonedCartItemIds->push((int) $cartItem['id']);
@@ -101,6 +106,36 @@ class OnliPaymentProblemController extends Controller
 
         return Inertia::render('Onlineshop::Sales/PaymentProblems', [
             'items' => $items,
+        ]);
+    }
+
+    /**
+     * Remove a specific payment problem or abandoned cart.
+     */
+    public function destroy($id, Request $request)
+    {
+        $type = $request->input('type', 'payment_problem');
+
+        if ($type === 'abandoned_cart') {
+            $record = OnliCarritoAbandonado::find($id);
+            if (!$record) {
+                return response()->json(['success' => false, 'message' => 'Carrito abandonado no encontrado.'], 404);
+            }
+            $record->delete();
+            return response()->json([
+                'success' => true,
+                'message' => 'Carrito abandonado eliminado correctamente.',
+            ]);
+        }
+
+        $record = OnliPaymentProblem::find($id);
+        if (!$record) {
+            return response()->json(['success' => false, 'message' => 'Registro de pago no encontrado.'], 404);
+        }
+        $record->delete();
+        return response()->json([
+            'success' => true,
+            'message' => 'Registro de pago eliminado correctamente.',
         ]);
     }
 
