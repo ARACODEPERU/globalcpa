@@ -1,8 +1,8 @@
-<div id="merchandising">
+{{-- <div id="merchandising">
     <a href="{{ route('web_subscriptions') }}" class="mer">
         <i class="fa fa-briefcase" aria-hidden="true"></i>
     </a>
-</div>
+</div> --}}
 
 
 {{-- <div id="whatsapp">
