@@ -90,7 +90,7 @@
                                                                     <br>
                                                                     <a href="{{ route('web_course_description', $item->id) }}"
                                                                         style="text-decoration: none;">
-                                                                        <h4 style=" height: 30px; color: #000;">
+                                                                        <h4 style=" height: 30px;">
                                                                             {{ $item->name }}</h4>
                                                                     </a>
                                                                     <br>
