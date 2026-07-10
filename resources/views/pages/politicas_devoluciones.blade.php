@@ -33,6 +33,7 @@
                         </div>
                     </div>
                 </div>
+                <br>
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-md-12">
@@ -43,28 +44,29 @@
                                 <h2 class="text-lg font-medium tracking-wide text-slate-700 dark:text-navy-100">
                                     Última actualización: 21/08/2025
                                 </h2>
-                                <h1
-                                    style="color: #1a1a1a; border-bottom: 2px solid #ddd; padding-bottom: 5px; margin-top: 25px;">
+                                <h1 class="font-bold tracking-wide text-slate-900 dark:text-navy-100"
+                                    style="padding-bottom: 5px; margin-top: 25px;">
                                     Política de Devoluciones - CPA Academy</h1>
 
                                 <div class="section">
-                                    <h2
-                                        style="color: #1a1a1a; border-bottom: 2px solid #ddd; padding-bottom: 5px; margin-top: 25px;">
+                                    <h2 class="font-bold tracking-wide text-slate-900 dark:text-navy-100"
+                                        style=" padding-bottom: 5px; margin-top: 25px;">
                                         1. Derecho de desistimiento</h2>
-                                    <p style="margin-bottom: 10px;">El usuario podrá ejercer su derecho de desistimiento
+                                    <p class="text-slate-700 dark:text-navy-100 text-xl">
+                                        El usuario podrá ejercer su derecho de desistimiento
                                         dentro de los <strong>7 días calendario</strong> posteriores a la compra, siempre
-                                        que el curso no haya iniciado.</p>
-                                    <p style="margin-bottom: 10px;">En este caso, se realizará la devolución íntegra del
+                                        que el curso no haya iniciado.<br>En este caso, se realizará la devolución íntegra del
                                         monto pagado, utilizando el mismo medio de pago empleado en la transacción.</p>
                                 </div>
 
                                 <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
 
                                 <div class="section">
-                                    <h2
-                                        style="color: #1a1a1a; border-bottom: 2px solid #ddd; padding-bottom: 5px; margin-top: 25px;">
+                                    <h2 class="font-bold tracking-wide text-slate-900 dark:text-navy-100"
+                                        style="padding-bottom: 5px; margin-top: 25px;">
                                         2. Cursos ya iniciados</h2>
-                                    <p style="margin-bottom: 10px;">Una vez iniciado el curso o si el usuario ha accedido a
+                                    <p class="text-slate-700 dark:text-navy-100 text-xl">
+                                        Una vez iniciado el curso o si el usuario ha accedido a
                                         los materiales digitales, no procederá la devolución, salvo en casos de cancelación
                                         o reprogramación atribuibles a CPA Academy.</p>
                                 </div>
@@ -72,10 +74,11 @@
                                 <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
 
                                 <div class="section">
-                                    <h2
-                                        style="color: #1a1a1a; border-bottom: 2px solid #ddd; padding-bottom: 5px; margin-top: 25px;">
+                                    <h2 class="font-bold tracking-wide text-slate-900 dark:text-navy-100"
+                                        style="padding-bottom: 5px; margin-top: 25px;">
                                         3. Cancelación o reprogramación del curso</h2>
-                                    <p style="margin-bottom: 10px;">Si por causas de fuerza mayor o decisión institucional
+                                    <p class="text-slate-700 dark:text-navy-100 text-xl">
+                                        Si por causas de fuerza mayor o decisión institucional
                                         el curso no pudiera dictarse en la fecha programada, CPA Academy ofrecerá al usuario:
                                     </p>
                                     <ul style="margin-top: 5px; margin-bottom: 15px; padding-left: 25px;">
@@ -88,24 +91,27 @@
                                 <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
 
                                 <div class="section">
-                                    <h2
-                                        style="color: #1a1a1a; border-bottom: 2px solid #ddd; padding-bottom: 5px; margin-top: 25px;">
+                                    <h2 class="font-bold tracking-wide text-slate-900 dark:text-navy-100"
+                                        style="padding-bottom: 5px; margin-top: 25px;">
                                         4. Procedimiento para solicitar devoluciones</h2>
-                                    <p style="margin-bottom: 10px;">El usuario deberá enviar su solicitud al correo
-                                        <strong><a
-                                                href="mailto:jsuclupe@globalcpaperu.com">jsuclupe@globalcpaperu.com</a></strong>,
-                                        indicando sus datos personales, comprobante de pago y motivo de la solicitud.</p>
-                                    <p style="margin-bottom: 10px;">El área administrativa evaluará el caso y dará respuesta
+                                    <p class="text-slate-700 dark:text-navy-100 text-xl">
+                                        El usuario deberá enviar su solicitud al correo
+                                        <strong>
+                                            <a href="mailto:jsuclupe@globalcpaperu.com">jsuclupe@globalcpaperu.com</a>
+                                        </strong>,
+                                        indicando sus datos personales, comprobante de pago y motivo de la solicitud.
+                                        <br> El área administrativa evaluará el caso y dará respuesta
                                         en un plazo máximo de <strong>5 días hábiles</strong>.</p>
                                 </div>
 
                                 <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
 
                                 <div class="section">
-                                    <h2
-                                        style="color: #1a1a1a; border-bottom: 2px solid #ddd; padding-bottom: 5px; margin-top: 25px;">
+                                    <h2 class="font-bold tracking-wide text-slate-900 dark:text-navy-100"
+                                        style="padding-bottom: 5px; margin-top: 25px;">
                                         5. Medios de reembolso</h2>
-                                    <p style="margin-bottom: 10px;">El reembolso se realizará únicamente a través del mismo
+                                    <p class="text-slate-700 dark:text-navy-100 text-xl">
+                                        El reembolso se realizará únicamente a través del mismo
                                         medio de pago utilizado en la compra (tarjeta de crédito, débito u otro medio
                                         electrónico).</p>
                                 </div>
@@ -113,10 +119,11 @@
                                 <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
 
                                 <div class="section">
-                                    <h2
-                                        style="color: #1a1a1a; border-bottom: 2px solid #ddd; padding-bottom: 5px; margin-top: 25px;">
+                                    <h2 class="font-bold tracking-wide text-slate-900 dark:text-navy-100"
+                                        style="padding-bottom: 5px; margin-top: 25px;">
                                         6. Contacto</h2>
-                                    <p style="margin-bottom: 10px;">Para consultas, reclamos o soporte, puede contactarnos a
+                                    <p class="text-slate-700 dark:text-navy-100 text-xl">
+                                        Para consultas, reclamos o soporte, puede contactarnos a
                                         través de:</p>
                                     <ul style="margin-top: 5px; margin-bottom: 15px; padding-left: 25px;">
                                         <li style="margin-bottom: 5px;"><strong>Correo:</strong> <a
