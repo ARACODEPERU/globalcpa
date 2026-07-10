@@ -161,19 +161,23 @@
                     <div class="social-icons-modern">
                         <a href="https://www.facebook.com/globalcpaperu" target="_blank" class="social-icon-link"
                             aria-label="Facebook">
-                            <img src="{{ asset('themes/webpage/images/logos/facebook-round.svg') }}" alt="Facebook">
+                            <img style="width: 30px; height: 30px;" src="{{ asset('themes/webpage/images/logos/facebook-round.svg') }}" alt="Facebook">
                         </a>
                         <a href="https://www.instagram.com/globalcpaperu" target="_blank" class="social-icon-link"
                             aria-label="Instagram">
-                            <img src="{{ asset('themes/webpage/images/logos/instagram-round.svg') }}" alt="Instagram">
+                            <img style="width: 30px; height: 30px;" src="{{ asset('themes/webpage/images/logos/instagram-round.svg') }}" alt="Instagram">
                         </a>
                         <a href="https://www.tiktok.com/@globalcpa" target="_blank" class="social-icon-link"
                             aria-label="TikTok">
-                            <img src="{{ asset('themes/webpage/images/logos/tik_tok-round.svg') }}" alt="TikTok">
+                            <img style="width: 30px; height: 30px;" src="{{ asset('themes/webpage/images/logos/tik_tok-round.svg') }}" alt="TikTok">
                         </a>
                         <a href="https://www.youtube.com/@globalcpaperu" target="_blank" class="social-icon-link"
                             aria-label="YouTube">
-                            <img src="{{ asset('themes/webpage/images/logos/youtube-round.svg') }}" alt="YouTube">
+                            <img style="width: 30px; height: 30px;" src="{{ asset('themes/webpage/images/logos/youtube-round.svg') }}" alt="YouTube">
+                        </a>
+                        <a href="https://wa.me/51967052506" target="_blank" class="social-icon-link"
+                            aria-label="WhatsApp">
+                            <img style="width: 30px; height: 30px;" src="{{ asset('themes/webpage/images/logos/whatsapp.png') }}" alt="WhatsApp">
                         </a>
                     </div>
                 </div>
