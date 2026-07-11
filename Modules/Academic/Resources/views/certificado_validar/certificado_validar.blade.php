@@ -16,7 +16,7 @@
 
         <div class="mt-5 w-full transition-all duration-[.25s] sm:mt-5 lg:mt-6">
             <div style="text-align:center;">
-                <h1 class="title_aracode" style="font-size: 45px; line-height: 1.1; font-weight: 700;">
+                <h1 class="title_aracode cv-title" style="font-size: 45px; line-height: 1.1; font-weight: 700;">
                     Validar Certificado
                 </h1>
             </div>
@@ -26,13 +26,13 @@
 
         <div class="max-w-lg mx-auto mt-8">
             <div class="text-center mb-6">
-                <p class="text-sm font-medium tracking-wide" style="color: #747682;">Ingresa tu número de DNI para consultar</p>
+                <p class="cv-subtitle text-sm font-medium tracking-wide" style="color: #747682;">Ingresa tu número de DNI para consultar</p>
             </div>
 
             <form id="search-form" method="get">
                 <label for="default-search" class="sr-only">Buscar por DNI</label>
 
-                <div class="relative flex items-center w-full rounded-2xl transition-all duration-300 ease-out"
+                <div class="cv-search-box relative flex items-center w-full rounded-2xl transition-all duration-300 ease-out"
                      style="background: linear-gradient(135deg, #f5f5f5, #fff); border: 2px solid #d1d5dc; box-shadow: 0 4px 15px rgba(0,0,0,0.08);"
                      onmouseover="this.style.boxShadow='0 8px 25px rgba(87,87,86,0.15)'; this.style.borderColor='#575756';"
                      onmouseout="this.style.boxShadow='0 4px 15px rgba(0,0,0,0.08)'; this.style.borderColor='#d1d5dc';"
@@ -41,7 +41,7 @@
 
                     <!-- Icono lupa -->
                     <div class="flex items-center pl-5 pr-2 pointer-events-none shrink-0">
-
+                        <svg class="cv-search-icon w-6 h-6" style="color: #575756;" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/>
                         </svg>
                     </div>
@@ -51,7 +51,7 @@
                         <input
                             type="text"
                             id="default-search"
-                            class="w-full py-4 pr-4 bg-transparent border-0 focus:ring-0 focus:outline-none font-medium tracking-wide text-base"
+                            class="cv-search-input w-full py-4 pr-4 bg-transparent border-0 focus:ring-0 focus:outline-none font-medium tracking-wide text-base"
                             style="color: #575756;"
                             placeholder="Ingresa Número DNI"
                             required
@@ -95,8 +95,8 @@
 
         @else
                     <div>
-                        <div class="text-2xl">{{ $person->full_name }}</div>
-                    <div class="profile-image-container">
+                        <div class="cv-person-name text-2xl">{{ $person->full_name }}</div>
+                    <div class="profile-image-container cv-profile-border">
                         @if(!empty(trim($person->image ?? '')))
                             <img src="{{ asset('storage/'.$person->image)}}" alt="{{ $person->full_name }}" class="profile-image">
                         @else
@@ -140,8 +140,8 @@
                 </style>
                 <br><hr>
                 <div class="overflow-x-auto relative shadow-md sm:rounded-lg">
-                    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                    <table class="cv-table w-full text-sm text-left">
+                        <thead class="text-xs uppercase">
                             <tr class="text-2xl">
                                 <th scope="col" class="py-3 px-6">
                                     Curso
@@ -153,11 +153,11 @@
                         </thead>
                         <tbody>
                             @foreach ($certificates as $certificate)
-                            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                                <td class="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                            <tr>
+                                <td class="py-4 px-6 font-medium whitespace-nowrap">
                                     <a href="{{ route('certificado_validar', ['dni'=>$person->number, 'course_id'=>$certificate->course_id]) }}">{{ $certificate->description }}</a>
                                 </td>
-                                <td class="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                <td class="py-4 px-6 font-medium whitespace-nowrap">
                                     {{ explode(' ', $certificate->fecha)[0] }}
                                 </td>
                             </tr>
@@ -235,5 +235,159 @@
             });
         });
     </script>
+
+    <style>
+        /* ========== VALIDAR CERTIFICADO - ESTILOS ========== */
+
+        /* Tabla - Modo claro */
+        .cv-table thead {
+            background-color: #f9fafb;
+        }
+
+        .cv-table thead th {
+            color: #374151;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .cv-table tbody tr {
+            background-color: #fff;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .cv-table tbody tr:hover {
+            background-color: #f9fafb;
+        }
+
+        .cv-table tbody td {
+            color: #111827;
+        }
+
+        .cv-table tbody td a {
+            color: #111827;
+            text-decoration: none;
+        }
+
+        .cv-table tbody td a:hover {
+            color: #e30613;
+        }
+
+        /* ========== DARK MODE - Validar Certificado ========== */
+
+        /* Título */
+        .dark .cv-title,
+        body.dark-only .cv-title {
+            color: #e0e0e0 !important;
+        }
+
+        /* Subtítulo "Ingresa tu número de DNI" */
+        .dark .cv-subtitle,
+        body.dark-only .cv-subtitle {
+            color: rgba(255, 255, 255, 0.6) !important;
+        }
+
+        /* Input de búsqueda */
+        .dark .cv-search-box,
+        body.dark-only .cv-search-box {
+            background: linear-gradient(135deg, #1f2f3e, #262932) !important;
+            border-color: #374558 !important;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+        }
+
+        .dark .cv-search-box:hover,
+        body.dark-only .cv-search-box:hover {
+            border-color: #4a5568 !important;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4) !important;
+        }
+
+        .dark .cv-search-box:focus-within,
+        body.dark-only .cv-search-box:focus-within {
+            border-color: #e30613 !important;
+            box-shadow: 0 0 0 3px rgba(227, 6, 19, 0.2), 0 8px 25px rgba(0, 0, 0, 0.4) !important;
+        }
+
+        .dark .cv-search-icon,
+        body.dark-only .cv-search-icon {
+            color: rgba(255, 255, 255, 0.5) !important;
+        }
+
+        .dark .cv-search-input,
+        body.dark-only .cv-search-input {
+            color: #e0e0e0 !important;
+        }
+
+        .dark .cv-search-input::placeholder,
+        body.dark-only .cv-search-input::placeholder {
+            color: rgba(255, 255, 255, 0.4) !important;
+        }
+
+        /* Nombre del alumno */
+        .dark .cv-person-name,
+        body.dark-only .cv-person-name {
+            color: #e0e0e0 !important;
+        }
+
+        /* Borde del círculo de perfil */
+        .dark .cv-profile-border,
+        body.dark-only .cv-profile-border {
+            border-color: #374558 !important;
+        }
+
+        /* Tabla de cursos */
+        .dark .cv-table,
+        body.dark-only .cv-table {
+            background-color: transparent !important;
+        }
+
+        .dark .cv-table thead,
+        body.dark-only .cv-table thead {
+            background-color: #1f2f3e !important;
+        }
+
+        .dark .cv-table thead th,
+        body.dark-only .cv-table thead th {
+            color: rgba(255, 255, 255, 0.7) !important;
+            border-bottom-color: #374558 !important;
+        }
+
+        .dark .cv-table tbody tr,
+        body.dark-only .cv-table tbody tr {
+            background-color: #15202b !important;
+            border-bottom-color: #374558 !important;
+        }
+
+        .dark .cv-table tbody tr:hover,
+        body.dark-only .cv-table tbody tr:hover {
+            background-color: #1f2f3e !important;
+        }
+
+        .dark .cv-table tbody td,
+        body.dark-only .cv-table tbody td {
+            color: rgba(255, 255, 255, 0.8) !important;
+        }
+
+        .dark .cv-table tbody td a,
+        body.dark-only .cv-table tbody td a {
+            color: #e0e0e0 !important;
+        }
+
+        .dark .cv-table tbody td a:hover,
+        body.dark-only .cv-table tbody td a:hover {
+            color: #e30613 !important;
+        }
+
+        /* HR */
+        .dark .cv-hr,
+        body.dark-only .cv-hr {
+            border-top-color: rgba(255, 255, 255, 0.15) !important;
+        }
+
+        /* Card de plan curricular */
+        .dark .cv-card,
+        body.dark-only .cv-card {
+            background-color: #1f2f3e !important;
+            border-color: #374558 !important;
+            color: rgba(255, 255, 255, 0.8) !important;
+        }
+    </style>
 
 @stop
