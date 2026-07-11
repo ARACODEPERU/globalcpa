@@ -138,12 +138,10 @@
             bottom: 0;
             right: 0;
             padding: 0 5px;
-            background: white;
-            /* Ajusta este color al fondo de tu sitio */
-            /* Agrega la transición para que los puntos suspensivos desaparezcan suavemente */
+            background: transparent;
+            color: inherit;
             transition: opacity 0.2s ease-in-out;
             opacity: 1;
-            /* Por defecto, los puntos suspensivos son visibles */
         }
 
         /* Clase para mostrar el texto completo */
