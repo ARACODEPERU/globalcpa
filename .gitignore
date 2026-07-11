@@ -22,3 +22,4 @@ yarn-error.log
 classify_files.py
 /app/Helpers/Invoices/Certificates/
 .mimocode/.cron-lock
+/.mimocode
