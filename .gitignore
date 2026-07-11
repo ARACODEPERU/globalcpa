@@ -21,3 +21,4 @@ yarn-error.log
 /graphify-out
 classify_files.py
 /app/Helpers/Invoices/Certificates/
+.mimocode/.cron-lock
