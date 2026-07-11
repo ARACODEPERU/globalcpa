@@ -59,7 +59,8 @@
             let name = respuesta.name;
             let price = respuesta.price;
             let modalidad = respuesta.additional;
-            let url_descripcion_programa = "{{ url('curso-descripcion') }}/" + id;
+            let tieneLanding = respuesta.url_slug && respuesta.landing_published == 1;
+            let url_descripcion_programa = tieneLanding ? "/curso/" + respuesta.url_slug : "{{ url('curso-descripcion') }}/" + id;
 
             cart.innerHTML += `
                 <tr class="border-y border-transparent border-b-slate-200 dark:border-b-navy-500" id="${id}_pc">

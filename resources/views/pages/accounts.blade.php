@@ -272,7 +272,8 @@
                 var name = respuesta.name;
                 var price = respuesta.price;
                 var modalidad = respuesta.additional;
-                var url_descripcion_programa = "/curso-descripcion/" + id;
+                var tieneLanding = respuesta.url_slug && respuesta.landing_published == 1;
+                var url_descripcion_programa = tieneLanding ? "/curso/" + respuesta.url_slug : "/curso-descripcion/" + id;
 
                 cart.innerHTML += `
                     <tr class="border-y border-transparent border-b-slate-200 dark:border-b-navy-500" id="${id}_pc">

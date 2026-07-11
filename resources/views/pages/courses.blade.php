@@ -73,11 +73,14 @@
                                                     id="course-list" style="display: {{ $i + 1 == 1 ? '' : 'none' }};">
 
                                                     @foreach ($courses->skip($p * $i)->take($p) as $item)
+                                                        @php
+                                                            $hasPublishedLanding = filled($item->course?->landing?->url_slug) && ($item->course?->landing?->is_published ?? false);
+                                                            $courseUrl = $hasPublishedLanding ? route('course_url_slug', $item->course?->landing?->url_slug) : route('web_course_description', $item->id);
+                                                        @endphp
                                                         <div class="col-xl-4 col-md-6 col-sm-12 box-col-4">
                                                             <div class="card weekend-card">
                                                                 <div class="card-body">
-                                                                    <a
-                                                                        href="{{ route('web_course_description', $item->id) }}">
+                                                                    <a href="{{ $courseUrl }}">
                                                                         @if($item->course?->image)
                                                                         <img class="w-100 mb-3"
                                                                             src="{{ asset('storage/' . $item->course->image) }}"
@@ -88,7 +91,7 @@
                                                                     <span
                                                                         style="color: #e30613;">{{ $item->additional }}</span>
                                                                     <br>
-                                                                    <a href="{{ route('web_course_description', $item->id) }}"
+                                                                    <a href="{{ $courseUrl }}"
                                                                         style="text-decoration: none;">
                                                                         <h4 style=" height: 30px;">
                                                                             {{ $item->name }}</h4>
@@ -97,8 +100,7 @@
                                                                     <div class="card">
                                                                         <div class="">
                                                                             <div class="btn-showcase">
-                                                                                <a
-                                                                                    href="{{ route('web_course_description', $item->id) }}">
+                                                                                <a href="{{ $courseUrl }}">
                                                                                     <button
                                                                                         class="btn btn-pill btn-light btn-air-light btn-sm"
                                                                                         type="button"
@@ -142,11 +144,14 @@
                                                 <div class="row widget-grid">
                                                     @foreach ($courses as $item)
                                                         @if (strtolower($item->additional) == strtolower($type))
+                                                            @php
+                                                                $hasPublishedLanding = filled($item->course?->landing?->url_slug) && ($item->course?->landing?->is_published ?? false);
+                                                                $courseUrl = $hasPublishedLanding ? route('course_url_slug', $item->course?->landing?->url_slug) : route('web_course_description', $item->id);
+                                                            @endphp
                                                             <div class="col-xl-4 col-md-6 col-sm-12 box-col-4">
                                                                 <div class="card weekend-card">
                                                                     <div class="card-body">
-                                                                        <a
-                                                                            href="{{ route('web_course_description', $item->id) }}">
+                                                                        <a href="{{ $courseUrl }}">
                                                                             @if($item->course?->image)
                                                                             {{-- Si hay imagen, la mostramos --}}
                                                                             <img class="w-100 mb-3"
@@ -163,7 +168,7 @@
                                                                         <span
                                                                             style="color: #6a4c93;">{{ $item->additional }}</span>
                                                                         <br>
-                                                                        <a href="{{ route('web_course_description', $item->id) }}"
+                                                                        <a href="{{ $courseUrl }}"
                                                                             style="text-decoration: none;">
                                                                             <h4 style=" height: 30px; color: #000;">
                                                                                 {{ $item->name }}</h4>
@@ -172,8 +177,7 @@
                                                                         <div class="card">
                                                                             <div class="">
                                                                                 <div class="btn-showcase">
-                                                                                    <a
-                                                                                        href="{{ route('web_course_description', $item->id) }}">
+                                                                                    <a href="{{ $courseUrl }}">
                                                                                         <button
                                                                                             class="btn btn-pill btn-light btn-air-light btn-sm"
                                                                                             type="button"

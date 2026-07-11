@@ -235,6 +235,11 @@
                     cleanedPhone = cleanedPhone.substring(numericCode.length);
                 }
 
+                // Argentina: si el número no empieza con 9, agregarlo automáticamente
+                if (numericCode === '54' && cleanedPhone.length > 0 && !cleanedPhone.startsWith('9')) {
+                    cleanedPhone = '9' + cleanedPhone;
+                }
+
                 // Asignar el teléfono completo: prefijo + número limpio (sin código duplicado)
                 formData.set('phone', prefix + cleanedPhone);
 

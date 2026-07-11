@@ -2593,7 +2593,8 @@
             finalize: "{{ route('web_cart_finalize') }}",
             abandoned: "{{ route('web_cart_abandoned') }}",
             searchPerson: "{{ route('sales_search_person_apies') }}",
-            description: "{{ url('curso-descripcion') }}"
+            description: "{{ url('curso-descripcion') }}",
+            slug: "{{ url('curso') }}"
         };
         const pendingPaidCartKey = 'pending_paid_cart_checkout';
 
@@ -2686,7 +2687,7 @@
                             </div>
                             <div class="cart-summary-content">
                                 <strong class="cart-summary-name">
-                                    <a href="${routes.description}/${item.id}" target="_blank">${item.name}</a>
+                                    <a href="${item.url_slug && item.landing_published == 1 ? routes.slug + '/' + item.url_slug : routes.description + '/' + item.id}" target="_blank">${item.name}</a>
                                 </strong>
                                 <div class="cart-summary-meta">
                                     <span><i class="fa fa-calendar" aria-hidden="true"></i> Modalidad: ${item.additional || 'Online'}</span>
