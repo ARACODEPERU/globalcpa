@@ -137,8 +137,8 @@
             $("body").addClass("light")
         }
         // Recargar en /carrito para que MercadoPago se renderice con el tema correcto
-        if (window.location.pathname === '/carrito') {
-            window.location.reload(true);
+        if (window.location.pathname.startsWith('/carrito')) {
+            setTimeout(function() { window.location.reload(); }, 100);
         }
     })
     $("body").addClass(localStorage.getItem("cion_mode") ? localStorage.getItem("cion_mode") : "light")
