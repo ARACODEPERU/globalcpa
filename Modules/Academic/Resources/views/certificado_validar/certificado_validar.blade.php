@@ -24,19 +24,59 @@
 
         @if ($person=="")
 
-        <form id="search-form" class="max-w-md mx-auto" method="get">
-            <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
-            <div class="relative">
-                <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
-                    </svg>
-                </div>
-                <input type="search" id="default-search" class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Ingresa Numero DNI" required
-                name="dni"/>
-                <button type="submit" class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"></button>
+        <div class="max-w-lg mx-auto mt-8">
+            <div class="text-center mb-6">
+                <p class="text-sm font-medium tracking-wide" style="color: #747682;">Ingresa tu número de DNI para consultar</p>
             </div>
-        </form>
+
+            <form id="search-form" method="get">
+                <label for="default-search" class="sr-only">Buscar por DNI</label>
+
+                <div class="relative flex items-center w-full rounded-2xl transition-all duration-300 ease-out"
+                     style="background: linear-gradient(135deg, #f5f5f5, #fff); border: 2px solid #d1d5dc; box-shadow: 0 4px 15px rgba(0,0,0,0.08);"
+                     onmouseover="this.style.boxShadow='0 8px 25px rgba(87,87,86,0.15)'; this.style.borderColor='#575756';"
+                     onmouseout="this.style.boxShadow='0 4px 15px rgba(0,0,0,0.08)'; this.style.borderColor='#d1d5dc';"
+                     onfocusin="this.style.borderColor='#e30613'; this.style.boxShadow='0 0 0 3px rgba(227,6,19,0.15), 0 8px 25px rgba(87,87,86,0.12)';"
+                     onfocusout="this.style.borderColor='#d1d5dc'; this.style.boxShadow='0 4px 15px rgba(0,0,0,0.08)';">
+
+                    <!-- Icono lupa -->
+                    <div class="flex items-center pl-5 pr-2 pointer-events-none shrink-0">
+
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/>
+                        </svg>
+                    </div>
+
+                    <!-- Input -->
+                    <div class="relative flex-1">
+                        <input
+                            type="text"
+                            id="default-search"
+                            class="w-full py-4 pr-4 bg-transparent border-0 focus:ring-0 focus:outline-none font-medium tracking-wide text-base"
+                            style="color: #575756;"
+                            placeholder="Ingresa Número DNI"
+                            required
+                            name="dni"
+                            autocomplete="off"
+                            inputmode="numeric"
+                            pattern="[0-9]*"
+                        />
+                    </div>
+
+                    <!-- Botón de envío -->
+                    <div class="pr-2">
+                        <button type="submit" class="relative flex items-center gap-2 px-6 py-3 text-white font-semibold text-sm rounded-xl transition-all duration-300 ease-out active:scale-95"
+                                style="background: linear-gradient(45deg, #575756, #e30613); box-shadow: 0 4px 12px rgba(87,87,86,0.25);"
+                                onmouseover="this.style.background='linear-gradient(45deg, #e30613, #575756)'; this.style.transform='translateY(-1px)'; this.style.boxShadow='0 6px 20px rgba(227,6,19,0.3)';"
+                                onmouseout="this.style.background='linear-gradient(45deg, #575756, #e30613)'; this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(87,87,86,0.25)';">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/>
+                            </svg>
+                            <span>Buscar</span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
 
         <script>
             document.getElementById('search-form').addEventListener('submit', function(event) {
@@ -57,25 +97,45 @@
                     <div>
                         <div class="text-2xl">{{ $person->full_name }}</div>
                     <div class="profile-image-container">
-                        <img src="{{ asset('storage/'.$person->image)}}" alt="{{ $person->full_name }}" class="profile-image">
+                        @if(!empty(trim($person->image ?? '')))
+                            <img src="{{ asset('storage/'.$person->image)}}" alt="{{ $person->full_name }}" class="profile-image">
+                        @else
+                            @php
+                                $nameParts = explode(' ', $person->full_name);
+                                $initials = strtoupper(mb_substr($nameParts[0], 0, 1));
+                                if (count($nameParts) > 1) {
+                                    $initials .= strtoupper(mb_substr(end($nameParts), 0, 1));
+                                }
+                            @endphp
+                            <span class="profile-initials">{{ $initials }}</span>
+                        @endif
                     </div>
                 </div>
 
                 <style>
                 .profile-image-container {
-                    width: 60px;
-                    height: 60px;
-                    border: 2px solid #ccc; /* Borde del círculo vacío */
-                    border-radius: 50%; /* Forma circular */
-                    overflow: hidden; /* Oculta cualquier parte de la imagen que se salga */
+                    width: 64px;
+                    height: 64px;
+                    border-radius: 50%;
+                    overflow: hidden;
                     display: flex;
                     align-items: center;
                     justify-content: center;
+                    border: 3px solid #575756;
+                    background: linear-gradient(45deg, #575756, #e30613);
+                    flex-shrink: 0;
                 }
                 .profile-image {
-                    max-width: 100%;
-                    max-height: 100%;
-                    object-fit: cover; /* Para que la imagen cubra el contenedor sin deformarse */
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                }
+                .profile-initials {
+                    color: #ffffff;
+                    font-weight: 700;
+                    font-size: 1.25rem;
+                    line-height: 1;
+                    user-select: none;
                 }
                 </style>
                 <br><hr>
