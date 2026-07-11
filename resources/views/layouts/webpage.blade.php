@@ -112,10 +112,13 @@
          * PREVENCIÓN DE PARPADEO Y SINCRONIZACIÓN DE MODO OSCURO
          */
         (function() {
-            if (localStorage.getItem("_x_darkMode_on") === "true") {
+            const isDark = localStorage.getItem("cion_mode") === "dark-only"
+                || localStorage.getItem("_x_darkMode_on") === "true";
+            if (isDark) {
                 document.documentElement.classList.add("dark");
-                // Aplicamos al body inmediatamente si ya existe, si no, lo haremos en un listener
-                window.addEventListener('DOMContentLoaded', () => document.body.classList.add("dark-only"));
+                document.body.classList.add("dark-only");
+                localStorage.setItem("cion_mode", "dark-only");
+                localStorage.setItem("_x_darkMode_on", "true");
             }
         })();
     </script>

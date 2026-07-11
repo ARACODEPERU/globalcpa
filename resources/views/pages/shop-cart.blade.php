@@ -2581,6 +2581,500 @@
                 width: 100%;
             }
         }
+
+        /* ===== Dark Mode ===== */
+        body.dark-only .checkout-page-body {
+            background: #111827;
+        }
+
+        body.dark-only #step-payment .checkout-wide,
+        body.dark-only .cart-table-card,
+        body.dark-only .checkout-payment-card,
+        body.dark-only .account-shell,
+        body.dark-only .checkout-progress-card {
+            background: #1e293b;
+            border-color: #334155;
+            color: #e2e8f0;
+        }
+
+        body.dark-only .cart-table-header h2,
+        body.dark-only .cart-table-header p,
+        body.dark-only .secure-payment-copy strong,
+        body.dark-only .secure-payment-copy small,
+        body.dark-only .checkout-payment-header h2 {
+            color: #f1f5f9;
+        }
+
+        body.dark-only .cart-table-header p,
+        body.dark-only .secure-payment-copy small {
+            color: #94a3b8;
+        }
+
+        body.dark-only .cart-table-header small {
+            background: rgba(220, 38, 38, 0.15);
+            color: #fca5a5;
+        }
+
+        body.dark-only .cart-summary-item {
+            background: #0f172a;
+            border-color: #334155;
+        }
+
+        body.dark-only .cart-summary-name {
+            color: #f1f5f9;
+        }
+
+        body.dark-only .cart-summary-name a {
+            color: #f1f5f9;
+        }
+
+        body.dark-only .cart-summary-meta {
+            color: #94a3b8;
+        }
+
+        body.dark-only .cart-summary-meta i {
+            color: #64748b;
+        }
+
+        body.dark-only .cart-summary-price span {
+            color: #94a3b8;
+        }
+
+        body.dark-only .cart-summary-price strong {
+            color: #60a5fa;
+        }
+
+        body.dark-only .cart-total-summary {
+            background: #0f172a;
+            border-color: #334155;
+        }
+
+        body.dark-only .cart-total-summary span {
+            color: #e2e8f0;
+        }
+
+        body.dark_only .cart-total-summary strong,
+        body.dark-only .cart-total-summary strong {
+            color: #60a5fa;
+        }
+
+        body.dark-only .checkout-total-row {
+            background: rgba(220, 38, 38, 0.1);
+            border-color: rgba(220, 38, 38, 0.3);
+            color: #f1f5f9;
+        }
+
+        body.dark-only .checkout-total-row strong {
+            color: #f87171;
+        }
+
+        body.dark-only .checkout-field label {
+            color: #cbd5e1;
+        }
+
+        body.dark-only .checkout-field input,
+        body.dark-only .checkout-select,
+        body.dark-only .phone-input-group select {
+            background: #0f172a;
+            border-color: #475569;
+            color: #f1f5f9;
+        }
+
+        body.dark-only .checkout-field input::placeholder {
+            color: #64748b;
+        }
+
+        body.dark-only .checkout-field input:focus,
+        body.dark-only .checkout-select:focus,
+        body.dark-only .phone-input-group select:focus {
+            border-color: #60a5fa;
+            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.15);
+        }
+
+        body.dark-only .secure-payment-note {
+            color: #94a3b8;
+        }
+
+        body.dark-only .secure-payment-note a {
+            color: #60a5fa;
+        }
+
+        body.dark-only .secure-payment-note .secure-payment-icon svg path {
+            fill: #60a5fa;
+        }
+
+        body.dark-only .checkout-step-text {
+            color: #94a3b8;
+        }
+
+        body.dark-only .checkout-step.active .checkout-step-text {
+            color: #f87171;
+        }
+
+        body.dark-only .checkout-steps::before {
+            background: #334155;
+        }
+
+        body.dark-only .checkout-step-number {
+            background: #1e293b;
+            border-color: #1e293b;
+            color: #e2e8f0;
+            box-shadow: 0 0 0 2px #475569;
+        }
+
+        body.dark-only .checkout-step.active .checkout-step-number {
+            background: #dc2626;
+            border-color: #dc2626;
+            color: #fff;
+            box-shadow: 0 0 0 2px #dc2626;
+        }
+
+        body.dark-only .checkout-step.done .checkout-step-number {
+            background: #1e293b;
+            border-color: #1e293b;
+            color: #e2e8f0;
+            box-shadow: 0 0 0 2px #475569;
+        }
+
+        body.dark-only .payment-brand {
+            color: #e2e8f0;
+        }
+
+        body.dark-only .payment-brand strong {
+            color: #f1f5f9;
+        }
+
+        body.dark-only .payment-brand small {
+            color: #94a3b8;
+        }
+
+        body.dark-only .security-check-grid {
+            background: #0f172a;
+            border-color: #334155;
+        }
+
+        body.dark-only .security-check-card {
+            border-color: #334155;
+            color: #e2e8f0;
+        }
+
+        body.dark-only .security-check-card strong {
+            color: #f1f5f9;
+        }
+
+        body.dark-only .security-check-card small {
+            color: #94a3b8;
+        }
+
+        body.dark-only .security-check-card-static:hover {
+            color: #e2e8f0;
+            border-color: #475569;
+        }
+
+        body.dark-only .boton-degradado-trash {
+            background: rgba(220, 38, 38, 0.15);
+            color: #f87171;
+        }
+
+        body.dark-only .boton-degradado-trash:hover {
+            background: rgba(220, 38, 38, 0.25);
+        }
+
+        /* MercadoPago Brick dark mode overrides */
+        body.dark-only #cardPaymentBrick_container {
+            background: #1e293b;
+            border-radius: 8px;
+        }
+
+        body.dark-only #cardPaymentBrick_container .mp-checkout-container,
+        body.dark-only #cardPaymentBrick_container .mp-card-form,
+        body.dark-only #cardPaymentBrick_container .mp-form,
+        body.dark-only #cardPaymentBrick_container .mp-brick-container {
+            background: #1e293b !important;
+            color: #e2e8f0 !important;
+        }
+
+        body.dark-only #cardPaymentBrick_container input,
+        body.dark-only #cardPaymentBrick_container select {
+            background: #0f172a !important;
+            border-color: #475569 !important;
+            color: #f1f5f9 !important;
+        }
+
+        body.dark-only #cardPaymentBrick_container label,
+        body.dark-only #cardPaymentBrick_container .mp-field-label {
+            color: #cbd5e1 !important;
+        }
+
+        body.dark-only #cardPaymentBrick_container .mp-input-wrapper {
+            background: #0f172a !important;
+            border-color: #475569 !important;
+        }
+
+        body.dark-only #cardPaymentBrick_container .mp-input {
+            background: #0f172a !important;
+            color: #f1f5f9 !important;
+        }
+
+        /* MercadoPago iframe / shadow DOM dark overrides */
+        body.dark-only #cardPaymentBrick_container iframe {
+            background: #1e293b !important;
+        }
+
+        body.dark-only #cardPaymentBrick_container [class*="form"], 
+        body.dark-only #cardPaymentBrick_container [class*="field"],
+        body.dark-only #cardPaymentBrick_container [class*="input"] {
+            background-color: #0f172a !important;
+            border-color: #475569 !important;
+            color: #f1f5f9 !important;
+        }
+
+        body.dark-only #cardPaymentBrick_container [class*="label"],
+        body.dark-only #cardPaymentBrick_container [class*="title"],
+        body.dark-only #cardPaymentBrick_container [class*="text"] {
+            color: #e2e8f0 !important;
+        }
+
+        body.dark-only #cardPaymentBrick_container [class*="secondary"],
+        body.dark-only #cardPaymentBrick_container [class*="subtitle"] {
+            color: #94a3b8 !important;
+        }
+
+        body.dark-only #cardPaymentBrick_container [class*="card"],
+        body.dark-only #cardPaymentBrick_container [class*="section"],
+        body.dark-only #cardPaymentBrick_container [class*="group"] {
+            background-color: #1e293b !important;
+        }
+
+        body.dark-only #cardPaymentBrick_container [class*="border"] {
+            border-color: #475569 !important;
+        }
+
+        body.dark-only #cardPaymentBrick_container [class*="divider"] {
+            border-color: #334155 !important;
+        }
+
+        /* Account & Invoice dark mode */
+        body.dark-only .account-tab {
+            background: #0f172a;
+            border-color: #334155;
+            color: #60a5fa;
+        }
+
+        body.dark-only .account-tab.active {
+            background: rgba(96, 165, 250, 0.1);
+            border-color: #60a5fa;
+        }
+
+        body.dark-only .account-tab strong {
+            color: #60a5fa;
+        }
+
+        body.dark-only .account-form-grid {
+            background: #0f172a;
+            border-color: #334155;
+        }
+
+        body.dark-only .invoice-tab {
+            background: #0f172a;
+            border-color: #334155;
+            color: #e2e8f0;
+        }
+
+        body.dark-only .invoice-tab.active {
+            background: rgba(96, 165, 250, 0.1);
+            border-color: #60a5fa;
+        }
+
+        body.dark-only .invoice-tab-grid .invoice-tab {
+            background: #0f172a;
+            border-color: #334155;
+            color: #e2e8f0;
+        }
+
+        body.dark-only .invoice-tab-grid .invoice-tab.active {
+            background: rgba(96, 165, 250, 0.1);
+            border-color: #60a5fa;
+        }
+
+        body.dark-only .invoice-tab-grid .invoice-tab strong {
+            color: #f1f5f9;
+        }
+
+        body.dark-only .invoice-tab-grid .invoice-tab small {
+            color: #94a3b8;
+        }
+
+        body.dark-only .invoice-radio-dot {
+            border-color: #64748b;
+        }
+
+        body.dark-only .invoice-tab.active .invoice-radio-dot {
+            background: #60a5fa;
+            border-color: #60a5fa;
+        }
+
+        body.dark-only .invoice-form-grid {
+            background: #0f172a;
+            border-color: #334155;
+        }
+
+        body.dark-only .final-section-heading h3 {
+            color: #f1f5f9;
+        }
+
+        body.dark-only .final-section-heading p {
+            color: #94a3b8;
+        }
+
+        body.dark-only .final-section-icon {
+            color: #60a5fa;
+        }
+
+        body.dark-only .final-info-note {
+            background: #0f172a;
+            border-color: #334155;
+            color: #94a3b8;
+        }
+
+        body.dark-only .final-info-note .final-section-icon {
+            background: rgba(96, 165, 250, 0.1);
+            border-color: #334155;
+        }
+
+        body.dark-only .final-success-card {
+            background: rgba(22, 163, 74, 0.1);
+            border-color: rgba(22, 163, 74, 0.3);
+        }
+
+        body.dark-only .final-success-card strong {
+            color: #4ade80;
+        }
+
+        body.dark-only .final-success-card small {
+            color: #86efac;
+        }
+
+        body.dark-only .final-secure-note {
+            color: #64748b;
+        }
+
+        body.dark-only .account-header h2 {
+            color: #f1f5f9;
+        }
+
+        body.dark-only .account-header p {
+            color: #94a3b8;
+        }
+
+        body.dark-only .final-step-kicker {
+            color: #60a5fa;
+        }
+
+        /* Modals dark mode */
+        body.dark-only .payment-warning-dialog,
+        body.dark-only .phone-required-dialog,
+        body.dark-only .account-conflict-dialog,
+        body.dark-only .pending-paid-dialog {
+            background: #1e293b;
+            color: #e2e8f0;
+        }
+
+        body.dark-only .payment-warning-dialog h3,
+        body.dark-only .phone-required-dialog h3,
+        body.dark-only .account-conflict-dialog h3,
+        body.dark-only .pending-paid-dialog h3 {
+            color: #f1f5f9;
+        }
+
+        body.dark-only .payment-warning-dialog p,
+        body.dark-only .phone-required-dialog p,
+        body.dark-only .account-conflict-dialog p,
+        body.dark-only .pending-paid-dialog p {
+            color: #cbd5e1;
+        }
+
+        body.dark-only .phone-required-dialog {
+            border-color: #334155;
+            border-top-color: #3b82f6;
+        }
+
+        body.dark-only .account-conflict-dialog {
+            border-color: #334155;
+            border-top-color: #dc2626;
+        }
+
+        body.dark-only .pending-paid-dialog {
+            border-color: #334155;
+            border-top-color: #16a34a;
+        }
+
+        body.dark-only .phone-required-close,
+        body.dark-only .account-conflict-close,
+        body.dark-only .pending-paid-close {
+            background: #334155;
+            color: #e2e8f0;
+        }
+
+        body.dark-only .account-conflict-secondary {
+            background: #334155;
+            border-color: #475569;
+            color: #e2e8f0;
+        }
+
+        body.dark-only .account-conflict-support a {
+            background: rgba(220, 38, 38, 0.1);
+            border-color: rgba(220, 38, 38, 0.3);
+            color: #f87171;
+        }
+
+        body.dark-only .pending-paid-course {
+            background: #0f172a;
+            border-color: #334155;
+        }
+
+        body.dark-only .pending-paid-course strong {
+            color: #f1f5f9;
+        }
+
+        body.dark-only .pending-paid-course small {
+            color: #94a3b8;
+        }
+
+        body.dark-only .phone-required-icon {
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+        }
+
+        body.dark-only .phone-required-kicker {
+            color: #60a5fa;
+        }
+
+        body.dark-only .account-conflict-icon {
+            background: #dc2626;
+            box-shadow: 0 0 0 9px rgba(220, 38, 38, 0.2);
+        }
+
+        body.dark-only .account-conflict-kicker {
+            color: #4ade80;
+        }
+
+        body.dark-only .pending-paid-icon {
+            background: #16a34a;
+            box-shadow: 0 0 0 9px rgba(22, 163, 74, 0.2);
+        }
+
+        body.dark-only .pending-paid-kicker {
+            color: #4ade80;
+        }
+
+        body.dark-only .payment-brand-logo {
+            filter: brightness(0.9);
+        }
+
+        body.dark-only .mp-loading-message {
+            color: #94a3b8;
+        }
     </style>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -2827,6 +3321,82 @@
             showStep('final');
         }
 
+        function injectDarkStylesIntoShadowDOM() {
+            if (!document.body.classList.contains('dark-only')) return;
+
+            const darkCSS = `
+                :host, :root { background-color: #1e293b !important; color: #e2e8f0 !important; }
+                .mp-header-title, .mp-title, [class*="header-title"], [class*="HeaderTitle"] {
+                    color: #ffffff !important; font-weight: 700 !important;
+                }
+                .mp-brick-container, .mp-checkout-container, .mp-card-form, .mp-form {
+                    background-color: #1e293b !important; color: #e2e8f0 !important;
+                }
+                .mp-field-label, label, [class*="label"], [class*="Label"] {
+                    color: #cbd5e1 !important;
+                }
+                .mp-input, input, select, [class*="input"], [class*="Input"] {
+                    background-color: #0f172a !important; color: #f1f5f9 !important;
+                    border-color: #475569 !important;
+                }
+                .mp-input:focus, input:focus, select:focus {
+                    border-color: #60a5fa !important;
+                    box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.25) !important;
+                }
+                .mp-input::placeholder, input::placeholder { color: #64748b !important; }
+                [class*="secondary"], [class*="Secondary"], [class*="subtitle"], [class*="Subtitle"] {
+                    color: #94a3b8 !important;
+                }
+                [class*="divider"], [class*="Divider"], hr { border-color: #334155 !important; }
+                [class*="card"], [class*="Card"], [class*="section"], [class*="Section"] {
+                    background-color: #1e293b !important;
+                }
+                [class*="border"], [class*="Border"] { border-color: #475569 !important; }
+                [class*="row"], [class*="Row"] { border-color: #334155 !important; }
+                [class*="option"], [class*="Option"] {
+                    background-color: #0f172a !important; border-color: #475569 !important;
+                }
+                [class*="option"]:hover, [class*="Option"]:hover {
+                    background-color: #1e293b !important;
+                }
+                [class*="text"], [class*="Text"], [class*="body"], [class*="Body"] {
+                    color: #e2e8f0 !important;
+                }
+                [class*="helper"], [class*="Helper"], [class*="error"], [class*="Error"] {
+                    color: #f87171 !important;
+                }
+                [class*="success"], [class*="Success"] { color: #4ade80 !important; }
+                button[type="submit"], [class*="button"], [class*="Button"],
+                [class*="submit"], [class*="Submit"] {
+                    background-color: #dc2626 !important; color: #ffffff !important;
+                    border-color: #dc2626 !important;
+                }
+                button[type="submit"]:hover, [class*="button"]:hover, [class*="Button"]:hover {
+                    background-color: #b91c1c !important;
+                }
+            `;
+
+            const container = document.getElementById('cardPaymentBrick_container');
+            if (!container) return;
+
+            function injectIntoShadowRoots(root) {
+                root.querySelectorAll('*').forEach(el => {
+                    if (el.shadowRoot) {
+                        let styleEl = el.shadowRoot.querySelector('.mp-dark-inject');
+                        if (!styleEl) {
+                            styleEl = document.createElement('style');
+                            styleEl.className = 'mp-dark-inject';
+                            styleEl.textContent = darkCSS;
+                            el.shadowRoot.prepend(styleEl);
+                        }
+                        injectIntoShadowRoots(el.shadowRoot);
+                    }
+                });
+            }
+
+            injectIntoShadowRoots(container);
+        }
+
         async function renderMercadoPago(currentPaymentVersion) {
             const container = document.getElementById('cardPaymentBrick_container');
             parkPaymentPhoneField();
@@ -2840,6 +3410,9 @@
                 const mp = new MercadoPago(mercadoPublicKey, { locale: 'es-PE' });
                 const bricksBuilder = mp.bricks();
 
+                const isDarkMode = document.body.classList.contains('dark-only') || document.body.classList.contains('dark');
+                const brickTheme = isDarkMode ? 'dark' : 'bootstrap';
+
                 const brickPromise = bricksBuilder.create('cardPayment', 'cardPaymentBrick_container', {
                     initialization: {
                         preferenceId,
@@ -2848,8 +3421,8 @@
                     customization: {
                         visual: {
                             style: {
+                                theme: brickTheme,
                                 customVariables: {
-                                    theme: 'bootstrap',
                                     baseColor: '#dc2626',
                                     baseColorFirstVariant: '#b91c1c',
                                     baseColorSecondVariant: '#991b1b',
@@ -2866,6 +3439,8 @@
                             parkPaymentPhoneField();
                             attachMercadoPagoPhoneGuard();
                             hideAlert();
+                            // Inyectar estilos dark en shadow DOM de MercadoPago
+                            injectDarkStylesIntoShadowDOM();
                         },
                         onSubmit: (cardFormData) => {
                             hideAlert();
