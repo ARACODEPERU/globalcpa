@@ -242,13 +242,13 @@
                 </div>
             </div>
             <script>
-                window.onload = function() {
-                    // Espera 1 segundo para mejorar la experiencia de usuario
-                    setTimeout(function() {
-                        // Redirecciona a la misma URL con el fragmento #todos al final
-                        window.location.href = window.location.href.split('#')[0] + '#todos';
-                    }, 500);
-                };
+                // window.onload = function() {
+                //     // Espera 1 segundo para mejorar la experiencia de usuario
+                //     setTimeout(function() {
+                //         // Redirecciona a la misma URL con el fragmento #todos al final
+                //         window.location.href = window.location.href.split('#')[0] + '#todos';
+                //     }, 500);
+                // };
 
                 function unhidden(id) {
                     // 1. Obtener el elemento por su ID
