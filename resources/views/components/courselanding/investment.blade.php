@@ -201,6 +201,7 @@
                                 </div>
                                 <form id="modalContactForm">
                                     @csrf
+                                    <input type="hidden" name="flow_id" value="{{ $landing->flow_id ?? null}}">
                                     <input type="hidden" name="subject" value="{{ $landing->course->description ?? 'Curso' }}">
                                     <input type="hidden" name="message" value="Desde Landing - Modal Financiamiento">
 
