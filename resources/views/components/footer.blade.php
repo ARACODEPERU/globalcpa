@@ -163,7 +163,7 @@
                             aria-label="Facebook">
                             <img style="width: 30px; height: 30px;" src="{{ asset('themes/webpage/images/logos/facebook-round.svg') }}" alt="Facebook">
                         </a>
-                        <a href="https://www.instagram.com/globalcpaperu" target="_blank" class="social-icon-link"
+                        <a href="https://www.instagram.com/academycpa?igsh=ano2ZGNoNjkyeGdk" target="_blank" class="social-icon-link"
                             aria-label="Instagram">
                             <img style="width: 30px; height: 30px;" src="{{ asset('themes/webpage/images/logos/instagram-round.svg') }}" alt="Instagram">
                         </a>

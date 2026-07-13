@@ -208,7 +208,7 @@
                 <div class="d-flex flex-column justify-content-center h-100">
                     <!-- Item 3 -->
                     <div class="solution-item-modern solution-item-right" data-aos="fade-left" data-aos-delay="100">
-                        <div class="solution-icon-modern"><i class="fa fa-handshake-o" aria-hidden="true"></i></div>
+                        <div class="solution-icon-modern"><i class="fa fa-handshake" aria-hidden="true"></i></div>
                         <div class="solution-text-modern">
                             <h3>Certificación ACCA</h3>
                             <p>Único Approved Learning Partner en Perú para tu preparación.</p>
