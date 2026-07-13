@@ -511,7 +511,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="container-fluid">
+                <div class="container-fluid" style="padding: 40px 0px 20px 0px;">
                     <div class="row">
                         <div class="col-md-12">
                             <h1 class="title_aracode" style="font-size: 45px; line-height: 1.1; font-weight: 700;">
@@ -520,7 +520,9 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6 xl:grid-cols-4">
+                    <br>
+
+                    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6 xl:grid-cols-3">
                         <div class="card">
                             <div class="flex grow flex-col items-center px-4 pb-4 sm:px-5">
                                 <img style="width: 100%; margin-top: 20px;"
