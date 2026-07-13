@@ -60,34 +60,34 @@
 
                                     <div x-data="{ activeTab: 'tabHome' }" class="tabs flex flex-col">
                                         <div
-                                            class="is-scrollbar-hidden overflow-x-auto rounded-lg bg-slate-200 text-slate-600 dark:bg-navy-800 dark:text-navy-200">
+                                            class="is-scrollbar-hidden overflow-x-auto rounded-lg bg-slate-200 dark:bg-slate-200 text-slate-600">
                                             <div class="tabs-list flex px-1.5 py-1">
                                                 <button @click="activeTab = 'tabHome'"
                                                     :class="activeTab === 'tabHome' ?
-                                                        'bg-white shadow dark:bg-navy-500 dark:text-navy-100' :
-                                                        'hover:text-slate-800 focus:text-slate-800 dark:hover:text-navy-100 dark:focus:text-navy-100'"
-                                                    class="btn shrink-0 px-3 py-1.5 font-medium">
+                                                        'bg-white text-slate-900 shadow dark:bg-slate-100 dark:text-slate-950' :
+                                                        'text-slate-600 hover:text-slate-800 dark:text-slate-400 dark:hover:text-red-600'"
+                                                    class="btn shrink-0 px-3 py-1.5 font-medium transition-colors">
                                                     Obligación
                                                 </button>
                                                 <button @click="activeTab = 'tabProfile'"
                                                     :class="activeTab === 'tabProfile' ?
-                                                        'bg-white shadow dark:bg-navy-500 dark:text-navy-100' :
-                                                        'hover:text-slate-800 focus:text-slate-800 dark:hover:text-navy-100 dark:focus:text-navy-100'"
-                                                    class="btn shrink-0 px-3 py-1.5 font-medium">
+                                                        'bg-white text-slate-900 shadow dark:bg-slate-100 dark:text-slate-950' :
+                                                        'text-slate-600 hover:text-slate-800 dark:text-slate-400 dark:hover:text-red-600'"
+                                                    class="btn shrink-0 px-3 py-1.5 font-medium transition-colors">
                                                     ¿Qué hace a esta obra única y útil?
                                                 </button>
                                                 <button @click="activeTab = 'tabMessages'"
                                                     :class="activeTab === 'tabMessages' ?
-                                                        'bg-white shadow dark:bg-navy-500 dark:text-navy-100' :
-                                                        'hover:text-slate-800 focus:text-slate-800 dark:hover:text-navy-100 dark:focus:text-navy-100'"
-                                                    class="btn shrink-0 px-3 py-1.5 font-medium">
+                                                        'bg-white text-slate-900 shadow dark:bg-slate-100 dark:text-slate-950' :
+                                                        'text-slate-600 hover:text-slate-800 dark:text-slate-400 dark:hover:text-red-600'"
+                                                    class="btn shrink-0 px-3 py-1.5 font-medium transition-colors">
                                                     Sobre su autor
                                                 </button>
                                                 <button @click="activeTab = 'tabSettings'"
                                                     :class="activeTab === 'tabSettings' ?
-                                                        'bg-white shadow dark:bg-navy-500 dark:text-navy-100' :
-                                                        'hover:text-slate-800 focus:text-slate-800 dark:hover:text-navy-100 dark:focus:text-navy-100'"
-                                                    class="btn shrink-0 px-3 py-1.5 font-medium">
+                                                        'bg-white text-slate-900 shadow dark:bg-slate-100 dark:text-slate-950' :
+                                                        'text-slate-600 hover:text-slate-800 dark:text-slate-400 dark:hover:text-red-600'"
+                                                    class="btn shrink-0 px-3 py-1.5 font-medium transition-colors">
                                                     Estructura de la obra
                                                 </button>
                                             </div>
