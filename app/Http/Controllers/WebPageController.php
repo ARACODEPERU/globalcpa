@@ -36,6 +36,7 @@ use Illuminate\Support\Facades\DB;
 use Modules\Academic\Entities\AcaStudentCoursesInterest;
 use Modules\CMS\Entities\CmsLanding;
 use Modules\Onlineshop\Entities\OnliCarritoAbandonado;
+use Modules\Onlineshop\Entities\OnliPaymentProblem;
 use Spatie\Permission\Models\Role;
 
 class WebPageController extends Controller
@@ -633,6 +634,35 @@ public function course_url_slug($id){
 
             $sale->save();
 
+            // Guardar en payment_problems si el pago fue aprobado pero aún no se ha completado el registro
+            OnliPaymentProblem::create([
+                'sale_id' => $sale->id,
+                'phone_country' => ltrim($phoneCode ?? '', '+'),
+                'phone' => $phoneNumber ?? null,
+                'email' => $payer['email'] ?? null,
+                'clie_full_name' => $payerName,
+                'amount' => $expectedTotal,
+                'payment_method' => $cardData['payment_method_id'] ?? null,
+                'courses_info' => $items->map(function ($item) {
+                    return [
+                        'id' => $item->id,
+                        'item_id' => $item->item_id,
+                        'name' => $item->name,
+                        'image' => $item->image,
+                        'price' => $item->price,
+                        'additional' => $item->additional,
+                    ];
+                })->toArray(),
+                'payment_data' => [
+                    'payment_id' => $payment->id,
+                    'status' => $payment->status,
+                    'payment_method_id' => $cardData['payment_method_id'] ?? null,
+                    'installments' => $cardData['installments'] ?? 1,
+                    'payer' => $payer,
+                ],
+                'status' => 'pending',
+            ]);
+
             OnliCarritoAbandonado::where('paid', false)
                 ->where(function ($q) use ($phoneCode, $phoneNumber, $payer) {
                     if (!empty($phoneNumber)) {
@@ -831,6 +861,9 @@ public function course_url_slug($id){
             $onliSale->clie_full_name = $onliSale->clie_full_name ?: $person->full_name;
             $onliSale->nota_sale_id = $saleNote->id;
             $onliSale->save();
+
+            // Si existía un registro en payment_problems, eliminarlo (usuario completó el proceso)
+            OnliPaymentProblem::where('sale_id', $onliSale->id)->delete();
 
             foreach ($onliSale->details as $detail) {
                 $item = $detail->item ?: OnliItem::find($detail->onli_item_id);

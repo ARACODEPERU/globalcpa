@@ -60,6 +60,7 @@ class ProcessCarritoAbandonado implements ShouldQueue
                 $record->update([
                     'notification_sent_at' => Carbon::now(),
                     'notification_count' => $record->notification_count + 1,
+                    'last_success_at' => Carbon::now(),
                 ]);
             }
         } catch (\Throwable $th) {
@@ -67,6 +68,15 @@ class ProcessCarritoAbandonado implements ShouldQueue
                 'message' => 'ProcessCarritoAbandonado: ' . $th->getMessage(),
                 'source' => 'ProcessCarritoAbandonado',
             ]);
+
+            // También contar el intento fallido para llegar al límite de 5
+            $record = OnliCarritoAbandonado::find($this->recordId);
+            if ($record) {
+                $record->update([
+                    'notification_sent_at' => Carbon::now(),
+                    'notification_count' => $record->notification_count + 1,
+                ]);
+            }
         }
     }
 }

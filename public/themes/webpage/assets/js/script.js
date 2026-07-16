@@ -121,18 +121,24 @@
         }
     });
    $(".mode").on("click", function () {
-        const bodyModeDark = $("body").hasClass("dark-only") 
+        const bodyModeDark = $("body").hasClass("dark-only")
         if(!bodyModeDark){
             $(".mode").addClass("active")
             localStorage.setItem("cion_mode","dark-only")
+            localStorage.setItem("_x_darkMode_on","true")
             $("body").addClass("dark-only")
             $("body").removeClass("light")
         }
         if(bodyModeDark){
             $(".mode").removeClass("active")
             localStorage.setItem("cion_mode","light")
+            localStorage.setItem("_x_darkMode_on","false")
             $("body").removeClass("dark-only")
             $("body").addClass("light")
+        }
+        // Recargar en /carrito para que MercadoPago se renderice con el tema correcto
+        if (window.location.pathname.startsWith('/carrito')) {
+            setTimeout(function() { window.location.reload(); }, 100);
         }
     })
     $("body").addClass(localStorage.getItem("cion_mode") ? localStorage.getItem("cion_mode") : "light")

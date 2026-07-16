@@ -93,6 +93,30 @@
             text-transform: uppercase;
             letter-spacing: 0.1px;
         }
+
+        .teachers-section-opt3 .row {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .teachers-section-opt3 .row > [class*="col-"] {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .teachers-section-opt3 .teacher-card-opt3 {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            box-sizing: border-box;
+        }
+
+        .teachers-section-opt3 .teacher-content-opt3 {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
     </style>
 
     <section class="teachers-section-opt3">

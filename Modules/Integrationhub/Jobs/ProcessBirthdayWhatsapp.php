@@ -20,15 +20,17 @@ class ProcessBirthdayWhatsapp implements ShouldQueue
     public string $phone;
     public string $email;
     public string $name;
+    public ?string $role;
 
     /**
      * Create a new job instance.
      */
-    public function __construct(string $phone, string $email, string $name)
+    public function __construct(string $phone, string $email, string $name, ?string $role = null)
     {
         $this->phone = $phone;
         $this->email = $email;
         $this->name = $name;
+        $this->role = $role;
     }
 
     /**
@@ -41,7 +43,15 @@ class ProcessBirthdayWhatsapp implements ShouldQueue
         try {
             // 1. Enviar correo de felicitación de cumpleaños
             //Mail::to($this->email)->send(new BirthdayGreetingMail($this->name));
-            $flowId = IntegrationFlowId::where('key', 'birthday_greeting')->value('flow_id') ?? '1780844285916';
+            $flowId = '1780844285916';
+
+            // Si la persona tiene rol Docente, usar el flow_id específico para docentes sino se presume es ALumno
+            if ($this->role === 'Docente') {
+                $flowId = IntegrationFlowId::where('key', 'birthday_greeting_teacher')->value('flow_id') ?? '1782495662257';
+            }else{
+                $flowId = IntegrationFlowId::where('key', 'birthday_greeting')->value('flow_id') ?? '1780844285916';
+            }
+
             // 2. Crear contacto en la API externa e Iniciar flujo de WhatsApp de cumpleaños
             $hub->runEndpoint('create_contact', [
                 'phone' => $this->phone,

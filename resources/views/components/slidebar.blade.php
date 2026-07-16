@@ -108,8 +108,12 @@
                         </a>
                         <ul x-collapse x-show="expanded">
                             @foreach ($courses as $item)
+                                @php
+                                    $hasPublishedLanding = filled($item->course?->landing?->url_slug) && ($item->course?->landing?->is_published ?? false);
+                                    $courseUrl = $hasPublishedLanding ? route('course_url_slug', $item->course?->landing?->url_slug) : route('web_course_description', $item->id);
+                                @endphp
                                 <li>
-                                    <a x-data="navLink" href="{{ route('web_course_description', $item->id) }}"
+                                    <a x-data="navLink" href="{{ $courseUrl }}"
                                         class="flex items-center justify-between p-1 text-xs+ tracking-wide transition-[color,padding-left] duration-300 ease-in-out hover:pl-4">
                                         <div class="flex items-center space-x-2">
                                             <div class="size-0.5 opacity-60"</div>

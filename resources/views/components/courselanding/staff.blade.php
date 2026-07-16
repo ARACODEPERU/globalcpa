@@ -57,7 +57,7 @@
 
 
                     <div class="carousel-viewport" style="padding: 40px 0;">
-                        <div class="carousel-track" style="animation-duration: 50s;">
+                        <div class="carousel-track" id="carouselTrack" style="animation-duration: 50s;">
                             {{-- Se duplica el contenido solo si hay menos de 6 docentes --}}
                             @php
                             $teachersToShow = count($teachersPremium) < 6
@@ -141,9 +141,40 @@
         .carousel-track:hover { animation-play-state: paused; }
         @keyframes scroll-infinite { 0% { transform: translateX(0); } 100% { transform: translateX(calc(-50% - 15px)); } }
         .teacher-carousel-item { flex-shrink: 0; }
+
+        /* Modo centrado cuando los items caben en el viewport */
+        .carousel-track.carousel-centered {
+            width: 100% !important;
+            justify-content: center !important;
+            animation: none !important;
+        }
+        .carousel-track.carousel-centered:hover {
+            animation-play-state: running;
+        }
     </style>
 
     <script>
+        // Detectar si los items caben en el viewport y centrarlos si es así
+        function checkCarouselFit() {
+            const track = document.getElementById('carouselTrack');
+            if (!track) return;
+
+            const viewport = track.parentElement;
+            const viewportWidth = viewport.offsetWidth;
+            const trackWidth = track.scrollWidth;
+
+            // Si el ancho total del track cabe en el viewport, centrar y sin animación
+            if (trackWidth <= viewportWidth) {
+                track.classList.add('carousel-centered');
+            } else {
+                track.classList.remove('carousel-centered');
+            }
+        }
+
+        // Ejecutar al cargar y al redimensionar
+        document.addEventListener('DOMContentLoaded', checkCarouselFit);
+        window.addEventListener('resize', checkCarouselFit);
+
         function openTeacherModal(element) {
             const teacherData = JSON.parse(atob(element.getAttribute('data-teacher')));
             showTeacherDetails(teacherData);

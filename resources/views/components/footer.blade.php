@@ -142,7 +142,7 @@
                     <ul>
                         <li><a href="{{ route('politicas_privacidad') }}">Políticas de privacidad</a></li>
                         <li><a href="{{ route('politicas_devoluciones') }}">Políticas de devoluciones</a></li>
-                        <li><a href="{{ route('terms_main') }}">Términos y condiciones</a></li>
+                        <li><a href="{{ route('terms_main') }}">Términos <br>y condiciones</a></li>
                     </ul>
                 </div>
 
@@ -161,19 +161,27 @@
                     <div class="social-icons-modern">
                         <a href="https://www.facebook.com/globalcpaperu" target="_blank" class="social-icon-link"
                             aria-label="Facebook">
-                            <img src="{{ asset('themes/webpage/images/logos/facebook-round.svg') }}" alt="Facebook">
+                            <img style="width: 30px; height: 30px;" src="{{ asset('themes/webpage/images/logos/facebook-round.svg') }}" alt="Facebook">
                         </a>
-                        <a href="https://www.instagram.com/globalcpaperu" target="_blank" class="social-icon-link"
+                        <a href="https://www.instagram.com/academycpa?igsh=ano2ZGNoNjkyeGdk" target="_blank" class="social-icon-link"
                             aria-label="Instagram">
-                            <img src="{{ asset('themes/webpage/images/logos/instagram-round.svg') }}" alt="Instagram">
+                            <img style="width: 30px; height: 30px;" src="{{ asset('themes/webpage/images/logos/instagram-round.svg') }}" alt="Instagram">
                         </a>
                         <a href="https://www.tiktok.com/@globalcpa" target="_blank" class="social-icon-link"
                             aria-label="TikTok">
-                            <img src="{{ asset('themes/webpage/images/logos/tik_tok-round.svg') }}" alt="TikTok">
+                            <img style="width: 30px; height: 30px;" src="{{ asset('themes/webpage/images/logos/tik_tok-round.svg') }}" alt="TikTok">
                         </a>
                         <a href="https://www.youtube.com/@globalcpaperu" target="_blank" class="social-icon-link"
                             aria-label="YouTube">
-                            <img src="{{ asset('themes/webpage/images/logos/youtube-round.svg') }}" alt="YouTube">
+                            <img style="width: 30px; height: 30px;" src="{{ asset('themes/webpage/images/logos/youtube-round.svg') }}" alt="YouTube">
+                        </a>
+                        <a href="https://www.linkedin.com/school/academy-cpa/" target="_blank" class="social-icon-link"
+                            aria-label="LinkedIn">
+                            <img style="width: 30px; height: 30px;" src="{{ asset('themes/webpage/images/logos/linkedin.png') }}" alt="LinkedIn">
+                        </a>
+                        <a href="https://wa.me/51967052506" target="_blank" class="social-icon-link"
+                            aria-label="WhatsApp">
+                            <img style="width: 30px; height: 30px;" src="{{ asset('themes/webpage/images/logos/whatsapp.png') }}" alt="WhatsApp">
                         </a>
                     </div>
                 </div>

@@ -94,14 +94,14 @@
 
                             </ul>
                         </li>
-                        <li class="sidebar-list" style="padding: 15px 0px;">
+                        {{-- <li class="sidebar-list" style="padding: 15px 0px;">
                             <a class="sidebar-link sidebar-title" href="{{ route('web_subscriptions') }}">
                                 <span>
                                     <i class="fa fa-briefcase" aria-hidden="true" style="font-size: 26px;"></i><br>
                                     Empresas
                                 </span>
                             </a>
-                        </li>
+                        </li> --}}
                         <li class="sidebar-list" style="padding: 15px 0px;">
                             <a class="sidebar-link sidebar-title" href="{{ route('web_book_amauta') }}">
                                 <span>
@@ -138,12 +138,10 @@
             bottom: 0;
             right: 0;
             padding: 0 5px;
-            background: white;
-            /* Ajusta este color al fondo de tu sitio */
-            /* Agrega la transición para que los puntos suspensivos desaparezcan suavemente */
+            background: transparent;
+            color: inherit;
             transition: opacity 0.2s ease-in-out;
             opacity: 1;
-            /* Por defecto, los puntos suspensivos son visibles */
         }
 
         /* Clase para mostrar el texto completo */
