@@ -23,3 +23,5 @@ classify_files.py
 /app/Helpers/Invoices/Certificates/
 .mimocode/.cron-lock
 /.mimocode
+.mimocode\
+.mimocode/.cron-lock
