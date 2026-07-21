@@ -601,7 +601,7 @@
                     <div class="w-full p-4">
                         <div class="grid grid-cols-3">
                             <div class="col-span-3 sm:col-span-1">
-                                <form  class="grid sm:grid-cols-2 gap-6">
+                                <form @submit.prevent="form.get(route('acco_sales_special_rates'))" class="grid sm:grid-cols-2 gap-6">
                                     <div class="w-full">
                                         <flat-pickr v-model="form.issue_date" class="form-input" :config="basic"></flat-pickr>
                                     </div>
