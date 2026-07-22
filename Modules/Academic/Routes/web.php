@@ -130,7 +130,7 @@ Route::middleware(['auth', 'verified', 'invalid_updated_information', 'user_acti
 
     Route::post('students/store', 'AcaStudentController@store')
         ->name('aca_students_store');
-    Route::middleware(['auth', 'permission:aca_estudiante_enviar_correo_acceso'])
+    Route::middleware(['auth', 'permission:aca_estudiante_nuevo'])
         ->get('students/send/accessmail/{personId}', [AcaStudentController::class, 'sendAccessMail'])
         ->name('aca_students_send_access_mail');
 
