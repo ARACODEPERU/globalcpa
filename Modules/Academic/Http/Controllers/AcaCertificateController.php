@@ -1702,9 +1702,32 @@ class AcaCertificateController extends Controller
                     // Verificar que la persona está inscrita en el curso
                     $student = AcaStudent::where('person_id', $person->id)->first();
                     if ($student) {
-                        $isEnrolled = AcaCapRegistration::where('student_id', $student->id)
-                            ->where('course_id', $module->course_id)
+                        $today = Carbon::today();
+
+                        // 1. Verificar si tiene una suscripción activa
+                        $hasActiveSubscription = \Modules\Academic\Entities\AcaStudentSubscription::where('student_id', $student->id)
+                            ->where(function ($query) use ($today) {
+                                $query->where('status', true)
+                                    ->orWhere(function ($q) use ($today) {
+                                        $q->whereDate('date_start', '<=', $today)
+                                            ->whereDate('date_end', '>=', $today);
+                                    });
+                            })
                             ->exists();
+
+                        // 2. Verificar si está matriculado en el curso (con matrícula vigente)
+                        $hasValidRegistration = AcaCapRegistration::where('student_id', $student->id)
+                            ->where('course_id', $module->course_id)
+                            ->where(function ($query) use ($today) {
+                                $query->where('unlimited', true)
+                                    ->orWhere(function ($q) use ($today) {
+                                        $q->where('unlimited', false)
+                                            ->whereDate('date_end', '>=', $today);
+                                    });
+                            })
+                            ->exists();
+
+                        $isEnrolled = $hasActiveSubscription || $hasValidRegistration;
                     }
 
                     if ($isEnrolled) {
