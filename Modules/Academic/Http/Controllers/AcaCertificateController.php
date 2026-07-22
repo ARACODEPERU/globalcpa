@@ -1460,11 +1460,34 @@ class AcaCertificateController extends Controller
         $this->pushModuleCertificateText($texts, $parameter, $side, 'names', $studentName);
         $this->pushModuleCertificateText($texts, $parameter, $side, 'title', $courseTitle, (int) ($this->certificateField($parameter, $side, 'max_width_title') ?? 800));
 
+        // Obtener configuración del módulo para la descripción
+        $moduleConfig = $parameter->moduleConfig;
+        $visibleModuleDescription = $moduleConfig ? ($moduleConfig->visible_module_description ?? false) : false;
+
         if ($side === 'front') {
             if (($parameter->content_type ?? 'description') !== 'table') {
-                // Descripción del módulo
+                // Descripción del módulo - usar configuración del módulo si está disponible
                 $description = $module->certificate_description ?? '';
-                $this->pushModuleCertificateText($texts, $parameter, $side, 'description', $description, (int) ($parameter->max_width_description ?? 800), true);
+                if ($visibleModuleDescription && $description) {
+                    $fontSize = (int) ($moduleConfig->font_size_module_description ?? 14);
+                    $maxWidth = (int) ($moduleConfig->max_width_module_description ?? 800);
+                    $texts[] = [
+                        'id' => $side.'-description',
+                        'text' => $description,
+                        'x' => (float) ($moduleConfig->position_module_description_x ?? 425),
+                        'y' => (float) ($moduleConfig->position_module_description_y ?? 350),
+                        'font_size' => $fontSize,
+                        'font_family' => $this->certificateFontFamily($moduleConfig->fontfamily_module_description ?? 'Arial'),
+                        'color' => $moduleConfig->color_module_description ?? '#1a1c2d',
+                        'align' => $moduleConfig->text_align_module_description ?? 'left',
+                        'vertical_align' => $moduleConfig->font_vertical_module_description ?? 'top',
+                        'width' => $maxWidth,
+                        'line_height' => 1.25,
+                    ];
+                } elseif (! $moduleConfig) {
+                    // Sin configuración de módulo, usar parámetro general
+                    $this->pushModuleCertificateText($texts, $parameter, $side, 'description', $description, (int) ($parameter->max_width_description ?? 800), true);
+                }
             }
         } elseif ($parameter->back_content_show_manual) {
             $this->pushModuleCertificateText($texts, $parameter, $side, 'description', $parameter->back_description ?? '', (int) ($parameter->back_max_width_description ?? 800), true);
@@ -1631,14 +1654,16 @@ class AcaCertificateController extends Controller
     private function findModuleCertificate($courseId)
     {
         // Primero: certificado específico del curso
-        $certificate = AcaCertificateParameter::where('for_module', true)
+        $certificate = AcaCertificateParameter::with('moduleConfig')
+            ->where('for_module', true)
             ->where('course_id', $courseId)
             ->where('state', true)
             ->first();
 
         // Si no existe, buscar genérico
         if (! $certificate) {
-            $certificate = AcaCertificateParameter::where('for_module', true)
+            $certificate = AcaCertificateParameter::with('moduleConfig')
+                ->where('for_module', true)
                 ->whereNull('course_id')
                 ->where('state', true)
                 ->first();
