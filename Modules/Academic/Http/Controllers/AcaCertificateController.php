@@ -1722,7 +1722,7 @@ class AcaCertificateController extends Controller
         $isEnrolled = false;
 
         if ($dni != 0) {
-            $person = Person::where('number', $dni)->select('full_name', 'image', 'number')->first();
+            $person = Person::where('number', $dni)->select('id', 'full_name', 'image', 'number')->first();
 
             // Validación de certificado de módulo
             if ($module_id != 0 && $person) {
@@ -1736,7 +1736,16 @@ class AcaCertificateController extends Controller
                         ->first();
 
                     if ($certificateRecord) {
-                        $module = AcaModule::with('course')->find($module_id);
+                        // Buscar el módulo - intentar con el course_id del certificado registrado
+                        $module = AcaModule::with('course')->where('id', $module_id)->first();
+
+                        // Si no se encuentra con el course_id del certificado, buscar en el curso del certificado registrado
+                        if (! $module && $certificateRecord->course_id) {
+                            $module = AcaModule::with('course')
+                                ->where('id', $module_id)
+                                ->where('course_id', $certificateRecord->course_id)
+                                ->first();
+                        }
 
                         if ($module) {
                             // Obtener los temas del módulo con sus contenidos
