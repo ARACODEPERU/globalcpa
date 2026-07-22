@@ -1289,7 +1289,7 @@ class AcaCertificateController extends Controller
         return str_replace(['-', '_'], ' ', str_replace(['.ttf', '.otf'], '', $font));
     }
 
-    public function downloadModuleCertificate($module_id)
+    public function downloadModuleCertificate(Request $request, $module_id)
     {
         // 1. Obtener estudiante actual
         $user = Auth::user();
@@ -1332,6 +1332,9 @@ class AcaCertificateController extends Controller
             if ($studentExam) {
                 $showGrade = true;
             } else {
+                if ($request->boolean('preview')) {
+                    return response()->json(['success' => false, 'message' => 'No tienes examen aprobado para visualizar el certificado'], 403);
+                }
                 return back()->with('error', 'No tienes examen aprobado para descargar el certificado');
             }
         } else {
@@ -1346,14 +1349,245 @@ class AcaCertificateController extends Controller
                     $viewedContents = $theme->student_history->unique('content_id')->count();
                     $progress = round(($viewedContents / $totalContents) * 100);
                     if ($progress < 100) {
+                        if ($request->boolean('preview')) {
+                            return response()->json(['success' => false, 'message' => 'Debes completar todos los contenidos del módulo para visualizar el certificado'], 403);
+                        }
                         return back()->with('error', 'Debes completar todos los contenidos del módulo para descargar el certificado');
                     }
                 }
             }
         }
 
-        // 5. Generar certificados (anverso y reverso si está configurado)
+        // 5. Si es preview, devolver JSON con los datos del certificado
+        if ($request->boolean('preview')) {
+            return response()->json($this->moduleCertificatePreviewPayload($student, $module, $certificate, $showGrade));
+        }
+
+        // 6. Generar certificados (anverso y reverso si está configurado)
         return $this->generateModuleCertificates($certificate, $student, $module, $showGrade);
+    }
+
+    /**
+     * Construye el payload JSON para el preview del certificado de módulo
+     * Misma estructura que certificatePreviewPayload pero adaptada para módulos
+     */
+    private function moduleCertificatePreviewPayload(AcaStudent $student, AcaModule $module, AcaCertificateParameter $parameter, bool $showGrade): array
+    {
+        $course = $module->course;
+        $sides = [
+            $this->moduleCertificateSidePayload($student, $module, $parameter, $course, 'front', $showGrade),
+        ];
+
+        if ($parameter->has_reverse && $parameter->back_certificate_img) {
+            $sides[] = $this->moduleCertificateSidePayload($student, $module, $parameter, $course, 'back', $showGrade);
+        }
+
+        return [
+            'success' => true,
+            'file_name' => 'certificado_'.$student->id.'_'.$module->id,
+            'sides' => $sides,
+        ];
+    }
+
+    /**
+     * Construye el payload de una cara del certificado de módulo
+     */
+    private function moduleCertificateSidePayload(AcaStudent $student, AcaModule $module, AcaCertificateParameter $parameter, ?AcaCourse $course, string $side, bool $showGrade): array
+    {
+        $isBack = $side === 'back';
+        $imagePath = $isBack ? $parameter->back_certificate_img : $parameter->certificate_img;
+        $imageSize = $this->certificateImageSize($imagePath);
+        $configuredWidth = (int) ($isBack ? $parameter->back_certificate_img_width : $parameter->certificate_img_width);
+        $configuredHeight = (int) ($isBack ? $parameter->back_certificate_img_height : $parameter->certificate_img_height);
+        $width = $configuredWidth > 0 ? $configuredWidth : (int) ($imageSize['width'] ?? 1550);
+        $height = $configuredHeight > 0 ? $configuredHeight : (int) ($imageSize['height'] ?? 1096);
+
+        return [
+            'key' => $side,
+            'label' => $isBack ? 'Reverso' : 'Anverso',
+            'width' => $width,
+            'height' => $height,
+            'base_image' => $this->certificateStorageUrl($imagePath),
+            'texts' => $this->moduleCertificateTextItems($student, $module, $parameter, $course, $side),
+            'contents' => $this->moduleCertificateContentItems($parameter, $module, $side),
+            'qr' => $this->moduleCertificateQrItem($student, $parameter, $course, $side),
+        ];
+    }
+
+    /**
+     * Construye los textos del certificado de módulo
+     */
+    private function moduleCertificateTextItems(AcaStudent $student, AcaModule $module, AcaCertificateParameter $parameter, ?AcaCourse $course, string $side): array
+    {
+        $texts = [];
+        $studentName = $student->person->full_name ?? '';
+
+        // Título: usar certificate_title del módulo o formar uno con el curso
+        $courseTitle = $module->certificate_title
+            ?? (($course->certificate_title ?? $course->description ?? 'Curso').' - Módulo: '.($module->description ?? ''));
+
+        $this->pushModuleCertificateText($texts, $parameter, $side, 'date', 'Lima, '.$this->moduleCertificateDateText($student, $course));
+        $this->pushModuleCertificateText($texts, $parameter, $side, 'names', $studentName);
+        $this->pushModuleCertificateText($texts, $parameter, $side, 'title', $courseTitle, (int) ($this->certificateField($parameter, $side, 'max_width_title') ?? 800));
+
+        if ($side === 'front') {
+            if (($parameter->content_type ?? 'description') !== 'table') {
+                // Descripción del módulo
+                $description = $module->certificate_description ?? '';
+                $this->pushModuleCertificateText($texts, $parameter, $side, 'description', $description, (int) ($parameter->max_width_description ?? 800), true);
+            }
+        } elseif ($parameter->back_content_show_manual) {
+            $this->pushModuleCertificateText($texts, $parameter, $side, 'description', $parameter->back_description ?? '', (int) ($parameter->back_max_width_description ?? 800), true);
+        }
+
+        return $texts;
+    }
+
+    /**
+     * Agrega un texto al array de textos del certificado de módulo
+     */
+    private function pushModuleCertificateText(array &$texts, AcaCertificateParameter $parameter, string $side, string $field, ?string $text, ?int $width = null, bool $multiline = false): void
+    {
+        if (! $text || ! $this->certificateField($parameter, $side, 'visible_'.$field)) {
+            return;
+        }
+
+        $fontSize = (int) ($this->certificateField($parameter, $side, 'font_size_'.$field) ?? 18);
+
+        $texts[] = [
+            'id' => $side.'-'.$field,
+            'text' => $text,
+            'x' => (float) ($this->certificateField($parameter, $side, 'position_'.$field.'_x') ?? 0),
+            'y' => (float) ($this->certificateField($parameter, $side, 'position_'.$field.'_y') ?? 0),
+            'font_size' => $fontSize,
+            'font_family' => $this->certificateFontFamily($this->certificateField($parameter, $side, 'fontfamily_'.$field)),
+            'color' => $this->certificateField($parameter, $side, 'color_'.$field) ?? '#000000',
+            'align' => $this->certificateField($parameter, $side, 'font_align_'.$field) ?? 'left',
+            'vertical_align' => $this->certificateField($parameter, $side, 'font_vertical_align_'.$field) ?? 'top',
+            'width' => $width,
+            'line_height' => $multiline ? 1.25 : 1,
+        ];
+    }
+
+    /**
+     * Construye el contenido (tabla/lista) del certificado de módulo
+     */
+    private function moduleCertificateContentItems(AcaCertificateParameter $parameter, AcaModule $module, string $side): array
+    {
+        $items = [];
+
+        // Contenido del módulo específico (temas)
+        if ($side === 'front' && ($parameter->content_type ?? 'description') === 'table' && $parameter->visible_description) {
+            $items[] = $this->moduleTablePayload(
+                'front-module-table',
+                $module,
+                (float) ($parameter->position_description_x ?? 0),
+                (float) ($parameter->position_description_y ?? 0),
+                (int) ($parameter->max_width_description ?? 800),
+                (int) ($parameter->font_size_description ?? 14),
+                $parameter->color_description ?? '#000000',
+                $this->certificateFontFamily($parameter->fontfamily_description),
+                'table'
+            );
+        }
+
+        if ($side === 'back' && $parameter->for_module && $parameter->back_visible_module) {
+            $items[] = $this->moduleTablePayload(
+                'back-module-content',
+                $module,
+                (float) ($parameter->back_position_module_x ?? 0),
+                (float) ($parameter->back_position_module_y ?? 0),
+                (int) ($parameter->back_max_width_module ?? 800),
+                (int) ($parameter->back_font_size_module ?? 14),
+                $parameter->back_color_module ?? '#000000',
+                $this->certificateFontFamily($parameter->back_fontfamily_module),
+                $parameter->back_content_type_module ?? 'list'
+            );
+        }
+
+        return $items;
+    }
+
+    /**
+     * Construye el payload de tabla/lista para el certificado de módulo
+     */
+    private function moduleTablePayload(string $id, AcaModule $module, float $x, float $y, int $width, int $fontSize, string $color, string $fontFamily, string $type): array
+    {
+        $themes = $module->themes->sortBy('position')->map(function ($theme) {
+            return $theme->description ?? '';
+        })->filter()->values()->all();
+
+        return [
+            'id' => $id,
+            'type' => $type,
+            'x' => $x,
+            'y' => $y,
+            'width' => $width,
+            'font_size' => $fontSize,
+            'color' => $color,
+            'font_family' => $fontFamily,
+            'modules' => [
+                [
+                    'title' => $module->description ?? 'Módulo',
+                    'themes' => $themes,
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Construye el ítem QR del certificado de módulo
+     */
+    private function moduleCertificateQrItem(AcaStudent $student, AcaCertificateParameter $parameter, ?AcaCourse $course, string $side): ?array
+    {
+        $validationUrl = route('certificado_validar', [
+            'dni' => $student?->person?->number ?: 0,
+            'course_id' => $course?->id ?: 0,
+        ]);
+
+        if ($side === 'front') {
+            if (! $parameter->visible_image_qr || ! $parameter->size_qr) {
+                return null;
+            }
+
+            return [
+                'text' => $validationUrl,
+                'x' => (float) ($parameter->position_qr_x ?? 0),
+                'y' => (float) ($parameter->position_qr_y ?? 0),
+                'size' => (float) ($parameter->size_qr ?? 120),
+                'align' => $parameter->font_align_qr ?? 'top-left',
+            ];
+        }
+
+        if (! $parameter->back_visible_qr || ! $parameter->back_size_qr) {
+            return null;
+        }
+
+        return [
+            'text' => $validationUrl,
+            'x' => (float) ($parameter->back_position_qr_x ?? 0),
+            'y' => (float) ($parameter->back_position_qr_y ?? 0),
+            'size' => (float) ($parameter->back_size_qr ?? 120),
+            'align' => 'top-left',
+        ];
+    }
+
+    /**
+     * Obtiene la fecha del certificado de módulo
+     */
+    private function moduleCertificateDateText(AcaStudent $student, ?AcaCourse $course): string
+    {
+        if ($course) {
+            $register = AcaCapRegistration::where('student_id', $student->id)
+                ->where('course_id', $course->id)
+                ->first();
+
+            if ($register && $register->certificate_date) {
+                return Carbon::parse($register->certificate_date)->locale('es')->isoFormat('D [de] MMMM [de] YYYY');
+            }
+        }
+
+        return Carbon::now()->locale('es')->isoFormat('D [de] MMMM [de] YYYY');
     }
 
     /**
