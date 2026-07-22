@@ -1653,6 +1653,21 @@ class AcaCertificateController extends Controller
             );
         }
 
+        // 3. Registrar certificado de módulo en aca_certificates (si no existe ya)
+        $existingCert = AcaCertificate::where('student_id', $student->id)
+            ->where('module_id', $module->id)
+            ->first();
+
+        if (! $existingCert) {
+            AcaCertificate::create([
+                'student_id' => $student->id,
+                'course_id' => $module->course_id,
+                'module_id' => $module->id,
+                'registration_id' => null,
+                'content' => null,
+            ]);
+        }
+
         // Si existen ambos (has_reverse = true y back generado), descargar como ZIP
         if ($imagenFront && $imagenBack) {
             $zipFileName = "certificado_{$student->id}_{$module->id}.zip";
@@ -1696,57 +1711,37 @@ class AcaCertificateController extends Controller
 
             // Validación de certificado de módulo
             if ($module_id != 0 && $person) {
-                $module = AcaModule::with('course')->find($module_id);
+                // Buscar estudiante por person_id
+                $student = AcaStudent::where('person_id', $person->id)->first();
 
-                if ($module) {
-                    // Verificar que la persona está inscrita en el curso
-                    $student = AcaStudent::where('person_id', $person->id)->first();
-                    if ($student) {
-                        $today = Carbon::today();
+                if ($student) {
+                    // Verificar que existe un certificado registrado para este módulo
+                    $certificateRecord = AcaCertificate::where('student_id', $student->id)
+                        ->where('module_id', $module_id)
+                        ->first();
 
-                        // 1. Verificar si tiene una suscripción activa
-                        $hasActiveSubscription = \Modules\Academic\Entities\AcaStudentSubscription::where('student_id', $student->id)
-                            ->where(function ($query) use ($today) {
-                                $query->where('status', true)
-                                    ->orWhere(function ($q) use ($today) {
-                                        $q->whereDate('date_start', '<=', $today)
-                                            ->whereDate('date_end', '>=', $today);
-                                    });
-                            })
-                            ->exists();
+                    if ($certificateRecord) {
+                        $module = AcaModule::with('course')->find($module_id);
 
-                        // 2. Verificar si está matriculado en el curso (con matrícula vigente)
-                        $hasValidRegistration = AcaCapRegistration::where('student_id', $student->id)
-                            ->where('course_id', $module->course_id)
-                            ->where(function ($query) use ($today) {
-                                $query->where('unlimited', true)
-                                    ->orWhere(function ($q) use ($today) {
-                                        $q->where('unlimited', false)
-                                            ->whereDate('date_end', '>=', $today);
-                                    });
-                            })
-                            ->exists();
-
-                        $isEnrolled = $hasActiveSubscription || $hasValidRegistration;
-                    }
-
-                    if ($isEnrolled) {
-                        // Obtener los temas del módulo con sus contenidos
-                        $moduleThemes = AcaTheme::with('contents')
-                            ->where('module_id', $module_id)
-                            ->orderBy('position')
-                            ->get()
-                            ->map(function ($theme) {
-                                return [
-                                    'description' => $theme->description,
-                                    'contents' => $theme->contents->map(function ($content) {
-                                        return [
-                                            'description' => $content->description,
-                                            'is_file' => $content->is_file,
-                                        ];
-                                    })->values(),
-                                ];
-                            });
+                        if ($module) {
+                            // Obtener los temas del módulo con sus contenidos
+                            $moduleThemes = AcaTheme::with('contents')
+                                ->where('module_id', $module_id)
+                                ->orderBy('position')
+                                ->get()
+                                ->map(function ($theme) {
+                                    return [
+                                        'description' => $theme->description,
+                                        'contents' => $theme->contents->map(function ($content) {
+                                            return [
+                                                'description' => $content->description,
+                                                'is_file' => $content->is_file,
+                                            ];
+                                        })->values(),
+                                    ];
+                                });
+                            $isEnrolled = true;
+                        }
                     }
                 }
             }
