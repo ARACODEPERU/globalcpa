@@ -1016,12 +1016,18 @@ class AcaCertificateController extends Controller
             },
         ])->find($certificate->course_id);
 
+        // Si el certificado es de un módulo, cargar el módulo
+        $module = null;
+        if ($certificate->module_id) {
+            $module = AcaModule::find($certificate->module_id);
+        }
+
         $sides = [
-            $this->certificateSidePayload($certificate, $student, $parameter, $course, 'front'),
+            $this->certificateSidePayload($certificate, $student, $parameter, $course, 'front', $module),
         ];
 
         if ($parameter->has_reverse && $parameter->back_certificate_img) {
-            $sides[] = $this->certificateSidePayload($certificate, $student, $parameter, $course, 'back');
+            $sides[] = $this->certificateSidePayload($certificate, $student, $parameter, $course, 'back', $module);
         }
 
         return [
@@ -1061,7 +1067,7 @@ class AcaCertificateController extends Controller
         return null;
     }
 
-    private function certificateSidePayload(AcaCertificate $certificate, AcaStudent $student, AcaCertificateParameter $parameter, ?AcaCourse $course, string $side): array
+    private function certificateSidePayload(AcaCertificate $certificate, AcaStudent $student, AcaCertificateParameter $parameter, ?AcaCourse $course, string $side, ?AcaModule $module = null): array
     {
         $isBack = $side === 'back';
         $imagePath = $isBack ? $parameter->back_certificate_img : $parameter->certificate_img;
@@ -1077,17 +1083,26 @@ class AcaCertificateController extends Controller
             'width' => $width,
             'height' => $height,
             'base_image' => $this->certificateStorageUrl($imagePath),
-            'texts' => $this->certificateTextItems($certificate, $student, $parameter, $course, $side),
+            'texts' => $this->certificateTextItems($certificate, $student, $parameter, $course, $side, $module),
             'contents' => $this->certificateContentItems($parameter, $course, $side),
             'qr' => $this->certificateQrItem($certificate, $student, $parameter, $side),
         ];
     }
 
-    private function certificateTextItems(AcaCertificate $certificate, AcaStudent $student, AcaCertificateParameter $parameter, ?AcaCourse $course, string $side): array
+    private function certificateTextItems(AcaCertificate $certificate, AcaStudent $student, AcaCertificateParameter $parameter, ?AcaCourse $course, string $side, ?AcaModule $module = null): array
     {
         $texts = [];
         $studentName = $student->person->full_name ?? '';
-        $courseTitle = $course->certificate_title ?? $course->description ?? 'Curso';
+
+        // Si es certificado de módulo, usar datos del módulo
+        if ($module) {
+            $courseTitle = $module->certificate_title
+                ?? (($course->certificate_title ?? $course->description ?? 'Curso').' - Módulo: '.($module->description ?? ''));
+            $description = $module->certificate_description ?? '';
+        } else {
+            $courseTitle = $course->certificate_title ?? $course->description ?? 'Curso';
+            $description = $course->certificate_description ?? '';
+        }
 
         $this->pushCertificateText($texts, $parameter, $side, 'date', 'Lima, '.$this->certificateDateText($certificate, $student));
         $this->pushCertificateText($texts, $parameter, $side, 'names', $studentName);
@@ -1095,7 +1110,7 @@ class AcaCertificateController extends Controller
 
         if ($side === 'front') {
             if (($parameter->content_type ?? 'description') !== 'table') {
-                $this->pushCertificateText($texts, $parameter, $side, 'description', $course->certificate_description ?? '', (int) ($parameter->max_width_description ?? 800), true);
+                $this->pushCertificateText($texts, $parameter, $side, 'description', $description, (int) ($parameter->max_width_description ?? 800), true);
             }
         } elseif ($parameter->back_content_show_manual) {
             $this->pushCertificateText($texts, $parameter, $side, 'description', $parameter->back_description ?? '', (int) ($parameter->back_max_width_description ?? 800), true);
