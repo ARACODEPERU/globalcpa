@@ -270,7 +270,44 @@
 
     onUnmounted(() => {
         if (crosshairInterval) clearInterval(crosshairInterval);
+        if (selectedCrosshairInterval) clearInterval(selectedCrosshairInterval);
     });
+
+    // Crosshair del componente seleccionado
+    const selectedCrosshairVisible = ref(false);
+    const selectedCrosshairX = ref(0);
+    const selectedCrosshairY = ref(0);
+    const selectedCrosshairWidth = ref(0);
+    const selectedCrosshairHeight = ref(0);
+    let selectedCrosshairInterval = null;
+
+    const updateSelectedCrosshair = () => {
+        const node = selectedNode.value;
+        if (!node) {
+            selectedCrosshairVisible.value = false;
+            if (selectedCrosshairInterval) {
+                clearInterval(selectedCrosshairInterval);
+                selectedCrosshairInterval = null;
+            }
+            return;
+        }
+
+        // Obtener posición y dimensiones del nodo seleccionado
+        const box = node.getAbsoluteTransform().decompose();
+        selectedCrosshairX.value = box.x;
+        selectedCrosshairY.value = box.y;
+        selectedCrosshairWidth.value = node.width() * box.scaleX;
+        selectedCrosshairHeight.value = node.height() * box.scaleY;
+        selectedCrosshairVisible.value = true;
+
+        // Iniciar parpadeo cada 400ms
+        if (selectedCrosshairInterval) clearInterval(selectedCrosshairInterval);
+        let visible = true;
+        selectedCrosshairInterval = setInterval(() => {
+            visible = !visible;
+            selectedCrosshairVisible.value = visible;
+        }, 400);
+    };
 
     const frontTemplateUrl = computed(() => getImage(props.certificate.certificate_img));
     const backTemplateUrl = computed(() => {
@@ -660,6 +697,7 @@
             transformer.moveToTop();
             transformer.forceUpdate();
             transformer.getLayer()?.batchDraw();
+            updateSelectedCrosshair();
         });
     };
 
@@ -686,6 +724,11 @@
         if (event.target !== event.target.getStage()) return;
 
         selectedNode.value = null;
+        selectedCrosshairVisible.value = false;
+        if (selectedCrosshairInterval) {
+            clearInterval(selectedCrosshairInterval);
+            selectedCrosshairInterval = null;
+        }
         const transformer = transformerRef.value?.getNode?.();
         transformer?.nodes([]);
         transformer?.getLayer()?.batchDraw();
@@ -2377,6 +2420,48 @@
                                         @transformend="(event) => onTextTransformEnd(item, event)"
                                     />
                                     <v-transformer ref="transformerRef" :config="transformerConfig" />
+                                    <!-- Crosshair del componente seleccionado -->
+                                    <template v-if="selectedCrosshairVisible && selectedNode">
+                                        <!-- Línea vertical -->
+                                        <v-line
+                                            :config="{
+                                                points: [
+                                                    selectedCrosshairX + selectedCrosshairWidth / 2, selectedCrosshairY,
+                                                    selectedCrosshairX + selectedCrosshairWidth / 2, selectedCrosshairY + selectedCrosshairHeight
+                                                ],
+                                                stroke: '#3B82F6',
+                                                strokeWidth: 1,
+                                                dash: [4, 4],
+                                                opacity: 0.9,
+                                                listening: false
+                                            }"
+                                        />
+                                        <!-- Línea horizontal -->
+                                        <v-line
+                                            :config="{
+                                                points: [
+                                                    selectedCrosshairX, selectedCrosshairY + selectedCrosshairHeight / 2,
+                                                    selectedCrosshairX + selectedCrosshairWidth, selectedCrosshairY + selectedCrosshairHeight / 2
+                                                ],
+                                                stroke: '#3B82F6',
+                                                strokeWidth: 1,
+                                                dash: [4, 4],
+                                                opacity: 0.9,
+                                                listening: false
+                                            }"
+                                        />
+                                        <!-- Punto central -->
+                                        <v-circle
+                                            :config="{
+                                                x: selectedCrosshairX + selectedCrosshairWidth / 2,
+                                                y: selectedCrosshairY + selectedCrosshairHeight / 2,
+                                                radius: 4,
+                                                fill: '#3B82F6',
+                                                opacity: 0.9,
+                                                listening: false
+                                            }"
+                                        />
+                                    </template>
                                 </v-layer>
                             </v-stage>
                         </div>
