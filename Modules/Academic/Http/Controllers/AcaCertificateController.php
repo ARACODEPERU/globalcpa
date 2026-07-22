@@ -1410,7 +1410,7 @@ class AcaCertificateController extends Controller
             'base_image' => $this->certificateStorageUrl($imagePath),
             'texts' => $this->moduleCertificateTextItems($student, $module, $parameter, $course, $side),
             'contents' => $this->moduleCertificateContentItems($parameter, $module, $side),
-            'qr' => $this->moduleCertificateQrItem($student, $parameter, $course, $side),
+            'qr' => $this->moduleCertificateQrItem($student, $parameter, $course, $side, $module->id),
         ];
     }
 
@@ -1538,11 +1538,12 @@ class AcaCertificateController extends Controller
     /**
      * Construye el ítem QR del certificado de módulo
      */
-    private function moduleCertificateQrItem(AcaStudent $student, AcaCertificateParameter $parameter, ?AcaCourse $course, string $side): ?array
+    private function moduleCertificateQrItem(AcaStudent $student, AcaCertificateParameter $parameter, ?AcaCourse $course, string $side, ?int $moduleId = null): ?array
     {
         $validationUrl = route('certificado_validar', [
             'dni' => $student?->person?->number ?: 0,
-            'course_id' => $course?->id ?: 0,
+            'course_id' => 0,
+            'module_id' => $moduleId ?: 0,
         ]);
 
         if ($side === 'front') {
@@ -1681,14 +1682,53 @@ class AcaCertificateController extends Controller
         return back()->with('error', 'Error al generar el certificado');
     }
 
-    public function certificado_validar($dni = 0, $course_id = 0)
+    public function certificado_validar($dni = 0, $course_id = 0, $module_id = 0)
     {
         $person = '';
         $certificates = '';
         $course = '';
+        $module = null;
+        $moduleThemes = [];
+        $isEnrolled = false;
+
         if ($dni != 0) {
             $person = Person::where('number', $dni)->select('full_name', 'image', 'number')->first();
-            if ($course_id == 0) {
+
+            // Validación de certificado de módulo
+            if ($module_id != 0 && $person) {
+                $module = AcaModule::with('course')->find($module_id);
+
+                if ($module) {
+                    // Verificar que la persona está inscrita en el curso
+                    $student = AcaStudent::where('person_id', $person->id)->first();
+                    if ($student) {
+                        $isEnrolled = AcaCapRegistration::where('student_id', $student->id)
+                            ->where('course_id', $module->course_id)
+                            ->exists();
+                    }
+
+                    if ($isEnrolled) {
+                        // Obtener los temas del módulo con sus contenidos
+                        $moduleThemes = AcaTheme::with('contents')
+                            ->where('module_id', $module_id)
+                            ->orderBy('position')
+                            ->get()
+                            ->map(function ($theme) {
+                                return [
+                                    'description' => $theme->description,
+                                    'contents' => $theme->contents->map(function ($content) {
+                                        return [
+                                            'description' => $content->description,
+                                            'is_file' => $content->is_file,
+                                        ];
+                                    })->values(),
+                                ];
+                            });
+                    }
+                }
+            }
+            // Validación original de certificados de curso
+            elseif ($course_id == 0) {
                 $certificates = DB::table('people')
                     ->join('aca_students', 'people.id', '=', 'aca_students.person_id')
                     ->join('aca_certificates', 'aca_students.id', '=', 'aca_certificates.student_id')
@@ -1707,13 +1747,15 @@ class AcaCertificateController extends Controller
                     ->select('aca_certificates.created_at as fecha', 'aca_courses.description', 'aca_brochures.curriculum_plan', 'aca_courses.id as course_id')
                     ->get();
             }
-
         }
 
         return view('academic::certificado_validar.certificado_validar', [
             'person' => $person,
             'certificates' => $certificates,
             'course' => $course,
+            'module' => $module,
+            'moduleThemes' => $moduleThemes,
+            'isEnrolled' => $isEnrolled,
         ]);
     }
 
