@@ -1108,7 +1108,7 @@ class AcaCertificateController extends Controller
         }
 
         $this->pushCertificateText($texts, $parameter, $side, 'date', 'Lima, '.$this->certificateDateText($certificate, $student));
-        $this->pushCertificateText($texts, $parameter, $side, 'names', $studentName);
+        $this->pushCertificateText($texts, $parameter, $side, 'names', $studentName, (int) ($this->certificateField($parameter, $side, 'max_width_names') ?? 600));
         $this->pushCertificateText($texts, $parameter, $side, 'title', $courseTitle, (int) ($this->certificateField($parameter, $side, 'max_width_title') ?? 800));
 
         if ($side === 'front') {
@@ -1460,7 +1460,7 @@ class AcaCertificateController extends Controller
             ?? (($course->certificate_title ?? $course->description ?? 'Curso').' - Módulo: '.($module->description ?? ''));
 
         $this->pushModuleCertificateText($texts, $parameter, $side, 'date', 'Lima, '.$this->moduleCertificateDateText($student, $course));
-        $this->pushModuleCertificateText($texts, $parameter, $side, 'names', $studentName);
+        $this->pushModuleCertificateText($texts, $parameter, $side, 'names', $studentName, (int) ($this->certificateField($parameter, $side, 'max_width_names') ?? 600));
         $this->pushModuleCertificateText($texts, $parameter, $side, 'title', $courseTitle, (int) ($this->certificateField($parameter, $side, 'max_width_title') ?? 800));
 
         if ($side === 'front') {
