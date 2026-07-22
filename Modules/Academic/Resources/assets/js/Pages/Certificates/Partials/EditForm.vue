@@ -236,6 +236,40 @@
     const transformerRef = ref(null);
     const selectedNode = ref(null);
 
+    // Crosshair guía central
+    const crosshairVisible = ref(true);
+    let crosshairInterval = null;
+    const cursorX = ref(0);
+    const cursorY = ref(0);
+    const showCursorCoords = ref(false);
+
+    const centerCrossX = computed(() => canvasWidth.value / 2);
+    const centerCrossY = computed(() => canvasHeight.value / 2);
+
+    const onStageMouseMove = (e) => {
+        const stage = e.target.getStage();
+        const pointer = stage.getPointerPosition();
+        if (!pointer) return;
+        // Convertir coordenadas del stage a coordenadas del canvas (sin escala)
+        cursorX.value = Math.round(pointer.x / stageScale.value);
+        cursorY.value = Math.round(pointer.y / stageScale.value);
+        showCursorCoords.value = true;
+    };
+
+    const onStageMouseLeave = () => {
+        showCursorCoords.value = false;
+    };
+
+    onMounted(() => {
+        crosshairInterval = setInterval(() => {
+            crosshairVisible.value = !crosshairVisible.value;
+        }, 600);
+    });
+
+    onUnmounted(() => {
+        if (crosshairInterval) clearInterval(crosshairInterval);
+    });
+
     const frontTemplateUrl = computed(() => getImage(props.certificate.certificate_img));
     const backTemplateUrl = computed(() => {
         if (form.back_certificate_img_preview) {
@@ -2233,7 +2267,7 @@
                             <div class="mb-2 text-xs text-gray-500 dark:text-gray-400">
                                 Arrastra para mover. Selecciona un texto o QR y usa las esquinas para cambiar su tamaÃ±o antes de guardar.
                             </div>
-                            <v-stage :config="stageConfig" @mousedown="clearSelection" @touchstart="clearSelection">
+                            <v-stage :config="stageConfig" @mousedown="clearSelection" @touchstart="clearSelection" @mousemove="onStageMouseMove" @mouseleave="onStageMouseLeave">
                                 <v-layer :config="layerConfig">
                                     <v-image
                                         v-if="activeBaseImage"
@@ -2242,6 +2276,67 @@
                                     <v-rect
                                         :config="{ x: 0, y: 0, width: canvasWidth, height: canvasHeight, stroke: '#000000', strokeWidth: 1, listening: false }"
                                     />
+                                    <!-- Crosshair guía central (parpadea cada 600ms) -->
+                                    <template v-if="activeBaseImage">
+                                        <v-line
+                                            :config="{
+                                                points: [centerCrossX, 0, centerCrossX, canvasHeight],
+                                                stroke: '#9CA3AF',
+                                                strokeWidth: 1,
+                                                dash: [6, 4],
+                                                opacity: crosshairVisible ? 0.8 : 0,
+                                                listening: false
+                                            }"
+                                        />
+                                        <v-line
+                                            :config="{
+                                                points: [0, centerCrossY, canvasWidth, centerCrossY],
+                                                stroke: '#9CA3AF',
+                                                strokeWidth: 1,
+                                                dash: [6, 4],
+                                                opacity: crosshairVisible ? 0.8 : 0,
+                                                listening: false
+                                            }"
+                                        />
+                                        <!-- Coordenadas del cursor -->
+                                        <v-tag
+                                            v-if="showCursorCoords"
+                                            :config="{
+                                                x: cursorX + 12,
+                                                y: cursorY - 24,
+                                                text: `X: ${cursorX}  Y: ${cursorY}`,
+                                                fontSize: 12,
+                                                fontFamily: 'monospace',
+                                                fill: '#374151',
+                                                padding: 4,
+                                                listening: false
+                                            }"
+                                        />
+                                        <v-rect
+                                            v-if="showCursorCoords"
+                                            :config="{
+                                                x: cursorX + 10,
+                                                y: cursorY - 26,
+                                                width: 130,
+                                                height: 20,
+                                                fill: 'rgba(255,255,255,0.85)',
+                                                cornerRadius: 3,
+                                                listening: false
+                                            }"
+                                        />
+                                        <v-text
+                                            v-if="showCursorCoords"
+                                            :config="{
+                                                x: cursorX + 14,
+                                                y: cursorY - 22,
+                                                text: `X: ${cursorX}  Y: ${cursorY}`,
+                                                fontSize: 12,
+                                                fontFamily: 'monospace',
+                                                fill: '#374151',
+                                                listening: false
+                                            }"
+                                        />
+                                    </template>
                                     <v-image
                                         v-if="previewQr"
                                         :config="previewQr.config"
