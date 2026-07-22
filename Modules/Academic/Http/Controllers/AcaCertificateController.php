@@ -1358,7 +1358,22 @@ class AcaCertificateController extends Controller
             }
         }
 
-        // 5. Si es preview, devolver JSON con los datos del certificado
+        // 5. Registrar certificado de módulo en aca_certificates (si no existe ya)
+        $existingCert = AcaCertificate::where('student_id', $student->id)
+            ->where('module_id', $module->id)
+            ->first();
+
+        if (! $existingCert) {
+            AcaCertificate::create([
+                'student_id' => $student->id,
+                'course_id' => $module->course_id,
+                'module_id' => $module->id,
+                'registration_id' => null,
+                'content' => null,
+            ]);
+        }
+
+        // 6. Si es preview, devolver JSON con los datos del certificado
         if ($request->boolean('preview')) {
             return response()->json($this->moduleCertificatePreviewPayload($student, $module, $certificate, $showGrade));
         }
