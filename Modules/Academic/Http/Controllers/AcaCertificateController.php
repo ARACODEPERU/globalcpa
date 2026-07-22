@@ -947,7 +947,8 @@ class AcaCertificateController extends Controller
 
         $autoCertificate = new CertificateImage;
 
-        $certificateParameter = $this->resolveCertificateParameter($course_id, false);
+        $forModule = !empty($xcer->module_id);
+        $certificateParameter = $this->resolveCertificateParameter($course_id, $forModule);
 
         $certificate_id = null;
 
