@@ -57,6 +57,7 @@
         position_names_x: props.certificate.position_names_x,
         position_names_y: props.certificate.position_names_y,
         font_size_names: props.certificate.font_size_names,
+        max_width_names: props.certificate.max_width_names || 600,
         fontfamily_title: props.certificate.fontfamily_title,
         font_align_title: props.certificate.font_align_title,
         font_vertical_align_title: props.certificate.font_vertical_align_title,
@@ -133,6 +134,7 @@
         back_position_names_x: props.certificate.back_position_names_x,
         back_position_names_y: props.certificate.back_position_names_y,
         back_font_size_names: props.certificate.back_font_size_names,
+        back_max_width_names: props.certificate.back_max_width_names || 600,
         back_color_names: props.certificate.back_color_names ?? '#000000',
         back_visible_names: props.certificate.back_visible_names == 1 ? true : false,
 
@@ -402,6 +404,8 @@
                     family: 'back_fontfamily_names',
                     color: 'back_color_names',
                     align: 'back_font_align_names',
+                    width: 'back_max_width_names',
+                    defaultWidth: 600,
                     visible: form.back_visible_names,
                     action: 7,
                 },
@@ -503,6 +507,8 @@
                 family: 'fontfamily_names',
                 color: 'color_names',
                 align: 'font_align_names',
+                width: 'max_width_names',
+                defaultWidth: 600,
                 visible: form.visible_names,
                 action: 2,
             },
@@ -1069,6 +1075,14 @@
                                                 id="font_size_names"
                                                 v-model="form.font_size_names"
                                                 placeholder="22, 23, etc..."
+                                            />
+                                        </div>
+                                        <div class="col-span-2">
+                                            <InputLabel for="max_width_names">Ancho máximo (px)</InputLabel>
+                                            <TextInput
+                                                id="max_width_names"
+                                                v-model="form.max_width_names"
+                                                placeholder="600"
                                             />
                                         </div>
                                         <div class="col-span-2">
@@ -1646,6 +1660,10 @@
                                                 <div class="col-span-2">
                                                     <InputLabel for="back_font_size_names">Tamaño de fuente</InputLabel>
                                                     <TextInput id="back_font_size_names" v-model="form.back_font_size_names" placeholder="22, 23, etc..." />
+                                                </div>
+                                                <div class="col-span-2">
+                                                    <InputLabel for="back_max_width_names">Ancho máximo (px)</InputLabel>
+                                                    <TextInput id="back_max_width_names" v-model="form.back_max_width_names" placeholder="600" />
                                                 </div>
                                                 <div class="col-span-2">
                                                     <InputLabel for="back_font_align_names">A. horizontal</InputLabel>
