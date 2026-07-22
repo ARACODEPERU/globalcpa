@@ -1313,22 +1313,6 @@ class AcaCertificateController extends Controller
             return back()->with('error', 'Este módulo no permite la descarga de certificados');
         }
 
-        // 2.2. Verificar que el estudiante completó todos los contenidos del módulo
-        $themes = AcaTheme::with(['contents', 'student_history' => function ($q) use ($user) {
-            $q->where('person_id', $user->person_id);
-        }])->where('module_id', $module_id)->get();
-
-        foreach ($themes as $theme) {
-            $totalContents = $theme->contents->reject(fn($c) => $c->is_file == 4)->count();
-            if ($totalContents > 0) {
-                $viewedContents = $theme->student_history->unique('content_id')->count();
-                $progress = round(($viewedContents / $totalContents) * 100);
-                if ($progress < 100) {
-                    return back()->with('error', 'Debes completar todos los contenidos del módulo para descargar el certificado');
-                }
-            }
-        }
-
         // 3. Buscar certificado primero para determinar si requiere examen
         $certificate = $this->findModuleCertificate($module->course_id);
 
@@ -1336,8 +1320,9 @@ class AcaCertificateController extends Controller
             return back()->with('error', 'No hay certificado configurado para módulos');
         }
 
-        // 4. Verificar examen aprobado solo si el certificado lo requiere
+        // 4. Verificar condición según configuración del certificado
         if ($certificate->require_exam_to_download) {
+            // Solo verificar examen aprobado
             $exam = AcaExam::where('module_id', $module_id)->first();
 
             if (! $exam) {
@@ -1352,6 +1337,22 @@ class AcaCertificateController extends Controller
 
             if (! $studentExam) {
                 return back()->with('error', 'No tienes examen aprobado para descargar el certificado');
+            }
+        } else {
+            // Verificar que completó todo el contenido del módulo
+            $themes = AcaTheme::with(['contents', 'student_history' => function ($q) use ($user) {
+                $q->where('person_id', $user->person_id);
+            }])->where('module_id', $module_id)->get();
+
+            foreach ($themes as $theme) {
+                $totalContents = $theme->contents->reject(fn($c) => $c->is_file == 4)->count();
+                if ($totalContents > 0) {
+                    $viewedContents = $theme->student_history->unique('content_id')->count();
+                    $progress = round(($viewedContents / $totalContents) * 100);
+                    if ($progress < 100) {
+                        return back()->with('error', 'Debes completar todos los contenidos del módulo para descargar el certificado');
+                    }
+                }
             }
         }
 

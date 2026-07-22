@@ -252,11 +252,12 @@
 
     const canDownloadCertificate = () => {
         if (!props.module.allow_certificate_download) return false;
-        if (moduleProgress.value < 100) return false;
-        if (!props.certificateRequiresExam) return true;
-        return studentExam.value &&
-               studentExam.value.punctuation >= 11 &&
-               (studentExam.value.status === 'completado' || studentExam.value.status === 'revision_pendiente' || studentExam.value.status === 'calificado');
+        if (props.certificateRequiresExam) {
+            return studentExam.value &&
+                   studentExam.value.punctuation >= 11 &&
+                   (studentExam.value.status === 'completado' || studentExam.value.status === 'revision_pendiente' || studentExam.value.status === 'calificado');
+        }
+        return moduleProgress.value >= 100;
     };
 
     // Descargar certificado del módulo
@@ -966,7 +967,7 @@
                                             Descargar Certificado
                                         </button>
                                    </div>
-                                   <div v-else-if="module.allow_certificate_download && moduleProgress < 100" class="mt-2 text-center text-xs text-amber-500 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 rounded-lg py-2 px-3">
+                                   <div v-else-if="module.allow_certificate_download && !certificateRequiresExam && moduleProgress < 100" class="mt-2 text-center text-xs text-amber-500 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 rounded-lg py-2 px-3">
                                         Completa el {{ moduleProgress }}% del contenido para descargar el certificado
                                    </div>
                         </div>
