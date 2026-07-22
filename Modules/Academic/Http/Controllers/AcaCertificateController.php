@@ -608,6 +608,7 @@ class AcaCertificateController extends Controller
                 $acaCertificate->position_names_x = $request->get('position_names_x');
                 $acaCertificate->position_names_y = $request->get('position_names_y');
                 $acaCertificate->font_size_names = $request->get('font_size_names');
+                $acaCertificate->max_width_names = $request->get('max_width_names');
                 $acaCertificate->color_names = $request->get('color_names');
                 $acaCertificate->visible_names = $request->get('visible_names');
                 break;
@@ -663,6 +664,7 @@ class AcaCertificateController extends Controller
                 $acaCertificate->back_position_names_x = $request->get('back_position_names_x');
                 $acaCertificate->back_position_names_y = $request->get('back_position_names_y');
                 $acaCertificate->back_font_size_names = $request->get('back_font_size_names');
+                $acaCertificate->back_max_width_names = $request->get('back_max_width_names');
                 $acaCertificate->back_color_names = $request->get('back_color_names');
                 $acaCertificate->back_visible_names = $request->get('back_visible_names');
                 break;
