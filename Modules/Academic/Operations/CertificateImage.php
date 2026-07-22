@@ -28,8 +28,6 @@ class CertificateImage
 
     public $course_id = null; // ID del curso
 
-    public $showGrade = true; // Mostrar nota del examen en el certificado
-
     /**
      * Genera la imagen del certificado
      *
@@ -40,7 +38,7 @@ class CertificateImage
      * @param  int|null  $module_id  ID del módulo (para certificados de módulo)
      * @return string|null Contenido de la imagen en binario
      */
-    public function generate($certificate_id, $type = 'front', $student_id = null, $course_id = null, $module_id = null, $showGrade = true)
+    public function generate($certificate_id, $type = 'front', $student_id = null, $course_id = null, $module_id = null)
     {
         // Inicializar propiedades
         //dd($course_id);
@@ -48,7 +46,6 @@ class CertificateImage
         $this->module_id = $module_id;
         $this->student_id = $student_id;
         $this->course_id = $course_id;
-        $this->showGrade = $showGrade;
 
         // Cargar configuración del certificado con la relación moduleConfig
         $this->certificates_param = AcaCertificateParameter::with(['moduleConfig'])->find($certificate_id);
@@ -333,7 +330,7 @@ class CertificateImage
                 }
 
                 // Obtener configuración de exam grades y themes desde grade_config
-                $showExamGrade = $this->showGrade && ($this->getField('back_show_exam_grade') ?? false);
+                $showExamGrade = $this->getField('back_show_exam_grade') ?? false;
                 $showThemes = $this->getField('back_show_themes') ?? true;
 
                 // Obtener notas reales si hay estudiante
@@ -428,7 +425,7 @@ class CertificateImage
                 $isPreview = ! $this->student_id && ! $this->course_id;
 
                 // Obtener configuración de exam grades y themes desde grade_config
-                $showExamGrade = $this->showGrade && ($this->getField('back_show_exam_grade') ?? false);
+                $showExamGrade = $this->getField('back_show_exam_grade') ?? false;
                 $showThemes = $this->getField('back_show_themes') ?? true;
 
                 // Obtener notas reales si hay estudiante

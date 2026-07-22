@@ -212,6 +212,7 @@ class AcaCertificateController extends Controller
             'name_certificate' => $request->get('name_certificate'),
             'state' => true,
             'for_module' => $request->get('for_module') ? true : false,
+            'require_exam_to_download' => $request->get('require_exam_to_download') ? true : false,
             'back_certificate_img' => $backPath,
             'back_certificate_img_width' => $backImgWidth,
             'back_certificate_img_height' => $backImgHeight,
@@ -839,6 +840,7 @@ class AcaCertificateController extends Controller
                 }
                 $acaCertificate->state = $request->get('state') ? true : false;
                 $acaCertificate->for_module = $request->get('for_module') ? true : false;
+                $acaCertificate->require_exam_to_download = $request->get('require_exam_to_download') ? true : false;
                 $acaCertificate->has_reverse = $request->get('has_reverse') ? true : false;
                 break;
         }
@@ -1311,31 +1313,33 @@ class AcaCertificateController extends Controller
             return back()->with('error', 'Este módulo no permite la descarga de certificados');
         }
 
-        // 3. Buscar certificado configurado para módulos
+        // 3. Buscar certificado primero para determinar si requiere examen
         $certificate = $this->findModuleCertificate($module->course_id);
 
         if (! $certificate) {
             return back()->with('error', 'No hay certificado configurado para módulos');
         }
 
-        // 4. Determinar si existe examen y si el estudiante lo aprobó
-        $showGrade = false;
-        $exam = AcaExam::where('module_id', $module_id)->first();
+        // 4. Verificar condición según configuración del certificado
+        if ($certificate->require_exam_to_download) {
+            // Solo verificar examen aprobado
+            $exam = AcaExam::where('module_id', $module_id)->first();
 
-        if ($exam) {
+            if (! $exam) {
+                return back()->with('error', 'No tienes examen para este módulo');
+            }
+
             $studentExam = AcaStudentExam::where('exam_id', $exam->id)
                 ->where('student_id', $student->id)
                 ->where('punctuation', '>=', 11)
                 ->whereIn('status', ['calificado', 'completado', 'revision_pendiente'])
                 ->first();
 
-            if ($studentExam) {
-                $showGrade = true;
-            } else {
+            if (! $studentExam) {
                 return back()->with('error', 'No tienes examen aprobado para descargar el certificado');
             }
         } else {
-            // No existe examen: verificar que completó todo el contenido del módulo
+            // Verificar que completó todo el contenido del módulo
             $themes = AcaTheme::with(['contents', 'student_history' => function ($q) use ($user) {
                 $q->where('person_id', $user->person_id);
             }])->where('module_id', $module_id)->get();
@@ -1353,7 +1357,7 @@ class AcaCertificateController extends Controller
         }
 
         // 5. Generar certificados (anverso y reverso si está configurado)
-        return $this->generateModuleCertificates($certificate, $student, $module, $showGrade);
+        return $this->generateModuleCertificates($certificate, $student, $module);
     }
 
     /**
@@ -1390,7 +1394,7 @@ class AcaCertificateController extends Controller
      * @param  mixed  $module  Datos del módulo
      * @return response Descarga la imagen del certificado
      */
-    private function generateModuleCertificates($certificate, $student, $module, $showGrade = true)
+    private function generateModuleCertificates($certificate, $student, $module)
     {
         // Instanciar el generador de certificados
         $autoCertificate = new CertificateImage;
@@ -1401,8 +1405,7 @@ class AcaCertificateController extends Controller
             'front',              // tipo: anverso
             $student->id,         // student_id
             $module->course_id,   // course_id
-            $module->id,          // module_id (para datos reales del módulo)
-            $showGrade            // mostrar nota del examen
+            $module->id          // module_id (para datos reales del módulo)
         );
 
         // 2. Generar certificado REVERSO (back) si has_reverse = true Y existe back_certificate_img
@@ -1413,8 +1416,7 @@ class AcaCertificateController extends Controller
                 'back',
                 $student->id,
                 $module->course_id,
-                $module->id,
-                $showGrade
+                $module->id
             );
         }
 
