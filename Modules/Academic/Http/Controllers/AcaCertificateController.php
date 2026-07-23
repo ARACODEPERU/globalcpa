@@ -1128,15 +1128,15 @@ class AcaCertificateController extends Controller
 
         // Nota Final (PROMEDIO FINAL) en el reverso
         if ($side === 'back') {
-            $this->addGradeTextItem($texts, $certificate, $student);
+            $this->addGradeTextItem($texts, $certificate, $student, $parameter);
         }
 
         return $texts;
     }
 
-    private function addGradeTextItem(array &$texts, AcaCertificate $certificate, AcaStudent $student): void
+    private function addGradeTextItem(array &$texts, AcaCertificate $certificate, AcaStudent $student, AcaCertificateParameter $parameter): void
     {
-        $gradeConfig = AcaCertificateGradeConfig::where('certificate_id', $certificate->id)->first();
+        $gradeConfig = AcaCertificateGradeConfig::where('certificate_id', $parameter->id)->first();
 
         if (! $gradeConfig || ! $gradeConfig->back_visible_grade) {
             return;
@@ -1156,7 +1156,9 @@ class AcaCertificateController extends Controller
             return;
         }
 
-        $gradeValue = 'Promedio Final: '.number_format($studentGrade->final_average, 2);
+        $label = 'Promedio Final: ';
+        $gradeDisplay = number_format($studentGrade->final_average, 2);
+        $fontSize = (int) ($gradeConfig->back_font_size_grade ?? 14);
 
         if ($studentGrade->final_average < 11) {
             $textColor = '#FF0000';
@@ -1164,17 +1166,53 @@ class AcaCertificateController extends Controller
             $textColor = $gradeConfig->back_color_grade ?? '#000000';
         }
 
+        $posX = (float) ($gradeConfig->back_position_grade_x ?? 0);
+        $posY = (float) ($gradeConfig->back_position_grade_y ?? 0);
+
+        // Anchura estimada del label + separación
+        $labelWidth = strlen($label) * $fontSize * 0.65;
+        $spacing = 8;
+
+        $rectWidth = (int) ($gradeConfig->back_rectangle_width ?? 100);
+        $rectHeight = (int) ($gradeConfig->back_rectangle_height ?? 100);
+        $rectColor = $gradeConfig->back_rectangle_color ?? '#000000';
+        $avgDim = ($rectWidth + $rectHeight) / 2;
+        $rectStrokeWidth = max(1, round($avgDim * 0.03));
+
+        // Posición del rectángulo: justo a la derecha del label, centrado verticalmente
+        $rectX = $posX + $labelWidth + $spacing;
+        $rectY = $posY + ($fontSize / 2) - ($rectHeight / 2);
+
+        // Item 1: label "Promedio Final: " (sin recuadro)
         $texts[] = [
-            'id' => 'back-grade',
-            'text' => $gradeValue,
-            'x' => (float) ($gradeConfig->back_position_grade_x ?? 0),
-            'y' => (float) ($gradeConfig->back_position_grade_y ?? 0),
-            'font_size' => (int) ($gradeConfig->back_font_size_grade ?? 14),
+            'id' => 'back-grade-label',
+            'text' => $label,
+            'x' => $posX,
+            'y' => $posY,
+            'font_size' => $fontSize,
             'font_family' => $this->certificateFontFamily($gradeConfig->back_fontfamily_grade),
             'color' => $textColor,
             'align' => 'left',
             'width' => null,
             'line_height' => 1,
+        ];
+
+        // Item 2: valor de la nota dentro del recuadro
+        $texts[] = [
+            'id' => 'back-grade-value',
+            'text' => $gradeDisplay,
+            'x' => $rectX + ($rectWidth / 2),
+            'y' => $rectY + ($rectHeight / 2),
+            'font_size' => $fontSize,
+            'font_family' => $this->certificateFontFamily($gradeConfig->back_fontfamily_grade),
+            'color' => $textColor,
+            'align' => 'center',
+            'width' => $rectWidth,
+            'line_height' => 1,
+            'rect_width' => $rectWidth,
+            'rect_height' => $rectHeight,
+            'rect_color' => $rectColor,
+            'rect_stroke_width' => $rectStrokeWidth,
         ];
     }
 

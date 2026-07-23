@@ -220,11 +220,32 @@
             opacity: 0.96,
         };
 
-        if (item.width !== null && item.width !== undefined && item.width !== '') {
+        // Si tiene rectángulo, centrar el texto dentro del recuadro
+        if (item.rect_width && item.rect_height) {
+            config.x = Number(item.x || 0) - item.rect_width / 2;
+            config.y = Number(item.y || 0) - item.rect_height / 2;
+            config.width = item.rect_width;
+            config.height = item.rect_height;
+            config.align = 'center';
+            config.verticalAlign = 'middle';
+        } else if (item.width !== null && item.width !== undefined && item.width !== '') {
             config.width = Number(item.width);
         }
 
         return config;
+    };
+
+    const rectConfig = (item) => {
+        if (!item.rect_width || !item.rect_height) return null;
+        return {
+            x: Number(item.x || 0) - item.rect_width / 2,
+            y: Number(item.y || 0) - item.rect_height / 2,
+            width: item.rect_width,
+            height: item.rect_height,
+            stroke: item.rect_color || item.color || '#000000',
+            strokeWidth: Number(item.rect_stroke_width || 1),
+            fill: 'transparent',
+        };
     };
 
     const qrAnchorToPosition = (align, x, y, size) => {
@@ -535,11 +556,13 @@
                                     v-if="baseImage"
                                     :config="{ image: baseImage, x: 0, y: 0, width: activeSide.width, height: activeSide.height }"
                                 />
-                                <v-text
-                                    v-for="item in activeSide.texts"
-                                    :key="item.id"
-                                    :config="textConfig(item)"
-                                />
+                                <template v-for="item in activeSide.texts" :key="item.id">
+                                    <v-rect
+                                        v-if="item.rect_width"
+                                        :config="rectConfig(item)"
+                                    />
+                                    <v-text :config="textConfig(item)" />
+                                </template>
                                 <template v-for="item in activeSide.contents" :key="item.id">
                                     <v-group v-if="item.type === 'table'" :config="{ x: item.x, y: item.y }">
                                         <v-rect :config="{ x: 0, y: 0, width: item.width, height: tableHeight(item), stroke: item.color || '#111827', strokeWidth: 1 }" />
