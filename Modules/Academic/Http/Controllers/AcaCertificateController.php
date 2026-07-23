@@ -845,6 +845,11 @@ class AcaCertificateController extends Controller
                 break;
         }
 
+        // Siempre actualizar has_reverse independientemente del action_type
+        if ($request->has('has_reverse')) {
+            $acaCertificate->has_reverse = $request->boolean('has_reverse');
+        }
+
         $acaCertificate->save();
 
         $fullPath = null;
