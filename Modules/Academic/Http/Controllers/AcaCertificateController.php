@@ -1475,9 +1475,11 @@ class AcaCertificateController extends Controller
             if ($studentExam) {
                 $showGrade = true;
             } else {
+
                 if ($request->boolean('preview')) {
                     return response()->json(['success' => false, 'message' => 'No tienes examen aprobado para visualizar el certificado'], 403);
                 }
+
                 return back()->with('error', 'No tienes examen aprobado para descargar el certificado');
             }
         } else {
@@ -1492,14 +1494,17 @@ class AcaCertificateController extends Controller
                     $viewedContents = $theme->student_history->unique('content_id')->count();
                     $progress = round(($viewedContents / $totalContents) * 100);
                     if ($progress < 100) {
+
                         if ($request->boolean('preview')) {
                             return response()->json(['success' => false, 'message' => 'Debes completar todos los contenidos del módulo para visualizar el certificado'], 403);
                         }
+
                         return back()->with('error', 'Debes completar todos los contenidos del módulo para descargar el certificado');
                     }
                 }
             }
         }
+
 
         // 5. Registrar certificado de módulo en aca_certificates (si no existe ya)
         $existingCert = AcaCertificate::where('student_id', $student->id)
@@ -1747,6 +1752,7 @@ class AcaCertificateController extends Controller
         }
 
         return Carbon::now()->locale('es')->isoFormat('D [de] MMMM [de] YYYY');
+
     }
 
     /**
