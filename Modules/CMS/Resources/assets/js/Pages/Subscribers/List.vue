@@ -14,6 +14,58 @@
     import iconExcel from '@/Components/vristo/icon/icon-excel.vue';
     import { onUnmounted, ref } from 'vue';
 
+    const trafficColors = {
+        facebook_ads: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400 border-blue-400',
+        google_ads: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 border-green-400',
+        cpc: 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400 border-orange-400',
+        social: 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400 border-purple-400',
+        organic: 'bg-teal-100 text-teal-800 dark:bg-teal-900/30 dark:text-teal-400 border-teal-400',
+        email: 'bg-pink-100 text-pink-800 dark:bg-pink-900/30 dark:text-pink-400 border-pink-400',
+        referrer: 'bg-cyan-100 text-cyan-800 dark:bg-cyan-900/30 dark:text-cyan-400 border-cyan-400',
+        direct: 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400 border-gray-400',
+    };
+
+    const trafficIcons = {
+        facebook_ads: 'fa-brands fa-facebook',
+        google_ads: 'fa-brands fa-google',
+        cpc: 'fa-solid fa-dollar-sign',
+        social: 'fa-solid fa-share-nodes',
+        organic: 'fa-solid fa-magnifying-glass',
+        email: 'fa-solid fa-envelope',
+        referrer: 'fa-solid fa-arrow-up-right-from-square',
+        direct: 'fa-solid fa-link',
+    };
+
+    const trafficLabels = {
+        facebook_ads: 'Facebook Ads',
+        google_ads: 'Google Ads',
+        cpc: 'CPC',
+        social: 'Social',
+        organic: 'Orgánico',
+        email: 'Email',
+        referrer: 'Otra página',
+        direct: 'Orgánico',
+    };
+
+    const getHost = (url) => {
+        if (!url) return '';
+        try { return new URL(url).hostname.replace(/^www\./, ''); } catch { return url; }
+    };
+
+    const getOrigenLabel = (subscriber) => {
+        if (subscriber.traffic_source === 'referrer') {
+            return getHost(subscriber.referer) || trafficLabels.referrer;
+        }
+        return trafficLabels[subscriber.traffic_source] || (subscriber.traffic_source ? subscriber.traffic_source : trafficLabels.organic);
+    };
+
+    const formatDateTime = (dateTimeString) => {
+        const date = new Date(dateTimeString);
+        const formattedDate = date.toISOString().slice(0, 10);
+        const formattedTime = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        return `${formattedDate} ${formattedTime}`;
+    };
+
 
     const props = defineProps({
         subscribers: {
@@ -205,6 +257,9 @@
                                         <th>
                                             Acción realizada
                                         </th>
+                                        <th>
+                                            Origen
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -229,6 +284,33 @@
                                         </td>
                                         <td >
                                             {{ subscriber.message }}
+                                        </td>
+                                        <td>
+                                            <span
+                                                :class="[trafficColors[subscriber.traffic_source] || trafficColors.organic, 'inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded border']"
+                                                v-tippy="{
+                                                    content: [
+                                                        subscriber.utm_source ? 'Source: ' + subscriber.utm_source : '',
+                                                        subscriber.utm_medium ? 'Medium: ' + subscriber.utm_medium : '',
+                                                        subscriber.utm_campaign ? 'Campaign: ' + subscriber.utm_campaign : '',
+                                                        subscriber.utm_term ? 'Term: ' + subscriber.utm_term : '',
+                                                        subscriber.utm_content ? 'Content: ' + subscriber.utm_content : '',
+                                                        subscriber.utm_id ? 'UTM ID: ' + subscriber.utm_id : '',
+                                                        subscriber.fbclid ? 'FBCLID: ' + subscriber.fbclid : '',
+                                                        subscriber.gclid ? 'GCLID: ' + subscriber.gclid : '',
+                                                        subscriber.referer ? 'Referer: ' + subscriber.referer : '',
+                                                        subscriber.landing_url ? 'URL: ' + subscriber.landing_url : '',
+                                                    ].filter(Boolean).join('<br>'),
+                                                    allowHTML: true,
+                                                    placement: 'left'
+                                                }"
+                                            >
+                                                <i :class="trafficIcons[subscriber.traffic_source] || trafficIcons.organic" class="text-xs"></i>
+                                                {{ getOrigenLabel(subscriber) }}
+                                            </span>
+                                            <div class="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5 max-w-[120px] truncate" v-if="subscriber.utm_campaign">
+                                                {{ subscriber.utm_campaign }}
+                                            </div>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -265,11 +347,3 @@
         </ModalStatus>
     </AppLayout>
 </template>
-<script>
-function formatDateTime(dateTimeString) {
-  const date = new Date(dateTimeString);
-  const formattedDate = date.toISOString().slice(0, 10);
-  const formattedTime = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  return `${formattedDate} ${formattedTime}`;
-}
-</script>

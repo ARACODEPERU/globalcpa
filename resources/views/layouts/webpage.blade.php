@@ -123,6 +123,9 @@
         })();
     </script>
     @yield('etiquetasmeta')
+
+    {{-- Tracking de tráfico (first-touch): UTM, fbclid, gclid, referrer --}}
+    <script src="{{ asset('js/traffic-tracking.js') }}"></script>
 </head>
 
 <body>

@@ -3455,7 +3455,7 @@
                                 },
                                 body: JSON.stringify({
                                     item_id: cartIds,
-                                    cardFormData
+                                    cardFormData: Object.assign({}, cardFormData, JSON.parse(localStorage.getItem('traffic_tracking') || '{}'))
                                 })
                             }, 30000)
                                 .then((data) => {
@@ -3819,7 +3819,8 @@
                 invoice_email: value("invoice_email"),
                 invoice_ruc: value("invoice_ruc"),
                 invoice_business_name: value("invoice_business_name"),
-                invoice_address: value("invoice_address")
+                invoice_address: value("invoice_address"),
+                ...JSON.parse(localStorage.getItem('traffic_tracking') || '{}')
             };
 
             requestJson(routes.finalize, {
@@ -4282,12 +4283,16 @@
                 return;
             }
 
+            let tracking = {};
+            try { tracking = JSON.parse(localStorage.getItem('traffic_tracking') || '{}'); } catch (e) {}
+
             const payload = {
                 client_id: abandonedClientId,
                 phone_country: phoneState.areaCode,
                 phone: phoneState.phone,
                 cart_items: cartItems.length ? cartItems.map(item => ({ id: item.id, name: item.name, image: item.image, price: item.price, additional: item.additional })) : (cartIds.length ? cartIds.map(id => ({ id })) : undefined),
                 cart_total: checkoutTotal || undefined,
+                ...tracking,
             };
 
             const names = document.getElementById('create_names')?.value?.trim();

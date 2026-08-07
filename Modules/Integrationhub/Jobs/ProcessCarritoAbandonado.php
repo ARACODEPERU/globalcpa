@@ -10,6 +10,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Modules\Integrationhub\Entities\IntegrationError;
 use Modules\Integrationhub\Http\Controllers\IntegrationhubController;
+use Modules\Integrationhub\Support\TrafficSourceResolver;
 use Modules\Onlineshop\Entities\OnliCarritoAbandonado;
 
 class ProcessCarritoAbandonado implements ShouldQueue
@@ -30,17 +31,25 @@ class ProcessCarritoAbandonado implements ShouldQueue
         try {
             $hub = app(IntegrationhubController::class);
 
-            $hub->runEndpoint('create_contact', [
-                'phone' => $this->phone,
-                'email' => 'nohay@correo.com',
-                'first_name' => "Usuario Abandonó carrito",
-                'actions' => [
+            $record = OnliCarritoAbandonado::find($this->recordId);
+            $tracking = $record ? $record->only(TrafficSourceResolver::KEYS) : [];
+
+            $actions = array_merge(
+                [
                     [
                         'action' => 'set_field_value',
                         'field_name' => 'Abandono Carrito',
                         'value' => now()->toDateTimeString(),
                     ],
                 ],
+                TrafficSourceResolver::actions($tracking)
+            );
+
+            $hub->runEndpoint('create_contact', [
+                'phone' => $this->phone,
+                'email' => 'nohay@correo.com',
+                'first_name' => "Usuario Abandonó carrito",
+                'actions' => $actions,
             ], [], true);
 
             // $hub->runEndpoint(
@@ -55,7 +64,6 @@ class ProcessCarritoAbandonado implements ShouldQueue
             //aqui agregar codigo de enviar plantilla endopoint flowid
 
 
-            $record = OnliCarritoAbandonado::find($this->recordId);
             if ($record) {
                 $record->update([
                     'notification_sent_at' => Carbon::now(),
@@ -79,4 +87,5 @@ class ProcessCarritoAbandonado implements ShouldQueue
             }
         }
     }
+
 }

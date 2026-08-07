@@ -197,6 +197,12 @@ Route::middleware(['auth', 'verified', 'invalid_updated_information', 'user_acti
     Route::get('courses/{courseId}/landing/section/{section}', [AcaCourseLandingController::class, 'getSectionData'])
         ->name('aca_courses_landing_get_section');
 
+    Route::put('courses/{courseId}/landing/utm-config', 'AcaCourseLandingController@updateUtmConfig')
+        ->name('aca_courses_landing_update_utm_config');
+
+    Route::get('courses/{courseId}/landing/utm-stats', [AcaCourseLandingController::class, 'getUtmStats'])
+        ->name('aca_courses_landing_utm_stats');
+
     Route::put('courses/{courseId}/landing', 'AcaCourseLandingController@update')
         ->name('aca_courses_landing_update');
 
