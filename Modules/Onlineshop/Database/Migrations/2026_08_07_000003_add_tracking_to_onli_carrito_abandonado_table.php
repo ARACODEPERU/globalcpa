@@ -18,8 +18,8 @@ return new class extends Migration
                 $table->string('utm_id')->nullable()->after('utm_content');
                 $table->string('fbclid')->nullable()->after('utm_id');
                 $table->string('gclid')->nullable()->after('fbclid');
-                $table->string('referer')->nullable()->after('gclid');
-                $table->string('landing_url')->nullable()->after('referer');
+                $table->text('referer')->nullable()->after('gclid');
+                $table->text('landing_url')->nullable()->after('referer');
                 $table->string('traffic_source')->nullable()->after('landing_url');
             });
         }
