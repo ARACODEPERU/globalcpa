@@ -72,7 +72,7 @@
             <x-sidebar />
             <!-- Page Sidebar Ends-->
             <div class="page-body">
-                    <br><br>
+                    
                 <div data-aos="fade-in">
                      <x-slider />
                 </div>
