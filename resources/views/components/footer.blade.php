@@ -179,7 +179,7 @@
                             aria-label="LinkedIn">
                             <img style="width: 30px; height: 30px;" src="{{ asset('themes/webpage/images/logos/linkedin.png') }}" alt="LinkedIn">
                         </a>
-                        <a href="https://wa.me/51967052506" target="_blank" class="social-icon-link"
+                        <a href="https://wa.me/51967052506?text=/Agente%20Principal" target="_blank" class="social-icon-link"
                             aria-label="WhatsApp">
                             <img style="width: 30px; height: 30px;" src="{{ asset('themes/webpage/images/logos/whatsapp.png') }}" alt="WhatsApp">
                         </a>
