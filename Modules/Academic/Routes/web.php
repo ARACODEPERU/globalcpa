@@ -74,7 +74,8 @@ Route::middleware(['auth', 'verified', 'invalid_updated_information', 'user_acti
         ->get('teachers/edit/{id}', 'AcaTeacherController@edit')
         ->name('aca_teachers_edit');
 
-    Route::post('teachers/store', 'AcaTeacherController@store')->name('aca_teachers_store');
+    Route::middleware(['permission:aca_docente_nuevo'])
+        ->post('teachers/store', 'AcaTeacherController@store')->name('aca_teachers_store');
     Route::post('teachers/update', 'AcaTeacherController@update')->name('aca_teachers_update');
     Route::middleware(['middleware' => 'permission:aca_docente_eliminar'])
         ->delete('teachers/destroy/{id}', 'AcaTeacherController@destroy')
@@ -113,22 +114,28 @@ Route::middleware(['auth', 'verified', 'invalid_updated_information', 'user_acti
         ->get('students/registrations/{id}', 'AcaCapRegistrationController@create')
         ->name('aca_students_registrations_create');
 
-    Route::post('students/registrations_store', 'AcaCapRegistrationController@store')
+    Route::middleware(['permission:aca_estudiante_matricular'])
+        ->post('students/registrations_store', 'AcaCapRegistrationController@store')
         ->name('aca_students_registrations_store');
 
-    Route::post('students/subscriptions_store', [AcaCapRegistrationController::class, 'subscriptionStore'])
+    Route::middleware(['permission:aca_estudiante_matricular'])
+        ->post('students/subscriptions_store', [AcaCapRegistrationController::class, 'subscriptionStore'])
         ->name('aca_students_subscriptions_store');
 
-    Route::delete('students/subscriptions_destroy/{student_id}/{subscription_id}', [AcaCapRegistrationController::class, 'subscriptionDestroy'])
+    Route::middleware(['permission:aca_estudiante_matricular'])
+        ->delete('students/subscriptions_destroy/{student_id}/{subscription_id}', [AcaCapRegistrationController::class, 'subscriptionDestroy'])
         ->name('aca_students_subscriptions_destroy');
 
-    Route::delete('students/registrations_destroy/{id}', 'AcaCapRegistrationController@destroy')
+    Route::middleware(['permission:aca_estudiante_matricular'])
+        ->delete('students/registrations_destroy/{id}', 'AcaCapRegistrationController@destroy')
         ->name('aca_students_registrations_destroy');
 
-    Route::put('students/registrations_update/{id}', [AcaCapRegistrationController::class, 'update'])
+    Route::middleware(['permission:aca_estudiante_matricular'])
+        ->put('students/registrations_update/{id}', [AcaCapRegistrationController::class, 'update'])
         ->name('aca_students_registrations_update');
 
-    Route::post('students/store', 'AcaStudentController@store')
+    Route::middleware(['permission:aca_estudiante_nuevo'])
+        ->post('students/store', 'AcaStudentController@store')
         ->name('aca_students_store');
     Route::middleware(['auth', 'permission:aca_estudiante_enviar_correo_acceso'])
         ->get('students/send/accessmail/{personId}', [AcaStudentController::class, 'sendAccessMail'])
@@ -137,6 +144,10 @@ Route::middleware(['auth', 'verified', 'invalid_updated_information', 'user_acti
     Route::middleware(['auth', 'permission:aca_estudiante_nuevo'])
         ->get('students/send/password-recovery/{personId}', [AcaStudentController::class, 'sendPasswordRecoveryMail'])
         ->name('aca_students_send_password_recovery_mail');
+
+    Route::middleware(['auth', 'permission:aca_estudiante_nuevo'])
+        ->post('students/set-password/{personId}', [AcaStudentController::class, 'setStudentPassword'])
+        ->name('aca_students_set_password');
 
     Route::middleware(['middleware' => 'permission:aca_estudiante_editar'])
         ->get('students/edit/{id}', 'AcaStudentController@edit')
@@ -196,6 +207,12 @@ Route::middleware(['auth', 'verified', 'invalid_updated_information', 'user_acti
 
     Route::get('courses/{courseId}/landing/section/{section}', [AcaCourseLandingController::class, 'getSectionData'])
         ->name('aca_courses_landing_get_section');
+
+    Route::put('courses/{courseId}/landing/utm-config', 'AcaCourseLandingController@updateUtmConfig')
+        ->name('aca_courses_landing_update_utm_config');
+
+    Route::get('courses/{courseId}/landing/utm-stats', [AcaCourseLandingController::class, 'getUtmStats'])
+        ->name('aca_courses_landing_utm_stats');
 
     Route::put('courses/{courseId}/landing', 'AcaCourseLandingController@update')
         ->name('aca_courses_landing_update');
@@ -619,6 +636,10 @@ Route::middleware(['auth', 'verified', 'invalid_updated_information', 'user_acti
         ->name('aca_student_exam_module_finish');
 
     Route::middleware(['middleware' => 'permission:aca_cursos_examen_resolver'])
+        ->post('student/module/exam/solve/start/{id}', [AcaExamController::class, 'moduleStartExam'])
+        ->name('aca_student_module_exam_start');
+
+    Route::middleware(['middleware' => 'permission:aca_cursos_examen_resolver'])
         ->post('student/module/exam/solve/retry/{id}', [AcaExamController::class, 'retryExam'])
         ->name('aca_student_module_exam_retry');
 
@@ -644,9 +665,6 @@ Route::middleware(['auth', 'verified', 'invalid_updated_information', 'user_acti
 
     Route::get('student/certificates/all', [AcaCertificateController::class, 'studentCertificates'])
         ->name('aca_student_certificates_all');
-
-    Route::get('student/certificate/course/{courseId}/find', [AcaCertificateController::class, 'findStudentCertificate'])
-        ->name('aca_student_course_certificate_find');
 
     Route::middleware(['middleware' => 'permission:aca_asistencia_crear_link'])
         ->post('attendance/link/store', [AcaAttendanceController::class, 'storeLink'])
