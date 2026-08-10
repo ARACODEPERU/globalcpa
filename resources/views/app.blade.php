@@ -27,6 +27,9 @@
     {!! $cadena_decodificada !!} --}}
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    {{-- Tracking de tráfico (first-touch): UTM, fbclid, gclid, referrer --}}
+    <script src="{{ asset('js/traffic-tracking.js') }}"></script>
     <!-- Scripts -->
     @routes
     @php

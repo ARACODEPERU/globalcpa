@@ -68,6 +68,10 @@ const renderCardPaymentBrick = async (bricksBuilder) => {
             },
             onSubmit: (cardFormData) => {
                 cardFormData.personInvoice = props.personInvoice
+                // Adjuntar datos de tráfico (UTM, fbclid, gclid, referrer, origen) capturados en localStorage
+                let _tt = {};
+                try { _tt = JSON.parse(localStorage.getItem('traffic_tracking') || '{}') || {}; } catch (e) {}
+                Object.assign(cardFormData, _tt);
                 return axios({
                         method: 'PUT',
                         url: route("aca_mercadopago_processpayment", props.subscription.id),

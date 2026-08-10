@@ -20,6 +20,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Cache;
 use Modules\Integrationhub\Entities\IntegrationError;
 use Modules\Integrationhub\Jobs\ProcessWhatsappFlow;
+use Modules\Integrationhub\Support\TrafficSourceResolver;
 
 class CmsSubscriberController extends Controller
 {
@@ -107,6 +108,17 @@ class CmsSubscriberController extends Controller
             'read'          => 0,
             'subject'       => $request->get('subject') ?? null,
             'message'       => $request->get('message') ?? null,
+            'utm_source'    => $request->get('utm_source'),
+            'utm_medium'    => $request->get('utm_medium'),
+            'utm_campaign'  => $request->get('utm_campaign'),
+            'utm_term'      => $request->get('utm_term'),
+            'utm_content'   => $request->get('utm_content'),
+            'utm_id'        => $request->get('utm_id'),
+            'fbclid'        => $request->get('fbclid'),
+            'gclid'         => $request->get('gclid'),
+            'referer'       => $request->get('referer'),
+            'landing_url'   => $request->get('landing_url'),
+            'traffic_source'=> $request->get('traffic_source'),
         ]);
 
         // Solo enviar a WhatsApp si hay un flow_id definido
@@ -129,7 +141,8 @@ class CmsSubscriberController extends Controller
                         $firstName,
                         $cleanPhone,
                         $request->get('email'),
-                        $flowId
+                        $flowId,
+                        $request->only(TrafficSourceResolver::KEYS)
                     );
                 }
             } catch (\Throwable $th) {

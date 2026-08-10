@@ -307,6 +307,8 @@
                         }
                     }
                 };
+                var _t = JSON.parse(localStorage.getItem('traffic_tracking') || '{}');
+                ['utm_source','utm_medium','utm_campaign','utm_term','utm_content','utm_id','fbclid','gclid','referer','landing_url','traffic_source'].forEach(function(k){ if(_t[k]) formData.set(k, _t[k]); });
                 xhr.send(formData);
             });
         }

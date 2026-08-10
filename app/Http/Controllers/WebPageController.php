@@ -616,6 +616,17 @@ public function course_url_slug($id){
                 'response_date_approved' => Carbon::now()->format('Y-m-d'),
                 'response_payer' => json_encode($request->all()),
                 'response_payment_method_id' => $cardData['payment_method_id'] ?? null,
+                'utm_source'     => $cardData['utm_source'] ?? null,
+                'utm_medium'     => $cardData['utm_medium'] ?? null,
+                'utm_campaign'   => $cardData['utm_campaign'] ?? null,
+                'utm_term'       => $cardData['utm_term'] ?? null,
+                'utm_content'    => $cardData['utm_content'] ?? null,
+                'utm_id'         => $cardData['utm_id'] ?? null,
+                'fbclid'         => $cardData['fbclid'] ?? null,
+                'gclid'          => $cardData['gclid'] ?? null,
+                'referer'        => $cardData['referer'] ?? null,
+                'landing_url'    => $cardData['landing_url'] ?? null,
+                'traffic_source' => $cardData['traffic_source'] ?? null,
             ]);
 
             $sale->mercado_payment_id = $payment->id;
@@ -1293,6 +1304,17 @@ public function course_url_slug($id){
                 'phone'                         => $comprador_telefono,
                 'email'                         => $comprador_email,
                 'response_status'               => 'pendiente',
+                'utm_source'     => $request->get('utm_source'),
+                'utm_medium'     => $request->get('utm_medium'),
+                'utm_campaign'   => $request->get('utm_campaign'),
+                'utm_term'       => $request->get('utm_term'),
+                'utm_content'    => $request->get('utm_content'),
+                'utm_id'         => $request->get('utm_id'),
+                'fbclid'         => $request->get('fbclid'),
+                'gclid'          => $request->get('gclid'),
+                'referer'        => $request->get('referer'),
+                'landing_url'    => $request->get('landing_url'),
+                'traffic_source' => $request->get('traffic_source'),
             ]);
 
             $productquantity = 1;
@@ -1466,6 +1488,17 @@ public function course_url_slug($id){
                 'phone'                         => $comprador_telefono,
                 'email'                         => $comprador_email,
                 'response_status'               => 'pendiente',
+                'utm_source'     => $request->get('utm_source'),
+                'utm_medium'     => $request->get('utm_medium'),
+                'utm_campaign'   => $request->get('utm_campaign'),
+                'utm_term'       => $request->get('utm_term'),
+                'utm_content'    => $request->get('utm_content'),
+                'utm_id'         => $request->get('utm_id'),
+                'fbclid'         => $request->get('fbclid'),
+                'gclid'          => $request->get('gclid'),
+                'referer'        => $request->get('referer'),
+                'landing_url'    => $request->get('landing_url'),
+                'traffic_source' => $request->get('traffic_source'),
             ]);
 
             $productquantity = 1;
@@ -1941,6 +1974,15 @@ public function course_url_slug($id){
         }
         if (isset($validated['cart_total'])) {
             $data['cart_total'] = $validated['cart_total'];
+        }
+
+        foreach ([
+            'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content',
+            'utm_id', 'fbclid', 'gclid', 'referer', 'landing_url', 'traffic_source',
+        ] as $field) {
+            if ($request->has($field)) {
+                $data[$field] = $request->get($field);
+            }
         }
 
         if ($existing) {
