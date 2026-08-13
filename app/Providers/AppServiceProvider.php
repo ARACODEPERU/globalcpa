@@ -34,6 +34,7 @@ class AppServiceProvider extends ServiceProvider
 
         Inertia::share([
             'MERCADOPAGO_KEY' => config('services.mercadopago.key'),
+            'MERCADOPAGO_MAX_INSTALLMENTS' => config('services.mercadopago.max_installments'),
         ]);
 
     }

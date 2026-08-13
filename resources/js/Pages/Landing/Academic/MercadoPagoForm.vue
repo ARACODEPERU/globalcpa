@@ -5,6 +5,7 @@ import { usePage } from '@inertiajs/vue3';
 const page = usePage();
 
 const publicKey = page.props.MERCADOPAGO_KEY;
+const maxInstallments = page.props.MERCADOPAGO_MAX_INSTALLMENTS;
 
 const props = defineProps({
     preference: {
@@ -55,7 +56,7 @@ onMounted(() => {
             atm: "all",
             onboarding_credits: "all",
             wallet_purchase: "all",
-            maxInstallments: 1,
+            maxInstallments,
             },
         },
         callbacks: {

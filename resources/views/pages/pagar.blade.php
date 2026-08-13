@@ -90,7 +90,7 @@
                                                 }
                                             },
                                             paymentMethods: {
-                                                maxInstallments: 1,
+                                                maxInstallments: {{ config('services.mercadopago.max_installments') }},
                                             }
                                         },
                                         callbacks: {

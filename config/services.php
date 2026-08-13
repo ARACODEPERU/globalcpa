@@ -33,7 +33,8 @@ return [
 
     'mercadopago' => [
         'key' => env('MERCADOPAGO_KEY'),
-        'token' => env('MERCADOPAGO_TOKEN')
+        'token' => env('MERCADOPAGO_TOKEN'),
+        'max_installments' => (int) env('MERCADOPAGO_MAX_INSTALLMENTS', 12),
     ],
     'recaptcha' => [
     'site_key' => env('RECAPTCHA_SITE_KEY'),
