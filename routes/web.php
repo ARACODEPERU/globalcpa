@@ -27,7 +27,6 @@ use Modules\Sales\Http\Controllers\SalesController;
 use App\Http\Controllers\WebController;
 
 use Illuminate\Support\Facades\Log;
-use Throwable;
 
 // PAGINA WEB //
 // Route::get('/', [WebPageController::class, 'construction'])->name('construction');
@@ -248,7 +247,7 @@ Route::get('person/update_information', function () {
         } else {
             return back();
         }
-    } catch (Throwable $e) {
+    } catch (\Throwable $e) {
         // Opción 1: Registrar el error en el archivo laravel.log
         Log::error('Error en update_information: ' . $e->getMessage());
 
