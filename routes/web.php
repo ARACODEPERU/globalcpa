@@ -233,8 +233,7 @@ Route::middleware('auth')->group(function () {
                 'provinces.name AS province_name',
                 'departments.name AS department_name'
             )
-            ->get();
-                dd($person, $identityDocumentTypes, $ubigeo);
+            ->get();                
         if (Auth::user()->hasRole('Alumno')) {
             return Inertia::render('Person/UpdateInformation', [
                 'person' => $person,
