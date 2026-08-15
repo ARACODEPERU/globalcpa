@@ -221,7 +221,7 @@ Route::middleware('auth')->group(function () {
     Route::get('parameters/{id}/{val}/default', [ParametersController::class, 'updateDefaultValue'])->name('parameters_update_default_value');
 
     ////////////////actualizar informacion de personas
-    Route::get('person/update_information_2', function () {
+    Route::get('person/update_information', function () {
         $person = Person::find(Auth::user()->person_id);
         $identityDocumentTypes = DB::table('identity_document_type')->get();
 
