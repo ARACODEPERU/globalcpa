@@ -222,27 +222,39 @@ Route::middleware('auth')->group(function () {
 
     ////////////////actualizar informacion de personas
     Route::get('person/update_information', function () {
-        $person = Person::find(Auth::user()->person_id);
+        $user = Auth::user();
+
+        if (!$user) {
+            return redirect()->route('login');
+        }
+
+        // 1. Obtener los datos de la persona
+        $person = Person::find($user->person_id);
+
+        // 2. Obtener tipos de documento
         $identityDocumentTypes = DB::table('identity_document_type')->get();
 
-        $ubigeo = District::join('provinces', 'province_id', 'provinces.id')
-            ->join('departments', 'provinces.department_id', 'departments.id')
+        // 3. Consulta de Ubigeo especificando origen de columnas
+        $ubigeo = District::join('provinces', 'districts.province_id', '=', 'provinces.id')
+            ->join('departments', 'provinces.department_id', '=', 'departments.id')
             ->select(
                 'districts.id AS district_id',
                 'districts.name AS district_name',
                 'provinces.name AS province_name',
                 'departments.name AS department_name'
             )
-            ->get();                
-        if (Auth::user()->hasRole('Alumno')) {
+            ->get();
+
+        if ($user->hasRole('Alumno')) {
             return Inertia::render('Person/UpdateInformation', [
                 'person' => $person,
                 'identityDocumentTypes' => $identityDocumentTypes,
                 'ubigeo' => $ubigeo
             ]);
-        } else {
-            return back();
         }
+
+        return back();
+        
     })->name('user-update-profile');
 
     Route::post(
