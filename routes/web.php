@@ -224,21 +224,19 @@ Route::middleware('auth')->group(function () {
 
     ////////////////actualizar informacion de personas
     Route::get('person/update_information', function () {
-        $lle = "inicia";
         try {
             $user = Auth::user();
     
             if (!$user) {
                 return redirect()->route('login');
-                $lle.="-233";
             }
     
             // 1. Obtener los datos de la persona
             $person = Person::find($user->person_id);
-            $lle.="-238";
+    
             // 2. Obtener tipos de documento
             $identityDocumentTypes = DB::table('identity_document_type')->get();
-            $lle.="-241";
+    
             // 3. Consulta de Ubigeo especificando origen de columnas
             $ubigeo = District::join('provinces', 'districts.province_id', '=', 'provinces.id')
                 ->join('departments', 'provinces.department_id', '=', 'departments.id')
@@ -249,34 +247,24 @@ Route::middleware('auth')->group(function () {
                     'departments.name AS department_name'
                 )
                 ->get();
-                $lle.="-252";
+    
             if ($user->hasRole('Alumno')) {
-                $lle.="-254";
-                dd($lle);
                 return Inertia::render('Person/UpdateInformation', [
                     'person' => $person,
                     'identityDocumentTypes' => $identityDocumentTypes,
                     'ubigeo' => $ubigeo
                 ]);
-                $lle.="-260";
-                dd($lle);
             }
-    dd($lle);
+            
             return back();
     
         } catch (\Throwable $e) {
 
-            // Registra el detalle exacto en storage/logs/laravel.log
-            Log::error('Error 500 en user-update-profile: ' . $e->getMessage(), [
-                'file' => $e->getFile(),
-                'line' => $e->getLine()
-            ]);
-    
-            // Muestra el mensaje exacto mientras depuras
             return response()->json([
-                'message' => 'Error 500 en el servidor',
-                'error' => $e->getMessage(),
-                'file' => $e->getFile() . ':' . $e->getLine()
+                'exception' => get_class($e),
+                'message'   => $e->getMessage(),
+                'file'      => $e->getFile() . ':' . $e->getLine(),
+                'trace'     => collect($e->getTrace())->take(3) // Muestra las primeras 3 líneas del fallo
             ], 500);
         }
     })->name('user-update-profile');
