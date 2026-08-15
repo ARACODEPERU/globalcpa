@@ -248,6 +248,7 @@ Route::get('person/update_information', function () {
             return back();
         }
     } catch (\Throwable $e) {
+        dd($e);
         // Opción 1: Registrar el error en el archivo laravel.log
         Log::error('Error en update_information: ' . $e->getMessage());
 
