@@ -18,14 +18,15 @@ import {
 import esES from 'ant-design-vue/es/locale/es_ES';
 import { FileInput } from 'flowbite-vue'
 
+// 1. CORRECCIÓN DE PROPS: Definir Array como tipo válido
 const props = defineProps({
     identityDocumentTypes: {
-        type: Object,
-        default: () => ({}),
+        type: [Array, Object],
+        default: () => [],
     },
     ubigeo: {
-        type: Object,
-        default: () => ({})
+        type: [Array, Object],
+        default: () => []
     },
     person: {
         type: Object,
@@ -33,26 +34,26 @@ const props = defineProps({
     }
 });
 
+// 2. CORRECCIÓN DE EVALUACIÓN SEGURA (?.) AL INICIALIZAR EL FORMULARIO
 const form = useForm({
-    id: props.person.id,
-    student_id: props.person.student_id,
-    document_type_id: props.person.document_type_id,
-    number: props.person.number,
-    telephone: props.person.telephone,
-    email: props.person.email,
-    image: props.person.image,
-    image_preview: props.person.image_preview,
-    address: props.person.address,
-    ubigeo: props.person.ubigeo,
-    birthdate: props.person.birthdate,
-    names: props.person.names,
-    father_lastname: props.person.father_lastname,
-    mother_lastname: props.person.mother_lastname,
-    ubigeo_description: props.person.city ?? null
+    id: props.person?.id ?? null,
+    student_id: props.person?.student_id ?? null,
+    document_type_id: props.person?.document_type_id ?? null,
+    number: props.person?.number ?? '',
+    telephone: props.person?.telephone ?? '',
+    email: props.person?.email ?? '',
+    image: props.person?.image ?? null,
+    image_preview: props.person?.image_preview ?? null,
+    address: props.person?.address ?? '',
+    ubigeo: props.person?.ubigeo ?? null,
+    birthdate: props.person?.birthdate ?? '',
+    names: props.person?.names ?? '',
+    father_lastname: props.person?.father_lastname ?? '',
+    mother_lastname: props.person?.mother_lastname ?? '',
+    ubigeo_description: props.person?.city ?? null
 });
 
 const updateInfoPerson = () => {
-
     form.post(route('user-update-profile-store'), {
         forceFormData: true,
         errorBag: 'updateInfoPerson',
@@ -69,15 +70,13 @@ const updateInfoPerson = () => {
 
 const filterOption = (input, option) => {
     const inputValueLower = input.toLowerCase();
-    const optionTitleLower = option.label.toLowerCase();
+    const optionTitleLower = option.label ? option.label.toLowerCase() : '';
     return optionTitleLower.includes(inputValueLower);
 };
 
 const cropImageAndSave = (res) => {
     form.image = res;
 }
-
-
 </script>
 
 <template>
