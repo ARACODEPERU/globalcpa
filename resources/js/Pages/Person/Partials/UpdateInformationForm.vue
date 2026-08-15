@@ -1,4 +1,6 @@
-<script setup>
+<!-- 
+
+    <script setup>
 import { useForm, Link } from '@inertiajs/vue3';
 
 import InputError from '@/Components/InputError.vue';
@@ -206,4 +208,9 @@ const cropImageAndSave = (res) => {
             </PrimaryButton>
         </div>
     </ConfigProvider>
+</template>
+-->
+
+<template>
+    test
 </template>
