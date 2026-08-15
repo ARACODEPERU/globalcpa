@@ -53,9 +53,8 @@ const getImage = (path) => {
                 </blockquote>
             </div>
         </div>
-        <!-- COMÉNTALO O ELIMÍNALO TEMPORALMENTE PARA PROBAR: -->
-        <!-- <div class="mt-5">
+        <div class="mt-5">
             <UpdateInformationForm :person="person" :identityDocumentTypes="identityDocumentTypes" :ubigeo="ubigeo" /> 
-        </div> -->
+        </div>
     </AppLayout>
 </template>
