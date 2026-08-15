@@ -26,8 +26,6 @@ use Modules\Blog\Http\Controllers\BlogController;
 use Modules\Sales\Http\Controllers\SalesController;
 use App\Http\Controllers\WebController;
 
-use Illuminate\Support\Facades\Log;
-
 // PAGINA WEB //
 // Route::get('/', [WebPageController::class, 'construction'])->name('construction');
 Route::get('/', [WebPageController::class, 'index'])->name('index_main');
@@ -222,9 +220,8 @@ Route::middleware('auth')->group(function () {
     Route::put('parameters/update/{id}', [ParametersController::class, 'update'])->name('parameters_update');
     Route::get('parameters/{id}/{val}/default', [ParametersController::class, 'updateDefaultValue'])->name('parameters_update_default_value');
 
-////////////////actualizar informacion de personas
-Route::get('person/update_information', function () {
-    try {
+    ////////////////actualizar informacion de personas
+    Route::get('person/update_information', function () {
         $person = Person::find(Auth::user()->person_id);
         $identityDocumentTypes = DB::table('identity_document_type')->get();
 
@@ -237,7 +234,7 @@ Route::get('person/update_information', function () {
                 'departments.name AS department_name'
             )
             ->get();
-
+                dd($person, $identityDocumentTypes, $ubigeo);
         if (Auth::user()->hasRole('Alumno')) {
             return Inertia::render('Person/UpdateInformation', [
                 'person' => $person,
@@ -247,18 +244,7 @@ Route::get('person/update_information', function () {
         } else {
             return back();
         }
-    } catch (\Throwable $e) {
-        dd($e);
-        // Opción 1: Registrar el error en el archivo laravel.log
-        Log::error('Error en update_information: ' . $e->getMessage());
-
-        // Opción 2a: Redirigir hacia atrás con un mensaje de error
-        return back()->with('error', 'Ocurrió un error al cargar la información: ' . $e->getMessage());
-
-        // Opción 2b: Si estás en desarrollo y quieres ver el error completo en pantalla:
-        // throw $e;
-    }
-})->name('user-update-profile');
+    })->name('user-update-profile');
 
     Route::post(
         'person/update_information/store',
