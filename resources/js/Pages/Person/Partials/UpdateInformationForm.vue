@@ -1,14 +1,20 @@
 <script setup>
-import { computed } from 'vue';
+import { computed, defineAsyncComponent } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import 'cropperjs/dist/cropper.css';
-import CropperImage from '@/Components/CropperImage.vue';
-import Swal2 from 'sweetalert2';
 import { ConfigProvider, Select, Input } from 'ant-design-vue';
 import esES from 'ant-design-vue/es/locale/es_ES';
+
+// 🚨 IMPORTACIÓN DINÁMICA: Evita que Cropper.js se ejecute en SSR / Node.js
+const CropperImage = defineAsyncComponent(() => {
+    // Importamos el CSS e ImageCropper solo cuando se ejecute en el navegador
+    if (typeof window !== 'undefined') {
+        import('cropperjs/dist/cropper.css');
+    }
+    return import('@/Components/CropperImage.vue');
+});
 
 const props = defineProps({
     identityDocumentTypes: {
@@ -25,7 +31,7 @@ const props = defineProps({
     },
 });
 
-// --- COMPUTED DEFENSI VOS (Evitan que .map() rompa la página) ---
+// Computed seguras
 const documentTypeOptions = computed(() => {
     const list = Array.isArray(props.identityDocumentTypes)
         ? props.identityDocumentTypes
@@ -49,7 +55,7 @@ const ubigeoOptions = computed(() => {
     }));
 });
 
-// --- INICIALIZACIÓN DEL FORMULARIO ---
+// Inicialización
 const form = useForm({
     id: props.person?.id ?? null,
     student_id: props.person?.student_id ?? null,
@@ -73,7 +79,9 @@ const updateInfoPerson = () => {
         forceFormData: true,
         errorBag: 'updateInfoPerson',
         preserveScroll: true,
-        onSuccess: () => {
+        onSuccess: async () => {
+            // Importación dinámica de SweetAlert2 para evitar fallos en SSR
+            const { default: Swal2 } = await import('sweetalert2');
             Swal2.fire({
                 title: 'Enhorabuena',
                 text: 'Se registró correctamente',
