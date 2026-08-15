@@ -222,6 +222,7 @@ Route::middleware('auth')->group(function () {
 
     ////////////////actualizar informacion de personas
     Route::get('person/update_information', function () {
+        dd();
         $person = Person::find(Auth::user()->person_id);
         $identityDocumentTypes = DB::table('identity_document_type')->get();
 
