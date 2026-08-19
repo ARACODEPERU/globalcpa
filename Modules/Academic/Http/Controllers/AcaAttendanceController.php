@@ -132,7 +132,7 @@ class AcaAttendanceController extends Controller
         // Validar número de caracteres según el tipo de documento
         $docType = IdentityDocumentType::find($request->identity_document_type_id);
         $maxAllowedLength = $docType ? (int) $docType->number_characters : 8;
-        $isOtros = ($docType && $docType->code == 0); // Ajusta 'code' según cómo identifiques el tipo "Otros"
+        $isOtros = ($docType && $docType->sunat_code == '00'); // Identificar tipo "Otros" por sunat_code
 
         if ($isOtros) {
             // Si es "Otros", solo validamos que no pase del máximo
@@ -162,13 +162,26 @@ class AcaAttendanceController extends Controller
             return back()->withErrors(['verification_code' => 'El código de verificación es incorrecto.']);
         }
 
-        // Buscar persona por tipo de documento y número
-        $person = Person::where('document_type_id', $request->identity_document_type_id)
-            ->where('number', $request->dni)
-            ->first();
+        // Buscar persona por número de documento (el campo number es UNIQUE en la tabla people)
+        $dni = trim($request->dni);
+        $person = Person::where('number', $dni)->first();
 
         if (! $person) {
-            return back()->withErrors(['dni' => 'No se encontró una persona con el DNI ingresado.']);
+            return back()->withErrors(['dni' => 'No se encontró una persona con el número de documento ' . $dni . '. Verifica el dato o contacta a administración.']);
+        }
+
+        // Verificar que el tipo de documento seleccionado coincida con el registrado
+        if ($person->document_type_id != $request->identity_document_type_id) {
+            $docTypeRegistered = IdentityDocumentType::find($person->document_type_id);
+            $docTypeSelected = IdentityDocumentType::find($request->identity_document_type_id);
+            $registeredDesc = $docTypeRegistered ? $docTypeRegistered->description : 'N/D';
+            $selectedDesc = $docTypeSelected ? $docTypeSelected->description : 'N/D';
+
+            // Si el tipo no coincide pero el número es único, permitir el registro
+            // pero informar al usuario del tipo correcto
+            if ($selectedDesc !== $registeredDesc) {
+                return back()->withErrors(['dni' => 'El número ' . $dni . ' está registrado como ' . $registeredDesc . ', pero seleccionaste ' . $selectedDesc . '. Selecciona el tipo de documento correcto: ' . $registeredDesc . '.']);
+            }
         }
 
         $student = AcaStudent::where('person_id', $person->id)->first();
