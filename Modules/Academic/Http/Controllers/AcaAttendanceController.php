@@ -171,17 +171,11 @@ class AcaAttendanceController extends Controller
         }
 
         // Verificar que el tipo de documento seleccionado coincida con el registrado
+        $mismatchMessage = null;
         if ($person->document_type_id != $request->identity_document_type_id) {
             $docTypeRegistered = IdentityDocumentType::find($person->document_type_id);
-            $docTypeSelected = IdentityDocumentType::find($request->identity_document_type_id);
             $registeredDesc = $docTypeRegistered ? $docTypeRegistered->description : 'N/D';
-            $selectedDesc = $docTypeSelected ? $docTypeSelected->description : 'N/D';
-
-            // Si el tipo no coincide pero el número es único, permitir el registro
-            // pero informar al usuario del tipo correcto
-            if ($selectedDesc !== $registeredDesc) {
-                return back()->withErrors(['dni' => 'El número ' . $dni . ' está registrado como ' . $registeredDesc . ', pero seleccionaste ' . $selectedDesc . '. Selecciona el tipo de documento correcto: ' . $registeredDesc . '.']);
-            }
+            $mismatchMessage = 'Tu tipo de documento está registrado como "' . $registeredDesc . '". Actualiza tu información desde tu perfil para evitar problemas futuros.';
         }
 
         $student = AcaStudent::where('person_id', $person->id)->first();
@@ -230,10 +224,16 @@ class AcaAttendanceController extends Controller
             'registered_at' => Carbon::now(),
         ]);
 
-        return redirect()->route('aca_attendance_success', [
+        $params = [
             'course' => $link->course?->description,
             'content' => $link->content?->description,
-        ]);
+        ];
+
+        if ($mismatchMessage) {
+            $params['warning'] = $mismatchMessage;
+        }
+
+        return redirect()->route('aca_attendance_success', $params);
     }
 
     public function success(Request $request)
@@ -243,6 +243,7 @@ class AcaAttendanceController extends Controller
         return Inertia::render('Academic::Attendance/AttendanceSuccess', [
             'course' => $request->query('course'),
             'content' => $request->query('content'),
+            'warning' => $request->query('warning'),
             'registeredAt' => Carbon::now()->format('d/m/Y H:i:s'),
             'primaryColor' => 'red',
             'company' => $company ? [
