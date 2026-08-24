@@ -132,7 +132,12 @@ class Factura
                         }
                     }
                 }
-                // Otros errores
+                // Error HTTP - SUNAT rechazó la petición (ej: 400 Bad Request)
+                elseif (!is_numeric($codeError) && strtolower($codeError) === 'http') {
+                    $status = 'Rechazada';
+                    $messageError = "SUNAT rechazó la petición HTTP ({$originalMessage}). Verifique credenciales SOL, certificado digital o datos del XML. Detalle: {$originalMessage}";
+                }
+                // Otros errores numéricos
                 else {
                     $code = (int)$codeError;
                     if (in_array($code, $connectionErrorCodes) || $code === -1 || $code === 0) {
@@ -140,6 +145,7 @@ class Factura
                         $messageError = "SUNAT no responde (error {$codeError}). El comprobante está en espera para reintento automático. Detalle: {$originalMessage}";
                     } else {
                         $status = 'Rechazada';
+                        $messageError = "Error de SUNAT (error {$codeError}). Detalle: {$originalMessage}";
                     }
                 }
             }
