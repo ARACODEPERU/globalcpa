@@ -3431,7 +3431,7 @@
                                 }
                             }
                         },
-                        paymentMethods: { maxInstallments: 1 }
+                        paymentMethods: { maxInstallments: {{ config('services.mercadopago.max_installments') }} }
                     },
                     callbacks: {
                         onReady: () => {

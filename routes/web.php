@@ -26,6 +26,8 @@ use Modules\Blog\Http\Controllers\BlogController;
 use Modules\Sales\Http\Controllers\SalesController;
 use App\Http\Controllers\WebController;
 
+use Illuminate\Support\Facades\Log;
+
 // PAGINA WEB //
 // Route::get('/', [WebPageController::class, 'construction'])->name('construction');
 Route::get('/', [WebPageController::class, 'index'])->name('index_main');
@@ -222,29 +224,51 @@ Route::middleware('auth')->group(function () {
 
     ////////////////actualizar informacion de personas
     Route::get('person/update_information', function () {
-        $person = Person::find(Auth::user()->person_id);
-        $identityDocumentTypes = DB::table('identity_document_type')->get();
-
-        $ubigeo = District::join('provinces', 'province_id', 'provinces.id')
-            ->join('departments', 'provinces.department_id', 'departments.id')
-            ->select(
-                'districts.id AS district_id',
-                'districts.name AS district_name',
-                'provinces.name AS province_name',
-                'departments.name AS department_name'
-            )
-            ->get();
-
-        if (Auth::user()->hasRole('Alumno')) {
-            return Inertia::render('Person/UpdateInformation', [
-                'person' => $person,
-                'identityDocumentTypes' => $identityDocumentTypes,
-                'ubigeo' => $ubigeo
-            ]);
-        } else {
+        try {
+            $user = Auth::user();
+    
+            if (!$user) {
+                return redirect()->route('login');
+            }
+    
+            // 1. Obtener los datos de la persona
+            $person = Person::find($user->person_id);
+    
+            // 2. Obtener tipos de documento
+            $identityDocumentTypes = DB::table('identity_document_type')->get();
+    
+            // 3. Consulta de Ubigeo especificando origen de columnas
+            $ubigeo = District::join('provinces', 'districts.province_id', '=', 'provinces.id')
+                ->join('departments', 'provinces.department_id', '=', 'departments.id')
+                ->select(
+                    'districts.id AS district_id',
+                    'districts.name AS district_name',
+                    'provinces.name AS province_name',
+                    'departments.name AS department_name'
+                )
+                ->get();
+    
+            if ($user->hasRole('Alumno')) {
+                return Inertia::render('Person/UpdateInformation', [
+                    'person' => $person,
+                    'identityDocumentTypes' => $identityDocumentTypes,
+                    'ubigeo' => $ubigeo
+                ]);
+            }
+            
             return back();
+    
+        } catch (\Throwable $e) {
+
+            return response()->json([
+                'exception' => get_class($e),
+                'message'   => $e->getMessage(),
+                'file'      => $e->getFile() . ':' . $e->getLine(),
+                'trace'     => collect($e->getTrace())->take(3) // Muestra las primeras 3 líneas del fallo
+            ], 500);
         }
     })->name('user-update-profile');
+
 
     Route::post(
         'person/update_information/store',

@@ -25,3 +25,4 @@ classify_files.py
 /.mimocode
 .mimocode\
 .mimocode/.cron-lock
+.freebuff/project-id
