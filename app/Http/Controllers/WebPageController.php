@@ -262,7 +262,7 @@ class WebPageController extends Controller
 
     }
 
-public function course_url_slug($id){
+    public function course_url_slug($id){
         $landing = AcaCourseLanding::with('course')
             ->with('course.category')
             ->with('course.modality')
@@ -2031,5 +2031,14 @@ public function course_url_slug($id){
             return response()->json(['error' => 'Error: ' . $e->getMessage()], 500);
         }
     }
+
+
+    // =========== BLOG - PROVISIONAL =========== //
+
+    public function blog_index()
+    {
+        return view('pages.blog');
+    }
+
 
 }

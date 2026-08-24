@@ -76,6 +76,10 @@ Route::get('/ask/product/{id}', [LandingController::class, 'redirectToWhatsApp']
 Route::get('/find/invoice', [SalesController::class, 'findInvoice'])->name('find_electronic_invoice');
 Route::post('/find/invoice', [SalesController::class, 'clientSearchDocument'])->name('client_search_electronic_invoice');
 
+
+// BLOG //
+
+Route::get('/blog', [WebController::class, 'blog_index'])->name('blog_principal');
 // Route::get('/blog/home', [BlogController::class, 'index'])->name('blog_principal');
 // Route::get('/article/{url}', [BlogController::class, 'article'])->name('blog_article_by_url');
 // Route::get('/category/{id}', [BlogController::class, 'category'])->name('blog_category');
