@@ -29,6 +29,7 @@ use App\Models\Sale;
 use App\Models\SaleDocumentItem;
 use App\Models\SaleProduct;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Greenter\Model\Sale\Cuota;
 class Factura
 {
@@ -51,6 +52,25 @@ class Factura
             $invoice = $this->setDocument($document);
             $see = $this->util->getSee();
             $res = $see->send($invoice);
+
+            // === DEBUG: Log detallado de respuesta SUNAT ===
+            if (!$res->isSuccess()) {
+                $error = $res->getError();
+                Log::error('SUNAT DEBUG - Error en envio de factura:', [
+                    'document_id' => $document_id,
+                    'error_code' => $error ? $error->getCode() : 'N/A',
+                    'error_message' => $error ? $error->getMessage() : 'N/A',
+                    'is_success' => $res->isSuccess(),
+                    'response_type' => get_class($res),
+                ]);
+            } else {
+                Log::info('SUNAT DEBUG - Factura enviada exitosamente:', [
+                    'document_id' => $document_id,
+                    'cdr_code' => $res->getCdrResponse() ? $res->getCdrResponse()->getCode() : 'N/A',
+                ]);
+            }
+            // === FIN DEBUG ===
+
             //fecha en la que se envio a sunat el documento
             $document->invoice_send_date = Carbon::now();
 
