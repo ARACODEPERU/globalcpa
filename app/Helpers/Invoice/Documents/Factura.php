@@ -152,10 +152,10 @@ class Factura
                         }
                     }
                 }
-                // Error HTTP - SUNAT rechazó la petición (ej: 400 Bad Request)
+                // Error HTTP - SUNAT respondió con error HTTP (ej: 502 Bad Gateway, 400 Bad Request)
                 elseif (!is_numeric($codeError) && strtolower($codeError) === 'http') {
-                    $status = 'Rechazada';
-                    $messageError = "SUNAT rechazó la petición HTTP ({$originalMessage}). Verifique credenciales SOL, certificado digital o datos del XML. Detalle: {$originalMessage}";
+                    $status = 'Pendiente de Reintento';
+                    $messageError = "SUNAT respondió con error HTTP ({$originalMessage}). Es probable que SUNAT esté presentando picos de sobrecarga. Intente reintentar más tarde. Si el error persiste, verifique: credenciales SOL, certificado digital o datos del XML.";
                 }
                 // Otros errores numéricos
                 else {
