@@ -61,7 +61,8 @@ const form = useForm({
     certificate_title: props.course.certificate_title,
     discount: props.course.discount,
     discount_applies: props.course.discount_applies,
-    auto_certificate: props.course.auto_certificate == 1 ? true : false
+    auto_certificate: props.course.auto_certificate == 1 ? true : false,
+    round_grades: props.course.round_grades == 1 ? true : false
 });
 
 const updateCourse = () => {
