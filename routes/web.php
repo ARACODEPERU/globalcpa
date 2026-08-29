@@ -79,9 +79,8 @@ Route::post('/find/invoice', [SalesController::class, 'clientSearchDocument'])->
 
 // BLOG //
 
-Route::get('/blog', [WebController::class, 'blog_index'])->name('blog_principal');
 // Route::get('/blog/home', [BlogController::class, 'index'])->name('blog_principal');
-// Route::get('/article/{url}', [BlogController::class, 'article'])->name('blog_article_by_url');
+Route::get('/article/{url}', [BlogController::class, 'article'])->name('blog_article_by_url');
 // Route::get('/category/{id}', [BlogController::class, 'category'])->name('blog_category');
 // Route::get('/policies', [BlogController::class, 'policies'])->name('blog_policies');
 // Route::get('/contact-us', [BlogController::class, 'contactUs'])->name('blog_contact_us');
@@ -230,17 +229,17 @@ Route::middleware('auth')->group(function () {
     Route::get('person/update_information', function () {
         try {
             $user = Auth::user();
-    
+
             if (!$user) {
                 return redirect()->route('login');
             }
-    
+
             // 1. Obtener los datos de la persona
             $person = Person::find($user->person_id);
-    
+
             // 2. Obtener tipos de documento
             $identityDocumentTypes = DB::table('identity_document_type')->get();
-    
+
             // 3. Consulta de Ubigeo especificando origen de columnas
             $ubigeo = District::join('provinces', 'districts.province_id', '=', 'provinces.id')
                 ->join('departments', 'provinces.department_id', '=', 'departments.id')
@@ -251,7 +250,7 @@ Route::middleware('auth')->group(function () {
                     'departments.name AS department_name'
                 )
                 ->get();
-    
+
             if ($user->hasRole('Alumno')) {
                 return Inertia::render('Person/UpdateInformation', [
                     'person' => $person,
@@ -259,9 +258,9 @@ Route::middleware('auth')->group(function () {
                     'ubigeo' => $ubigeo
                 ]);
             }
-            
+
             return back();
-    
+
         } catch (\Throwable $e) {
 
             return response()->json([

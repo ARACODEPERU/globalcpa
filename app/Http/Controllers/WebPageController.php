@@ -37,6 +37,8 @@ use Modules\Academic\Entities\AcaStudentCoursesInterest;
 use Modules\CMS\Entities\CmsLanding;
 use Modules\Onlineshop\Entities\OnliCarritoAbandonado;
 use Modules\Onlineshop\Entities\OnliPaymentProblem;
+use Modules\Blog\Entities\BlogArticle;
+use Modules\Blog\Entities\BlogCategory;
 use Spatie\Permission\Models\Role;
 
 class WebPageController extends Controller
@@ -2037,7 +2039,52 @@ class WebPageController extends Controller
 
     public function blog_index()
     {
-        return view('pages.blog');
+        $categories = BlogCategory::where('status', true)->get();
+
+        $articles = BlogArticle::with('category')->with('author')
+            ->where('status', true)
+            ->orderByDesc('created_at')
+            ->paginate(10);
+
+        $latest_articles = BlogArticle::select(
+            'title',
+            'imagen',
+            'url',
+            'created_at'
+        )
+            ->where('status', true)
+            ->latest('created_at')
+            ->take(4)
+            ->get();
+
+        $banner = CmsSection::where('component_id', 'blog_banner_area_16')
+            ->join('cms_section_items', 'section_id', 'cms_sections.id')
+            ->join('cms_items', 'cms_section_items.item_id', 'cms_items.id')
+            ->select(
+                'cms_items.content',
+                'cms_section_items.position'
+            )
+            ->orderBy('cms_section_items.position')
+            ->first();
+
+        $courses = OnliItem::whereHas('course')->with('course')->latest()->get();
+        $types = getEnumValues('onli_items', 'additional', 0, 1);
+        $p = 12;
+        $lines = 2;
+
+        // Artículos agrupados por categoría para el sidebar accordion
+        $articlesByCategory = [];
+        foreach ($categories as $category) {
+            $articlesByCategory[$category->id] = BlogArticle::where('category_id', $category->id)
+                ->where('status', true)
+                ->orderByDesc('created_at')
+                ->get();
+        }
+
+        return view('pages.blog', compact(
+            'categories', 'articles', 'latest_articles', 'banner',
+            'courses', 'types', 'p', 'lines', 'articlesByCategory'
+        ));
     }
 
 
