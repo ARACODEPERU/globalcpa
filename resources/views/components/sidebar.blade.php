@@ -103,6 +103,14 @@
                             </a>
                         </li> --}}
                         <li class="sidebar-list" style="padding: 15px 0px;">
+                            <a class="sidebar-link sidebar-title" href="{{ route('blog_principal') }}">
+                                <span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><line x1="2" y1="10" x2="22" y2="10"/><line x1="8" y1="4" x2="8" y2="8"/><line x1="12" y1="4" x2="12" y2="8"/><line x1="16" y1="4" x2="16" y2="8"/></svg><br>
+                                    Blog
+                                </span>
+                            </a>
+                        </li>
+                        <li class="sidebar-list" style="padding: 15px 0px;">
                             <a class="sidebar-link sidebar-title" href="{{ route('web_book_amauta') }}">
                                 <span>
                                     <i class="fa fa-book" aria-hidden="true" style="font-size: 26px;"></i><br>
