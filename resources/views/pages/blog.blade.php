@@ -84,12 +84,13 @@
             padding: 60px 0 40px;
             text-align: center;
         }
-
         .blog-hero h1 {
             font-size: 2.2rem;
             font-weight: 700;
-            margin-bottom: 10px;
-        }
+            text-transform: uppercase;
+            text-align: center;
+            color: #fff;
+        } 
 
         .blog-hero p {
             font-size: 1.1rem;
@@ -331,7 +332,7 @@
             <x-sidebar />
 
             <div class="page-body">
-                <br><br>
+                <br>
 
                 <!-- Hero Banner -->
                 <div class="blog-hero" data-aos="fade-in">
