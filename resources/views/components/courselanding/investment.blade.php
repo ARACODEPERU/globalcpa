@@ -293,7 +293,7 @@
                                 placeholder="ejemplo@correo.com" required>
                         </div>
                     </div>
-                    <button type="submit" id="submitPageContactButton"
+                    <button type="submit" id="submitModalContactButton"
                         class="btn btn-warning btn-lg w-100 fw-bold shadow-sm py-3 d-flex align-items-center justify-content-center gap-2"
                         style="border-radius: 12px; color: #002060 !important;">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="20" height="20"
