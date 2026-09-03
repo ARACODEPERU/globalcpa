@@ -192,6 +192,58 @@
             .btn-login-icon { display: inline-block; }
         }
 
+        /* Dropdown menu for user */
+        .user-dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            min-width: 180px;
+            z-index: 1000;
+            padding: 8px 0;
+        }
+        .onhover-dropdown:hover .user-dropdown-menu {
+            display: block;
+        }
+        .user-dropdown-menu a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            color: #374151;
+            text-decoration: none;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+        .user-dropdown-menu a:hover {
+            background: #f3f4f6;
+            color: #e30613;
+        }
+        .user-dropdown-menu .dropdown-divider {
+            height: 1px;
+            background: #e5e7eb;
+            margin: 4px 0;
+        }
+        body.dark-only .user-dropdown-menu {
+            background: #1f2937;
+            border-color: #374558;
+        }
+        body.dark-only .user-dropdown-menu a {
+            color: #d1d5db;
+        }
+        body.dark-only .user-dropdown-menu a:hover {
+            background: #374558;
+            color: #e30613;
+        }
+        body.dark-only .user-dropdown-menu .dropdown-divider {
+            background: #374558;
+        }
+
+
         /* Móvil Pequeño (< 450px) - Rango crítico 320px */
         @media only screen and (max-width: 450px) {
             .custom-page-header { padding: 8px 10px; }
@@ -314,35 +366,39 @@
 
                 <!-- Usuario / Login -->
                 @auth
-                    <li class="profile-nav onhover-dropdown pe-0 py-0">
-                        <div class="custom-profile-media">
+                    <li class="profile-nav onhover-dropdown pe-0 py-0" style="position: relative;">
+                        <div class="custom-profile-media" style="cursor: pointer;">
                             @php
                                 $userName = Auth::user()->name;
                                 $userAvatar = Auth::user()->avatar;
                             @endphp
 
                             @if ($userAvatar && Storage::disk('public')->exists($userAvatar))
-                                <a href="{{ route('login') }}">
-                                    <img class="custom-avatar-img" src="{{ asset('storage/' . $userAvatar) }}" alt="Avatar">
-                                </a>
+                                <img class="custom-avatar-img" src="{{ asset('storage/' . $userAvatar) }}" alt="Avatar">
                             @else
-                                <a href="{{ route('login') }}">
-                                    <div class="custom-initials-box">
-                                        <span>{{ substr($userName, 0, 1) }}</span>
-                                    </div>
-                                </a>
+                                <div class="custom-initials-box">
+                                    <span>{{ substr($userName, 0, 1) }}</span>
+                                </div>
                             @endif
                             
                             <div class="custom-user-info">
-                                <a href="{{ route('login') }}">
-                                    <span style="font-weight: 600; font-size: 14px;">{{ $userName }}</span>
-                                </a>
-                                <a href="{{ route('login') }}">
-                                    <span style="font-size: 12px; color: #898989;">
-                                        {{ Auth::user()->hasRole(['Alumno']) ? 'Alumno' : 'Docente' }}
-                                    </span>
-                                </a>
+                                <span style="font-weight: 600; font-size: 14px;">{{ $userName }}</span>
+                                <span style="font-size: 12px; color: #898989;">
+                                    {{ Auth::user()->hasRole(['Alumno']) ? 'Alumno' : 'Docente' }}
+                                </span>
                             </div>
+                        </div>
+                        <div class="user-dropdown-menu">
+                            <a href="{{ url('/dashboard') }}">
+                                <i class="fa-solid fa-gauge-high"></i> Ir a Academy
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
+                                @csrf
+                                <button type="submit" style="background: none; border: none; width: 100%; text-align: left; padding: 10px 16px; color: #e30613; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 10px;">
+                                    <i class="fa-solid fa-right-from-bracket"></i> Cerrar sesion
+                                </button>
+                            </form>
                         </div>
                     </li>
                 @endauth
@@ -416,8 +472,8 @@
                         </div>
                     </li>
                     @auth
-                        <li class="profile-nav onhover-dropdown pe-0 py-0 view-pc">
-                            <div class="d-flex align-items-center profile-media">
+                        <li class="profile-nav onhover-dropdown pe-0 py-0 view-pc" style="position: relative;">
+                            <div class="d-flex align-items-center profile-media" style="cursor: pointer;">
 
                                 @php
                                     $userName = Auth::user()->name;
@@ -445,6 +501,18 @@
                                         @endif
                                     </p>
                                 </div>
+                            </div>
+                            <div class="user-dropdown-menu">
+                                <a href="{{ url('/dashboard') }}">
+                                    <i class="fa-solid fa-gauge-high"></i> Ir a Academy
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
+                                    @csrf
+                                    <button type="submit" style="background: none; border: none; width: 100%; text-align: left; padding: 10px 16px; color: #e30613; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 10px;">
+                                        <i class="fa-solid fa-right-from-bracket"></i> Cerrar sesion
+                                    </button>
+                                </form>
                             </div>
                         </li>
                     @endauth
