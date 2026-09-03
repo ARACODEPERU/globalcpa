@@ -221,10 +221,14 @@
                     aria-label="Close"></button>
             </div>
             <div class="modal-body p-4 p-lg-5 pt-0">
-                <div class="text-center mb-4">
-                    <h2 class="fw-bold text-navy-custom text-[24px]">Asegura tu vacante</h2>
-                    <p class="text-muted dark:text-gray-400">Completa tus datos para recibir la información y asegurar
-                        tu participación.</p>
+                <div class="mb-4">
+                    <h2 class="fw-bold text-navy-custom" style="font-size: 20px;">
+                        Estás muy cerca de asegurar tu vacante
+                    </h2>
+                    <p class="text-muted" style="font-size: 15px;">
+                        Completa tus datos y un asesor de CPA Academy se comunicará contigo por WhatsApp para
+                        resolver tus consultas y ayudarte a acceder a la Preventa Exclusiva.
+                    </p>
                 </div>
                 <form id="modalContactForm">
                     @csrf
@@ -240,7 +244,7 @@
                                     class="fa-solid fa-user"></i></span>
                             <input type="text" name="full_name"
                                 class="form-control border-start-0 ps-0 dark:bg-gray-700 dark:text-white dark:border-gray-600 bg-white"
-                                placeholder="Nombre completo" required>
+                                placeholder="Ingresa tu nombre completo" required>
                         </div>
                     </div>
 
@@ -293,6 +297,7 @@
                                 placeholder="ejemplo@correo.com" required>
                         </div>
                     </div>
+                    <p class="text-muted mb-3" style="font-size: 13px;">Tu información será tratada de forma confidencial.</p>
                     <button type="submit" id="submitModalContactButton"
                         class="btn btn-warning btn-lg w-100 fw-bold shadow-sm py-3 d-flex align-items-center justify-content-center gap-2"
                         style="border-radius: 12px; color: #002060 !important;">
