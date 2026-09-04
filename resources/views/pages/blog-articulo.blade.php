@@ -212,6 +212,14 @@
             border-color: #374558;
         }
 
+        body.dark-only .sidebar-box .latest-item .info a {
+            color: #d1d5db;
+        }
+
+        body.dark-only .sidebar-box .latest-item .info span {
+            color: #9ca3af;
+        }
+
         body.dark-only .sidebar-box h5 {
             color: #f3f4f6;
         }
@@ -229,9 +237,111 @@
             color: #f3f4f6;
         }
 
-        body.dark-only .article-hero {
-            background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
+        body.dark-only .article-lock-box {
+            background: linear-gradient(to bottom, rgba(21,32,43,0) 0%, rgba(21,32,43,1) 30%) !important;
         }
+
+        body.dark-only .article-lock-box h5 {
+            color: #f3f4f6 !important;
+        }
+
+        body.dark-only .article-lock-box .text-muted {
+            color: #9ca3af !important;
+        }
+
+        body.dark-only .article-lock-box .btn-outline-primary {
+            color: #7dd3fc !important;
+            border-color: #7dd3fc !important;
+            background-color: transparent !important;
+        }
+
+        /* Contenido del articulo (TinyMCE) en modo oscuro */
+        body.dark-only .article-body,
+        body.dark-only .article-body :not(button):not(input):not(select):not(textarea):not(a) {
+            color: #d1d5db !important;
+        }
+
+        body.dark-only .article-body h1,
+        body.dark-only .article-body h2,
+        body.dark-only .article-body h3,
+        body.dark-only .article-body h4,
+        body.dark-only .article-body h5,
+        body.dark-only .article-body h6 {
+            color: #f3f4f6 !important;
+        }
+
+        body.dark-only .article-body a {
+            color: #7dd3fc !important;
+            text-decoration: underline;
+        }
+
+        body.dark-only .article-body table,
+        body.dark-only .article-body td,
+        body.dark-only .article-body th {
+            border: 1px solid #374558 !important;
+            background-color: transparent !important;
+        }
+
+        body.dark-only .article-body pre,
+        body.dark-only .article-body code {
+            background-color: #111827 !important;
+            color: #e5e7eb !important;
+            border-color: #374558 !important;
+        }
+
+        body.dark-only .article-body blockquote {
+            background-color: #1f2937;
+            color: #d1d5db;
+            border-left: 3px solid #e30613;
+        }
+
+        /* Tags del articulo (badges) en modo oscuro */
+        body.dark-only .article-content .badge.bg-light.text-dark {
+            background-color: #374558 !important;
+            color: #f3f4f6 !important;
+        }
+
+        /* Caja de Categorias en modo oscuro */
+        body.dark-only .blog-sidebar-box {
+            background: #111827;
+            border-color: #374558;
+        }
+
+        body.dark-only .blog-sidebar-box h5 {
+            color: #f3f4f6;
+        }
+
+        body.dark-only .blog-sidebar-box details.blog-cat {
+            border-bottom-color: #374558;
+        }
+
+        body.dark-only .blog-sidebar-box details.blog-cat summary {
+            color: #f3f4f6;
+        }
+
+        body.dark-only .blog-sidebar-box details.blog-cat .cat-article-item a {
+            color: #d1d5db;
+        }
+
+        body.dark-only .blog-sidebar-box details.blog-cat .cat-article-item a:hover {
+            color: #e30613;
+        }
+
+        /* Modal de login en modo oscuro */
+        body.dark-only #loginModalArticle .modal-header {
+            border-bottom-color: #374558 !important;
+        }
+
+        body.dark-only #loginModalArticle a {
+            color: #7dd3fc !important;
+        }
+
+        body.dark-only #loginModalArticle .input-group-text {
+            background-color: #374558;
+            border-color: #374558;
+            color: #f3f4f6;
+        }
+
     </style>
 
     <div class="page-wrapper" id="pageWrapper">
@@ -296,7 +406,7 @@
                                         @endphp
                                         {!! nl2br(e($preview)) !!}
                                         
-                                        <div class="text-center mt-4 p-4" style="background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 30%); position: relative;">
+                                        <div class="text-center mt-4 p-4 article-lock-box" style="background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 30%); position: relative;">
                                             <div style="padding-top: 40px;">
                                                 <div class="mb-3">
                                                     <i class="fa fa-lock fa-3x text-muted mb-3"></i>

@@ -305,6 +305,26 @@
             color: #d1d5db;
         }
 
+        body.dark-only .blog-sidebar-box details.blog-cat {
+            border-bottom-color: #374558;
+        }
+
+        body.dark-only .blog-sidebar-box details.blog-cat summary {
+            color: #f3f4f6;
+        }
+
+        body.dark-only .blog-sidebar-box details.blog-cat .cat-article-item a {
+            color: #d1d5db;
+        }
+
+        body.dark-only .blog-sidebar-box details.blog-cat .cat-article-item a:hover {
+            color: #e30613;
+        }
+
+        body.dark-only .blog-sidebar-box .blog-latest-item .latest-info a {
+            color: #d1d5db;
+        }
+
         body.dark-only .blog-card .card-meta .author {
             color: #d1d5db;
         }

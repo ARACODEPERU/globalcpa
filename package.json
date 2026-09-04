@@ -4,6 +4,7 @@
         "dev": "vite",
         "build": "vite build && vite build --ssr",
         "editor:build": "npm run build --prefix ../editor-aracode",
+        "audit:dark": "node scripts/audit-dark-mode.mjs",
         "prebuild": "npm run editor:build"
     },
     "name": "aracode",

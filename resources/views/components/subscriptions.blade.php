@@ -1,4 +1,30 @@
-<div>
+<div class="subscriptions-wrap">
+
+    <style>
+        /* Modo oscuro: el CSS de .title_aracode y .boton-degradado-courses no se
+           carga en las páginas públicas, así que los títulos heredan el color de
+           encabezado de Bootstrap (#1F2F3E) -> oscuro sobre oscuro. */
+        body.dark-only .subscriptions-wrap h1.title_aracode,
+        body.dark-only .subscriptions-wrap h3.title_aracode,
+        body.dark-only .subscriptions-wrap h2 b.title_aracode {
+            color: #f3f4f6;
+        }
+
+        body.dark-only .subscriptions-wrap .tabs-list button.btn {
+            color: #f3f4f6;
+            background-color: transparent;
+        }
+
+        body.dark-only .subscriptions-wrap .boton-degradado-courses b {
+            color: #ffffff;
+        }
+
+        body.dark-only .subscriptions-wrap .card {
+            background-color: #1f2937;
+            border-color: #374558;
+            color: #d1d5db;
+        }
+    </style>
 
     <br>
     <div class="mt-4 px-[var(--margin-x)] transition-all duration-[.25s] sm:mt-5 lg:mt-6">

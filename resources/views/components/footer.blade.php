@@ -117,7 +117,7 @@
             border-top: 1px solid rgba(255, 255, 255, 0.1);
             text-align: center;
             font-size: 0.85rem;
-            color: #6b7280;
+            color: #9ca3af;
         }
     </style>
 

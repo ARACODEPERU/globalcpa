@@ -26,3 +26,5 @@ classify_files.py
 .mimocode\
 .mimocode/.cron-lock
 .freebuff/project-id
+dark-mode-audit-report.json
+scripts/audit-dark-mode.mjs
