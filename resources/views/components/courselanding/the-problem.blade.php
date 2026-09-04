@@ -10,6 +10,16 @@
         border-color: #374558 !important;
     }
 
+    /* Insignia roja legible tambien en modo oscuro */
+    .badge-red-custom {
+        background-color: rgba(220, 53, 69, 0.1) !important;
+        color: #dc3545 !important;
+    }
+    :is(.dark, .dark-only) .badge-red-custom {
+        background-color: rgba(220, 53, 69, 0.22) !important;
+        color: #fca5a5 !important;
+    }
+
     .fa-solid, .fas {
         font-family: "Font Awesome 6 Free" !important;
         font-weight: 900 !important;
@@ -22,8 +32,8 @@
             <div class="col-md-12">
                 <div class="card-body p-4 p-lg-5">
                     <div class="text-center mb-5">
-                        <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border"
-                            style="background-color: rgba(220, 53, 69, 0.1); color: #dc3545; font-size: 14px; font-weight: 600;">
+                        <span class="badge badge-red-custom rounded-pill px-3 py-2 mb-3 shadow-sm border"
+                            style="font-size: 14px; font-weight: 600;">
                             <i class="fa-solid fa-triangle-exclamation me-1"></i> {{ $landing->problem_section['name'] }}
                         </span>
                         <h2 class="fw-bold display-6 text-navy-custom">{{ $landing->problem_section['title'] }}</h2>
