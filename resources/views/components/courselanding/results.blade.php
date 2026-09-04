@@ -15,15 +15,6 @@
             font-family: "Font Awesome 6 Free" !important;
             font-weight: 900 !important;
         }
-            /* Insignia verde legible tambien en modo oscuro */
-        .badge-green-custom {
-            background-color: rgba(40, 167, 69, 0.1) !important;
-            color: #28a745 !important;
-        }
-        :is(.dark, .dark-only) .badge-green-custom {
-            background-color: rgba(40, 167, 69, 0.22) !important;
-            color: #86efac !important;
-        }
     </style>
 
     <div class="container-fluid card border-0 shadow-sm aos-animate" data-aos="fade-up">
@@ -31,8 +22,8 @@
             <div class="col-md-12">
                 <div class="card-body p-4 p-lg-5">
                     <div class="text-center mb-5">
-                        <span class="badge badge-green-custom rounded-pill px-3 py-2 mb-3 shadow-sm border"
-                            style="font-size: 14px; font-weight: 600;">
+                        <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border"
+                            style="background-color: rgba(40, 167, 69, 0.1); color: #28a745; font-size: 14px; font-weight: 600;">
                             <i class="fa-solid fa-circle-check me-1"></i> {{ $landing->results_section['name'] }}
                         </span>
                         <h2 class="fw-bold display-6 text-navy-custom">

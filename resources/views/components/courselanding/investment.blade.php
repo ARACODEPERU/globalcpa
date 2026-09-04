@@ -47,30 +47,6 @@
             background-color: #1d273a !important;
             border-color: #374558 !important;
         }
-            /* Restaura el estilo del boton principal: su hoja de estilos externa no se carga en estas paginas */
-        .btn-modern {
-            padding: 12px 28px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50px;
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-
-        .btn-modern-primary {
-            background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%) !important;
-            color: #002060 !important;
-            border: none !important;
-            box-shadow: 0 4px 15px rgba(255, 193, 107, 0.35) !important;
-        }
-
-        .btn-modern-primary:hover {
-            filter: brightness(1.04);
-            color: #002060 !important;
-        }
     </style>
 
     <div class="container-fluid aos-animate mt-5" data-aos="fade-up">
