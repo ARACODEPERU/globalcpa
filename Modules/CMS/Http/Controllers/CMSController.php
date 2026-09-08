@@ -73,7 +73,6 @@ class CMSController extends Controller
         $sitemapRoutes = [
             ['path' => '/', 'priority' => '1.0', 'changefreq' => 'daily'],
             ['path' => '/home', 'priority' => '1.0', 'changefreq' => 'daily'],
-            ['path' => '/home2', 'priority' => '0.9', 'changefreq' => 'daily'],
             ['path' => '/nosotros', 'priority' => '0.8', 'changefreq' => 'monthly'],
             ['path' => '/docentes', 'priority' => '0.8', 'changefreq' => 'monthly'],
             ['path' => '/academy', 'priority' => '0.9', 'changefreq' => 'weekly'],
@@ -93,7 +92,6 @@ class CMSController extends Controller
             ['path' => '/stories/contact-us', 'priority' => '0.7', 'changefreq' => 'monthly'],
             ['path' => '/prices/academic', 'priority' => '0.8', 'changefreq' => 'monthly'],
             ['path' => '/find/invoice', 'priority' => '0.8', 'changefreq' => 'weekly'],
-            ['path' => '/get-csrf-token', 'priority' => '0.0', 'changefreq' => 'weekly'],
         ];
 
         // Dynamic: Add CMS pages marked as main
