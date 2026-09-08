@@ -89,6 +89,9 @@ Route::middleware(['auth', 'verified', 'user_activity_log'])->prefix('cms')->gro
         ->post('one/free/course/store', [OneFreeCourseController::class, 'store'])
         ->name('cms_landing_course_free_store');
 
+    Route::get('sitemap', [CMSController::class, 'sitemap'])->name('cms_sitemap');
+    Route::post('sitemap/generate', [CMSController::class, 'sitemapGenerate'])->name('cms_sitemap_generate');
+
 });
 
 
