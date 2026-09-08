@@ -33,7 +33,7 @@ class GenerateSitemapCommand extends Command
         $this->info('Rutas estáticas: ' . count($urls));
 
         foreach ($this->getDynamicUrlProviders($limit) as $provider) {
-            $dynamic = $provider->__invoke();
+            $dynamic = $provider();
             $urls = array_merge($urls, $dynamic);
             $this->info('Rutas dinámicas añadidas desde ' . $provider->getName() . ': ' . count($dynamic));
         }
@@ -104,10 +104,10 @@ class GenerateSitemapCommand extends Command
         ];
     }
 
-    protected function makeDynamicProvider(callable $urlFn, string $name): object
+    protected function makeDynamicProvider(callable $urlFn): object
     {
-        return new class($urlFn, $name) {
-            public function __construct(private $urlFn, private $name) {}
+        return new class($urlFn, $this->getCurrentClass()) {
+            public function __construct(private readonly callable $urlFn, private readonly string $name) {}
 
             public function __invoke(): array
             {
@@ -116,7 +116,7 @@ class GenerateSitemapCommand extends Command
 
             public function getName(): string
             {
-                return (string) $this->name;
+                return $this->name;
             }
         };
     }
