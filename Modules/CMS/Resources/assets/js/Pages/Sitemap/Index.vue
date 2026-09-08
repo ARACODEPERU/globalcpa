@@ -28,46 +28,10 @@ const totalUrls = ref(0);
 
 const form = useForm({});
 
-const generateSitemap = () => {
-    Swal2.fire({
-        title: '¿Generar Sitemap?',
-        text: exists.value ? 'Se actualizará el archivo sitemap.xml con las rutas actuales del proyecto.' : 'Se creará el archivo sitemap.xml con las rutas del proyecto.',
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: '¡Sí, Generar!',
-        cancelButtonText: 'Cancelar',
-        showLoaderOnConfirm: true,
-        preConfirm: () => {
-            return axios.post(route('cms_sitemap_generate')).then((res) => {
-                if (!res.data.success) {
-                    Swal2.showValidationMessage(res.data.message);
-                }
-                return res;
-            });
-        },
-        allowOutsideClick: () => !Swal2.isLoading(),
-    }).then((result) => {
-        if (result.isConfirmed) {
-            content.value = result.value.data.content;
-            exists.value = true;
-            totalUrls.value = result.value.data.total_urls;
-            Swal2.fire({
-                title: '¡Sitemap Generado!',
-                text: result.value.data.message,
-                icon: 'success',
-            });
-        }
-    });
-};
-
-// Parse the XML to count URLs and display nicely
-const parsedUrls = ref([]);
-if (content.value) {
+const parseXml = (xml) => {
     try {
         const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(content.value, 'text/xml');
+        const xmlDoc = parser.parseFromString(xml, 'text/xml');
         const urlNodes = xmlDoc.querySelectorAll('url');
         totalUrls.value = urlNodes.length;
         parsedUrls.value = Array.from(urlNodes).map((urlNode) => {
@@ -81,6 +45,61 @@ if (content.value) {
     } catch (e) {
         parsedUrls.value = [];
     }
+};
+
+const generateSitemap = () => {
+    Swal2.fire({
+        title: '¿Generar Sitemap?',
+        text: exists.value ? 'Se actualizará el archivo sitemap.xml con las rutas actuales del proyecto.' : 'Se creará el archivo sitemap.xml con las rutas del proyecto.',
+        icon: 'question',
+        backdrop: true,
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: '¡Sí, Generar!',
+        cancelButtonText: 'Cancelar',
+        showLoaderOnConfirm: true,
+        preConfirm: () => {
+            return axios.post(route('cms_sitemap_generate')).then((res) => {
+                if (!res.data.success) {
+                    Swal2.showValidationMessage(res.data.message || 'No se pudo generar el sitemap');
+                }
+                return res;
+            }).catch((error) => {
+                const msg = error?.response?.data?.message || error?.response?.data?.exception || 'Error al generar el sitemap';
+                Swal2.showValidationMessage(msg);
+                return false;
+            });
+        },
+        allowOutsideClick: () => !Swal2.isLoading(),
+    }).then((result) => {
+        if (result.isConfirmed && result.value?.data?.success) {
+            content.value = result.value.data.content;
+            exists.value = true;
+            totalUrls.value = result.value.data.total_urls;
+            parseXml(content.value);
+
+            if (result.value.data.warning) {
+                Swal2.fire({
+                    title: 'Sitemap generado con advertencia',
+                    html: `<p>${result.value.data.message}</p><p class="text-sm text-left mt-3">${result.value.data.warning}</p>`,
+                    icon: 'warning',
+                });
+            } else {
+                Swal2.fire({
+                    title: '¡Sitemap Generado!',
+                    text: result.value.data.message,
+                    icon: 'success',
+                });
+            }
+        }
+    });
+};
+
+// Parse the XML to count URLs and display nicely
+const parsedUrls = ref([]);
+if (content.value) {
+    parseXml(content.value);
 }
 </script>
 

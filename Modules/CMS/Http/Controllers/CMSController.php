@@ -254,7 +254,6 @@ class CMSController extends Controller
 
         return response($content, 200, [
             'Content-Type' => 'application/xml; charset=UTF-8',
-            'X-Robots-Tag' => 'noindex',
         ]);
     }
 }

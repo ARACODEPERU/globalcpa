@@ -297,5 +297,8 @@ Route::get('/test-image/{student_id}/{certificate_id}', [WebController::class, '
 Route::post('landing/store/course-free',[WebPageController::class, 'storeCourseFree'])
     ->name('landing_store_course_free');
 
+// Sitemap público (fallback cuando public/sitemap.xml no existe o no es accesible)
+Route::get('/sitemap.xml', [\Modules\CMS\Http\Controllers\CMSController::class, 'publicSitemap'])->name('public_sitemap');
+
 require __DIR__ . '/auth.php';
 require __DIR__ . '/system.php';
