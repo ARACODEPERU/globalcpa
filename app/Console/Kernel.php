@@ -41,8 +41,8 @@ class Kernel extends ConsoleKernel
         }
     }
 
-    public function registerCommand(string $commandClass): void
+    public function registerCommand($command): void
     {
-        $this->app->make($commandClass);
+        $this->app->make($command);
     }
 }
