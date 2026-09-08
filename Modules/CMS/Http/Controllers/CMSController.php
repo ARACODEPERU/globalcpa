@@ -169,15 +169,92 @@ class CMSController extends Controller
 
         $xml .= '</urlset>';
 
-        // Write to public/sitemap.xml
-        $sitemapPath = public_path('sitemap.xml');
-        File::put($sitemapPath, $xml);
+        // Write to storage (always writable) as the fallback source for /sitemap.xml
+        $storagePath = storage_path('app/sitemap.xml');
+        File::put($storagePath, $xml);
+
+        // Try to write to public/sitemap.xml (may fail due to permissions)
+        $publicPath = public_path('sitemap.xml');
+        $wroteToPublic = $this->writeSitemapFile($publicPath, $xml);
+
+        // If public was not writable, try to remove the stale public file so the
+        // /sitemap.xml route (serving from storage) can take over instead of a
+        // static file being served with old content.
+        if (!$wroteToPublic && File::exists($publicPath)) {
+            @unlink($publicPath);
+        }
+
+        $warning = null;
+        $message = 'Sitemap generado correctamente con ' . count($sitemapRoutes) . ' URLs.';
+        if (!$wroteToPublic) {
+            $warning = 'El servidor no tiene permisos de escritura sobre public/sitemap.xml. ' .
+                'El sitemap se guardó en storage y se sirve desde la ruta /sitemap.xml. ' .
+                'Para que se genere directamente en public, asigna permisos de escritura al archivo o carpeta public/.';
+            $message = 'Sitemap generado con ' . count($sitemapRoutes) . ' URLs (guardado en storage, no en public).';
+        }
 
         return response()->json([
             'success' => true,
-            'message' => 'Sitemap generado correctamente con ' . count($sitemapRoutes) . ' URLs.',
+            'message' => $message,
+            'warning' => $warning,
             'content' => $xml,
             'total_urls' => count($sitemapRoutes),
+            'wrote_to_public' => $wroteToPublic,
+        ]);
+    }
+
+    /**
+     * Attempt to write the sitemap file, trying to overcome permission issues.
+     *
+     * @param string $path
+     * @param string $content
+     * @return bool True if the file was written, false otherwise.
+     */
+    private function writeSitemapFile($path, $content)
+    {
+        // If the file already exists, try to make it writable.
+        if (File::exists($path)) {
+            @chmod($path, 0666);
+        }
+
+        try {
+            File::put($path, $content);
+            return true;
+        } catch (\Throwable $e) {
+            // The directory may be writable even if the file is not: delete and retry.
+            if (File::exists($path)) {
+                @unlink($path);
+            }
+            try {
+                File::put($path, $content);
+                return true;
+            } catch (\Throwable $e2) {
+                return false;
+            }
+        }
+    }
+
+    /**
+     * Serve the sitemap.xml for search engines. Falls back to storage when
+     * public/sitemap.xml is not readable.
+     */
+    public function publicSitemap()
+    {
+        $publicPath = public_path('sitemap.xml');
+
+        if (File::exists($publicPath)) {
+            $content = File::get($publicPath);
+        } else {
+            $storagePath = storage_path('app/sitemap.xml');
+            if (!File::exists($storagePath)) {
+                abort(404);
+            }
+            $content = File::get($storagePath);
+        }
+
+        return response($content, 200, [
+            'Content-Type' => 'application/xml; charset=UTF-8',
+            'X-Robots-Tag' => 'noindex',
         ]);
     }
 }
