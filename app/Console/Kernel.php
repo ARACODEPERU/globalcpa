@@ -35,14 +35,5 @@ class Kernel extends ConsoleKernel
         $this->load(base_path('Modules/Sales/Console'));
         $this->load(base_path('Modules/Academic/Console'));
         require base_path('routes/console.php');
-
-        if (class_exists(\App\Console\Commands\GenerateSitemapCommand::class)) {
-            $this->registerCommand(\App\Console\Commands\GenerateSitemapCommand::class);
-        }
-    }
-
-    public function registerCommand($command): void
-    {
-        $this->app->make($command);
     }
 }
