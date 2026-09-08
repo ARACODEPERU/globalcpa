@@ -32,7 +32,7 @@ use Illuminate\Support\Facades\Log;
 // Route::get('/', [WebPageController::class, 'construction'])->name('construction');
 Route::get('/', [WebPageController::class, 'index'])->name('index_main');
 Route::get('/home', [WebPageController::class, 'index'])->name('index_main_home');
-Route::get('/home2', [WebPageController::class, 'index2'])->name('index_main_home2');
+//Route::get('/home2', [WebPageController::class, 'index2'])->name('index_main_home2');
 Route::get('/nosotros', [WebPageController::class, 'about'])->name('web_about');
 Route::get('/docentes', [WebPageController::class, 'teachers'])->name('web_teachers');
 Route::get('/landing/{slug}', [WebPageController::class, 'landing'])->name('web_landing');
