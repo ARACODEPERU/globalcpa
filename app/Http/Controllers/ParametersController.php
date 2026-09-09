@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Parameter;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
-
-use function Pest\Laravel\json;
 
 class ParametersController extends Controller
 {
@@ -119,6 +119,10 @@ class ParametersController extends Controller
             'json_query_data'       => $request->get('json_query_data'),
             'value_default'         => $valor_seguro
         ]);
+
+        // Invalidar caches que dependen de valores de parametros (ej: API Key de OpenAI en P000025)
+        Cache::forget('academic:openai-api-key:' . $request->get('parameter_code'));
+        Log::info('Parametro actualizado, cache de API key invalidada', ['parameter_code' => $request->get('parameter_code')]);
     }
 
     public function getSubQuery($json_query_data)

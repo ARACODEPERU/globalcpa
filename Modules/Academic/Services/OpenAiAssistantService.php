@@ -177,7 +177,18 @@ class OpenAiAssistantService
             throw new RuntimeException('Falta configurar la API Key de OpenAI en el parametro P000025 del sistema.');
         }
 
-        return trim($apiKey);
+        return $this->sanitizeApiKey($apiKey);
+    }
+
+    /**
+     * Limpia la key de caracteres invisibles o espacios que suelen quedar
+     * al copiarla/pegarla (espacios, saltos de linea, zero-width, NBSP).
+     */
+    private function sanitizeApiKey(string $apiKey): string
+    {
+        $clean = preg_replace('/[\s\x{200B}-\x{200D}\x{FEFF}\x{00A0}]+/u', '', $apiKey) ?? '';
+
+        return trim($clean);
     }
 
     protected function apiKeyFromParameter(): ?string

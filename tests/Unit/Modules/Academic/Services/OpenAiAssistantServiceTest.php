@@ -151,4 +151,23 @@ class OpenAiAssistantServiceTest extends TestCase
 
         $service->sendPrompt(11, 'hola');
     }
+
+    public function test_sanitizes_invisible_characters_from_api_key(): void
+    {
+        // Key pegada con espacio, NBSP y zero-width space invisibles
+        config(['academic.openai.api_key' => "sk-test \u{00A0}key\u{200B}x  "]);
+
+        Http::fake([
+            'api.openai.com/v1/responses' => Http::response([
+                'id' => 'resp_clean',
+                'output' => [['content' => [['type' => 'output_text', 'text' => 'ok']]]],
+            ]),
+        ]);
+
+        app(OpenAiAssistantService::class)->sendPrompt(13, 'hola');
+
+        Http::assertSent(function ($request) {
+            return $request->header('Authorization')[0] === 'Bearer sk-testkeyx';
+        });
+    }
 }
