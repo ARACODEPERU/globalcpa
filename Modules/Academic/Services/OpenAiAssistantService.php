@@ -201,7 +201,7 @@ class OpenAiAssistantService
 
         $value = Cache::remember(
             'academic:openai-api-key:' . $parameterCode,
-            now()->addMinutes(60),
+            now()->addMinutes(1),
             function () use ($parameterCode) {
                 return Parameter::where('parameter_code', $parameterCode)->value('value_default');
             }

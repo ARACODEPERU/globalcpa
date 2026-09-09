@@ -134,8 +134,13 @@ class ParametersController extends Controller
 
     public function updateDefaultValue($id, $val)
     {
-        Parameter::find($id)->update([
+        $parameter = Parameter::find($id);
+
+        $parameter->update([
             'value_default' => $val
         ]);
+
+        // Invalidar caches que dependen de valores de parametros (ej: API Key de OpenAI en P000025)
+        Cache::forget('academic:openai-api-key:' . $parameter->parameter_code);
     }
 }
