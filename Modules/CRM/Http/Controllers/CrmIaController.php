@@ -216,8 +216,8 @@ class CrmIaController extends Controller
             $questionText = $request->input('messageText');
             $responseText = $request->input('respond') ?: $questionText;
 
-            $censoredQuestion = $service->censorText(Auth::id(), $questionText);
-            $censoredResponse = $service->censorText(Auth::id(), $responseText);
+            $censoredQuestion = $this->censorWithFallback($service, $questionText);
+            $censoredResponse = $this->censorWithFallback($service, $responseText);
 
             return response()->json([
                 'success' => true,
@@ -232,5 +232,47 @@ class CrmIaController extends Controller
                 'message' => $e->getMessage(),
             ], 200);
         }
+    }
+
+    /**
+     * Censura el texto con la IA, pero si la IA "responde" en lugar de censurar
+     * (resultado vacío o mucho más largo que el original) o falla, se usa un
+     * censurado local determinista para no guardar contenido inventado.
+     */
+    private function censorWithFallback(OpenAiAssistantService $service, string $text): string
+    {
+        $text = trim($text);
+
+        if ($text === '') {
+            return $text;
+        }
+
+        try {
+            $censored = $service->censorText(Auth::id(), $text);
+
+            // Alucinación: la IA devolvió una respuesta inventada (mucho más larga)
+            if (trim($censored) === '' || mb_strlen($censored) > mb_strlen($text) * 1.5) {
+                return $this->localCensor($text);
+            }
+
+            return $censored;
+        } catch (\Throwable $e) {
+            Log::error('CRM censorWithFallback: ' . $e->getMessage());
+
+            return $this->localCensor($text);
+        }
+    }
+
+    /**
+     * Censurado local determinista: DNI/RUC/teléfonos y correos electrónicos.
+     */
+    private function localCensor(string $text): string
+    {
+        // DNI (8 dígitos), RUC (11 dígitos) o teléfono (9 dígitos)
+        $censored = preg_replace('/\b\d{8,11}\b/', '********', $text) ?? $text;
+        // Correos electrónicos
+        $censored = preg_replace('/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/', '********', $censored) ?? $censored;
+
+        return $censored;
     }
 }
