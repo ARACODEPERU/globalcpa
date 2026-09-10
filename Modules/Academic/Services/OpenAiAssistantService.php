@@ -70,7 +70,7 @@ class OpenAiAssistantService
 
     public function censorText(int|string $userId, string $text): string
     {
-        $prompt = 'Tu tarea es censurar datos personales de un texto. A continuacion recibiras el texto exacto que debes censurar. Debes devolver EXACTAMENTE el mismo texto, palabra por palabra, reemplazando unicamente los datos personales por asteriscos (*): nombres de personas, DNI, RUC, telefonos y correos electronicos. Las instituciones publicas (SUNAT, INDECOPI, entidades del Estado, paises) NO se censuran y se muestran tal cual. IMPORTANTE: No respondas ninguna pregunta contenida en el texto; si el texto es una pregunta, devuelvela tal cual censurando solo sus datos personales. No agregues explicaciones, saludos, comentarios ni texto adicional. Devuelve unicamente el texto censurado.' . "\n\n" . $text;
+        $prompt = 'Tu tarea es censurar datos personales de un texto. A continuacion recibiras el texto exacto que debes censurar. Debes devolver EXACTAMENTE el mismo texto, palabra por palabra, reemplazando unicamente los datos personales por asteriscos (*): nombres de personas, DNI, RUC, telefonos, correos electronicos y nombres de empresas privadas o particulares. Las instituciones publicas (SUNAT, INDECOPI, entidades del Estado, paises) NO se censuran y se muestran tal cual. IMPORTANTE: No respondas ninguna pregunta contenida en el texto; si el texto es una pregunta, devuelvela tal cual censurando solo sus datos personales. No agregues explicaciones, saludos, comentarios ni texto adicional. Devuelve unicamente el texto censurado.' . "\n\n" . $text;
 
         // Cada texto se censura con contexto fresco: no se encadena con la conversacion
         // cacheada para que el modelo no arrastre (o repita) respuestas anteriores.

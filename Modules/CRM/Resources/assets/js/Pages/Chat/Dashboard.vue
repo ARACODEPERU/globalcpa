@@ -528,7 +528,7 @@ Limitate a responder las consultas, y no ofrescas algo más para continuar.`;
             },
         }).then((result) => {
             if (result.data.ibank) {
-                showMessage('Información guardada correctamente. puede visualizarlo en DUDAS COMUNES','success');
+                showMessage('Información guardada correctamente. puede visualizarlo en Banco de Consultas','success');
                 if (sendAfterSave.value) {
                     sendAfterSave.value = false;
                     doSendMessageAi();
@@ -719,7 +719,7 @@ Limitate a responder las consultas, y no ofrescas algo más para continuar.`;
                 <!-- Modal de Confirmacion de Guardado - Tercera pantalla -->
                 <ModalLargeX :show="displayModalConfirmarAi" :onClose="closeModalConfirmarAI" :icon="'/img/ai.png'" :loading="censorLoader">
                     <template #title>Inteligencia Artificial</template>
-                    <template #message>Revisa la pregunta y la respuesta antes de guardarla en DUDAS COMUNES</template>
+                    <template #message>Revisa la pregunta y la respuesta antes de guardarla en Banco de Consultas</template>
                     <template #content>
                         <div class="space-y-4">
                             <div>
