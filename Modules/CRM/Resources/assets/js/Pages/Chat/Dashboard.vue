@@ -280,14 +280,26 @@
         routeBackend: null,
         userId: null
     });
+
+    const instructionsPorDefecto = 'Eres un contador y un experto en NIIF, responde la consulta pero censura nombres propios de personas y empresas y cambialas por nombres genéricos igual si encuentras datos como teléfonos, numeros de identidad o similares';
+
+    const displayModalRespuestaAi = ref(false);
+
     const openModalQuestionAI = (item) => {
         formIaconsulta.messageText = item.content
-        formIaconsulta.instructions = item.content
+        formIaconsulta.instructions = instructionsPorDefecto
         displayModalAi.value = true;
+        displayModalRespuestaAi.value = false;
+    };
+
+    const openModalRespuestaAI = () => {
+        displayModalAi.value = false;
+        displayModalRespuestaAi.value = true;
     };
 
     const closeModalQuestionAI = () => {
         displayModalAi.value = false;
+        displayModalRespuestaAi.value = false;
         formIaconsulta.reset();
     };
 
@@ -312,11 +324,14 @@
         }).then((result) => {
             if (result.data.success) {
                 formIaconsulta.respond = result.data.responseText
+                openModalRespuestaAI()
             } else {
                 showMessage(result.data.message || 'No se pudo consultar la IA.', 'error')
+                displayModalAi.value = false
             }
         }).catch((error) => {
             showMessage(error.response?.data?.message || 'Error al consultar la IA. Intenta nuevamente.', 'error')
+            displayModalAi.value = false
         }).finally(()=>{
             formIaconsulta.processing = false;;
         });
@@ -444,6 +459,62 @@
         <div class="mt-5">
 
             <div class="flex gap-5 relative sm:h-[calc(100vh_-_150px)] h-full sm:min-h-0" :class="{ 'min-h-[999px]': isShowChatMenu }">
+                <!-- Modal de Consulta AI - Primera pantalla -->
+                <ModalLargeX :show="displayModalAi" :onClose="closeModalQuestionAI" :icon="'/img/ai.png'">
+                    <template #header>
+                        <h3 class="text-lg font-semibold text-gray-900">Inteligencia Artificial</h3>
+                        <p class="text-sm text-gray-500">Modificar respuesta</p>
+                    </template>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Consulta del usuario</label>
+                            <input
+                                type="text"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary form-input"
+                                rows="3"
+                                v-model="formIaconsulta.messageText"
+                                readonly
+                            />
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Instrucciones</label>
+                            <div class="relative">
+                                <textarea
+                                    class="form-textarea"
+                                    rows="6"
+                                    v-model="formIaconsulta.instructions"
+                                ></textarea>
+                                <button
+                                    type="button"
+                                    @click="formIaconsulta.instructions = instructionsPorDefecto"
+                                    class="absolute bottom-2 right-2 px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 rounded text-gray-600"
+                                >
+                                    Restablecer
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <template #footer>
+                        <div class="flex justify-end gap-3">
+                            <button
+                                type="button"
+                                @click="selectServerAI"
+                                class="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark disabled:opacity-50"
+                                :disabled="formIaconsulta.processing"
+                            >
+                                {{ formIaconsulta.processing ? 'Consultando...' : 'CONSULTAR AI' }}
+                            </button>
+                            <button
+                                type="button"
+                                @click="closeModalQuestionAI"
+                                class="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200"
+                            >
+                                CERRAR
+                            </button>
+                        </div>
+                    </template>
+                </ModalLargeX>
+
                 <div
                     class="panel p-4 flex-none max-w-xs w-full absolute xl:relative z-10 space-y-4 h-full hidden xl:block overflow-hidden"
                     :class="isShowChatMenu && '!block !overflow-y-auto'"
