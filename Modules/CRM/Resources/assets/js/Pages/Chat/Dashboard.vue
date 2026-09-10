@@ -281,7 +281,7 @@
         userId: null
     });
 
-    const instructionsPorDefecto = 'Eres un contador y un experto en NIIF, responde la consulta pero censura nombres propios de personas y empresas y cambialas por nombres genéricos igual si encuentras datos como teléfonos, numeros de identidad o similares';
+    const instructionsPorDefecto = 'Eres un contador y un experto en NIIF, responde la consulta.';
 
     const displayModalRespuestaAi = ref(false);
 

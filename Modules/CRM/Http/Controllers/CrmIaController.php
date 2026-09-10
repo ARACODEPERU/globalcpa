@@ -15,6 +15,7 @@ use Inertia\Inertia;
 use Modules\Academic\Services\OpenAiAssistantService;
 use Modules\CRM\Emails\NotifyChatMessage;
 use Modules\CRM\Entities\CrmConversation;
+use Modules\CRM\Entities\CrmInformationBank;
 use Modules\CRM\Entities\CrmMessage;
 use Modules\CRM\Entities\CrmParticipant;
 use Modules\CRM\Entities\CrmUser;
@@ -211,11 +212,26 @@ class CrmIaController extends Controller
     public function censorTextService(Request $request)
     {
         try {
-            $response = app(OpenAiAssistantService::class)->censorText(Auth::id(), $request->input('messageText'));
+            $service = app(OpenAiAssistantService::class);
+
+            $questionText = $request->input('messageText');
+            $responseText = $request->input('respond') ?: $questionText;
+
+            $censoredQuestion = $service->censorText(Auth::id(), $questionText);
+            $censoredResponse = $service->censorText(Auth::id(), $responseText);
+
+            CrmInformationBank::create([
+                'question_text' => $censoredQuestion,
+                'response_text' => $censoredResponse,
+                'user_id' => Auth::id(),
+                'likes_count' => 1,
+                'shared_count' => 1,
+                'status' => true,
+            ]);
 
             return response()->json([
                 'success' => true,
-                'responseText' => $response,
+                'responseText' => $censoredResponse,
             ]);
         } catch (\Throwable $e) {
             Log::error('CRM censorTextService: ' . $e->getMessage());
