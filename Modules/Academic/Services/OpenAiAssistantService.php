@@ -70,7 +70,7 @@ class OpenAiAssistantService
 
     public function censorText(int|string $userId, string $text): string
     {
-        $prompt = 'por favor censura con asteriscos los nombres personales y de empresas privadas en el siguiente texto, las publicas no; solo responde lo que pedi sin palabras previas o saludos: ';
+        $prompt = 'por favor censura con asteriscos los nombres personales y de empresas privadas en el siguiente texto, las publicas no es decir las de Estados o paises muestralos; solo responde lo que pedi sin palabras previas o saludos: ';
 
         // Cada texto se censura con contexto fresco: no se encadena con la conversacion
         // cacheada para que el modelo no arrastre (o repita) respuestas anteriores.

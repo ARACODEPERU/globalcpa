@@ -15,7 +15,6 @@ use Inertia\Inertia;
 use Modules\Academic\Services\OpenAiAssistantService;
 use Modules\CRM\Emails\NotifyChatMessage;
 use Modules\CRM\Entities\CrmConversation;
-use Modules\CRM\Entities\CrmInformationBank;
 use Modules\CRM\Entities\CrmMessage;
 use Modules\CRM\Entities\CrmParticipant;
 use Modules\CRM\Entities\CrmUser;
@@ -220,17 +219,9 @@ class CrmIaController extends Controller
             $censoredQuestion = $service->censorText(Auth::id(), $questionText);
             $censoredResponse = $service->censorText(Auth::id(), $responseText);
 
-            CrmInformationBank::create([
-                'question_text' => $censoredQuestion,
-                'response_text' => $censoredResponse,
-                'user_id' => Auth::id(),
-                'likes_count' => 1,
-                'shared_count' => 1,
-                'status' => true,
-            ]);
-
             return response()->json([
                 'success' => true,
+                'questionText' => $censoredQuestion,
                 'responseText' => $censoredResponse,
             ]);
         } catch (\Throwable $e) {

@@ -284,6 +284,9 @@
     const instructionsPorDefecto = 'Eres un contador y un experto en NIIF, responde la consulta.';
 
     const displayModalRespuestaAi = ref(false);
+    const displayModalConfirmarAi = ref(false);
+    const censoredQuestion = ref(null);
+    const censoredResponse = ref(null);
 
     const openModalQuestionAI = (item) => {
         formIaconsulta.messageText = item.content
@@ -300,6 +303,9 @@
     const closeModalQuestionAI = () => {
         displayModalAi.value = false;
         displayModalRespuestaAi.value = false;
+        displayModalConfirmarAi.value = false;
+        censoredQuestion.value = null;
+        censoredResponse.value = null;
         formIaconsulta.reset();
     };
 
@@ -433,16 +439,52 @@
             timeout: 0,
         }).then((result) => {
             if(result.data.success){
-                showMessage('Información guardada correctamente. puede visualizarlo en DUDAS COMUNES','success');
+                censoredQuestion.value = result.data.questionText;
+                censoredResponse.value = result.data.responseText;
+                displayModalRespuestaAi.value = false;
+                displayModalConfirmarAi.value = true;
             } else {
-                showMessage(result.data.message || 'No se pudo consultar la IA.', 'error')
+                showMessage(result.data.message || 'No se pudo censurar la respuesta.', 'error')
             }
         }).catch((error) => {
-            showMessage(error.response?.data?.message || 'Error al consultar la IA. Intenta nuevamente.', 'error')
+            showMessage(error.response?.data?.message || 'Error al censurar la respuesta. Intenta nuevamente.', 'error')
         }).finally(()=>{
             formIaconsulta.processing = false;;
         });
     }
+
+    const closeModalConfirmarAI = () => {
+        displayModalConfirmarAi.value = false;
+        displayModalRespuestaAi.value = true;
+    };
+
+    const confirmSaveQuestion = () => {
+        if (!censoredQuestion.value?.trim() || !censoredResponse.value?.trim()) {
+            showMessage('La pregunta y la respuesta no pueden estar vacías.', 'warning');
+            return;
+        }
+        censorLoader.value = true;
+        axios.post(route('crm_common_questions_store'), {
+            question_text: censoredQuestion.value,
+            response_text: censoredResponse.value,
+            user_id: authUser.id,
+        }, {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        }).then((result) => {
+            if (result.data.ibank) {
+                showMessage('Información guardada correctamente. puede visualizarlo en DUDAS COMUNES','success');
+                closeModalQuestionAI();
+            } else {
+                showMessage('No se pudo guardar la respuesta.', 'error');
+            }
+        }).catch((error) => {
+            showMessage(error.response?.data?.message || 'Error al guardar la respuesta. Intenta nuevamente.', 'error');
+        }).finally(() => {
+            censorLoader.value = false;
+        });
+    };
 
     const stripHtml = (html) => {
         const div = document.createElement('div');
@@ -570,6 +612,50 @@
                             class="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200"
                         >
                             Modificar
+                        </button>
+                    </template>
+                </ModalLargeX>
+
+                <!-- Modal de Confirmacion de Guardado - Tercera pantalla -->
+                <ModalLargeX :show="displayModalConfirmarAi" :onClose="closeModalConfirmarAI" :icon="'/img/ai.png'">
+                    <template #title>Inteligencia Artificial</template>
+                    <template #message>Revisa la pregunta y la respuesta antes de guardarla en DUDAS COMUNES</template>
+                    <template #content>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Pregunta</label>
+                                <textarea
+                                    class="form-textarea text-gray-900 font-medium"
+                                    style="border-color:#3b5bdb"
+                                    rows="3"
+                                    v-model="censoredQuestion"
+                                ></textarea>
+                            </div>
+                            <div class="bg-gray-50 p-3 rounded-md border">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Respuesta</label>
+                                <Editor
+                                    id="confirmarRespondTxt"
+                                    :api-key="P000010"
+                                    v-model="censoredResponse"
+                                />
+                            </div>
+                        </div>
+                    </template>
+                    <template #buttons>
+                        <button
+                            type="button"
+                            @click="confirmSaveQuestion"
+                            class="px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 disabled:opacity-50"
+                            :disabled="censorLoader"
+                        >
+                            Guardar
+                        </button>
+                        <button
+                            type="button"
+                            @click="closeModalConfirmarAI"
+                            class="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200"
+                        >
+                            Cancelar
                         </button>
                     </template>
                 </ModalLargeX>
