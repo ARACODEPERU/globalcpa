@@ -502,12 +502,77 @@
                                 class="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark disabled:opacity-50"
                                 :disabled="formIaconsulta.processing"
                             >
-                                {{ formIaconsulta.processing ? 'Consultando...' : 'CONSULTAR AI' }}
+                                {{ formIaconsulta.processing ? 'Consultando...' : 'CONSULTAR' }}
                             </button>
                             <button
                                 type="button"
                                 @click="closeModalQuestionAI"
+                                class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+                            >
+                                CERRAR
+                            </button>
+                        </div>
+                    </template>
+                </ModalLargeX>
+
+                <!-- Modal de Respuesta AI - Segunda pantalla -->
+                <ModalLargeX :show="displayModalRespuestaAi" :onClose="closeModalQuestionAI" :icon="'/img/ai.png'">
+                    <template #header>
+                        <h3 class="text-lg font-semibold text-gray-900">Inteligencia Artificial</h3>
+                        <p class="text-sm text-gray-500">Respuesta generada</p>
+                    </template>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Consulta del usuario</label>
+                            <textarea
+                                class="form-textarea"
+                                rows="3"
+                                v-model="formIaconsulta.messageText"
+                            ></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Instrucciones</label>
+                            <div class="relative">
+                                <textarea
+                                    class="form-textarea"
+                                    rows="6"
+                                    v-model="formIaconsulta.instructions"
+                                ></textarea>
+                                <button
+                                    type="button"
+                                    @click="formIaconsulta.instructions = instructionsPorDefecto"
+                                    class="absolute bottom-2 right-2 px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 rounded text-gray-600"
+                                >
+                                    Restablecer
+                                </button>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 p-3 rounded-md border">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Respuesta de la IA</label>
+                            <div class="text-gray-900 whitespace-pre-wrap">{{ formIaconsulta.respond }}</div>
+                        </div>
+                    </div>
+                    <template #footer>
+                        <div class="flex justify-end gap-3">
+                            <button
+                                type="button"
+                                @click="sendMessageAi"
+                                class="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark disabled:opacity-50"
+                                :disabled="!formIaconsulta.respond?.trim() || formIaconsulta.processing"
+                            >
+                                ENVIAR RESPUESTA
+                            </button>
+                            <button
+                                type="button"
+                                @click="displayModalRespuestaAi = false; displayModalAi = true"
                                 class="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200"
+                            >
+                                MODIFICAR
+                            </button>
+                            <button
+                                type="button"
+                                @click="closeModalQuestionAI"
+                                class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
                             >
                                 CERRAR
                             </button>
