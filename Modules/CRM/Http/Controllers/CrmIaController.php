@@ -81,9 +81,9 @@ class CrmIaController extends Controller
         ]);
     }
 
-    public function sendPromptOpenAI(string $message, ?string $archivo = null): string
+    public function sendPromptOpenAI(string $message, ?string $instructions = null, ?string $archivo = null): string
     {
-        return app(OpenAiAssistantService::class)->sendPrompt(Auth::id(), $message, $archivo);
+        return app(OpenAiAssistantService::class)->sendPrompt(Auth::id(), $message, $archivo, $instructions);
     }
 
     public function sendMessage(Request $request)
@@ -190,7 +190,9 @@ class CrmIaController extends Controller
     public function basicQuestionService(Request $request)
     {
         try {
-            $response = $this->sendPromptOpenAI($request->input('messageText'));
+            $messageText = $request->input('messageText');
+            $instructions = $request->input('instructions');
+            $response = $this->sendPromptOpenAI($messageText, $instructions);
 
             return response()->json([
                 'success' => true,

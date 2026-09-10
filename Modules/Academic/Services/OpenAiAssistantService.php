@@ -14,7 +14,7 @@ class OpenAiAssistantService
 {
     private const BASE_URL = 'https://api.openai.com/v1';
 
-    public function sendPrompt(int|string $userId, string $message, ?string $fileName = null): string
+    public function sendPrompt(int|string $userId, string $message, ?string $fileName = null, ?string $customInstructions = null): string
     {
         if (trim($message) === '') {
             throw new RuntimeException('El mensaje para OpenAI no puede estar vacio.');
@@ -33,6 +33,9 @@ class OpenAiAssistantService
             ],
         ];
 
+        // Usar instrucciones personalizadas si se proporcionan, sino usar las de config
+        $instructions = $customInstructions ?? config('academic.openai.instructions');
+
         if ($fileName) {
             Cache::forget($this->responseCacheKey($userId));
 
@@ -44,7 +47,7 @@ class OpenAiAssistantService
         }
 
         try {
-            $response = $this->requestResponses($userId, $input);
+            $response = $this->requestResponses($userId, $input, $instructions);
         } catch (RequestException $exception) {
             // Si la conversacion previa expiro en OpenAI, reintentar una vez sin historial.
             $payload = $exception->response->json() ?? [];
@@ -72,14 +75,12 @@ class OpenAiAssistantService
         return $this->sendPrompt($userId, $prompt . $text);
     }
 
-    private function requestResponses(int|string $userId, array $input): array
+    private function requestResponses(int|string $userId, array $input, ?string $instructions = null): array
     {
         $payload = [
             'model' => $this->model(),
             'input' => $input,
         ];
-
-        $instructions = config('academic.openai.instructions');
 
         if ($instructions) {
             $payload['instructions'] = $instructions;
