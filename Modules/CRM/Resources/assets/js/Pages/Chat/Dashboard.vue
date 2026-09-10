@@ -603,7 +603,7 @@ Limitate a responder las consultas, y no ofrescas algo más para continuar.`;
 
             <div class="flex gap-5 relative sm:h-[calc(100vh_-_150px)] h-full sm:min-h-0" :class="{ 'min-h-[999px]': isShowChatMenu }">
                 <!-- Modal de Consulta AI - Primera pantalla -->
-                <ModalLargeX :show="displayModalAi" :onClose="closeModalQuestionAI" :icon="'/img/ai.png'">
+                <ModalLargeX :show="displayModalAi" :onClose="closeModalQuestionAI" :icon="'/img/ai.png'" :loading="formIaconsulta.processing">
                     <template #title>Inteligencia Artificial</template>
                     <template #message>Mejora tu respuesta</template>
                     <template #content>
@@ -648,7 +648,7 @@ Limitate a responder las consultas, y no ofrescas algo más para continuar.`;
                 </ModalLargeX>
 
                 <!-- Modal de Respuesta AI - Segunda pantalla -->
-                <ModalLargeX :show="displayModalRespuestaAi" :onClose="closeModalQuestionAI" :icon="'/img/ai.png'">
+                <ModalLargeX :show="displayModalRespuestaAi" :onClose="closeModalQuestionAI" :icon="'/img/ai.png'" :loading="censorLoader || formIaconsulta.processing">
                     <template #title>Inteligencia Artificial</template>
                     <template #message>Respuesta generada</template>
                     <template #content>
@@ -717,7 +717,7 @@ Limitate a responder las consultas, y no ofrescas algo más para continuar.`;
                 </ModalLargeX>
 
                 <!-- Modal de Confirmacion de Guardado - Tercera pantalla -->
-                <ModalLargeX :show="displayModalConfirmarAi" :onClose="closeModalConfirmarAI" :icon="'/img/ai.png'">
+                <ModalLargeX :show="displayModalConfirmarAi" :onClose="closeModalConfirmarAI" :icon="'/img/ai.png'" :loading="censorLoader">
                     <template #title>Inteligencia Artificial</template>
                     <template #message>Revisa la pregunta y la respuesta antes de guardarla en DUDAS COMUNES</template>
                     <template #content>
