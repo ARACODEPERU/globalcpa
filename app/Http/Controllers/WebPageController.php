@@ -116,7 +116,7 @@ class WebPageController extends Controller
         ]);
     }
 
-    public function nosotros()
+    public function about()
     {
 
         $banner = CmsSection::where('component_id', 'nosotros_banner_area_11')  //siempre cambiar el id del componente
@@ -2072,7 +2072,7 @@ class WebPageController extends Controller
         $p = 12;
         $lines = 2;
 
-        // Artículos agrupados por categoría para el sidebar accordion
+        // Artï¿½culos agrupados por categorï¿½a para el sidebar accordion
         $articlesByCategory = [];
         foreach ($categories as $category) {
             $articlesByCategory[$category->id] = BlogArticle::where('category_id', $category->id)
