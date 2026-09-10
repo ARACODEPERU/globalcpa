@@ -77,11 +77,12 @@ class CrmMessagesController extends Controller
             $participants = CrmParticipant::where('conversation_id', $conversationId)
                 ->where('user_id', '<>', Auth::id())
                 ->pluck('user_id');
-            // Crear el mensaje
+            // Crear el mensaje (se guarda el HTML tal cual para que las etiquetas
+            // se rendericen al mostrarse con v-html)
             $message = CrmMessage::create([
                 'conversation_id' => $conversationId,
                 'person_id' => $personId,
-                'content' => htmlentities($request->get('text'), ENT_QUOTES, "UTF-8"),
+                'content' => $request->get('text'),
                 'type' => $request->get('type'),
                 'answer_ai' => $request->has('answer_ai') ? $request->get('answer_ai') : false
             ]);

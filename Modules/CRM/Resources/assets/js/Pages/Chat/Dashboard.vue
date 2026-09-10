@@ -281,7 +281,10 @@
         userId: null
     });
 
-    const instructionsPorDefecto = 'Eres un contador y un experto en NIIF, responde la consulta.';
+    const instructionsPorDefecto = `Eres un contador y un experto en NIIF y NIA, responde la consulta. La respuesta debe combinar lenguaje técnico sencillo de entender, y tener la siguiente estructura:
+Análisis - Desarrollo - Conclusiones y Recomendaciones
+responde usando etiquetas html
+Limitate a responder las consultas, y no ofrescas algo más para continuar.`;
 
     const displayModalRespuestaAi = ref(false);
     const displayModalConfirmarAi = ref(false);

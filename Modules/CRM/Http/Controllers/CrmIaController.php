@@ -103,7 +103,8 @@ class CrmIaController extends Controller
         $message = CrmMessage::create([
             'conversation_id' => $conversationId,
             'person_id' => $personId,
-            'content' => htmlentities($request->get('text'), ENT_QUOTES, 'UTF-8'),
+            // Se guarda el HTML tal cual para que las etiquetas se rendericen al mostrarse con v-html
+            'content' => $request->get('text'),
             'type' => $request->get('type'),
             'answer_ai' => false,
         ]);
