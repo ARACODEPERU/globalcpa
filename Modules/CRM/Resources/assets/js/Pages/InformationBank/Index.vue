@@ -90,7 +90,7 @@
                 <div class="grid grid-cols-6 gap-10">
                     <div class="col-span-6 sm:col-span-2">
                         <div class="max-w-xs">
-                            <h2 class="text-2xl font-bold md:text-4xl md:leading-tight dark:text-white">Dudas Comunes</h2>
+                            <h2 class="text-2xl font-bold md:text-4xl md:leading-tight dark:text-white">Banco de Consultas</h2>
                             <p class="mt-1 hidden md:block text-gray-600 dark:text-neutral-400">Respuestas a las preguntas más frecuentes.</p>
                         </div>
                     </div>
