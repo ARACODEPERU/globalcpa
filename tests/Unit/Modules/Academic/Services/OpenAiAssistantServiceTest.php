@@ -152,6 +152,31 @@ class OpenAiAssistantServiceTest extends TestCase
         $service->sendPrompt(11, 'hola');
     }
 
+    public function test_censor_text_uses_fresh_context_without_previous_response_id(): void
+    {
+        Cache::put('academic:openai-response:8', 'resp_anterior', now()->addHour());
+
+        Http::fake([
+            'api.openai.com/v1/responses' => Http::response([
+                'id' => 'resp_censored',
+                'output' => [['content' => [['type' => 'output_text', 'text' => 'texto censurado']]]],
+            ]),
+        ]);
+
+        $service = app(OpenAiAssistantService::class);
+        $result = $service->censorText(8, 'Juan Perez llama al 999 888 777');
+
+        $this->assertSame('texto censurado', $result);
+
+        Http::assertSent(function ($request) {
+            return ($request['previous_response_id'] ?? null) === null
+                && str_contains($request['input'][0]['content'][0]['text'], 'Juan Perez llama al 999 888 777');
+        });
+
+        // La conversacion cacheada no se lee ni se sobreescribe al censurar.
+        $this->assertSame('resp_anterior', Cache::get('academic:openai-response:8'));
+    }
+
     public function test_sanitizes_invisible_characters_from_api_key(): void
     {
         // Key pegada con espacio, NBSP y zero-width space invisibles

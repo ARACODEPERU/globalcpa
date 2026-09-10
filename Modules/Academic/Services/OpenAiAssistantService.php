@@ -14,7 +14,7 @@ class OpenAiAssistantService
 {
     private const BASE_URL = 'https://api.openai.com/v1';
 
-    public function sendPrompt(int|string $userId, string $message, ?string $fileName = null, ?string $customInstructions = null): string
+    public function sendPrompt(int|string $userId, string $message, ?string $fileName = null, ?string $customInstructions = null, bool $continueThread = true): string
     {
         if (trim($message) === '') {
             throw new RuntimeException('El mensaje para OpenAI no puede estar vacio.');
@@ -47,13 +47,13 @@ class OpenAiAssistantService
         }
 
         try {
-            $response = $this->requestResponses($userId, $input, $instructions);
+            $response = $this->requestResponses($userId, $input, $instructions, $continueThread);
         } catch (RequestException $exception) {
             // Si la conversacion previa expiro en OpenAI, reintentar una vez sin historial.
             $payload = $exception->response->json() ?? [];
 
             if ($this->isPreviousResponseError($payload) && Cache::pull($this->responseCacheKey($userId))) {
-                $response = $this->requestResponses($userId, $input);
+                $response = $this->requestResponses($userId, $input, null, $continueThread);
             } else {
                 throw new RuntimeException($this->openAiErrorMessage($exception), 0, $exception);
             }
@@ -61,7 +61,7 @@ class OpenAiAssistantService
             $this->deleteTemporaryFile($filePath);
         }
 
-        if (!empty($response['id'])) {
+        if ($continueThread && !empty($response['id'])) {
             Cache::put($this->responseCacheKey($userId), $response['id'], now()->addHours(12));
         }
 
@@ -72,10 +72,12 @@ class OpenAiAssistantService
     {
         $prompt = 'por favor censura con asteriscos los nombres personales y de empresas privadas en el siguiente texto, las publicas no; solo responde lo que pedi sin palabras previas o saludos: ';
 
-        return $this->sendPrompt($userId, $prompt . $text);
+        // Cada texto se censura con contexto fresco: no se encadena con la conversacion
+        // cacheada para que el modelo no arrastre (o repita) respuestas anteriores.
+        return $this->sendPrompt($userId, $prompt . $text, null, null, false);
     }
 
-    private function requestResponses(int|string $userId, array $input, ?string $instructions = null): array
+    private function requestResponses(int|string $userId, array $input, ?string $instructions = null, bool $continueThread = true): array
     {
         $payload = [
             'model' => $this->model(),
@@ -86,7 +88,7 @@ class OpenAiAssistantService
             $payload['instructions'] = $instructions;
         }
 
-        $previousResponseId = Cache::get($this->responseCacheKey($userId));
+        $previousResponseId = $continueThread ? Cache::get($this->responseCacheKey($userId)) : null;
 
         if ($previousResponseId) {
             $payload['previous_response_id'] = $previousResponseId;
