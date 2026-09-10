@@ -22,7 +22,9 @@
     });
 
     const updateDefaultValue = (id, value) => {
-        axios.get(route('parameters_update_default_value',[id,value])).then(()=>{
+        axios.post(route('parameters_update_default_value',[id]),{
+            value_default: value
+        }).then(()=>{
             message.success('Se actualizó correctamente');
         });
     }
@@ -81,6 +83,9 @@
                                     <th>
                                         Valor
                                     </th>
+                                    <th class="text-center">
+                                        Estado
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -137,10 +142,12 @@
                                                 v-model:value="parameter.value_default"
                                                 style="width: 100%"
                                                 show-count
-                                                :maxlength="5000"
-                                                @change="updateDefaultValue(parameter.id, parameter.value_default)"
+                                                :maxlength="parameter.parameter_code === 'P000026' || parameter.parameter_code === 'P000027' ? 100000 : 5000"
+                                                :autoSize="{ minRows: 3, maxRows: 20 }"
+                                                @blur="updateDefaultValue(parameter.id, parameter.value_default)"
                                                 >
                                             </Textarea>
+                                            <small v-if="parameter.parameter_code === 'P000026' || parameter.parameter_code === 'P000027'">El contenido se sincroniza al perder el foco</small>
                                         </template>
                                         <template v-else-if="parameter.control_type == 'rdj'">
                                             <div>
@@ -189,6 +196,24 @@
                                                 />
                                                 <span :for="`custom_switch_checkbox-${index}`" class="bg-[#ebedf2] dark:bg-dark block h-full before:absolute before:left-1 before:bg-white dark:before:bg-white-dark dark:peer-checked:before:bg-white before:bottom-1 before:w-4 before:h-4 peer-checked:before:left-7 peer-checked:bg-primary before:transition-all before:duration-300 "></span>
                                             </label>
+                                        </template>
+                                    </td>
+                                    <td class="text-center">
+                                        <template v-if="parameter.sync_status === 'Actualizado'">
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                                </svg>
+                                                Actualizado
+                                            </span>
+                                        </template>
+                                        <template v-else-if="parameter.sync_status === 'Pendiente'">
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                                <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
+                                                </svg>
+                                                Pendiente
+                                            </span>
                                         </template>
                                     </td>
                                 </tr>

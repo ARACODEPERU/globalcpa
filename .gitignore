@@ -28,3 +28,7 @@ classify_files.py
 .freebuff/project-id
 dark-mode-audit-report.json
 scripts/audit-dark-mode.mjs
+public/llms.txt
+public/robots.txt
+public/llms.txt
+public/robots.txt
