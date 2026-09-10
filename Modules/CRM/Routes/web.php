@@ -68,6 +68,10 @@ Route::middleware(['auth', 'verified', 'user_activity_log'])->prefix('crm')->gro
         ->post('conversations/messages/list', [CrmMessagesController::class, 'getMessages'])
         ->name('crm_list_message');
 
+    Route::middleware(['middleware' => 'permission:crm_chat_messages'])
+        ->delete('conversations/messages/destroy', [CrmMessagesController::class, 'destroyMessage'])
+        ->name('crm_chat_message_destroy');
+
     Route::middleware(['middleware' => 'permission:crm_chat_dashboard'])
         ->post('conversations/messages/upload/audio', [CrmMessagesController::class, 'uploadMessagesAudio'])
         ->name('crm_upload_message_audio');

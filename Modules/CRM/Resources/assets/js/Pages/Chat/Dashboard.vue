@@ -491,6 +491,47 @@
         div.innerHTML = html;
         return div.textContent || div.innerText || '';
     }
+
+    const hasAnyRole = (rolesToCheck) => {
+        return (authUser.roles || []).some(role => rolesToCheck.includes(role.name));
+    };
+
+    const canDeleteMessage = (message) => {
+        if (!message || !message.id || !message.created_at) return false;
+        if (!hasAnyRole(['Docente', 'admin', 'Administrador'])) return false;
+        if (selectedUser.value?.userId !== message.fromUserId) return false;
+        const createdAt = new Date(message.created_at);
+        if (isNaN(createdAt.getTime())) return false;
+        return Date.now() - createdAt.getTime() < 60 * 60 * 1000;
+    };
+
+    const deleteMessage = (message, index) => {
+        Swal.fire({
+            title: '¿Estás seguro de eliminar este mensaje?',
+            text: 'Esta acción no se puede deshacer.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                axios.delete(route('crm_chat_message_destroy'), {
+                    data: { message_id: message.id },
+                }).then((response) => {
+                    if (response.data.success) {
+                        selectedUser.value.messages.splice(index, 1);
+                        showMessage(response.data.message || 'Mensaje eliminado correctamente.', 'success');
+                    } else {
+                        showMessage(response.data.message || 'No se pudo eliminar el mensaje.', 'error');
+                    }
+                }).catch((error) => {
+                    showMessage(error.response?.data?.message || 'Error al eliminar el mensaje. Intenta nuevamente.', 'error');
+                });
+            }
+        });
+    };
 </script>
 <template>
     <AppLayout title="Chat">
@@ -1073,7 +1114,7 @@
                                         </div>
                                         <template v-if="selectedUser.messages && selectedUser.messages.length">
                                             <div v-for="(message, index) in selectedUser.messages" :key="index">
-                                                <div class="flex items-start gap-3" :class="{ 'justify-end': selectedUser.userId === message.fromUserId }">
+                                                <div class="flex items-start gap-3 group" :class="{ 'justify-end': selectedUser.userId === message.fromUserId }">
                                                     <div class="flex-none" :class="{ 'order-2': selectedUser.userId === message.fromUserId }">
                                                         <template v-if="selectedUser.userId === message.fromUserId">
                                                             <img v-if="$page.props.auth.user.avatar" :src="getImage($page.props.auth.user.avatar)" class="rounded-full h-10 w-10 object-cover" />
@@ -1086,6 +1127,16 @@
                                                     </div>
                                                     <div class="space-y-2">
                                                         <div class="flex items-center gap-3">
+
+                                                                <button
+                                                                    v-if="canDeleteMessage(message)"
+                                                                    type="button"
+                                                                    class="hidden group-hover:flex items-center text-white-dark hover:text-danger"
+                                                                    title="Eliminar mensaje"
+                                                                    @click="deleteMessage(message, index)"
+                                                                >
+                                                                    <icon-trash-lines class="w-4.5 h-4.5" />
+                                                                </button>
 
                                                                 <div class="dark:bg-gray-800 p-4 py-2 rounded-md bg-black/10"
                                                                     :class="message.fromUserId == selectedUser.userId ? 'ltr:rounded-br-none rtl:rounded-bl-none !bg-primary text-white': 'ltr:rounded-tl-none rtl:rounded-tr-none'"

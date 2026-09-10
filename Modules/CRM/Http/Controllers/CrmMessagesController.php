@@ -328,6 +328,51 @@ class CrmMessagesController extends Controller
         return true;
     }
 
+    public function destroyMessage(Request $request)
+    {
+        $authUser = Auth::user();
+
+        // Solo docentes y administradores pueden eliminar mensajes
+        if (!$authUser->hasAnyRole(['Docente', 'admin', 'Administrador'])) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No tienes permisos para eliminar mensajes.'
+            ], 403);
+        }
+
+        try {
+            $msg = CrmMessage::findOrFail($request->get('message_id'));
+
+            // Solo puede eliminar mensajes que él mismo haya enviado
+            if ($msg->person_id != $authUser->person_id) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Solo puedes eliminar tus propios mensajes.'
+                ], 403);
+            }
+
+            // Solo puede eliminar mensajes enviados hace menos de una hora
+            if (!$msg->created_at || $msg->created_at->lt(now()->subHour())) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Solo puedes eliminar mensajes enviados hace menos de una hora.'
+                ], 403);
+            }
+
+            $msg->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Mensaje eliminado correctamente.'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No se pudo eliminar el mensaje. Intenta nuevamente.'
+            ], 500);
+        }
+    }
+
     public function frequentlyQuestionsStore(Request $request)
     {
         $iBank = CrmInformationBank::create([

@@ -80,7 +80,7 @@
     <AppLayout title="Contactos">
         <Navigation >
             <li class="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
-                <span>Dudas Comunes</span>
+                <span>Banco de Consultas</span>
             </li>
         </Navigation>
         <div class="mt-5">
