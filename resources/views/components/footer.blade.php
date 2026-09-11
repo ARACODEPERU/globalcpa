@@ -140,6 +140,9 @@
                 <div class="col-lg-2 col-md-6">
                     <h3>Legal</h3>
                     <ul>
+                        <li><a href="{{ route('web_about') }}">Nosotros</a></li>
+                        <li><a href="{{ route('web_why_cpa') }}">¿Por qué elegirnos?</a></li>
+                        <li><a href="{{ route('web_testimonials') }}">Testimonios</a></li>
                         <li><a href="{{ route('politicas_privacidad') }}">Políticas de privacidad</a></li>
                         <li><a href="{{ route('politicas_devoluciones') }}">Políticas de devoluciones</a></li>
                         <li><a href="{{ route('terms_main') }}">Términos <br>y condiciones</a></li>
