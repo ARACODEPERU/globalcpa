@@ -37,6 +37,8 @@ Route::get('/home', [WebPageController::class, 'index'])->name('index_main_home'
 Route::get('/nosotros', [WebPageController::class, 'about'])->name('web_about');
 Route::get('/por-que-cpa-academy', [WebPageController::class, 'whyCpa'])->name('web_why_cpa');
 Route::get('/testimonios', [WebPageController::class, 'testimonials'])->name('web_testimonials');
+Route::get('/fag', [WebPageController::class, 'fag'])->name('web_fag');
+Route::get('/faq', [WebPageController::class, 'faq'])->name('web_faq');
 Route::get('/docentes', [WebPageController::class, 'teachers'])->name('web_teachers');
 Route::get('/landing/{slug}', [WebPageController::class, 'landing'])->name('web_landing');
 Route::get('/academy', [WebPageController::class, 'academy'])->name('web_academy');
