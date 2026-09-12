@@ -117,15 +117,19 @@
         (function() {
             const isDark = localStorage.getItem("cion_mode") === "dark-only"
                 || localStorage.getItem("_x_darkMode_on") === "true";
+            document.documentElement.classList.toggle("dark", isDark);
+            document.body.classList.toggle("dark-only", isDark);
             if (isDark) {
-                document.documentElement.classList.add("dark");
-                document.body.classList.add("dark-only");
                 localStorage.setItem("cion_mode", "dark-only");
                 localStorage.setItem("_x_darkMode_on", "true");
+            } else {
+                localStorage.setItem("cion_mode", "light");
+                localStorage.setItem("_x_darkMode_on", "false");
             }
         })();
     </script>
     @yield('etiquetasmeta')
+    @yield('styles')
 
     {{-- Tracking de tráfico (first-touch): UTM, fbclid, gclid, referrer --}}
     <script src="{{ asset('js/traffic-tracking.js') }}"></script>

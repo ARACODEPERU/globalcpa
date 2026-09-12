@@ -337,6 +337,17 @@
         .modal-content { border: none; border-radius: 16px; overflow: hidden; }
         .modal-header { background: #002060; color: #ffffff; border-bottom: 0; }
         .modal-header .btn-close { filter: invert(1); opacity: 0.85; }
+        /* Forzar que el iframe de video llene el contenedor ratio */
+        .ratio { position: relative; }
+        .ratio > * { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
+        /* Vimeo: eliminar espacio negro arriba y forzar dimensiones */
+        .ratio iframe { position: absolute !important; top: 0 !important; left: 0 !important; width: 100% !important; height: 100% !important; border: 0 !important; padding: 0 !important; margin: 0 !important; }
+        /* Modal header siempre legible */
+        .modal-header, .modal-header .modal-title { color: #ffffff !important; }
+        body.dark-only .modal-header { background: #002060 !important; color: #ffffff !important; border-color: #004080 !important; }
+        body.dark-only .modal-header .modal-title { color: #ffffff !important; }
+        body.dark-only .modal-header .btn-close { filter: invert(1); opacity: 0.85; }
+        body.dark-only .page-wrapper .modal-content { background-color: #1d273a !important; }
 
         /* --- Filtros --- */
         .tst-filter-chip {
@@ -633,10 +644,12 @@
                                     <select name="curso" class="form-select w-auto" onchange="this.form.submit()">
                                         <option value="">Todos los cursos</option>
                                         @foreach ($courseOptions as $option)
-                                            <option value="{{ $option->id }}"
-                                                {{ (string) $filters['curso'] === (string) $option->id ? 'selected' : '' }}>
-                                                {{ $option->description }} ({{ $option->total }})
-                                            </option>
+                                            @if ($option->slug)
+                                                <option value="{{ $option->slug }}"
+                                                    {{ $filters['curso'] === $option->slug ? 'selected' : '' }}>
+                                                    {{ $option->description }} ({{ $option->total }})
+                                                </option>
+                                            @endif
                                         @endforeach
                                     </select>
                                 </form>

@@ -51,6 +51,7 @@ Route::get('/politicas_privacidad', [WebPageController::class, 'privacypolicies'
 //Route::get('/terminos-y-condiciones', [WebPageController::class, 'terms'])->name('terms_main'); //ya está hecho
 
 Route::get('/cursos', [WebPageController::class, 'courses'])->name('web_courses');
+Route::get('/buscar-cursos', [WebPageController::class, 'searchCourses'])->name('web_search_courses');
 Route::get('/curso-descripcion/{id}', [WebPageController::class, 'coursedescription'])->name('web_course_description');
 Route::get('/curso/{id}', [WebPageController::class, 'course_url_slug'])->name('course_url_slug'); // ruta de cursos landing
 

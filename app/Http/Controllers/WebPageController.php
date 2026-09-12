@@ -156,7 +156,9 @@ class WebPageController extends Controller
             }
 
             if ($courseFilter) {
-                $query->where('course_id', $courseFilter);
+                $query->whereHas('course.landing', function ($lq) use ($courseFilter) {
+                    $lq->where('url_slug', $courseFilter);
+                });
             }
 
             if ($ratingFilter && is_numeric($ratingFilter)) {
@@ -206,8 +208,14 @@ class WebPageController extends Controller
             ->where('cms_testimonies.status', true)
             ->whereNotNull('cms_testimonies.course_id')
             ->join('aca_courses', 'aca_courses.id', '=', 'cms_testimonies.course_id')
-            ->select('aca_courses.id as id', 'aca_courses.description as description', DB::raw('COUNT(*) as total'))
-            ->groupBy('aca_courses.id', 'aca_courses.description')
+            ->leftJoin('aca_course_landings', 'aca_course_landings.course_id', '=', 'aca_courses.id')
+            ->select(
+                'aca_courses.id as id',
+                'aca_courses.description as description',
+                'aca_course_landings.url_slug as slug',
+                DB::raw('COUNT(*) as total')
+            )
+            ->groupBy('aca_courses.id', 'aca_courses.description', 'aca_course_landings.url_slug')
             ->orderByDesc('total')
             ->limit(60)
             ->get();
@@ -578,6 +586,43 @@ class WebPageController extends Controller
             'types' => $types,
             'p' => $p,
             'coursesSchema' => $coursesSchema,
+        ]);
+    }
+
+    /**
+     * Buscador de cursos: busca por nombre, descripción o categoría.
+     */
+    public function searchCourses(Request $request)
+    {
+        $query = trim($request->input('q', ''));
+
+        $courses = OnliItem::whereHas('course')
+            ->whereHas('course.landing', function ($landingQ) {
+                $landingQ->where('is_published', true)->whereNotNull('url_slug');
+            })
+            ->with(['course', 'course.landing', 'course.category'])
+            ->when($query, function ($q) use ($query) {
+                $q->where(function ($sub) use ($query) {
+                    $sub->where('name', 'like', "%{$query}%")
+                        ->orWhere('description', 'like', "%{$query}%")
+                        ->orWhereHas('course', function ($cq) use ($query) {
+                            $cq->where('description', 'like', "%{$query}%")
+                               ->orWhereHas('category', function ($catQ) use ($query) {
+                                   $catQ->where('description', 'like', "%{$query}%");
+                               });
+                        });
+                });
+            })
+            ->latest()
+            ->paginate(12)
+            ->withQueryString();
+
+        $total = $courses->total();
+
+        return view('pages.search-results', [
+            'courses' => $courses,
+            'query'   => $query,
+            'total'   => $total,
         ]);
     }
 

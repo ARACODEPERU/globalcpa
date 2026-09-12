@@ -36,6 +36,7 @@
             display: flex;
             align-items: center;
         }
+        body.dark-only .loader-text { color: #ffffff; }
         .loader-text::after {
             content: '';
             animation: typing-dots 1.5s infinite;
