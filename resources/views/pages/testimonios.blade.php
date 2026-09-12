@@ -9,6 +9,13 @@
 
 @section('content')
 
+    {{-- Schema markup (JSON-LD): organizacion con valoracion agregada y resenas --}}
+    @if (!empty($schema))
+        <script type="application/ld+json">
+            {!! json_encode($schema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) !!}
+        </script>
+    @endif
+
     <style>
         /* =========================================
            PÁGINA TESTIMONIOS
@@ -134,6 +141,16 @@
         .tst-featured-name { font-weight: 700; font-size: 1.1rem; margin-bottom: 2px; }
         .tst-featured-role { font-size: 0.9rem; color: rgba(255, 255, 255, 0.7); }
         .tst-featured-stars { color: #ffc107; font-size: 1rem; }
+        .tst-featured-program {
+            font-size: 1.05rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            color: #ffc107;
+            margin-bottom: 12px;
+            position: relative;
+            z-index: 1;
+        }
 
         /* --- Muro de testimonios --- */
         .tst-card {
@@ -182,6 +199,23 @@
         }
         .tst-card .tst-name { font-weight: 700; font-size: 0.98rem; margin-bottom: 2px; }
         .tst-card .tst-role { font-size: 0.82rem; }
+        /* El titulo (producto, servicio o curso) abre la tarjeta, antes del comentario. */
+        .tst-card .tst-card-title {
+            font-size: 1.02rem;
+            font-weight: 800;
+            line-height: 1.35;
+            color: #002060;
+            margin-bottom: 14px;
+        }
+        :is(.dark, .dark-only) .tst-card .tst-card-title { color: #93c5fd; }
+        .tst-mini-card .tst-mini-title {
+            font-weight: 700;
+            font-size: 0.82rem;
+            line-height: 1.3;
+            color: #002060;
+            margin-bottom: 8px;
+        }
+        :is(.dark, .dark-only) .tst-mini-card .tst-mini-title { color: #93c5fd; }
 
         /* --- Marquee --- */
         .tst-marquee-viewport {
@@ -226,6 +260,123 @@
         }
         .tst-mini-card .tst-mini-name { font-weight: 700; font-size: 0.9rem; margin-bottom: 1px; }
         .tst-mini-card .tst-mini-role { font-size: 0.78rem; }
+
+        /* --- Video / portada de la tarjeta --- */
+        .tst-card-media {
+            position: relative;
+            height: 165px;
+            border-radius: 14px;
+            overflow: hidden;
+            margin-bottom: 18px;
+            background: linear-gradient(135deg, #002060 0%, #004080 100%);
+        }
+        .tst-card-media img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .tst-play {
+            position: absolute;
+            inset: 0;
+            margin: auto;
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(227, 6, 19, 0.92);
+            color: #ffffff;
+            font-size: 19px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.3);
+            transition: transform 0.25s ease, background 0.25s ease;
+        }
+        .tst-play:hover { transform: scale(1.08); background: #e30613; color: #ffffff; }
+        .tst-video-tag {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 50px;
+            background: rgba(0, 0, 0, 0.55);
+            color: #ffffff;
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+        .tst-read-more {
+            background: none;
+            border: none;
+            padding: 0;
+            margin-top: 8px;
+            color: #002060;
+            font-weight: 700;
+            font-size: 0.82rem;
+        }
+        .tst-read-more:hover { color: #e30613; }
+        .tst-read-more i { display: inline-block; transition: transform 0.2s ease; }
+        .tst-read-more[aria-expanded="true"] i { transform: rotate(180deg); }
+        :is(.dark, .dark-only) .tst-read-more { color: #93c5fd; }
+        .tst-featured-video { margin-top: 18px; }
+        .tst-featured-video .btn {
+            border-radius: 50px;
+            font-weight: 700;
+            padding: 9px 22px;
+            background: #e30613;
+            border: none;
+            color: #ffffff;
+        }
+        .tst-featured-video .btn:hover { background: #c00511; color: #ffffff; }
+        .modal-content { border: none; border-radius: 16px; overflow: hidden; }
+        .modal-header { background: #002060; color: #ffffff; border-bottom: 0; }
+        .modal-header .btn-close { filter: invert(1); opacity: 0.85; }
+
+        /* --- Filtros --- */
+        .tst-filter-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 16px;
+            border-radius: 50px;
+            border: 1px solid rgba(128, 128, 128, 0.3);
+            background: #ffffff;
+            color: #4b5563;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.25s ease;
+        }
+        .tst-filter-chip:hover { border-color: #002060; color: #002060; }
+        .tst-filter-chip.is-active {
+            background: #002060;
+            border-color: #002060;
+            color: #ffffff;
+        }
+        :is(.dark, .dark-only) .tst-filter-chip {
+            background: #1d273a;
+            border-color: #374558;
+            color: #cbd5e1;
+        }
+        :is(.dark, .dark-only) .tst-filter-chip.is-active {
+            background: #e30613;
+            border-color: #e30613;
+            color: #ffffff;
+        }
+        .tst-group-title {
+            font-weight: 700;
+            font-size: 1.15rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
 
         /* --- CTA final --- */
         .tst-cta {
@@ -337,13 +488,15 @@
 
                                     <div class="d-flex flex-wrap gap-3">
                                         <span class="tst-hero-tag">
-                                            <i class="fa fa-star text-warning"></i> Egresados reales
+                                            <i class="fa fa-star text-warning"></i>
+                                            {{ $stats['total'] }} testimonios
+                                        </span>
+                                        <span class="tst-hero-tag">
+                                            <i class="fa fa-graduation-cap text-warning"></i>
+                                            {{ $stats['courses'] }} cursos opinados
                                         </span>
                                         <span class="tst-hero-tag">
                                             <i class="fa fa-globe text-warning"></i> +10 países de LATAM
-                                        </span>
-                                        <span class="tst-hero-tag">
-                                            <i class="fa fa-briefcase text-warning"></i> En las mejores empresas
                                         </span>
                                     </div>
                                 </div>
@@ -353,7 +506,7 @@
                 </div>
 
                 {{-- ============================================ --}}
-                {{-- 2. ESTADÍSTICAS --}}
+                {{-- 2. ESTADÍSTICAS (calculadas con testimonios reales) --}}
                 {{-- ============================================ --}}
                 <section class="tst-section pt-0">
                     <div class="container">
@@ -361,23 +514,23 @@
                             <div class="row row-cols-2 row-cols-lg-4 g-4 position-relative">
                                 <div class="col tst-stat">
                                     <i class="fa fa-thumbs-up"></i>
-                                    <strong>98%</strong>
+                                    <strong>{{ $stats['recommend'] }}%</strong>
                                     <span>Nos recomiendan</span>
                                 </div>
                                 <div class="col tst-stat">
-                                    <i class="fa fa-graduation-cap"></i>
-                                    <strong>+5,000</strong>
-                                    <span>Alumnos formados</span>
+                                    <i class="fa fa-comments"></i>
+                                    <strong>{{ number_format($stats['total']) }}</strong>
+                                    <span>Testimonios publicados</span>
                                 </div>
                                 <div class="col tst-stat">
                                     <i class="fa fa-star"></i>
-                                    <strong>4.9/5</strong>
+                                    <strong>{{ $stats['average'] ?: '—' }}/5</strong>
                                     <span>Puntuación promedio</span>
                                 </div>
                                 <div class="col tst-stat">
                                     <i class="fa fa-briefcase"></i>
-                                    <strong>+85%</strong>
-                                    <span>Promueven o mejoran su empleo</span>
+                                    <strong>{{ number_format($stats['courses']) }}</strong>
+                                    <span>Cursos con opiniones</span>
                                 </div>
                             </div>
                         </div>
@@ -387,170 +540,300 @@
                 {{-- ============================================ --}}
                 {{-- 3. TESTIMONIO DESTACADO --}}
                 {{-- ============================================ --}}
-                <section class="tst-section pt-0">
-                    <div class="container">
-                        <div class="tst-featured shadow" data-aos="zoom-in">
-                            <div class="row align-items-center position-relative">
-                                <div class="col-lg-9">
-                                    <div class="tst-featured-stars mb-3">
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                    </div>
-                                    <blockquote>
-                                        "Llegué a CPA Academy buscando actualizar mis conocimientos en NIIF y
-                                        encontré mucho más: docentes que trabajan en las firmas donde siempre
-                                        quise estar, casos reales de empresas peruanas y una comunidad que me
-                                        abrió las puertas a mi puesto actual. Fue el punto de quiebre de mi
-                                        carrera."
-                                    </blockquote>
-                                    <div class="d-flex align-items-center gap-3">
-                                        <img src="https://ui-avatars.com/api/?name=Maria+Fernandez&size=140&rounded=true&background=002060&color=ffffff&bold=true"
-                                            alt="María Fernández" class="tst-featured-avatar">
-                                        <div>
-                                            <p class="tst-featured-name mb-0">María Fernández</p>
-                                            <p class="tst-featured-role mb-0">
-                                                Supervisora de Auditoría · Big Four · Egresada del Programa de
-                                                Especialización en NIIF
+                @if ($featured)
+                    <section class="tst-section pt-0">
+                        <div class="container">
+                            <div class="tst-featured shadow" data-aos="zoom-in">
+                                <div class="row align-items-center position-relative">
+                                    <div class="col-lg-9">
+                                        @if ($featured['program'])
+                                            <p class="tst-featured-program">
+                                                {{ \Illuminate\Support\Str::limit($featured['program'], 90) }}
                                             </p>
+                                        @endif
+                                        <div class="tst-featured-stars mb-3">
+                                            @for ($i = 1; $i <= 5; $i++)
+                                                <i class="fa fa-star{{ $i <= $featured['rating'] ? '' : '-o' }}"></i>
+                                            @endfor
                                         </div>
+                                        <blockquote>
+                                            "{{ $featured['quote'] }}"
+                                        </blockquote>
+                                        <div class="d-flex align-items-center gap-3">
+                                            <img src="{{ $featured['photo'] ?: $featured['avatar'] }}"
+                                                alt="{{ $featured['author'] }}" class="tst-featured-avatar">
+                                            <div>
+                                                <p class="tst-featured-name mb-0">{{ $featured['author'] }}</p>
+                                                <p class="tst-featured-role mb-0">{{ $featured['role'] }}</p>
+                                            </div>
+                                        </div>
+                                        @if ($featured['video'])
+                                            @php
+                                                $featuredTarget = $testimonies->pluck('id')->contains($featured['id'])
+                                                    ? 'tstVideo' . $featured['id']
+                                                    : 'tstVideoFeatured';
+                                            @endphp
+                                            <div class="tst-featured-video">
+                                                <button type="button"
+                                                    class="btn"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#{{ $featuredTarget }}">
+                                                    <i class="fa fa-play-circle me-2"></i>Ver video testimonio
+                                                </button>
+                                            </div>
+                                        @endif
+                                    </div>
+                                    <div class="col-lg-3 text-center d-none d-lg-block">
+                                        <i class="fa fa-quote-right" style="font-size: 7rem; opacity: 0.15;"></i>
                                     </div>
                                 </div>
-                                <div class="col-lg-3 text-center d-none d-lg-block">
-                                    <i class="fa fa-quote-right" style="font-size: 7rem; opacity: 0.15;"></i>
+                            </div>
+                        </div>
+                    </section>
+                @endif
+
+                {{-- ============================================ --}}
+                {{-- 4. MURO DE TESTIMONIOS (agrupado por categoría) --}}
+                {{-- ============================================ --}}
+                <section class="tst-section tst-section-alt">
+                    <div class="container">
+                        <div class="text-center mb-4" data-aos="fade-up">
+                            <h2 class="fw-bold text-navy-custom">Lo que dicen nuestros egresados</h2>
+                            <p class="text-muted-custom mx-auto" style="max-width: 700px;">
+                                @if ($total > 0)
+                                    {{ number_format($total) }}
+                                    {{ \Illuminate\Support\Str::plural('testimonio', $total) }} de profesionales que
+                                    confiaron en CPA Academy para dar el siguiente paso.
+                                @else
+                                    Muy pronto verás aquí las opiniones de nuestros egresados.
+                                @endif
+                            </p>
+                        </div>
+
+                        @if ($categoryOptions->count() > 0)
+                            <div class="d-flex flex-wrap justify-content-center gap-2 mb-3" data-aos="fade-up">
+                                <a href="{{ route('web_testimonials') }}"
+                                    class="tst-filter-chip {{ !$filters['categoria'] && !$filters['curso'] ? 'is-active' : '' }}">
+                                    Todas las categorías
+                                </a>
+                                @foreach ($categoryOptions as $option)
+                                    <a href="{{ route('web_testimonials', ['categoria' => $option->category]) }}"
+                                        class="tst-filter-chip {{ $filters['categoria'] === $option->category ? 'is-active' : '' }}">
+                                        {{ $option->category }} ({{ $option->total }})
+                                    </a>
+                                @endforeach
+                            </div>
+
+                            @if ($courseOptions->count() > 0)
+                                <form method="GET" action="{{ route('web_testimonials') }}"
+                                    class="d-flex justify-content-center mb-4" data-aos="fade-up">
+                                    @if ($filters['categoria'])
+                                        <input type="hidden" name="categoria" value="{{ $filters['categoria'] }}">
+                                    @endif
+                                    <select name="curso" class="form-select w-auto" onchange="this.form.submit()">
+                                        <option value="">Todos los cursos</option>
+                                        @foreach ($courseOptions as $option)
+                                            <option value="{{ $option->id }}"
+                                                {{ (string) $filters['curso'] === (string) $option->id ? 'selected' : '' }}>
+                                                {{ $option->description }} ({{ $option->total }})
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </form>
+                            @endif
+                        @endif
+
+                        @if ($testimonies->count() === 0)
+                            <div class="text-center py-5 bg-card-custom rounded-4" data-aos="fade-up">
+                                <i class="fa fa-comments-o" style="font-size: 3rem; color: #cbd5e1;"></i>
+                                <h3 class="h5 fw-bold text-navy-custom mt-3">Todavía no hay testimonios publicados</h3>
+                                <p class="text-muted-custom mb-0">
+                                    Los testimonios de nuestros alumnos pasan por revisión antes de publicarse.
+                                </p>
+                            </div>
+                        @else
+                            @foreach ($groups as $group)
+                                <div class="mb-5" data-aos="fade-up">
+                                    <h3 class="tst-group-title text-navy-custom">
+                                        <i class="fa fa-folder-open text-warning"></i>
+                                        {{ $group['category'] }}
+                                        <span class="badge bg-secondary">{{ $group['testimonies']->count() }}</span>
+                                    </h3>
+                                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                                        @foreach ($group['testimonies'] as $t)
+                                            @php
+                                                $quote = (string) $t['quote'];
+                                                $quoteLimit = 220;
+                                                $isLongQuote = mb_strlen($quote) > $quoteLimit;
+                                                $quoteShort = $isLongQuote ? \Illuminate\Support\Str::substr($quote, 0, $quoteLimit) : $quote;
+                                                $quoteRest = $isLongQuote ? \Illuminate\Support\Str::substr($quote, $quoteLimit) : '';
+                                            @endphp
+                                            <div class="col">
+                                                <div class="tst-card bg-card-custom shadow-sm">
+                                                    @if ($t['program'])
+                                                        <h3 class="tst-card-title">
+                                                            {{ \Illuminate\Support\Str::limit($t['program'], 90) }}
+                                                        </h3>
+                                                    @endif
+                                                    @if ($t['cover'] || $t['video'])
+                                                        <div class="tst-card-media">
+                                                            @if ($t['cover'])
+                                                                <img src="{{ $t['cover'] }}"
+                                                                    alt="{{ \Illuminate\Support\Str::limit($t['program'], 50) }}"
+                                                                    loading="lazy">
+                                                            @endif
+                                                            @if ($t['video'])
+                                                                <span class="tst-video-tag">
+                                                                    <i class="fa fa-video-camera"></i> Video
+                                                                </span>
+                                                                <button type="button"
+                                                                    class="tst-play"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#tstVideo{{ $t['id'] }}"
+                                                                    title="Ver video testimonio">
+                                                                    <i class="fa fa-play"></i>
+                                                                </button>
+                                                            @endif
+                                                        </div>
+                                                    @endif
+                                                    <div>
+                                                        <div class="tst-stars">
+                                                            @for ($i = 1; $i <= 5; $i++)
+                                                                <i class="fa fa-star{{ $i <= $t['rating'] ? '' : '-o' }}"></i>
+                                                            @endfor
+                                                        </div>
+                                                        <div class="tst-quote-mark">"</div>
+                                                        <p class="tst-text">
+                                                            {{ $quoteShort }}@if ($isLongQuote)<span class="collapse" id="tstQuote{{ $t['id'] }}">{{ $quoteRest }}</span>@endif
+                                                        </p>
+                                                        @if ($isLongQuote)
+                                                            <button type="button"
+                                                                class="tst-read-more"
+                                                                data-bs-toggle="collapse"
+                                                                data-bs-target="#tstQuote{{ $t['id'] }}"
+                                                                aria-expanded="false">
+                                                                <i class="fa fa-chevron-down"></i> Leer más
+                                                            </button>
+                                                        @endif
+                                                    </div>
+                                                    <div class="tst-author">
+                                                        <img src="{{ $t['photo'] ?: $t['avatar'] }}"
+                                                            alt="{{ $t['author'] }}" class="tst-avatar" loading="lazy">
+                                                        <div>
+                                                            <p class="tst-name text-navy-custom mb-0">{{ $t['author'] }}</p>
+                                                            <p class="tst-role text-muted-custom mb-0">{{ $t['role'] }}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endforeach
+
+                            @if ($hasMore)
+                                <div class="text-center mt-4" data-aos="fade-up">
+                                    <a href="{{ route('web_testimonials', array_filter([
+                                        'categoria' => $filters['categoria'],
+                                        'curso' => $filters['curso'],
+                                        'rating' => $filters['rating'],
+                                        'page' => $page + 1,
+                                    ])) }}"
+                                        class="tst-filter-chip is-active" style="padding: 12px 28px;">
+                                        <i class="fa fa-chevron-down"></i> Ver más testimonios
+                                    </a>
+                                    <p class="text-muted-custom mt-2 mb-0" style="font-size: 0.85rem;">
+                                        Mostrando {{ $testimonies->count() }} de {{ $total }} testimonios.
+                                    </p>
+                                </div>
+                            @endif
+                        @endif
+                    </div>
+                </section>
+
+                {{-- ============================================ --}}
+                {{-- Modales de video de los testimonios --}}
+                {{-- ============================================ --}}
+                @php
+                    $videoModals = collect();
+
+                    foreach ($testimonies as $t) {
+                        if (!empty($t['video'])) {
+                            $videoModals->push(['modal_id' => 'tstVideo' . $t['id'], 'data' => $t]);
+                        }
+                    }
+
+                    if ($featured && !empty($featured['video']) && !$testimonies->pluck('id')->contains($featured['id'])) {
+                        $videoModals->push(['modal_id' => 'tstVideoFeatured', 'data' => $featured]);
+                    }
+                @endphp
+
+                @foreach ($videoModals as $videoModal)
+                    <div class="modal fade" id="{{ $videoModal['modal_id'] }}" tabindex="-1"
+                        aria-labelledby="{{ $videoModal['modal_id'] }}Label" aria-hidden="true">
+                        <div class="modal-dialog modal-lg modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title h6" id="{{ $videoModal['modal_id'] }}Label">
+                                        {{ $videoModal['data']['author'] }} ·
+                                        {{ \Illuminate\Support\Str::limit($videoModal['data']['program'], 70) }}
+                                    </h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Cerrar"></button>
+                                </div>
+                                <div class="modal-body p-0 bg-black">
+                                    <div class="ratio ratio-16x9">
+                                        {!! $videoModal['data']['video'] !!}
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </section>
-
-                {{-- ============================================ --}}
-                {{-- 4. MURO DE TESTIMONIOS --}}
-                {{-- ============================================ --}}
-                <section class="tst-section tst-section-alt">
-                    <div class="container">
-                        <div class="text-center mb-5" data-aos="fade-up">
-                            <h2 class="fw-bold text-navy-custom">Lo que dicen nuestros egresados</h2>
-                            <p class="text-muted-custom mx-auto" style="max-width: 700px;">
-                                Testimonios de profesionales que confiaron en CPA Academy para dar el
-                                siguiente paso.
-                            </p>
-                        </div>
-                        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-                            @php
-                                $wallTestimonials = [
-                                    [
-                                        'name' => 'Carlos Ramírez',
-                                        'role' => 'Gerente de Contabilidad · Retail',
-                                        'program' => 'Especialización en NIIF',
-                                        'quote' => 'Los docentes no solo dominan el tema: saben transmitirlo con casos que viví la misma semana en mi trabajo. Pase de preparar papeles de trabajo a liderar el cierre contable de mi empresa.',
-                                    ],
-                                    [
-                                        'name' => 'Lucía Torres',
-                                        'role' => 'Analista Financiero · Sector Bancario',
-                                        'program' => 'Finanzas Corporativas',
-                                        'quote' => 'La plataforma es muy práctica: puedo repasar las clases a mi ritmo y el material queda disponible siempre. Aprobé mi certificación interna del banco con lo aprendido aquí.',
-                                    ],
-                                    [
-                                        'name' => 'Jorge Salazar',
-                                        'role' => 'Auditor Senior · Firma Regional',
-                                        'program' => 'Auditoría Interna',
-                                        'quote' => 'Lo que más valoro es la honestidad académica: te enseñan lo que se aplica hoy, con las normas vigentes y los criterios reales de las firmas. Sin relleno.',
-                                    ],
-                                    [
-                                        'name' => 'Ana Paula Céspedes',
-                                        'role' => 'Jefa de Presupuestos · Minería',
-                                        'program' => 'Presupuestos y Costos',
-                                        'quote' => 'Vengo de otra academia y la diferencia es enorme. En CPA el seguimiento es personal: notaron mis fortalezas y me recomendaron el programa perfecto para mi siguiente paso.',
-                                    ],
-                                    [
-                                        'name' => 'Diego Mendoza',
-                                        'role' => 'Contador General · Agroexportación',
-                                        'program' => 'Tributación',
-                                        'quote' => 'Los módulos de tributación me ayudaron a reestructurar los procesos de mi empresa. Recuperé la inversión del programa en el primer trimestre, solo con multas evitadas.',
-                                    ],
-                                    [
-                                        'name' => 'Valeria Núñez',
-                                        'role' => 'Socia · Estudio Contable',
-                                        'program' => 'Programa para Empresas',
-                                        'quote' => 'Capacité a todo mi equipo con los programas in-company. Ahora hablamos el mismo idioma técnico y la calidad de nuestros informes a clientes mejoró notablemente.',
-                                    ],
-                                ];
-                            @endphp
-
-                            @foreach ($wallTestimonials as $t)
-                                <div class="col" data-aos="fade-up" data-aos-delay="{{ 100 * (($loop->index % 3) + 1) }}">
-                                    <div class="tst-card bg-card-custom shadow-sm">
-                                        <div>
-                                            <div class="tst-stars">
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                            </div>
-                                            <div class="tst-quote-mark">"</div>
-                                            <p class="tst-text">{{ $t['quote'] }}</p>
-                                        </div>
-                                        <div class="tst-author">
-                                            <img src="https://ui-avatars.com/api/?name={{ urlencode($t['name']) }}&size=104&rounded=true&background=e30613&color=ffffff&bold=true"
-                                                alt="{{ $t['name'] }}" class="tst-avatar" loading="lazy">
-                                            <div>
-                                                <p class="tst-name text-navy-custom mb-0">{{ $t['name'] }}</p>
-                                                <p class="tst-role text-muted-custom mb-0">{{ $t['role'] }}</p>
-                                                <p class="tst-role mb-0" style="color: #e30613; font-weight: 600;">
-                                                    {{ $t['program'] }}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-                </section>
+                @endforeach
 
                 {{-- ============================================ --}}
                 {{-- 5. CARRUSEL MARQUEE --}}
                 {{-- ============================================ --}}
-                <section class="tst-section">
-                    <div class="container-fluid">
-                        <div class="text-center mb-4" data-aos="fade-up">
-                            <h2 class="fw-bold text-navy-custom">Palabras que nos impulsan</h2>
-                        </div>
-                        <div class="tst-marquee-viewport" data-aos="fade-up">
-                            <div class="tst-marquee-track">
-                                @php
-                                    $miniTestimonials = [
-                                        ['name' => 'Ricardo Quispe', 'role' => 'Controller · Manufactura', 'quote' => 'La inversión se pagó sola con mi promoción.'],
-                                        ['name' => 'Gabriela Ríos', 'role' => 'Auditora · Big Four', 'quote' => 'Entré al banco de talentos de la firma gracias a la especialización.'],
-                                        ['name' => 'Martín Villanueva', 'role' => 'CFO · Pyme', 'quote' => 'Como dueño de negocio, las clases de NIIF me cambiaron la forma de ver mis estados financieros.'],
-                                        ['name' => 'Cristina Paredes', 'role' => 'Supervisora Tributaria', 'quote' => 'Docentes que responden tus dudas reales, no de manual.'],
-                                        ['name' => 'Luis Arana', 'role' => 'Jefe de Costos · Construcción', 'quote' => 'Los casos de la construcción eran exactamente los de mis obras.'],
-                                        ['name' => 'Fiorella Castro', 'role' => 'Analista de Tesorería', 'quote' => 'Pase de asistente a analista en un año. La clave: aplicar cada clase.'],
-                                    ];
-                                    $loopSet = array_merge($miniTestimonials, $miniTestimonials);
-                                @endphp
+                @if ($testimonies->count() > 0)
+                    <section class="tst-section">
+                        <div class="container-fluid">
+                            <div class="text-center mb-4" data-aos="fade-up">
+                                <h2 class="fw-bold text-navy-custom">Palabras que nos impulsan</h2>
+                            </div>
+                            <div class="tst-marquee-viewport" data-aos="fade-up">
+                                <div class="tst-marquee-track">
+                                    @php
+                                        $miniTestimonials = $testimonies->take(6);
+                                        $loopSet = $miniTestimonials->concat($miniTestimonials);
+                                    @endphp
 
-                                @foreach ($loopSet as $t)
-                                    <div class="tst-mini-card bg-card-custom shadow-sm">
-                                        <p class="tst-mini-quote text-muted-custom">"{{ $t['quote'] }}"</p>
-                                        <div class="tst-mini-author">
-                                            <img src="https://ui-avatars.com/api/?name={{ urlencode($t['name']) }}&size=88&rounded=true&background=002060&color=ffffff&bold=true"
-                                                alt="{{ $t['name'] }}" class="tst-mini-avatar" loading="lazy">
-                                            <div>
-                                                <p class="tst-mini-name text-navy-custom mb-0">{{ $t['name'] }}</p>
-                                                <p class="tst-mini-role text-muted-custom mb-0">{{ $t['role'] }}</p>
+                                    @foreach ($loopSet as $t)
+                                        <div class="tst-mini-card bg-card-custom shadow-sm">
+                                            @if ($t['program'])
+                                                <p class="tst-mini-title">
+                                                    {{ \Illuminate\Support\Str::limit($t['program'], 45) }}
+                                                </p>
+                                            @endif
+                                            <p class="tst-mini-quote text-muted-custom">
+                                                "{{ \Illuminate\Support\Str::limit($t['quote'], 150) }}"
+                                            </p>
+                                            <div class="tst-mini-author">
+                                                <img src="{{ $t['photo'] ?: $t['avatar'] }}"
+                                                    alt="{{ $t['author'] }}" class="tst-mini-avatar" loading="lazy">
+                                                <div>
+                                                    <p class="tst-mini-name text-navy-custom mb-0">{{ $t['author'] }}</p>
+                                                    <p class="tst-mini-role text-muted-custom mb-0">
+                                                        {{ \Illuminate\Support\Str::limit($t['program'], 40) }}
+                                                    </p>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                @endforeach
+                                    @endforeach
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </section>
+                    </section>
+                @endif
 
                 {{-- ============================================ --}}
                 {{-- 6. CTA FINAL --}}

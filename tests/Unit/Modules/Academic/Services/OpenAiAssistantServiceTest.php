@@ -177,6 +177,58 @@ class OpenAiAssistantServiceTest extends TestCase
         $this->assertSame('resp_anterior', Cache::get('academic:openai-response:8'));
     }
 
+    public function test_correct_text_returns_corrected_text_with_fresh_context(): void
+    {
+        Cache::put('academic:openai-response:8', 'resp_anterior', now()->addHour());
+
+        Http::fake([
+            'api.openai.com/v1/responses' => Http::response([
+                'id' => 'resp_corrected',
+                'output' => [['content' => [['type' => 'output_text', 'text' => 'Texto corregido con mejor redaccion.']]]],
+            ]),
+        ]);
+
+        $service = app(OpenAiAssistantService::class);
+        $result = $service->correctText(8, 'texto con mala redacion y ortografia');
+
+        $this->assertSame('Texto corregido con mejor redaccion.', $result);
+
+        Http::assertSent(function ($request) {
+            $prompt = $request['input'][0]['content'][0]['text'];
+
+            return ($request['previous_response_id'] ?? null) === null
+                && str_contains($prompt, 'texto con mala redacion y ortografia')
+                && str_contains($prompt, 'NIIF')
+                && str_contains($prompt, 'UNICAMENTE el texto corregido');
+        });
+
+        // No debe leer ni sobreescribir la conversacion cacheada.
+        $this->assertSame('resp_anterior', Cache::get('academic:openai-response:8'));
+    }
+
+    public function test_correct_text_spelling_mode_only_asks_for_spelling(): void
+    {
+        Http::fake([
+            'api.openai.com/v1/responses' => Http::response([
+                'id' => 'resp_spelling',
+                'output' => [['content' => [['type' => 'output_text', 'text' => 'Texto con tilde corregida.']]]],
+            ]),
+        ]);
+
+        $service = app(OpenAiAssistantService::class);
+        $result = $service->correctText(21, 'texto con tilde correjida', true);
+
+        $this->assertSame('Texto con tilde corregida.', $result);
+
+        Http::assertSent(function ($request) {
+            $prompt = $request['input'][0]['content'][0]['text'];
+
+            return str_contains($prompt, 'UNICAMENTE la ortografia')
+                && str_contains($prompt, 'NO reescribas las oraciones')
+                && !str_contains($prompt, 'mejora la claridad');
+        });
+    }
+
     public function test_sanitizes_invisible_characters_from_api_key(): void
     {
         // Key pegada con espacio, NBSP y zero-width space invisibles

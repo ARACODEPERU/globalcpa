@@ -2,7 +2,12 @@
 
 @section('content')
 
-
+    {{-- Schema markup (JSON-LD): listado de cursos --}}
+    @if (!empty($coursesSchema))
+        <script type="application/ld+json">
+            {!! json_encode($coursesSchema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) !!}
+        </script>
+    @endif
 
     <!-- Loader starts-->
     <!-- Loader ends-->

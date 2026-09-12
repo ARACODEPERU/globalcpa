@@ -109,6 +109,11 @@
 
                 <x-courselanding.certificate-template />
 
+                {{-- Testimonios de los alumnos de este curso (al final) + schema markup --}}
+                <x-courselanding.course-testimonials :testimonials="$course_testimonials ?? []"
+                    :course="$landing->course"
+                    :schema="$course_schema ?? null" />
+
 
             </div>
         </div>
