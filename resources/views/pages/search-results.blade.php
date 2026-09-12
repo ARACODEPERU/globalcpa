@@ -104,7 +104,7 @@
                                     </nav>
 
                                     <h1 class="h3 fw-bold text-white mb-2">
-                                        <i class="fa-solid fa-magnifying-glass me-2"></i>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 8px;"><path d="M16.66,10.08c0,3.63-2.95,6.58-6.58,6.58s-6.58-2.95-6.58-6.58S6.45,3.5,10.08,3.5s6.58,2.95,6.58,6.58Z"/><line x1="14.76" y1="14.71" x2="20.49" y2="20.49"/></svg>
                                         Resultados de búsqueda
                                     </h1>
 
@@ -129,8 +129,8 @@
                                                    style="border-radius: 25px 0 0 25px; border: none;"
                                                    autocomplete="off">
                                             <button class="btn btn-warning btn-lg" type="submit"
-                                                    style="border-radius: 0 25px 25px 0; color: #002060; font-weight: 700;">
-                                                <i class="fa-solid fa-magnifying-glass me-1"></i> Buscar
+                                                    style="border-radius: 0 25px 25px 0; color: #002060; font-weight: 700; display: flex; align-items: center; gap: 6px;">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16.66,10.08c0,3.63-2.95,6.58-6.58,6.58s-6.58-2.95-6.58-6.58S6.45,3.5,10.08,3.5s6.58,2.95,6.58,6.58Z"/><line x1="14.76" y1="14.71" x2="20.49" y2="20.49"/></svg> Buscar
                                             </button>
                                         </div>
                                     </form>
@@ -205,7 +205,7 @@
                             <div class="col-12">
                                 <div class="card" style="border-radius: 16px;">
                                     <div class="card-body text-center py-5">
-                                        <i class="fa-solid fa-search" style="font-size: 3.5rem; color: #cbd5e1;"></i>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16.66,10.08c0,3.63-2.95,6.58-6.58,6.58s-6.58-2.95-6.58-6.58S6.45,3.5,10.08,3.5s6.58,2.95,6.58,6.58Z"/><line x1="14.76" y1="14.71" x2="20.49" y2="20.49"/></svg>
                                         <h3 class="h5 fw-bold mt-3" style="color: #374151;">
                                             No se encontraron cursos
                                         </h3>

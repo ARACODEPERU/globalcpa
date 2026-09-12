@@ -295,15 +295,14 @@
         body.dark-only .header-search-wrap .search-toggle:hover {
             background: rgba(255, 255, 255, 0.08);
         }
-        .header-search-wrap .search-toggle i {
-            font-size: 22px;
+        .header-search-wrap .search-toggle svg {
             color: #2c323f;
             transition: color 0.25s;
         }
-        body.dark-only .header-search-wrap .search-toggle i {
+        body.dark-only .header-search-wrap .search-toggle svg {
             color: #b4b7c5;
         }
-        .header-search-wrap .search-toggle i:hover {
+        .header-search-wrap .search-toggle:hover svg {
             color: #e30613;
         }
         .header-search-form {
@@ -352,6 +351,11 @@
             font-size: 14px;
             transition: background 0.25s;
             white-space: nowrap;
+            display: flex;
+            align-items: center;
+        }
+        .header-search-form button svg {
+            color: #ffffff;
         }
         .header-search-form button:hover { background: #004080; }
         body.dark-only .header-search-form button {
@@ -398,14 +402,22 @@
                 </li>
             @endif
                 
-                <!-- Buscador -->
+                <!-- Buscador (SVG de svgrepo.com/svg/414914) -->
                 <li class="header-search-wrap" id="headerSearchWrap">
                     <button type="button" class="search-toggle" id="headerSearchToggle" title="Buscar cursos">
-                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M16.66,10.08c0,3.63-2.95,6.58-6.58,6.58s-6.58-2.95-6.58-6.58S6.45,3.5,10.08,3.5s6.58,2.95,6.58,6.58Z"/>
+                            <line x1="14.76" y1="14.71" x2="20.49" y2="20.49"/>
+                        </svg>
                     </button>
                     <form class="header-search-form" id="headerSearchForm" action="{{ route('web_search_courses') }}" method="GET">
                         <input type="text" name="q" id="headerSearchInput" placeholder="Buscar cursos..." autocomplete="off">
-                        <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+                        <button type="submit">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M16.66,10.08c0,3.63-2.95,6.58-6.58,6.58s-6.58-2.95-6.58-6.58S6.45,3.5,10.08,3.5s6.58,2.95,6.58,6.58Z"/>
+                                <line x1="14.76" y1="14.71" x2="20.49" y2="20.49"/>
+                            </svg>
+                        </button>
                     </form>
                 </li>
                 <script>
