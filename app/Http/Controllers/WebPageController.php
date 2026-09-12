@@ -460,6 +460,16 @@ class WebPageController extends Controller
         return Str::contains($html, '<iframe') ? $html : null;
     }
 
+    public function fag()
+    {
+        return view('pages.fag');
+    }
+
+    public function faq()
+    {
+        return view('pages.faq');
+    }
+
     public function teachers()
     {
         return view('pages.teachers');
