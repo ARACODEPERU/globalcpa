@@ -1,13 +1,13 @@
 {{-- <div id="merchandising">
     <a href="{{ route('web_subscriptions') }}" class="mer">
-        <i class="fas fa-briefcase" aria-hidden="true"></i>
+        <i class="fa fa-briefcase" aria-hidden="true"></i>
     </a>
 </div> --}}
 
 
 {{-- <div id="whatsapp">
     <a href="https://wa.link/4bu45u" class="wtsapp">
-        <i class="fab fa-whatsapp" aria-hidden="true" style="font-size: 28px;"></i>
+        <i class="fa fa-whatsapp" aria-hidden="true" style="font-size: 28px;"></i>
     </a>
 </div> --}}
 

@@ -101,11 +101,11 @@
                                     <div class="d-flex align-items-center mb-3">
                                         <span class="badge bg-warning text-dark me-2">Categoria</span>
                                         <div class="text-warning small">
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="far fa-star-half-stroke"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star-half-o"></i>
                                         </div>
                                     </div>
                                     <h1 class="display-5 fw-bold mb-3" style="color: #fff;">
@@ -114,9 +114,9 @@
                                     </h1>
 
                                     <div class="d-flex align-items-center text-white-50">
-                                        <span class="me-3"><i class="far fa-clock me-1"></i>
+                                        <span class="me-3"><i class="fa fa-clock-o me-1"></i>
                                             Inicio: 17 abril | Duración: 3 meses | Modalidad: En vivo</span>
-                                        <span><i class="fas fa-globe me-1"></i> Español</span>
+                                        <span><i class="fa fa-globe me-1"></i> Español</span>
                                     </div>
                                 </div>
                                 <div class="col-lg-4 text-center d-none d-lg-block position-relative"
@@ -139,7 +139,7 @@
                                 <div class="mb-4">
                                     <span class="badge rounded-pill bg-light text-primary px-3 py-2 mb-3 shadow-sm border"
                                         style="color: #002060 !important;">
-                                        <i class="fas fa-refresh me-1"></i> ACTUALIZACIÓN PROFESIONAL
+                                        <i class="fa fa-refresh me-1"></i> ACTUALIZACIÓN PROFESIONAL
                                     </span>
                                     <h2 class="fw-bold display-6" style="color: #002060;">
                                         Título de Sección
@@ -154,7 +154,7 @@
                                         <div class="d-flex align-items-center">
                                             <div class="flex-shrink-0 bg-warning-light p-3 rounded-circle me-3"
                                                 style="background-color: rgba(255, 193, 7, 0.1);">
-                                                <i class="fas fa-line-chart text-warning fs-4"></i>
+                                                <i class="fa fa-line-chart text-warning fs-4"></i>
                                             </div>
                                             <div>
                                                 <h5 class="mb-0 fw-bold" style="color: #002060;">Eficiencia</h5>
@@ -166,7 +166,7 @@
                                         <div class="d-flex align-items-center">
                                             <div class="flex-shrink-0 bg-info-light p-3 rounded-circle me-3"
                                                 style="background-color: rgba(0, 204, 255, 0.1);">
-                                                <i class="fas fa-database text-info fs-4"></i>
+                                                <i class="fa fa-database text-info fs-4"></i>
                                             </div>
                                             <div>
                                                 <h5 class="mb-0 fw-bold" style="color: #002060;">Data Driven</h5>
@@ -196,7 +196,7 @@
                                             Apellidos</label>
                                         <div class="input-group shadow-sm">
                                             <span class="input-group-text bg-white border-end-0"><i
-                                                    class="fas fa-user text-muted"></i></span>
+                                                    class="fa fa-user text-muted"></i></span>
                                             <input type="text" name="full_name" class="form-control border-start-0 ps-0"
                                                 placeholder="Ingresa tu nombre completo" required>
                                         </div>
@@ -207,7 +207,7 @@
                                             <label class="form-label fw-bold" style="color: #002060;">WhatsApp</label>
                                             <div class="input-group shadow-sm">
                                                 <span class="input-group-text bg-white border-end-0"><i
-                                                        class="fab fa-whatsapp text-muted"></i></span>
+                                                        class="fa fa-whatsapp text-muted"></i></span>
                                                 <input type="text" name="phone"
                                                     class="form-control border-start-0 ps-0" placeholder="Ej: 999 888 777"
                                                     required>
@@ -218,7 +218,7 @@
                                                 Electrónico</label>
                                             <div class="input-group shadow-sm">
                                                 <span class="input-group-text bg-white border-end-0"><i
-                                                        class="fas fa-envelope text-muted"></i></span>
+                                                        class="fa fa-envelope text-muted"></i></span>
                                                 <input type="email" name="email"
                                                     class="form-control border-start-0 ps-0"
                                                     placeholder="ejemplo@correo.com" required>
@@ -230,7 +230,7 @@
                                         <button type="submit" id="submitPageContactButton"
                                             class="btn btn-warning btn-lg w-100 fw-bold shadow-sm py-3"
                                             style="color: #002060; border-radius: 12px; transition: all 0.3s ease;">
-                                            <i class="far fa-file-pdf me-2"></i> DESCARGAR BROCHURE
+                                            <i class="fa fa-file-pdf-o me-2"></i> DESCARGAR BROCHURE
                                         </button>
                                     </div>
                                     <div id="messagePageContact" class="mt-3"></div>
@@ -248,7 +248,7 @@
                                 <div class="text-center mb-5">
                                     <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border"
                                         style="background-color: rgba(220, 53, 69, 0.1); color: #dc3545;">
-                                        <i class="fas fa-exclamation-triangle me-1"></i> EL PROBLEMA
+                                        <i class="fa fa-exclamation-triangle me-1"></i> EL PROBLEMA
                                     </span>
                                     <h2 class="fw-bold display-6" style="color: #002060;">Tu equipo está saturado y
                                         pierdes ventas todos los días</h2>
@@ -261,7 +261,7 @@
                                         <div
                                             class="h-100 p-4 rounded-4 border shadow-sm text-center bg-white transition-all">
                                             <div class="mb-4">
-                                                <i class="far fa-clock text-warning" style="font-size: 3.5rem;"></i>
+                                                <i class="fa fa-clock-o text-warning" style="font-size: 3.5rem;"></i>
                                             </div>
                                             <h4 class="fw-bold mb-3" style="color: #002060;">No ofreces atención 24/7</h4>
                                             <p class="text-muted mb-0">en canales como WhatsApp e Instagram y eso te hace
@@ -272,7 +272,7 @@
                                         <div
                                             class="h-100 p-4 rounded-4 border shadow-sm text-center bg-white transition-all">
                                             <div class="mb-4">
-                                                <i class="fas fa-users text-warning" style="font-size: 3.5rem;"></i>
+                                                <i class="fa fa-users text-warning" style="font-size: 3.5rem;"></i>
                                             </div>
                                             <h4 class="fw-bold mb-3" style="color: #002060;">Equipo saturado en post-venta
                                             </h4>
@@ -283,7 +283,7 @@
                                         <div
                                             class="h-100 p-4 rounded-4 border shadow-sm text-center bg-white transition-all">
                                             <div class="mb-4">
-                                                <i class="far fa-comment text-warning" style="font-size: 3.5rem;"></i>
+                                                <i class="fa fa-commenting-o text-warning" style="font-size: 3.5rem;"></i>
                                             </div>
                                             <h4 class="fw-bold mb-3" style="color: #002060;">Tu Chatbot no vende</h4>
                                             <p class="text-muted mb-0">Chatbots básicos que responden, pero no convierten
@@ -305,7 +305,7 @@
                                 <div class="text-center mb-5">
                                     <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border"
                                         style="background-color: rgba(0, 32, 96, 0.1); color: #002060;">
-                                        <i class="fas fa-list-ul me-1"></i> PLAN DE ESTUDIOS
+                                        <i class="fa fa-list-ul me-1"></i> PLAN DE ESTUDIOS
                                     </span>
                                     <h2 class="fw-bold display-6" style="color: #002060;">Lo que vas a aprender</h2>
                                     <p class="text-muted fs-5 mx-auto" style="max-width: 800px;">Un temario diseñado para
@@ -533,7 +533,7 @@
                                 <div class="text-center mb-5">
                                     <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border"
                                         style="background-color: rgba(255, 193, 7, 0.1); color: #002060;">
-                                        <i class="fas fa-graduation-cap me-1"></i> STAFF ACADÉMICO
+                                        <i class="fa fa-graduation-cap me-1"></i> STAFF ACADÉMICO
                                     </span>
                                     <h2 class="fw-bold display-6" style="color: #002060;">Expertos que Guiarán tu Aprendizaje</h2>
                                     <p class="text-muted fs-5 mx-auto" style="max-width: 800px;">
@@ -589,7 +589,7 @@
                                 <div class="text-center mb-4">
                                     <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border"
                                         style="background-color: rgba(0, 32, 96, 0.05); color: #002060;">
-                                        <i class="fas fa-users me-1"></i> NUESTRO STAFF (DINÁMICO)
+                                        <i class="fa fa-users me-1"></i> NUESTRO STAFF (DINÁMICO)
                                     </span>
                                     <h2 class="fw-bold display-6" style="color: #002060;">Líderes de la Industria</h2>
                                     <p class="text-muted fs-5 mx-auto" style="max-width: 800px;">
@@ -645,7 +645,7 @@
                                 <div class="text-center mb-5">
                                     <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border"
                                         style="background-color: rgba(40, 167, 69, 0.1); color: #28a745;">
-                                        <i class="fas fa-check-circle me-1"></i> RESULTADOS DEL PROGRAMA
+                                        <i class="fa fa-check-circle me-1"></i> RESULTADOS DEL PROGRAMA
                                     </span>
                                     <h2 class="fw-bold display-6" style="color: #002060;">
                                         Transforma tu Práctica Contable
@@ -677,7 +677,7 @@
 
                                                 <div class="mb-4 d-inline-flex align-items-center justify-content-center rounded-circle shadow-sm" 
                                                      style="width: 70px; height: 70px; background-color: white; border: 1px solid #f1f1f1;">
-                                                    <i class="fas {{ $item['icon'] }}" style="font-size: 2rem; color: {{ $item['color'] }};"></i>
+                                                    <i class="fa {{ $item['icon'] }}" style="font-size: 2rem; color: {{ $item['color'] }};"></i>
                                                 </div>
                                                 
                                                 <h4 class="fw-bold mb-3" style="color: #002060;">{{ $item['title'] }}</h4>
@@ -704,7 +704,7 @@
                                 <div class="text-center mb-4">
                                     <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border"
                                         style="background-color: rgba(0, 123, 255, 0.05); color: #007bff;">
-                                        <i class="fas fa-quote-right me-1"></i> TESTIMONIOS
+                                        <i class="fa fa-quote-right me-1"></i> TESTIMONIOS
                                     </span>
                                     <h2 class="fw-bold display-6" style="color: #002060;">Lo que dicen nuestros alumnos</h2>
                                     <p class="text-muted fs-5 mx-auto" style="max-width: 800px;">
@@ -864,7 +864,7 @@
                                 <div class="text-center mb-5">
                                     <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border"
                                         style="background-color: rgba(255, 193, 7, 0.1); color: #002060;">
-                                        <i class="fas fa-money me-1"></i> INVERSIÓN
+                                        <i class="fa fa-money me-1"></i> INVERSIÓN
                                     </span>
                                     <h2 class="fw-bold display-6" style="color: #002060;">Planes de Inversión</h2>
                                     <p class="text-muted fs-5 mx-auto" style="max-width: 800px;">
@@ -886,9 +886,9 @@
                                                     <span class="text-muted">/ pago único</span>
                                                 </div>
                                                 <ul class="list-unstyled text-start mb-4">
-                                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Acceso total al programa</li>
-                                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Material digital descargable</li>
-                                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Certificado de participación</li>
+                                                    <li class="mb-2"><i class="fa fa-check text-success me-2"></i> Acceso total al programa</li>
+                                                    <li class="mb-2"><i class="fa fa-check text-success me-2"></i> Material digital descargable</li>
+                                                    <li class="mb-2"><i class="fa fa-check text-success me-2"></i> Certificado de participación</li>
                                                 </ul>
                                                 <a href="#pageContactForm" class="btn btn-outline-warning w-100 fw-bold py-2" style="color: #002060; border-radius: 10px;">Inscribirse ahora</a>
                                             </div>
@@ -909,9 +909,9 @@
                                                     <span class="text-muted">/ pago único</span>
                                                 </div>
                                                 <ul class="list-unstyled text-start mb-4">
-                                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i> <b>Todo lo del plan Pronto Pago</b></li>
-                                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Sesiones de Q&A en vivo</li>
-                                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Soporte prioritario vía WhatsApp</li>
+                                                    <li class="mb-2"><i class="fa fa-check text-success me-2"></i> <b>Todo lo del plan Pronto Pago</b></li>
+                                                    <li class="mb-2"><i class="fa fa-check text-success me-2"></i> Sesiones de Q&A en vivo</li>
+                                                    <li class="mb-2"><i class="fa fa-check text-success me-2"></i> Soporte prioritario vía WhatsApp</li>
                                                 </ul>
                                                 <a href="#pageContactForm" class="btn btn-warning w-100 fw-bold py-2 shadow-sm" style="color: #002060; border-radius: 10px;">Inscribirse ahora</a>
                                             </div>
@@ -931,9 +931,9 @@
                                                     <span class="text-muted">/ por persona</span>
                                                 </div>
                                                 <ul class="list-unstyled text-start mb-4">
-                                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Beneficios del plan regular</li>
-                                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Sesión privada para el equipo</li>
-                                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Facturación personalizada</li>
+                                                    <li class="mb-2"><i class="fa fa-check text-success me-2"></i> Beneficios del plan regular</li>
+                                                    <li class="mb-2"><i class="fa fa-check text-success me-2"></i> Sesión privada para el equipo</li>
+                                                    <li class="mb-2"><i class="fa fa-check text-success me-2"></i> Facturación personalizada</li>
                                                 </ul>
                                                 <a href="#pageContactForm" class="btn btn-outline-warning w-100 fw-bold py-2" style="color: #002060; border-radius: 10px;">Contactar ventas</a>
                                             </div>
@@ -953,7 +953,7 @@
                                 <div class="text-center mb-5">
                                     <span class="badge rounded-pill px-3 py-2 mb-3 shadow-sm border"
                                         style="background-color: rgba(111, 66, 193, 0.1); color: #6f42c1;">
-                                        <i class="fas fa-magic me-1"></i> FAQ - VERSIÓN MODERNA
+                                        <i class="fa fa-magic me-1"></i> FAQ - VERSIÓN MODERNA
                                     </span>
                                     <h2 class="fw-bold display-6" style="color: #002060;">Preguntas Frecuentes</h2>
                                     <p class="text-muted fs-5 mx-auto" style="max-width: 700px;">
@@ -1026,7 +1026,7 @@
                                         <div class="text-center mt-5 p-4 rounded-4" style="background-color: #f8f9fa; border: 1px dashed #dee2e6;">
                                             <p class="mb-3 fw-bold" style="color: #002060;">¿Aún tienes dudas específicas?</p>
                                             <a href="https://wa.me/tu-numero" class="btn btn-success rounded-pill px-4 shadow-sm">
-                                                <i class="fab fa-whatsapp me-2"></i> Hablar con un Asesor
+                                                <i class="fa fa-whatsapp me-2"></i> Hablar con un Asesor
                                             </a>
                                         </div>
                                     </div>

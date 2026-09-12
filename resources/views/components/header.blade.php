@@ -608,13 +608,13 @@
                 <ul class="nav-menus">
                     <li>
                         <div class="mode">
-                            <i class="far fa-toggle-onn" aria-hidden="true" style="font-size: 26px;"></i>
+                            <i class="fa fa-toggle-on" aria-hidden="true" style="font-size: 26px;"></i>
                         </div>
                     </li>
                     <li class="cart-nav onhover-dropdown">
                         <div class="cart-box" style="top: 0px;">
                             <a href="{{ route('web_carrito') }}">
-                                <i class="fas fa-cart-plus" aria-hidden="true" style="font-size: 26px;">
+                                <i class="fa fa-cart-plus" aria-hidden="true" style="font-size: 26px;">
                                     <span class="cart-count contador" id="contadorCarritoWeb">0</span>
                                     <span id="contadorCarritoMovil" hidden
                                         style="color: white; display: none;"></span></i>
@@ -675,7 +675,7 @@
                         </a>
                         <a href="{{ route('login') }}" class="view-movile">
                             <button class="view-movile btn btn-pill btn-primary btn-air-primary btn-sm" type="button">
-                                <i class="fas fa-key"></i>
+                                <i class="fa fa-key"></i>
                             </button>
                         </a>
                     </li>
@@ -705,7 +705,7 @@
                     <li class="cart-nav">
                         <div class="cart-box" style="top: 0px; padding: 0px 10px;">
                             <a href="{{ route('web_carrito') }}">
-                                <i class="fas fa-cart-plus" aria-hidden="true" style="font-size: 46px;">
+                                <i class="fa fa-cart-plus" aria-hidden="true" style="font-size: 46px;">
                                     <span class="cart-count contador" id="contadorCarritoWeb">0</span>
                                     <span id="contadorCarritoMovil" hidden
                                         style="color: white; display: none;"></span></i>

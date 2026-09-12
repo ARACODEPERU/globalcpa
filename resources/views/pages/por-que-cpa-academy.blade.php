@@ -321,7 +321,7 @@
                                                 <a href="{{ route('index_main') }}"
                                                     class="text-white-50 text-decoration-none text-uppercase small fw-bold"
                                                     style="letter-spacing: 1px;">
-                                                    <i class="fas fa-home me-1"></i> Inicio
+                                                    <i class="fa fa-home me-1"></i> Inicio
                                                 </a>
                                             </li>
                                             <li class="breadcrumb-item active text-white text-uppercase small fw-bold"
@@ -342,18 +342,18 @@
 
                                     <div class="d-flex flex-wrap gap-3 mb-4">
                                         <span class="why-hero-tag">
-                                            <i class="fas fa-certificate text-warning"></i> Respaldo ACCA
+                                            <i class="fa fa-certificate text-warning"></i> Respaldo ACCA
                                         </span>
                                         <span class="why-hero-tag">
-                                            <i class="fas fa-briefcase text-warning"></i> Docentes de Big Four
+                                            <i class="fa fa-briefcase text-warning"></i> Docentes de Big Four
                                         </span>
                                         <span class="why-hero-tag">
-                                            <i class="fas fa-globe text-warning"></i> +10 países de LATAM
+                                            <i class="fa fa-globe text-warning"></i> +10 países de LATAM
                                         </span>
                                     </div>
 
                                     <a href="{{ route('web_courses') }}" class="btn-cta-white text-decoration-none">
-                                        <i class="fas fa-graduation-cap me-2"></i>Ver programas
+                                        <i class="fa fa-graduation-cap me-2"></i>Ver programas
                                     </a>
                                 </div>
                             </div>
@@ -377,7 +377,7 @@
                             <div class="col" data-aos="fade-up" data-aos-delay="100">
                                 <div class="why-feature-card bg-card-custom shadow-sm">
                                     <div class="feature-icon" style="background: linear-gradient(135deg, #e30613 0%, #a0040d 100%);">
-                                        <i class="fas fa-certificate"></i>
+                                        <i class="fa fa-certificate"></i>
                                     </div>
                                     <h3 class="text-navy-custom">Respaldo ACCA</h3>
                                     <p class="text-muted-custom">
@@ -389,7 +389,7 @@
                             <div class="col" data-aos="fade-up" data-aos-delay="200">
                                 <div class="why-feature-card bg-card-custom shadow-sm">
                                     <div class="feature-icon" style="background: linear-gradient(135deg, #002060 0%, #004080 100%);">
-                                        <i class="fas fa-briefcase"></i>
+                                        <i class="fa fa-briefcase"></i>
                                     </div>
                                     <h3 class="text-navy-custom">Docentes de Big Four</h3>
                                     <p class="text-muted-custom">
@@ -401,7 +401,7 @@
                             <div class="col" data-aos="fade-up" data-aos-delay="300">
                                 <div class="why-feature-card bg-card-custom shadow-sm">
                                     <div class="feature-icon" style="background: linear-gradient(135deg, #2c3e50 0%, #4b6584 100%);">
-                                        <i class="fas fa-line-chart"></i>
+                                        <i class="fa fa-line-chart"></i>
                                     </div>
                                     <h3 class="text-navy-custom">Aprendizaje aplicable</h3>
                                     <p class="text-muted-custom">
@@ -413,7 +413,7 @@
                             <div class="col" data-aos="fade-up" data-aos-delay="100">
                                 <div class="why-feature-card bg-card-custom shadow-sm">
                                     <div class="feature-icon" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">
-                                        <i class="fas fa-clock"></i>
+                                        <i class="fa fa-clock"></i>
                                     </div>
                                     <h3 class="text-navy-custom">Modalidad flexible</h3>
                                     <p class="text-muted-custom">
@@ -425,7 +425,7 @@
                             <div class="col" data-aos="fade-up" data-aos-delay="200">
                                 <div class="why-feature-card bg-card-custom shadow-sm">
                                     <div class="feature-icon" style="background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%);">
-                                        <i class="fas fa-users"></i>
+                                        <i class="fa fa-users"></i>
                                     </div>
                                     <h3 class="text-navy-custom">Comunidad LATAM</h3>
                                     <p class="text-muted-custom">
@@ -437,7 +437,7 @@
                             <div class="col" data-aos="fade-up" data-aos-delay="300">
                                 <div class="why-feature-card bg-card-custom shadow-sm">
                                     <div class="feature-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-                                        <i class="fas fa-book"></i>
+                                        <i class="fa fa-book"></i>
                                     </div>
                                     <h3 class="text-navy-custom">Currícula actualizada</h3>
                                     <p class="text-muted-custom">
@@ -458,22 +458,22 @@
                         <div class="why-stats-band shadow" data-aos="fade-up">
                             <div class="row row-cols-2 row-cols-lg-4 g-4 position-relative">
                                 <div class="col why-stat">
-                                    <i class="fas fa-graduation-cap"></i>
+                                    <i class="fa fa-graduation-cap"></i>
                                     <strong>+5,000</strong>
                                     <span>Alumnos formados</span>
                                 </div>
                                 <div class="col why-stat">
-                                    <i class="fas fa-globe-americas"></i>
+                                    <i class="fa fa-globe-americas"></i>
                                     <strong>+10</strong>
                                     <span>Países de LATAM</span>
                                 </div>
                                 <div class="col why-stat">
-                                    <i class="fas fa-chalkboard-teacher"></i>
+                                    <i class="fa fa-chalkboard-teacher"></i>
                                     <strong>+40</strong>
                                     <span>Docentes expertos</span>
                                 </div>
                                 <div class="col why-stat">
-                                    <i class="far fa-bookpen"></i>
+                                    <i class="fa fa-book-open"></i>
                                     <strong>+25</strong>
                                     <span>Programas de especialización</span>
                                 </div>
@@ -500,27 +500,27 @@
                                         <h3 class="why-compare-title text-white">CPA Academy</h3>
                                         <p class="why-compare-sub text-white-50">Formación con estándares internacionales</p>
                                         <div class="why-compare-item">
-                                            <i class="fas fa-check-circle"></i>
+                                            <i class="fa fa-check-circle"></i>
                                             <span>Docentes socios y gerentes de Big Four y banca en activo</span>
                                         </div>
                                         <div class="why-compare-item">
-                                            <i class="fas fa-check-circle"></i>
+                                            <i class="fa fa-check-circle"></i>
                                             <span>Respaldo internacional ACCA (Approved Learning Partner)</span>
                                         </div>
                                         <div class="why-compare-item">
-                                            <i class="fas fa-check-circle"></i>
+                                            <i class="fa fa-check-circle"></i>
                                             <span>Casos prácticos reales aplicables desde el primer día</span>
                                         </div>
                                         <div class="why-compare-item">
-                                            <i class="fas fa-check-circle"></i>
+                                            <i class="fa fa-check-circle"></i>
                                             <span>Certificado con validez y verificación en línea</span>
                                         </div>
                                         <div class="why-compare-item">
-                                            <i class="fas fa-check-circle"></i>
+                                            <i class="fa fa-check-circle"></i>
                                             <span>Comunidad de profesionales en +10 países</span>
                                         </div>
                                         <div class="why-compare-item">
-                                            <i class="fas fa-check-circle"></i>
+                                            <i class="fa fa-check-circle"></i>
                                             <span>Plataforma virtual con acceso permanente</span>
                                         </div>
                                     </div>
@@ -532,27 +532,27 @@
                                         <h3 class="why-compare-title text-navy-custom">Formación tradicional</h3>
                                         <p class="why-compare-sub text-muted-custom">Lo que suele ofrecerte el mercado</p>
                                         <div class="why-compare-item">
-                                            <i class="fas fa-times-circle"></i>
+                                            <i class="fa fa-times-circle"></i>
                                             <span>Docentes con experiencia limitada o desactualizada</span>
                                         </div>
                                         <div class="why-compare-item">
-                                            <i class="fas fa-times-circle"></i>
+                                            <i class="fa fa-times-circle"></i>
                                             <span>Sin respaldo de organismos internacionales</span>
                                         </div>
                                         <div class="why-compare-item">
-                                            <i class="fas fa-times-circle"></i>
+                                            <i class="fa fa-times-circle"></i>
                                             <span>Teoría genérica, alejada de la práctica real</span>
                                         </div>
                                         <div class="why-compare-item">
-                                            <i class="fas fa-times-circle"></i>
+                                            <i class="fa fa-times-circle"></i>
                                             <span>Certificados sin verificación ni valor diferencial</span>
                                         </div>
                                         <div class="why-compare-item">
-                                            <i class="fas fa-times-circle"></i>
+                                            <i class="fa fa-times-circle"></i>
                                             <span>Red de contactos limitada al aula</span>
                                         </div>
                                         <div class="why-compare-item">
-                                            <i class="fas fa-times-circle"></i>
+                                            <i class="fa fa-times-circle"></i>
                                             <span>Material que caduca al terminar el curso</span>
                                         </div>
                                     </div>
@@ -634,7 +634,7 @@
                             </p>
                             <div class="d-flex flex-wrap justify-content-center gap-3">
                                 <a href="{{ route('web_courses') }}" class="btn-cta-white text-decoration-none">
-                                    <i class="fas fa-graduation-cap me-2"></i>Ver programas
+                                    <i class="fa fa-graduation-cap me-2"></i>Ver programas
                                 </a>
                                 <a href="https://wa.me/51967052506?text=/Agente%20Principal" target="_blank"
                                     class="btn-cta-wa text-decoration-none">

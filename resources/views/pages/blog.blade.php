@@ -389,12 +389,12 @@
                                                 <div class="card-meta">
                                                     <span class="author">
                                                         @if ($article->author)
-                                                            <i class="fas fa-user me-1"></i>{{ $article->author->name }}
+                                                            <i class="fa fa-user me-1"></i>{{ $article->author->name }}
                                                         @endif
                                                     </span>
                                                     <span>
                                                         <i
-                                                            class="fas fa-calendar me-1"></i>{{ \Carbon\Carbon::parse($article->created_at)->format('d M Y') }}
+                                                            class="fa fa-calendar me-1"></i>{{ \Carbon\Carbon::parse($article->created_at)->format('d M Y') }}
                                                     </span>
                                                 </div>
                                             </div>
@@ -402,7 +402,7 @@
                                     </div>
                                 @empty
                                     <div class="col-12 text-center py-5">
-                                        <i class="fas fa-newspaper fa-3x text-muted mb-3"></i>
+                                        <i class="fa fa-newspaper fa-3x text-muted mb-3"></i>
                                         <h4 class="text-muted">No hay artículos publicados</h4>
                                         <p class="text-muted">Próximamente publicaremos contenido interesante.</p>
                                     </div>
@@ -437,7 +437,7 @@
 
                             <!-- Categorías -->
                             <div class="blog-sidebar-box" data-aos="fade-up">
-                                <h5><i class="far fa-folderpen me-2"></i>Categorías</h5>
+                                <h5><i class="fa fa-folder-open me-2"></i>Categorías</h5>
                                 <style>
                                     details.blog-cat {
                                         border-bottom: 1px solid #f3f4f6;
@@ -570,7 +570,7 @@
 
                             <!-- Últimos Artículos -->
                             <div class="blog-sidebar-box" data-aos="fade-up" data-aos-delay="100">
-                                <h5><i class="fas fa-clock me-2"></i>Últimos Artículos</h5>
+                                <h5><i class="fa fa-clock me-2"></i>Últimos Artículos</h5>
                                 @foreach ($latest_articles as $latest)
                                     <div class="blog-latest-item">
                                         <a href="{{ route('blog_article_by_url', $latest->url) }}">

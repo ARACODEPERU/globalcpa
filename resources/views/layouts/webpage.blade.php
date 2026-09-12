@@ -62,10 +62,20 @@
     <!-- latest jquery-->
     <script src="{{ asset('themes/webpage/assets/js/jquery.min.js') }}"></script>
 
-    <!-- Font Awesome 6 Free (CDN) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Font Awesome 4 (ANTES de app.css) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <link rel="stylesheet" href="{{ asset('themes/webpage/css/app.css') }}" />
+
+    <!-- Override FA6: forzar FA4 para .fa (DESPUES de app.css) -->
+    <style>
+        .fa,
+        .fa-classic,
+        .fa-serif {
+            font-family: FontAwesome !important;
+            font-weight: normal !important;
+        }
+    </style>
 
     <!-- Javascript Assets -->
     <!-- Carrito JS -->

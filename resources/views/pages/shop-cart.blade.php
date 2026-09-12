@@ -263,7 +263,7 @@
 
                             <div class="final-section-heading">
                                 <span class="final-section-icon" aria-hidden="true">
-                                    <i class="far fa-user"></i>
+                                    <i class="fa fa-user-o"></i>
                                 </span>
                                 <div>
                                     <h3>1. Crea tu cuenta</h3>
@@ -337,7 +337,7 @@
                             <div class="invoice-block" id="invoice-block">
                                 <div class="final-section-heading invoice-section-heading">
                                     <span class="final-section-icon" aria-hidden="true">
-                                        <i class="far fa-file-alt"></i>
+                                        <i class="fa fa-file-text-o"></i>
                                     </span>
                                     <div>
                                         <h3>2. Elige tu comprobante</h3>
@@ -347,7 +347,7 @@
                                 <div class="invoice-tab-grid">
                                     <button type="button" class="invoice-tab active" data-invoice-type="boleta">
                                         <span class="invoice-radio-dot" aria-hidden="true"></span>
-                                        <span class="invoice-tab-icon" aria-hidden="true"><i class="far fa-file-alt"></i></span>
+                                        <span class="invoice-tab-icon" aria-hidden="true"><i class="fa fa-file-text-o"></i></span>
                                         <span>
                                             <strong>Boleta de venta</strong>
                                             <small>Para personas naturales</small>
@@ -355,7 +355,7 @@
                                     </button>
                                     <button type="button" class="invoice-tab" data-invoice-type="factura">
                                         <span class="invoice-radio-dot" aria-hidden="true"></span>
-                                        <span class="invoice-tab-icon" aria-hidden="true"><i class="far fa-file-alt"></i></span>
+                                        <span class="invoice-tab-icon" aria-hidden="true"><i class="fa fa-file-text-o"></i></span>
                                         <span>
                                             <strong>Factura</strong>
                                             <small>Para empresas</small>
@@ -397,7 +397,7 @@
                              <div class="invoice-actions">
                                  <div class="final-info-note">
                                      <span class="final-section-icon" aria-hidden="true">
-                                         <i class="fas fa-shield"></i>
+                                         <i class="fa fa-shield"></i>
                                      </span>
                                      <span>Al finalizar te enviaremos tu comprobante de pago por correo.</span>
                                  </div>
@@ -405,7 +405,7 @@
                                      <b id="btn-finalize-text">FINALIZAR COMPRA</b>
                                  </button>
                                  <small class="final-secure-note">
-                                     <i class="fas fa-lock" aria-hidden="true"></i>
+                                     <i class="fa fa-lock" aria-hidden="true"></i>
                                      Tu información esta protegida y solo será utilizada para tu acceso al campus.
                                  </small>
                              </div>
@@ -3184,14 +3184,14 @@
                                     <a href="${item.url_slug && item.landing_published == 1 ? routes.slug + '/' + item.url_slug : routes.description + '/' + item.id}" target="_blank">${item.name}</a>
                                 </strong>
                                 <div class="cart-summary-meta">
-                                    <span><i class="fas fa-calendar" aria-hidden="true"></i> Modalidad: ${item.additional || 'Online'}</span>
+                                    <span><i class="fa fa-calendar" aria-hidden="true"></i> Modalidad: ${item.additional || 'Online'}</span>
                                 </div>
                             </div>
                             <div class="cart-summary-price">
                                 <span>Inversi&oacute;n</span>
                                 <strong>${priceLabel(item.price)}</strong>
                                 <button class="boton-degradado-trash" type="button" onclick="removeProduct(${item.id})" aria-label="Quitar curso">
-                                    <i class="fas fa-trash" aria-hidden="true" style="font-size: 16px;"></i>
+                                    <i class="fa fa-trash" aria-hidden="true" style="font-size: 16px;"></i>
                                 </button>
                             </div>
                         </div>
@@ -3299,17 +3299,17 @@
             parkPaymentPhoneField();
             document.getElementById('cardPaymentBrick_container').innerHTML = `
                 <div class="free-checkout-message">
-                    <div class="free-checkout-icon"><i class="fas fa-shopping-cart" aria-hidden="true"></i></div>
+                    <div class="free-checkout-icon"><i class="fa fa-shopping-cart" aria-hidden="true"></i></div>
                     <h3>¡Estás a un paso de registrarte!</h3>
                     <p class="free-checkout-main-copy">Has agregado tu curso al carrito correctamente.</p>
                     <p class="free-checkout-action-copy">Para continuar con tu registro gratuito, haz clic en el botón <span class="free-checkout-emphasis">"Confirmar mi acceso"</span> y crea tu cuenta en nuestra plataforma.</p>
                     <div class="free-checkout-email-note">
-                        <i class="far fa-envelope" aria-hidden="true"></i>
+                        <i class="fa fa-envelope-o" aria-hidden="true"></i>
                         <span>Te enviaremos los accesos a tu correo electrónico.</span>
                     </div>
                     <button type="button" class="free-checkout-button" onclick="continueFreeCheckout()">
                         <span>Confirmar mi acceso</span>
-                        <i class="fas fa-angle-right" aria-hidden="true"></i>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
                     </button>
                 </div>
             `;

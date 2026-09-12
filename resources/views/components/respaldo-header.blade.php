@@ -196,7 +196,7 @@
                 <!-- Modo Oscuro -->
                 <li class="mode-nav">
                     <div class="mode">
-                        <i class="far fa-toggle-onn custom-nav-icon"></i>
+                        <i class="fa fa-toggle-on custom-nav-icon"></i>
                     </div>
                 </li>
 
@@ -204,7 +204,7 @@
                 <li class="cart-nav onhover-dropdown">
                     <div class="cart-box custom-cart-box">
                         <a href="{{ route('web_carrito') }}">
-                            <i class="fas fa-cart-plus custom-nav-icon"></i>
+                            <i class="fa fa-cart-plus custom-nav-icon"></i>
                             <span class="cart-count custom-cart-count contador" id="contadorCarritoWeb">0</span>
                             <span id="contadorCarritoMovil" hidden style="display: none;"></span>
                         </a>
@@ -247,7 +247,7 @@
                             </button>
                             <!-- Botón Icono (Móvil) -->
                             <button class="btn btn-pill btn-primary btn-air-primary btn-sm px-2 btn-login-icon" type="button">
-                                <i class="fas fa-key"></i>
+                                <i class="fa fa-key"></i>
                             </button>
                         </a>
                     </li>

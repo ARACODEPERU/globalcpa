@@ -94,7 +94,7 @@
                                         <ol class="breadcrumb mb-0">
                                             <li class="breadcrumb-item">
                                                 <a href="{{ route('index_main') }}" class="text-white-50 text-decoration-none">
-                                                    <i class="fas fa-home me-1"></i> Inicio
+                                                    <i class="fa fa-home me-1"></i> Inicio
                                                 </a>
                                             </li>
                                             <li class="breadcrumb-item active text-white" aria-current="page">
@@ -178,7 +178,7 @@
                                                         </a>
                                                         <a onclick="agregarAlCarrito({ id: {{ $item->id }}, nombre: '{{ $item->name }}', precio: {{ $item->price }} })">
                                                             <button class="btn btn-pill btn-primary btn-air-primary btn-sm" type="button">
-                                                                <i class="fas fa-cart-plus" aria-hidden="true" style="font-size: 18px;"></i>
+                                                                <i class="fa fa-cart-plus" aria-hidden="true" style="font-size: 18px;"></i>
                                                                 &nbsp; {{ (float) $item->price <= 0 ? 'Gratis' : 'S/ ' . $item->price }}
                                                             </button>
                                                         </a>

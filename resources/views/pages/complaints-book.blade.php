@@ -153,7 +153,7 @@
                                 <div class="flex justify-end space-x-2">
                                     <button class="boton-degradado-courses">
                                         <b>
-                                            <i class="fas fa-paper-plane" aria-hidden="true" style="font-size: 16px;"></i>
+                                            <i class="fa fa-paper-plane" aria-hidden="true" style="font-size: 16px;"></i>
                                             &nbsp; Enviar
                                         </b>
                                     </button>
@@ -294,7 +294,7 @@
                                 <div class="flex justify-end space-x-2">
                                     <button class="boton-degradado-courses">
                                         <b>
-                                            <i class="fas fa-paper-plane" aria-hidden="true" style="font-size: 16px;"></i>
+                                            <i class="fa fa-paper-plane" aria-hidden="true" style="font-size: 16px;"></i>
                                             &nbsp; Enviar
                                         </b>
                                     </button>

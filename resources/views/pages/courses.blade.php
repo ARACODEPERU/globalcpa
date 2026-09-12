@@ -120,7 +120,7 @@
                                                                                         class="btn btn-pill btn-primary btn-air-primary btn-sm"
                                                                                         type="button"
                                                                                         data-bs-original-title="btn btn-pill btn-primary btn-air-primary btn-sm">
-                                                                                        <i class="fas fa-cart-plus"
+                                                                                        <i class="fa fa-cart-plus"
                                                                                             aria-hidden="true"
                                                                                             style="font-size: 18px;"></i>
                                                                                         &nbsp; {{ (float) $item->price <= 0 ? 'Gratis' : 'S/ ' . $item->price }}
@@ -198,7 +198,7 @@
                                                                                             class="btn btn-pill btn-primary btn-air-primary btn-sm"
                                                                                             type="button"
                                                                                             data-bs-original-title="btn btn-pill btn-primary btn-air-primary btn-sm">
-                                                                                            <i class="fas fa-cart-plus"
+                                                                                            <i class="fa fa-cart-plus"
                                                                                                 aria-hidden="true"
                                                                                                 style="font-size: 18px;"></i>
                                                                                             &nbsp; {{ (float) $item->price <= 0 ? 'Gratis' : 'S/ ' . $item->price }}

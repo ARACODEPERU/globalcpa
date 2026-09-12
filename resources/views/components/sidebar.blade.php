@@ -6,14 +6,14 @@
                     <img class="img-fluid"
                         src="{{ asset('themes/webpage/images/Logo_isotipo_negativo.png') }}" alt="">
                 </a>
-                <div class="back-btn"><i class="fas fa-angle-left"> </i></div>
+                <div class="back-btn"><i class="fa fa-angle-left"> </i></div>
             </div>
             <nav class="sidebar-main">
                 <div id="sidebar-menu">
                     <ul class="sidebar-links" id="simple-bar">
                         <li class="back-btn">
                             <a href=""></a>
-                            <div class="mobile-back text-end"><span>Back</span><i class="fas fa-angle-right ps-2"
+                            <div class="mobile-back text-end"><span>Back</span><i class="fa fa-angle-right ps-2"
                                     aria-hidden="true"></i></div>
                         </li>
                         <li class="sidebar-main-title">
@@ -22,7 +22,7 @@
                         <li class="sidebar-list" style="padding: 15px 0px;">
                             <a class="sidebar-link sidebar-title" href="{{ route('index_main') }}">
                                 <span>
-                                    <i class="fas fa-home" aria-hidden="true" style="font-size: 26px;"></i><br>
+                                    <i class="fa fa-home" aria-hidden="true" style="font-size: 26px;"></i><br>
                                     Home
                                 </span>
                             </a>
@@ -30,7 +30,7 @@
                         <li class="sidebar-list" style="padding: 15px 0px;">
                             <a class="sidebar-link sidebar-title" href="javascript:void(0)">
                                 <span>
-                                    <i class="fas fa-graduation-cap" aria-hidden="true" style="font-size: 26px;"></i><br>
+                                    <i class="fa fa-graduation-cap" aria-hidden="true" style="font-size: 26px;"></i><br>
                                     Formación
                                 </span>
                             </a>
@@ -81,7 +81,7 @@
                                                         <button class="btn btn-pill btn-primary btn-air-primary btn-sm"
                                                             type="button"
                                                             data-bs-original-title="btn btn-pill btn-primary btn-air-primary btn-sm">
-                                                            <i class="fas fa-graduation-cap" aria-hidden="true"
+                                                            <i class="fa fa-graduation-cap" aria-hidden="true"
                                                                 style="font-size: 18px;"></i>
                                                             &nbsp; Ver Todos
                                                         </button>
@@ -97,7 +97,7 @@
                         {{-- <li class="sidebar-list" style="padding: 15px 0px;">
                             <a class="sidebar-link sidebar-title" href="{{ route('web_subscriptions') }}">
                                 <span>
-                                    <i class="fas fa-briefcase" aria-hidden="true" style="font-size: 26px;"></i><br>
+                                    <i class="fa fa-briefcase" aria-hidden="true" style="font-size: 26px;"></i><br>
                                     Empresas
                                 </span>
                             </a>
@@ -115,7 +115,7 @@
                         <li class="sidebar-list" style="padding: 15px 0px;">
                             <a class="sidebar-link sidebar-title" href="{{ route('web_book_amauta') }}">
                                 <span>
-                                    <i class="fas fa-book" aria-hidden="true" style="font-size: 26px;"></i><br>
+                                    <i class="fa fa-book" aria-hidden="true" style="font-size: 26px;"></i><br>
                                     Publicación
                                 </span>
                             </a>

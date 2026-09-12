@@ -179,7 +179,7 @@
                 <div class="d-flex flex-column justify-content-center h-100">
                     <!-- Item 1 -->
                     <div class="solution-item-modern solution-item-left" data-aos="fade-right" data-aos-delay="100">
-                        <div class="solution-icon-modern"><i class="fas fa-globe" aria-hidden="true"></i></div>
+                        <div class="solution-icon-modern"><i class="fa fa-globe" aria-hidden="true"></i></div>
                         <div class="solution-text-modern">
                             <h3>Formación Global</h3>
                             <p>Estándares internacionales para contadores, financieros y auditores.</p>
@@ -187,7 +187,7 @@
                     </div>
                     <!-- Item 2 -->
                     <div class="solution-item-modern solution-item-left" data-aos="fade-right" data-aos-delay="200">
-                        <div class="solution-icon-modern"><i class="fas fa-refresh" aria-hidden="true"></i></div>
+                        <div class="solution-icon-modern"><i class="fa fa-refresh" aria-hidden="true"></i></div>
                         <div class="solution-text-modern">
                             <h3>Suscripciones Flexibles</h3>
                             <p>Asesoría especializada y formación continua escalable.</p>
@@ -208,7 +208,7 @@
                 <div class="d-flex flex-column justify-content-center h-100">
                     <!-- Item 3 -->
                     <div class="solution-item-modern solution-item-right" data-aos="fade-left" data-aos-delay="100">
-                        <div class="solution-icon-modern"><i class="fas fa-handshake" aria-hidden="true"></i></div>
+                        <div class="solution-icon-modern"><i class="fa fa-handshake" aria-hidden="true"></i></div>
                         <div class="solution-text-modern">
                             <h3>Certificación ACCA</h3>
                             <p>Único Approved Learning Partner en Perú para tu preparación.</p>
@@ -216,7 +216,7 @@
                     </div>
                     <!-- Item 4 -->
                     <div class="solution-item-modern solution-item-right" data-aos="fade-left" data-aos-delay="200">
-                        <div class="solution-icon-modern"><i class="fas fa-users" aria-hidden="true"></i></div>
+                        <div class="solution-icon-modern"><i class="fa fa-users" aria-hidden="true"></i></div>
                         <div class="solution-text-modern">
                             <h3>In-Company</h3>
                             <p>Capacitación diseñada a medida para los objetivos de tu empresa.</p>

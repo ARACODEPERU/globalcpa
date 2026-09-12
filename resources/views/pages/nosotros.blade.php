@@ -283,7 +283,7 @@
                                                 <a href="{{ route('index_main') }}"
                                                     class="text-white-50 text-decoration-none text-uppercase small fw-bold"
                                                     style="letter-spacing: 1px;">
-                                                    <i class="fas fa-home me-1"></i> Inicio
+                                                    <i class="fa fa-home me-1"></i> Inicio
                                                 </a>
                                             </li>
                                             <li class="breadcrumb-item active text-white text-uppercase small fw-bold"
@@ -304,13 +304,13 @@
 
                                     <div class="d-flex flex-wrap gap-3">
                                         <span class="nos-hero-tag">
-                                            <i class="fas fa-certificate text-warning"></i> Respaldo ACCA
+                                            <i class="fa fa-certificate text-warning"></i> Respaldo ACCA
                                         </span>
                                         <span class="nos-hero-tag">
-                                            <i class="fas fa-globe text-warning"></i> Alumnos en +10 países de LATAM
+                                            <i class="fa fa-globe text-warning"></i> Alumnos en +10 países de LATAM
                                         </span>
                                         <span class="nos-hero-tag">
-                                            <i class="fas fa-users text-warning"></i> Docentes expertos
+                                            <i class="fa fa-users text-warning"></i> Docentes expertos
                                         </span>
                                     </div>
                                 </div>
@@ -385,7 +385,7 @@
                             <div class="col" data-aos="fade-up" data-aos-delay="100">
                                 <div class="nos-value-card bg-card-custom shadow-sm">
                                     <div class="value-icon" style="background: linear-gradient(135deg, #e30613 0%, #a0040d 100%);">
-                                        <i class="fas fa-bullseye"></i>
+                                        <i class="fa fa-bullseye"></i>
                                     </div>
                                     <h3 class="text-navy-custom">Misión</h3>
                                     <p class="text-muted-custom">
@@ -398,7 +398,7 @@
                             <div class="col" data-aos="fade-up" data-aos-delay="200">
                                 <div class="nos-value-card bg-card-custom shadow-sm">
                                     <div class="value-icon" style="background: linear-gradient(135deg, #002060 0%, #004080 100%);">
-                                        <i class="fas fa-eye"></i>
+                                        <i class="fa fa-eye"></i>
                                     </div>
                                     <h3 class="text-navy-custom">Visión</h3>
                                     <p class="text-muted-custom">
@@ -411,7 +411,7 @@
                             <div class="col" data-aos="fade-up" data-aos-delay="300">
                                 <div class="nos-value-card bg-card-custom shadow-sm">
                                     <div class="value-icon" style="background: linear-gradient(135deg, #2c3e50 0%, #4b6584 100%);">
-                                        <i class="fas fa-handshake"></i>
+                                        <i class="fa fa-handshake"></i>
                                     </div>
                                     <h3 class="text-navy-custom">Valores</h3>
                                     <p class="text-muted-custom">
@@ -436,28 +436,28 @@
                         <div class="row row-cols-2 row-cols-lg-4 g-4">
                             <div class="col" data-aos="zoom-in" data-aos-delay="100">
                                 <div class="nos-counter bg-card-custom shadow-sm red">
-                                    <i class="fas fa-graduation-cap"></i>
+                                    <i class="fa fa-graduation-cap"></i>
                                     <strong>+5,000</strong>
                                     <span class="text-muted-custom">Alumnos formados</span>
                                 </div>
                             </div>
                             <div class="col" data-aos="zoom-in" data-aos-delay="200">
                                 <div class="nos-counter bg-card-custom shadow-sm navy">
-                                    <i class="fas fa-globe-americas"></i>
+                                    <i class="fa fa-globe-americas"></i>
                                     <strong>+10</strong>
                                     <span class="text-muted-custom">Países de LATAM</span>
                                 </div>
                             </div>
                             <div class="col" data-aos="zoom-in" data-aos-delay="300">
                                 <div class="nos-counter bg-card-custom shadow-sm red">
-                                    <i class="fas fa-chalkboard-teacher"></i>
+                                    <i class="fa fa-chalkboard-teacher"></i>
                                     <strong>+40</strong>
                                     <span class="text-muted-custom">Docentes expertos</span>
                                 </div>
                             </div>
                             <div class="col" data-aos="zoom-in" data-aos-delay="400">
                                 <div class="nos-counter bg-card-custom shadow-sm navy">
-                                    <i class="far fa-bookpen"></i>
+                                    <i class="fa fa-book-open"></i>
                                     <strong>+25</strong>
                                     <span class="text-muted-custom">Programas de especialización</span>
                                 </div>
@@ -484,7 +484,7 @@
                             <img src="{{ asset('themes/webpage/images/acca.png') }}" alt="ACCA Approved Learning Partner">
                             <div>
                                 <h3 class="fw-bold text-navy-custom mb-2">
-                                    <i class="fas fa-certificate" style="color: #e30613;"></i>
+                                    <i class="fa fa-certificate" style="color: #e30613;"></i>
                                     Respaldo ACCA
                                 </h3>
                                 <p class="text-muted-custom mb-0" style="line-height: 1.7;">
@@ -515,7 +515,7 @@
                             </p>
                             <div class="d-flex flex-wrap justify-content-center gap-3">
                                 <a href="{{ route('web_courses') }}" class="btn-cta-white text-decoration-none">
-                                    <i class="fas fa-graduation-cap me-2"></i>Ver programas
+                                    <i class="fa fa-graduation-cap me-2"></i>Ver programas
                                 </a>
                                 <a href="https://wa.me/51967052506?text=/Agente%20Principal" target="_blank"
                                     class="btn-cta-wa text-decoration-none">

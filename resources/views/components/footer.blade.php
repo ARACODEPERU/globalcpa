@@ -131,7 +131,7 @@
                     <p>Garantiza la autenticidad de tus logros académicos. Valida el certificado CPA Academy ingresando
                         el código correspondiente.</p>
                     <a href="{{ route('certificado_validar') }}" class="footer-cta-btn">
-                        <i class="fas fa-certificate"></i>
+                        <i class="fa fa-certificate"></i>
                         Validar Certificado
                     </a>
                 </div>
@@ -155,11 +155,11 @@
                 <div class="col-lg-3 col-md-6">
                     <h3>Contáctanos</h3>
                     <div class="contact-item">
-                        <i class="fas fa-phone-square"></i>
+                        <i class="fa fa-phone-square"></i>
                         <span>967 052 506</span>
                     </div>
                     <div class="contact-item">
-                        <i class="fas fa-envelope"></i>
+                        <i class="fa fa-envelope"></i>
                         <span>informes@globalcpaperu.com</span>
                     </div>
 

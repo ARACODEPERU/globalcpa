@@ -131,7 +131,7 @@
                                 <div class="ct-card shadow-sm">
                                     <div class="ct-stars">
                                         @for ($i = 1; $i <= 5; $i++)
-                                            <i class="fas fa-star{{ $i <= ($t['rating'] ?? 5) ? '' : '-o' }}"></i>
+                                            <i class="fa fa-star{{ $i <= ($t['rating'] ?? 5) ? '' : '-o' }}"></i>
                                         @endfor
                                     </div>
                                     <div class="ct-quote-mark">"</div>
@@ -144,7 +144,7 @@
                                             data-bs-toggle="collapse"
                                             data-bs-target="#ctQuote{{ $t['id'] }}"
                                             aria-expanded="false">
-                                            <i class="fas fa-chevron-down"></i> Leer más
+                                            <i class="fa fa-chevron-down"></i> Leer más
                                         </button>
                                     @endif
 
@@ -162,7 +162,7 @@
                                             class="ct-video-btn"
                                             data-bs-toggle="modal"
                                             data-bs-target="#ctVideo{{ $t['id'] }}">
-                                            <i class="fas fa-play"></i> Ver video
+                                            <i class="fa fa-play"></i> Ver video
                                         </button>
                                     @endif
                                 </div>
