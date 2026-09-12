@@ -21,7 +21,7 @@
                     <div class="text-center mb-5">
                         <span class="badge rounded-pill bg-badge-custom text-navy-custom px-3 py-2 mb-3 shadow-sm border"
                             style="font-size: 14px; font-weight: 600;">
-                            <i class="fa fa-magic me-1"></i> {{ $landing->faq_section['name'] }}
+                            <i class="fas fa-magic me-1"></i> {{ $landing->faq_section['name'] }}
                         </span>
                         <h2 class="fw-bold display-6 text-[#002060] dark:text-white" style="font-size: 28px;">
                             {{ $landing->faq_section['title'] }}</h2>
@@ -43,7 +43,7 @@
                                                 <div class="faq-question p-3 flex justify-between items-center cursor-pointer text-[#002060] dark:text-blue-300 font-semibold faq-item-custom">
                                                     <span>{{ $faq['question'] }}</span>
                                                     <i id="faq-icon-{{ $loop->index }}"
-                                                        class="fa fa-chevron-down"
+                                                        class="fas fa-chevron-down"
                                                         style="transition: transform 0.3s;"></i>
                                                 </div>
                                                 <div id="faq-answer-{{ $loop->index }}"

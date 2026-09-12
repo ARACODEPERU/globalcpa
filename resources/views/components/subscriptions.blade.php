@@ -72,7 +72,7 @@
                                         <ul style="height: auto;">
                                             @foreach ($details as $detail)
                                                 <li style="padding: 3px 0px;">
-                                                    <i class="fa fa-circle" style="font-size: 12px;"></i>
+                                                    <i class="fas fa-circle" style="font-size: 12px;"></i>
                                                     &nbsp;{{ $detail['label'] }}
                                                 </li>
                                             @endforeach
@@ -89,7 +89,7 @@
                                         <a href="{{ route('academic_step_account', $subscription->id) }}">
                                             <button class="boton-degradado-courses">
                                                 <b style="font-size: 18px;">
-                                                    <i class="fa fa-edit" aria-hidden="true"
+                                                    <i class="fas fa-edit" aria-hidden="true"
                                                         style="font-size: 20px;"></i>
                                                     &nbsp; Suscribirme
                                                 </b>
@@ -128,7 +128,7 @@
                                         <ul style="height: auto;">
                                             @foreach ($details as $detail)
                                                 <li style="padding: 3px 0px;">
-                                                    <i class="fa fa-circle" style="font-size: 12px;"></i>
+                                                    <i class="fas fa-circle" style="font-size: 12px;"></i>
                                                     &nbsp;{{ $detail['label'] }}
                                                 </li>
                                             @endforeach
@@ -145,7 +145,7 @@
                                         <a href="{{ route('academic_step_account', $subscription->id) }}">
                                             <button class="boton-degradado-courses">
                                                 <b style="font-size: 18px;">
-                                                    <i class="fa fa-edit" aria-hidden="true"
+                                                    <i class="fas fa-edit" aria-hidden="true"
                                                         style="font-size: 20px;"></i>
                                                     &nbsp; Suscribirme
                                                 </b>

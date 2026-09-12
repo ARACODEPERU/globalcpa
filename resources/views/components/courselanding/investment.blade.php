@@ -160,7 +160,7 @@
                                             </ul>
                                             <a href="javascript:void(0)" onclick="procederInscripcion()"
                                                 class="btn btn-modern btn-modern-primary w-100 mb-3">
-                                                <i class="fa fa-shopping-cart me-2"></i> Inscribirse ahora
+                                                <i class="fas fa-shopping-cart me-2"></i> Inscribirse ahora
                                             </a>
                                             <button type="button" data-bs-toggle="modal"
                                                 data-bs-target="#modalFinanciamiento"
@@ -277,7 +277,7 @@
                             <label class="form-label fw-bold text-navy-custom">País</label>
                             <div class="input-group shadow-sm">
                                 <span class="input-group-text bg-white dark:bg-gray-700 border-end-0"><i
-                                        class="fa fa-flag text-muted"></i></span>
+                                        class="fas fa-flag text-muted"></i></span>
                                 <select name="country_phone" id="modalCountryPhoneSelect"
                                     class="form-select border-start-0 ps-0 dark:bg-gray-700 dark:text-white dark:border-gray-600 bg-white"
                                     required>

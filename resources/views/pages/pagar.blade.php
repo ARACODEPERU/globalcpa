@@ -340,7 +340,7 @@
                                             <button class="boton-degradado-trash" onclick="eliminarproducto({ id: ` +
                     id + `, nombre: '` +
                     name + `', precio: ` + price + ` });">
-                                                    <i class="fa fa-trash" aria-hidden="true" style="font-size: 16px;">
+                                                    <i class="fas fa-trash" aria-hidden="true" style="font-size: 16px;">
                                                         <a title="Eliminar este Curso" class="remove"></a>
                               </i>
                                             </button>

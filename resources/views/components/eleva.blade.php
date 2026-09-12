@@ -82,7 +82,7 @@
                             <p>
                                 Docentes de Big Four, banca y organismos internacionales.
                             </p>
-                            <i class="fa fa-university" aria-hidden="true" style="font-size: 60px;"></i>
+                            <i class="fas fa-university" aria-hidden="true" style="font-size: 60px;"></i>
                         </div>
                         <div class="card eleva-card"
                             style="padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
@@ -103,7 +103,7 @@
                             <p>
                                 Diseñado para generar impacto inmediato.
                             </p>
-                            <i class="fa fa-line-chart" aria-hidden="true" style="font-size: 60px;"></i>
+                            <i class="fas fa-line-chart" aria-hidden="true" style="font-size: 60px;"></i>
                         </div>
                     </div>
                 </div>

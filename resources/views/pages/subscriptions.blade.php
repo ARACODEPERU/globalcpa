@@ -38,7 +38,7 @@
                                                 <a href="/"
                                                     class="text-white-50 text-decoration-none text-uppercase small fw-bold"
                                                     style="letter-spacing: 1px;">
-                                                    <i class="fa fa-home me-1" aria-hidden="true"></i> Inicio
+                                                    <i class="fas fa-home me-1" aria-hidden="true"></i> Inicio
                                                 </a>
                                             </li>
                                             <li class="breadcrumb-item active text-white text-uppercase small fw-bold"
@@ -59,10 +59,10 @@
 
                                     <div class="d-flex gap-3">
                                         <div class="d-flex align-items-center text-white-50 small">
-                                            <i class="fa fa-check-circle text-success me-2" aria-hidden="true"></i> Acceso Ilimitado
+                                            <i class="fas fa-check-circle text-success me-2" aria-hidden="true"></i> Acceso Ilimitado
                                         </div>
                                         <div class="d-flex align-items-center text-white-50 small">
-                                            <i class="fa fa-check-circle text-success me-2" aria-hidden="true"></i> Contenido Premium
+                                            <i class="fas fa-check-circle text-success me-2" aria-hidden="true"></i> Contenido Premium
                                         </div>
                                     </div>
                                 </div>
@@ -72,27 +72,27 @@
                                         <!-- Íconos flotantes de beneficios -->
                                         <div
                                             class="icon-item item-1 shadow-lg d-flex align-items-center justify-content-center">
-                                            <i class="fa fa-infinity fa-2x text-white" aria-hidden="true"></i>
+                                            <i class="fas fa-infinity fa-2x text-white" aria-hidden="true"></i>
                                         </div>
                                         <div
                                             class="icon-item item-2 shadow d-flex align-items-center justify-content-center">
-                                            <i class="fa fa-certificate fa-2x text-white" aria-hidden="true"></i>
+                                            <i class="fas fa-certificate fa-2x text-white" aria-hidden="true"></i>
                                         </div>
                                         <div
                                             class="icon-item item-3 shadow d-flex align-items-center justify-content-center">
-                                            <i class="fa fa-users fa-2x text-white" aria-hidden="true"></i>
+                                            <i class="fas fa-users fa-2x text-white" aria-hidden="true"></i>
                                         </div>
                                         <div
                                             class="icon-item item-4 shadow d-flex align-items-center justify-content-center">
-                                            <i class="fa fa-star fa-2x text-white" aria-hidden="true"></i>
+                                            <i class="fas fa-star fa-2x text-white" aria-hidden="true"></i>
                                         </div>
                                         <div
                                             class="icon-item item-5 shadow d-flex align-items-center justify-content-center">
-                                            <i class="fa fa-play-circle fa-2x text-white" aria-hidden="true"></i>
+                                            <i class="fas fa-play-circle fa-2x text-white" aria-hidden="true"></i>
                                         </div>
                                         <div
                                             class="icon-item item-6 shadow d-flex align-items-center justify-content-center">
-                                            <i class="fa fa-book-open fa-2x text-white" aria-hidden="true"></i>
+                                            <i class="far fa-bookpen fa-2x text-white" aria-hidden="true"></i>
                                         </div>
                                     </div>
                                 </div>
@@ -243,25 +243,25 @@
                                                     <br>
                                                     <ul>
                                                         <li>
-                                                            <i class="fa fa-circle" aria-hidden="true"
+                                                            <i class="fas fa-circle" aria-hidden="true"
                                                                 style="color: red;"></i>&nbsp;
                                                             <strong>Programas de especialización</strong> alineados a los estándares
                                                             de ACCA
                                                         </li>
                                                         <li>
-                                                            <i class="fa fa-circle" aria-hidden="true"
+                                                            <i class="fas fa-circle" aria-hidden="true"
                                                                 style="color: red;"></i>&nbsp;
                                                             Preparación oficial para obtener la
                                                             <strong>certificación internacional.</strong>
                                                         </li>
                                                         <li>
-                                                            <i class="fa fa-circle" aria-hidden="true"
+                                                            <i class="fas fa-circle" aria-hidden="true"
                                                                 style="color: red;"></i>&nbsp;
                                                             Acceso a beneficios exclusivos a través de nuestros
                                                             <strong>planes de suscripción anual.</strong>
                                                         </li>
                                                         <li>
-                                                            <i class="fa fa-circle" aria-hidden="true"
+                                                            <i class="fas fa-circle" aria-hidden="true"
                                                                 style="color: red;"></i>&nbsp;
                                                             Acompañamiento académico respaldado por una red global
                                                         </li>
@@ -455,7 +455,7 @@
                                     <div class="flex items-center justify-between pt-4">
                                         <a href="{{ asset('themes/webpage/suscripcion_global.pdf') }}" download="suscripcion_global" class="boton-degradado-courses">
                                             <strong style="font-size: 15px;">
-                                                <i class="fa fa-download" aria-hidden="true"
+                                                <i class="fas fa-download" aria-hidden="true"
                                                     style="font-size: 20px;"></i>
                                                 &nbsp; Descargar Brochure
                                             </strong>

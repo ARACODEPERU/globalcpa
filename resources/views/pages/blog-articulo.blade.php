@@ -390,8 +390,8 @@
                                         </div>
                                     @endif
                                     <span><i
-                                            class="fa fa-calendar me-1"></i>{{ \Carbon\Carbon::parse($article->created_at)->format('d M Y') }}</span>
-                                    <span><i class="fa fa-eye me-1"></i>{{ $article->views }} vistas</span>
+                                            class="fas fa-calendar me-1"></i>{{ \Carbon\Carbon::parse($article->created_at)->format('d M Y') }}</span>
+                                    <span><i class="fas fa-eye me-1"></i>{{ $article->views }} vistas</span>
                                 </div>
 
                                 <div class="article-body">
@@ -409,16 +409,16 @@
                                         <div class="text-center mt-4 p-4 article-lock-box" style="background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 30%); position: relative;">
                                             <div style="padding-top: 40px;">
                                                 <div class="mb-3">
-                                                    <i class="fa fa-lock fa-3x text-muted mb-3"></i>
+                                                    <i class="fas fa-lock fa-3x text-muted mb-3"></i>
                                                 </div>
                                                 <h5 class="fw-bold text-navy-custom mb-3">¿Quieres leer el artículo completo?</h5>
                                                 <p class="text-muted mb-4">Si quieres leer esta información completa debes loguearte. Si no tienes una cuenta, regístrate.</p>
                                                 <div class="d-flex justify-content-center gap-3">
                                                     <button type="button" class="btn btn-primary px-4 py-2" data-bs-toggle="modal" data-bs-target="#loginModalArticle" style="background-color: #002060; border-color: #002060; border-radius: 8px;">
-                                                        <i class="fa fa-sign-in-alt me-2"></i>Iniciar Sesión
+                                                        <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión
                                                     </button>
                                                     <a href="{{ url('/register') }}" class="btn btn-outline-primary px-4 py-2" style="color: #002060; border-color: #002060; border-radius: 8px;">
-                                                        <i class="fa fa-user-plus me-2"></i>Registrarse
+                                                        <i class="fas fa-user-plus me-2"></i>Registrarse
                                                     </a>
                                                 </div>
                                             </div>
@@ -465,7 +465,7 @@
                         <div class="col-lg-4 col-md-4">
                             <!-- Categorías -->
                             <div class="blog-sidebar-box" data-aos="fade-up">
-                                <h5><i class="fa fa-folder-open me-2"></i>Categorías</h5>
+                                <h5><i class="far fa-folderpen me-2"></i>Categorías</h5>
                                 <style>
                                     details.blog-cat { border-bottom: 1px solid #f3f4f6; }
                                     details.blog-cat summary {
@@ -518,7 +518,7 @@
 
                             <!-- Últimos Artículos -->
                             <div class="sidebar-box" data-aos="fade-up" data-aos-delay="100">
-                                <h5><i class="fa fa-clock me-2"></i>Últimos Artículos</h5>
+                                <h5><i class="fas fa-clock me-2"></i>Últimos Artículos</h5>
                                 @foreach ($latest_articles as $latest)
                                     <div class="latest-item">
                                         <a href="{{ route('blog_article_by_url', $latest->url) }}">
@@ -549,7 +549,7 @@
         <div class="modal-content" style="border-radius: 12px; border: none;">
             <div class="modal-header" style="border-bottom: 1px solid #e5e7eb; padding: 20px 24px;">
                 <h5 class="modal-title fw-bold text-navy-custom" id="loginModalArticleLabel">
-                    <i class="fa fa-sign-in-alt me-2"></i>Iniciar Sesion
+                    <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesion
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -560,14 +560,14 @@
                     <div class="mb-3">
                         <label class="form-label fw-bold text-navy-custom">Correo Electronico</label>
                         <div class="input-group">
-                            <span class="input-group-text"><i class="fa fa-envelope"></i></span>
+                            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
                             <input type="email" name="email" class="form-control" placeholder="tu@correo.com" required>
                         </div>
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-bold text-navy-custom">Contrasena</label>
                         <div class="input-group">
-                            <span class="input-group-text"><i class="fa fa-lock"></i></span>
+                            <span class="input-group-text"><i class="fas fa-lock"></i></span>
                             <input type="password" name="password" class="form-control" placeholder="Tu contrasena" required>
                         </div>
                     </div>
@@ -579,7 +579,7 @@
                         <a href="{{ url('/forgot-password') }}" style="font-size: 0.85rem; color: #002060;">Olvidaste tu contrasena?</a>
                     </div>
                     <button type="submit" id="submitLoginArticle" class="btn btn-primary w-100 py-2" style="background-color: #002060; border-color: #002060; border-radius: 8px;">
-                        <i class="fa fa-sign-in-alt me-2"></i>Iniciar Sesion
+                        <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesion
                     </button>
                 </form>
                 <div class="text-center mt-3">
@@ -599,7 +599,7 @@ document.getElementById('loginFormArticle').addEventListener('submit', function(
     var errorDiv = document.getElementById('loginErrorArticle');
     
     btn.disabled = true;
-    btn.innerHTML = '<i class="fa fa-spinner fa-spin me-2"></i>Iniciando sesion...';
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Iniciando sesion...';
     errorDiv.classList.add('d-none');
     
     var formData = new FormData(form);
@@ -624,7 +624,7 @@ document.getElementById('loginFormArticle').addEventListener('submit', function(
         errorDiv.textContent = error.message || 'Error al iniciar sesion. Intenta de nuevo.';
         errorDiv.classList.remove('d-none');
         btn.disabled = false;
-        btn.innerHTML = '<i class="fa fa-sign-in-alt me-2"></i>Iniciar Sesion';
+        btn.innerHTML = '<i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesion';
     });
 });
 </script>

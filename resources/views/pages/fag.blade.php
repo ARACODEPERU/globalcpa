@@ -328,7 +328,7 @@
                                                 <a href="{{ route('index_main') }}"
                                                     class="text-white-50 text-decoration-none text-uppercase small fw-bold"
                                                     style="letter-spacing: 1px;">
-                                                    <i class="fa fa-home me-1"></i> Inicio
+                                                    <i class="fas fa-home me-1"></i> Inicio
                                                 </a>
                                             </li>
                                             <li class="breadcrumb-item active text-white text-uppercase small fw-bold"
@@ -349,13 +349,13 @@
 
                                     <div class="d-flex flex-wrap gap-3">
                                         <span class="fag-hero-tag">
-                                            <i class="fa fa-certificate text-warning"></i> Respaldo ACCA
+                                            <i class="fas fa-certificate text-warning"></i> Respaldo ACCA
                                         </span>
                                         <span class="fag-hero-tag">
-                                            <i class="fa fa-graduation-cap text-warning"></i> +5,000 alumnos formados
+                                            <i class="fas fa-graduation-cap text-warning"></i> +5,000 alumnos formados
                                         </span>
                                         <span class="fag-hero-tag">
-                                            <i class="fa fa-globe text-warning"></i> +10 países de LATAM
+                                            <i class="fas fa-globe text-warning"></i> +10 países de LATAM
                                         </span>
                                     </div>
                                 </div>
@@ -424,7 +424,7 @@
                             <div class="col" data-aos="fade-up" data-aos-delay="100">
                                 <div class="fag-obj-card bg-card-custom shadow-sm">
                                     <div class="obj-icon" style="background: linear-gradient(135deg, #e30613 0%, #a0040d 100%);">
-                                        <i class="fa fa-bullseye"></i>
+                                        <i class="fas fa-bullseye"></i>
                                     </div>
                                     <h3 class="text-navy-custom">Especialización técnica</h3>
                                     <p class="text-muted-custom">
@@ -436,7 +436,7 @@
                             <div class="col" data-aos="fade-up" data-aos-delay="200">
                                 <div class="fag-obj-card bg-card-custom shadow-sm">
                                     <div class="obj-icon" style="background: linear-gradient(135deg, #002060 0%, #004080 100%);">
-                                        <i class="fa fa-briefcase"></i>
+                                        <i class="fas fa-briefcase"></i>
                                     </div>
                                     <h3 class="text-navy-custom">Preparación profesional</h3>
                                     <p class="text-muted-custom">
@@ -448,7 +448,7 @@
                             <div class="col" data-aos="fade-up" data-aos-delay="300">
                                 <div class="fag-obj-card bg-card-custom shadow-sm">
                                     <div class="obj-icon" style="background: linear-gradient(135deg, #2c3e50 0%, #4b6584 100%);">
-                                        <i class="fa fa-certificate"></i>
+                                        <i class="fas fa-certificate"></i>
                                     </div>
                                     <h3 class="text-navy-custom">Certificación con respaldo</h3>
                                     <p class="text-muted-custom">
@@ -460,7 +460,7 @@
                             <div class="col" data-aos="fade-up" data-aos-delay="400">
                                 <div class="fag-obj-card bg-card-custom shadow-sm">
                                     <div class="obj-icon" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">
-                                        <i class="fa fa-link"></i>
+                                        <i class="fas fa-link"></i>
                                     </div>
                                     <h3 class="text-navy-custom">Orientación profesional</h3>
                                     <p class="text-muted-custom">
@@ -560,35 +560,35 @@
                                     Lo que obtienes con <span style="color: #e30613;">FAG</span>
                                 </h2>
                                 <div class="fag-benefit-item">
-                                    <i class="fa fa-check-circle" style="color: #4ade80; font-size: 1.1rem;"></i>
+                                    <i class="fas fa-check-circle" style="color: #4ade80; font-size: 1.1rem;"></i>
                                     <div class="benefit-text">
                                         <strong>Programa de especialización con certificado</strong>
                                         Reconoce tu formación con un certificado verificable y respaldado por ACCA.
                                     </div>
                                 </div>
                                 <div class="fag-benefit-item">
-                                    <i class="fa fa-check-circle" style="color: #4ade80; font-size: 1.1rem;"></i>
+                                    <i class="fas fa-check-circle" style="color: #4ade80; font-size: 1.1rem;"></i>
                                     <div class="benefit-text">
                                         <strong>Docentes de Big Four y banca en activo</strong>
                                         Aprende directamente de quienes lideran en las firmas y bancos más importantes.
                                     </div>
                                 </div>
                                 <div class="fag-benefit-item">
-                                    <i class="fa fa-check-circle" style="color: #4ade80; font-size: 1.1rem;"></i>
+                                    <i class="fas fa-check-circle" style="color: #4ade80; font-size: 1.1rem;"></i>
                                     <div class="benefit-text">
                                         <strong>Metodología práctica y aplicable</strong>
                                         Casos reales y herramientas que generan impacto desde la primera clase.
                                     </div>
                                 </div>
                                 <div class="fag-benefit-item">
-                                    <i class="fa fa-check-circle" style="color: #4ade80; font-size: 1.1rem;"></i>
+                                    <i class="fas fa-check-circle" style="color: #4ade80; font-size: 1.1rem;"></i>
                                     <div class="benefit-text">
                                         <strong>Comunidad LATAM de profesionales</strong>
                                         Conecta con egresados y compañeros de más de 10 países de la región.
                                     </div>
                                 </div>
                                 <div class="fag-benefit-item">
-                                    <i class="fa fa-check-circle" style="color: #4ade80; font-size: 1.1rem;"></i>
+                                    <i class="fas fa-check-circle" style="color: #4ade80; font-size: 1.1rem;"></i>
                                     <div class="benefit-text">
                                         <strong>Flexibilidad para tu vida profesional</strong>
                                         Clases en vivo y en línea, diseñadas para compatibilizar con tu trabajo.
@@ -613,22 +613,22 @@
                         <div class="fag-stats-band shadow" data-aos="fade-up">
                             <div class="row row-cols-2 row-cols-lg-4 g-4 position-relative">
                                 <div class="col fag-stat">
-                                    <i class="fa fa-graduation-cap"></i>
+                                    <i class="fas fa-graduation-cap"></i>
                                     <strong>+5,000</strong>
                                     <span>Alumnos formados</span>
                                 </div>
                                 <div class="col fag-stat">
-                                    <i class="fa fa-globe-americas"></i>
+                                    <i class="fas fa-globe-americas"></i>
                                     <strong>+10</strong>
                                     <span>Países de LATAM</span>
                                 </div>
                                 <div class="col fag-stat">
-                                    <i class="fa fa-chalkboard-teacher"></i>
+                                    <i class="fas fa-chalkboard-teacher"></i>
                                     <strong>+40</strong>
                                     <span>Docentes expertos</span>
                                 </div>
                                 <div class="col fag-stat">
-                                    <i class="fa fa-book-open"></i>
+                                    <i class="far fa-bookpen"></i>
                                     <strong>+25</strong>
                                     <span>Programas de especialización</span>
                                 </div>
@@ -652,7 +652,7 @@
                             </p>
                             <div class="d-flex flex-wrap justify-content-center gap-3">
                                 <a href="{{ route('web_courses') }}" class="btn-cta-white text-decoration-none">
-                                    <i class="fa fa-graduation-cap me-2"></i>Ver programas
+                                    <i class="fas fa-graduation-cap me-2"></i>Ver programas
                                 </a>
                                 <a href="https://wa.me/51967052506?text=/Agente%20Principal" target="_blank"
                                     class="btn-cta-wa text-decoration-none">

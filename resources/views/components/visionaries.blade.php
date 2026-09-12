@@ -27,9 +27,9 @@
                                         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.
                                             Recusandae asperiores mollitia.</p>
                                         <ul>
-                                            <li><a href=""><i class="fa fa-facebook fa-2x"></i></a></li>
-                                            <li><a href=""><i class="fa fa-twitter fa-2x"></i></a></li>
-                                            <li><a href=""><i class="fa fa-linkedin fa-2x"></i></a></li>
+                                            <li><a href=""><i class="fab fa-facebook fa-2x"></i></a></li>
+                                            <li><a href=""><i class="fab fa-twitter fa-2x"></i></a></li>
+                                            <li><a href=""><i class="fab fa-linkedin fa-2x"></i></a></li>
                                         </ul>
                                     </figcaption>
                                 </figure>
@@ -47,9 +47,9 @@
                                         <p>Neque minima ea, a praesentium saepe nihil maxime quod esse
                                             numquam explicabo eligendi.</p>
                                         <ul>
-                                            <li><a href=""><i class="fa fa-facebook fa-2x"></i></a></li>
-                                            <li><a href=""><i class="fa fa-twitter fa-2x"></i></a></li>
-                                            <li><a href=""><i class="fa fa-linkedin fa-2x"></i></a></li>
+                                            <li><a href=""><i class="fab fa-facebook fa-2x"></i></a></li>
+                                            <li><a href=""><i class="fab fa-twitter fa-2x"></i></a></li>
+                                            <li><a href=""><i class="fab fa-linkedin fa-2x"></i></a></li>
                                         </ul>
                                     </figcaption>
                                 </figure>
@@ -67,9 +67,9 @@
                                         <p>Temporibus dolor, quisquam consectetur molestias, veniam
                                             voluptatum. Beatae alias omnis totam.</p>
                                         <ul>
-                                            <li><a href=""><i class="fa fa-facebook fa-2x"></i></a></li>
-                                            <li><a href=""><i class="fa fa-twitter fa-2x"></i></a></li>
-                                            <li><a href=""><i class="fa fa-linkedin fa-2x"></i></a></li>
+                                            <li><a href=""><i class="fab fa-facebook fa-2x"></i></a></li>
+                                            <li><a href=""><i class="fab fa-twitter fa-2x"></i></a></li>
+                                            <li><a href=""><i class="fab fa-linkedin fa-2x"></i></a></li>
                                         </ul>
                                     </figcaption>
                                 </figure>

@@ -479,7 +479,7 @@
                                                 <a href="{{ route('index_main') }}"
                                                     class="text-white-50 text-decoration-none text-uppercase small fw-bold"
                                                     style="letter-spacing: 1px;">
-                                                    <i class="fa fa-home me-1"></i> Inicio
+                                                    <i class="fas fa-home me-1"></i> Inicio
                                                 </a>
                                             </li>
                                             <li class="breadcrumb-item active text-white text-uppercase small fw-bold"
@@ -499,15 +499,15 @@
 
                                     <div class="d-flex flex-wrap gap-3">
                                         <span class="tst-hero-tag">
-                                            <i class="fa fa-star text-warning"></i>
+                                            <i class="fas fa-star text-warning"></i>
                                             {{ $stats['total'] }} testimonios
                                         </span>
                                         <span class="tst-hero-tag">
-                                            <i class="fa fa-graduation-cap text-warning"></i>
+                                            <i class="fas fa-graduation-cap text-warning"></i>
                                             {{ $stats['courses'] }} cursos opinados
                                         </span>
                                         <span class="tst-hero-tag">
-                                            <i class="fa fa-globe text-warning"></i> +10 países de LATAM
+                                            <i class="fas fa-globe text-warning"></i> +10 países de LATAM
                                         </span>
                                     </div>
                                 </div>
@@ -524,22 +524,22 @@
                         <div class="tst-stats-band shadow" data-aos="fade-up">
                             <div class="row row-cols-2 row-cols-lg-4 g-4 position-relative">
                                 <div class="col tst-stat">
-                                    <i class="fa fa-thumbs-up"></i>
+                                    <i class="fas fa-thumbs-up"></i>
                                     <strong>{{ $stats['recommend'] }}%</strong>
                                     <span>Nos recomiendan</span>
                                 </div>
                                 <div class="col tst-stat">
-                                    <i class="fa fa-comments"></i>
+                                    <i class="fas fa-comments"></i>
                                     <strong>{{ number_format($stats['total']) }}</strong>
                                     <span>Testimonios publicados</span>
                                 </div>
                                 <div class="col tst-stat">
-                                    <i class="fa fa-star"></i>
+                                    <i class="fas fa-star"></i>
                                     <strong>{{ $stats['average'] ?: '—' }}/5</strong>
                                     <span>Puntuación promedio</span>
                                 </div>
                                 <div class="col tst-stat">
-                                    <i class="fa fa-briefcase"></i>
+                                    <i class="fas fa-briefcase"></i>
                                     <strong>{{ number_format($stats['courses']) }}</strong>
                                     <span>Cursos con opiniones</span>
                                 </div>
@@ -564,7 +564,7 @@
                                         @endif
                                         <div class="tst-featured-stars mb-3">
                                             @for ($i = 1; $i <= 5; $i++)
-                                                <i class="fa fa-star{{ $i <= $featured['rating'] ? '' : '-o' }}"></i>
+                                                <i class="fas fa-star{{ $i <= $featured['rating'] ? '' : '-o' }}"></i>
                                             @endfor
                                         </div>
                                         <blockquote>
@@ -589,13 +589,13 @@
                                                     class="btn"
                                                     data-bs-toggle="modal"
                                                     data-bs-target="#{{ $featuredTarget }}">
-                                                    <i class="fa fa-play-circle me-2"></i>Ver video testimonio
+                                                    <i class="fas fa-play-circle me-2"></i>Ver video testimonio
                                                 </button>
                                             </div>
                                         @endif
                                     </div>
                                     <div class="col-lg-3 text-center d-none d-lg-block">
-                                        <i class="fa fa-quote-right" style="font-size: 7rem; opacity: 0.15;"></i>
+                                        <i class="fas fa-quote-right" style="font-size: 7rem; opacity: 0.15;"></i>
                                     </div>
                                 </div>
                             </div>
@@ -658,7 +658,7 @@
 
                         @if ($testimonies->count() === 0)
                             <div class="text-center py-5 bg-card-custom rounded-4" data-aos="fade-up">
-                                <i class="fa fa-comments-o" style="font-size: 3rem; color: #cbd5e1;"></i>
+                                <i class="far fa-comments" style="font-size: 3rem; color: #cbd5e1;"></i>
                                 <h3 class="h5 fw-bold text-navy-custom mt-3">Todavía no hay testimonios publicados</h3>
                                 <p class="text-muted-custom mb-0">
                                     Los testimonios de nuestros alumnos pasan por revisión antes de publicarse.
@@ -668,7 +668,7 @@
                             @foreach ($groups as $group)
                                 <div class="mb-5" data-aos="fade-up">
                                     <h3 class="tst-group-title text-navy-custom">
-                                        <i class="fa fa-folder-open text-warning"></i>
+                                        <i class="far fa-folderpen text-warning"></i>
                                         {{ $group['category'] }}
                                         <span class="badge bg-secondary">{{ $group['testimonies']->count() }}</span>
                                     </h3>
@@ -697,14 +697,14 @@
                                                             @endif
                                                             @if ($t['video'])
                                                                 <span class="tst-video-tag">
-                                                                    <i class="fa fa-video-camera"></i> Video
+                                                                    <i class="fas fa-video-camera"></i> Video
                                                                 </span>
                                                                 <button type="button"
                                                                     class="tst-play"
                                                                     data-bs-toggle="modal"
                                                                     data-bs-target="#tstVideo{{ $t['id'] }}"
                                                                     title="Ver video testimonio">
-                                                                    <i class="fa fa-play"></i>
+                                                                    <i class="fas fa-play"></i>
                                                                 </button>
                                                             @endif
                                                         </div>
@@ -712,7 +712,7 @@
                                                     <div>
                                                         <div class="tst-stars">
                                                             @for ($i = 1; $i <= 5; $i++)
-                                                                <i class="fa fa-star{{ $i <= $t['rating'] ? '' : '-o' }}"></i>
+                                                                <i class="fas fa-star{{ $i <= $t['rating'] ? '' : '-o' }}"></i>
                                                             @endfor
                                                         </div>
                                                         <div class="tst-quote-mark">"</div>
@@ -725,7 +725,7 @@
                                                                 data-bs-toggle="collapse"
                                                                 data-bs-target="#tstQuote{{ $t['id'] }}"
                                                                 aria-expanded="false">
-                                                                <i class="fa fa-chevron-down"></i> Leer más
+                                                                <i class="fas fa-chevron-down"></i> Leer más
                                                             </button>
                                                         @endif
                                                     </div>
@@ -753,7 +753,7 @@
                                         'page' => $page + 1,
                                     ])) }}"
                                         class="tst-filter-chip is-active" style="padding: 12px 28px;">
-                                        <i class="fa fa-chevron-down"></i> Ver más testimonios
+                                        <i class="fas fa-chevron-down"></i> Ver más testimonios
                                     </a>
                                     <p class="text-muted-custom mt-2 mb-0" style="font-size: 0.85rem;">
                                         Mostrando {{ $testimonies->count() }} de {{ $total }} testimonios.
@@ -863,7 +863,7 @@
                             </p>
                             <div class="d-flex flex-wrap justify-content-center gap-3">
                                 <a href="{{ route('web_courses') }}" class="btn-cta-white text-decoration-none">
-                                    <i class="fa fa-graduation-cap me-2"></i>Ver programas
+                                    <i class="fas fa-graduation-cap me-2"></i>Ver programas
                                 </a>
                                 <a href="https://wa.me/51967052506?text=/Agente%20Principal" target="_blank"
                                     class="btn-cta-wa text-decoration-none">

@@ -33,11 +33,11 @@
                                     <div class="d-flex align-items-center mb-3">
                                         <span class="badge bg-warning text-dark me-2">{{ $item->additional }}</span>
                                         <div class="text-warning small">
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star-half-o"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="far fa-star-half-stroke"></i>
 
                                             <span class="text-white ms-1">(4.8/5 de {{ rand(30, 120) }} alumnos activos)</span>
                                         </div>
@@ -45,9 +45,9 @@
                                     <h1 class="display-5 fw-bold mb-3" style="color: #fff;">{{ $item->name }}</h1>
                                     <p class="lead text-white-50 mb-4">{{ $item->description }}</p>
                                     <div class="d-flex align-items-center text-white-50 small">
-                                        <span class="me-3"><i class="fa fa-clock-o me-1"></i> Actualizado:
+                                        <span class="me-3"><i class="far fa-clock me-1"></i> Actualizado:
                                             {{ \Carbon\Carbon::now()->format('M Y') }}</span>
-                                        <span><i class="fa fa-globe me-1"></i> Español</span>
+                                        <span><i class="fas fa-globe me-1"></i> Español</span>
                                     </div>
                                 </div>
                                 <div class="col-lg-4 text-center d-none d-lg-block position-relative"
@@ -138,19 +138,19 @@
 
                                     {{-- Icono Central --}}
                                     <div class="center-pulse">
-                                        <i class="fa fa-laptop fa-5x text-white"></i>
+                                        <i class="fas fa-laptop fa-5x text-white"></i>
                                     </div>
 
                                     {{-- Sistema Orbital --}}
                                     <div class="orbit-system">
                                         <div class="orbit-item pos-1" title="Clases en Video">
-                                            <i class="fa fa-play text-warning fs-5"></i>
+                                            <i class="fas fa-play text-warning fs-5"></i>
                                         </div>
                                         <div class="orbit-item pos-2" title="Certificación">
-                                            <i class="fa fa-certificate text-info fs-5"></i>
+                                            <i class="fas fa-certificate text-info fs-5"></i>
                                         </div>
                                         <div class="orbit-item pos-3" title="Recursos Descargables">
-                                            <i class="fa fa-file-text-o text-success fs-5"></i>
+                                            <i class="far fa-file-alt text-success fs-5"></i>
                                         </div>
                                     </div>
                                 </div>
@@ -220,7 +220,7 @@
                                                                             :class="$store.global.isDarkModeEnabled ?
                                                                                 'text-gray-300' : 'text-muted'">
                                                                             <i
-                                                                                class="fa fa-check-circle text-success mt-1 me-2 flex-shrink-0"></i>
+                                                                                class="fas fa-check-circle text-success mt-1 me-2 flex-shrink-0"></i>
                                                                             <span>{{ $resume->description }}</span>
                                                                         </li>
                                                                     @endforeach
@@ -276,10 +276,10 @@
                                                         'bg-light'">
                                                     <div class="text-warning mb-2">
                                                         <template x-for="i in review.stars">
-                                                            <i class="fa fa-star"></i>
+                                                            <i class="fas fa-star"></i>
                                                         </template>
                                                         <template x-for="i in (5 - review.stars)">
-                                                            <i class="fa fa-star-o"></i>
+                                                            <i class="far fa-star"></i>
                                                         </template>
                                                     </div>
                                                     <p class="mb-2 fst-italic"
@@ -315,7 +315,7 @@
                                             @endif
                                             <span class="small"
                                                 :class="$store.global.isDarkModeEnabled ? 'text-gray-400' : 'text-muted'"><i
-                                                    class="fa fa-clock-o"></i> Oferta por tiempo limitado</span>
+                                                    class="far fa-clock"></i> Oferta por tiempo limitado</span>
                                         </div>
 
                                         <div class="d-grid gap-2 mb-4">
@@ -338,27 +338,27 @@
                                             <ul class="list-unstyled mb-0">
                                                 <li class="mb-2 d-flex align-items-center"
                                                     :class="$store.global.isDarkModeEnabled ? 'text-gray-300' : 'text-muted'">
-                                                    <i class="fa fa-video-camera text-secondary me-3"
+                                                    <i class="fas fa-video-camera text-secondary me-3"
                                                         style="width: 20px; text-align:center;"></i> <span>Acceso de por
                                                         vida</span>
                                                 </li>
                                                 <li class="mb-2 d-flex align-items-center"
                                                     :class="$store.global.isDarkModeEnabled ? 'text-gray-300' : 'text-muted'">
-                                                    <i class="fa fa-mobile text-secondary me-3"
+                                                    <i class="fas fa-mobile text-secondary me-3"
                                                         style="width: 20px; text-align:center;"></i> <span>Acceso en
                                                         móviles y
                                                         TV</span>
                                                 </li>
                                                 <li class="mb-2 d-flex align-items-center"
                                                     :class="$store.global.isDarkModeEnabled ? 'text-gray-300' : 'text-muted'">
-                                                    <i class="fa fa-certificate text-secondary me-3"
+                                                    <i class="fas fa-certificate text-secondary me-3"
                                                         style="width: 20px; text-align:center;"></i> <span>Certificado de
                                                         finalización</span>
                                                 </li>
                                                 @if ($course->brochure->path_file)
                                                     <li class="mb-2 d-flex align-items-center"
                                                         :class="$store.global.isDarkModeEnabled ? 'text-gray-300' : 'text-muted'">
-                                                        <i class="fa fa-file-pdf-o text-secondary me-3"
+                                                        <i class="far fa-file-pdf text-secondary me-3"
                                                             style="width: 20px; text-align:center;"></i> <span>Recursos
                                                             descargables</span>
                                                     </li>
@@ -370,7 +370,7 @@
                                             <div class="text-center border-top pt-3">
                                                 <a href="#" class="text-decoration-none fw-bold text-primary"
                                                     data-bs-target="#exampleModalToggle" data-bs-toggle="modal">
-                                                    <i class="fa fa-download me-1"></i> Descargar Temario (PDF)
+                                                    <i class="fas fa-download me-1"></i> Descargar Temario (PDF)
                                                 </a>
                                             </div>
                                         @endif

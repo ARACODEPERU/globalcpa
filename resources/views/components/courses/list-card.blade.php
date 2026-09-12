@@ -113,7 +113,7 @@
                                                                             class="btn btn-pill btn-primary btn-air-primary btn-sm"
                                                                             type="button"
                                                                             data-bs-original-title="btn btn-pill btn-primary btn-air-primary btn-sm">
-                                                                            <i class="fa fa-cart-plus"
+                                                                            <i class="fas fa-cart-plus"
                                                                                 aria-hidden="true"
                                                                                 style="font-size: 18px;"></i>
                                                                             &nbsp; {{ $priceLabel }}
@@ -201,7 +201,7 @@
                                                                                     class="btn btn-pill btn-primary btn-air-primary btn-sm"
                                                                                     type="button"
                                                                                     data-bs-original-title="btn btn-pill btn-primary btn-air-primary btn-sm">
-                                                                                    <i class="fa fa-cart-plus"
+                                                                                    <i class="fas fa-cart-plus"
                                                                                         aria-hidden="true"
                                                                                         style="font-size: 18px;"></i>
                                                                                     &nbsp; {{ $priceLabel }}
@@ -228,7 +228,7 @@
                                             <button class="btn btn-pill btn-primary btn-air-primary btn-sm"
                                                 type="button"
                                                 data-bs-original-title="btn btn-pill btn-primary btn-air-primary btn-sm">
-                                                <i class="fa fa-graduation-cap" aria-hidden="true"
+                                                <i class="fas fa-graduation-cap" aria-hidden="true"
                                                     style="font-size: 18px;"></i>
                                                 &nbsp; Ver Toda Nuestra Formación
                                             </button>

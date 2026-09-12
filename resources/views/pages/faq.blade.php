@@ -297,7 +297,7 @@
                                                 <a href="{{ route('index_main') }}"
                                                     class="text-white-50 text-decoration-none text-uppercase small fw-bold"
                                                     style="letter-spacing: 1px;">
-                                                    <i class="fa fa-home me-1"></i> Inicio
+                                                    <i class="fas fa-home me-1"></i> Inicio
                                                 </a>
                                             </li>
                                             <li class="breadcrumb-item active text-white text-uppercase small fw-bold"
@@ -318,13 +318,13 @@
 
                                     <div class="d-flex flex-wrap gap-3">
                                         <span class="faq-hero-tag">
-                                            <i class="fa fa-question-circle text-warning"></i> Dudas frecuentes
+                                            <i class="fas fa-question-circle text-warning"></i> Dudas frecuentes
                                         </span>
                                         <span class="faq-hero-tag">
-                                            <i class="fa fa-graduation-cap text-warning"></i> +5,000 alumnos
+                                            <i class="fas fa-graduation-cap text-warning"></i> +5,000 alumnos
                                         </span>
                                         <span class="faq-hero-tag">
-                                            <i class="fa fa-certificate text-warning"></i> Respaldo ACCA
+                                            <i class="fas fa-certificate text-warning"></i> Respaldo ACCA
                                         </span>
                                     </div>
                                 </div>
@@ -350,7 +350,7 @@
                                     placeholder="Ej: certificado, ACCA, inscripción..."
                                     aria-label="Buscar en preguntas frecuentes">
                                 <button type="button" class="faq-search-btn" id="faqSearchBtn">
-                                    <i class="fa fa-search me-2"></i>Buscar
+                                    <i class="fas fa-search me-2"></i>Buscar
                                 </button>
                             </form>
                         </div>
@@ -369,19 +369,19 @@
                                 <div class="list-group list-group-flush bg-card-custom shadow-sm rounded-4 p-3 sticky-lg-top" style="top: 20px;">
                                     <small class="text-muted-custom text-uppercase fw-bold" style="font-size: 0.7rem; letter-spacing: 1px;">Categorías</small>
                                     <a href="#cat-programas" class="list-group-item list-group-item-action list-group-item-dark bg-transparent py-2 px-3 rounded-3 fw-semibold text-navy-custom text-decoration-none d-flex align-items-center gap-2 border-0">
-                                        <i class="fa fa-book-open" style="color: #002060;"></i>
+                                        <i class="far fa-bookpen" style="color: #002060;"></i>
                                         <span class="d-none d-md-inline">Programas y cursos</span>
                                     </a>
                                     <a href="#cat-inscripcion" class="list-group-item list-group-item-action list-group-item-dark bg-transparent py-2 px-3 rounded-3 fw-semibold text-navy-custom text-decoration-none d-flex align-items-center gap-2 border-0">
-                                        <i class="fa fa-pen" style="color: #002060;"></i>
+                                        <i class="fas fa-pen" style="color: #002060;"></i>
                                         <span class="d-none d-md-inline">Inscripción y pagos</span>
                                     </a>
                                     <a href="#cat-certificados" class="list-group-item list-group-item-action list-group-item-dark bg-transparent py-2 px-3 rounded-3 fw-semibold text-navy-custom text-decoration-none d-flex align-items-center gap-2 border-0">
-                                        <i class="fa fa-certificate" style="color: #002060;"></i>
+                                        <i class="fas fa-certificate" style="color: #002060;"></i>
                                         <span class="d-none d-md-inline">Certificados</span>
                                     </a>
                                     <a href="#cat-general" class="list-group-item list-group-item-action list-group-item-dark bg-transparent py-2 px-3 rounded-3 fw-semibold text-navy-custom text-decoration-none d-flex align-items-center gap-2 border-0">
-                                        <i class="fa fa-comments" style="color: #002060;"></i>
+                                        <i class="fas fa-comments" style="color: #002060;"></i>
                                         <span class="d-none d-md-inline">General</span>
                                     </a>
                                 </div>
@@ -392,7 +392,7 @@
                                 {{-- Categoría 1: Programas y cursos --}}
                                 <div id="cat-programas" class="mt-4" data-aos="fade-up">
                                     <h3 class="fw-bold text-navy-custom mb-3">
-                                        <i class="fa fa-book-open me-2" style="color: #002060;"></i>Programas y cursos
+                                        <i class="far fa-bookpen me-2" style="color: #002060;"></i>Programas y cursos
                                     </h3>
                                     <h5 class="text-muted-custom fw-normal mb-4 text-sm">
                                         Respuestas sobre los programas de especialización, modalidades y estructura.
@@ -465,7 +465,7 @@
                                 {{-- Categoría 2: Inscripción y pagos --}}
                                 <div id="cat-inscripcion" class="mt-5" data-aos="fade-up">
                                     <h3 class="fw-bold text-navy-custom mb-3">
-                                        <i class="fa fa-pen me-2" style="color: #002060;"></i>Inscripción y pagos
+                                        <i class="fas fa-pen me-2" style="color: #002060;"></i>Inscripción y pagos
                                     </h3>
                                     <h5 class="text-muted-custom fw-normal mb-4 text-sm">
                                         Información sobre precios, métodos de pago, facturas, promociones y procesos de inscripción.
@@ -550,7 +550,7 @@
                                 {{-- Categoría 3: Certificados --}}
                                 <div id="cat-certificados" class="mt-5" data-aos="fade-up">
                                     <h3 class="fw-bold text-navy-custom mb-3">
-                                        <i class="fa fa-certificate me-2" style="color: #002060;"></i>Certificados
+                                        <i class="fas fa-certificate me-2" style="color: #002060;"></i>Certificados
                                     </h3>
                                     <h5 class="text-muted-custom fw-normal mb-4 text-sm">
                                         Todo sobre certificación, verificación, validez y el respaldo ACCA.
@@ -611,7 +611,7 @@
                                 {{-- Categoría 4: General --}}
                                 <div id="cat-general" class="mt-5" data-aos="fade-up">
                                     <h3 class="fw-bold text-navy-custom mb-3">
-                                        <i class="fa fa-comments me-2" style="color: #002060;"></i>General
+                                        <i class="fas fa-comments me-2" style="color: #002060;"></i>General
                                     </h3>
                                     <h5 class="text-muted-custom fw-normal mb-4 text-sm">
                                         Contacto, horarios, ubicaciones, reclamos y soporte al alumno.
@@ -695,22 +695,22 @@
                         <div class="faq-stats-band shadow" data-aos="fade-up">
                             <div class="row row-cols-2 row-cols-lg-4 g-4 position-relative">
                                 <div class="col faq-stat">
-                                    <i class="fa fa-graduation-cap"></i>
+                                    <i class="fas fa-graduation-cap"></i>
                                     <strong>+5,000</strong>
                                     <span>Alumnos formados</span>
                                 </div>
                                 <div class="col faq-stat">
-                                    <i class="fa fa-globe-americas"></i>
+                                    <i class="fas fa-globe-americas"></i>
                                     <strong>+10</strong>
                                     <span>Países de LATAM</span>
                                 </div>
                                 <div class="col faq-stat">
-                                    <i class="fa fa-chalkboard-teacher"></i>
+                                    <i class="fas fa-chalkboard-teacher"></i>
                                     <strong>+40</strong>
                                     <span>Docentes expertos</span>
                                 </div>
                                 <div class="col faq-stat">
-                                    <i class="fa fa-book-open"></i>
+                                    <i class="far fa-bookpen"></i>
                                     <strong>+25</strong>
                                     <span>Programas de especialización</span>
                                 </div>
@@ -734,7 +734,7 @@
                             </p>
                             <div class="d-flex flex-wrap justify-content-center gap-3">
                                 <a href="{{ route('web_courses') }}" class="btn-cta-white text-decoration-none">
-                                    <i class="fa fa-graduation-cap me-2"></i>Ver programas
+                                    <i class="fas fa-graduation-cap me-2"></i>Ver programas
                                 </a>
                                 <a href="https://wa.me/51967052506?text=/Agente%20Principal" target="_blank"
                                     class="btn-cta-wa text-decoration-none">

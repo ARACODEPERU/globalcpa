@@ -98,7 +98,7 @@
 
                         <button class="btn mt-1 h-11 justify-between bg-primary font-medium text-white hover:bg-primary-focus focus:bg-primary-focus active:bg-primary-focus/90 dark:bg-accent dark:hover:bg-accent-focus dark:focus:bg-accent-focus dark:active:bg-accent/90">
                             <span>TOTAL:</span>
-                            <span><i class="fa fa-heart" aria-hidden="true"></i>&nbsp; <div id="totalid">S/ 0.00</div></span>
+                            <span><i class="fas fa-heart" aria-hidden="true"></i>&nbsp; <div id="totalid">S/ 0.00</div></span>
                         </button>
                     </div>
                 </div>
@@ -295,7 +295,7 @@
                         </td>
                         <td class="whitespace-nowrap px-4 py-3 text-slate-700 dark:text-navy-100 sm:px-5">
                             <button class="boton-degradado-trash" onclick="eliminarproducto({ id: ${id}, nombre: '${name}', precio: ${price} });">
-                                <i class="fa fa-trash" aria-hidden="true" style="font-size: 16px;">
+                                <i class="fas fa-trash" aria-hidden="true" style="font-size: 16px;">
                                     <a title="Eliminar este Curso" class="remove"></a>
                                 </i>
                             </button>

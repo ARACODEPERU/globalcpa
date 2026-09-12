@@ -480,7 +480,7 @@
                                             download="El_Amauta_de_las_NIIF">
                                             <button class="boton-degradado-courses">
                                                 <b style="font-size: 15px;">
-                                                    <i class="fa fa-download" aria-hidden="true"
+                                                    <i class="fas fa-download" aria-hidden="true"
                                                         style="font-size: 20px;"></i>
                                                     &nbsp; Descargar Brochure
                                                 </b>
@@ -489,7 +489,7 @@
                                         <a href="https://wa.link/yibjj7" target="_blank">
                                             <button class="boton-degradado-courses">
                                                 <b style="font-size: 15px;">
-                                                    <i class="fa fa-cart-plus" aria-hidden="true"
+                                                    <i class="fas fa-cart-plus" aria-hidden="true"
                                                         style="font-size: 20px;"></i>
                                                     &nbsp; Comprar versión impresa
                                                 </b>
@@ -499,7 +499,7 @@
                                             target="_blank">
                                             <button class="boton-degradado-courses">
                                                 <b style="font-size: 15px;">
-                                                    <i class="fa fa-cart-plus" aria-hidden="true"
+                                                    <i class="fas fa-cart-plus" aria-hidden="true"
                                                         style="font-size: 20px;"></i>
                                                     &nbsp; Comprar ebook
                                                 </b>
@@ -536,7 +536,7 @@
                                         target="_blank">
                                         <button class="boton-degradado-courses">
                                             <b style="font-size: 15px;">
-                                                <i class="fa fa-book" aria-hidden="true" style="font-size: 20px;"></i>
+                                                <i class="fas fa-book" aria-hidden="true" style="font-size: 20px;"></i>
                                                 &nbsp; Información
                                             </b>
                                         </button>
@@ -556,7 +556,7 @@
                                     <a href="https://isbn.bnp.gob.pe/catalogo.php?mode=detalle&nt=122583" target="_blank">
                                         <button class="boton-degradado-courses">
                                             <b style="font-size: 15px;">
-                                                <i class="fa fa-book" aria-hidden="true" style="font-size: 20px;"></i>
+                                                <i class="fas fa-book" aria-hidden="true" style="font-size: 20px;"></i>
                                                 &nbsp; Información
                                             </b>
                                         </button>
@@ -576,7 +576,7 @@
                                     <a href="https://isbn.bnp.gob.pe/catalogo.php?mode=detalle&nt=131181" target="_blank">
                                         <button class="boton-degradado-courses">
                                             <b style="font-size: 15px;">
-                                                <i class="fa fa-book" aria-hidden="true" style="font-size: 20px;"></i>
+                                                <i class="fas fa-book" aria-hidden="true" style="font-size: 20px;"></i>
                                                 &nbsp; Información
                                             </b>
                                         </button>

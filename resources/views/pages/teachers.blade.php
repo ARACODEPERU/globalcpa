@@ -35,7 +35,7 @@
                                         <ol class="breadcrumb mb-0">
                                             <li class="breadcrumb-item">
                                                 <a href="/" class="text-white-50 text-decoration-none text-uppercase small fw-bold" style="letter-spacing: 1px;">
-                                                    <i class="fa fa-home me-1"></i> Inicio
+                                                    <i class="fas fa-home me-1"></i> Inicio
                                                 </a>
                                             </li>
                                             <li class="breadcrumb-item active text-white text-uppercase small fw-bold" style="letter-spacing: 1px;" aria-current="page">
@@ -53,10 +53,10 @@
                                     
                                     <div class="d-flex gap-3">
                                         <div class="d-flex align-items-center text-white-50 small">
-                                            <i class="fa fa-check-circle text-success me-2"></i> Líderes en su Campo
+                                            <i class="fas fa-check-circle text-success me-2"></i> Líderes en su Campo
                                         </div>
                                         <div class="d-flex align-items-center text-white-50 small">
-                                            <i class="fa fa-check-circle text-success me-2"></i> Enfoque Práctico
+                                            <i class="fas fa-check-circle text-success me-2"></i> Enfoque Práctico
                                         </div>
                                     </div>
                                 </div>
