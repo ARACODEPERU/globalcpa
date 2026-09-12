@@ -3,8 +3,10 @@
 @section('title', ' - FAG')
 
 @section('etiquetasmeta')
-    <meta name="description"
-        content="CPA Academy - Formación Académica Guía (FAG): programa de especialización para profesionales en contabilidad, finanzas y auditoría con estándares internacionales ACCA." />
+    <x-seo
+        title="FAG - Formación Académica Guía - CPA Academy"
+        description="FAG (Formación Académica Guía) de CPA Academy: programa de especialización para profesionales en contabilidad, finanzas y auditoría con estándares internacionales ACCA."
+    />
 @endsection
 
 @section('content')

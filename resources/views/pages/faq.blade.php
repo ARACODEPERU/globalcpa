@@ -3,8 +3,10 @@
 @section('title', ' - Preguntas Frecuentes')
 
 @section('etiquetasmeta')
-    <meta name="description"
-        content="CPA Academy - Preguntas Frecuentes: resolución de dudas sobre programas, inscripciones, pagos, certificados y más. Consulta aquí tus preguntas sobre la formación contable y financiera." />
+    <x-seo
+        title="Preguntas Frecuentes - CPA Academy"
+        description="Resuelve tus dudas sobre programas, inscripciones, pagos, certificados y más en CPA Academy. Respuestas rápidas sobre formación contable y financiera."
+    />
 @endsection
 
 @section('content')

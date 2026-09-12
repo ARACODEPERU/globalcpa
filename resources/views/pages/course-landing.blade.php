@@ -1,5 +1,20 @@
 @extends('layouts.webpage')
 
+@section('title', ' - ' . ($landing->course->name ?? $landing->course->description ?? 'Curso'))
+
+@section('etiquetasmeta')
+    @php
+        $seoCourseName = $landing->course->name ?? $landing->course->description ?? 'Curso de especialización';
+        $seoDescription = \Illuminate\Support\Str::limit(trim(strip_tags((string) ($landing->course->description ?? ''))), 155) ?: null;
+        $seoImage = !empty($landing->course->image) ? asset('storage/' . $landing->course->image) : null;
+    @endphp
+    <x-seo
+        title="{{ $seoCourseName }} - CPA Academy"
+        :description="$seoDescription"
+        :image="$seoImage"
+    />
+@endsection
+
 @section('content')
 
     @if(!isset($landing) || empty($landing) || !isset($landing->course) || empty($landing->course))

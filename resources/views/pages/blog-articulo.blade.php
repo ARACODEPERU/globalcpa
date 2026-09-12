@@ -2,6 +2,14 @@
 
 @section('title', ' - ' . ($article->title ?? 'Artículo'))
 
+@section('etiquetasmeta')
+    <x-seo
+        title="{{ $article->title ?? 'Artículo' }} - Blog CPA Academy"
+        :description="\Illuminate\Support\Str::limit(trim(strip_tags((string) ($article->content_text ?? ''))), 155) ?: null"
+        :image="!empty($article->imagen) ? $article->imagen : null"
+    />
+@endsection
+
 @section('content')
 
 @php

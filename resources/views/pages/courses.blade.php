@@ -1,5 +1,14 @@
 @extends('layouts.webpage')
 
+@section('title', ' - Cursos')
+
+@section('etiquetasmeta')
+    <x-seo
+        title="Cursos y Programas de Especialización - CPA Academy"
+        description="Explora los cursos y programas de especialización de CPA Academy en NIIF, auditoría, finanzas, tributación y costos. Modalidad presencial y online con respaldo ACCA."
+    />
+@endsection
+
 @section('content')
 
     {{-- Schema markup (JSON-LD): listado de cursos --}}

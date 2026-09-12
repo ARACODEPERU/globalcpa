@@ -3,8 +3,10 @@
 @section('title', ' - Nosotros')
 
 @section('etiquetasmeta')
-    <meta name="description"
-        content="Conoce CPA Academy: escuela de negocios con respaldo ACCA, formando contadores y financieros líderes en más de 10 países de LATAM." />
+    <x-seo
+        title="Nosotros - CPA Academy"
+        description="Conoce CPA Academy: escuela de negocios con respaldo ACCA, formando contadores y financieros líderes en más de 10 países de LATAM."
+    />
 @endsection
 
 @section('content')

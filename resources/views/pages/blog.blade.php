@@ -1,5 +1,14 @@
 @extends('layouts.webpage')
 
+@section('title', ' - Blog')
+
+@section('etiquetasmeta')
+    <x-seo
+        title="Blog de CPA Academy"
+        description="Artículos y novedades de CPA Academy sobre contabilidad, finanzas, auditoría, NIIF y actualización profesional, escritos por expertos en activo."
+    />
+@endsection
+
 @section('content')
 
     <style>

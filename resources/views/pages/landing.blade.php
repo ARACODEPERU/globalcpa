@@ -1,6 +1,11 @@
 @extends('layouts.webpage')
+@section('title', ' - ' . ($landingPage->title ?? 'Landing'))
 @section('etiquetasmeta')
-    <meta name="description" content="{{ $landingPage->description_short }}" />
+    <x-seo
+        title="{{ $landingPage->title ?? 'Landing' }} - CPA Academy"
+        :description="!empty($landingPage->description_short) ? $landingPage->description_short : null"
+        :image="!empty($landingPage->main_image) ? asset('storage/' . $landingPage->main_image) : null"
+    />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" />
     <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />

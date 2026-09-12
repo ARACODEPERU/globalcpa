@@ -3,8 +3,10 @@
 @section('title', ' - Testimonios')
 
 @section('etiquetasmeta')
-    <meta name="description"
-        content="Historias reales de profesionales que transformaron su carrera con CPA Academy. Conoce los testimonios de nuestros egresados en LATAM." />
+    <x-seo
+        title="Testimonios - CPA Academy"
+        description="Historias reales de profesionales que transformaron su carrera con CPA Academy. Conoce los testimonios de nuestros egresados en LATAM."
+    />
 @endsection
 
 @section('content')

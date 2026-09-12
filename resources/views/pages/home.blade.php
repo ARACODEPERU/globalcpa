@@ -1,5 +1,14 @@
 @extends('layouts.webpage')
 
+@section('title', ' - Inicio')
+
+@section('etiquetasmeta')
+    <x-seo
+        title="CPA Academy - Formación profesional en contabilidad, finanzas y auditoría"
+        description="CPA Academy: escuela de negocios con respaldo ACCA, docentes de Big Four y programas prácticos en contabilidad, finanzas y auditoría. +5,000 alumnos en +10 países de LATAM."
+    />
+@endsection
+
 @section('content')
 
 <style>

@@ -3,8 +3,10 @@
 @section('title', ' - ¿Por qué CPA Academy?')
 
 @section('etiquetasmeta')
-    <meta name="description"
-        content="Descubre por qué elegir CPA Academy: respaldo ACCA, docentes de Big Four, metodología práctica y alumnos en más de 10 países de LATAM." />
+    <x-seo
+        title="¿Por qué CPA Academy?"
+        description="Descubre por qué elegir CPA Academy: respaldo ACCA, docentes de Big Four, metodología práctica y alumnos en más de 10 países de LATAM."
+    />
 @endsection
 
 @section('content')
