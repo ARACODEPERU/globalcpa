@@ -42,6 +42,8 @@
         align-items: center;
     }
     body.dark-only .loader-text { color: #ffffff; }
+    /* Modo oscuro: logo del loader en blanco (el asset ya es 100% blanco) */
+    body.dark-only .loader-logo { content: url("{{ asset('themes/webpage/images/Logo_cpa_blanco.png') }}"); }
     .loader-text::after {
         content: '';
         animation: typing-dots 1.5s infinite;

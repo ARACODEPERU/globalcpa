@@ -11,6 +11,59 @@
 
 @section('content')
 
+    <style>
+        /* =========================================
+           HERO DE CURSOS (estilo institucional del sitio)
+           ========================================= */
+        .crs-hero {
+            background: linear-gradient(135deg, #002060 0%, #004080 100%);
+            border-radius: 20px;
+            border: 0;
+            overflow: hidden;
+            position: relative;
+        }
+        .crs-hero::after {
+            content: '';
+            position: absolute;
+            top: -80px;
+            right: -80px;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(227, 6, 19, 0.25) 0%, rgba(0, 32, 96, 0) 70%);
+            pointer-events: none;
+        }
+        .crs-hero-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .crs-hero-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 22px;
+            border-radius: 50px;
+            background: #ffc107;
+            color: #002060;
+            font-weight: 700;
+            border: 0;
+            text-decoration: none;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+        .crs-hero-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 193, 7, 0.35);
+            color: #002060;
+        }
+    </style>
+
     {{-- Schema markup (JSON-LD): listado de cursos --}}
     @if (!empty($coursesSchema))
         <script type="application/ld+json">
@@ -37,13 +90,59 @@
             <!-- Page Sidebar Ends-->
             <div class="page-body">
                 <div class="container-fluid"></div>
-                <div class="container-fluid">
-                    <br><br><br>
-                    <img style="
-                    width: 100%;"
-                        src="{{ asset('themes/webpage/images/courses-page.jpg') }}" alt="">
+                <div class="container-fluid mt-5">
+                    <div class="card crs-hero shadow mb-4" data-aos="fade-in">
+                        <div class="card-body p-4 p-lg-5 position-relative">
+                            <div class="row align-items-center">
+                                <div class="col-lg-8">
+                                    <nav aria-label="breadcrumb" class="mb-3">
+                                        <ol class="breadcrumb mb-0">
+                                            <li class="breadcrumb-item">
+                                                <a href="{{ route('index_main') }}"
+                                                    class="text-white-50 text-decoration-none text-uppercase small fw-bold"
+                                                    style="letter-spacing: 1px;">
+                                                    <i class="fa fa-home me-1"></i> Inicio
+                                                </a>
+                                            </li>
+                                            <li class="breadcrumb-item active text-white text-uppercase small fw-bold"
+                                                style="letter-spacing: 1px;" aria-current="page">
+                                                Cursos
+                                            </li>
+                                        </ol>
+                                    </nav>
+
+                                    <h1 class="display-4 fw-bold text-white mb-3">
+                                        Explora nuestros <span class="text-warning">cursos</span>
+                                    </h1>
+                                    <p class="lead text-white-50 mb-4" style="max-width: 620px; line-height: 1.6;">
+                                        Especializaciones en tributación, NIIF, auditoría, finanzas y costos,
+                                        dictadas por docentes en ejercicio y con certificación con respaldo internacional.
+                                    </p>
+
+                                    <div class="d-flex flex-wrap gap-3 mb-4">
+                                        <span class="crs-hero-tag">
+                                            <i class="fa fa-book text-warning"></i>
+                                            {{ $courses->count() }} programas disponibles
+                                        </span>
+                                        <span class="crs-hero-tag">
+                                            <i class="fa fa-user-tie text-warning"></i>
+                                            Docentes expertos en ejercicio
+                                        </span>
+                                        <span class="crs-hero-tag">
+                                            <i class="fa fa-certificate text-warning"></i>
+                                            Certificación con respaldo
+                                        </span>
+                                    </div>
+
+                                    <button type="button" class="crs-hero-btn"
+                                        onclick="document.querySelector('.dashboard_default').scrollIntoView({ behavior: 'smooth', block: 'start' });">
+                                        Explorar catálogo <i class="fa fa-arrow-down"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <br>
                 <!-- Container-fluid starts-->
                 <div class="container-fluid dashboard_default">
                     <div class="row">
@@ -269,17 +368,12 @@
 
 
     <script>
-        let currentIndex = 0;
-        const slides = document.querySelector('.slides');
-        const totalSlides = document.querySelectorAll('.slide').length;
-
-        function showNextSlide() {
-            currentIndex = (currentIndex + 1) % totalSlides;
-            const offset = -currentIndex * 100;
-            slides.style.transform = `translateX(${offset}%)`;
-        }
-
-        setInterval(showNextSlide, 3000); // Cambia cada 3 segundos
+        // Código legacy del slider que no existe en esta página: deshabilitado para evitar errores
+        // let currentIndex = 0;
+        // const slides = document.querySelector('.slides');
+        // const totalSlides = document.querySelectorAll('.slide').length;
+        // function showNextSlide() { /* ... */ }
+        // setInterval(showNextSlide, 3000);
     </script>
 
 
@@ -422,6 +516,20 @@
 
             // Inicializar la paginación al cargar la página (mostrar la primera página)
             updatePagination(1);
+        });
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            // Inicializar AOS para las animaciones del hero y las tarjetas
+            if (window.AOS !== undefined) {
+                AOS.init({
+                    mirror: false,
+                    duration: 800,
+                    once: true
+                });
+                AOS.refresh();
+            }
         });
     </script>
 

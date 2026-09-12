@@ -35,6 +35,9 @@
             object-fit: contain;
         }
 
+        /* Swap de logo claro/blanco según modo: por defecto solo el claro */
+        .custom-logo-img--dark { display: none; }
+
         /* Sección Derecha: Menú */
         .header-right-group {
             display: flex;
@@ -120,6 +123,12 @@
             /* border-bottom: 1px solid #374558; */
             border-bottom: 1px solid #e30613;
         }
+
+        /* En modo oscuro: mostrar el logo 100% blanco y ocultar el claro */
+        html.dark .custom-logo-img--light,
+        body.dark-only .custom-logo-img--light { display: none !important; }
+        html.dark .custom-logo-img--dark,
+        body.dark-only .custom-logo-img--dark { display: inline-block !important; }
 
         /* BLOQUE DE FUERZA BRUTA: Evita que el tema oculte el botón */
         .custom-nav-list li.custom-item-darkmode {
@@ -382,7 +391,8 @@
             </div>
             <div class="logo-wrapper custom-logo-wrapper">
                 <a href="{{ route('index_main') }}">
-                    <img class="custom-logo-img" src="{{ asset('themes/webpage/images/Logo_cpa_modificado.png') }}" alt="Logo">
+                    <img class="custom-logo-img custom-logo-img--light" src="{{ asset('themes/webpage/images/Logo_cpa_modificado.png') }}" alt="Logo">
+                    <img class="custom-logo-img custom-logo-img--dark" src="{{ asset('themes/webpage/images/Logo_cpa_blanco.png') }}" alt="Logo">
                 </a>
             </div>
         </div>
