@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use App\Services\JobOffersAccess;
+use App\Services\StudentTestimonyAccess;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Tightenco\Ziggy\Ziggy;
@@ -36,6 +38,13 @@ class HandleInertiaRequests extends Middleware
                 'roles' => $request->user() ? $request->user()->roles->pluck('name') : [],
                 'permissions' => $request->user() ? $request->user()->getPermissionsViaRoles()->pluck('name') : [],
             ],
+            'hasActiveSubscription' => fn () => JobOffersAccess::hasActiveSubscription(
+                JobOffersAccess::studentId($request->user())
+            ),
+            // Acceso a la vista "Ofertas Laborales": curso de pago o suscripcion activa y vigente
+            'canViewJobOffers' => fn () => JobOffersAccess::canView($request->user()),
+            // Acceso al apartado "Testimonios" del alumno (misma regla de acceso)
+            'canLeaveTestimonials' => fn () => StudentTestimonyAccess::canParticipate($request->user()),
             'ziggy' => function () use ($request) {
                 return array_merge((new Ziggy)->toArray(), [
                     'location' => $request->url(),

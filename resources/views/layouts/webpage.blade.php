@@ -62,7 +62,20 @@
     <!-- latest jquery-->
     <script src="{{ asset('themes/webpage/assets/js/jquery.min.js') }}"></script>
 
+    <!-- Font Awesome 4 (ANTES de app.css) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
     <link rel="stylesheet" href="{{ asset('themes/webpage/css/app.css') }}" />
+
+    <!-- Override FA6: forzar FA4 para .fa (DESPUES de app.css) -->
+    <style>
+        .fa,
+        .fa-classic,
+        .fa-serif {
+            font-family: FontAwesome !important;
+            font-weight: normal !important;
+        }
+    </style>
 
     <!-- Javascript Assets -->
     <!-- Carrito JS -->
@@ -75,7 +88,6 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
         rel="stylesheet" />
-
 
     <!-- Themify icon-->
     <link rel="stylesheet" type="text/css" href="{{ asset('themes/webpage/assets/css/vendors/themify.css') }}">
@@ -114,15 +126,19 @@
         (function() {
             const isDark = localStorage.getItem("cion_mode") === "dark-only"
                 || localStorage.getItem("_x_darkMode_on") === "true";
+            document.documentElement.classList.toggle("dark", isDark);
+            document.body.classList.toggle("dark-only", isDark);
             if (isDark) {
-                document.documentElement.classList.add("dark");
-                document.body.classList.add("dark-only");
                 localStorage.setItem("cion_mode", "dark-only");
                 localStorage.setItem("_x_darkMode_on", "true");
+            } else {
+                localStorage.setItem("cion_mode", "light");
+                localStorage.setItem("_x_darkMode_on", "false");
             }
         })();
     </script>
     @yield('etiquetasmeta')
+    @yield('styles')
 
     {{-- Tracking de tráfico (first-touch): UTM, fbclid, gclid, referrer --}}
     <script src="{{ asset('js/traffic-tracking.js') }}"></script>

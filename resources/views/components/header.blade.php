@@ -264,6 +264,110 @@
             
             /* Ajuste fino para botón login icono */
             .btn-pill.px-2 { padding-left: 0.5rem !important; padding-right: 0.5rem !important; }
+            .header-search-wrap .header-search-input { width: 0; padding: 0; opacity: 0; }
+        }
+
+        /* =========================================
+           BUSCADOR EXPANDIBLE EN HEADER
+           ========================================= */
+        .header-search-wrap {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            position: relative;
+            list-style: none;
+        }
+        .header-search-wrap .search-toggle {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: transparent;
+            transition: background 0.25s;
+        }
+        .header-search-wrap .search-toggle:hover {
+            background: rgba(0, 32, 96, 0.08);
+        }
+        body.dark-only .header-search-wrap .search-toggle:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+        .header-search-wrap .search-toggle svg {
+            color: #2c323f;
+            transition: color 0.25s;
+        }
+        body.dark-only .header-search-wrap .search-toggle svg {
+            color: #b4b7c5;
+        }
+        .header-search-wrap .search-toggle:hover svg {
+            color: #e30613;
+        }
+        .header-search-form {
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            width: 0;
+            opacity: 0;
+            transition: width 0.35s ease, opacity 0.25s ease, margin 0.35s ease;
+            margin-left: 0;
+        }
+        .header-search-wrap.is-open .header-search-form,
+        .header-search-wrap:hover .header-search-form {
+            width: 220px;
+            opacity: 1;
+            margin-left: 4px;
+        }
+        .header-search-form input {
+            width: 100%;
+            padding: 7px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 20px 0 0 20px;
+            font-size: 13px;
+            outline: none;
+            background: #ffffff;
+            color: #1f2937;
+            transition: border-color 0.25s;
+        }
+        .header-search-form input::placeholder { color: #9ca3af; }
+        .header-search-form input:focus { border-color: #002060; }
+        body.dark-only .header-search-form input {
+            background: #1f2937;
+            border-color: #374558;
+            color: #f6f7fb;
+        }
+        body.dark-only .header-search-form input::placeholder { color: #6b7280; }
+        body.dark-only .header-search-form input:focus { border-color: #e30613; }
+        .header-search-form button {
+            padding: 7px 14px;
+            border: 1px solid #002060;
+            border-left: none;
+            border-radius: 0 20px 20px 0;
+            background: #002060;
+            color: #ffffff;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.25s;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+        }
+        .header-search-form button svg {
+            color: #ffffff;
+        }
+        .header-search-form button:hover { background: #004080; }
+        body.dark-only .header-search-form button {
+            background: #e30613;
+            border-color: #e30613;
+        }
+        body.dark-only .header-search-form button:hover { background: #c00511; }
+        @media only screen and (max-width: 575px) {
+            .header-search-wrap:hover .header-search-form,
+            .header-search-wrap.is-open .header-search-form {
+                width: 160px;
+            }
         }
     </style>
 
@@ -298,6 +402,63 @@
                 </li>
             @endif
                 
+                <!-- Buscador (SVG de svgrepo.com/svg/414914) -->
+                <li class="header-search-wrap" id="headerSearchWrap">
+                    <button type="button" class="search-toggle" id="headerSearchToggle" title="Buscar cursos">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M16.66,10.08c0,3.63-2.95,6.58-6.58,6.58s-6.58-2.95-6.58-6.58S6.45,3.5,10.08,3.5s6.58,2.95,6.58,6.58Z"/>
+                            <line x1="14.76" y1="14.71" x2="20.49" y2="20.49"/>
+                        </svg>
+                    </button>
+                    <form class="header-search-form" id="headerSearchForm" action="{{ route('web_search_courses') }}" method="GET">
+                        <input type="text" name="q" id="headerSearchInput" placeholder="Buscar cursos..." autocomplete="off">
+                        <button type="submit">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M16.66,10.08c0,3.63-2.95,6.58-6.58,6.58s-6.58-2.95-6.58-6.58S6.45,3.5,10.08,3.5s6.58,2.95,6.58,6.58Z"/>
+                                <line x1="14.76" y1="14.71" x2="20.49" y2="20.49"/>
+                            </svg>
+                        </button>
+                    </form>
+                </li>
+                <script>
+                    (function() {
+                        const wrap = document.getElementById('headerSearchWrap');
+                        const toggle = document.getElementById('headerSearchToggle');
+                        const form = document.getElementById('headerSearchForm');
+                        const input = document.getElementById('headerSearchInput');
+                        let closeTimer = null;
+
+                        toggle.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            wrap.classList.toggle('is-open');
+                            if (wrap.classList.contains('is-open')) {
+                                setTimeout(function() { input.focus(); }, 100);
+                            }
+                        });
+
+                        wrap.addEventListener('mouseenter', function() { clearTimeout(closeTimer); });
+                        wrap.addEventListener('mouseleave', function() {
+                            closeTimer = setTimeout(function() {
+                                if (!wrap.classList.contains('is-open')) {
+                                    wrap.classList.remove('is-open');
+                                }
+                            }, 300);
+                        });
+
+                        document.addEventListener('click', function(e) {
+                            if (!wrap.contains(e.target)) {
+                                wrap.classList.remove('is-open');
+                            }
+                        });
+
+                        input.addEventListener('keydown', function(e) {
+                            if (e.key === 'Escape') {
+                                wrap.classList.remove('is-open');
+                            }
+                        });
+                    })();
+                </script>
+
                 <!-- Modo Oscuro -->
                 <li class="custom-item-darkmode">
                     <div style="cursor: pointer;" id="darkModeToggle">
@@ -331,6 +492,7 @@
                                 
                                 syncUI(nextState);
                                 localStorage.setItem("_x_darkMode_on", nextState);
+                                localStorage.setItem("cion_mode", nextState ? 'dark-only' : 'light');
                             });
                         };
 

@@ -4,6 +4,7 @@ use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\JobOffersController;
 use App\Http\Controllers\KardexController;
 use App\Http\Controllers\LocalSaleController;
 use App\Http\Controllers\ParametersController;
@@ -32,8 +33,12 @@ use Illuminate\Support\Facades\Log;
 // Route::get('/', [WebPageController::class, 'construction'])->name('construction');
 Route::get('/', [WebPageController::class, 'index'])->name('index_main');
 Route::get('/home', [WebPageController::class, 'index'])->name('index_main_home');
-Route::get('/home2', [WebPageController::class, 'index2'])->name('index_main_home2');
+//Route::get('/home2', [WebPageController::class, 'index2'])->name('index_main_home2');
 Route::get('/nosotros', [WebPageController::class, 'about'])->name('web_about');
+Route::get('/por-que-cpa-academy', [WebPageController::class, 'whyCpa'])->name('web_why_cpa');
+Route::get('/testimonios', [WebPageController::class, 'testimonials'])->name('web_testimonials');
+Route::get('/fag', [WebPageController::class, 'fag'])->name('web_fag');
+Route::get('/faq', [WebPageController::class, 'faq'])->name('web_faq');
 Route::get('/docentes', [WebPageController::class, 'teachers'])->name('web_teachers');
 Route::get('/landing/{slug}', [WebPageController::class, 'landing'])->name('web_landing');
 Route::get('/academy', [WebPageController::class, 'academy'])->name('web_academy');
@@ -46,6 +51,7 @@ Route::get('/politicas_privacidad', [WebPageController::class, 'privacypolicies'
 //Route::get('/terminos-y-condiciones', [WebPageController::class, 'terms'])->name('terms_main'); //ya está hecho
 
 Route::get('/cursos', [WebPageController::class, 'courses'])->name('web_courses');
+Route::get('/buscar-cursos', [WebPageController::class, 'searchCourses'])->name('web_search_courses');
 Route::get('/curso-descripcion/{id}', [WebPageController::class, 'coursedescription'])->name('web_course_description');
 Route::get('/curso/{id}', [WebPageController::class, 'course_url_slug'])->name('course_url_slug'); // ruta de cursos landing
 
@@ -218,12 +224,16 @@ Route::middleware('auth')->group(function () {
         [PersonController::class, 'updateInfoPersonByUser']
     )->name('user_persom_info_store');
 
+    // Ofertas Laborales (iframe configurable desde el parametro P000032)
+    Route::get('ofertas-laborales', [JobOffersController::class, 'index'])->name('job_offers');
+
     Route::get('parameters/list', [ParametersController::class, 'index'])->name('parameters');
     Route::get('parameters/create', [ParametersController::class, 'create'])->name('parameters_create');
     Route::post('parameters/store', [ParametersController::class, 'store'])->name('parameters_store');
     Route::get('parameters/{id}/edit', [ParametersController::class, 'edit'])->name('parameters_edit');
     Route::put('parameters/update/{id}', [ParametersController::class, 'update'])->name('parameters_update');
-    Route::get('parameters/{id}/{val}/default', [ParametersController::class, 'updateDefaultValue'])->name('parameters_update_default_value');
+    Route::get('parameters/{id}/{val}/default', [ParametersController::class, 'updateDefaultValue'])->name('parameters_update_default_value_get');
+    Route::post('parameters/{id}/default', [ParametersController::class, 'updateDefaultValuePost'])->name('parameters_update_default_value');
 
     ////////////////actualizar informacion de personas
     Route::get('person/update_information', function () {
@@ -296,6 +306,9 @@ Route::get('/test-image/{student_id}/{certificate_id}', [WebController::class, '
 
 Route::post('landing/store/course-free',[WebPageController::class, 'storeCourseFree'])
     ->name('landing_store_course_free');
+
+// Sitemap público (fallback cuando public/sitemap.xml no existe o no es accesible)
+Route::get('/sitemap.xml', [\Modules\CMS\Http\Controllers\CMSController::class, 'publicSitemap'])->name('public_sitemap');
 
 require __DIR__ . '/auth.php';
 require __DIR__ . '/system.php';

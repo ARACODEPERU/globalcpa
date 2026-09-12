@@ -2,7 +2,12 @@
 
 @section('content')
 
-
+    {{-- Schema markup (JSON-LD): listado de cursos --}}
+    @if (!empty($coursesSchema))
+        <script type="application/ld+json">
+            {!! json_encode($coursesSchema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) !!}
+        </script>
+    @endif
 
     <!-- Loader starts-->
     <!-- Loader ends-->
@@ -74,8 +79,9 @@
 
                                                     @foreach ($courses->skip($p * $i)->take($p) as $item)
                                                         @php
-                                                            $hasPublishedLanding = filled($item->course?->landing?->url_slug) && ($item->course?->landing?->is_published ?? false);
-                                                            $courseUrl = $hasPublishedLanding ? route('course_url_slug', $item->course?->landing?->url_slug) : route('web_course_description', $item->id);
+                                                            $courseUrl = filled($item->course?->landing?->url_slug) && ($item->course?->landing?->is_published ?? false)
+                                                                ? route('course_url_slug', $item->course->landing->url_slug)
+                                                                : route('web_course_description', $item->id);
                                                         @endphp
                                                         <div class="col-xl-4 col-md-6 col-sm-12 box-col-4">
                                                             <div class="card weekend-card">
@@ -145,8 +151,9 @@
                                                     @foreach ($courses as $item)
                                                         @if (strtolower($item->additional) == strtolower($type))
                                                             @php
-                                                                $hasPublishedLanding = filled($item->course?->landing?->url_slug) && ($item->course?->landing?->is_published ?? false);
-                                                                $courseUrl = $hasPublishedLanding ? route('course_url_slug', $item->course?->landing?->url_slug) : route('web_course_description', $item->id);
+                                                                $courseUrl = filled($item->course?->landing?->url_slug) && ($item->course?->landing?->is_published ?? false)
+                                                                    ? route('course_url_slug', $item->course->landing->url_slug)
+                                                                    : route('web_course_description', $item->id);
                                                             @endphp
                                                             <div class="col-xl-4 col-md-6 col-sm-12 box-col-4">
                                                                 <div class="card weekend-card">

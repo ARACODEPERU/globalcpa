@@ -36,6 +36,7 @@
             display: flex;
             align-items: center;
         }
+        body.dark-only .loader-text { color: #ffffff; }
         .loader-text::after {
             content: '';
             animation: typing-dots 1.5s infinite;
@@ -108,6 +109,11 @@
                 <x-courselanding.professional-development-form :landing="$landing" />
 
                 <x-courselanding.certificate-template />
+
+                {{-- Testimonios de los alumnos de este curso (al final) + schema markup --}}
+                <x-courselanding.course-testimonials :testimonials="$course_testimonials ?? []"
+                    :course="$landing->course"
+                    :schema="$course_schema ?? null" />
 
 
             </div>

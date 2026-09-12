@@ -29,12 +29,14 @@ use App\Models\Department;
 use App\Models\District;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Str;
 use Modules\Academic\Entities\AcaStudent;
 use Modules\Academic\Entities\AcaCapRegistration;
 use Modules\Academic\Entities\AcaCourseLanding;
 use Illuminate\Support\Facades\DB;
 use Modules\Academic\Entities\AcaStudentCoursesInterest;
 use Modules\CMS\Entities\CmsLanding;
+use Modules\CMS\Entities\CmsTestimony;
 use Modules\Onlineshop\Entities\OnliCarritoAbandonado;
 use Modules\Onlineshop\Entities\OnliPaymentProblem;
 use Modules\Blog\Entities\BlogArticle;
@@ -116,45 +118,364 @@ class WebPageController extends Controller
         ]);
     }
 
-    public function nosotros()
+    public function about()
     {
+        return view('pages.nosotros');
+    }
 
-        $banner = CmsSection::where('component_id', 'nosotros_banner_area_11')  //siempre cambiar el id del componente
-            ->join('cms_section_items', 'section_id', 'cms_sections.id')
-            ->join('cms_items', 'cms_section_items.item_id', 'cms_items.id')
-            ->select(
-                'cms_items.content',
-                'cms_section_items.position'
-            )
-            ->orderBy('cms_section_items.position')
-            ->first();
+    public function whyCpa()
+    {
+        return view('pages.por-que-cpa-academy');
+    }
 
+    /**
+     * Pagina publica de testimonios.
+     *
+     * Muestra los testimonios aprobados y visibles. Si hay pocos se muestran
+     * todos; si hay muchos, se pagina mostrando los mas recientes agrupados por
+     * categoria de curso (y con filtro por curso).
+     */
+    public function testimonials(Request $request)
+    {
+        $perPage = 12;
+        $category = $request->query('categoria');
+        $courseFilter = $request->query('curso');
+        $ratingFilter = $request->query('rating');
 
-        $visions = CmsSection::where('component_id', 'nosotros_vision_area_12')  //siempre cambiar el id del componente
-            ->join('cms_section_items', 'section_id', 'cms_sections.id')
-            ->join('cms_items', 'cms_section_items.item_id', 'cms_items.id')
-            ->select(
-                'cms_items.content',
-                'cms_section_items.position'
-            )
-            ->orderBy('cms_section_items.position')
+        $baseQuery = function () use ($category, $courseFilter, $ratingFilter) {
+            $query = CmsTestimony::query()
+                ->with(['course.category', 'product', 'student.person'])
+                ->where('approval_status', CmsTestimony::STATUS_APPROVED)
+                ->where('status', true)
+                ->whereNotNull('description');
+
+            if ($category) {
+                $query->whereHas('course.category', function ($q) use ($category) {
+                    $q->where('description', $category);
+                });
+            }
+
+            if ($courseFilter) {
+                $query->whereHas('course.landing', function ($lq) use ($courseFilter) {
+                    $lq->where('url_slug', $courseFilter);
+                });
+            }
+
+            if ($ratingFilter && is_numeric($ratingFilter)) {
+                $query->where('rating', (int) $ratingFilter);
+            }
+
+            return $query;
+        };
+
+        $total = $baseQuery()->count();
+        $page = max(1, (int) $request->query('page', 1));
+
+        $rows = $total > $perPage
+            ? $baseQuery()->orderByDesc('created_at')->forPage($page, $perPage)->get()
+            : $baseQuery()->orderByDesc('created_at')->get();
+
+        $map = fn (CmsTestimony $testimony) => $this->testimonyPayload($testimony);
+
+        $testimonies = $rows->map($map)->values();
+
+        // Agrupacion por categoria de curso (los mas recientes primero dentro de cada grupo).
+        $groups = $testimonies
+            ->groupBy('category')
+            ->map(function ($items, $categoryName) {
+                return [
+                    'category' => $categoryName,
+                    'testimonies' => $items->values(),
+                ];
+            })
+            ->values();
+
+        // Chips de filtro por categoria con su conteo (sobre el total aprobado).
+        $categoryOptions = CmsTestimony::query()
+            ->where('cms_testimonies.approval_status', CmsTestimony::STATUS_APPROVED)
+            ->where('cms_testimonies.status', true)
+            ->whereNotNull('cms_testimonies.course_id')
+            ->join('aca_courses', 'aca_courses.id', '=', 'cms_testimonies.course_id')
+            ->join('aca_category_courses', 'aca_category_courses.id', '=', 'aca_courses.category_id')
+            ->select('aca_category_courses.description as category', DB::raw('COUNT(*) as total'))
+            ->groupBy('aca_category_courses.description')
+            ->orderByDesc('total')
             ->get();
 
-        $lider = CmsSection::where('component_id', 'nosotros_lider_area_13')  //siempre cambiar el id del componente
-            ->join('cms_section_items', 'section_id', 'cms_sections.id')
-            ->join('cms_items', 'cms_section_items.item_id', 'cms_items.id')
+        // Cursos con testimonios aprobados (para el filtro por curso).
+        $courseOptions = CmsTestimony::query()
+            ->where('cms_testimonies.approval_status', CmsTestimony::STATUS_APPROVED)
+            ->where('cms_testimonies.status', true)
+            ->whereNotNull('cms_testimonies.course_id')
+            ->join('aca_courses', 'aca_courses.id', '=', 'cms_testimonies.course_id')
+            ->leftJoin('aca_course_landings', 'aca_course_landings.course_id', '=', 'aca_courses.id')
             ->select(
-                'cms_items.content',
-                'cms_section_items.position'
+                'aca_courses.id as id',
+                'aca_courses.description as description',
+                'aca_course_landings.url_slug as slug',
+                DB::raw('COUNT(*) as total')
             )
-            ->orderBy('cms_section_items.position')
+            ->groupBy('aca_courses.id', 'aca_courses.description', 'aca_course_landings.url_slug')
+            ->orderByDesc('total')
+            ->limit(60)
             ->get();
 
-        return view('pages.nosotros', [
-            'banner' => $banner,
-            'visions' => $visions,
-            'lider' => $lider
+        // Estadisticas reales de los testimonios aprobados.
+        $ratingsQuery = CmsTestimony::query()
+            ->where('approval_status', CmsTestimony::STATUS_APPROVED)
+            ->where('status', true)
+            ->whereNotNull('rating');
+
+        $ratingsTotal = (clone $ratingsQuery)->count();
+        $ratingsSum = (clone $ratingsQuery)->sum('rating');
+        $positive = (clone $ratingsQuery)->where('rating', '>=', 4)->count();
+
+        $stats = [
+            'total' => $ratingsTotal,
+            'average' => $ratingsTotal > 0 ? round($ratingsSum / $ratingsTotal, 1) : 0,
+            'recommend' => $ratingsTotal > 0 ? (int) round(($positive / $ratingsTotal) * 100) : 0,
+            'courses' => (clone $ratingsQuery)->whereNotNull('course_id')->distinct('course_id')->count('course_id'),
+            'top_rating' => (clone $ratingsQuery)->max('rating') ?: 5,
+        ];
+
+        // Testimonio destacado: el de mejor calificacion mas reciente.
+        $featuredRow = (clone $ratingsQuery)->orderByDesc('rating')->orderByDesc('created_at')->first();
+        $featured = $featuredRow ? $map($featuredRow) : null;
+
+        $hasMore = $total > $perPage && ($page * $perPage) < $total;
+
+        // Schema markup (JSON-LD): Organization con valoracion agregada y resenas.
+        $schema = null;
+
+        if ($stats['total'] > 0) {
+            $reviewPool = $testimonies->isNotEmpty() ? $testimonies : collect(array_filter([$featured]));
+
+            $schema = [
+                '@context' => 'https://schema.org',
+                '@type' => 'Organization',
+                'name' => 'CPA Academy',
+                'url' => url('/'),
+                'logo' => asset('themes/webpage/images/Logo_cpa_modificado.png'),
+                'aggregateRating' => $this->aggregateRatingSchema($reviewPool, (float) ($stats['average'] ?: 5)),
+                'review' => $reviewPool->take(20)->map(fn (array $item) => $this->reviewSchema($item))->values()->all(),
+            ];
+        }
+
+        return view('pages.testimonios', [
+            'testimonies' => $testimonies,
+            'groups' => $groups,
+            'featured' => $featured,
+            'stats' => $stats,
+            'schema' => $schema,
+            'categoryOptions' => $categoryOptions,
+            'courseOptions' => $courseOptions,
+            'total' => $total,
+            'perPage' => $perPage,
+            'page' => $page,
+            'hasMore' => $hasMore,
+            'filters' => [
+                'categoria' => $category,
+                'curso' => $courseFilter,
+                'rating' => $ratingFilter,
+            ],
         ]);
+    }
+
+    /**
+     * Normaliza un testimonio para las vistas publicas (tarjetas, landing de
+     * curso y schema markup). Compartido por testimonials() y course_url_slug().
+     */
+    private function testimonyPayload(CmsTestimony $testimony): array
+    {
+        $course = $testimony->course;
+        // Solo se usa el item de tienda cuando el testimonio apunta a uno
+        // (los sembrados desde products se enlazan al propio producto).
+        $product = $testimony->entitie === OnliItem::class ? $testimony->product : null;
+        $studentName = optional(optional($testimony->student)->person)->full_name;
+        $author = $testimony->author_name ?: $studentName ?: 'Alumno CPA Academy';
+        // El cargo o profesion escrito tiene prioridad; si esta vacio se usa el
+        // tipo de curso y, en su defecto, "Egresado".
+        $role = $testimony->author_role ?: ($course?->type_description ?: 'Egresado');
+        // El texto libre que escribio el admin tiene prioridad sobre el item enlazado.
+        $program = $course?->description ?: ($testimony->item_label ?: ($product?->name ?: $testimony->title));
+
+        $cover = null;
+        if ($course && $course->image) {
+            $cover = asset('storage/' . $course->image);
+        } elseif ($product) {
+            $cover = $product->image;
+        }
+
+        return [
+            'id' => $testimony->id,
+            'author' => $author,
+            'role' => $role,
+            'program' => $program,
+            'category' => $course?->category?->description ?: 'Testimonios',
+            'course_id' => $testimony->course_id ? (int) $testimony->course_id : null,
+            'rating' => (int) ($testimony->rating ?: 5),
+            'quote' => $testimony->description,
+            'photo' => $testimony->image ? asset('storage/' . $testimony->image) : null,
+            'cover' => $cover,
+            'video' => $this->cleanIframe($testimony->video),
+            'avatar' => 'https://ui-avatars.com/api/?name=' . urlencode($author) . '&size=140&rounded=true&background=002060&color=ffffff&bold=true',
+            'date' => optional($testimony->created_at)->format('d/m/Y'),
+            'created_at_iso' => optional($testimony->created_at)->toIso8601String(),
+        ];
+    }
+
+    /**
+     * Arma una reseña de schema.org (JSON-LD) a partir de un testimonio normalizado.
+     */
+    private function reviewSchema(array $testimony, string $itemType = 'Course'): array
+    {
+        $review = [
+            '@type' => 'Review',
+            'author' => [
+                '@type' => 'Person',
+                'name' => $testimony['author'],
+            ],
+            'reviewRating' => [
+                '@type' => 'Rating',
+                'ratingValue' => $testimony['rating'],
+                'bestRating' => 5,
+                'worstRating' => 1,
+            ],
+            'reviewBody' => Str::limit(trim(strip_tags((string) $testimony['quote'])), 500, ''),
+            'itemReviewed' => [
+                '@type' => $itemType,
+                'name' => $testimony['program'] ?: 'CPA Academy',
+            ],
+        ];
+
+        if (!empty($testimony['created_at_iso'])) {
+            $review['datePublished'] = $testimony['created_at_iso'];
+        }
+
+        return $review;
+    }
+
+    /**
+     * Valoracion agregada (schema.org) a partir de una coleccion de testimonios normalizados.
+     */
+    private function aggregateRatingSchema($testimonies, ?float $average = null): ?array
+    {
+        $count = count($testimonies);
+
+        if ($count === 0) {
+            return null;
+        }
+
+        if ($average === null) {
+            $ratings = collect($testimonies)->pluck('rating')->filter();
+            $average = $ratings->isNotEmpty() ? round($ratings->avg(), 1) : 5;
+        }
+
+        return [
+            '@type' => 'AggregateRating',
+            'ratingValue' => $average,
+            'reviewCount' => $count,
+            'bestRating' => 5,
+            'worstRating' => 1,
+        ];
+    }
+
+    /**
+     * Testimonios publicables (aprobados, visibles y con texto) de un curso.
+     */
+    private function publicCourseTestimonials($course)
+    {
+        if (!$course) {
+            return collect();
+        }
+
+        return CmsTestimony::query()
+            ->with(['course.category', 'product', 'student.person'])
+            ->where('course_id', $course->id)
+            ->where('approval_status', CmsTestimony::STATUS_APPROVED)
+            ->where('status', true)
+            ->whereNotNull('description')
+            ->orderByDesc('created_at')
+            ->get()
+            ->map(fn (CmsTestimony $testimony) => $this->testimonyPayload($testimony))
+            ->values();
+    }
+
+    /**
+     * Schema markup (Course) de una landing, con valoracion agregada y resenas.
+     */
+    private function publicCourseSchema($landing, $testimonials = null): ?array
+    {
+        if (!$landing || !$landing->course) {
+            return null;
+        }
+
+        $course = $landing->course;
+
+        $schema = [
+            '@context' => 'https://schema.org',
+            '@type' => 'Course',
+            'name' => $course->description,
+            'description' => Str::limit(trim(strip_tags((string) $course->description)), 300, ''),
+            'url' => route('course_url_slug', $landing->url_slug),
+            'inLanguage' => 'es',
+            'provider' => [
+                '@type' => 'Organization',
+                'name' => 'CPA Academy',
+                'url' => url('/'),
+            ],
+        ];
+
+        if ($course->image) {
+            $schema['image'] = asset('storage/' . $course->image);
+        }
+
+        if ($course->category?->description) {
+            $schema['about'] = $course->category->description;
+        }
+
+        $testimonials = $testimonials ?? $this->publicCourseTestimonials($course);
+
+        if ($testimonials->isNotEmpty()) {
+            $schema['aggregateRating'] = $this->aggregateRatingSchema($testimonials);
+            $schema['review'] = $testimonials->take(20)
+                ->map(fn (array $testimony) => $this->reviewSchema($testimony))
+                ->values()
+                ->all();
+        }
+
+        return $schema;
+    }
+
+    /**
+     * Devuelve el codigo iframe del video de un testimonio editorial.
+     *
+     * Solo se acepta si contiene un <iframe>; se eliminan los <script> y los
+     * manejadores inline (on*) por seguridad.
+     */
+    private function cleanIframe(?string $html): ?string
+    {
+        $html = trim((string) $html);
+
+        if ($html === '' || !Str::contains($html, '<iframe')) {
+            return null;
+        }
+
+        $html = preg_replace('#<script\b[^>]*>.*?</script>#is', '', $html) ?? '';
+        $html = preg_replace('#\son\w+\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+)#i', '', $html) ?? '';
+        $html = trim($html);
+
+        return Str::contains($html, '<iframe') ? $html : null;
+    }
+
+    public function fag()
+    {
+        return view('pages.fag');
+    }
+
+    public function faq()
+    {
+        return view('pages.faq');
     }
 
     public function teachers()
@@ -190,7 +511,7 @@ class WebPageController extends Controller
     public function courses()
     {
         $courses = OnliItem::whereHas('course') // Filtra para que solo traiga items con curso existente
-                    ->with('course')                  // Carga la relación para evitar el problema de N+1
+                    ->with(['course', 'course.landing', 'course.category']) // Evita el problema de N+1
                     ->latest()
                     ->get();
 
@@ -220,6 +541,43 @@ class WebPageController extends Controller
 
         $p = 12; //numero de cursos mostrados PAGINACION
 
+        // Schema markup: ItemList de cursos para los buscadores.
+        $coursesSchema = [
+            '@context' => 'https://schema.org',
+            '@type' => 'ItemList',
+            'itemListElement' => $courses->take(30)->values()->map(function (OnliItem $item, int $index) {
+                $course = $item->course;
+                $hasPublishedLanding = filled($course?->landing?->url_slug) && ($course?->landing?->is_published ?? false);
+
+                $element = [
+                    '@type' => 'ListItem',
+                    'position' => $index + 1,
+                    'item' => [
+                        '@type' => 'Course',
+                        'name' => $course?->description ?: $item->name,
+                        'url' => $hasPublishedLanding
+                            ? route('course_url_slug', $course->landing->url_slug)
+                            : route('web_course_description', $item->id),
+                        'provider' => [
+                            '@type' => 'Organization',
+                            'name' => 'CPA Academy',
+                            'url' => url('/'),
+                        ],
+                    ],
+                ];
+
+                if ($course?->image) {
+                    $element['item']['image'] = asset('storage/' . $course->image);
+                }
+
+                if ($course?->category?->description) {
+                    $element['item']['about'] = $course->category->description;
+                }
+
+                return $element;
+            })->all(),
+        ];
+
         return view('pages.courses', [
             'courses' => $courses,
             //'categories' => $categories,
@@ -227,6 +585,44 @@ class WebPageController extends Controller
             'title' => $title,
             'types' => $types,
             'p' => $p,
+            'coursesSchema' => $coursesSchema,
+        ]);
+    }
+
+    /**
+     * Buscador de cursos: busca por nombre, descripción o categoría.
+     */
+    public function searchCourses(Request $request)
+    {
+        $query = trim($request->input('q', ''));
+
+        $courses = OnliItem::whereHas('course')
+            ->whereHas('course.landing', function ($landingQ) {
+                $landingQ->where('is_published', true)->whereNotNull('url_slug');
+            })
+            ->with(['course', 'course.landing', 'course.category'])
+            ->when($query, function ($q) use ($query) {
+                $q->where(function ($sub) use ($query) {
+                    $sub->where('name', 'like', "%{$query}%")
+                        ->orWhere('description', 'like', "%{$query}%")
+                        ->orWhereHas('course', function ($cq) use ($query) {
+                            $cq->where('description', 'like', "%{$query}%")
+                               ->orWhereHas('category', function ($catQ) use ($query) {
+                                   $catQ->where('description', 'like', "%{$query}%");
+                               });
+                        });
+                });
+            })
+            ->latest()
+            ->paginate(12)
+            ->withQueryString();
+
+        $total = $courses->total();
+
+        return view('pages.search-results', [
+            'courses' => $courses,
+            'query'   => $query,
+            'total'   => $total,
         ]);
     }
 
@@ -332,11 +728,19 @@ class WebPageController extends Controller
             $onliItem = OnliItem::where('item_id', $landing->course->id)->first();
         }
 
+        // Testimonios aprobados y visibles de ESTE curso (se publican al final de la landing).
+        $courseTestimonials = $this->publicCourseTestimonials($landing?->course);
+
+        // Schema markup del curso, con su valoracion agregada y resenas cuando las tiene.
+        $courseSchema = $this->publicCourseSchema($landing, $courseTestimonials);
+
         return view ('pages.course-landing', [
             'landing' => $landing,
             'teachers_premium' => $teachersPremium,
             'colors' => $colors,
             'onli_item_id' => $onliItem ? $onliItem->id : null,
+            'course_testimonials' => $courseTestimonials,
+            'course_schema' => $courseSchema,
         ]);
     }
 
@@ -407,11 +811,15 @@ class WebPageController extends Controller
             $onliItem = OnliItem::where('item_id', $landing->course->id)->first();
         }
 
+        $previewTestimonials = $this->publicCourseTestimonials($landing?->course);
+
         return view ('pages.course-landing', [
             'landing' => $landing,
             'teachers_premium' => $teachersPremium,
             'colors' => $colors,
             'onli_item_id' => $onliItem ? $onliItem->id : null,
+            'course_testimonials' => $previewTestimonials,
+            'course_schema' => $this->publicCourseSchema($landing, $previewTestimonials),
         ]);
     }
 
@@ -2072,7 +2480,7 @@ class WebPageController extends Controller
         $p = 12;
         $lines = 2;
 
-        // Art�culos agrupados por categor�a para el sidebar accordion
+        // Art�culos agrupados por categor�a para el sidebar accordion
         $articlesByCategory = [];
         foreach ($categories as $category) {
             $articlesByCategory[$category->id] = BlogArticle::where('category_id', $category->id)

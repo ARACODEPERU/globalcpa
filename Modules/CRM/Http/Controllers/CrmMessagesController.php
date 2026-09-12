@@ -77,11 +77,12 @@ class CrmMessagesController extends Controller
             $participants = CrmParticipant::where('conversation_id', $conversationId)
                 ->where('user_id', '<>', Auth::id())
                 ->pluck('user_id');
-            // Crear el mensaje
+            // Crear el mensaje (se guarda el HTML tal cual para que las etiquetas
+            // se rendericen al mostrarse con v-html)
             $message = CrmMessage::create([
                 'conversation_id' => $conversationId,
                 'person_id' => $personId,
-                'content' => htmlentities($request->get('text'), ENT_QUOTES, "UTF-8"),
+                'content' => $request->get('text'),
                 'type' => $request->get('type'),
                 'answer_ai' => $request->has('answer_ai') ? $request->get('answer_ai') : false
             ]);
@@ -326,6 +327,51 @@ class CrmMessagesController extends Controller
         Mail::to($data[1]->email_for)->send(new ClientHelpEmail($data));
 
         return true;
+    }
+
+    public function destroyMessage(Request $request)
+    {
+        $authUser = Auth::user();
+
+        // Solo docentes y administradores pueden eliminar mensajes
+        if (!$authUser->hasAnyRole(['Docente', 'admin', 'Administrador'])) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No tienes permisos para eliminar mensajes.'
+            ], 403);
+        }
+
+        try {
+            $msg = CrmMessage::findOrFail($request->get('message_id'));
+
+            // Solo puede eliminar mensajes que él mismo haya enviado
+            if ($msg->person_id != $authUser->person_id) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Solo puedes eliminar tus propios mensajes.'
+                ], 403);
+            }
+
+            // Solo puede eliminar mensajes enviados hace menos de una hora
+            if (!$msg->created_at || $msg->created_at->lt(now()->subHour())) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Solo puedes eliminar mensajes enviados hace menos de una hora.'
+                ], 403);
+            }
+
+            $msg->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Mensaje eliminado correctamente.'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No se pudo eliminar el mensaje. Intenta nuevamente.'
+            ], 500);
+        }
     }
 
     public function frequentlyQuestionsStore(Request $request)
