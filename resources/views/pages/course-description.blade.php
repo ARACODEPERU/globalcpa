@@ -1,5 +1,15 @@
 @extends('layouts.webpage')
 
+@section('title', ' - ' . ($item->name ?? 'Curso'))
+
+@section('etiquetasmeta')
+    <x-seo
+        title="{{ $item->name ?? 'Curso de especialización' }} - CPA Academy"
+        :description="!empty($item->description) ? \Illuminate\Support\Str::limit(trim(strip_tags((string) $item->description)), 155) : null"
+        :image="!empty($item->course?->image) ? asset('storage/' . $item->course->image) : null"
+    />
+@endsection
+
 @section('content')
     {{-- Ideally, this CSS should be in the <head> of your main layout file (e.g., layouts/webpage.blade.php) --}}
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
