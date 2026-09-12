@@ -29,12 +29,10 @@ Route::middleware(['auth','user_activity_log'])->prefix('security')->group(funct
     Route::post('person/information/update', [PersonController::class, 'createdOrUpdated'])->name('person_information_update');
 
     Route::get('dashboard/storage/indicator', [SecurityController::class, 'storageIndicador'])->name('security_storage_indicator');
+    Route::post('dashboard/storage/recalculate', [SecurityController::class, 'storageRecalculate'])->name('security_storage_recalculate');
 
     Route::get('table/permissions', [PermissionController::class, 'getData'])->name('security_permissions_data');
 
     Route::get('user/activity/logs', [UserActivityLogsController::class, 'index'])->name('user_activity_logs');
     Route::get('user/activity/logs/data', [UserActivityLogsController::class, 'getData'])->name('user_activity_logs_data');
-
-    Route::get('user/activity/online', [SecurityController::class, 'usersOnline'])->name('security_users_online');
-
 });
