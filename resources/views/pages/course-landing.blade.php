@@ -83,7 +83,10 @@
     <!-- page-wrapper Start-->
     <div class="page-wrapper" id="pageWrapper">
         <!-- Page Header Start-->
-        <x-header />
+        <x-header :breadcrumb="[
+            ['label' => 'Cursos', 'url' => route('web_courses')],
+            ['label' => $landing->course->name ?? ($landing->course->description ?? 'Curso de especialización')],
+        ]" />
 
         <!-- Page Body Start-->
         <div class="page-body-wrapper">

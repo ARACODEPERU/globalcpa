@@ -1,5 +1,10 @@
 
 <div>
+    @php
+        // Niveles de miga resueltos por App\View\Components\Header.
+        // Defensivo: si la vista se renderiza suelta, simplemente no hay barra.
+        $crumbs = $crumbs ?? [];
+    @endphp
     <style>
         /* =========================================
            ESTILOS PERSONALIZADOS HEADER (RESPONSIVE)
@@ -10,6 +15,7 @@
             display: flex !important;
             align-items: center;
             justify-content: space-between;
+            flex-wrap: wrap;
             padding: 10px 20px;
             width: 100%;
             z-index: 1000 !important;
@@ -378,6 +384,142 @@
                 width: 160px;
             }
         }
+
+        /* =========================================
+           BREADCRUMBS BAJO EL HEADER
+           ========================================= */
+        /* La barra va de borde a borde del header: el ancho compensa el padding
+           horizontal del contenedor (20px en escritorio) y los margenes negativos
+           la pegan a los extremos. */
+        .custom-breadcrumb-bar {
+            flex: 0 0 auto;
+            width: calc(100% + 40px);
+            box-sizing: border-box;
+            margin: 8px -20px -10px -20px;
+            padding: 7px 20px;
+            background-color: #f8fafc;
+            border-top: 1px solid #e5e7eb;
+        }
+        .custom-breadcrumb-list {
+            display: flex;
+            align-items: center;
+            flex-wrap: nowrap;
+            gap: 8px;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            font-size: 12.5px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            line-height: 1.2;
+            text-transform: uppercase;
+        }
+        .custom-breadcrumb-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 0;
+        }
+        /* El separador se dibuja por CSS: los lectores de pantalla solo anuncian las etiquetas.
+           nowrap evita que el flex lo comprima y parta su contenido en varias lineas. */
+        .custom-breadcrumb-item + .custom-breadcrumb-item::before {
+            content: "/";
+            flex: 0 0 auto;
+            white-space: nowrap;
+            color: #9ca3af;
+            font-weight: 400;
+        }
+        .custom-breadcrumb-item a {
+            color: #002060;
+            text-decoration: none;
+            white-space: nowrap;
+            transition: color 0.2s;
+        }
+        .custom-breadcrumb-item a:hover {
+            color: #e30613;
+            text-decoration: underline;
+        }
+        .custom-breadcrumb-item.is-current {
+            flex: 1 1 auto;
+        }
+        .custom-breadcrumb-item.is-current span {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            color: #6b7280;
+        }
+        /* El header es position:fixed: este espaciador reserva en flujo la altura que
+           agrega la barra (8px de margen + alto + el padding inferior que se absorbe). */
+        .custom-breadcrumb-spacer {
+            height: 32px;
+        }
+
+        /* Móvil: barra más baja y niveles intermedios resumidos en "/ … /" */
+        @media only screen and (max-width: 575px) {
+            .custom-breadcrumb-bar {
+                width: calc(100% + 30px);
+                margin: 8px -15px -10px -15px;
+                padding: 6px 15px;
+            }
+            .custom-breadcrumb-list {
+                font-size: 11px;
+                gap: 6px;
+            }
+            .custom-breadcrumb-item {
+                gap: 6px;
+            }
+            .custom-breadcrumb-item + .custom-breadcrumb-item::before {
+                content: none;
+            }
+            .custom-breadcrumb-item:not(:first-child):not(.is-current) {
+                display: none;
+            }
+            .custom-breadcrumb-item.is-current::before {
+                content: "/ … /";
+                flex: 0 0 auto;
+                white-space: nowrap;
+                color: #9ca3af;
+                font-weight: 400;
+            }
+            .custom-breadcrumb-spacer {
+                height: 28px;
+            }
+        }
+
+        /* En el rango de 320px el header reduce su padding a 8px 10px */
+        @media only screen and (max-width: 450px) {
+            .custom-breadcrumb-bar {
+                width: calc(100% + 20px);
+                margin: 8px -10px -8px -10px;
+                padding: 6px 10px;
+            }
+        }
+
+        /* Modo oscuro */
+        body.dark-only .custom-breadcrumb-bar {
+            background-color: #0b1220;
+            border-top-color: #374558;
+        }
+        body.dark-only .custom-breadcrumb-item a {
+            color: #b4b7c5;
+        }
+        body.dark-only .custom-breadcrumb-item a:hover {
+            color: #e30613;
+        }
+        body.dark-only .custom-breadcrumb-item.is-current span {
+            color: #f6f7fb;
+        }
+        body.dark-only .custom-breadcrumb-item + .custom-breadcrumb-item::before,
+        body.dark-only .custom-breadcrumb-item.is-current::before {
+            color: #6b7280;
+        }
+
+        /* Al imprimir el tema oculta .page-header: el espaciador tampoco debe ocupar espacio */
+        @media print {
+            .custom-breadcrumb-spacer {
+                display: none;
+            }
+        }
     </style>
 
     <div class="page-header custom-page-header">
@@ -593,6 +735,47 @@
             </ul>
         </div>
 
+        {{-- Breadcrumbs: fila propia del header; la altura extra la reserva .custom-breadcrumb-spacer --}}
+        @if (! empty($crumbs))
+            <nav class="custom-breadcrumb-bar" aria-label="Ruta de navegación">
+                <ol class="custom-breadcrumb-list">
+                    @foreach ($crumbs as $crumb)
+                        <li class="custom-breadcrumb-item {{ $loop->last ? 'is-current' : '' }}"
+                            @if ($loop->last) aria-current="page" @endif>
+                            @if (! $loop->last && ! empty($crumb['url']))
+                                <a href="{{ $crumb['url'] }}">{{ $crumb['label'] }}</a>
+                            @else
+                                <span>{{ $crumb['label'] }}</span>
+                            @endif
+                        </li>
+                    @endforeach
+                </ol>
+            </nav>
+
+            @php
+                // Datos estructurados para que Google pueda mostrar las migas en resultados.
+                $breadcrumbSchema = [];
+
+                foreach ($crumbs as $index => $crumb) {
+                    $breadcrumbSchema[] = [
+                        '@type' => 'ListItem',
+                        'position' => $index + 1,
+                        'name' => $crumb['label'],
+                        'item' => (! empty($crumb['url']) && $index < count($crumbs) - 1)
+                            ? $crumb['url']
+                            : url()->current(),
+                    ];
+                }
+            @endphp
+            <script type="application/ld+json">
+                {!! json_encode([
+                    '@context' => 'https://schema.org',
+                    '@type' => 'BreadcrumbList',
+                    'itemListElement' => $breadcrumbSchema,
+                ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
+            </script>
+        @endif
+
         {{-- Botón Móvil: Se muestra solo en Landing y debajo del contenido principal del header --}}
         @if(Route::is(['course_url_slug', 'landing_preview']))
             <div class="d-md-none w-100 pt-2 pb-1">
@@ -606,6 +789,11 @@
         @endif
 
     </div>
+
+    {{-- El header es position:fixed, así que reserva en flujo la altura de la fila de migas --}}
+    @if (! empty($crumbs))
+        <div class="custom-breadcrumb-spacer" aria-hidden="true"></div>
+    @endif
 
 
 

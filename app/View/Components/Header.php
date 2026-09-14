@@ -2,6 +2,7 @@
 
 namespace App\View\Components;
 
+use App\Services\Breadcrumbs;
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
@@ -10,8 +11,11 @@ class Header extends Component
 {
     /**
      * Create a new component instance.
+     *
+     * @param  array|null  $breadcrumb  Niveles de miga enviados por la página.
+     *                                  Reemplazan a los definidos en config/breadcrumbs.php.
      */
-    public function __construct()
+    public function __construct(public ?array $breadcrumb = null)
     {
         //
     }
@@ -21,6 +25,8 @@ class Header extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.header');
+        return view('components.header', [
+            'crumbs' => Breadcrumbs::forRoute(request()->route()?->getName(), $this->breadcrumb),
+        ]);
     }
 }
