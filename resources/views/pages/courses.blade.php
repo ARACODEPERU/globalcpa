@@ -3,18 +3,16 @@
 @section('title', ' - Cursos')
 
 @section('etiquetasmeta')
-    <x-seo
-        title="Cursos y Programas de Especialización - CPA Academy"
-        description="Explora los cursos y programas de especialización de CPA Academy en NIIF, auditoría, finanzas, tributación y costos. Modalidad presencial y online con respaldo ACCA."
-    />
+    <x-seo title="Cursos y Programas de Especialización - CPA Academy"
+        description="Explora los cursos y programas de especialización de CPA Academy en NIIF, auditoría, finanzas, tributación y costos. Modalidad presencial y online con respaldo ACCA." />
 @endsection
 
 @section('content')
 
     <style>
         /* =========================================
-           HERO DE CURSOS (estilo institucional del sitio)
-           ========================================= */
+                   HERO DE CURSOS (estilo institucional del sitio)
+                   ========================================= */
         .crs-hero {
             background: linear-gradient(135deg, #002060 0%, #004080 100%);
             border-radius: 20px;
@@ -22,6 +20,7 @@
             overflow: hidden;
             position: relative;
         }
+
         .crs-hero::after {
             content: '';
             position: absolute;
@@ -32,6 +31,7 @@
             background: radial-gradient(circle, rgba(227, 6, 19, 0.25) 0%, rgba(0, 32, 96, 0) 70%);
             pointer-events: none;
         }
+
         .crs-hero-tag {
             display: inline-flex;
             align-items: center;
@@ -44,6 +44,7 @@
             font-size: 14px;
             font-weight: 600;
         }
+
         .crs-hero-btn {
             display: inline-flex;
             align-items: center;
@@ -57,6 +58,7 @@
             text-decoration: none;
             transition: transform 0.15s ease, box-shadow 0.15s ease;
         }
+
         .crs-hero-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(255, 193, 7, 0.35);
@@ -187,19 +189,24 @@
 
                                                     @foreach ($courses->skip($p * $i)->take($p) as $item)
                                                         @php
-                                                            $courseUrl = filled($item->course?->landing?->url_slug) && ($item->course?->landing?->is_published ?? false)
-                                                                ? route('course_url_slug', $item->course->landing->url_slug)
-                                                                : route('web_course_description', $item->id);
+                                                            $courseUrl =
+                                                                filled($item->course?->landing?->url_slug) &&
+                                                                ($item->course?->landing?->is_published ?? false)
+                                                                    ? route(
+                                                                        'course_url_slug',
+                                                                        $item->course->landing->url_slug,
+                                                                    )
+                                                                    : route('web_course_description', $item->id);
                                                         @endphp
                                                         <div class="col-xl-4 col-md-6 col-sm-12 box-col-4">
                                                             <div class="card weekend-card">
                                                                 <div class="card-body">
                                                                     <a href="{{ $courseUrl }}">
-                                                                        @if($item->course?->image)
-                                                                        <img class="w-100 mb-3"
-                                                                            src="{{ asset('storage/' . $item->course->image) }}"
-                                                                            alt="{{ $item->course->name ?? 'Imagen' }}">
-                                                                    @endif
+                                                                        @if ($item->course?->image)
+                                                                            <img class="w-100 mb-3"
+                                                                                src="{{ asset('storage/' . $item->course->image) }}"
+                                                                                alt="{{ $item->name }}">
+                                                                        @endif
                                                                     </a>
                                                                     <br>
                                                                     <span
@@ -231,7 +238,8 @@
                                                                                         <i class="fa fa-cart-plus"
                                                                                             aria-hidden="true"
                                                                                             style="font-size: 18px;"></i>
-                                                                                        &nbsp; {{ (float) $item->price <= 0 ? 'Gratis' : 'S/ ' . $item->price }}
+                                                                                        &nbsp;
+                                                                                        {{ (float) $item->price <= 0 ? 'Gratis' : 'S/ ' . $item->price }}
                                                                                     </button>
                                                                                 </a>
                                                                             </div>
@@ -259,33 +267,38 @@
                                                     @foreach ($courses as $item)
                                                         @if (strtolower($item->additional) == strtolower($type))
                                                             @php
-                                                                $courseUrl = filled($item->course?->landing?->url_slug) && ($item->course?->landing?->is_published ?? false)
-                                                                    ? route('course_url_slug', $item->course->landing->url_slug)
-                                                                    : route('web_course_description', $item->id);
+                                                                $courseUrl =
+                                                                    filled($item->course?->landing?->url_slug) &&
+                                                                    ($item->course?->landing?->is_published ?? false)
+                                                                        ? route(
+                                                                            'course_url_slug',
+                                                                            $item->course->landing->url_slug,
+                                                                        )
+                                                                        : route('web_course_description', $item->id);
                                                             @endphp
                                                             <div class="col-xl-4 col-md-6 col-sm-12 box-col-4">
                                                                 <div class="card weekend-card">
                                                                     <div class="card-body">
                                                                         <a href="{{ $courseUrl }}">
-                                                                            @if($item->course?->image)
-                                                                            {{-- Si hay imagen, la mostramos --}}
-                                                                            <img class="w-100 mb-3"
-                                                                                 src="{{ asset('storage/' . $item->course->image) }}"
-                                                                                 alt="{{ $item->course->name }}">
-                                                                        @else
-                                                                            {{-- Si NO hay imagen (o no hay curso), mandamos el log para investigar --}}
-                                                                            <script>
-                                                                                console.warn("⚠️ Item sin imagen detectado (ID: {{ $item->id ?? 'N/A' }}):", @json($item));
-                                                                            </script>
-                                                                        @endif
+                                                                            @if ($item->course?->image)
+                                                                                {{-- Si hay imagen, la mostramos --}}
+                                                                                <img class="w-100 mb-3"
+                                                                                    src="{{ asset('storage/' . $item->course->image) }}"
+                                                                                    alt="{{ $item->name }}">
+                                                                            @else
+                                                                                {{-- Si NO hay imagen (o no hay curso), mandamos el log para investigar --}}
+                                                                                <script>
+                                                                                    console.warn("⚠️ Item sin imagen detectado (ID: {{ $item->id ?? 'N/A' }}):", @json($item));
+                                                                                </script>
+                                                                            @endif
                                                                         </a>
                                                                         <br>
                                                                         <span
-                                                                            style="color: #6a4c93;">{{ $item->additional }}</span>
+                                                                            style="color: #e30613;">{{ $item->additional }}</span>
                                                                         <br>
                                                                         <a href="{{ $courseUrl }}"
                                                                             style="text-decoration: none;">
-                                                                            <h4 style=" height: 30px; color: #000;">
+                                                                            <h4 style=" height: 30px;">
                                                                                 {{ $item->name }}</h4>
                                                                         </a>
                                                                         <br>
@@ -309,7 +322,8 @@
                                                                                             <i class="fa fa-cart-plus"
                                                                                                 aria-hidden="true"
                                                                                                 style="font-size: 18px;"></i>
-                                                                                            &nbsp; {{ (float) $item->price <= 0 ? 'Gratis' : 'S/ ' . $item->price }}
+                                                                                            &nbsp;
+                                                                                            {{ (float) $item->price <= 0 ? 'Gratis' : 'S/ ' . $item->price }}
                                                                                         </button>
                                                                                     </a>
                                                                                 </div>

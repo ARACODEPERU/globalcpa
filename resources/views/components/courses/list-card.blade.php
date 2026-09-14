@@ -56,13 +56,13 @@
                                                             <a href="{{ route('course_url_slug', $item->course?->landing?->url_slug) }}">
                                                                 <img class="w-100 mb-3"
                                                                     src="{{ asset('storage/' . $item->course->image) }}"
-                                                                    alt="">
+                                                                    alt="{{ $item->name }}">
                                                             </a>
                                                         @else
                                                             <a href="{{ route('web_course_description', $item->id) }}">
                                                                 <img class="w-100 mb-3"
                                                                     src="{{ asset('storage/' . $item->course->image) }}"
-                                                                    alt="">
+                                                                    alt="{{ $item->name }}">
                                                             </a>
                                                         @endif
 
@@ -148,14 +148,14 @@
                                                                 <a
                                                                     href="{{ route('course_url_slug', $item->course?->landing?->url_slug) }}">
                                                                     @if($item->course?->image)
-                                                                        <img class="w-100 mb-3" src="{{ asset('storage/' . $item->course->image) }}" alt="">
+                                                                        <img class="w-100 mb-3" src="{{ asset('storage/' . $item->course->image) }}" alt="{{ $item->name }}">
                                                                     @endif
                                                                 </a>
                                                                 @else
                                                                     <a
                                                                         href="{{ route('web_course_description', $item->id) }}">
                                                                         @if($item->course?->image)
-                                                                            <img class="w-100 mb-3" src="{{ asset('storage/' . $item->course->image) }}" alt="">
+                                                                            <img class="w-100 mb-3" src="{{ asset('storage/' . $item->course->image) }}" alt="{{ $item->name }}">
                                                                         @endif
                                                                     </a>
                                                                 @endif
