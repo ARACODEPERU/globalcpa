@@ -169,6 +169,24 @@
         /* =========================================
            ICONOS DEL RAIL (Home / Formación / Publicación)
            ========================================= */
+        /* El sitio carga Font Awesome desde varios orígenes (CDN 4.7, app.css del
+           tema y el bundle de Vite) y todos declaran la familia "FontAwesome"
+           apuntando a archivos distintos. Según cuál gane la cascade, el glifo del
+           rail se dibuja con FA4 o con FA6 y cambia de forma/tamaño entre páginas.
+           Se fija una familia propia con ruta estable para que las 3 tarjetas del
+           rail se vean idénticas en todo el sitio. */
+        @font-face {
+            font-family: 'CpaRailIcons';
+            src: url('{{ asset('themes/personalLanding/assets/font/webfonts/fa-solid-900.woff2') }}') format('woff2'),
+                 url('{{ asset('themes/personalLanding/assets/font/webfonts/fa-solid-900.ttf') }}') format('truetype');
+            font-style: normal;
+            font-weight: 400;
+            font-display: block;
+        }
+        .sidebar-list .sb-icon-box i {
+            font-family: 'CpaRailIcons' !important;
+            font-weight: 400 !important;
+        }
         .sidebar-list > a.sidebar-link { text-decoration: none !important; }
         /* El tema (compact-sidebar) deja el enlace y el span como block: se
            fuerza el bloque (tile + texto) a ocupar todo el ancho del rail. */
