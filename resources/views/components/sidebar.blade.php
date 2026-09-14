@@ -21,16 +21,16 @@
                         </li>
                         <li class="sidebar-list" style="padding: 15px 0px;">
                             <a class="sidebar-link sidebar-title" href="{{ route('index_main') }}">
-                                <span>
-                                    <i class="fa fa-home" aria-hidden="true" style="font-size: 26px;"></i><br>
+                                <span class="sb-item">
+                                    <span class="sb-icon-box"><i class="fa fa-home" aria-hidden="true"></i></span>
                                     Home
                                 </span>
                             </a>
                         </li>
                         <li class="sidebar-list" style="padding: 15px 0px;">
                             <a class="sidebar-link sidebar-title" href="javascript:void(0)">
-                                <span>
-                                    <i class="fa fa-graduation-cap" aria-hidden="true" style="font-size: 26px;"></i><br>
+                                <span class="sb-item">
+                                    <span class="sb-icon-box"><i class="fa fa-graduation-cap" aria-hidden="true"></i></span>
                                     Formación
                                 </span>
                             </a>
@@ -114,8 +114,8 @@
                         </li> --}}
                         <li class="sidebar-list" style="padding: 15px 0px;">
                             <a class="sidebar-link sidebar-title" href="{{ route('web_book_amauta') }}">
-                                <span>
-                                    <i class="fa fa-book" aria-hidden="true" style="font-size: 26px;"></i><br>
+                                <span class="sb-item">
+                                    <span class="sb-icon-box"><i class="fa fa-book" aria-hidden="true"></i></span>
                                     Publicación
                                 </span>
                             </a>
@@ -165,6 +165,61 @@
         .truncated-link.show-full::after {
             content: none;
             opacity: 0;
+        }
+        /* =========================================
+           ICONOS DEL RAIL (Home / Formación / Publicación)
+           ========================================= */
+        .sidebar-list > a.sidebar-link { text-decoration: none !important; }
+        .sidebar-list .sb-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            text-align: center;
+            font-size: 12.5px;
+            font-weight: 600;
+            letter-spacing: 0.2px;
+            color: rgba(255, 255, 255, 0.78) !important; /* el rail es navy en ambos modos */
+            transition: color 0.2s ease;
+        }
+        .sidebar-list .sb-icon-box {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 14px;
+            background: #eef2f9;
+            border: 1px solid #e2e8f2;
+            color: #002060 !important; /* gana al 'span' blanco del tema (.compact-small) */
+            font-size: 20px;
+            transition: all 0.2s ease;
+        }
+        .sidebar-list > a.sidebar-link:hover .sb-item { color: #ffc107 !important; }
+        /* El tema fuerza blanco sobre los <i>/<svg> del sidebar: el tile manda */
+        .sidebar-wrapper .sidebar-list .sb-icon-box i,
+        .sidebar-wrapper .sidebar-list .sb-icon-box svg { color: inherit !important; }
+        .sidebar-list > a.sidebar-link:hover .sb-icon-box {
+            background: #ffc107;
+            border-color: #ffc107;
+            color: #002060;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 18px rgba(255, 193, 7, 0.35);
+        }
+
+        /* El rail mantiene su navy en ambos modos: mismo tratamiento */
+        body.dark-only .sidebar-list .sb-item { color: rgba(255, 255, 255, 0.78) !important; }
+        body.dark-only .sidebar-list .sb-icon-box {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.15);
+            color: #ffc107 !important;
+        }
+        body.dark-only .sidebar-list > a.sidebar-link:hover .sb-item { color: #ffc107 !important; }
+        body.dark-only .sidebar-list > a.sidebar-link:hover .sb-icon-box {
+            background: rgba(255, 193, 7, 0.15);
+            border-color: rgba(255, 193, 7, 0.45);
+            color: #ffc107 !important;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
         }
     </style>
     <script>
