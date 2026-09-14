@@ -40,6 +40,19 @@
         P000010: {
             type: String,
             default: null
+        },
+        // Chat de consultas (solo admins): elegir un asistente y operar como el.
+        modoAsistentes: {
+            type: Boolean,
+            default: false
+        },
+        asistentes: {
+            type: Array,
+            default: () => []
+        },
+        asistenteSeleccionado: {
+            type: Object,
+            default: null
         }
     });
 
@@ -55,7 +68,7 @@
 
     const fetchPosts = async () => {
         try {
-            axios.get(route('crm_chat_contacts_data')).then( (response) => {
+            chatGet(route('crm_chat_contacts_data')).then( (response) => {
                 data.posts = response.data;
             });
         } catch (error) {
@@ -65,7 +78,7 @@
 
     const fetchNextPosts = async () => {
         try {
-            axios.get(`${route('crm_chat_contacts_data')}?page=${data.posts.current_page += 1}`).then((response) => {
+            chatGet(`${route('crm_chat_contacts_data')}?page=${data.posts.current_page += 1}`).then((response) => {
                 response.data.data.map(item => {
                     data.posts.data.push(item);
                 });
@@ -98,7 +111,7 @@
 
     const searchUsers = async () => {
         try {
-            const response = await axios.get(`${route('crm_chat_contacts_data')}?search=${searchUser.value}`);
+            const response = await chatGet(`${route('crm_chat_contacts_data')}?search=${searchUser.value}`);
             console.log(response);
             data.posts = response.data;
         } catch (error) {
@@ -118,7 +131,7 @@
         }
 
         try {
-            axios.post(route('crm_list_message'),{
+            chatPost(route('crm_list_message'),{
                 conversationId: user.conversationId,
                 personId: user.userId
             }).then((response) => {
@@ -148,7 +161,7 @@
                 type: 'text',
                 id: null
             };
-            axios.post(route('crm_send_message'),msg).then((response) => {
+            chatPost(route('crm_send_message'),msg).then((response) => {
                 return response.data;
             }).then((res) => {
                 if(res.success){
@@ -191,7 +204,7 @@
                 type: 'audio',
                 id: null
             };
-            axios.post(route('crm_send_message'),msg).then((response) => {
+            chatPost(route('crm_send_message'),msg).then((response) => {
                 return response.data;
             }).then((res) => {
                 selectedUser.value.messages.push(msg);
@@ -212,7 +225,7 @@
                 type: 'file',
                 id: null
             };
-            axios.post(route('crm_send_message'),msg).then((response) => {
+            chatPost(route('crm_send_message'),msg).then((response) => {
                 return response.data;
             }).then((res) => {
                 selectedUser.value.messages.push(msg);
@@ -224,6 +237,72 @@
 
     // Configura tu conexión a Socket.IO
     const authUser = usePage().props.auth.user;
+
+    // ---------------------------------------------------------------------
+    // Chat de consultas: un admin entra "como" un asistente y desde ese momento
+    // todo el chat (contactos, mensajes, IA) se hace con acting_person_id /
+    // acting_user_id, y el backend responde y firma como el asistente.
+    // ---------------------------------------------------------------------
+    // Asistente activo: arranca con el de la URL (?asistente=) y se puede
+    // cambiar en caliente desde el selector, sin recargar la pagina.
+    const asistenteActivo = ref(props.asistenteSeleccionado);
+
+    const suplantando = computed(() => !!asistenteActivo.value);
+
+    const actingParams = computed(() => suplantando.value ? {
+        acting_person_id: asistenteActivo.value.person_id,
+        acting_user_id: asistenteActivo.value.user_id,
+    } : {});
+
+    // Id de usuario con el que se compara lo que llega por socket.
+    const effectiveUserId = computed(() => asistenteActivo.value?.user_id ?? authUser.id);
+
+    const withActing = (config = {}) => ({
+        ...config,
+        params: { ...(config.params || {}), ...actingParams.value },
+    });
+
+    const chatGet = (url, config = {}) => axios.get(url, withActing(config));
+    const chatPost = (url, data = {}, config = {}) => axios.post(url, data, withActing(config));
+    const chatDelete = (url, config = {}) => axios.delete(url, withActing(config));
+
+    // Mantiene la URL sincronizada para que un refresh conserve la seleccion.
+    const actualizarUrl = (asistente = null) => {
+        try {
+            window.history.replaceState(
+                {},
+                '',
+                asistente
+                    ? route('crm_chat_asistente', { asistente: asistente.person_id })
+                    : route('crm_chat_asistente')
+            );
+        } catch (error) {
+            // Sin Ziggy disponible: el selector sigue funcionando en memoria.
+        }
+    };
+
+    // Cambia de identidad (null = "Yo") y recarga la bandeja del nuevo perfil.
+    const aplicarIdentidad = (asistente = null) => {
+        asistenteActivo.value = asistente;
+
+        selectedUser.value = null;
+        isShowUserChat.value = false;
+        isShowChatMenu.value = false;
+        textMessage.value = '';
+        data.posts = { data: [], current_page: 1, total: 0 };
+
+        actualizarUrl(asistente);
+        fetchPosts();
+    };
+
+    const entrarComoAsistente = (asistente) => aplicarIdentidad(asistente);
+    const salirModoAsistente = () => aplicarIdentidad(null);
+
+    const getAsistenteImage = (image) => {
+        if (!image) return null;
+        if (image.startsWith('/img/')) return `${xasset}${image}`;
+        return `${xasset}storage/${image}`;
+    };
 
     onMounted(() => {
         window.socketIo.on(channelListenChat, (result) => {
@@ -239,7 +318,7 @@
             };
 
             participants.forEach(item => {
-                if(authUser.id == item){
+                if(effectiveUserId.value == item){
                     fetchPosts()
                     if(selectedUser.value){
                         if(conversationId == selectedUser.value.conversationId){
@@ -328,7 +407,7 @@ Limitate a responder las consultas, y no ofrescas algo más para continuar.`;
     const sendPromptOpenAI = () => {
         formIaconsulta.processing = true;
         const url = route('crm_application_ai_prompt_send_message_openai');
-        axios.post(url,formIaconsulta,{
+        chatPost(url,formIaconsulta,{
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -404,8 +483,7 @@ Limitate a responder las consultas, y no ofrescas algo más para continuar.`;
             type: 'text',
             id: null,
             answer_ai: true
-        };
-        axios.post(route('crm_send_message'), msg).then((response) => {
+        };            chatPost(route('crm_send_message'), msg).then((response) => {
             return response.data;
         }).then((res) => {
             if(res.success){
@@ -485,7 +563,7 @@ Limitate a responder las consultas, y no ofrescas algo más para continuar.`;
     const sendCensorTextOpenAI = () => {
         formIaconsulta.processing = true;
         const url = route('crm_respond_frequently_questions_store');
-        axios.post(url,formIaconsulta,{
+        chatPost(url,formIaconsulta,{
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -518,10 +596,10 @@ Limitate a responder las consultas, y no ofrescas algo más para continuar.`;
             return;
         }
         censorLoader.value = true;
-        axios.post(route('crm_common_questions_store'), {
+        chatPost(route('crm_common_questions_store'), {
             question_text: censoredQuestion.value,
             response_text: censoredResponse.value,
-            user_id: authUser.id,
+            user_id: effectiveUserId.value,
         }, {
             headers: {
                 'Content-Type': 'application/json'
@@ -576,7 +654,7 @@ Limitate a responder las consultas, y no ofrescas algo más para continuar.`;
             cancelButtonText: 'Cancelar',
         }).then((result) => {
             if (result.isConfirmed) {
-                axios.delete(route('crm_chat_message_destroy'), {
+                chatDelete(route('crm_chat_message_destroy'), {
                     data: { message_id: message.id },
                 }).then((response) => {
                     if (response.data.success) {
@@ -600,6 +678,78 @@ Limitate a responder las consultas, y no ofrescas algo más para continuar.`;
             </li>
         </Navigation>
         <div class="mt-5">
+
+            <!-- Chat de consultas: el selector queda siempre visible para poder
+                 cambiar entre "Yo" y cada asistente sin perder el contexto. -->
+            <div v-if="modoAsistentes" class="mb-4 rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800">
+                <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
+                    <div>
+                        <p class="text-sm font-bold text-gray-700 dark:text-gray-200">
+                            Chat de consultas
+                        </p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">
+                            Elige con quién chatear: tú mismo o uno de los asistentes.
+                        </p>
+                    </div>
+                    <span
+                        v-if="suplantando"
+                        class="rounded-full bg-indigo-100 px-3 py-1 text-xs font-semibold text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-200"
+                    >
+                        Escribiendo como {{ asistenteActivo.full_name }}
+                    </span>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <button
+                        type="button"
+                        class="flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm transition"
+                        :class="suplantando
+                            ? 'border-gray-200 text-gray-700 hover:border-indigo-400 hover:text-indigo-700 dark:border-gray-700 dark:text-gray-200 dark:hover:text-indigo-300'
+                            : 'border-indigo-500 bg-indigo-50 font-semibold text-indigo-700 dark:border-indigo-400 dark:bg-indigo-900/40 dark:text-indigo-200'"
+                        @click="salirModoAsistente"
+                    >
+                        <img
+                            v-if="authUser.avatar"
+                            :src="getImage(authUser.avatar)"
+                            class="h-6 w-6 rounded-full object-cover"
+                            alt=""
+                        />
+                        <img
+                            v-else
+                            :src="'https://ui-avatars.com/api/?name=' + authUser.name + '&size=48&rounded=true'"
+                            class="h-6 w-6 rounded-full object-cover"
+                            alt=""
+                        />
+                        Yo
+                    </button>
+                    <button
+                        v-for="asistente in asistentes"
+                        :key="asistente.person_id"
+                        type="button"
+                        class="flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm transition"
+                        :class="asistenteActivo && asistenteActivo.person_id === asistente.person_id
+                            ? 'border-indigo-500 bg-indigo-50 font-semibold text-indigo-700 dark:border-indigo-400 dark:bg-indigo-900/40 dark:text-indigo-200'
+                            : 'border-gray-200 text-gray-700 hover:border-indigo-400 hover:text-indigo-700 dark:border-gray-700 dark:text-gray-200 dark:hover:text-indigo-300'"
+                        @click="entrarComoAsistente(asistente)"
+                    >
+                        <img
+                            v-if="getAsistenteImage(asistente.image)"
+                            :src="getAsistenteImage(asistente.image)"
+                            class="h-6 w-6 rounded-full object-cover"
+                            alt=""
+                        />
+                        <img
+                            v-else
+                            :src="'https://ui-avatars.com/api/?name=' + asistente.full_name + '&size=48&rounded=true'"
+                            class="h-6 w-6 rounded-full object-cover"
+                            alt=""
+                        />
+                        {{ asistente.full_name }}
+                    </button>
+                </div>
+                <p v-if="!asistentes.length" class="mt-2 text-xs text-gray-500">
+                    No hay usuarios con el rol Asistente.
+                </p>
+            </div>
 
             <div class="flex gap-5 relative sm:h-[calc(100vh_-_150px)] h-full sm:min-h-0" :class="{ 'min-h-[999px]': isShowChatMenu }">
                 <!-- Modal de Consulta AI - Primera pantalla -->
@@ -1228,6 +1378,13 @@ Limitate a responder las consultas, y no ofrescas algo más para continuar.`;
                                                             :class="{ 'ltr:text-right rtl:text-left': selectedUser.userId === message.fromUserId }"
                                                         >
                                                             {{ message.time ? message.time : '5h ago' }}
+                                                        </div>
+                                                        <div
+                                                            v-if="message.sent_by_name"
+                                                            class="text-[11px] font-semibold text-warning"
+                                                            :class="{ 'ltr:text-right rtl:text-left': selectedUser.userId === message.fromUserId }"
+                                                        >
+                                                            Respondido por {{ message.sent_by_name }}
                                                         </div>
                                                     </div>
                                                 </div>
