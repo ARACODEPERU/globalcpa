@@ -170,10 +170,22 @@
            ICONOS DEL RAIL (Home / Formación / Publicación)
            ========================================= */
         .sidebar-list > a.sidebar-link { text-decoration: none !important; }
+        /* El tema (compact-sidebar) deja el enlace y el span como block: se
+           fuerza el bloque (tile + texto) a ocupar todo el ancho del rail. */
+        .sidebar-list > a.sidebar-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding-left: 0;
+            padding-right: 0;
+        }
         .sidebar-list .sb-item {
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
+            width: 100%;
             gap: 8px;
             text-align: center;
             font-size: 12.5px;
@@ -183,6 +195,10 @@
             transition: color 0.2s ease;
         }
         .sidebar-list .sb-icon-box {
+            /* Con el span en block, sin este margen el tile se pega a la
+               izquierda del rail en vez de quedar centrado. */
+            margin: 0 auto;
+            flex: 0 0 auto;
             width: 48px;
             height: 48px;
             display: flex;
