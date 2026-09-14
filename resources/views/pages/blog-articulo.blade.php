@@ -5,7 +5,7 @@
 @section('etiquetasmeta')
     <x-seo
         title="{{ $article->title ?? 'Artículo' }} - Blog CPA Academy"
-        :description="\Illuminate\Support\Str::limit(trim(strip_tags((string) ($article->content_text ?? ''))), 155) ?: null"
+        :description="\Illuminate\Support\Str::limit(trim(strip_tags(html_entity_decode((string) ($article->content_text ?? ''), ENT_QUOTES, "UTF-8"))), 155) ?: null"
         :image="!empty($article->imagen) ? $article->imagen : null"
     />
 @endsection
@@ -407,8 +407,9 @@
                                         {!! $article->content_text !!}
                                     @else
                                         @php
+                                            $decoded = html_entity_decode($article->content_text, ENT_QUOTES, 'UTF-8');
                                             $lines = explode("
-", strip_tags($article->content_text));
+", strip_tags($decoded));
                                             $preview = implode("
 ", array_slice($lines, 0, 10));
                                         @endphp
