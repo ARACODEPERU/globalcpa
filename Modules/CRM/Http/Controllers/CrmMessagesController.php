@@ -104,7 +104,15 @@ class CrmMessagesController extends Controller
                 'new_message' => true,
             ]);
 
-            return response()->json(['success' => true], 201);
+            // El id real permite al cliente reconocer el eco que llega por socket y
+            // no pintar el mensaje dos veces (una como mio y otra como del alumno).
+            return response()->json([
+                'success' => true,
+                'message' => [
+                    'id' => $message->id,
+                    'conversation_id' => $message->conversation_id,
+                ],
+            ], 201);
         } else {
             return response()->json(['success' => false], 201);
         }

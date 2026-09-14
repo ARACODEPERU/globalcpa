@@ -150,6 +150,31 @@
 
     };
 
+    // Compara ids sin depender del tipo (el id del socket puede llegar como texto).
+    const mismoMensaje = (a, b) => a != null && b != null && String(a) === String(b);
+
+    // Pinta un mensaje propio evitando duplicados: el eco del socket puede llegar
+    // antes o despues de la respuesta del POST, y en los dos ordenes debe quedar un
+    // solo mensaje, pintado como mio.
+    const pushMensajePropio = (msg) => {
+        if (!selectedUser.value) return;
+
+        const mensajes = selectedUser.value.messages ?? (selectedUser.value.messages = []);
+
+        const eco = mensajes.find((m) => mismoMensaje(m.id, msg.id));
+
+        if (eco) {
+            // El eco del socket se adelanto a esta respuesta: se corrige el lado del
+            // mensaje ya pintado en vez de agregar un duplicado.
+            eco.fromUserId = msg.fromUserId;
+            eco.time = msg.time;
+            return;
+        }
+
+        mensajes.push(msg);
+        scrollToBottom();
+    };
+
     const sendMessage = () => {
         if (textMessage.value.trim()) {
             isShowLoadingSend.value = true;
@@ -165,9 +190,9 @@
                 return response.data;
             }).then((res) => {
                 if(res.success){
-                    selectedUser.value.messages.push(msg);
+                    msg.id = res.message?.id ?? null;
+                    pushMensajePropio(msg);
                     textMessage.value = '';
-                    scrollToBottom();
                 }else{
                     showMessage('No puede enviar mensajes en este momento. Por favor, complete su información personal en su perfil para habilitar esta función.','info');
                 }
@@ -207,8 +232,8 @@
             chatPost(route('crm_send_message'),msg).then((response) => {
                 return response.data;
             }).then((res) => {
-                selectedUser.value.messages.push(msg);
-                scrollToBottom();
+                msg.id = res.message?.id ?? null;
+                pushMensajePropio(msg);
                 isShowLoadingSend.value = false;
             });
         }
@@ -228,8 +253,8 @@
             chatPost(route('crm_send_message'),msg).then((response) => {
                 return response.data;
             }).then((res) => {
-                selectedUser.value.messages.push(msg);
-                scrollToBottom();
+                msg.id = res.message?.id ?? null;
+                pushMensajePropio(msg);
                 isShowLoadingSend.value = false;
             });
         }
@@ -312,11 +337,20 @@
             // El backend manda "ofUserId" = person_id de quien ENVIO. Esta vista
             // pinta como propio (derecha) lo que trae fromUserId igual al person_id
             // del contacto, asi que hay que traducirlo: si el emisor soy yo, va como
-            // mio; si no, va como del alumno. Antes se copiaba tal cual y mi propio
-            // mensaje aparecia como enviado por el alumno (hasta recargar).
+            // mio; si no, va como del alumno.
             const ofUserId = Number(result.data.ofUserId);
-            const miPersonaId = Number(asistenteActivo.value?.person_id ?? authUser.person_id);
-            const esMio = ofUserId === miPersonaId;
+            // Se compara contra todas mis identidades: la persona suplantada (si
+            // estoy respondiendo como un asistente) y mi propia persona. El
+            // person_id que guarda el mensaje es el dato de la base, asi que sirve
+            // de respaldo si el socket manda el emisor de otra forma. Ademas,
+            // sent_by_user_id solo se llena cuando un admin responde en nombre de un
+            // asistente, asi que tambien confirma que el mensaje lo escribi yo.
+            const misPersonas = [asistenteActivo.value?.person_id, authUser.person_id]
+                .filter(persona => persona != null)
+                .map(Number);
+            const esMio = misPersonas.includes(ofUserId)
+                || misPersonas.includes(Number(result.data.message?.person_id))
+                || result.data.message?.sent_by_user_id != null;
 
             const newmsg = {
                 fromUserId: esMio ? (selectedUser.value?.userId ?? ofUserId) : 0,
@@ -332,16 +366,24 @@
                     fetchPosts()
                     if(selectedUser.value){
                         if(conversationId == selectedUser.value.conversationId){
-                            // Si el mensaje ya se pinto al enviarlo (queda con id null),
-                            // solo se le asigna el id real en lugar de duplicarlo.
-                            const pendiente = esMio
-                                ? [...selectedUser.value.messages].reverse().find(m => m.id == null && m.text === newmsg.text)
+                            const mensajes = selectedUser.value.messages ?? (selectedUser.value.messages = []);
+
+                            // 1) El eco puede llegar despues del POST: si el mensaje ya
+                            //    esta pintado con el id real, no se repite.
+                            const yaPintado = mensajes.some(m => mismoMensaje(m.id, newmsg.id));
+
+                            // 2) Si todavia no tiene id (el POST aun no responde), se le
+                            //    asigna el id real en lugar de pintar un duplicado.
+                            const pendiente = (esMio && ! yaPintado)
+                                ? [...mensajes].reverse().find(m => m.id == null && m.text === newmsg.text && m.type === newmsg.type)
                                 : null;
+
                             if (pendiente) {
                                 pendiente.id = newmsg.id;
-                            } else {
-                                selectedUser.value.messages.push(newmsg);
+                            } else if (! yaPintado) {
+                                mensajes.push(newmsg);
                             }
+
                             scrollToBottom();
                         }
                     }
@@ -502,13 +544,14 @@ Limitate a responder las consultas, y no ofrescas algo más para continuar.`;
             type: 'text',
             id: null,
             answer_ai: true
-        };            chatPost(route('crm_send_message'), msg).then((response) => {
+        };
+        chatPost(route('crm_send_message'), msg).then((response) => {
             return response.data;
         }).then((res) => {
             if(res.success){
-                selectedUser.value.messages.push(msg);
+                msg.id = res.message?.id ?? null;
+                pushMensajePropio(msg);
                 textMessage.value = '';
-                scrollToBottom();
             }else{
                 showMessage('No puede enviar mensajes en este momento. Por favor, complete su información personal en su perfil para habilitar esta función.','info');
             }
