@@ -16,6 +16,7 @@
     use Illuminate\Support\Facades\Auth;
 @endphp
 
+    <link rel="stylesheet" href="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/content.min.css" referrerpolicy="origin" />
     <style>
         .article-hero {
             background: linear-gradient(135deg, #002060 0%, #1a3a7a 100%);
@@ -88,7 +89,23 @@
             border-radius: 8px;
         }
 
-        .sidebar-box {
+        /* Complemento TinyMCE - estilos de contenido */
+        .article-body h1 { font-size: 2em; font-weight: bold; margin: 0.67em 0; }
+        .article-body h2 { font-size: 1.5em; font-weight: bold; margin: 0.83em 0; }
+        .article-body h3 { font-size: 1.17em; font-weight: bold; margin: 1em 0; }
+        .article-body p { margin: 1em 0; }
+        .article-body ul { list-style-type: disc; margin: 1em 0; padding-left: 40px; }
+        .article-body ol { list-style-type: decimal; margin: 1em 0; padding-left: 40px; }
+        .article-body ul ul { list-style-type: circle; }
+        .article-body ul ul ul { list-style-type: square; }
+        .article-body li { margin: 0.5em 0; }
+        .article-body blockquote { margin: 1em 0; padding: 0.5em 1em; border-left: 3px solid #ddd; }
+        .article-body table { border-collapse: collapse; margin: 1em 0; width: 100%; }
+        .article-body table td, .article-body table th { border: 1px solid #ddd; padding: 5px 10px; }
+        .article-body table th { background-color: #f3f3f3; }
+        .article-body a { color: #0958d9; text-decoration: underline; }
+
+                .sidebar-box {
             background: #f9fafb;
             border: 1px solid #e5e7eb;
             border-radius: 12px;
@@ -379,7 +396,7 @@
                 <div class="container mt-4">
                     <div class="row g-4">
                         <!-- Contenido del Artículo -->
-                        <div class="col-lg-8 col-md-8" data-aos="fade-up">
+                        <div class="col-lg-9 col-md-9" data-aos="fade-up">
                             <div class="article-content">
                                 <img src="{{ $article->imagen }}" alt="{{ $article->title }}" class="article-image">
 
@@ -471,7 +488,7 @@
                         </div>
 
                         <!-- Sidebar -->
-                        <div class="col-lg-4 col-md-4">
+                        <div class="col-lg-3 col-md-3">
                             <!-- Categorías -->
                             <div class="blog-sidebar-box" data-aos="fade-up">
                                 <h5><i class="fa fa-folder-open me-2"></i>Categorías</h5>
