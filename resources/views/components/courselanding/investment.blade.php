@@ -1,7 +1,19 @@
-@props(['landing'])
+@props(['landing', 'onliItemId' => null])
 
-@if (filled($landing->investment_section ?? null))
-    <style>
+@php
+    $investmentItems = $landing->investment_section['items'] ?? [];
+    $investmentFirstPrice = isset($investmentItems[0]['price_now'])
+        ? (float) $investmentItems[0]['price_now']
+        : (float) ($landing->course->price ?? 0);
+    $esCursoGratis = $investmentFirstPrice <= 0;
+    $investmentFirstVisible = filled($investmentItems[0] ?? null)
+        && ($investmentItems[0]['price_before_visible'] ?? false);
+    $gratisCourseName = $landing->course->description ?? $landing->course->name ?? 'Curso';
+    $gratisCourseImage = $landing->course->image ?? '';
+    $gratisCourseId = $onliItemId ?? 0;
+@endphp
+
+<style>
         .text-navy-custom {
             color: #002060 !important;
         }
@@ -71,8 +83,29 @@
             filter: brightness(1.04);
             color: #002060 !important;
         }
+
+        /* Botón para inscribirse a un curso gratuito (rojo institucional) */
+        .btn-inscribir-gratis {
+            background: linear-gradient(135deg, #e30613 0%, #c00000 100%) !important;
+            color: #ffffff !important;
+            border: none !important;
+            box-shadow: 0 4px 15px rgba(227, 6, 19, 0.35) !important;
+        }
+
+        .btn-inscribir-gratis:hover {
+            filter: brightness(1.06);
+            color: #ffffff !important;
+        }
+
+        /* Versión destacada (doble de tamaño) para el CTA de cursos gratuitos */
+        .btn-inscribir-gratis-lg {
+            padding: 24px 56px !important;
+            font-size: 2rem !important;
+            border-radius: 60px !important;
+        }
     </style>
 
+@if (filled($landing->investment_section ?? null))
     <div class="container-fluid aos-animate mt-5" data-aos="fade-up">
         <div class="row bg-item-custom rounded-4 shadow-sm border dark:border-gray-700">
             <div class="col-md-12">
@@ -110,6 +143,19 @@
                         </p>
 
                     </div>
+
+                    @if ($esCursoGratis && !$investmentFirstVisible)
+                        <div class="text-center mb-5" data-aos="zoom-in">
+                            <a href="javascript:void(0)"
+                                onclick='inscribirmeGratis({ id: {{ $gratisCourseId }}, nombre: @json($gratisCourseName), precio: 0, image: @json($gratisCourseImage) })'
+                                class="btn btn-modern btn-inscribir-gratis btn-inscribir-gratis-lg">
+                                <i class="fa fa-check-circle me-2"></i> Inscribirme Gratis
+                            </a>
+                            <p class="text-gray-600 dark:text-gray-400 mt-3 mb-0">
+                                Este curso es gratuito. Te llevaremos al carrito para completar tu inscripción sin costo.
+                            </p>
+                        </div>
+                    @endif
 
                     <div class="row g-4 justify-content-center">
                         <!-- Plan Regular (Pronto pago)  [0] -->
@@ -158,10 +204,18 @@
                                                     @endforeach
                                                 @endif
                                             </ul>
-                                            <a href="javascript:void(0)" onclick="procederInscripcion()"
-                                                class="btn btn-modern btn-modern-primary w-100 mb-3">
-                                                <i class="fa fa-shopping-cart me-2"></i> Inscribirse ahora
-                                            </a>
+                                            @if ($esCursoGratis)
+                                                <a href="javascript:void(0)"
+                                                    onclick='inscribirmeGratis({ id: {{ $gratisCourseId }}, nombre: @json($gratisCourseName), precio: 0, image: @json($gratisCourseImage) })'
+                                                    class="btn btn-modern btn-inscribir-gratis w-100 mb-3">
+                                                    <i class="fa fa-check-circle me-2"></i> Inscribirme Gratis
+                                                </a>
+                                            @else
+                                                <a href="javascript:void(0)" onclick="procederInscripcion()"
+                                                    class="btn btn-modern btn-modern-primary w-100 mb-3">
+                                                    <i class="fa fa-shopping-cart me-2"></i> Inscribirse ahora
+                                                </a>
+                                            @endif
                                             <button type="button" data-bs-toggle="modal"
                                                 data-bs-target="#modalFinanciamiento"
                                                 class="btn btn-modern btn-modern-outline w-100 text-navy-custom d-flex align-items-center justify-content-center gap-2">
@@ -229,6 +283,24 @@
                             @endif
                         @endif
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+@elseif ($esCursoGratis)
+    <div class="container-fluid aos-animate mt-5" data-aos="fade-up">
+        <div class="row bg-item-custom rounded-4 shadow-sm border dark:border-gray-700">
+            <div class="col-md-12">
+                <div class="card-body p-4 p-lg-5 text-center">
+                    <h2 class="fw-bold display-6 text-navy-custom">Inscríbete gratis</h2>
+                    <p class="text-gray-600 dark:text-gray-400 fs-5 mx-auto" style="max-width: 800px;">
+                        Este curso es gratuito. Agrégalo a tu carrito y completa tu inscripción sin costo.
+                    </p>
+                    <a href="javascript:void(0)"
+                        onclick='inscribirmeGratis({ id: {{ $gratisCourseId }}, nombre: @json($gratisCourseName), precio: 0, image: @json($gratisCourseImage) })'
+                        class="btn btn-modern btn-inscribir-gratis btn-inscribir-gratis-lg">
+                        <i class="fa fa-check-circle me-2"></i> Inscribirme Gratis
+                    </a>
                 </div>
             </div>
         </div>

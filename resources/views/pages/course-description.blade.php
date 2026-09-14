@@ -328,6 +328,18 @@
                                                     class="fa fa-clock-o"></i> Oferta por tiempo limitado</span>
                                         </div>
 
+                                        <style>
+                                            .btn-inscribir-gratis {
+                                                background: linear-gradient(135deg, #e30613 0%, #c00000 100%) !important;
+                                                border: none !important;
+                                                color: #ffffff !important;
+                                            }
+
+                                            .btn-inscribir-gratis:hover {
+                                                background: linear-gradient(135deg, #c00000 0%, #a30000 100%) !important;
+                                                color: #ffffff !important;
+                                            }
+                                        </style>
                                         <div class="d-grid gap-2 mb-4">
                                             @if ((float) $item->price > 0)
                                                 <button class="btn btn-primary btn-lg fw-bold shadow-sm py-3"
@@ -335,9 +347,10 @@
                                                     Añadir al Carrito
                                                 </button>
                                             @else
-                                                <a href="" class="btn btn-primary btn-lg fw-bold shadow-sm py-3">
-                                                    Inscribirme Gratis
-                                                </a>
+                                                <button class="btn btn-lg fw-bold shadow-sm py-3 btn-inscribir-gratis"
+                                                    onclick='inscribirmeGratis({ id: {{ $item->id }}, nombre: @json($item->name), precio: 0, image: @json($item->image ?? "") })'>
+                                                    <i class="fa fa-check-circle me-2"></i> Inscribirme Gratis
+                                                </button>
                                             @endif
                                         </div>
 

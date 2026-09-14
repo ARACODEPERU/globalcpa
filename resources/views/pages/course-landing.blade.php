@@ -117,7 +117,7 @@
                 <x-courselanding.testimonials :landing="$landing" />
 
                 {{-- Nueva Sección: Planes de Inversión --}}
-                <x-courselanding.investment :landing="$landing" />
+                <x-courselanding.investment :landing="$landing" :onli-item-id="$onli_item_id" />
 
                 {{-- Propuesta 2: Preguntas Frecuentes (Diseño Moderno de Tarjetas) --}}
                 <x-courselanding.faq :landing="$landing" />
@@ -170,12 +170,21 @@
                 return;
             }
 
+            var precioCurso = @json($landing->investment_section['items'][0]['price_now'] ?? 0);
+            var esGratis = parseFloat(precioCurso) <= 0;
+
+            var titulo = esGratis ? '¿Inscribirme gratis?' : '¿Confirmar inscripción?';
+            var mensaje = esGratis
+                ? 'Este curso es gratuito. Se agregará a tu carrito para completar la inscripción sin costo.'
+                : '¿Estás seguro de que deseas proceder con la compra?';
+            var textoBtn = esGratis ? 'Sí, inscribirme' : 'Sí, continuar';
+
             Swal.fire({
-                title: '¿Confirmar inscripción?',
-                text: '¿Estás seguro de que deseas proceder con la compra?',
+                title: titulo,
+                text: mensaje,
                 icon: 'question',
                 showCancelButton: true,
-                confirmButtonText: 'Sí, continuar',
+                confirmButtonText: textoBtn,
                 cancelButtonText: 'Cancelar',
             }).then((result) => {
                 if (result.isConfirmed) {
@@ -186,7 +195,7 @@
                     var producto = {
                         id: @json($onli_item_id ?? 0),
                         nombre: @json($landing->course->description ?? 'Curso'),
-                        precio: @json($landing->investment_section['items'][0]['price_now'] ?? 0),
+                        precio: precioCurso,
                         image: "{{ $landing->course->image ?? '' }}"
                     };
 
@@ -195,8 +204,26 @@
                     carrito.push(producto);
                     localStorage.setItem('carrito', JSON.stringify(carrito));
 
-                    // 4. Redireccionar
-                    window.location.href = "{{ route('web_carrito') }}";
+                    if (esGratis) {
+                        // 4a. Para cursos gratis: mostrar mensaje y ofrecer ir al carrito
+                        Swal.fire({
+                            title: '¡Inscripción gratuita!',
+                            html: '<strong>' + producto.nombre + '</strong> se agregó a tu carrito.<br><br>' +
+                                  '<span style="color: #16a34a; font-weight: 600;">Este curso es gratuito. Ve al carrito para completar tu inscripción sin costo.</span>',
+                            icon: 'success',
+                            showCancelButton: true,
+                            confirmButtonText: 'Ir al Carrito',
+                            cancelButtonText: 'Seguir navegando',
+                            reverseButtons: true,
+                        }).then((result2) => {
+                            if (result2.isConfirmed) {
+                                window.location.href = "{{ route('web_carrito') }}";
+                            }
+                        });
+                    } else {
+                        // 4b. Para cursos de pago: redireccionar directamente al carrito
+                        window.location.href = "{{ route('web_carrito') }}";
+                    }
                 }
             });
         }
