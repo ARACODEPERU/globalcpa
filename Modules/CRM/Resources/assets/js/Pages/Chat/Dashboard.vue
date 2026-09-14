@@ -308,8 +308,18 @@
         window.socketIo.on(channelListenChat, (result) => {
             let participants = result.data.participants;
             let conversationId = result.data.message.conversation_id;
+
+            // El backend manda "ofUserId" = person_id de quien ENVIO. Esta vista
+            // pinta como propio (derecha) lo que trae fromUserId igual al person_id
+            // del contacto, asi que hay que traducirlo: si el emisor soy yo, va como
+            // mio; si no, va como del alumno. Antes se copiaba tal cual y mi propio
+            // mensaje aparecia como enviado por el alumno (hasta recargar).
+            const ofUserId = Number(result.data.ofUserId);
+            const miPersonaId = Number(asistenteActivo.value?.person_id ?? authUser.person_id);
+            const esMio = ofUserId === miPersonaId;
+
             const newmsg = {
-                fromUserId: result.data.ofUserId,
+                fromUserId: esMio ? (selectedUser.value?.userId ?? ofUserId) : 0,
                 toUserId: 0,
                 text: result.data.message.content,
                 time: 'En este momento',
@@ -322,7 +332,16 @@
                     fetchPosts()
                     if(selectedUser.value){
                         if(conversationId == selectedUser.value.conversationId){
-                            selectedUser.value.messages.push(newmsg);
+                            // Si el mensaje ya se pinto al enviarlo (queda con id null),
+                            // solo se le asigna el id real en lugar de duplicarlo.
+                            const pendiente = esMio
+                                ? [...selectedUser.value.messages].reverse().find(m => m.id == null && m.text === newmsg.text)
+                                : null;
+                            if (pendiente) {
+                                pendiente.id = newmsg.id;
+                            } else {
+                                selectedUser.value.messages.push(newmsg);
+                            }
                             scrollToBottom();
                         }
                     }
