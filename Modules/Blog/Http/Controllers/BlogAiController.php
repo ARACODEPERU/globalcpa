@@ -16,7 +16,7 @@ class BlogAiController extends Controller
     public function correctSpelling(Request $request): \Illuminate\Http\JsonResponse
     {
         $request->validate([
-            'text' => 'required|string|max:10000',
+            'text' => 'required|string|max:100000',
         ]);
 
         $text = trim($request->input('text'));
@@ -163,7 +163,7 @@ PROMPT;
     public function verifyContent(Request $request): \Illuminate\Http\JsonResponse
     {
         $request->validate([
-            'text' => 'required|string|max:15000',
+            'text' => 'required|string|max:100000',
         ]);
 
         $text = trim($request->input('text'));
