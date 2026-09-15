@@ -68,7 +68,26 @@ class ArticleContentCleaner
             $clean .= $document->saveHTML($child);
         }
 
-        return $clean !== '' ? $clean : $html;
+        if ($clean === '') {
+            return $html;
+        }
+
+        // Red de seguridad: con HTML muy raro libxml puede descartar contenido y
+        // dejaria el articulo a medias. Si se perdio algo de texto visible se
+        // devuelve el original tal cual, que es preferible a perder parrafos.
+        if (self::visibleLength($clean) !== self::visibleLength($html)) {
+            return $html;
+        }
+
+        return $clean;
+    }
+
+    /** Cantidad de caracteres visibles (sin etiquetas ni espacios) de un HTML. */
+    private static function visibleLength(string $html): int
+    {
+        $text = strip_tags(html_entity_decode($html, ENT_QUOTES, 'UTF-8'));
+
+        return mb_strlen(preg_replace('/[\s\x{00A0}]+/u', '', $text) ?? '', 'UTF-8');
     }
 
     private static function parse(string $html): ?DOMDocument

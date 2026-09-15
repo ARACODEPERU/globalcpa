@@ -91,4 +91,67 @@ class ArticleContentCleanerTest extends TestCase
 
         $this->assertSame(1, substr_count($clean, '<li>'));
     }
+
+    /**
+     * El contenido pegado desde Word trae parrafos y listas anidados en divs
+     * envolventes. La reparacion nunca debe perder texto del articulo.
+     */
+    public function test_conserva_todo_el_texto_visible_de_un_pegado_de_word(): void
+    {
+        $html = '<div><div>&nbsp;</div>'
+            . '<div><p>En el estado de resultados hay cinco categorías:</p></div>'
+            . '<div><ul><li><p>la categoría operativa</p></li></ul></div>'
+            . '<div><p>la categoría de inversión</p></div>'
+            . '<div><ul><li><p>la categoría de financiamiento</p></li></ul></div>'
+            . '</div>';
+
+        $clean = ArticleContentCleaner::cleanLists($html);
+
+        $this->assertSame($this->textoVisible($html), $this->textoVisible($clean));
+    }
+
+    /**
+     * Red de seguridad: si el parseo perdiera contenido, se devuelve el HTML
+     * original en lugar de un articulo mutilado.
+     */
+    public function test_devuelve_el_original_cuando_el_parseo_perderia_contenido(): void
+    {
+        // Texto despues de un </html> suelto se descarta al re-serializar.
+        $html = '<ul><li>un item</li></ul></html>el resto del articulo';
+
+        $clean = ArticleContentCleaner::cleanLists($html);
+
+        $this->assertSame($html, $clean);
+    }
+
+    /**
+     * Propiedad que debe cumplirse siempre: la reparacion no pierde ni una letra
+     * del articulo, sea cual sea lo mal formado que venga el HTML.
+     */
+    public function test_nunca_pierde_texto_visible(): void
+    {
+        $fragmentos = [
+            '<ul><li>uno</li><p>dos</p></ul>',
+            '<body><ul><li>uno</li></ul></body>texto suelto del articulo',
+            '<ul><li>uno</li></ul></div><div><ul><li>dos</li></ul>',
+            '<div><ul><li>uno</li></ul>&nbsp;</div>',
+            '<table><tr><td><ul><li>uno</li></ul>texto de la celda</td></tr></table>',
+            '<ul><li>uno</li></ul><script>var x = 1; el resto del articulo',
+        ];
+
+        foreach ($fragmentos as $fragmento) {
+            $this->assertSame(
+                $this->textoVisible($fragmento),
+                $this->textoVisible(ArticleContentCleaner::cleanLists($fragmento)),
+                'Se perdio texto con: ' . $fragmento
+            );
+        }
+    }
+
+    private function textoVisible(string $html): string
+    {
+        $texto = strip_tags(html_entity_decode($html, ENT_QUOTES, 'UTF-8'));
+
+        return preg_replace('/[\s\x{00A0}]+/u', '', $texto) ?? '';
+    }
 }
