@@ -200,6 +200,9 @@
         .article-body table { border-collapse: collapse; margin: 1em 0; width: 100%; }
         .article-body table td, .article-body table th { border: 1px solid #ddd; padding: 5px 10px; }
         .article-body table th { background-color: #f3f3f3; }
+        /* Items que traen su texto en un <p> (listas reparadas) sin margen extra */
+        .article-body li > p:first-child { margin-top: 0; }
+        .article-body li > p:last-child { margin-bottom: 0; }
         .article-body a { color: #0958d9; text-decoration: underline; }
 
                 .sidebar-box {
@@ -525,7 +528,7 @@
 
                                 <div class="article-body-wrap {{ $isGuestLocked ? 'is-locked' : '' }}">
                                     <div class="article-body">
-                                        {!! $article->content_text !!}
+                                        {!! $article->content_html !!}
                                     </div>
                                     @if ($isGuestLocked)
                                         <div class="article-lock-fade" aria-hidden="true"></div>
