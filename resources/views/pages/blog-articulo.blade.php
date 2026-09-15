@@ -61,13 +61,33 @@
 
         .article-content .article-meta {
             display: flex;
-            gap: 20px;
+            flex-wrap: wrap;
+            column-gap: 20px;
+            row-gap: 10px;
             align-items: center;
             margin-bottom: 20px;
             padding-bottom: 15px;
             border-bottom: 1px solid #f3f4f6;
             font-size: 0.85rem;
             color: #6b7280;
+        }
+
+        .article-content .article-meta .meta-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+
+        .article-content .article-meta .author-block {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 0;
+        }
+
+        .article-content .article-meta .author-block .author {
+            overflow-wrap: anywhere;
         }
 
         .article-content .article-meta .author-avatar {
@@ -87,6 +107,83 @@
             max-width: 100%;
             height: auto;
             border-radius: 8px;
+        }
+
+        /* Bloqueo de contenido para invitados (el HTML se carga completo y se oculta con CSS) */
+        .article-body-wrap {
+            position: relative;
+        }
+
+        .article-body-wrap.is-locked {
+            max-height: 28rem;
+            overflow: hidden;
+        }
+
+        .article-lock-fade {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 9rem;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, #fff 85%);
+            pointer-events: none;
+        }
+
+        .article-lock-box {
+            position: relative;
+            z-index: 2;
+        }
+
+        .article-lock-box.is-overlap {
+            margin-top: -2.5rem;
+        }
+
+        .article-lock-icon {
+            display: inline-block;
+            width: 72px;
+            height: 72px;
+            opacity: 0.95;
+        }
+
+        .article-lock-actions {
+            display: flex;
+            justify-content: center;
+            align-items: stretch;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .article-lock-actions .btn {
+            min-width: 170px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            white-space: nowrap;
+            line-height: 1.2;
+            text-decoration: none !important;
+        }
+
+        @media (max-width: 575.98px) {
+            .article-body-wrap.is-locked {
+                max-height: 24rem;
+            }
+
+            .article-lock-fade {
+                height: 8rem;
+            }
+
+            .article-lock-actions {
+                flex-direction: column;
+            }
+
+            .article-lock-actions .btn {
+                width: 100%;
+            }
+
+            .article-content .article-meta .author-block {
+                flex-basis: 100%;
+            }
         }
 
         /* Complemento TinyMCE - estilos de contenido */
@@ -232,6 +329,15 @@
             border-color: #374558;
         }
 
+        body.dark-only .article-lock-fade {
+            background: linear-gradient(to bottom, rgba(31, 41, 55, 0) 0%, #1f2937 85%);
+        }
+
+        body.dark-only .article-lock-icon {
+            filter: brightness(0) invert(1);
+            opacity: 0.85;
+        }
+
         body.dark-only .sidebar-box {
             background: #111827;
             border-color: #374558;
@@ -262,11 +368,7 @@
             color: #f3f4f6;
         }
 
-        body.dark-only .article-lock-box {
-            background: linear-gradient(to bottom, rgba(21,32,43,0) 0%, rgba(21,32,43,1) 30%) !important;
-        }
-
-        body.dark-only .article-lock-box h5 {
+        body.dark-only .article-lock-box h3 {
             color: #f3f4f6 !important;
         }
 
@@ -376,9 +478,7 @@
             <x-sidebar />
 
             <div class="page-body">
-                <br><br>
-
-                <!-- Hero -->
+                                <!-- Hero -->
                 <div class="article-hero" data-aos="fade-in">
                     <div class="container">
                         <div class="breadcrumb-custom">
@@ -402,55 +502,55 @@
 
                                 <div class="article-meta">
                                     @if ($article->author)
-                                        <div class="d-flex align-items-center">
+                                        <div class="author-block">
                                             @php $userName = $article->author->name; @endphp
                                             @if ($article->author->avatar && Storage::disk('public')->exists($article->author->avatar))
                                                 <img src="{{ asset('storage/' . $article->author->avatar) }}"
-                                                    class="author-avatar me-2" alt="{{ $userName }}">
+                                                    class="author-avatar" alt="{{ $userName }}">
                                             @else
                                                 <img src="https://ui-avatars.com/api/?name={{ urlencode($userName) }}&size=80&rounded=true"
-                                                    class="author-avatar me-2" alt="{{ $userName }}">
+                                                    class="author-avatar" alt="{{ $userName }}">
                                             @endif
                                             <span class="author">{{ $userName }}</span>
                                         </div>
                                     @endif
-                                    <span><i
-                                            class="fa fa-calendar me-1"></i>{{ \Carbon\Carbon::parse($article->created_at)->format('d M Y') }}</span>
-                                    <span><i class="fa fa-eye me-1"></i>{{ $article->views }} vistas</span>
+                                    <span class="meta-item"><i class="fa fa-calendar"></i>{{ \Carbon\Carbon::parse($article->created_at)->format('d M Y') }}</span>
+                                    <span class="meta-item"><i class="fa fa-eye"></i>{{ $article->views }} vistas</span>
                                 </div>
 
-                                <div class="article-body">
-                                    @if(Auth::check())
+                                @php
+                                    $plainText = trim(strip_tags(html_entity_decode((string) ($article->content_text ?? ''), ENT_QUOTES, 'UTF-8')));
+                                    $isGuestLocked = !Auth::check() && mb_strlen($plainText, 'UTF-8') > 1200;
+                                @endphp
+
+                                <div class="article-body-wrap {{ $isGuestLocked ? 'is-locked' : '' }}">
+                                    <div class="article-body">
                                         {!! $article->content_text !!}
-                                    @else
-                                        @php
-                                            $decoded = html_entity_decode($article->content_text, ENT_QUOTES, 'UTF-8');
-                                            $lines = explode("
-", strip_tags($decoded));
-                                            $preview = implode("
-", array_slice($lines, 0, 10));
-                                        @endphp
-                                        {!! nl2br(e($preview)) !!}
-                                        
-                                        <div class="text-center mt-4 p-4 article-lock-box" style="background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 30%); position: relative;">
-                                            <div style="padding-top: 40px;">
-                                                <div class="mb-3">
-                                                    <i class="fa fa-lock fa-3x text-muted mb-3"></i>
-                                                </div>
-                                                <h5 class="fw-bold text-navy-custom mb-3">¿Quieres leer el artículo completo?</h5>
-                                                <p class="text-muted mb-4">Si quieres leer esta información completa debes loguearte. Si no tienes una cuenta, regístrate.</p>
-                                                <div class="d-flex justify-content-center gap-3">
-                                                    <button type="button" class="btn btn-primary px-4 py-2" data-bs-toggle="modal" data-bs-target="#loginModalArticle" style="background-color: #002060; border-color: #002060; border-radius: 8px;">
-                                                        <i class="fa fa-sign-in-alt me-2"></i>Iniciar Sesión
-                                                    </button>
-                                                    <a href="{{ url('/register') }}" class="btn btn-outline-primary px-4 py-2" style="color: #002060; border-color: #002060; border-radius: 8px;">
-                                                        <i class="fa fa-user-plus me-2"></i>Registrarse
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
+                                    </div>
+                                    @if ($isGuestLocked)
+                                        <div class="article-lock-fade" aria-hidden="true"></div>
                                     @endif
                                 </div>
+
+                                @if (!Auth::check())
+                                    <div class="text-center p-4 article-lock-box {{ $isGuestLocked ? 'is-overlap' : '' }}">
+                                        <img src="{{ asset('img/svg/book-open.svg') }}" alt="" width="72" height="72"
+                                            class="article-lock-icon mb-3">
+                                        <h3 class="fw-bold text-navy-custom mb-3">¿Quieres leer el artículo completo?</h3>
+                                        <p class="text-muted mb-4">Si quieres leer esta información completa debes loguearte. Si no tienes una cuenta, regístrate.</p>
+                                        <div class="article-lock-actions">
+                                            <button type="button" class="btn btn-primary"
+                                                data-bs-toggle="modal" data-bs-target="#loginModalArticle"
+                                                style="background-color: #002060; border-color: #002060; border-radius: 8px;">
+                                                <i class="fa fa-sign-in-alt"></i>Iniciar Sesión
+                                            </button>
+                                            <a href="{{ url('/register') }}" class="btn btn-outline-primary"
+                                                style="color: #002060; border-color: #002060; border-radius: 8px;">
+                                                <i class="fa fa-user-plus"></i>Registrarse
+                                            </a>
+                                        </div>
+                                    </div>
+                                @endif
 
                                 @if ($article->keywords && is_array($article->keywords) && count($article->keywords) > 0)
                                     <div class="mt-4 pt-3 border-top">
@@ -623,13 +723,13 @@ document.getElementById('loginFormArticle').addEventListener('submit', function(
     var form = this;
     var btn = document.getElementById('submitLoginArticle');
     var errorDiv = document.getElementById('loginErrorArticle');
-    
+
     btn.disabled = true;
     btn.innerHTML = '<i class="fa fa-spinner fa-spin me-2"></i>Iniciando sesion...';
     errorDiv.classList.add('d-none');
-    
+
     var formData = new FormData(form);
-    
+
     fetch(form.action, {
         method: 'POST',
         body: formData,
