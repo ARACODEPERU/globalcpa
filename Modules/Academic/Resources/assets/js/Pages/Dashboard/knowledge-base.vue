@@ -361,7 +361,7 @@
                                 <Link :href="route('blog_article_show_studante', art.url)" class="text-primary text-xl font-bold text-center ltr:sm:text-left rtl:sm:text-right">{{ art.title }}</Link>
                                 <p class="text-center ltr:sm:text-left rtl:sm:text-right">{{ formatDateKnow(art.created_at) }}</p>
                                 <div class="mt-4 sm:mt-4 mb-16">
-                                    <p class="text-white-dark font-semibold">
+                                    <p class="text-white-dark font-semibold line-clamp-2" :title="art.short_description">
                                         {{ art.short_description }}
                                     </p>
                                 </div>

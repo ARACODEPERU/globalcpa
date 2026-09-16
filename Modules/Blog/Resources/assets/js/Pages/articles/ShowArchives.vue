@@ -75,7 +75,7 @@
                                                     {{ row.title }}
                                                 </h6>
                                             </Link>
-                                            <p class="mt-2 text-gray-500 dark:text-gray-300">
+                                            <p class="mt-2 text-gray-500 dark:text-gray-300 line-clamp-2" :title="row.short_description">
                                                 {{ row.short_description }}
                                             </p>
                                             <div class="mt-4 font-medium group-data-[theme-color=violet]:text-violet-500 group-data-[theme-color=sky]:text-sky-500 group-data-[theme-color=red]:text-red-500 group-data-[theme-color=green]:text-green-500 group-data-[theme-color=pink]:text-pink-500 group-data-[theme-color=blue]:text-blue-500">

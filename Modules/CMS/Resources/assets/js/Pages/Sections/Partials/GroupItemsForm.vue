@@ -8,6 +8,7 @@ import TextInput from '@/Components/TextInput.vue';
 import Keypad from '@/Components/Keypad.vue';
 import Swal2 from 'sweetalert2';
 import { ref } from 'vue';
+import { resizeImageFile } from '@/utils/imageResize';
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 
 const props = defineProps({
@@ -147,13 +148,22 @@ const destroyGroup = (id) => {
 
 const xassetUrl = assetUrl;
 
-const readImageFile = (file,gr,it) => {
+const readImageFile = async (file,gr,it) => {
+    if (! file) return;
+
     const reader = new FileReader();
-    arrayGroups.value[gr].group.items[it].content = file; 
+    arrayGroups.value[gr].group.items[it].content = file;
     reader.onload = (e) => {
         arrayGroups.value[gr].group.items[it].image_preview  = e.target.result;
     };
     reader.readAsDataURL(file);
+
+    // Se envia reducida a 440px de ancho (alto proporcional) cuando el navegador termina.
+    const resized = await resizeImageFile(file);
+
+    if (arrayGroups.value[gr] && arrayGroups.value[gr].group.items[it]) {
+        arrayGroups.value[gr].group.items[it].content = resized;
+    }
 }
 
 const esImageBase64 = (cadena) => {

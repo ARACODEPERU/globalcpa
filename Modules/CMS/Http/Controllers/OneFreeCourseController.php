@@ -4,6 +4,7 @@ namespace Modules\CMS\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Parameter;
+use App\Services\ImageResizer;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -48,7 +49,8 @@ class OneFreeCourseController extends Controller
                 $filename = date('YmdHis') . '.' . $extension;
 
                 // lo guarda en storage/app/public/uploads/cmsLanding con el nombre personalizado
-                $mainImagePath = $file->storeAs('uploads/cmsLanding', $filename, 'public');
+                // y con un ancho maximo de 440px (alto proporcional).
+                $mainImagePath = ImageResizer::store($file, 'uploads/cmsLanding', $filename);
             }
             //dd($request->get('landing_id'));
             if (!$request->filled('landing_id')) {

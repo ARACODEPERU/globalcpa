@@ -11,6 +11,7 @@ import { computed, ref, watch } from 'vue';
 import { Input, Textarea, Checkbox } from 'flowbite-vue'
 import Editor from '@tinymce/tinymce-vue'
 import ImageCompressorjs from '@/Components/ImageCompressorjs.vue';
+import { IMAGE_MAX_WIDTH } from '@/utils/imageResize';
 
 const props = defineProps({
     venture: {
@@ -142,7 +143,7 @@ const handleImageCompressed = (file) => {
                         <figcaption class="mt-2 text-sm text-center text-gray-500 dark:text-gray-400">Imagen Actual</figcaption>
                     </figure>
                 </div>
-                <ImageCompressorjs :onImageCompressed="handleImageCompressed" /> 
+                <ImageCompressorjs :onImageCompressed="handleImageCompressed" :max-width="IMAGE_MAX_WIDTH" /> 
                 <InputError :message="form.errors.image" class="mt-2" />
             </div>
             

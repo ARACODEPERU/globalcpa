@@ -11,6 +11,7 @@ import AppLayout from '@/Layouts/Vristo/AppLayout.vue';
     import InputLabel from '@/Components/InputLabel.vue';
     import TextInput from '@/Components/TextInput.vue';
     import SecondaryButton  from '@/Components/SecondaryButton.vue';
+    import { resizeImageFile } from '@/utils/imageResize';
 
     const props = defineProps({
         page: {
@@ -275,33 +276,45 @@ const saveChangesGroupItems = (key) => {
     });
 }
 
-const updateImagePreview = (index,image) => {
-        const photo = image;
-
-        if (! photo) return;
+const updateImagePreview = async (index, image) => {
+        if (! image) return;
 
         const reader = new FileReader();
 
-        //console.log(itemsForm.items[index]);
+        // El archivo original se asigna de inmediato para que el formulario lo tenga,
+        // y se reemplaza por la version reducida a 440px cuando el navegador termina.
         itemsForm.items[index].item.content = image;
 
         reader.onload = (e) => {
             itemsForm.items[index].image_preview = e.target.result;
         };
-        
-        reader.readAsDataURL(photo);
+
+        reader.readAsDataURL(image);
+
+        const resized = await resizeImageFile(image);
+
+        if (itemsForm.items[index]) {
+            itemsForm.items[index].item.content = resized;
+        }
     };
 
     const xassetUrl = assetUrl;
 
-const readImageFile = (file, gr, it) => {
+const readImageFile = async (file, gr, it) => {
+    if (! file) return;
+
     const reader = new FileReader();
     itemsForm.items[gr].item.items[it].content = file;
     reader.onload = (e) => {
-        console.log(e.target.result)
         itemsForm.items[gr].item.items[it].image_preview = e.target.result;
     };
     reader.readAsDataURL(file);
+
+    const resized = await resizeImageFile(file);
+
+    if (itemsForm.items[gr] && itemsForm.items[gr].item.items[it]) {
+        itemsForm.items[gr].item.items[it].content = resized;
+    }
 }
 
 const esImageBase64 = (cadena) => {

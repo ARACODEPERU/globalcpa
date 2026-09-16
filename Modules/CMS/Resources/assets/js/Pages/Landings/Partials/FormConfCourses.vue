@@ -5,6 +5,7 @@
     import { ref, onMounted, computed, watch } from 'vue';
     import Editor from '@tinymce/tinymce-vue'
     import InputError from '@/Components/InputError.vue';
+    import { resizeImageFile } from '@/utils/imageResize';
     import { usePage } from '@inertiajs/vue3';
     import flatPickr from 'vue-flatpickr-component';
     import 'flatpickr/dist/flatpickr.css';
@@ -82,7 +83,7 @@
     const imagePreviewRef = ref(null);
     const fileName = ref(null);
 
-    const loadFile = (event) => {
+    const loadFile = async (event) => {
         const file = event.target.files[0];
         if (!file) {
             // If the user cancels the file selection, clear the fields and exit
@@ -94,6 +95,9 @@
 
         // Assign the file object to the `image` field for form submission
         form.image = file;
+
+        // La imagen principal de la landing se envia reducida a 440px de ancho (alto proporcional).
+        form.image = await resizeImageFile(file);
 
         // Guardar nombre + extensión
         fileName.value = file.name;

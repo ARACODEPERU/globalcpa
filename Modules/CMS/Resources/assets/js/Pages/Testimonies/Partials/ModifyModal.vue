@@ -5,6 +5,7 @@ import Swal2 from 'sweetalert2';
 import ModalLargeX from '@/Components/ModalLargeX.vue';
 import InputError from '@/Components/InputError.vue';
 import IaCorrectionMenu from '../../../Components/IaCorrectionMenu.vue';
+import { resizeImageFile } from '@/utils/imageResize';
 
 const props = defineProps({
     show: {
@@ -101,11 +102,14 @@ const setRating = (value) => {
     form.rating = value;
 };
 
-const onImageChange = (event) => {
+const onImageChange = async (event) => {
     const file = event.target.files[0] || null;
-    form.image = file;
     removeImage.value = false;
+
+    // La miniatura se muestra al instante y el archivo viaja reducido a 440px de ancho.
     photoPreview.value = file ? URL.createObjectURL(file) : null;
+
+    form.image = await resizeImageFile(file);
 };
 
 const markRemoveImage = () => {
