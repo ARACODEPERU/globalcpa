@@ -10,6 +10,10 @@ Route::middleware('auth')->group(function () {
         ->name('bank-account-store');
     Route::delete('bank/account/destroy/{id}', [BankAccountController::class, 'destroy'])
         ->name('bank-account-destroy');
+        Route::post('company/billetera/store', [CompanyBilleteraController::class, 'storeOrUpdate'])
+        ->name('company-billetera-store');
+    Route::delete('company/billetera/destroy/{id}', [CompanyBilleteraController::class, 'destroy'])
+        ->name('company-billetera-destroy');
     ///users///
     Route::middleware(['permission:usuarios'])
         ->get('datatables/users', [UserController::class, 'getUsers'])->name('users-tables-list');
