@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BankAccountController;
 use App\Http\Controllers\ComplaintsBookController;
+use App\Http\Controllers\CompanyBilleteraController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
