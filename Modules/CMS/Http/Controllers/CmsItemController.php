@@ -2,7 +2,6 @@
 
 namespace Modules\CMS\Http\Controllers;
 
-use App\Services\ImageResizer;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -71,11 +70,11 @@ class CmsItemController extends Controller
             $original_name = str_replace(" ", "_", $original_name);
             $extension = $file->getClientOriginalExtension();
             $file_name = date('YmdHis') . '.' . $extension;
-
-            // Las imagenes se guardan con un ancho maximo de 440px; los archivos, tal cual.
-            $path = $type_id == 1
-                ? ImageResizer::store($file, $destination, $file_name)
-                : $file->storeAs($destination, $file_name, 'public');
+            $path = $request->file('content')->storeAs(
+                $destination,
+                $file_name,
+                'public'
+            );
 
             $content = $type_id == 1 ? $path : $path;
         }
@@ -140,11 +139,11 @@ class CmsItemController extends Controller
             $original_name = str_replace(" ", "_", $original_name);
             $extension = $file->getClientOriginalExtension();
             $file_name = date('YmdHis') . '.' . $extension;
-
-            // Las imagenes se guardan con un ancho maximo de 440px; los archivos, tal cual.
-            $path = $type_id == 1
-                ? ImageResizer::store($file, $destination, $file_name)
-                : $file->storeAs($destination, $file_name, 'public');
+            $path = $request->file('content')->storeAs(
+                $destination,
+                $file_name,
+                'public'
+            );
 
             $content = $type_id == 1 ?  $path : $path;
         }

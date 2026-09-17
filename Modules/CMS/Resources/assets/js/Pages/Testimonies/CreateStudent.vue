@@ -4,7 +4,6 @@
     import { computed, ref } from 'vue';
     import InputError from '@/Components/InputError.vue';
     import IaCorrectionMenu from '../../Components/IaCorrectionMenu.vue';
-    import { resizeImageFile } from '@/utils/imageResize';
     import Swal2 from 'sweetalert2';
 
     const props = defineProps({
@@ -51,13 +50,10 @@
         showList.value = false;
     };
 
-    const onPhotoChange = async (event) => {
+    const onPhotoChange = (event) => {
         const file = event.target.files[0] || null;
-
-        // La miniatura se muestra al instante y el archivo viaja reducido a 440px de ancho.
+        form.photo = file;
         photoPreview.value = file ? URL.createObjectURL(file) : null;
-
-        form.photo = await resizeImageFile(file);
     };
 
     const setRating = (value) => {

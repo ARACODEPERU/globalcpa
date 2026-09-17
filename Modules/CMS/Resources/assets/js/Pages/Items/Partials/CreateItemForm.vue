@@ -8,7 +8,6 @@ import TextInput from '@/Components/TextInput.vue';
 import Keypad from '@/Components/Keypad.vue';
 import Swal2 from 'sweetalert2';
 import { ref, watch } from 'vue';
-import { resizeImageFile } from '@/utils/imageResize';
 
 const props = defineProps({
     types: {
@@ -56,13 +55,6 @@ watch(() => form.type_id, () => {
     }
 });
 
-// Las imagenes de los items se reducen a 440px de ancho (alto proporcional) antes de subirlas.
-const onContentFileSelected = async (event) => {
-    const file = event.target.files[0] || null;
-    form.content = file;
-    form.content = await resizeImageFile(file);
-}
-
 const xassetUrl = assetUrl;
 </script>
 
@@ -95,7 +87,7 @@ const xassetUrl = assetUrl;
                             <figcaption class="mt-2 text-sm text-center text-gray-500 dark:text-gray-400">Imagen Actual</figcaption>
                         </figure>
                     </div>
-                    <input @input="onContentFileSelected" accept=".svg, .png, .jpg, .jpeg, .gif" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" aria-describedby="file_input_help" id="file_input" type="file">
+                    <input @input="form.content = $event.target.files[0]" accept=".svg, .png, .jpg, .jpeg, .gif" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" aria-describedby="file_input_help" id="file_input" type="file">
                     <p class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">SVG, PNG, JPG or GIF (MAX. 800x400px).</p>
                 </template>
                 <template v-if="form.type_id == 2">

@@ -3,7 +3,6 @@
 namespace Modules\CMS\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Services\ImageResizer;
 use App\Models\Parameter;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -186,10 +185,7 @@ class CmsTestimonyController extends Controller
 
         $path = null;
         if ($request->hasFile('photo')) {
-            $photo = $request->file('photo');
-
-            // Las fotos de testimonio se guardan con un ancho maximo de 440px.
-            $path = ImageResizer::store($photo, 'uploads/testimonies', ImageResizer::makeFileName($photo));
+            $path = $request->file('photo')->store('uploads/testimonies', 'public');
         }
 
         $publish = $request->boolean('publish');
@@ -299,9 +295,7 @@ class CmsTestimonyController extends Controller
                 $original_name = str_replace(" ", "_", $original_name);
                 $extension = $file->getClientOriginalExtension();
                 $file_name = $testimony->id . '.' . $extension;
-                // Las imagenes de testimonio se guardan con un ancho maximo de 440px.
-                $path = ImageResizer::store($file, $destination, $file_name);
-                @unlink($tempFile);
+                $path = Storage::disk('public')->putFileAs($destination, $file, $file_name);
                 $testimony->image = $path;
                 $testimony->save();
             }
@@ -396,9 +390,7 @@ class CmsTestimonyController extends Controller
                 $original_name = str_replace(" ", "_", $original_name);
                 $extension = $file->getClientOriginalExtension();
                 $file_name = $testimony->id . '.' . $extension;
-                // Las imagenes de testimonio se guardan con un ancho maximo de 440px.
-                $path = ImageResizer::store($file, $destination, $file_name);
-                @unlink($tempFile);
+                $path = Storage::disk('public')->putFileAs($destination, $file, $file_name);
                 $testimony->image = $path;
             }
         }
@@ -504,10 +496,7 @@ class CmsTestimonyController extends Controller
 
         // Imagen: reemplazar o quitar.
         if ($request->hasFile('image')) {
-            $image = $request->file('image');
-
-            // Las imagenes de testimonio se guardan con un ancho maximo de 440px.
-            $testimony->image = ImageResizer::store($image, 'uploads/testimonies', ImageResizer::makeFileName($image));
+            $testimony->image = $request->file('image')->store('uploads/testimonies', 'public');
         } elseif ($request->boolean('remove_image')) {
             $testimony->image = null;
         }
