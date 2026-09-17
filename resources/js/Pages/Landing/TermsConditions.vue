@@ -1,5 +1,4 @@
 <script setup>
-import { Link, usePage } from '@inertiajs/vue3';
 import { Head, Link, usePage } from '@inertiajs/vue3';
 import iconUser from '@/Components/vristo/icon/icon-user.vue';
 import { useAppStore } from '@/stores/index';
