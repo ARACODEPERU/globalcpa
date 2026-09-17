@@ -5,7 +5,6 @@
     import Swal2 from 'sweetalert2';
     import ModalLargeX from '@/Components/ModalLargeX.vue';
     import InputError from '@/Components/InputError.vue';
-    import { resizeImageFile } from '@/utils/imageResize';
 
     const props = defineProps({
         courses: {
@@ -151,13 +150,10 @@
         form.rating = value;
     };
 
-    const onPhotoChange = async (event) => {
+    const onPhotoChange = (event) => {
         const file = event.target.files[0] || null;
-
-        // La miniatura se muestra al instante y el archivo viaja reducido a 440px de ancho.
+        form.photo = file;
         photoPreview.value = file ? URL.createObjectURL(file) : null;
-
-        form.photo = await resizeImageFile(file);
     };
 
     /**

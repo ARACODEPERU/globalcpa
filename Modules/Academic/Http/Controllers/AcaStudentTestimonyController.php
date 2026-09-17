@@ -3,7 +3,6 @@
 namespace Modules\Academic\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Services\ImageResizer;
 use App\Services\StudentTestimonyAccess;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -196,10 +195,7 @@ class AcaStudentTestimonyController extends Controller
         $path = $existing?->image;
 
         if ($request->hasFile('photo')) {
-            $photo = $request->file('photo');
-
-            // Las fotos de testimonio se guardan con un ancho maximo de 440px.
-            $path = ImageResizer::store($photo, 'uploads/testimonies', ImageResizer::makeFileName($photo));
+            $path = $request->file('photo')->store('uploads/testimonies', 'public');
         }
 
         $courseModel = AcaCourse::find($course['id']);
