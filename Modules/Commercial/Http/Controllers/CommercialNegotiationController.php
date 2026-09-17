@@ -273,6 +273,7 @@ class CommercialNegotiationController extends Controller
             'negotiation' => $negotiation,
             'statuses' => $this->statuses(),
             'paymentMethods' => $this->paymentMethods(),
+            'contactChannelLabels' => CommercialNegotiation::contactChannelLabels(),
         ]);
     }
 
@@ -586,6 +587,7 @@ class CommercialNegotiationController extends Controller
      */
     private function contactChannels(): array
     {
+
         return [
             ['value' => 'Ads', 'label' => 'Ads'],
             ['value' => 'Invitado CPA', 'label' => 'Invitado CPA'],
@@ -598,6 +600,7 @@ class CommercialNegotiationController extends Controller
             ['value' => 'Webinar', 'label' => 'Webinar'],
             ['value' => 'Lead gratuito', 'label' => 'Lead gratuito'],
         ];
+
     }
 
     /**
