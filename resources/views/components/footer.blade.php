@@ -143,7 +143,7 @@
                         <li><a href="{{ route('web_about') }}">Nosotros</a></li>
                         <li><a href="{{ route('web_why_cpa') }}">¿Por qué elegirnos?</a></li>
                         <li><a href="{{ route('web_testimonials') }}">Testimonios</a></li>
-                        <li><a href="{{ route('web_fag') }}">FAG</a></li>
+                        {{-- <li><a href="{{ route('web_fag') }}">FAG</a></li> --}}
                         <li><a href="{{ route('web_faq') }}">Preguntas Frecuentes</a></li>
                         <li><a href="{{ route('politicas_privacidad') }}">Políticas de privacidad</a></li>
                         <li><a href="{{ route('politicas_devoluciones') }}">Políticas de devoluciones</a></li>
@@ -166,27 +166,33 @@
                     <div class="social-icons-modern">
                         <a href="https://www.facebook.com/globalcpaperu" target="_blank" class="social-icon-link"
                             aria-label="Facebook">
-                            <img style="width: 30px; height: 30px;" src="{{ asset('themes/webpage/images/logos/facebook-round.svg') }}" alt="Facebook">
+                            <img style="width: 30px; height: 30px;"
+                                src="{{ asset('themes/webpage/images/logos/facebook-round.svg') }}" alt="Facebook">
                         </a>
-                        <a href="https://www.instagram.com/academycpa?igsh=ano2ZGNoNjkyeGdk" target="_blank" class="social-icon-link"
-                            aria-label="Instagram">
-                            <img style="width: 30px; height: 30px;" src="{{ asset('themes/webpage/images/logos/instagram-round.svg') }}" alt="Instagram">
+                        <a href="https://www.instagram.com/academycpa?igsh=ano2ZGNoNjkyeGdk" target="_blank"
+                            class="social-icon-link" aria-label="Instagram">
+                            <img style="width: 30px; height: 30px;"
+                                src="{{ asset('themes/webpage/images/logos/instagram-round.svg') }}" alt="Instagram">
                         </a>
                         <a href="https://www.tiktok.com/@globalcpa" target="_blank" class="social-icon-link"
                             aria-label="TikTok">
-                            <img style="width: 30px; height: 30px;" src="{{ asset('themes/webpage/images/logos/tik_tok-round.svg') }}" alt="TikTok">
+                            <img style="width: 30px; height: 30px;"
+                                src="{{ asset('themes/webpage/images/logos/tik_tok-round.svg') }}" alt="TikTok">
                         </a>
                         <a href="https://www.youtube.com/@globalcpaperu" target="_blank" class="social-icon-link"
                             aria-label="YouTube">
-                            <img style="width: 30px; height: 30px;" src="{{ asset('themes/webpage/images/logos/youtube-round.svg') }}" alt="YouTube">
+                            <img style="width: 30px; height: 30px;"
+                                src="{{ asset('themes/webpage/images/logos/youtube-round.svg') }}" alt="YouTube">
                         </a>
                         <a href="https://www.linkedin.com/school/academy-cpa/" target="_blank" class="social-icon-link"
                             aria-label="LinkedIn">
-                            <img style="width: 30px; height: 30px;" src="{{ asset('themes/webpage/images/logos/linkedin.png') }}" alt="LinkedIn">
+                            <img style="width: 30px; height: 30px;"
+                                src="{{ asset('themes/webpage/images/logos/linkedin.png') }}" alt="LinkedIn">
                         </a>
-                        <a href="https://wa.me/51967052506?text=/Agente%20Principal" target="_blank" class="social-icon-link"
-                            aria-label="WhatsApp">
-                            <img style="width: 30px; height: 30px;" src="{{ asset('themes/webpage/images/logos/whatsapp.png') }}" alt="WhatsApp">
+                        <a href="https://wa.me/51967052506?text=/Agente%20Principal" target="_blank"
+                            class="social-icon-link" aria-label="WhatsApp">
+                            <img style="width: 30px; height: 30px;"
+                                src="{{ asset('themes/webpage/images/logos/whatsapp.png') }}" alt="WhatsApp">
                         </a>
                     </div>
                 </div>
@@ -201,7 +207,9 @@
             </div>
 
             <div class="footer-bottom">
-                <p class="mb-0">&copy; {{ date('Y') }} CPA Academy. Todos los derechos reservados.</p>
+                <p class="mb-0">&copy; {{ date('Y') }} <b>CPA Academy</b>. Todos los derechos reservados. ||
+                    Desarrollado por <a href="https://aracodeperu.com/" target="_blank"
+                        rel="noopener noreferrer">ARACODE SMART SOLUTIONS</a></p>
             </div>
         </div>
     </footer>

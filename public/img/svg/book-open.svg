@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Icono "open-book-book" - SVG Repo: https://www.svgrepo.com/svg/179011/open-book-book - Licencia CC0
+     Las lineas de las paginas son huecos transparentes (mask) para que sigan viendose
+     cuando el icono se invierte a blanco en modo oscuro. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="108 120 296 268" role="img" aria-hidden="true" focusable="false">
+    <defs>
+        <mask id="bookOpenLines" maskUnits="userSpaceOnUse" x="108" y="120" width="296" height="268">
+            <rect x="108" y="120" width="296" height="268" fill="#ffffff"/>
+            <g fill="#000000">
+                <rect x="142.222" y="194.801" width="85.333" height="8.62"/>
+                <rect x="142.222" y="223.246" width="85.333" height="8.62"/>
+                <rect x="142.222" y="251.69" width="85.333" height="8.62"/>
+                <rect x="142.222" y="280.135" width="85.333" height="8.62"/>
+                <rect x="142.222" y="308.579" width="85.333" height="8.62"/>
+                <rect x="284.444" y="194.801" width="85.333" height="8.62"/>
+                <rect x="284.444" y="223.246" width="85.333" height="8.62"/>
+                <rect x="284.444" y="251.69" width="85.333" height="8.62"/>
+                <rect x="284.444" y="280.135" width="85.333" height="8.62"/>
+                <rect x="284.444" y="308.579" width="85.333" height="8.62"/>
+            </g>
+        </mask>
+    </defs>
+    <path fill="#002060" mask="url(#bookOpenLines)"
+        d="M298.093,126.276c-23.247,0-42.093,18.846-42.093,42.093c0-23.247-18.846-42.093-42.093-42.093h-100.13v256H256h142.222v-256H298.093z"/>
+</svg>

@@ -9,6 +9,7 @@ import { ref, onMounted, reactive, nextTick  } from 'vue';
 import Editor from '@tinymce/tinymce-vue'
 import TextInput from '@/Components/TextInput.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
+import BlogAiAssistant from '@/Components/BlogAiAssistant.vue';
 
 
     const props = defineProps({
@@ -34,6 +35,13 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 
     const photoPreview = ref(null);
     const photoInput = ref(null);
+
+    const MAX_DESCRIPTION = 1000;
+
+    // La IA tambien escribe este campo, y maxlength no bloquea una asignacion por codigo.
+    const setDescriptionFromAi = (value) => {
+        form.description = (value || '').slice(0, MAX_DESCRIPTION);
+    };
 
     const createArticle = () => {
         if (photoInput.value) {
@@ -153,11 +161,25 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
             </div>
             <div class="col-span-6 sm:col-span-6">
                 <InputLabel for="description" value="description *" />
-                <textarea v-model="form.description" rows="2" class="form-textarea"></textarea>
+                <textarea v-model="form.description" rows="2" maxlength="1000" class="form-textarea"></textarea>
+                <div class="flex justify-end mt-1 text-xs"
+                    :class="(form.description || '').length >= 1000 ? 'text-red-500' : 'text-gray-400'">
+                    {{ (form.description || '').length }}/1000
+                </div>
                 <InputError :message="form.errors.description" class="mt-2" />
             </div>
             <div class="col-span-6 sm:col-span-6">
-                <InputLabel for="content" value="Contenido *" />
+                <div class="flex items-center justify-between mb-2">
+                    <InputLabel for="content" value="Contenido *" />
+                    <BlogAiAssistant
+                        :contentText="form.content_text"
+                        :title="form.title"
+                        :description="form.description"
+                        @update:contentText="form.content_text = $event"
+                        @update:title="form.title = $event"
+                        @update:description="setDescriptionFromAi"
+                    />
+                </div>
                 <Editor
                     :api-key="tiny_api_key"
                     v-model="form.content_text"

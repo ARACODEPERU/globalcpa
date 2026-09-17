@@ -24,7 +24,9 @@
     <!-- page-wrapper Start-->
     <div class="page-wrapper" id="pageWrapper">
         <!-- Page Header Start-->
-        <x-header />
+        <x-header :breadcrumb="[
+            ['label' => $landingPage->title ?? 'Landing'],
+        ]" />
         <!-- Page Header Ends-->
         <!-- Page Body Start-->
         <div class="page-body-wrapper">

@@ -125,6 +125,51 @@ function preguntarIrAlCarrito(producto) {
     });
 }
 
+// Inscribe un curso gratuito (precio 0): lo agrega al carrito y avisa que no se paga nada.
+function inscribirmeGratis(producto) {
+    carritoTemp = obtenerCarrito();
+
+    var agregar = true;
+    for (let i = 0; i < carritoTemp.length; i++) {
+        if (carritoTemp[i].id == producto.id) {
+            Swal.fire({
+                title: "Estimado Usuario",
+                text: producto.nombre + " ya se encuentra en tu carrito.",
+                icon: "warning",
+                confirmButtonText: "Aceptar",
+            });
+            agregar = false;
+            break;
+        }
+    }
+
+    if (agregar) {
+        let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+        carrito.push(producto);
+        localStorage.setItem("carrito", JSON.stringify(carrito));
+        getTotal();
+        cargarContadorCarrito();
+        if (typeof cargarItemsCarritoBD === "function") {
+            cargarItemsCarritoBD();
+        }
+
+        Swal.fire({
+            title: "\u00a1Inscripci\u00f3n gratuita!",
+            html: '<strong>' + producto.nombre + '</strong> se agreg\u00f3 a tu carrito.<br><br>' +
+                  '<span style="color: #16a34a; font-weight: 600;">Este curso es gratuito. Ve al carrito para completar tu inscripci\u00f3n sin costo.</span>',
+            icon: "success",
+            showCancelButton: true,
+            confirmButtonText: "Ir al Carrito",
+            cancelButtonText: "Seguir navegando",
+            reverseButtons: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = "/carrito";
+            }
+        });
+    }
+}
+
 // Obtener el carrito actual
 function obtenerCarrito() {
     return JSON.parse(localStorage.getItem("carrito")) || [];

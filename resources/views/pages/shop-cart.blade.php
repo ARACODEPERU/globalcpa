@@ -3313,10 +3313,51 @@
                     </button>
                 </div>
             `;
+            mountFreeCheckoutPhoneField();
             updateFreeCheckoutView();
         }
 
+        function mountFreeCheckoutPhoneField() {
+            const source = document.getElementById('payment-phone-field');
+            const panel = document.querySelector('.free-checkout-message');
+            const button = panel ? panel.querySelector('.free-checkout-button') : null;
+
+            if (!source || !panel || !button) {
+                return;
+            }
+
+            const existing = panel.querySelector('#free-phone-field');
+            if (existing) {
+                existing.remove();
+            }
+
+            const freeField = source.cloneNode(true);
+            freeField.id = 'free-phone-field';
+            freeField.classList.remove('d-none');
+
+            const country = freeField.querySelector('select');
+            if (country) {
+                country.id = 'free_phone_country';
+                country.selectedIndex = 0;
+            }
+
+            const number = freeField.querySelector('input');
+            if (number) {
+                number.id = 'free_phone';
+                number.value = '';
+            }
+
+            button.parentNode.insertBefore(freeField, button);
+        }
+
         function continueFreeCheckout() {
+            const phoneState = getCheckoutPhoneState();
+
+            if (!phoneState.isComplete) {
+                notifyPaymentPhoneRequired(phoneState, false, 'continuar con tu registro');
+                return;
+            }
+
             fillPayerData({});
             showStep('final');
         }
@@ -3802,12 +3843,21 @@
                 return;
             }
 
+            const phoneState = getCheckoutPhoneState();
+
+            if (freeCheckout && !phoneState.isComplete) {
+                notifyPaymentPhoneRequired(phoneState, false, 'continuar con tu registro');
+                return;
+            }
+
             setBusy("btn-finalize", true);
             const accountMode = document.getElementById("account_mode").value;
             const payload = {
                 account_mode: accountMode,
                 sale_id: freeCheckout ? null : paidSaleId,
                 item_id: freeCheckout ? cartIds : undefined,
+                phone_country: phoneState.areaCode,
+                phone: phoneState.phone,
                 email: accountMode === "login" ? value("login_email") : value("create_email"),
                 password: accountMode === "login" ? value("login_password") : value("create_password"),
                 names: value("create_names"),
@@ -3994,12 +4044,31 @@
             };
         }
 
-        function notifyPaymentPhoneRequired(phoneState, reloadOnClose = false) {
+        // Devuelve el estado del teléfono según el modo activo:
+        // en registro gratuito usa el campo del panel (#free_phone*), en pago usa el de MercadoPago.
+        function getCheckoutPhoneState() {
+            if (!freeCheckout) {
+                return getPaymentPhoneState();
+            }
+
+            const phoneCountry = document.getElementById('free_phone_country');
+            const phone = value('free_phone');
+            const areaCode = phoneCountry?.selectedOptions[0]?.dataset.areaCode || phoneCountry?.value.replace(/\D/g, '') || '';
+
+            return {
+                areaCode,
+                phone,
+                isComplete: Boolean(areaCode && phone),
+                focusTargetId: !areaCode ? 'free_phone_country' : 'free_phone'
+            };
+        }
+
+        function notifyPaymentPhoneRequired(phoneState, reloadOnClose = false, actionLabel = 'procesar el pago') {
             const phoneMessage = !phoneState.areaCode && !phoneState.phone
-                ? 'Por seguridad necesitamos validar tu teléfono antes de procesar el pago. Selecciona el código de país e ingresa tu número de teléfono para continuar con tranquilidad.'
+                ? 'Por seguridad necesitamos validar tu teléfono antes de ' + actionLabel + '. Selecciona el código de país e ingresa tu número de teléfono para continuar con tranquilidad.'
                 : (!phoneState.areaCode
-                    ? 'Por seguridad necesitamos que selecciones el código de país de tu teléfono antes de continuar con el pago.'
-                    : 'Por seguridad necesitamos que ingreses tu número de teléfono antes de continuar con el pago.');
+                    ? 'Por seguridad necesitamos que selecciones el código de país de tu teléfono antes de ' + actionLabel + '.'
+                    : 'Por seguridad necesitamos que ingreses tu número de teléfono antes de ' + actionLabel + '.');
 
             showPhoneRequiredModal(phoneMessage, phoneState.focusTargetId, reloadOnClose);
         }

@@ -28,6 +28,7 @@ use App\Models\Country;
 use App\Models\Department;
 use App\Models\District;
 use Carbon\Carbon;
+use Modules\Onlineshop\Jobs\ProcessCompra;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use Modules\Academic\Entities\AcaStudent;
@@ -1128,6 +1129,8 @@ class WebPageController extends Controller
             'names' => 'required_if:account_mode,create|nullable|string|max:255',
             'create_document_type' => 'required_if:account_mode,create|nullable|integer',
             'number' => 'required_if:account_mode,create|nullable|string|max:20',
+            'phone' => ($freeCheckout ? 'required' : 'nullable') . '|string|max:20',
+            'phone_country' => ($freeCheckout ? 'required' : 'nullable') . '|string|max:10',
         ];
 
         if ($freeCheckout) {
@@ -1158,6 +1161,13 @@ class WebPageController extends Controller
         $validated = $validator->validated();
         $onliSale = null;
         $freeItems = null;
+
+        // Teléfono capturado en el carrito (se guarda en people.telephone para enviarlo a n8n_post_compra)
+        $phoneNumber = trim((string) ($validated['phone'] ?? ''));
+        $phoneCountry = trim((string) ($validated['phone_country'] ?? ''));
+        $telephone = $phoneNumber !== ''
+            ? ($phoneCountry !== '' ? '+' . ltrim($phoneCountry, '+') . ' ' . $phoneNumber : $phoneNumber)
+            : null;
 
         if ($freeCheckout) {
             $freeItems = $this->cartItemsFromIds($validated['item_id']);
@@ -1231,7 +1241,7 @@ class WebPageController extends Controller
                         'short_name' => $validated['names'],
                         'full_name' => $validated['names'],
                         'number' => $validated['number'],
-                        'telephone' => null,
+                        'telephone' => $telephone,
                         'email' => $validated['email'],
                         'is_provider' => false,
                         'is_client' => true,
@@ -1263,13 +1273,22 @@ class WebPageController extends Controller
                 }
             }
 
+            // Guardar/actualizar siempre el teléfono ingresado (tanto en registro como en login)
+            if (!is_null($telephone)) {
+                $person->telephone = $telephone;
+                $person->save();
+            }
+
             $student = AcaStudent::firstOrCreate(
                 ['person_id' => $person->id],
                 ['student_code' => $person->number ?: $person->id, 'new_student' => true]
             );
 
             if ($freeCheckout) {
-                $onliSale = $this->createFreeCartSale($freeItems, $person);
+                $onliSale = $this->createFreeCartSale($freeItems, $person, $request->only([
+                    'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'utm_id',
+                    'fbclid', 'gclid', 'referer', 'landing_url', 'traffic_source',
+                ]));
                 $validated['invoice_type'] = 'boleta';
                 $validated['invoice_name'] = $person->full_name;
                 $validated['invoice_dni'] = $person->number;
@@ -1330,6 +1349,9 @@ class WebPageController extends Controller
             return response()->json(['error' => 'No se pudo finalizar la compra.'], 500);
         }
 
+        // Enviar datos de la compra a N8N via Integrationhub (async)
+        ProcessCompra::dispatch($onliSale->id, 'carrito_web');
+
         if (! $freeCheckout) {
             try {
                 Mail::to($onliSale->email ?: $person->email)
@@ -1376,7 +1398,7 @@ class WebPageController extends Controller
         return $payer;
     }
 
-    private function createFreeCartSale($items, Person $person): OnliSale
+    private function createFreeCartSale($items, Person $person, array $tracking = []): OnliSale
     {
         $sale = OnliSale::create([
             'module_name' => 'Onlineshop',
@@ -1393,6 +1415,17 @@ class WebPageController extends Controller
             'response_status_detail' => 'free_checkout',
             'response_date_approved' => Carbon::now()->format('Y-m-d'),
             'response_payment_method_id' => 'free',
+            'utm_source'     => $tracking['utm_source'] ?? null,
+            'utm_medium'     => $tracking['utm_medium'] ?? null,
+            'utm_campaign'   => $tracking['utm_campaign'] ?? null,
+            'utm_term'       => $tracking['utm_term'] ?? null,
+            'utm_content'    => $tracking['utm_content'] ?? null,
+            'utm_id'         => $tracking['utm_id'] ?? null,
+            'fbclid'         => $tracking['fbclid'] ?? null,
+            'gclid'          => $tracking['gclid'] ?? null,
+            'referer'        => $tracking['referer'] ?? null,
+            'landing_url'    => $tracking['landing_url'] ?? null,
+            'traffic_source' => $tracking['traffic_source'] ?? null,
         ]);
 
         foreach ($items as $item) {
