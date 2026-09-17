@@ -9,7 +9,7 @@ const xassetUrl = assetUrl;
 const store = useAppStore();
 </script>
 <template>
-    <Head title="Términos y condiciones | ARACODE Smart Solutions" />
+    <Head title="Términos y condiciones | CPA ACademy" />
     <!-- Content -->
     <div class="relative h-screen">
         <div class="py-10 lg:py-14">

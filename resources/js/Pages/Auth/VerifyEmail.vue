@@ -26,7 +26,7 @@ const company = usePage().props.company;
 </script>
 
 <template>
-    <GuestLayout title="Verifica tu correo | ARACODE Smart Solutions">
+    <GuestLayout title="Verifica tu correo | CPA Academy">
 
         <div>
             <div class="absolute inset-0">
@@ -72,7 +72,7 @@ const company = usePage().props.company;
                                 </template>
                             </Link>
                             <div class="dropdown ms-auto w-max">
-                                
+
                             </div>
                         </div>
                         <div class="w-full max-w-[440px] lg:mt-16">

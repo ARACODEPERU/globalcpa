@@ -1,6 +1,6 @@
 <script setup>
     import { Head, Link } from '@inertiajs/vue3';
-    
+
     defineProps({
         subscriptions: {
             type: Object,
@@ -10,7 +10,7 @@
 </script>
 
 <template>
-    <Head title="Suscripciones | ARACODE Smart Solutions" />
+    <Head title="Suscripciones | CPA Academy" />
     <!-- Pricing -->
     <div class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
         <!-- Title -->
@@ -22,7 +22,7 @@
 
         <!-- Grid -->
         <div class="flex flex-wrap justify-center gap-6">
-            <!-- Card --> 
+            <!-- Card -->
             <div v-for="(subscription, index) in subscriptions" class="flex flex-col border border-gray-200 text-center rounded-xl p-8 dark:border-neutral-800 w-[300px]">
                 <h4 class="font-medium text-lg text-gray-800 dark:text-neutral-200">{{ subscription.period }}</h4>
                 <span class="mt-7 font-bold text-5xl text-gray-800 dark:text-neutral-200">{{ subscription.title }}</span>

@@ -29,7 +29,7 @@ const props = defineProps({
 </script>
 
 <template>
-    <Head title="Pago seguro | ARACODE Smart Solutions" />
+    <Head title="Pago seguro | ACPA Academy" />
 
         <div class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
         <!-- Title -->
