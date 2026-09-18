@@ -129,7 +129,7 @@
         // ============================================================================
         // AQUI DEBE IR EL ENLACE DEL VIDEO TUTORIAL DE INGRESO.
         // Pegar la URL dentro de las comillas, por ejemplo:
-        // $tutorialVideoUrl = 'https://www.youtube.com/watch?v=XXXXXXXXXXX';
+        $tutorialVideoUrl = 'https://vimeo.com/1227793199';
         // Mientras este en blanco, el boton "Video tutorial de ingreso" no se muestra.
         // (Tambien se puede enviar la URL desde el mailable al construir la vista.)
         // ============================================================================
