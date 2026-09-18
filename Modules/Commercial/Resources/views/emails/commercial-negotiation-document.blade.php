@@ -248,8 +248,7 @@
         <br>
         <footer>
             <p style="text-align: center; font-size: 15px; color: #fff;">
-                &copy; Derechos Reservados {{ env('APP_NAME') }} | Desarrollado por
-                <a href="https://aracodeperu.com/">Aracode Smart Solutions</a>
+                &copy; Derechos Reservados {{ env('APP_NAME') }} | CPA Academy
             </p>
         </footer>
     </div>
