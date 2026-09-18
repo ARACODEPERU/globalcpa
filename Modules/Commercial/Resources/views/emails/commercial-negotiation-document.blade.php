@@ -129,7 +129,7 @@
         // ============================================================================
         // AQUI DEBE IR EL ENLACE DEL VIDEO TUTORIAL DE INGRESO.
         // Pegar la URL dentro de las comillas, por ejemplo:
-        $tutorialVideoUrl = 'https://vimeo.com/1227793199';
+        // $tutorialVideoUrl = 'https://www.youtube.com/watch?v=XXXXXXXXXXX';
         // Mientras este en blanco, el boton "Video tutorial de ingreso" no se muestra.
         // (Tambien se puede enviar la URL desde el mailable al construir la vista.)
         // ============================================================================
@@ -248,7 +248,8 @@
         <br>
         <footer>
             <p style="text-align: center; font-size: 15px; color: #fff;">
-                &copy; Derechos Reservados {{ env('APP_NAME') }} | CPA Academy
+                &copy; Derechos Reservados {{ env('APP_NAME') }} | Desarrollado por
+                <a href="https://aracodeperu.com/">Aracode Smart Solutions</a>
             </p>
         </footer>
     </div>

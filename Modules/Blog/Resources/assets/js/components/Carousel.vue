@@ -44,7 +44,7 @@
                     <img :src="item.imagen" class="w-full max-h-80 object-cover" alt="" />
                     <div class="absolute z-[999] text-white top-1/4 ltr:left-12 rtl:right-12">
                         <div class="sm:text-3xl text-base font-bold">{{ item.title }}</div>
-                        <div class="sm:mt-5 mt-1 w-4/5 text-base sm:block hidden font-medium line-clamp-2" :title="item.short_description">
+                        <div class="sm:mt-5 mt-1 w-4/5 text-base sm:block hidden font-medium">
                             {{ item.short_description }}
                         </div>
                         <Link style="width: 120px" href="route('blog_article_show_studante',item.url)" type="button" class="mt-4 btn btn-primary">Leer mas</Link>

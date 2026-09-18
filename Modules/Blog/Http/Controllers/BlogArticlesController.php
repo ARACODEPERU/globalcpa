@@ -91,7 +91,7 @@ class BlogArticlesController extends Controller
         $this->validate($request, [
             'title' => 'required|max:255|unique:blog_articles,title',
             'content_text' => 'required',
-            'description' => 'required|max:1000',
+            'description' => 'required|max:255',
             'category_id' => 'required'
         ]);
 
@@ -159,7 +159,7 @@ class BlogArticlesController extends Controller
         $this->validate($request, [
             'title' => 'required|max:255|unique:blog_articles,title,' . $blogArticle->id,
             'content_text' => 'required',
-            'description' => 'required|max:1000',
+            'description' => 'required|max:255',
             'category_id' => 'required'
         ]);
 
@@ -218,7 +218,6 @@ class BlogArticlesController extends Controller
         $this->validate($request, [
             'title' => 'required|max:255|unique:blog_articles,title,' . $blogArticle->id,
             'content_text' => 'required',
-            'description' => 'required|max:1000',
         ]);
 
         $baseUrl = env('APP_URL'); // Ruta base de tu aplicación

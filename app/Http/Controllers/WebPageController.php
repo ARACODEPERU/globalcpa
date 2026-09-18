@@ -1398,6 +1398,29 @@ class WebPageController extends Controller
         return $payer;
     }
 
+    public function blog_article_view($url)
+    {
+        $article = \Modules\Blog\Entities\BlogArticle::where('url', $url)
+            ->where('status', true)
+            ->first();
+
+        if (! $article) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Articulo no encontrado.',
+            ], 404);
+        }
+
+        // El conteo de vistas NO ocurre al renderizar: se registra en
+        // blog_article_view(), para que el navegador pueda decidir con
+        // localStorage si corresponde contarla (una vez por dia por articulo).
+
+        return response()->json([
+            'success' => true,
+            'views' => (int) $article->views,
+        ]);
+    }
+
     private function createFreeCartSale($items, Person $person, array $tracking = []): OnliSale
     {
         $sale = OnliSale::create([

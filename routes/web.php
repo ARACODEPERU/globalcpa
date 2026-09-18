@@ -43,6 +43,11 @@ Route::get('/docentes', [WebPageController::class, 'teachers'])->name('web_teach
 Route::get('/landing/{slug}', [WebPageController::class, 'landing'])->name('web_landing');
 Route::get('/academy', [WebPageController::class, 'academy'])->name('web_academy');
 
+// Registro de la vista del articulo. Va aparte del render para que el navegador
+// decida con localStorage si corresponde contarla (una vez por dia por articulo).
+Route::post('/blog/{url}/vista', [WebPageController::class, 'blog_article_view'])
+    ->name('blog_article_view');
+    
 Route::get('/el-amauta-de-las-niif', [WebPageController::class, 'bookamauta'])->name('web_book_amauta');
 Route::get('/planes-de-suscripcion', [WebPageController::class, 'subscriptions'])->name('web_subscriptions');
 Route::get('/politicas-de-devolucion', [WebPageController::class, 'politicas_devoluciones'])->name('politicas_devoluciones');
