@@ -18,10 +18,32 @@ class CommercialNegotiationConfirmedMail extends Mailable
     public $negotiation;
     public $client;
 
+    /**
+     * Enlace al proceso de 9 pasos: es el "siguiente paso" que el equipo debe
+     * continuar, tanto el asesor como los administradores que reciben el aviso.
+     * Al ser propiedad publica, la vista la tiene disponible como $processUrl.
+     */
+    public $processUrl;
+
     public function __construct(CommercialNegotiation $negotiation, $client)
     {
         $this->negotiation = $negotiation;
         $this->client = $client;
+        $this->processUrl = $this->resolveProcessUrl($negotiation);
+    }
+
+    /**
+     * Si el nombre de ruta no esta publicado (por ejemplo con una cache de rutas
+     * anterior a habilitar el modulo) route() lanza y el correo no saldria: se cae
+     * a la URL canonica, que es la misma que registra el modulo.
+     */
+    private function resolveProcessUrl(CommercialNegotiation $negotiation): string
+    {
+        try {
+            return route('comm_negotiations_process', $negotiation->id);
+        } catch (\Throwable $e) {
+            return url('/commercial/negotiations/process/' . $negotiation->id);
+        }
     }
 
     public function envelope(): Envelope
@@ -38,7 +60,7 @@ class CommercialNegotiationConfirmedMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'emails.commercial_negotiation_confirmed',
+            view: 'commercial::emails.commercial-negotiation-confirmed',
             with: [
                 'negotiation' => $this->negotiation,
                 'client' => $this->client,
