@@ -5,6 +5,9 @@ import "../css/webpage-custom.css";
 // Importación de Iconos Modernos para la Web Pública
 import '@fortawesome/fontawesome-free/css/all.css';
 
+// Conteo de vistas de artículos del blog (una vez cada 24h por navegador)
+import { initBlogArticleViewCounter } from "./utils/blogViewCounter";
+
 // Nota: No importamos Vristo CSS aquí para evitar conflictos.
 // Si necesitas interactividad con Alpine.js, asegúrate de que esté disponible
 // ya sea por CDN o importándolo aquí si prefieres compilarlo.
@@ -72,4 +75,8 @@ document.addEventListener("DOMContentLoaded", function () {
             if (myInput) myInput.focus();
         });
     }
+
+    // Conteo de vistas del artículo del blog: el render ya no incrementa,
+    // lo hace este módulo contra el endpoint POST /blog/{url}/vista.
+    initBlogArticleViewCounter();
 });

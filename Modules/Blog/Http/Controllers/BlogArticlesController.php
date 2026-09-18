@@ -329,7 +329,9 @@ class BlogArticlesController extends Controller
             ->whereNull('comment_id')
             ->get();
 
-        $article->increment('views');
+        // El conteo de vistas ya NO ocurre al renderizar: lo registra el endpoint
+        // POST /blog/{url}/vista (WebPageController::blog_article_view),
+        // una vez cada 24h por navegador.
 
         return Inertia::render('Blog::articles/Show', [
             'article' => $article,

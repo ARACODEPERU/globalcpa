@@ -1411,9 +1411,10 @@ class WebPageController extends Controller
             ], 404);
         }
 
-        // El conteo de vistas NO ocurre al renderizar: se registra en
-        // blog_article_view(), para que el navegador pueda decidir con
+        // Este endpoint ES el unico lugar donde se cuenta la vista: el render
+        // (/article/{url}) ya no incrementa, y el navegador decide con
         // localStorage si corresponde contarla (una vez por dia por articulo).
+        $article->increment('views');
 
         return response()->json([
             'success' => true,

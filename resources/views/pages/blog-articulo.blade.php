@@ -518,7 +518,9 @@
                                         </div>
                                     @endif
                                     <span class="meta-item"><i class="fa fa-calendar"></i>{{ \Carbon\Carbon::parse($article->created_at)->format('d M Y') }}</span>
-                                    <span class="meta-item"><i class="fa fa-eye"></i>{{ $article->views }} vistas</span>
+                                    <span class="meta-item"><i class="fa fa-eye"></i><span id="article-views-count"
+                                            data-slug="{{ $article->url }}"
+                                            data-url="{{ route('blog_article_view', $article->url) }}">{{ $article->views }}</span> vistas</span>
                                 </div>
 
                                 @php
