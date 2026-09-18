@@ -299,9 +299,9 @@
                                         Somos <span class="text-warning">CPA Academy</span>
                                     </h1>
                                     <p class="lead text-white-50 mb-4" style="max-width: 600px; line-height: 1.6;">
-                                        Escuela de negocios dedicada a la formación de profesionales en contabilidad,
-                                        finanzas y auditoría, con estándares internacionales y aprendizaje aplicable
-                                        al mundo real.
+                                        Aceleramos tu carrera profesional. Especialízate en contabilidad, finanzas y auditoría con 
+                                        estándares globales y metodologías 100% prácticas que puedes aplicar desde 
+                                        tu primer día.
                                     </p>
 
                                     <div class="d-flex flex-wrap gap-3">
@@ -334,22 +334,18 @@
                         <div class="row align-items-center g-5">
                             <div class="col-lg-6" data-aos="fade-right">
                                 <h2 class="fw-bold text-navy-custom mb-4">
-                                    Formamos al talento que <span style="color: #e30613;">transforma</span> empresas
+                                    Formamos al talento que transforma empresas
                                 </h2>
                                 <p class="text-muted-custom" style="line-height: 1.8; font-size: 1.02rem;">
-                                    En <strong>CPA Academy</strong> creemos que el crecimiento profesional se construye
-                                    con conocimiento aplicable. Por eso diseñamos programas de especialización que
-                                    combinan la experiencia de docentes de Big Four, banca y organismos
-                                    internacionales con metodologías de aprendizaje prácticas.
+                                    Impulsamos tu carrera con conocimiento 100% aplicable. Aprenderás de líderes 
+                                    activos en las Big Four y la banca mediante metodologías diseñadas para resolver 
+                                    retos del mundo real.
                                 </p>
                                 <p class="text-muted-custom" style="line-height: 1.8; font-size: 1.02rem;">
-                                    Somos la única escuela de negocios peruana reconocida oficialmente por
-                                    <strong>ACCA</strong> como <em>Approved Learning Partner</em>, y nuestra comunidad
-                                    de alumnos se extiende por más de 10 países de Latinoamérica.
-                                </p>
-                                <p class="text-muted-custom mb-0" style="line-height: 1.8; font-size: 1.02rem;">
-                                    Desde Lima, formamos al equipo de profesionales que las empresas más importantes
-                                    del país confían para liderar sus áreas de contabilidad, finanzas y auditoría.
+
+                                    Estudia con la garantía de ser la <strong> única escuela peruana reconocida como Approved Learning Partner 
+                                    por la ACCA, </strong> y únete a una red de profesionales en más de 10 países. Prepárate para 
+                                    liderar las áreas financieras de las corporaciones más exigentes.
                                 </p>
                             </div>
                             <div class="col-lg-6" data-aos="fade-left">
@@ -375,7 +371,7 @@
                 {{-- ============================================ --}}
                 {{-- 3. MISIÓN, VISIÓN Y VALORES --}}
                 {{-- ============================================ --}}
-                <section class="nos-section nos-section-alt">
+                {{-- <section class="nos-section nos-section-alt">
                     <div class="container">
                         <div class="text-center mb-5" data-aos="fade-up">
                             <h2 class="fw-bold text-navy-custom">Misión, Visión y Valores</h2>
@@ -425,7 +421,7 @@
                             </div>
                         </div>
                     </div>
-                </section>
+                </section> --}}
 
                 {{-- ============================================ --}}
                 {{-- 4. CPA EN NÚMEROS --}}
@@ -439,7 +435,7 @@
                             <div class="col" data-aos="zoom-in" data-aos-delay="100">
                                 <div class="nos-counter bg-card-custom shadow-sm red">
                                     <i class="fa fa-graduation-cap"></i>
-                                    <strong>+5,000</strong>
+                                    <strong>+1,000</strong>
                                     <span class="text-muted-custom">Alumnos formados</span>
                                 </div>
                             </div>
@@ -447,21 +443,21 @@
                                 <div class="nos-counter bg-card-custom shadow-sm navy">
                                     <i class="fa fa-globe-americas"></i>
                                     <strong>+10</strong>
-                                    <span class="text-muted-custom">Países de LATAM</span>
+                                    <span class="text-muted-custom">Países en LATAM</span>
                                 </div>
                             </div>
                             <div class="col" data-aos="zoom-in" data-aos-delay="300">
                                 <div class="nos-counter bg-card-custom shadow-sm red">
                                     <i class="fa fa-chalkboard-teacher"></i>
                                     <strong>+40</strong>
-                                    <span class="text-muted-custom">Docentes expertos</span>
+                                    <span class="text-muted-custom">Docentes referentes</span>
                                 </div>
                             </div>
                             <div class="col" data-aos="zoom-in" data-aos-delay="400">
                                 <div class="nos-counter bg-card-custom shadow-sm navy">
                                     <i class="fa fa-book-open"></i>
-                                    <strong>+25</strong>
-                                    <span class="text-muted-custom">Programas de especialización</span>
+                                    <strong>+50</strong>
+                                    <span class="text-muted-custom">Programas académicos</span>
                                 </div>
                             </div>
                         </div>
@@ -483,10 +479,10 @@
                 <section class="nos-section">
                     <div class="container">
                         <div class="nos-acca bg-card-custom shadow-sm mb-5" data-aos="fade-up">
-                            <img src="{{ asset('themes/webpage/images/acca.png') }}" alt="ACCA Approved Learning Partner">
+                            <img style="width: 280px;" src="{{ asset('themes/webpage/images/acca.png') }}" alt="ACCA Approved Learning Partner">
                             <div>
                                 <h3 class="fw-bold text-navy-custom mb-2">
-                                    <i class="fa fa-certificate" style="color: #e30613;"></i>
+                                    {{-- <i class="fa fa-certificate" style="color: #e30613;"></i> --}}
                                     Respaldo ACCA
                                 </h3>
                                 <p class="text-muted-custom mb-0" style="line-height: 1.7;">
