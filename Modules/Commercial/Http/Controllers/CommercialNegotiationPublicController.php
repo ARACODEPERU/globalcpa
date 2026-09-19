@@ -12,17 +12,16 @@ use App\Models\Industry;
 use App\Models\Parameter;
 use App\Models\PaymentMethod;
 use App\Models\Person;
+use App\Models\User;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Modules\Commercial\Entities\CommercialNegotiation;
 use Modules\Commercial\Entities\CommercialNegotiationInvoice;
-use Modules\Commercial\Support\NegotiationConfirmedRecipients;
 
 class CommercialNegotiationPublicController extends Controller
 {
@@ -274,10 +273,9 @@ class CommercialNegotiationPublicController extends Controller
             throw $e;
         }
 
-        $this->notifyConfirmed($negotiation, $person);
+        $this->notifyNegotiationRecipients($negotiation, $person);
 
-        // El aviso ya no es solo del asesor: tambien lo reciben los administradores.
-        return redirect()->back()->with('success', 'Tu acuerdo fue enviado correctamente. El equipo revisara la confirmacion.');
+        return redirect()->back()->with('success', 'Tu acuerdo fue enviado correctamente. El asesor revisara la confirmacion.');
     }
 
     public function searchPerson(Request $request, $token)
@@ -596,37 +594,31 @@ class CommercialNegotiationPublicController extends Controller
     }
 
     /**
-     * Aviso de negociacion confirmada: lo reciben el asesor que creo la negociacion
-     * y todos los usuarios con rol administrador, para que el proceso de 9 pasos no
-     * quede detenido si el asesor no esta disponible (ver NegotiationConfirmedRecipients).
-     *
-     * Se envia un correo por destinatario, no una lista de destinatarios: asi ningun
-     * miembro del equipo ve las direcciones de los demas, y el fallo de una direccion
-     * no deja sin aviso a las otras.
+     * Notifica que el cliente respondio la negociacion al equipo administrador
+     * y al asesor que la creo. Cada destinatario se encola por separado para que
+     * un correo invalido o un fallo puntual no impida notificar a los demas.
      */
-    private function notifyConfirmed(CommercialNegotiation $negotiation, Person $client): void
+    private function notifyNegotiationRecipients(CommercialNegotiation $negotiation, Person $client): void
     {
-        $recipients = NegotiationConfirmedRecipients::forNegotiation($negotiation);
+        $administratorEmails = User::role('Administrador')
+            ->whereNotNull('email')
+            ->pluck('email');
 
-        if ($recipients === []) {
-            Log::warning('Negociacion confirmada sin destinatarios para el aviso por correo.', [
-                'negotiation_id' => $negotiation->id,
-            ]);
+        $creatorEmail = $negotiation->creator?->email;
 
-            return;
-        }
+        $recipients = $administratorEmails
+            ->push($creatorEmail)
+            ->map(fn ($email) => trim((string) $email))
+            ->filter(fn ($email) => filter_var($email, FILTER_VALIDATE_EMAIL))
+            ->unique(fn ($email) => strtolower($email))
+            ->values();
 
-        foreach ($recipients as $email) {
+        foreach ($recipients as $recipient) {
             try {
-                Mail::to($email)->send(new CommercialNegotiationConfirmedMail($negotiation, $client));
-            } catch (\Exception $e) {
-                // El aviso por correo no debe interrumpir el registro de la negociacion,
-                // pero el fallo se registra: un correo que no sale en silencio deja al
-                // equipo sin enterarse de que el cliente ya respondio.
-                Log::error('No se pudo enviar el aviso de negociacion confirmada a ' . $email, [
-                    'negotiation_id' => $negotiation->id,
-                    'exception' => $e,
-                ]);
+                Mail::to($recipient)->queue(new CommercialNegotiationConfirmedMail($negotiation, $client));
+            } catch (\Throwable $e) {
+                // Un destinatario fallido no debe impedir los demas envios encolados.
+                report($e);
             }
         }
     }
