@@ -337,12 +337,12 @@
                                         ¿Por qué elegir <span class="text-warning">CPA Academy</span>?
                                     </h1>
                                     <p class="lead text-white-50 mb-4" style="max-width: 620px; line-height: 1.6;">
-                                        Porque tu carrera merece una formación con estándares internacionales,
-                                        docentes que lideran en las firmas más importantes y un método pensado
-                                        para aplicar desde el primer día.
+                                        Porque un certificado tradicional ya no basta. Con nosotros obtienes la visión de líderes 
+                                        del sector, el prestigio internacional de la ACCA y una red en +10 países. Deja de competir y 
+                                        comienza a liderar.
                                     </p>
 
-                                    <div class="d-flex flex-wrap gap-3 mb-4">
+                                    {{-- <div class="d-flex flex-wrap gap-3 mb-4">
                                         <span class="why-hero-tag">
                                             <i class="fa fa-certificate text-warning"></i> Respaldo ACCA
                                         </span>
@@ -352,10 +352,10 @@
                                         <span class="why-hero-tag">
                                             <i class="fa fa-globe text-warning"></i> +10 países de LATAM
                                         </span>
-                                    </div>
+                                    </div> --}}
 
                                     <a href="{{ route('web_courses') }}" class="btn-cta-white text-decoration-none">
-                                        <i class="fa fa-graduation-cap me-2"></i>Ver programas
+                                        <i class="fa fa-graduation-cap me-2"></i>Explorar programas
                                     </a>
                                 </div>
                             </div>
@@ -381,10 +381,10 @@
                                     <div class="feature-icon" style="background: linear-gradient(135deg, #e30613 0%, #a0040d 100%);">
                                         <i class="fa fa-certificate"></i>
                                     </div>
-                                    <h3 class="text-navy-custom">Respaldo ACCA</h3>
+                                    <h3 class="text-navy-custom">Respaldo Global ACCA</h3>
                                     <p class="text-muted-custom">
-                                        Única escuela de negocios peruana reconocida oficialmente como
-                                        <em>Approved Learning Partner</em> por ACCA.
+                                        Única escuela de negocios en Perú con el reconocimiento oficial Approved Learning Partner. 
+                                        Tu certificado con peso internacional.
                                     </p>
                                 </div>
                             </div>
@@ -393,10 +393,10 @@
                                     <div class="feature-icon" style="background: linear-gradient(135deg, #002060 0%, #004080 100%);">
                                         <i class="fa fa-briefcase"></i>
                                     </div>
-                                    <h3 class="text-navy-custom">Docentes de Big Four</h3>
+                                    <h3 class="text-navy-custom">Líderes de Big Four y Banca</h3>
                                     <p class="text-muted-custom">
-                                        Aprende de socios y gerentes de KPMG, Deloitte, banca y organismos
-                                        internacionales en activo.
+                                        Aprende las estrategias que usan hoy los socios y gerentes activos de KPMG, 
+                                        Deloitte y las corporaciones top.
                                     </p>
                                 </div>
                             </div>
@@ -405,10 +405,9 @@
                                     <div class="feature-icon" style="background: linear-gradient(135deg, #2c3e50 0%, #4b6584 100%);">
                                         <i class="fa fa-line-chart"></i>
                                     </div>
-                                    <h3 class="text-navy-custom">Aprendizaje aplicable</h3>
+                                    <h3 class="text-navy-custom">100% Práctico y Aplicable</h3>
                                     <p class="text-muted-custom">
-                                        Casos reales y herramientas que generan impacto inmediato en tu
-                                        trabajo desde la primera clase.
+                                        Olvida el relleno teórico. Resuelve casos reales y domina herramientas que generarán impacto en tu trabajo desde la clase uno.
                                     </p>
                                 </div>
                             </div>
@@ -417,10 +416,10 @@
                                     <div class="feature-icon" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">
                                         <i class="fa fa-clock"></i>
                                     </div>
-                                    <h3 class="text-navy-custom">Modalidad flexible</h3>
+                                    <h3 class="text-navy-custom">Diseñado para Ejecutivos</h3>
                                     <p class="text-muted-custom">
-                                        Clases en vivo y en línea, diseñadas para compatibilizar tu
-                                        formación con tu trabajo y tu vida.
+                                        Clases online en vivo adaptadas a la exigencia de tu profesión. 
+                                        Acelera tu carrera sin que tus cierres contables te detengan.
                                     </p>
                                 </div>
                             </div>
@@ -431,8 +430,7 @@
                                     </div>
                                     <h3 class="text-navy-custom">Comunidad LATAM</h3>
                                     <p class="text-muted-custom">
-                                        Conecta con profesionales de más de 10 países y forma parte de una
-                                        red en crecimiento constante.
+                                        Conecta con profesionales y líderes financieros de toda Latinoamérica para expandir tus oportunidades.
                                     </p>
                                 </div>
                             </div>
@@ -441,10 +439,9 @@
                                     <div class="feature-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
                                         <i class="fa fa-book"></i>
                                     </div>
-                                    <h3 class="text-navy-custom">Currícula actualizada</h3>
+                                    <h3 class="text-navy-custom">Vanguardia Normativa y Tech</h3>
                                     <p class="text-muted-custom">
-                                        Contenido al día en NIIF, auditoría, finanzas y tecnología
-                                        financiera, revisado por expertos.
+                                        Domina las últimas actualizaciones en NIIF, auditoría e Inteligencia Artificial financiera antes que el resto del mercado.
                                     </p>
                                 </div>
                             </div>
@@ -452,37 +449,6 @@
                     </div>
                 </section>
 
-                {{-- ============================================ --}}
-                {{-- 3. CPA EN NÚMEROS --}}
-                {{-- ============================================ --}}
-                <section class="why-section pt-0">
-                    <div class="container">
-                        <div class="why-stats-band shadow" data-aos="fade-up">
-                            <div class="row row-cols-2 row-cols-lg-4 g-4 position-relative">
-                                <div class="col why-stat">
-                                    <i class="fa fa-graduation-cap"></i>
-                                    <strong>+5,000</strong>
-                                    <span>Alumnos formados</span>
-                                </div>
-                                <div class="col why-stat">
-                                    <i class="fa fa-globe-americas"></i>
-                                    <strong>+10</strong>
-                                    <span>Países de LATAM</span>
-                                </div>
-                                <div class="col why-stat">
-                                    <i class="fa fa-chalkboard-teacher"></i>
-                                    <strong>+40</strong>
-                                    <span>Docentes expertos</span>
-                                </div>
-                                <div class="col why-stat">
-                                    <i class="fa fa-book-open"></i>
-                                    <strong>+25</strong>
-                                    <span>Programas de especialización</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
 
                 {{-- ============================================ --}}
                 {{-- 4. COMPARATIVA --}}
@@ -564,10 +530,43 @@
                     </div>
                 </section>
 
+                
+                {{-- ============================================ --}}
+                {{-- 3. CPA EN NÚMEROS --}}
+                {{-- ============================================ --}}
+                <section class="why-section pt-0">
+                    <div class="container">
+                        <div class="why-stats-band shadow" data-aos="fade-up">
+                            <div class="row row-cols-2 row-cols-lg-4 g-4 position-relative">
+                                <div class="col why-stat">
+                                    <i class="fa fa-graduation-cap"></i>
+                                    <strong>+1,000</strong>
+                                    <span>Alumnos formados</span>
+                                </div>
+                                <div class="col why-stat">
+                                    <i class="fa fa-globe-americas"></i>
+                                    <strong>+10</strong>
+                                    <span>Países de LATAM</span>
+                                </div>
+                                <div class="col why-stat">
+                                    <i class="fa fa-chalkboard-teacher"></i>
+                                    <strong>+40</strong>
+                                    <span>Docentes expertos</span>
+                                </div>
+                                <div class="col why-stat">
+                                    <i class="fa fa-book-open"></i>
+                                    <strong>+50</strong>
+                                    <span>Programas de especialización</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
                 {{-- ============================================ --}}
                 {{-- 5. METODOLOGÍA EN 4 PASOS --}}
                 {{-- ============================================ --}}
-                <section class="why-section">
+                {{-- <section class="why-section">
                     <div class="container">
                         <div class="text-center mb-5" data-aos="fade-up">
                             <h2 class="fw-bold text-navy-custom">Así aprendes en CPA Academy</h2>
@@ -610,7 +609,7 @@
                             </div>
                         </div>
                     </div>
-                </section>
+                </section> --}}
 
                 {{-- ============================================ --}}
                 {{-- 6. DOCENTES EXPERTOS --}}
