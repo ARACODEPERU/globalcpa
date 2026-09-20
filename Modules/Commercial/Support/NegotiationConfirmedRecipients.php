@@ -3,6 +3,7 @@
 namespace Modules\Commercial\Support;
 
 use App\Models\User;
+use App\Support\MailSender;
 use Modules\Commercial\Database\Seeders\CommercialDatabaseSeeder;
 use Modules\Commercial\Entities\CommercialNegotiation;
 
@@ -10,9 +11,11 @@ use Modules\Commercial\Entities\CommercialNegotiation;
  * Destinatarios del aviso que sale cuando el cliente abre su enlace y envia sus
  * datos (negociacion "confirmada").
  *
- * Van dos grupos, porque el proceso de 9 pasos no debe quedarse detenido:
+ * Van tres grupos, porque el proceso de 9 pasos no debe quedarse detenido:
  *  - el asesor que creo la negociacion (created_by), que es quien atendio al cliente;
- *  - todos los usuarios con rol administrador, para que cualquiera pueda retomarlo.
+ *  - todos los usuarios con rol administrador, para que cualquiera pueda retomarlo;
+ *  - el buzon de administracion del .env (MAIL_ADMIN), que recibe el aviso aunque
+ *    ningun usuario tenga el rol asignado.
  *
  * Los roles administradores se toman de CommercialDatabaseSeeder::ADMIN_ROLES
  * ('admin' y 'Administrador'): son los mismos a los que las migraciones y el seeder
@@ -33,7 +36,32 @@ class NegotiationConfirmedRecipients
             ->role(CommercialDatabaseSeeder::ADMIN_ROLES)
             ->pluck('email');
 
-        return self::merge($adminEmails, $negotiation->creator?->email);
+        // El buzon de administracion del .env se suma a los que tienen rol: es un
+        // destinatario mas, no un reemplazo. MailSender::adminAddress() nunca
+        // devuelve vacio (aplica respaldo si el .env no sirve).
+        return self::merge(
+            self::withAdminAddress($adminEmails),
+            $negotiation->creator?->email
+        );
+    }
+
+    /**
+     * Suma el buzon de administracion (MailSender::adminAddress()) a una lista de
+     * correos.
+     *
+     * Se mantiene como metodo aparte, y sin tocar la base de datos, para poder
+     * probar la regla del .env (MAIL_ADMIN y su respaldo) sin depender de MySQL.
+     *
+     * @param  iterable<mixed>  $emails
+     * @return array<int, mixed>
+     */
+    public static function withAdminAddress(iterable $emails): array
+    {
+        $list = is_array($emails) ? array_values($emails) : iterator_to_array($emails, false);
+
+        $list[] = MailSender::adminAddress();
+
+        return $list;
     }
 
     /**
