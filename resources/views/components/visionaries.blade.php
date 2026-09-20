@@ -21,7 +21,7 @@
                         <div class="col-md-4">
                             <div class="team-visionaries-member">
                                 <figure>
-                                    <img src="{{ asset('themes/webpage/images/v1.jpeg') }}"
+                                    <img src="{{ asset('themes/webpage/images/F1.png') }}"
                                         alt="" class="img-responsive">
                                     <figcaption>
                                         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.
@@ -41,7 +41,7 @@
                         <div class="col-md-4">
                             <div class="team-visionaries-member">
                                 <figure>
-                                    <img src="{{ asset('themes/webpage/images/v2.jpeg') }}"
+                                    <img src="{{ asset('themes/webpage/images/F2.png') }}"
                                         alt="" class="img-responsive">
                                     <figcaption>
                                         <p>Neque minima ea, a praesentium saepe nihil maxime quod esse
@@ -61,7 +61,7 @@
                         <div class="col-md-4">
                             <div class="team-visionaries-member">
                                 <figure>
-                                    <img src="{{ asset('themes/webpage/images/v3.jpeg') }}"
+                                    <img src="{{ asset('themes/webpage/images/F3.png') }}"
                                         alt="" class="img-responsive">
                                     <figcaption>
                                         <p>Temporibus dolor, quisquam consectetur molestias, veniam
