@@ -156,7 +156,7 @@
         </p>
 
         <p style="text-align: center; margin-top: 20px;">
-            <a href="{{ route('comm_negotiations_show', $negotiation->id) }}" class="btn">
+            <a href="{{ $reviewUrl }}" class="btn">
                 Revisar la negociacion
             </a>
         </p>
