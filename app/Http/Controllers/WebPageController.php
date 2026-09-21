@@ -1355,7 +1355,7 @@ class WebPageController extends Controller
         if (! $freeCheckout) {
             try {
                 Mail::to($onliSale->email ?: $person->email)
-                    ->send(new ConfirmPurchaseMail(OnliSale::with('details.item')->where('id', $onliSale->id)->first()));
+                    ->queue(new ConfirmPurchaseMail(OnliSale::with('details.item')->where('id', $onliSale->id)->first()));
             } catch (\Throwable $e) {
                 $onliSale->email_sent = false;
                 $onliSale->save();
@@ -2152,7 +2152,7 @@ class WebPageController extends Controller
 
                     ///enviar correo
                     Mail::to($sale->email)
-                        ->send(new ConfirmPurchaseMail(OnliSale::with('details.item')->where('id', $id)->first()));
+                        ->queue(new ConfirmPurchaseMail(OnliSale::with('details.item')->where('id', $id)->first()));
 
                     $sale->save();
                     $this->enviar_correo_con_cursos($id);
@@ -2235,7 +2235,7 @@ class WebPageController extends Controller
 
         //////////codigo enviar correo /////
         Mail::to($person->email)
-            ->send(new StudentRegistrationMailable([
+            ->queue(new StudentRegistrationMailable([
                 'courses'   => $courses,
                 'names'     => $person->names,
                 'email'      => $person->email,
@@ -2383,7 +2383,7 @@ class WebPageController extends Controller
             ];
 
             //////////codigo enviar correo /////
-            Mail::to($request->email)->send(new StudentRegistrationMailable([
+            Mail::to($request->email)->queue(new StudentRegistrationMailable([
                 'courses'   => $courses,
                 'names'     => $request->nombres,
                 'user'      => $request->email,
@@ -2421,6 +2421,18 @@ class WebPageController extends Controller
             return response()->json(['status' => 'ignored']);
         }
 
+        // Solo se deben registrar carritos que contengan al menos un curso de pago.
+        $paidItems = collect($validated['cart_items'] ?? [])
+            ->filter(fn ($item) => is_array($item) && (float) ($item['price'] ?? 0) > 0)
+            ->values();
+
+        if ($paidItems->isEmpty()) {
+            return response()->json(['status' => 'ignored']);
+        }
+
+        $validated['cart_items'] = $paidItems->all();
+        $validated['cart_total'] = $paidItems->sum(fn ($item) => (float) ($item['price'] ?? 0));
+
         $existing = OnliCarritoAbandonado::where('client_id', $validated['client_id'])->first();
 
         $data = [];
@@ -2454,7 +2466,8 @@ class WebPageController extends Controller
 
         if ($existing) {
             if (!empty($data)) {
-                $data['paid'] = false;
+                // No reabrir un carrito que ya fue asociado a una compra aprobada.
+                // El usuario puede seguir enviando eventos desde la misma pestaña.
                 $existing->update($data);
             }
         } else {
@@ -2491,7 +2504,7 @@ class WebPageController extends Controller
                 ['personId' => $person->id]
             );
 
-            Mail::to($person->email)->send(new \App\Mail\StudentPasswordRecoveryMail($person, $resetUrl));
+            Mail::to($person->email)->queue(new \App\Mail\StudentPasswordRecoveryMail($person, $resetUrl));
 
             return response()->json(['status' => 'success', 'message' => 'Correo enviado']);
         } catch (\Exception $e) {

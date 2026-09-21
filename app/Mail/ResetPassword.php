@@ -2,59 +2,54 @@
 
 namespace App\Mail;
 
+use App\Support\MailSender;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
+use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Password;
 
-class ResetPassword extends Mailable
+class ResetPassword extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
-    /**
-     * Create a new message instance.
-     */
-    public $user;
+    public mixed $user;
+    public string $url;
+    public int $tries = 3;
+    public array $backoff = [60, 300];
 
-    public function __construct($user)
+    public function __construct(mixed $user)
     {
         $this->user = $user;
+
+        // El token se crea una sola vez, antes de encolar. No debe regenerarse en
+        // build()/content(), porque un reintento produciría otro enlace.
+        $token = Password::createToken($user);
+        $this->url = route('password.reset', $token);
     }
 
-    /**
-     * Get the message envelope.
-     */
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Restablecer Contraseña',
+            from: new Address(MailSender::address(), MailSender::name()),
+            subject: 'Restablecer contraseña - ' . config('app.name'),
         );
     }
 
-    /**
-     * Get the message content definition.
-     */
-    public function build()
+    public function content(): Content
     {
-        $token = Password::createToken($this->user);
-        $url = route('password.reset', $token);
-
-        return $this->view('emails.reset_password')
-            ->subject('Restablecer Contraseña')
-            ->with([
-                'url' => $url,
-                'user' => $this->user
-            ]);
+        return new Content(
+            view: 'emails.reset_password',
+            with: [
+                'url' => $this->url,
+                'user' => $this->user,
+            ],
+        );
     }
 
-    /**
-     * Get the attachments for the message.
-     *
-     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
-     */
     public function attachments(): array
     {
         return [];

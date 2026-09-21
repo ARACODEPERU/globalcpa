@@ -2,6 +2,8 @@
 
 namespace App\Support;
 
+use Illuminate\Mail\Mailables\Address;
+
 /**
  * Remitente de los correos de la aplicacion.
  *
@@ -61,5 +63,21 @@ class MailSender
         return filter_var($address, FILTER_VALIDATE_EMAIL)
             ? $address
             : self::FALLBACK_ADMIN_ADDRESS;
+    }
+
+    /**
+     * Returns a safe Reply-To address without allowing external data to control From.
+     *
+     * @return array<int, Address>
+     */
+    public static function replyTo(?string $address, ?string $name = null): array
+    {
+        $address = trim((string) $address);
+
+        if (! filter_var($address, FILTER_VALIDATE_EMAIL)) {
+            return [];
+        }
+
+        return [new Address($address, trim((string) $name))];
     }
 }

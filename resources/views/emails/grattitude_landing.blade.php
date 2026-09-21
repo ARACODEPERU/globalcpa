@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bienvenidos a {{ env('APP_NAME') }}</title>
+    <title>Bienvenidos a {{ config('app.name') }}</title>
 
     <!--Google Fonts-->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
@@ -175,7 +175,7 @@
     </section>
     <footer>
         <p>
-            &copy; Derechos Reservados a {{ env('APP_NAME') }}| Desarrollado por <a href="https://aracodeperu.com/"
+            &copy; Derechos Reservados a {{ config('app.name') }}| Desarrollado por <a href="https://aracodeperu.com/"
                 style="">Aracode Smart Solutions</a>
         </p>
     </footer>

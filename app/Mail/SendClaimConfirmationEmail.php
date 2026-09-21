@@ -9,10 +9,14 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Mail\Mailables\Address;
+use App\Support\MailSender;
 
-class SendClaimConfirmationEmail extends Mailable
+class SendClaimConfirmationEmail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
+
+    public int $tries = 3;
+    public array $backoff = [60, 300];
 
     protected $data;
 
@@ -25,8 +29,8 @@ class SendClaimConfirmationEmail extends Mailable
     {
         return new Envelope(
             from: new Address(
-                config('mail.from.address'), // Usa config() en lugar de env()
-                config('mail.from.name')
+                MailSender::address(),
+                MailSender::name()
             ),
             subject: 'Confirmación de Recepción de Reclamo - Folio: ' . $this->data->composite_code,
         );
