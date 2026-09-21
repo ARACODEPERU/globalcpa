@@ -4347,8 +4347,9 @@
 
         function trackAbandonedCart() {
             const phoneState = getPaymentPhoneState();
+            const paidItems = cartItems.filter(item => Number(item.price || 0) > 0);
 
-            if (!phoneState.isComplete) {
+            if (!phoneState.isComplete || !paidItems.length) {
                 return;
             }
 
@@ -4359,8 +4360,8 @@
                 client_id: abandonedClientId,
                 phone_country: phoneState.areaCode,
                 phone: phoneState.phone,
-                cart_items: cartItems.length ? cartItems.map(item => ({ id: item.id, name: item.name, image: item.image, price: item.price, additional: item.additional })) : (cartIds.length ? cartIds.map(id => ({ id })) : undefined),
-                cart_total: checkoutTotal || undefined,
+                cart_items: paidItems.map(item => ({ id: item.id, name: item.name, image: item.image, price: item.price, additional: item.additional })),
+                cart_total: paidItems.reduce((total, item) => total + Number(item.price || 0), 0),
                 ...tracking,
             };
 

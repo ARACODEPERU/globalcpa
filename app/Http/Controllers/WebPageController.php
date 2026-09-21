@@ -1355,7 +1355,7 @@ class WebPageController extends Controller
         if (! $freeCheckout) {
             try {
                 Mail::to($onliSale->email ?: $person->email)
-                    ->send(new ConfirmPurchaseMail(OnliSale::with('details.item')->where('id', $onliSale->id)->first()));
+                    ->queue(new ConfirmPurchaseMail(OnliSale::with('details.item')->where('id', $onliSale->id)->first()));
             } catch (\Throwable $e) {
                 $onliSale->email_sent = false;
                 $onliSale->save();
@@ -1396,6 +1396,30 @@ class WebPageController extends Controller
         $payer['email'] = $email;
 
         return $payer;
+    }
+
+    public function blog_article_view($url)
+    {
+        $article = \Modules\Blog\Entities\BlogArticle::where('url', $url)
+            ->where('status', true)
+            ->first();
+
+        if (! $article) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Articulo no encontrado.',
+            ], 404);
+        }
+
+        // Este endpoint ES el unico lugar donde se cuenta la vista: el render
+        // (/article/{url}) ya no incrementa, y el navegador decide con
+        // localStorage si corresponde contarla (una vez por dia por articulo).
+        $article->increment('views');
+
+        return response()->json([
+            'success' => true,
+            'views' => (int) $article->views,
+        ]);
     }
 
     private function createFreeCartSale($items, Person $person, array $tracking = []): OnliSale
@@ -2128,7 +2152,7 @@ class WebPageController extends Controller
 
                     ///enviar correo
                     Mail::to($sale->email)
-                        ->send(new ConfirmPurchaseMail(OnliSale::with('details.item')->where('id', $id)->first()));
+                        ->queue(new ConfirmPurchaseMail(OnliSale::with('details.item')->where('id', $id)->first()));
 
                     $sale->save();
                     $this->enviar_correo_con_cursos($id);
@@ -2211,7 +2235,7 @@ class WebPageController extends Controller
 
         //////////codigo enviar correo /////
         Mail::to($person->email)
-            ->send(new StudentRegistrationMailable([
+            ->queue(new StudentRegistrationMailable([
                 'courses'   => $courses,
                 'names'     => $person->names,
                 'email'      => $person->email,
@@ -2359,7 +2383,7 @@ class WebPageController extends Controller
             ];
 
             //////////codigo enviar correo /////
-            Mail::to($request->email)->send(new StudentRegistrationMailable([
+            Mail::to($request->email)->queue(new StudentRegistrationMailable([
                 'courses'   => $courses,
                 'names'     => $request->nombres,
                 'user'      => $request->email,
@@ -2397,6 +2421,18 @@ class WebPageController extends Controller
             return response()->json(['status' => 'ignored']);
         }
 
+        // Solo se deben registrar carritos que contengan al menos un curso de pago.
+        $paidItems = collect($validated['cart_items'] ?? [])
+            ->filter(fn ($item) => is_array($item) && (float) ($item['price'] ?? 0) > 0)
+            ->values();
+
+        if ($paidItems->isEmpty()) {
+            return response()->json(['status' => 'ignored']);
+        }
+
+        $validated['cart_items'] = $paidItems->all();
+        $validated['cart_total'] = $paidItems->sum(fn ($item) => (float) ($item['price'] ?? 0));
+
         $existing = OnliCarritoAbandonado::where('client_id', $validated['client_id'])->first();
 
         $data = [];
@@ -2430,7 +2466,8 @@ class WebPageController extends Controller
 
         if ($existing) {
             if (!empty($data)) {
-                $data['paid'] = false;
+                // No reabrir un carrito que ya fue asociado a una compra aprobada.
+                // El usuario puede seguir enviando eventos desde la misma pestaña.
                 $existing->update($data);
             }
         } else {
@@ -2467,7 +2504,7 @@ class WebPageController extends Controller
                 ['personId' => $person->id]
             );
 
-            Mail::to($person->email)->send(new \App\Mail\StudentPasswordRecoveryMail($person, $resetUrl));
+            Mail::to($person->email)->queue(new \App\Mail\StudentPasswordRecoveryMail($person, $resetUrl));
 
             return response()->json(['status' => 'success', 'message' => 'Correo enviado']);
         } catch (\Exception $e) {

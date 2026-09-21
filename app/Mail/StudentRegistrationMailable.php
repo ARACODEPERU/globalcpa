@@ -9,10 +9,14 @@ use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use App\Support\MailSender;
 
-class StudentRegistrationMailable extends Mailable
+class StudentRegistrationMailable extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
+
+    public int $tries = 3;
+    public array $backoff = [60, 300];
 
     /**
      * Create a new message instance.
@@ -31,7 +35,7 @@ class StudentRegistrationMailable extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            from: new Address(env('MAIL_FROM_ADDRESS', 'capacitacion@globalcpaperu.com'), env('MAIL_FROM_NAME', 'GlobalCpa')),
+            from: new Address(MailSender::address('capacitacion@globalcpaperu.com'), MailSender::name()),
             subject: 'Bienvenido a CPA Academy',
         );
     }

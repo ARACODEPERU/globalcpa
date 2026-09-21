@@ -3,16 +3,21 @@
 namespace App\Mail;
 
 use App\Models\Person;
+use App\Support\MailSender;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class StudentPasswordRecoveryMail extends Mailable
+class StudentPasswordRecoveryMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
+
+    public int $tries = 3;
+    public array $backoff = [60, 300];
 
     public Person $person;
     public string $resetUrl;
@@ -27,10 +32,10 @@ class StudentPasswordRecoveryMail extends Mailable
     {
         return new Envelope(
             from: new Address(
-                env('MAIL_FROM_ADDRESS', 'informes@globalcpaperu.com'),
-                env('MAIL_FROM_NAME', 'CPA Academy')
+                MailSender::address(),
+                MailSender::name()
             ),
-            subject: 'Recuperar contraseña - ' . env('APP_NAME', 'CPA Academy'),
+            subject: 'Recuperar contraseña - ' . config('app.name'),
         );
     }
 

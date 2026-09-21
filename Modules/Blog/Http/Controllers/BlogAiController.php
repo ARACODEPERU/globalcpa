@@ -145,8 +145,7 @@ PROMPT;
             return response()->json([
                 'success' => true,
                 'title' => $title,
-                // La descripción del artículo se guarda en un campo de 1000 caracteres.
-                'description' => mb_substr($shortDescription, 0, 1000),
+                'description' => $shortDescription,
                 'content' => $content,
             ]);
         } catch (\Throwable $e) {

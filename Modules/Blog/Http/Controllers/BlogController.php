@@ -85,7 +85,10 @@ class BlogController extends Controller
             ->get();
 
         //$company = Company::first();
-        $article->increment('views');
+
+        // El conteo de vistas ya NO ocurre al renderizar: lo registra el endpoint
+        // POST /blog/{url}/vista (WebPageController::blog_article_view),
+        // una vez cada 24h por navegador.
 
         $logo = CmsSection::where('component_id', 'header_area_1')  //siempre cambiar el id del componente
             ->join('cms_section_items', 'section_id', 'cms_sections.id')

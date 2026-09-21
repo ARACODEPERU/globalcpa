@@ -350,7 +350,7 @@
                             </div>
                             <div class="col-lg-6" data-aos="fade-left">
                                 <div class="nos-image-frame" style="min-height: 380px;">
-                                    <img src="{{ asset('themes/webpage/images/soluciones-equipo.jpg') }}"
+                                    <img src="{{ asset('themes/webpage/images/alumnos.jpeg') }}"
                                         alt="Equipo de profesionales de CPA Academy">
                                     <div class="nos-stats-float">
                                         <div class="float-stat">

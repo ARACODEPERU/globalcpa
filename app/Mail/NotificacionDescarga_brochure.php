@@ -9,11 +9,15 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Mail\Mailables\Address;
+use App\Support\MailSender;
 
 
-class NotificacionDescarga_brochure extends Mailable
+class NotificacionDescarga_brochure extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
+
+    public int $tries = 3;
+    public array $backoff = [60, 300];
 
     /**
      * Create a new message instance.
@@ -31,8 +35,8 @@ class NotificacionDescarga_brochure extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            from: new Address(config('services.email.mail_from_address'), config('services.email.mail_from_name')),
-            subject: 'Alguien Descargó Brochure - '.config('services.email.app_name'),
+            from: new Address(MailSender::address(), MailSender::name()),
+            subject: 'Alguien descargó el brochure - ' . config('app.name'),
         );
     }
 

@@ -3,21 +3,24 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Support\MailSender;
 
-class VerifyEmail extends Mailable
+class VerifyEmail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
     public $user;
+    public string $url;
 
     public function __construct($user)
     {
         $this->user = $user;
+        $this->url = $user->verificationUrl();
     }
 
     /**
@@ -26,6 +29,7 @@ class VerifyEmail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
+            from: new \Illuminate\Mail\Mailables\Address(MailSender::address(), MailSender::name()),
             subject: 'Verifica tu correo electrónico',
         );
     }
@@ -38,7 +42,7 @@ class VerifyEmail extends Mailable
         return $this->view('emails.verify')
             ->subject('Verifica tu correo electrónico')
             ->with([
-                'url' => $this->user->verificationUrl(),
+                'url' => $this->url,
             ]);
     }
 

@@ -131,7 +131,7 @@
                                             {{ article.title }}
                                         </td>
                                         <td>
-                                            <div class="line-clamp-2" :title="article.short_description">{{ article.short_description }}</div>
+                                            {{ article.short_description }}
                                         </td>
                                         <td>
                                             {{ article.views }}

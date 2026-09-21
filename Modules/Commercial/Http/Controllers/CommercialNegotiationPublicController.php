@@ -16,11 +16,13 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Modules\Commercial\Entities\CommercialNegotiation;
 use Modules\Commercial\Entities\CommercialNegotiationInvoice;
+use Modules\Commercial\Support\NegotiationConfirmedRecipients;
 
 class CommercialNegotiationPublicController extends Controller
 {
@@ -80,6 +82,9 @@ class CommercialNegotiationPublicController extends Controller
 
         $data = $request->validate([
             'accepted' => ['required', 'accepted'],
+            // Mercado Pago: 'card' (pago con tarjeta) o 'evidence' (el cliente ya pago
+            // por fuera y adjunta la captura). En los otros medios no se envia.
+            'payment_option' => ['nullable', Rule::in(['card', 'evidence'])],
             'invoice_type' => ['required', Rule::in(['boleta', 'factura'])],
             'document_type_id' => ['required', 'string', 'exists:identity_document_type,id'],
             'number' => ['required', 'string', 'max:20'],
@@ -122,7 +127,7 @@ class CommercialNegotiationPublicController extends Controller
             'invoice_distrito' => ['nullable', 'string', 'max:255'],
             'invoice_provincia' => ['nullable', 'string', 'max:255'],
             'invoice_departamento' => ['nullable', 'string', 'max:255'],
-            'voucher' => [Rule::requiredIf($negotiation->payment_method !== 'mercadopago'), 'file', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
+            'voucher' => [Rule::requiredIf(fn () => $this->voucherRequired($negotiation, $request->input('payment_option'))), 'file', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
         ]);
 
         $isRuc = (string) $data['document_type_id'] === '6';
@@ -226,6 +231,9 @@ class CommercialNegotiationPublicController extends Controller
                 'client_id' => $clientId,
                 'client_data' => array_merge($personPayload, [
                     'full_name' => $fullName ?: ($data['full_name'] ?? null),
+                    // Mercado Pago liquidado por fuera: el cliente declara el pago y
+                    // adjunta su evidencia, no hay transaccion procesada en el sistema.
+                    'payment_declared' => $this->paymentDeclared($negotiation, $data['payment_option'] ?? null),
                 ]),
                 'voucher_path' => $voucherPath ?: $negotiation->voucher_path,
                 'rejected_reason' => null,
@@ -266,7 +274,7 @@ class CommercialNegotiationPublicController extends Controller
             throw $e;
         }
 
-        $this->notifyAsesor($negotiation, $person);
+        $this->notifyNegotiationRecipients($negotiation, $person);
 
         return redirect()->back()->with('success', 'Tu acuerdo fue enviado correctamente. El asesor revisara la confirmacion.');
     }
@@ -495,6 +503,30 @@ class CommercialNegotiationPublicController extends Controller
     }
 
     /**
+     * El voucher (imagen) es obligatorio en todos los medios de pago, salvo en
+     * Mercado Pago pagando con tarjeta. En Mercado Pago el cliente puede declarar
+     * que ya pago por fuera ('evidence'): ahi la imagen vuelve a ser obligatoria,
+     * igual que en una transferencia o billetera.
+     */
+    private function voucherRequired(CommercialNegotiation $negotiation, ?string $paymentOption): bool
+    {
+        if ($negotiation->payment_method !== 'mercadopago') {
+            return true;
+        }
+
+        return $paymentOption === 'evidence';
+    }
+
+    /**
+     * Marca el pago declarado por el cliente: Mercado Pago liquidado por fuera y
+     * enviado como evidencia. El metodo de pago del registro sigue siendo 'mercadopago'.
+     */
+    private function paymentDeclared(CommercialNegotiation $negotiation, ?string $paymentOption): bool
+    {
+        return $negotiation->payment_method === 'mercadopago' && $paymentOption === 'evidence';
+    }
+
+    /**
      * Cargo u ocupacion elegido en el formulario publico.
      *
      * El multiselect envia {id, description}; el texto guardado sale del
@@ -562,18 +594,35 @@ class CommercialNegotiationPublicController extends Controller
         ];
     }
 
-    private function notifyAsesor(CommercialNegotiation $negotiation, Person $client): void
+    /**
+     * Notifica que el cliente respondio la negociacion al equipo administrador (los
+     * roles del modulo mas el buzon MAIL_ADMIN) y al asesor que la creo. Cada
+     * destinatario se encola por separado para que un correo invalido o un fallo
+     * puntual no impida notificar a los demas.
+     */
+    private function notifyNegotiationRecipients(CommercialNegotiation $negotiation, Person $client): void
     {
-        $asesor = $negotiation->creator;
+        // Los destinatarios (roles administradores, buzon MAIL_ADMIN y asesor) se
+        // resuelven en NegotiationConfirmedRecipients, que valida y deduplica.
+        $recipients = NegotiationConfirmedRecipients::forNegotiation($negotiation);
 
-        if (! $asesor || ! $asesor->email) {
+        if ($recipients === []) {
+            // Sin destinatarios el aviso no sale: queda registrado para no perderlo
+            // en silencio.
+            Log::warning('Negociacion confirmada sin destinatarios para el aviso por correo.', [
+                'negotiation_id' => $negotiation->id,
+            ]);
+
             return;
         }
 
-        try {
-            Mail::to($asesor->email)->send(new CommercialNegotiationConfirmedMail($negotiation, $client));
-        } catch (\Exception $e) {
-            // El aviso por correo no debe interrumpir el registro de la negociacion.
+        foreach ($recipients as $email) {
+            try {
+                Mail::to($email)->queue(new CommercialNegotiationConfirmedMail($negotiation, $client));
+            } catch (\Throwable $e) {
+                // Un destinatario fallido no debe impedir los demas envios encolados.
+                report($e);
+            }
         }
     }
 }

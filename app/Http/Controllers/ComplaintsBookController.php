@@ -115,7 +115,7 @@ class ComplaintsBookController extends Controller
                 // Enviar el correo de confirmación
                 // Si esta línea lanza una excepción (ej. problemas de configuración de correo),
                 // la transacción se revertirá y el registro de la DB no se creará.
-                Mail::to($book->email)->send(new SendClaimConfirmationEmail($book));
+                Mail::to($book->email)->queue(new SendClaimConfirmationEmail($book));
             });
 
             // Si todo fue exitoso (validación, registro y envío de correo)

@@ -268,7 +268,7 @@
     </section>
     <footer>
         <p>
-            &copy; Derechos Reservados {{ env('APP_NAME') }} | Desarrollado por <a href="https://aracodeperu.com/"
+            &copy; Derechos Reservados {{ config('app.name') }} | Desarrollado por <a href="https://aracodeperu.com/"
                 style="">Aracode Smart Solutions</a>
         </p>
     </footer>

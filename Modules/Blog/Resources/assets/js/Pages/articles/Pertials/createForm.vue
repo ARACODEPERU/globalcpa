@@ -36,13 +36,6 @@ import BlogAiAssistant from '@/Components/BlogAiAssistant.vue';
     const photoPreview = ref(null);
     const photoInput = ref(null);
 
-    const MAX_DESCRIPTION = 1000;
-
-    // La IA tambien escribe este campo, y maxlength no bloquea una asignacion por codigo.
-    const setDescriptionFromAi = (value) => {
-        form.description = (value || '').slice(0, MAX_DESCRIPTION);
-    };
-
     const createArticle = () => {
         if (photoInput.value) {
             form.file = photoInput.value.files[0];
@@ -161,11 +154,7 @@ import BlogAiAssistant from '@/Components/BlogAiAssistant.vue';
             </div>
             <div class="col-span-6 sm:col-span-6">
                 <InputLabel for="description" value="description *" />
-                <textarea v-model="form.description" rows="2" maxlength="1000" class="form-textarea"></textarea>
-                <div class="flex justify-end mt-1 text-xs"
-                    :class="(form.description || '').length >= 1000 ? 'text-red-500' : 'text-gray-400'">
-                    {{ (form.description || '').length }}/1000
-                </div>
+                <textarea v-model="form.description" rows="2" class="form-textarea"></textarea>
                 <InputError :message="form.errors.description" class="mt-2" />
             </div>
             <div class="col-span-6 sm:col-span-6">
@@ -177,7 +166,7 @@ import BlogAiAssistant from '@/Components/BlogAiAssistant.vue';
                         :description="form.description"
                         @update:contentText="form.content_text = $event"
                         @update:title="form.title = $event"
-                        @update:description="setDescriptionFromAi"
+                        @update:description="form.description = $event"
                     />
                 </div>
                 <Editor
@@ -250,7 +239,7 @@ import BlogAiAssistant from '@/Components/BlogAiAssistant.vue';
                     <input @keydown.enter.stop.prevent="addkeyword" 
                         v-model="inputKeyword" 
                         class="form-input"
-                        :maxlength="22" placeholder="Separar con comas (ej: jovenes, escolares)"
+                        :maxlength="250" placeholder="Separar con comas (ej: jovenes, escolares)"
                     />
                 </div>
                 <InputError :message="form.errors.keywords" class="mt-2" />

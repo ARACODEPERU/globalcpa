@@ -2,7 +2,9 @@
 
 namespace Modules\Commercial\Emails;
 
+use App\Support\MailSender;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Content;
@@ -10,11 +12,17 @@ use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 use Modules\Commercial\Entities\CommercialNegotiation;
 
-class CommercialQuoteMail extends Mailable
+class CommercialQuoteMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
     public $negotiation;
+
+    /** @var int Número máximo de intentos, compatible con el worker general. */
+    public $tries = 3;
+
+    /** @var array<int, int> Demoras entre reintentos, en segundos. */
+    public $backoff = [60, 300];
 
     public function __construct(CommercialNegotiation $negotiation)
     {
@@ -25,10 +33,10 @@ class CommercialQuoteMail extends Mailable
     {
         return new Envelope(
             from: new Address(
-                env('MAIL_FROM_ADDRESS', 'contacto@globalcpa.com'),
-                env('MAIL_FROM_NAME', 'CPA Academy')
+                MailSender::address('contacto@globalcpa.com'),
+                MailSender::name()
             ),
-            subject: 'Tu cotizacion: ' . $this->negotiation->title . ' - ' . env('APP_NAME', 'Global CPA'),
+            subject: 'Tu cotizacion: ' . $this->negotiation->title . ' - ' . config('app.name'),
         );
     }
 
