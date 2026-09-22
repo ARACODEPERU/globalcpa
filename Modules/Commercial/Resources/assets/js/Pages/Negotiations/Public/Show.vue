@@ -227,8 +227,7 @@ const loadVerifiedPerson = (person) => {
     markPersonVerified();
 };
 
-// Verificaciones de identidad del cliente: cada una tiene su composable y aqui solo
-// se conectan con el formulario y con la ficha de la persona.
+// Verificaciones de identidad del cliente: cada una vive en su propio composable.
 const {
     dniLoading,
     dniValidated,
@@ -278,7 +277,6 @@ const searchPerson = () => {
             return;
         }
 
-        // Los datos ya estan verificados en la base de datos interna.
         loadVerifiedPerson(res.data.person);
 
         Swal2.fire({
@@ -456,10 +454,8 @@ const setMpPaymentMode = (mode) => {
     form.clearErrors("voucher");
 };
 
-// ---------------------------------------------------------------------------
 // Envio: el resumen previo (SummaryModal) es el ultimo paso antes de registrar la
-// negociacion. El estado de esta pantalla es el del formulario; el modal solo lo lee.
-// ---------------------------------------------------------------------------
+// negociacion.
 const summaryModal = ref(null);
 
 const submit = () => {
@@ -472,21 +468,17 @@ const submit = () => {
 // El cliente vuelve al formulario: no se envia nada y el correo queda listo para
 // corregirlo. SweetAlert devuelve el foco a su ultimo campo al terminar de cerrar, asi
 // que el enfoque se hace despues de ese cierre.
-const focusEmailField = () => {
-    setTimeout(() => {
-        const field = document.getElementById("email");
-        field?.scrollIntoView({ behavior: "smooth", block: "center" });
-        field?.focus();
-    }, 400);
-};
-
 const onSummaryCancelled = (dismiss) => {
     // El aviso del correo vuelve a estar disponible para cuando lo corrija.
     markEmailCheckAvailable();
 
     if (dismiss !== Swal2.DismissReason.cancel) return;
 
-    focusEmailField();
+    setTimeout(() => {
+        const field = document.getElementById("email");
+        field?.scrollIntoView({ behavior: "smooth", block: "center" });
+        field?.focus();
+    }, 400);
 };
 
 // Consulta el DNI de la tercera persona para la boleta.
