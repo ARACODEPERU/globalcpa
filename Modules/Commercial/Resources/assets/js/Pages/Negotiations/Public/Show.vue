@@ -462,23 +462,13 @@ const submit = () => {
     if (!validateRucBeforeSubmit()) return;
     if (!validateDniBeforeSubmit()) return;
     if (!validateBoletaTerceroBeforeSubmit()) return;
+
+    // Enviar silencia el aviso del correo (el resumen toma el foco; con el boton pulsado
+    // ya se silencio) y deja el correo enfocado: el resumen devuelve el foco al campo que
+    // estaba activo al abrirse, asi que al volver el formulario queda listo para corregir.
+    markSubmitting();
+    document.getElementById("email")?.focus();
     summaryModal.value?.show();
-};
-
-// El cliente vuelve al formulario: no se envia nada y el correo queda listo para
-// corregirlo. SweetAlert devuelve el foco a su ultimo campo al terminar de cerrar, asi
-// que el enfoque se hace despues de ese cierre.
-const onSummaryCancelled = (dismiss) => {
-    // El aviso del correo vuelve a estar disponible para cuando lo corrija.
-    markEmailCheckAvailable();
-
-    if (dismiss !== Swal2.DismissReason.cancel) return;
-
-    setTimeout(() => {
-        const field = document.getElementById("email");
-        field?.scrollIntoView({ behavior: "smooth", block: "center" });
-        field?.focus();
-    }, 400);
 };
 
 // Consulta el DNI de la tercera persona para la boleta.
@@ -1330,7 +1320,7 @@ watch(brickFormVisible, async (visible) => {
             :payment-evidence="isMercadoPagoEvidence"
             :total-label="totalAmount"
             @confirm="confirmNegotiation"
-            @cancel="onSummaryCancelled"
+            @cancel="markEmailCheckAvailable"
         />
     </GuestLayout>
 </template>
