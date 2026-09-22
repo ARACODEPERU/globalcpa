@@ -83,17 +83,6 @@ class NegotiationWebhookPayloadTest extends TestCase
             });
         }
 
-        if (! Schema::hasTable('professions')) {
-            Schema::create('professions', function (Blueprint $table) {
-                $table->unsignedSmallInteger('id')->primary();
-                $table->string('description');
-            });
-        }
-
-        DB::table('professions')->insert([
-            ['id' => 10, 'description' => 'Contabilidad'],
-        ]);
-
         // Usuario del alumno (lo que payload() resuelve por person_id).
         DB::table('users')->insert([
             ['id' => 50, 'name' => 'Juan Perez', 'email' => 'juan@alumno.com', 'person_id' => 9],
@@ -216,26 +205,99 @@ class NegotiationWebhookPayloadTest extends TestCase
         $this->assertSame('Contador independiente', $payload['persona']['ocupacion']);
     }
 
-    public function test_la_profesion_de_la_persona_se_resuelve_desde_el_catalogo(): void
+    public function test_los_tres_campos_de_profesion_llevan_el_cargo_de_la_negociacion(): void
     {
-        $payload = $this->payload($this->negotiation(), $this->person());
+        // Sin datos del formulario en la negociacion, el cargo de la ficha es lo unico que
+        // hay: la ficha rellena, pero no define el contrato de los tres campos de profesion.
+        $person = $this->person();
+        $person->ocupacion = 'Jefe de tesoreria';
+        $person->occupation_id = 17;
 
-        $this->assertSame(10, $payload['persona']['profesion_id']);
-        $this->assertSame('Contabilidad', $payload['persona']['profesion']);
-        $this->assertSame('Contador publico', $payload['persona']['profesion_texto']);
+        $persona = $this->payload($this->negotiation(), $person)['persona'];
+
+        $this->assertSame(17, $persona['profesion_id']);
+        $this->assertSame('Jefe de tesoreria', $persona['profesion']);
+        $this->assertSame('Jefe de tesoreria', $persona['profesion_texto']);
     }
 
-    public function test_sin_profesion_registrada_viaja_null(): void
+    public function test_sin_profesion_la_persona_viaja_con_el_cargo_que_declaro(): void
     {
         $person = $this->person();
         $person->profession_id = null;
         $person->profession = null;
+        $person->ocupacion = 'Jefe de tesoreria';
+        $person->occupation_id = 17;
 
-        $payload = $this->payload($this->negotiation(), $person);
+        $payload = $this->payload($this->negotiation(), $person)['persona'];
 
-        $this->assertNull($payload['persona']['profesion_id']);
-        $this->assertNull($payload['persona']['profesion']);
-        $this->assertNull($payload['persona']['profesion_texto']);
+        $this->assertSame(17, $payload['profesion_id']);
+        $this->assertSame('Jefe de tesoreria', $payload['profesion']);
+        $this->assertSame('Jefe de tesoreria', $payload['profesion_texto']);
+        $this->assertSame('Jefe de tesoreria', $payload['ocupacion']);
+    }
+
+    public function test_sin_datos_en_la_ficha_se_usa_lo_capturado_en_la_negociacion(): void
+    {
+        $person = $this->person();
+        $person->profession_id = null;
+        $person->profession = null;
+        $person->ocupacion = null;
+        $person->occupation_id = null;
+        $person->company = null;
+        $person->industry = null;
+        $person->industry_id = null;
+
+        $negotiation = $this->negotiation();
+        $negotiation->client_data = [
+            'ocupacion' => 'Asistente administrativo',
+            'occupation_id' => 4,
+            'company' => 'Aracode',
+            'industry' => 'Alquiler de Maquinarias',
+            'industry_id' => 23,
+        ];
+
+        $payload = $this->payload($negotiation, $person)['persona'];
+
+        $this->assertSame('Asistente administrativo', $payload['ocupacion']);
+        $this->assertSame(4, $payload['ocupacion_id']);
+        $this->assertSame(4, $payload['profesion_id']);
+        $this->assertSame('Asistente administrativo', $payload['profesion']);
+        $this->assertSame('Asistente administrativo', $payload['profesion_texto']);
+        $this->assertSame('Aracode', $payload['empresa']);
+        $this->assertSame('Alquiler de Maquinarias', $payload['industria']);
+        $this->assertSame(23, $payload['industria_id']);
+    }
+
+    public function test_lo_declarado_en_la_negociacion_manda_sobre_la_ficha(): void
+    {
+        // El cliente declaro su cargo en el formulario y su ficha cambio despues (edito su
+        // perfil, otra negociacion): a n8n viaja el cargo de esta negociacion, no el nuevo.
+        $person = $this->person();
+        $person->ocupacion = 'Gerente general';
+        $person->occupation_id = 20;
+        $person->company = 'EMPRESA DE LA FICHA';
+        $person->industry = 'Construccion';
+        $person->industry_id = 30;
+
+        $negotiation = $this->negotiation();
+        $negotiation->client_data = [
+            'ocupacion' => 'Asistente administrativo',
+            'occupation_id' => 4,
+            'company' => 'Aracode',
+            'industry' => 'Alquiler de Maquinarias',
+            'industry_id' => 23,
+        ];
+
+        $payload = $this->payload($negotiation, $person)['persona'];
+
+        $this->assertSame(4, $payload['profesion_id']);
+        $this->assertSame('Asistente administrativo', $payload['profesion']);
+        $this->assertSame('Asistente administrativo', $payload['profesion_texto']);
+        $this->assertSame('Asistente administrativo', $payload['ocupacion']);
+        $this->assertSame(4, $payload['ocupacion_id']);
+        $this->assertSame('Aracode', $payload['empresa']);
+        $this->assertSame('Alquiler de Maquinarias', $payload['industria']);
+        $this->assertSame(23, $payload['industria_id']);
     }
 
     public function test_las_cuotas_viajan_numeradas_con_su_fecha_de_vencimiento_y_monto(): void
