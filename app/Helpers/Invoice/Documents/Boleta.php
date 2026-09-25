@@ -127,7 +127,7 @@ class Boleta
             ->setSerie($document->invoice_serie)
             ->setCorrelativo($document->invoice_correlative)
             ->setFechaEmision($broadcast_date)
-            ->setTipoMoneda('PEN')
+            ->setTipoMoneda($document->invoice_type_currency ?: 'PEN')
             ->setCompany($company)
             ->setClient($client)
             ->setMtoOperGravadas($document->invoice_mto_oper_taxed)
@@ -239,6 +239,17 @@ class Boleta
     {
         try {
             $document = SaleDocument::find($id);
+
+            // Las boletas se informan a SUNAT dentro de un resumen diario, que no
+            // guarda el XML de cada comprobante. Si no quedo guardado, se firma aqui.
+            if (! $document->invoice_xml || ! is_file($document->invoice_xml)) {
+                $invoice = $this->setDocument($document);
+                $see = $this->util->getSee();
+
+                $document->invoice_xml = $this->util->writeXml($invoice, $see->getXmlSigned($invoice));
+                $document->invoice_document_name = $invoice->getName();
+                $document->save();
+            }
 
             return array(
                 'fileName' => $document->invoice_document_name . '.xml',

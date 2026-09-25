@@ -188,8 +188,8 @@ class Factura
         $province = $establishment->district->province;
 
         $department = $province->department;
-        $broadcast_date = new DateTime($document->invoice_broadcast_date . ' ' . Carbon::parse($document->created_at)->format('H:m:s'));
-        $due_date = new DateTime($document->invoice_due_date . ' ' . Carbon::parse($document->created_at)->format('H:m:s'));
+        $broadcast_date = new DateTime($document->invoice_broadcast_date . ' ' . Carbon::parse($document->created_at)->format('H:i:s'));
+        $due_date = new DateTime($document->invoice_due_date . ' ' . Carbon::parse($document->created_at)->format('H:i:s'));
         // Cliente
         $clientCity = District::with('province.department')->where('id',$document->client_ubigeo_code)->first();
 
@@ -264,7 +264,7 @@ class Factura
             ->setCorrelativo($document->invoice_correlative)
             ->setFechaEmision($broadcast_date)
             ->setFecVencimiento($due_date)
-            ->setTipoMoneda('PEN')
+            ->setTipoMoneda($document->invoice_type_currency ?: 'PEN')
             ->setCompany($company)
             ->setClient($client)
             ->setMtoOperGravadas($document->invoice_mto_oper_taxed)
@@ -338,7 +338,7 @@ class Factura
                     ->setCodBienDetraccion($tipDet) // catalog. 54
                     // Deposito en cuenta
                     ->setCodMedioPago($ipMeP) // catalog. 59
-                    ->setCtaBanco($this->mycompany->withdrawal_account_number)
+                    ->setCtaBanco($this->resolveDetractionAccount($this->mycompany->withdrawal_account_number))
                     ->setPercent($percent)
                     ->setMount($detMount)
             );
@@ -358,6 +358,29 @@ class Factura
 
         //dd($invoice);
         return $invoice;
+    }
+
+    /**
+     * La cuenta de detraccion debe ser un numero valido (CCI o cuenta).
+     * Si el dato trae texto (p. ej. "B.N. 00-002-235269 o CCI 0180..."), extraemos
+     * el CCI para que el XML no quede con un campo invalido que SUNAT rechaza/corta.
+     */
+    private function resolveDetractionAccount(?string $raw): string
+    {
+        $raw = $raw ?: '';
+
+        // Si hay un CCI (20 digitos), lo usamos.
+        if (preg_match('/\b(\d{20})\b/', $raw, $m)) {
+            return $m[1];
+        }
+
+        // Si hay una cuenta (8 a 20 digitos), quitamos separadores y usamos el primer bloque numerico.
+        $digits = preg_replace('/\D/', '', $raw);
+        if ($digits !== '' ) {
+            return $digits;
+        }
+
+        return '0000';
     }
 
     public function getFacturaDomPdf($id, $format = 'A4')
@@ -412,12 +435,49 @@ class Factura
         try {
             $document = SaleDocument::find($id);
 
+            if (! $document) {
+                return null;
+            }
+
+            $this->ensureXmlFile($document);
+
+            $name = $document->invoice_document_name
+                ?: trim($document->invoice_serie.'-'.$document->invoice_correlative, '-');
+
             return array(
-                'fileName' => $document->invoice_document_name . '.xml',
+                'fileName' => $name . '.xml',
                 'filePath' => $document->invoice_xml
             );
         } catch (Exception $e) {
             var_dump($e);
+        }
+    }
+
+    /**
+     * Se asegura de que el XML del comprobante exista en disco. El XML se guarda
+     * recién al enviar el comprobante a SUNAT; si todavía no fue enviado (o el
+     * archivo ya no está en el servidor) se genera y firma ahora mismo, con el
+     * mismo builder que usa el envío, sin comunicarse con SUNAT, y se registra
+     * en el documento igual que hace create().
+     */
+    private function ensureXmlFile(SaleDocument $document): void
+    {
+        if ($document->invoice_xml && file_exists($document->invoice_xml)) {
+            return;
+        }
+
+        try {
+            $invoice = $this->setDocument($document);
+            $path = $this->util->writeSignedXml($invoice);
+
+            if ($path) {
+                $document->invoice_xml = $path;
+                $document->invoice_document_name = $invoice->getName();
+                $document->save();
+            }
+        } catch (\Throwable $e) {
+            // Sin XML el correo sale igual, solo que sin ese adjunto.
+            Log::warning('No se pudo generar el XML de la factura '.$document->id.': '.$e->getMessage());
         }
     }
     public function getFacturaCDR($id)
