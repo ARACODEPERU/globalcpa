@@ -313,6 +313,7 @@ const displaySearchLoading = ref(false);
 
     const allowedStatuses = [
         { value: 'Enviado', label: 'Enviado (habilita el botón Consultar en SUNAT)' },
+        { value: 'Aceptado', label: 'Aceptado (marcar como aprobado por SUNAT)' },
         { value: 'sunat_disponible', label: 'SUNAT no disponible (habilita Reintentar)' },
         { value: 'fue_enviado', label: 'Ya enviado' },
         { value: 'Rechazado', label: 'Rechazado' },
@@ -333,7 +334,7 @@ const displaySearchLoading = ref(false);
 
     const savingStatus = ref(false);
 
-    const confirmChangeStatus = () => {
+    const persistChangeStatus = () => {
         savingStatus.value = true;
         axios.post(route('salesummaries_update_status', statusForm.id), {
             status: statusForm.status,
@@ -375,6 +376,30 @@ const displaySearchLoading = ref(false);
             });
             savingStatus.value = false;
         });
+    };
+
+    const confirmChangeStatus = () => {
+        // Marcar como "Aceptado" es una acción manual e irreversible desde aquí:
+        // se pide confirmación antes de enviarla.
+        if (statusForm.status === 'Aceptado') {
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: 'El resumen quedará marcado como Aceptado. Esta acción no consulta ni descarga el CDR; úsala solo si ya verificaste en SUNAT que el resumen fue aprobado.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, marcar como Aceptado',
+                cancelButtonText: 'Cancelar',
+                padding: '2em',
+                customClass: 'sweet-alerts',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    persistChangeStatus();
+                }
+            });
+            return;
+        }
+
+        persistChangeStatus();
     };
 
     const  openDownloadTap = (id,type) => {
