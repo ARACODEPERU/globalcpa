@@ -49,6 +49,10 @@ class CommercialNegotiationProcessController extends Controller
             'paymentMethods' => $this->paymentMethods(),
             'stepsStatus' => $this->stepStatuses($negotiation),
             'existingAccount' => $this->existingAccountInfo($negotiation),
+            // Fecha de emision del comprobante: la elegida por el administrador o,
+            // por defecto, la fecha en que el cliente registro sus datos.
+            'issueDate' => $this->issueDate($negotiation),
+            'clientConfirmedAt' => $negotiation->client_confirmed_at?->toISOString(),
             // Equivalente en soles cuando la negociacion esta en USD (PTM0004).
             'multiCurrencyEnabled' => app(\Modules\Sales\Services\ExchangeRateService::class)->isMultiCurrencyEnabled(),
             'exchangeRate' => (function () {
@@ -509,7 +513,7 @@ class CommercialNegotiationProcessController extends Controller
                 }
 
                 $sale = Sale::create([
-                    'sale_date' => Carbon::now()->format('Y-m-d'),
+                    'sale_date' => $this->issueDate($negotiation),
                     'user_id' => Auth::id(),
                     'client_id' => $person->id,
                     'local_id' => $localId,
@@ -612,7 +616,7 @@ class CommercialNegotiationProcessController extends Controller
 
                 if (! $isInstallments) {
                     $sale = Sale::create([
-                        'sale_date' => Carbon::now()->format('Y-m-d'),
+                        'sale_date' => $this->issueDate($negotiation),
                         'user_id' => Auth::id(),
                         'client_id' => $person->id,
                         'local_id' => $localId,
@@ -720,6 +724,9 @@ class CommercialNegotiationProcessController extends Controller
                     'documenttypeId' => $isFactura ? 1 : 2,
                     'userId' => Auth::id(),
                     'enline' => true,
+                    // Fecha de emision: la fecha en que el cliente registro sus datos
+                    // (ajustable por el administrador) y no la fecha de aprobacion.
+                    'issue_date' => $this->issueDate($negotiation),
                     // Moneda del comprobante: la elegida en la negociacion (PTM0004
                     // y el TC se validan dentro de generateBoleta).
                     'currency' => strtoupper((string) ($negotiation->currency ?? 'PEN')),
@@ -1027,6 +1034,19 @@ class CommercialNegotiationProcessController extends Controller
         }
 
         return $person;
+    }
+
+    /**
+     * Fecha de emision del comprobante (y de la venta): la elegida por el
+     * administrador y, si no la definio, la fecha en que el cliente registro sus
+     * datos. Las negociaciones antiguas sin fecha de registro caen en hoy.
+     */
+    private function issueDate(CommercialNegotiation $negotiation): string
+    {
+        return ($negotiation->invoice_issue_date
+            ?? $negotiation->client_confirmed_at
+            ?? Carbon::now())
+            ->format('Y-m-d');
     }
 
     private function nextPaymentDate(CommercialNegotiation $negotiation): ?string

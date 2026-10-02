@@ -239,6 +239,9 @@ class CommercialNegotiationPublicController extends Controller
 
             $negotiation->update([
                 'status' => 'confirmada',
+                // Fecha real en que el cliente registro sus datos y envio la evidencia:
+                // es la fecha por defecto (modificable) del comprobante.
+                'client_confirmed_at' => now(),
                 'client_id' => $clientId,
                 'client_data' => array_merge($personPayload, [
                     'full_name' => $fullName ?: ($data['full_name'] ?? null),

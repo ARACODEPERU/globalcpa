@@ -3,7 +3,7 @@ import AppLayout from "@/Layouts/Vristo/AppLayout.vue";
 import Navigation from "@/Components/vristo/layout/Navigation.vue";
 import IconLoader from "@/Components/vristo/icon/icon-loader.vue";
 import { Link, router, usePage } from "@inertiajs/vue3";
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import Swal2 from "sweetalert2";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { faCheckCircle, faFileArchive, faFileCode, faFilePdf, faLink, faPaperPlane, faTrashAlt, faXmarkCircle } from "@fortawesome/free-solid-svg-icons";
@@ -45,6 +45,60 @@ const deleteBlocked = computed(() => props.negotiation.status === "confirmada" &
 const statusByValue = (value) => props.statuses.find((item) => item.value === value);
 
 const paymentMethodLabel = (value) => props.paymentMethods.find((item) => item.value === value)?.label || value;
+
+// Fecha de emision del comprobante: la elegida por el administrador o, por defecto,
+// la fecha en que el cliente registro sus datos. Es editable antes de aprobar y se
+// guarda en la negociacion para que el proceso la use al emitir.
+const currentIssueDate = computed(() => {
+    const value = props.negotiation.invoice_issue_date || props.negotiation.client_confirmed_at;
+    return value ? String(value).slice(0, 10) : "";
+});
+
+const issueDateInput = ref(currentIssueDate.value);
+const savingIssueDate = ref(false);
+
+watch(currentIssueDate, (value) => {
+    issueDateInput.value = value;
+});
+
+const saveIssueDate = () => {
+    if (savingIssueDate.value) return;
+
+    savingIssueDate.value = true;
+
+    axios.post(route("comm_negotiations_issue_date", props.negotiation.id), {
+        invoice_issue_date: issueDateInput.value || null,
+    }).then((res) => {
+        if (!res.data?.success) {
+            Swal2.fire({
+                title: "No se pudo guardar",
+                text: res.data?.message || "Error al guardar la fecha de emision.",
+                icon: "error",
+                padding: "2em",
+                customClass: "sweet-alerts",
+            });
+            return;
+        }
+
+        Swal2.fire({
+            title: "Fecha guardada",
+            text: res.data?.message || "Fecha de emision guardada.",
+            icon: "success",
+            padding: "2em",
+            customClass: "sweet-alerts",
+        });
+    }).catch((error) => {
+        Swal2.fire({
+            title: "No se pudo guardar",
+            text: error.response?.data?.message || "Error de conexion",
+            icon: "error",
+            padding: "2em",
+            customClass: "sweet-alerts",
+        });
+    }).finally(() => {
+        savingIssueDate.value = false;
+    });
+};
 
 const clientName = computed(() => props.negotiation.client_data?.full_name || props.negotiation.client?.full_name || "Sin cliente");
 
@@ -517,6 +571,22 @@ const reactivate = () => {
                         <p class="text-sm text-amber-700 dark:text-amber-300">
                             Revisa el voucher y los datos del cliente para aprobar o rechazar.
                         </p>
+                        <div class="mt-3">
+                            <label for="invoice_issue_date" class="text-xs font-semibold uppercase text-amber-800 dark:text-amber-200">
+                                Fecha de emision del comprobante
+                            </label>
+                            <input
+                                id="invoice_issue_date"
+                                v-model="issueDateInput"
+                                type="date"
+                                class="form-input mt-1 block max-w-[200px]"
+                                :disabled="savingIssueDate"
+                                @change="saveIssueDate"
+                            />
+                            <p class="mt-1 text-xs text-amber-700 dark:text-amber-300">
+                                Por defecto, la fecha en que el cliente registro sus datos. Puedes cambiarla antes de aprobar.
+                            </p>
+                        </div>
                     </div>
                     <div class="flex flex-wrap gap-2">
                         <button type="button" class="btn btn-success" v-can="'comm_negociaciones_verificar'" :disabled="processing" @click="approve">

@@ -379,6 +379,33 @@ class CommercialNegotiationController extends Controller
         ]);
     }
 
+    /**
+     * Fecha de emision del comprobante elegida por el administrador.
+     *
+     * Se guarda en la negociacion (invoice_issue_date) para que el detalle y la
+     * pantalla de proceso compartan el mismo valor, y para que el paso que genera
+     * la venta y el comprobante la use aunque la aprobacion sea dias despues del
+     * registro del cliente. Sin valor explicito se toma la fecha de registro.
+     */
+    public function updateIssueDate(Request $request, $id)
+    {
+        $negotiation = CommercialNegotiation::findOrFail($id);
+
+        $request->validate([
+            'invoice_issue_date' => ['nullable', 'date'],
+        ]);
+
+        $negotiation->update([
+            'invoice_issue_date' => $request->input('invoice_issue_date') ?: null,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'invoice_issue_date' => $negotiation->invoice_issue_date?->format('Y-m-d'),
+            'message' => 'Fecha de emision del comprobante actualizada.',
+        ]);
+    }
+
     public function approve($id)
     {
         $negotiation = CommercialNegotiation::findOrFail($id);
@@ -792,6 +819,8 @@ class CommercialNegotiationController extends Controller
                 'client_id' => null,
                 'client_data' => null,
                 'voucher_path' => null,
+                'client_confirmed_at' => null,
+                'invoice_issue_date' => null,
                 'rejected_reason' => null,
                 'verified_by' => null,
                 'verified_at' => null,

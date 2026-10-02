@@ -16,6 +16,7 @@ import { faCheckCircle, faFileImage, faMagnifyingGlass, faUpload, faXmark, faXma
 import SummaryModal from "./Partials/SummaryModal.vue";
 import { useEmailAccountCheck } from "./composables/useEmailAccountCheck.js";
 import { useDniReniecCheck } from "./composables/useDniReniecCheck.js";
+import { useRucPersonCheck } from "./composables/useRucPersonCheck.js";
 
 const props = defineProps({
     negotiation: { type: Object, default: () => ({}) },
@@ -207,6 +208,20 @@ const selectCity = () => {
     form.ubigeo_description = ubigeoSelected.value?.ubigeo_description ?? null;
 };
 
+// Ubicacion resuelta a partir del RUC de SUNAT. Si no hay match en el ubigeo
+// peruano queda solo la descripcion y el cliente elige la ciudad.
+const applyUbigeoFromRuc = (item) => {
+    if (!item) {
+        ubigeoSelected.value = null;
+        form.ubigeo = null;
+        return;
+    }
+
+    ubigeoSelected.value = { district_id: item.district_id, ubigeo_description: item.ubigeo_description };
+    form.ubigeo = item.district_id;
+    form.ubigeo_description = item.ubigeo_description;
+};
+
 // Carga la ficha de una persona (busqueda interna o cuenta existente). Sus datos
 // quedan verificados al venir de una fuente confiable, asi que no se pide RENIEC.
 const loadVerifiedPerson = (person) => {
@@ -246,6 +261,13 @@ const loadVerifiedPerson = (person) => {
     }
 
     markPersonVerified();
+
+    // Un RUC obtenido de la base de datos o de una cuenta existente tambien habilita
+    // la razon social, sin pasar por SUNAT.
+    if (String(form.document_type_id) === "6") {
+        personRucValidated.value = true;
+        personRucNotice.value = "";
+    }
 };
 
 // Verificaciones de identidad del cliente: cada una vive en su propio composable.
@@ -253,7 +275,6 @@ const {
     dniLoading,
     dniValidated,
     dniNotice,
-    dniHint,
     onNumberInput,
     validateDni,
     resetDniCheck,
@@ -264,6 +285,28 @@ const {
     isDni,
     normalizeNumber: onlyNumbers,
 });
+
+const {
+    personRucLoading,
+    personRucValidated,
+    personRucNotice,
+    validatePersonRuc,
+    onPersonRucInput,
+    resetPersonRucCheck,
+} = useRucPersonCheck({
+    form,
+    token: props.negotiation.token,
+    isRuc,
+    ubigeoOptions: props.ubigeo,
+    selectUbigeo: applyUbigeoFromRuc,
+});
+
+// El numero del documento con RUC solo admite digitos y descarta la validacion previa.
+const onRucPersonNumberInput = () => {
+    onlyNumbers();
+    onPersonRucInput();
+    form.full_name = null;
+};
 
 const {
     accountNotice,
@@ -407,6 +450,7 @@ watch(() => form.document_type_id, (current, previous) => {
     if (String(current) === String(previous)) return;
 
     resetDniCheck();
+    resetPersonRucCheck();
 
     if (isForeignLocation.value) {
         form.ubigeo = null;
@@ -482,6 +526,7 @@ const summaryModal = ref(null);
 const submit = () => {
     if (!validateRucBeforeSubmit()) return;
     if (!validateDniBeforeSubmit()) return;
+    if (!validatePersonRucBeforeSubmit()) return;
     if (!validateBoletaTerceroBeforeSubmit()) return;
 
     // Enviar silencia el aviso del correo (el resumen toma el foco; con el boton pulsado
@@ -520,7 +565,10 @@ const validateBoletaDni = () => {
         }
 
         const person = res.data.person || {};
-        form.boleta_nombre = person.full_name || [person.father_lastname, person.mother_lastname, person.names].filter(Boolean).join(" ") || form.boleta_nombre;
+        // Convencion SUNAT: apellidos primero (paterno, materno) y luego los nombres.
+        form.boleta_nombre = [person.father_lastname, person.mother_lastname, person.names].filter(Boolean).join(" ")
+            || person.full_name
+            || form.boleta_nombre;
         boletaDniValidated.value = true;
         boletaDniNotice.value = "";
     }).catch(() => {
@@ -535,6 +583,14 @@ const onBoletaNumeroInput = () => {
     form.boleta_numero = form.boleta_numero ? String(form.boleta_numero).replace(/\D/g, "") : null;
     boletaDniValidated.value = false;
     boletaDniNotice.value = "";
+
+    // Igual que el DNI del cliente: al completar 8 digitos se consulta RENIEC y se
+    // habilita el nombre completo para editarlo.
+    if (isBoleta.value && boletaTercero.value
+        && String(form.boleta_numero || "").length === 8
+        && ! boletaDniLoading.value) {
+        validateBoletaDni();
+    }
 };
 
 const toggleBoletaTercero = (checked) => {
@@ -598,6 +654,21 @@ const validateDniBeforeSubmit = () => {
         Swal2.fire({
             title: "DNI no validado",
             text: dniNotice.value || "Debes validar tu DNI con la API para continuar (el boton RENIEC junto al numero de documento).",
+            icon: "warning",
+            padding: "2em",
+            customClass: "sweet-alerts",
+        });
+        return false;
+    }
+    return true;
+};
+
+// El RUC del cliente principal tambien debe estar validado por SUNAT antes de enviar.
+const validatePersonRucBeforeSubmit = () => {
+    if (isRuc.value && !personRucValidated.value) {
+        Swal2.fire({
+            title: "RUC no validado",
+            text: personRucNotice.value || "Debes validar tu RUC con SUNAT para continuar (el boton RUC junto al numero de documento).",
             icon: "warning",
             padding: "2em",
             customClass: "sweet-alerts",
@@ -916,13 +987,21 @@ watch(brickFormVisible, async (visible) => {
                                         RENIEC
                                     </button>
                                 </div>
+                                <div v-else-if="isRuc" class="flex">
+                                    <TextInput id="number" v-model="form.number" type="text" inputmode="numeric" pattern="[0-9]*" class="ltr:rounded-r-none rtl:rounded-l-none" @input="onRucPersonNumberInput" />
+                                    <button type="button" class="btn btn-secondary ltr:rounded-l-none rtl:rounded-r-none" :class="{ 'opacity-50': personRucLoading }" :disabled="personRucLoading" @click="validatePersonRuc">
+                                        <IconLoader v-if="personRucLoading" class="w-4 h-4 mr-2 animate-spin" />
+                                        <FontAwesomeIcon v-else :icon="faMagnifyingGlass" class="mr-2 h-4 w-4" />
+                                        RUC
+                                    </button>
+                                </div>
                                 <TextInput v-else id="number" v-model="form.number" type="text" inputmode="numeric" pattern="[0-9]*" @input="onlyNumbers" />
                                 <InputError :message="form.errors.number" class="mt-1" />
-                                <p v-if="isDni && dniHint" class="mt-1 text-xs font-medium text-amber-600 dark:text-amber-400">
-                                    {{ dniHint }}
-                                    <button type="button" class="underline" @click="validateDni">Rellenar con RENIEC</button>
+                                <p v-if="isDni && !dniValidated" class="mt-1 text-xs text-gray-500">
+                                    Completa tu DNI: al llegar a 8 digitos se consulta RENIEC y se habilitan tus nombres.
                                 </p>
                                 <p v-if="isDni && dniNotice" class="mt-1 text-xs text-danger">{{ dniNotice }}</p>
+                                <p v-if="isRuc && personRucNotice" class="mt-1 text-xs text-danger">{{ personRucNotice }}</p>
                             </div>
 
                             <div class="col-span-6 sm:col-span-2">
@@ -938,26 +1017,32 @@ watch(brickFormVisible, async (visible) => {
                             <template v-if="isRuc">
                                 <div class="col-span-6">
                                     <InputLabel for="full_name" value="Razon social *" />
-                                    <TextInput id="full_name" v-model="form.full_name" type="text" />
+                                    <TextInput id="full_name" v-model="form.full_name" type="text" :disabled="!personRucValidated" />
                                     <InputError :message="form.errors.full_name" class="mt-1" />
+                                    <p v-if="!personRucValidated" class="mt-1 text-xs text-gray-500">
+                                        Valida tu RUC con SUNAT para habilitar este campo.
+                                    </p>
                                 </div>
                             </template>
                             <template v-else>
                                 <div class="col-span-6 sm:col-span-2">
                                     <InputLabel for="names" value="Nombres *" />
-                                    <TextInput id="names" v-model="form.names" type="text" />
+                                    <TextInput id="names" v-model="form.names" type="text" :disabled="isDni && !dniValidated" />
                                     <InputError :message="form.errors.names" class="mt-1" />
                                 </div>
                                 <div class="col-span-6 sm:col-span-2">
                                     <InputLabel for="father_lastname" value="Apellido paterno *" />
-                                    <TextInput id="father_lastname" v-model="form.father_lastname" type="text" />
+                                    <TextInput id="father_lastname" v-model="form.father_lastname" type="text" :disabled="isDni && !dniValidated" />
                                     <InputError :message="form.errors.father_lastname" class="mt-1" />
                                 </div>
                                 <div class="col-span-6 sm:col-span-2">
                                     <InputLabel for="mother_lastname" value="Apellido materno *" />
-                                    <TextInput id="mother_lastname" v-model="form.mother_lastname" type="text" />
+                                    <TextInput id="mother_lastname" v-model="form.mother_lastname" type="text" :disabled="isDni && !dniValidated" />
                                     <InputError :message="form.errors.mother_lastname" class="mt-1" />
                                 </div>
+                                <p v-if="isDni && !dniValidated" class="col-span-6 text-xs text-gray-500">
+                                    Valida tu DNI con RENIEC para habilitar y editar tus nombres y apellidos.
+                                </p>
                             </template>
 
                             <div class="col-span-6 sm:col-span-2">
@@ -1140,8 +1225,11 @@ watch(brickFormVisible, async (visible) => {
 
                                                 <div class="col-span-6 sm:col-span-3">
                                                     <InputLabel for="boleta_nombre" value="Nombre completo *" />
-                                                    <TextInput id="boleta_nombre" v-model="form.boleta_nombre" type="text" />
+                                                    <TextInput id="boleta_nombre" v-model="form.boleta_nombre" type="text" :disabled="!boletaDniValidated" />
                                                     <InputError :message="form.errors.boleta_nombre" class="mt-1" />
+                                                    <p v-if="!boletaDniValidated" class="mt-1 text-xs text-gray-500">
+                                                        Busca el DNI en RENIEC para habilitar y editar el nombre.
+                                                    </p>
                                                 </div>
                                             </div>
                                         </template>
