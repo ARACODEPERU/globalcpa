@@ -205,23 +205,30 @@ class NegotiationWebhookPayloadTest extends TestCase
         $this->assertSame('Contador independiente', $payload['persona']['ocupacion']);
     }
 
-    public function test_los_tres_campos_de_profesion_llevan_el_cargo_de_la_negociacion(): void
+    public function test_los_tres_campos_de_profesion_llevan_la_profesion_de_la_ficha(): void
     {
-        // Sin datos del formulario en la negociacion, el cargo de la ficha es lo unico que
-        // hay: la ficha rellena, pero no define el contrato de los tres campos de profesion.
+        // Sin datos del formulario en la negociacion, la profesion de la ficha es lo unico
+        // que hay: la ficha rellena, pero no define el contrato de los tres campos de
+        // profesion. El cargo de la ficha no se cuela en ellos: es otro campo.
         $person = $this->person();
+        $person->profession = 'Contador publico';
+        $person->profession_id = 10;
         $person->ocupacion = 'Jefe de tesoreria';
         $person->occupation_id = 17;
 
         $persona = $this->payload($this->negotiation(), $person)['persona'];
 
-        $this->assertSame(17, $persona['profesion_id']);
-        $this->assertSame('Jefe de tesoreria', $persona['profesion']);
-        $this->assertSame('Jefe de tesoreria', $persona['profesion_texto']);
+        $this->assertSame(10, $persona['profesion_id']);
+        $this->assertSame('Contador publico', $persona['profesion']);
+        $this->assertSame('Contador publico', $persona['profesion_texto']);
+        $this->assertSame('Jefe de tesoreria', $persona['ocupacion']);
+        $this->assertSame(17, $persona['ocupacion_id']);
     }
 
-    public function test_sin_profesion_la_persona_viaja_con_el_cargo_que_declaro(): void
+    public function test_sin_profesion_en_la_ficha_los_campos_de_profesion_viajan_vacios(): void
     {
+        // La profesion no se rellena con el cargo: si la persona no tiene profesion en su
+        // ficha, los tres campos de profesion van en null aunque si declare un cargo.
         $person = $this->person();
         $person->profession_id = null;
         $person->profession = null;
@@ -230,10 +237,11 @@ class NegotiationWebhookPayloadTest extends TestCase
 
         $payload = $this->payload($this->negotiation(), $person)['persona'];
 
-        $this->assertSame(17, $payload['profesion_id']);
-        $this->assertSame('Jefe de tesoreria', $payload['profesion']);
-        $this->assertSame('Jefe de tesoreria', $payload['profesion_texto']);
+        $this->assertNull($payload['profesion_id']);
+        $this->assertNull($payload['profesion']);
+        $this->assertNull($payload['profesion_texto']);
         $this->assertSame('Jefe de tesoreria', $payload['ocupacion']);
+        $this->assertSame(17, $payload['ocupacion_id']);
     }
 
     public function test_sin_datos_en_la_ficha_se_usa_lo_capturado_en_la_negociacion(): void
@@ -251,6 +259,8 @@ class NegotiationWebhookPayloadTest extends TestCase
         $negotiation->client_data = [
             'ocupacion' => 'Asistente administrativo',
             'occupation_id' => 4,
+            'profession' => 'Contabilidad',
+            'profession_id' => 10,
             'company' => 'Aracode',
             'industry' => 'Alquiler de Maquinarias',
             'industry_id' => 23,
@@ -260,9 +270,9 @@ class NegotiationWebhookPayloadTest extends TestCase
 
         $this->assertSame('Asistente administrativo', $payload['ocupacion']);
         $this->assertSame(4, $payload['ocupacion_id']);
-        $this->assertSame(4, $payload['profesion_id']);
-        $this->assertSame('Asistente administrativo', $payload['profesion']);
-        $this->assertSame('Asistente administrativo', $payload['profesion_texto']);
+        $this->assertSame(10, $payload['profesion_id']);
+        $this->assertSame('Contabilidad', $payload['profesion']);
+        $this->assertSame('Contabilidad', $payload['profesion_texto']);
         $this->assertSame('Aracode', $payload['empresa']);
         $this->assertSame('Alquiler de Maquinarias', $payload['industria']);
         $this->assertSame(23, $payload['industria_id']);
@@ -270,11 +280,14 @@ class NegotiationWebhookPayloadTest extends TestCase
 
     public function test_lo_declarado_en_la_negociacion_manda_sobre_la_ficha(): void
     {
-        // El cliente declaro su cargo en el formulario y su ficha cambio despues (edito su
-        // perfil, otra negociacion): a n8n viaja el cargo de esta negociacion, no el nuevo.
+        // El cliente declaro su cargo y su profesion en el formulario y su ficha cambio
+        // despues (edito su perfil, otra negociacion): a n8n viajan los de esta
+        // negociacion, no los nuevos, y el cargo y la profesion no se mezclan.
         $person = $this->person();
         $person->ocupacion = 'Gerente general';
         $person->occupation_id = 20;
+        $person->profession = 'Derecho';
+        $person->profession_id = 11;
         $person->company = 'EMPRESA DE LA FICHA';
         $person->industry = 'Construccion';
         $person->industry_id = 30;
@@ -283,6 +296,8 @@ class NegotiationWebhookPayloadTest extends TestCase
         $negotiation->client_data = [
             'ocupacion' => 'Asistente administrativo',
             'occupation_id' => 4,
+            'profession' => 'Contabilidad',
+            'profession_id' => 10,
             'company' => 'Aracode',
             'industry' => 'Alquiler de Maquinarias',
             'industry_id' => 23,
@@ -290,9 +305,9 @@ class NegotiationWebhookPayloadTest extends TestCase
 
         $payload = $this->payload($negotiation, $person)['persona'];
 
-        $this->assertSame(4, $payload['profesion_id']);
-        $this->assertSame('Asistente administrativo', $payload['profesion']);
-        $this->assertSame('Asistente administrativo', $payload['profesion_texto']);
+        $this->assertSame(10, $payload['profesion_id']);
+        $this->assertSame('Contabilidad', $payload['profesion']);
+        $this->assertSame('Contabilidad', $payload['profesion_texto']);
         $this->assertSame('Asistente administrativo', $payload['ocupacion']);
         $this->assertSame(4, $payload['ocupacion_id']);
         $this->assertSame('Aracode', $payload['empresa']);

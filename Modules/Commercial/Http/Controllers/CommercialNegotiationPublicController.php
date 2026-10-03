@@ -66,6 +66,7 @@ class CommercialNegotiationPublicController extends Controller
             'industries' => Industry::select('id', 'description')->orderBy('description')->get(),
             // Cargos en orden alfabetico: el cliente los busca escribiendo.
             'occupations' => DB::table('occupations')->select('id', 'description')->orderBy('description')->get(),
+            'professions' => DB::table('professions')->select('id', 'description')->orderBy('description')->get(),
             'countries' => Country::where('status', true)->orderBy('description')->get(['id', 'description']),
             'ubigeo' => $this->ubigeo(),
             'paymentMethodCatalog' => PaymentMethod::with('bankAccount.bank')->get(),
@@ -111,6 +112,10 @@ class CommercialNegotiationPublicController extends Controller
             'ocupacion' => ['nullable'],
             'ocupacion.id' => ['nullable', 'integer', 'exists:occupations,id'],
             'ocupacion.description' => ['nullable', 'string', 'max:255'],
+            // Profesion: mismo contrato que el cargo (multiselect {id, description}).
+            'profesion' => ['nullable'],
+            'profesion.id' => ['nullable', 'integer', 'exists:professions,id'],
+            'profesion.description' => ['nullable', 'string', 'max:255'],
             'company' => ['nullable', 'string', 'max:200'],
             'industry_id' => ['nullable'],
             // El multiselect envia el objeto {id, description}: se valida el id por separado.
@@ -160,6 +165,9 @@ class CommercialNegotiationPublicController extends Controller
         // Cargo u ocupacion: se guarda el texto del catalogo junto a su id.
         [$occupationId, $occupation] = $this->resolveOccupation($data['ocupacion'] ?? null);
 
+        // Profesion: igual que el cargo, el texto sale del catalogo de professions.
+        [$professionId, $profession] = $this->resolveProfession($data['profesion'] ?? null);
+
         // El cliente extranjero guarda su ubicacion como "Pais - Estado - Ciudad".
         $foreignCountry = ($isForeignLocation && ! empty($data['foreign_country_id']))
             ? Country::where('id', $data['foreign_country_id'])->value('description')
@@ -200,6 +208,8 @@ class CommercialNegotiationPublicController extends Controller
             'telephone' => $data['telephone'] ?? null,
             'ocupacion' => $occupation,
             'occupation_id' => $occupationId,
+            'profession_id' => $professionId,
+            'profession' => $profession,
             'company' => $data['company'] ?? null,
             'industry_id' => $industry?->id,
             'industry' => $industry?->description,
@@ -558,6 +568,32 @@ class CommercialNegotiationPublicController extends Controller
 
         if (! empty($id)) {
             $oficial = DB::table('occupations')->where('id', $id)->value('description');
+
+            if ($oficial !== null) {
+                return [(int) $id, $oficial];
+            }
+        }
+
+        return [null, $description ?: null];
+    }
+
+    /**
+     * Profesion elegida en el formulario publico.
+     *
+     * Gemelo de resolveOccupation: el multiselect envia {id, description} y el
+     * texto guardado sale del catalogo professions (no de lo que venga en la
+     * peticion). Un texto suelto (pagina en cache) se respeta tal cual, sin id.
+     *
+     * @return array{0: ?int, 1: ?string}
+     */
+    private function resolveProfession($input): array
+    {
+        $id = is_array($input) ? ($input['id'] ?? null) : null;
+        $texto = is_array($input) ? ($input['description'] ?? null) : $input;
+        $description = is_string($texto) ? trim($texto) : null;
+
+        if (! empty($id)) {
+            $oficial = DB::table('professions')->where('id', $id)->value('description');
 
             if ($oficial !== null) {
                 return [(int) $id, $oficial];

@@ -229,6 +229,8 @@ class CommercialNegotiationProcessController extends Controller
             'telephone' => $data['telephone'] ?? $person->telephone,
             'ocupacion' => $data['ocupacion'] ?? $person->ocupacion,
             'occupation_id' => $data['occupation_id'] ?? $person->occupation_id,
+            'profession_id' => $data['profession_id'] ?? $person->profession_id,
+            'profession' => $data['profession'] ?? $person->profession,
             'company' => $data['company'] ?? $person->company,
             'industry_id' => $data['industry_id'] ?? $person->industry_id,
             'industry' => $data['industry'] ?? $person->industry,
