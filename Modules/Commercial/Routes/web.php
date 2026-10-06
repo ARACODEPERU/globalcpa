@@ -200,6 +200,10 @@ Route::middleware(['auth', 'verified'])->prefix('commercial')->group(function ()
         ->post('negotiations/reactivate/{id}', [CommercialNegotiationController::class, 'reactivate'])
         ->name('comm_negotiations_reactivate');
 
+    Route::middleware(['middleware' => 'permission:comm_negociaciones_verificar'])
+        ->post('negotiations/{id}/issue-date', [CommercialNegotiationController::class, 'updateIssueDate'])
+        ->name('comm_negotiations_issue_date');
+
     Route::middleware(['middleware' => 'permission:comm_negociaciones_editar'])
         ->post('negotiations/cancel/{id}', [CommercialNegotiationController::class, 'cancel'])
         ->name('comm_negotiations_cancel');

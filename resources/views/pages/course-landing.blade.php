@@ -316,18 +316,8 @@
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Registro exitoso, estas a un paso de asegurar tu vacante',
-                                text: 'Hemos recibido tu información y enviado el brochure a tu Whatsapp. Estamos en etapa final de preventa con condiciones preferenciales activas. Elige como deseas continuar:',
-                            }).then(() =>{
-                                    //Solo descargar brochure si NO hay flow_id (si está vacío, descarga directa)
-                                const flowIdInput = formElement.querySelector('input[name="flow_id"]');
-                                const flowIdValue = flowIdInput ? flowIdInput.value.trim() : '';
-                                if (!flowIdValue) {
-                                    const downloadUrl = "{{ isset($landing->course->brochure) ? $landing->course->brochure->path_file ?? '' : '' }}";
-                                    if (downloadUrl) {
-                                        window.open(downloadUrl, '_blank');
-                                    }
-                                }
-
+                                text: 'Tu brochure está listo para descargar. Un asesor está disponible ahora mismo en WhatsApp para resolver tus dudas finales y brindarte las mejores condiciones para tu inscripción.',
+                                // La descarga del brochure ya ocurrió antes de enviar los datos al endpoint
                             });
                         };
 
@@ -362,6 +352,20 @@
                 };
                 var _t = JSON.parse(localStorage.getItem('traffic_tracking') || '{}');
                 ['utm_source','utm_medium','utm_campaign','utm_term','utm_content','utm_id','fbclid','gclid','referer','landing_url','traffic_source'].forEach(function(k){ if(_t[k]) formData.set(k, _t[k]); });
+
+                // Descarga del brochure ANTES de enviar los datos al endpoint (con o sin flow_id)
+                var brochureUrl = @json(isset($landing->course->brochure) ? ($landing->course->brochure->path_file ?? '') : '');
+                if (brochureUrl) {
+                    var brochureLink = document.createElement('a');
+                    brochureLink.href = brochureUrl;
+                    brochureLink.download = ''; // fuerza la descarga; si el navegador lo ignora, se abre en pestaña
+                    brochureLink.rel = 'noopener';
+                    brochureLink.style.display = 'none';
+                    document.body.appendChild(brochureLink);
+                    brochureLink.click();
+                    brochureLink.remove();
+                }
+
                 xhr.send(formData);
             });
         }

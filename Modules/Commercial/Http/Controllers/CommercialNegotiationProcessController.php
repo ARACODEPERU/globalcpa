@@ -49,6 +49,21 @@ class CommercialNegotiationProcessController extends Controller
             'paymentMethods' => $this->paymentMethods(),
             'stepsStatus' => $this->stepStatuses($negotiation),
             'existingAccount' => $this->existingAccountInfo($negotiation),
+            // Fecha de emision del comprobante: la elegida por el administrador o,
+            // por defecto, la fecha en que el cliente registro sus datos.
+            'issueDate' => $this->issueDate($negotiation),
+            'clientConfirmedAt' => $negotiation->client_confirmed_at?->toISOString(),
+            // Equivalente en soles cuando la negociacion esta en USD (PTM0004).
+            'multiCurrencyEnabled' => app(\Modules\Sales\Services\ExchangeRateService::class)->isMultiCurrencyEnabled(),
+            'exchangeRate' => (function () {
+                try {
+                    $rate = app(\Modules\Sales\Services\ExchangeRateService::class)->getCurrentRate('USD');
+
+                    return $rate ? (float) $rate['rate'] : null;
+                } catch (\Throwable $e) {
+                    return null;
+                }
+            })(),
         ]);
     }
 
@@ -214,6 +229,8 @@ class CommercialNegotiationProcessController extends Controller
             'telephone' => $data['telephone'] ?? $person->telephone,
             'ocupacion' => $data['ocupacion'] ?? $person->ocupacion,
             'occupation_id' => $data['occupation_id'] ?? $person->occupation_id,
+            'profession_id' => $data['profession_id'] ?? $person->profession_id,
+            'profession' => $data['profession'] ?? $person->profession,
             'company' => $data['company'] ?? $person->company,
             'industry_id' => $data['industry_id'] ?? $person->industry_id,
             'industry' => $data['industry'] ?? $person->industry,
@@ -498,7 +515,7 @@ class CommercialNegotiationProcessController extends Controller
                 }
 
                 $sale = Sale::create([
-                    'sale_date' => Carbon::now()->format('Y-m-d'),
+                    'sale_date' => $this->issueDate($negotiation),
                     'user_id' => Auth::id(),
                     'client_id' => $person->id,
                     'local_id' => $localId,
@@ -601,7 +618,7 @@ class CommercialNegotiationProcessController extends Controller
 
                 if (! $isInstallments) {
                     $sale = Sale::create([
-                        'sale_date' => Carbon::now()->format('Y-m-d'),
+                        'sale_date' => $this->issueDate($negotiation),
                         'user_id' => Auth::id(),
                         'client_id' => $person->id,
                         'local_id' => $localId,
@@ -709,6 +726,12 @@ class CommercialNegotiationProcessController extends Controller
                     'documenttypeId' => $isFactura ? 1 : 2,
                     'userId' => Auth::id(),
                     'enline' => true,
+                    // Fecha de emision: la fecha en que el cliente registro sus datos
+                    // (ajustable por el administrador) y no la fecha de aprobacion.
+                    'issue_date' => $this->issueDate($negotiation),
+                    // Moneda del comprobante: la elegida en la negociacion (PTM0004
+                    // y el TC se validan dentro de generateBoleta).
+                    'currency' => strtoupper((string) ($negotiation->currency ?? 'PEN')),
                 ];
 
                 // La boleta se emite con los datos del tercero indicado por el cliente.
@@ -1013,6 +1036,19 @@ class CommercialNegotiationProcessController extends Controller
         }
 
         return $person;
+    }
+
+    /**
+     * Fecha de emision del comprobante (y de la venta): la elegida por el
+     * administrador y, si no la definio, la fecha en que el cliente registro sus
+     * datos. Las negociaciones antiguas sin fecha de registro caen en hoy.
+     */
+    private function issueDate(CommercialNegotiation $negotiation): string
+    {
+        return ($negotiation->invoice_issue_date
+            ?? $negotiation->client_confirmed_at
+            ?? Carbon::now())
+            ->format('Y-m-d');
     }
 
     private function nextPaymentDate(CommercialNegotiation $negotiation): ?string

@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Centro de Integraciones (IntegrationHub) — Manual de uso</title>
+<style>
+    @page { size: A4 landscape; }
+
+    * { box-sizing: border-box; }
+
+    body {
+        margin: 0;
+        font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+        font-size: 10.5pt;
+        line-height: 1.55;
+        color: #1f2937;
+    }
+
+    .wrap { max-width: 1030px; }
+
+    /* ---------- Portada ---------- */
+    .cover {
+        border-left: 12px solid #4361ee;
+        padding: 34mm 0 0 26px;
+        break-after: page;
+    }
+    .cover .kicker { color: #4361ee; font-weight: 700; letter-spacing: .18em; font-size: 9pt; text-transform: uppercase; }
+    .cover h1 { font-size: 27pt; line-height: 1.15; margin: 8px 0 6px; color: #0f172a; }
+    .cover h2 { break-before: avoid; font-size: 11.5pt; font-weight: 400; color: #475569; margin: 0 0 16px; max-width: 760px; border: 0; padding: 0; }
+    .cover .meta { font-size: 9.5pt; color: #475569; }
+    .cover .meta p { margin: 0 0 5px; }
+    .cover .meta strong { color: #0f172a; }
+    .cover .badge {
+        display: inline-block; margin-top: 14px; padding: 5px 12px; border-radius: 999px;
+        background: #eef2ff; color: #3730a3; font-size: 8.5pt; font-weight: 600;
+    }
+
+    /* ---------- Índice ---------- */
+    .toc { break-after: page; }
+    .toc ol { columns: 2; column-gap: 40px; padding-left: 18px; font-size: 10pt; }
+    .toc li { margin-bottom: 3px; }
+
+    /* ---------- Encabezados ---------- */
+    h2 {
+        break-before: page;
+        font-size: 16pt; color: #0f172a; margin: 0 0 4px;
+        padding-bottom: 6px; border-bottom: 2px solid #e2e8f0;
+    }
+    h2 .num { color: #4361ee; }
+    h3 { font-size: 12.5pt; color: #1e293b; margin: 20px 0 6px; }
+    h4 { font-size: 10.5pt; color: #334155; margin: 14px 0 4px; text-transform: none; }
+
+    p { margin: 0 0 9px; max-width: 880px; }
+    ul, ol { margin: 0 0 10px; padding-left: 20px; max-width: 880px; }
+    li { margin-bottom: 3px; }
+    code { font-family: Consolas, "Courier New", monospace; font-size: 9pt; background: #f1f5f9; padding: 1px 4px; border-radius: 3px; color: #0f172a; }
+    pre {
+        background: #0f172a; color: #e2e8f0; padding: 10px 12px; border-radius: 6px;
+        font-family: Consolas, "Courier New", monospace; font-size: 8.5pt; line-height: 1.45;
+        overflow-x: auto; white-space: pre-wrap; break-inside: avoid; margin: 6px 0 12px;
+    }
+    pre.light { background: #f8fafc; color: #0f172a; border: 1px solid #e2e8f0; }
+
+    /* ---------- Tablas ---------- */
+    table { width: 100%; border-collapse: collapse; margin: 6px 0 14px; font-size: 9pt; break-inside: avoid; }
+    th, td { border: 1px solid #e2e8f0; padding: 5px 7px; text-align: left; vertical-align: top; }
+    th { background: #f1f5f9; color: #0f172a; font-weight: 600; }
+    td code { font-size: 8.5pt; }
+    table.compact td, table.compact th { padding: 4px 6px; }
+
+    /* ---------- Avisos ---------- */
+    .note, .warn, .tip {
+        border-left: 4px solid #4361ee; background: #f5f8ff; padding: 8px 12px;
+        margin: 8px 0 14px; font-size: 9.5pt; break-inside: avoid;
+    }
+    .warn { border-color: #f59e0b; background: #fffbeb; }
+    .tip { border-color: #10b981; background: #ecfdf5; }
+    .note strong, .warn strong, .tip strong { display: block; margin-bottom: 2px; }
+
+    /* ---------- Figuras ---------- */
+    figure { margin: 10px 0 16px; break-inside: avoid; }
+    figure img { width: 100%; max-width: 970px; border: 1px solid #cbd5e1; border-radius: 6px; display: block; }
+    figcaption { font-size: 8.5pt; color: #475569; margin-top: 5px; max-width: 970px; }
+    figcaption strong { color: #1e293b; }
+
+    /* ---------- Diagrama ---------- */
+    .diagram { display: flex; align-items: stretch; gap: 8px; margin: 12px 0 16px; flex-wrap: wrap; }
+    .diagram .box {
+        flex: 1 1 0; min-width: 130px; border: 1px solid #cbd5e1; border-radius: 6px;
+        padding: 8px 10px; background: #f8fafc; font-size: 8.7pt;
+    }
+    .diagram .box strong { display: block; color: #0f172a; font-size: 9.2pt; margin-bottom: 3px; }
+    .diagram .arrow { display: flex; align-items: center; color: #4361ee; font-size: 14pt; font-weight: 700; }
+    .legend { font-size: 8.5pt; color: #64748b; }
+
+    .kpi { display: flex; gap: 10px; margin: 10px 0 16px; flex-wrap: wrap; }
+    .kpi div { border: 1px solid #e2e8f0; border-radius: 6px; padding: 7px 12px; background: #fff; font-size: 9pt; }
+    .kpi div b { color: #4361ee; font-size: 12pt; display: block; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ============================ PORTADA ============================ -->
+<div class="cover">
+    <div class="kicker">Manual de usuario y referencia técnica</div>
+    <h1>Centro de Integraciones</h1>
+    <h2>Módulo IntegrationHub — cómo crear integraciones, endpoints y mapeos, cómo probarlos y cómo auditar cada ejecución</h2>
+    <div class="meta">
+        <p><strong>Sistema:</strong> Global CPA — CpaAcademy (Laravel 11 + Vue 3/Inertia) &nbsp;·&nbsp; <strong>Módulo:</strong> Integrationhub (<code>M020</code>)</p>
+        <p><strong>Ámbito:</strong> integraciones, autenticación, endpoints, mapeo de campos, programación por cron, ejecución de pruebas, historial, errores y plantillas/flujos.</p>
+        <p><strong>Capturas:</strong> tomadas del sistema real en <code>http://globalcpa.test</code> &nbsp;·&nbsp; <strong>Fecha:</strong> septiembre 2026</p>
+    </div>
+    <span class="badge">Documento generado a partir del código y de los datos reales del módulo</span>
+</div>
+
+<!-- ============================ ÍNDICE ============================ -->
+<div class="toc">
+    <h2 style="break-before: avoid">Contenido</h2>
+    <ol>
+        <li>Qué es el Centro de Integraciones</li>
+        <li>Arquitectura y piezas del módulo</li>
+        <li>Acceso, permisos y rutas</li>
+        <li>Listado de integraciones</li>
+        <li>Crear una integración</li>
+        <li>Editar una integración: las 9 pestañas
+            <ol>
+                <li>Datos Generales</li>
+                <li>Autenticación</li>
+                <li>Endpoints</li>
+                <li>Mapeo Campos</li>
+                <li>Programación</li>
+                <li>Ejecutar (pruebas)</li>
+                <li>Integración (código)</li>
+                <li>Historial</li>
+                <li>Errores</li>
+            </ol>
+        </li>
+        <li>Páginas globales: Errores de Integración y Plantillas / Flujos</li>
+        <li>Ejecutar integraciones desde otros módulos</li>
+        <li>Operación y mantenimiento</li>
+        <li>Solución de problemas</li>
+        <li>Anexos
+            <ol>
+                <li>Rutas del módulo</li>
+                <li>Permisos</li>
+                <li>Diccionario de tablas</li>
+                <li>Checklist: nueva integración paso a paso</li>
+                <li>Caso real: N8N_Global y el webhook de negociaciones</li>
+            </ol>
+        </li>
+    </ol>
+</div>
+
+<!-- ============================ 1 ============================ -->
+<h2><span class="num">1.</span> Qué es el Centro de Integraciones</h2>
+
+<p>El <strong>Centro de Integraciones</strong> (módulo <code>Integrationhub</code>) es el punto único desde el cual el sistema se conecta con servicios externos: n8n, WhatsApp, ChatLevel.ai u otra API que se necesite. En lugar de escribir una llamada HTTP distinta en cada módulo, todo se declara aquí una sola vez y luego cualquier parte del sistema la invoca por su nombre.</p>
+
+<p>Con el módulo se puede:</p>
+<ul>
+    <li><strong>Registrar integraciones</strong> (una por servicio externo) con su URL base, tipo de ejecución, tiempo de espera y estado.</li>
+    <li><strong>Declarar endpoints</strong> (una por operación: enviar mensaje, crear contacto, publicar una compra…), con su método HTTP y el tipo de cuerpo que envía.</li>
+    <li><strong>Autenticarse</strong> con token, API key, contraseña, OAuth o Basic Auth, en cabecera, cuerpo o query string.</li>
+    <li><strong>Mapear los campos</strong> del cuerpo/query/ruta/cabecera, tomando valores de la base de datos, de una consulta SQL de solo lectura, de un valor fijo o de los que envía el módulo que invoca la integración.</li>
+    <li><strong>Programar ejecuciones</strong> con expresión cron, incluso llamando a APIs internas del propio módulo.</li>
+    <li><strong>Probar</strong> una ejecución desde la interfaz y ver la petición enviada y la respuesta recibida.</li>
+    <li><strong>Auditar</strong> cada llamada en el <em>Historial</em>, enmascarando los datos sensibles, y revisar los errores registrados.</li>
+</ul>
+
+<div class="kpi">
+    <div><b>2</b>integraciones configuradas</div>
+    <div><b>9</b>endpoints</div>
+    <div><b>20</b>mapeos de campos</div>
+    <div><b>305</b>ejecuciones registradas</div>
+    <div><b>35</b>rutas del módulo</div>
+    <div><b>10</b>tablas propias</div>
+</div>
+
+<h3>Glosario</h3>
+<table>
+    <tr><th style="width:170px">Término</th><th>Significado</th></tr>
+    <tr><td><strong>Integración</strong></td><td>Un servicio externo con una URL base común. Ejemplos reales del sistema: <code>ChatLevel.ai</code> y <code>N8N_Global</code>.</td></tr>
+    <tr><td><strong>Endpoint</strong></td><td>Una operación concreta de esa integración: su nombre único, su ruta, su método HTTP y el tipo de cuerpo.</td></tr>
+    <tr><td><strong>Autenticación</strong></td><td>Los campos (token, usuario, contraseña…) que se envían en cada llamada y en qué parte de la petición viajan.</td></tr>
+    <tr><td><strong>Mapeo de campos</strong></td><td>La definición de cada dato que se envía y de dónde sale: valor fijo, columna de una tabla, consulta SQL o variable que envía el módulo que invoca.</td></tr>
+    <tr><td><strong>Programación</strong></td><td>Una regla cron que dispara automáticamente un endpoint o una API interna.</td></tr>
+    <tr><td><strong>Ejecución (log)</strong></td><td>El registro de una llamada: petición enviada, respuesta recibida, código HTTP, tiempo y errores.</td></tr>
+    <tr><td><strong>Lote (<code>batch_id</code>)</strong></td><td>Identificador que agrupa varias ejecuciones de un mismo proceso. Los logs con lote no se purgan automáticamente.</td></tr>
+    <tr><td><strong>Flow ID</strong></td><td>Identificador de la plantilla de WhatsApp (n8n) que se usa en los flujos de saludo de cumpleaños.</td></tr>
+</table>
+
+<!-- ============================ 2 ============================ -->
+<h2><span class="num">2.</span> Arquitectura y piezas del módulo</h2>
+
+<p>Toda ejecución sigue el mismo circuito, ya venga de la pantalla <em>Ejecutar</em>, de una programación o de otro módulo del sistema (por ejemplo, al aprobar una negociación).</p>
+
+<div class="diagram">
+    <div class="box"><strong>Disparador</strong>Pantalla «Ejecutar» · cron · otro módulo que llama a <code>runEndpoint()</code> o a la ruta HTTP de ejecución</div>
+    <div class="arrow">→</div>
+    <div class="box"><strong>IntegrationhubController</strong>Arma la URL, los headers, el query y el body a partir de la autenticación y los mapeos de campos</div>
+    <div class="arrow">→</div>
+    <div class="box"><strong>Cliente HTTP</strong>Petición saliente con el tiempo de espera configurado en la integración</div>
+    <div class="arrow">→</div>
+    <div class="box"><strong>API externa</strong>n8n, WhatsApp, ChatLevel.ai…</div>
+    <div class="arrow">→</div>
+    <div class="box"><strong>Historial</strong>Se guarda la ejecución con request/response enmascarados (si <code>track_results</code> está activo)</div>
+</div>
+
+<h3>Componentes principales</h3>
+<table>
+    <tr><th style="width:300px">Componente</th><th>Responsabilidad</th></tr>
+    <tr><td><code>IntegrationhubController</code><br><span class="legend">Modules/Integrationhub/Http/Controllers</span></td><td>Todo el ciclo de vida: listar, crear, editar, eliminar integraciones; administrar autenticación, endpoints, mapeos, consultas y programaciones; ejecutar; consultar historial y errores.</td></tr>
+    <tr><td><code>IntegrationhubController::runEndpoint()</code></td><td>API interna para otros módulos: recibe el nombre del endpoint y los valores, y devuelve la respuesta en formato JSON.</td></tr>
+    <tr><td>Entidades (<code>Integration</code>, <code>IntegrationEndpoint</code>, <code>IntegrationFieldMap</code>, …)</td><td>Modelos Eloquent, uno por tabla, con sus relaciones (una integración tiene muchos endpoints; un endpoint tiene muchos mapeos de campos).</td></tr>
+    <tr><td>Páginas Vue/Inertia</td><td><code>Index</code>, <code>Create</code>, <code>Edit</code> (con sus 9 pestañas) , <code>Errors</code> y <code>FlowIds</code>.</td></tr>
+    <tr><td><code>RunScheduledIntegrations</code><br><span class="legend">comando <code>integrationhub:run-scheduled</code></span></td><td>Recorre las programaciones vencidas y ejecuta el endpoint o la API interna correspondiente.</td></tr>
+    <tr><td>Jobs y comandos de negocio</td><td><code>ProcessWhatsappFlow</code>, <code>ProcessBirthdayWhatsapp</code>, <code>ProcessCarritoAbandonado</code> y sus comandos, que consumen los endpoints <code>create_contact</code>, <code>set_value_in_custom_fields_for_contact_id</code> e <code>Inicio_contacto_con_flow_id</code>.</td></tr>
+</table>
+
+<div class="tip"><strong>Idea clave</strong>El nombre del endpoint es la pieza que une todo: es único en todo el sistema y es lo que usan los demás módulos para invocarlo, sin saber la URL ni la autenticación.</div>
+
+<!-- ============================ 3 ============================ -->
+<h2><span class="num">3.</span> Acceso, permisos y rutas</h2>
+
+<p>Se entra desde el menú lateral: <strong>Centro de Integraciones</strong>. El menú ofrece cuatro accesos directos: <em>Listado de Integraciones</em>, <em>Nueva Integración</em>, <em>Errores de Integración</em> y <em>Plantillas / Flujos</em>.</p>
+
+<figure style="max-width:560px">
+    <img src="capturas/01-listado.png" alt="Menú del Centro de Integraciones">
+    <figcaption><strong>Figura 1.</strong> El menú lateral muestra el modulo activo, los cuatro accesos del Centro de Integraciones y, en el cuerpo, el listado con las integraciones reales del sistema (N8N_Global y ChatLevel.ai).</figcaption>
+</figure>
+
+<p>El acceso a cada función está controlado por el middleware de permisos de Spatie. Un usuario que no tenga el permiso correspondiente verá un error de acceso denegado, aunque conozca la URL.</p>
+
+<table class="compact">
+    <tr><th style="width:170px">Permiso</th><th>Qué habilita</th></tr>
+    <tr><td><code>integrationhub_dashboard</code></td><td>Reservado para indicadores del módulo.</td></tr>
+    <tr><td><code>integrationhub_listado</code></td><td>Ver el listado, el historial, los errores y las plantillas/flujos.</td></tr>
+    <tr><td><code>integrationhub_crear</code></td><td>Abrir y usar el formulario «Nueva Integración».</td></tr>
+    <tr><td><code>integrationhub_editar</code></td><td>Abrir la pantalla de edición de una integración.</td></tr>
+    <tr><td><code>integrationhub_eliminar</code></td><td>Eliminar integraciones (borra en cascada endpoints, mapeos, programaciones y logs).</td></tr>
+    <tr><td><code>integrationhub_ejecutar</code></td><td>Ejecutar endpoints desde la interfaz o por las rutas HTTP de ejecución.</td></tr>
+</table>
+
+<div class="note"><strong>Nota</strong>Todas las rutas del módulo viajan dentro del grupo <code>web</code> y exigen sesión iniciada y correo verificado (<code>auth</code> + <code>verified</code>). Las rutas de ejecución añaden además el permiso <code>integrationhub_ejecutar</code>. El listado completo de rutas está en el <strong>Anexo A</strong>.</div>
+
+<!-- ============================ 4 ============================ -->
+<h2><span class="num">4.</span> Listado de integraciones</h2>
+
+<p>Pantalla de entrada del módulo (<code>integrationhub/listado</code>). Muestra las integraciones paginadas (10 por página) y permite buscar por nombre.</p>
+
+<table>
+    <tr><th style="width:150px">Columna</th><th>Qué muestra</th></tr>
+    <tr><td>Nombre</td><td>El identificador de la integración tal como se usa internamente.</td></tr>
+    <tr><td>URL Base</td><td>El dominio/path base sobre el que se construye cada endpoint.</td></tr>
+    <tr><td>Tipo</td><td>Manual, Programada o Webhook.</td></tr>
+    <tr><td>Estado</td><td>Activo / Inactivo. Una integración inactiva no se ejecuta por las programaciones.</td></tr>
+    <tr><td>Última Ejecución</td><td>Fecha de la última vez que se ejecutó algo de esa integración (o «Nunca»).</td></tr>
+    <tr><td>Acciones</td><td>Editar (abre la pantalla de pestañas) y Eliminar (con confirmación; borra también todos sus datos).</td></tr>
+</table>
+
+<figure>
+    <img src="capturas/02-listado-busqueda.png" alt="Búsqueda en el listado de integraciones">
+    <figcaption><strong>Figura 2.</strong> El buscador filtra por nombre: al escribir «N8N» queda sólo la integración N8N_Global. La búsqueda se envía como parámetro <code>search</code> en la URL, por lo que el enlace se puede compartir.</figcaption>
+</figure>
+
+<div class="warn"><strong>Cuidado al eliminar</strong>Al eliminar una integración se borran en cascada sus endpoints, autenticaciones, mapeos, programaciones y su historial. Si otra parte del sistema llama a uno de esos endpoints, esa llamada empezará a devolver «no existe el endpoint».</div>
+
+<!-- ============================ 5 ============================ -->
+<h2><span class="num">5.</span> Crear una integración</h2>
+
+<p>Desde <em>Nueva Integración</em> (o el botón del listado) se abre el formulario de creación. Sólo hacen falta el nombre y la URL base; el resto tiene valores por defecto razonables.</p>
+
+<figure>
+    <img src="capturas/03-crear-integracion.png" alt="Formulario de nueva integración">
+    <figcaption><strong>Figura 3.</strong> Formulario «Datos Generales» de una integración nueva. El tipo de ejecución arranca en <em>Manual</em>, el estado en <em>Activo</em>, con 30 segundos de espera y 3 reintentos.</figcaption>
+</figure>
+
+<table>
+    <tr><th style="width:210px">Campo</th><th style="width:120px">Obligatorio</th><th>Descripción y validaciones</th></tr>
+    <tr><td>Nombre de la Integración</td><td>Sí</td><td>Texto de hasta 100 caracteres. Es el nombre con el que se identifica el servicio (por ejemplo <code>N8N_Global</code>).</td></tr>
+    <tr><td>URL Base de la API</td><td>Sí</td><td>Debe ser una URL válida de hasta 500 caracteres y terminar en la parte común de todos los endpoints (por ejemplo <code>https://academy-cpa.app.n8n.cloud/webhook/</code>). No incluyas el nombre del endpoint: cada endpoint añade su propia ruta.</td></tr>
+    <tr><td>Descripción</td><td>No</td><td>Texto libre para dejar constancia de para qué se usa la integración.</td></tr>
+    <tr><td>Tipo de Ejecución</td><td>Sí</td><td><em>Manual</em> (se dispara a mano o desde otro módulo), <em>Programada</em> (por cron) o <em>Webhook</em> (la usa el sistema cuando ocurre un evento, como la aprobación de una negociación). Es informativo: no cambia el comportamiento de la ejecución.</td></tr>
+    <tr><td>Estado</td><td>No</td><td>Activo por defecto. Si se desactiva, las programaciones de esa integración se saltan.</td></tr>
+    <tr><td>Tiempo de espera</td><td>No</td><td>Entre 5 y 300 segundos (30 por defecto). <strong>Se aplica de verdad</strong>: es el tiempo máximo que el sistema espera la respuesta de la API externa.</td></tr>
+    <tr><td>Intentos de reintento</td><td>No</td><td>Entre 0 y 10 (3 por defecto). Se guarda en la configuración de la integración, pero <strong>hoy no se usa</strong> al enviar: no hay reintentos automáticos.</td></tr>
+</table>
+
+<figure style="max-width:900px">
+    <img src="capturas/04-crear-validacion.png" alt="Validación del formulario de creación">
+    <figcaption><strong>Figura 4.</strong> Si se intenta guardar sin nombre ni URL, el sistema muestra los mensajes de validación y no crea nada. Los dos campos obligatorios son el nombre y la URL base.</figcaption>
+</figure>
+
+<p>Al guardar correctamente, el sistema redirige directamente a la pantalla de edición de la integración recién creada, donde se configuran autenticación, endpoints, mapeos y programaciones.</p>
+
+<!-- ============================ 6 ============================ -->
+<h2><span class="num">6.</span> Editar una integración: las 9 pestañas</h2>
+
+<p>Toda la configuración vive en una sola pantalla con nueve pestañas. La primera (<em>Datos Generales</em>) mantiene los mismos campos de la creación; las demás se explican en las secciones siguientes.</p>
+
+<figure>
+    <img src="capturas/05-edit-general.png" alt="Pantalla de edición, pestaña Datos Generales">
+    <figcaption><strong>Figura 5.</strong> Pantalla de edición. Arriba, las nueve pestañas; en el centro, la pestaña activa. La barra de pestañas es la misma para todas las integraciones.</figcaption>
+</figure>
+
+<figure>
+    <img src="capturas/21-edit-general-n8n.png" alt="Datos generales de N8N_Global">
+    <figcaption><strong>Figura 6.</strong> Datos Generales de <code>N8N_Global</code>, la integración de tipo Webhook que usa el módulo Commercial para publicar la negociación aprobada.</figcaption>
+</figure>
+
+<h3>6.1 Datos Generales</h3>
+<p>Permite cambiar nombre, URL base, descripción, tipo de ejecución, estado, tiempo de espera y reintentos. Los cambios se guardan con <em>Guardar Cambios</em>. Cambiar la URL base afecta a <strong>todos</strong> los endpoints de la integración, porque la URL final se arma como <code>URL base + ruta del endpoint</code>.</p>
+
+<h3>6.2 Autenticación</h3>
+
+<p>Define qué credenciales viajan en cada llamada. Cada registro tiene un nombre, un tipo, un valor y una ubicación.</p>
+
+<table>
+    <tr><th style="width:150px">Campo</th><th>Opciones y comportamiento</th></tr>
+    <tr><td>Nombre del Campo</td><td>Nombre real de la cabecera, del parámetro o del campo del cuerpo. Por ejemplo la integración real <code>ChatLevel.ai</code> usa <code>X-ACCESS-TOKEN</code>.</td></tr>
+    <tr><td>Ubicación</td><td><em>Header</em> (cabecera HTTP), <em>Body</em> (dentro del cuerpo) o <em>Query Param</em> (añadido a la URL).</td></tr>
+    <tr><td>Tipo de Campo</td><td><em>Texto</em>, <em>Password</em>, <em>Token</em>, <em>API Key</em>, <em>OAuth</em> o <em>Basic Auth</em>. El tipo determina que el valor se enmascare en el historial.</td></tr>
+    <tr><td>Valor del Campo</td><td>El token o la clave. En Basic Auth se piden por separado <em>Usuario</em> y <em>Contraseña</em> y el sistema construye la cabecera <code>Authorization: Basic …</code> en Base64.</td></tr>
+</table>
+
+<figure>
+    <img src="capturas/06-edit-autenticacion.png" alt="Pestaña Autenticación">
+    <figcaption><strong>Figura 7.</strong> Pestaña Autenticación con la credencial real de ChatLevel.ai: cabecera <code>X-ACCESS-TOKEN</code> de tipo token, habilitada. Se puede editar, activar/desactivar o eliminar cada campo.</figcaption>
+</figure>
+
+<figure>
+    <img src="capturas/07-edit-autenticacion-modal.png" alt="Modal para agregar un campo de autenticación">
+    <figcaption><strong>Figura 8.</strong> Modal «Agregar Campo de Autenticación». Al elegir el tipo <em>Basic Auth</em> aparecen los campos Usuario y Contraseña, y el sistema arma la cabecera Basic automáticamente.</figcaption>
+</figure>
+
+<div class="warn"><strong>Seguridad</strong>Los valores de autenticación nunca se muestran completos en el historial: se reemplazan por una cadena de <code>x</code> de la misma longitud. Aun así, se guardan en la base de datos en texto plano, así que el acceso a la tabla <code>integration_auth</code> debe estar restringido.</div>
+
+<h3>6.3 Endpoints</h3>
+
+<p>Un endpoint es una operación del servicio externo. Se define con cinco datos y un interruptor de estado.</p>
+
+<table>
+    <tr><th style="width:170px">Campo</th><th>Descripción</th></tr>
+    <tr><td>Nombre</td><td>Identificador único <strong>en todo el sistema</strong> (no sólo dentro de la integración). El sistema rechaza nombres repetidos porque son la clave para ejecutar el endpoint desde otros módulos.</td></tr>
+    <tr><td>Ruta del Endpoint</td><td>Parte que se añade a la URL base. Admite marcadores entre llaves, por ejemplo <code>contacts/{contact_id}</code>.</td></tr>
+    <tr><td>Método HTTP</td><td>GET, POST, PUT, DELETE o PATCH.</td></tr>
+    <tr><td>Tipo de Cuerpo</td><td><em>JSON</em>, <em>XML</em>, <em>Form Data</em>, <em>Raw</em> o <em>Ninguno</em>. Determina cómo se serializa el cuerpo y la cabecera <code>Content-Type</code> que se envía.</td></tr>
+    <tr><td>Estado</td><td>Activo / Inactivo. Los endpoints inactivos se omiten en las ejecuciones programadas «de todos los endpoints».</td></tr>
+</table>
+
+<figure>
+    <img src="capturas/08-edit-endpoints.png" alt="Lista de endpoints">
+    <figcaption><strong>Figura 9.</strong> Endpoints reales de ChatLevel.ai: <code>send_text</code>, <code>get_contact</code>, <code>get_flows</code>, <code>Inicio_contacto_con_flow_id</code>, <code>create_contact</code>, <code>create_custom_fields</code>, <code>get_customs_fields_ids</code> y <code>set_value_in_custom_fields_for_contact_id</code>. Cada fila muestra método, ruta, tipo de cuerpo y estado, con acciones para editar, desactivar o eliminar.</figcaption>
+</figure>
+
+<figure>
+    <img src="capturas/09-edit-endpoints-modal.png" alt="Modal para agregar un endpoint">
+    <figcaption><strong>Figura 10.</strong> Modal «Agregar Endpoint». El método arranca en POST y el tipo de cuerpo en JSON. La ruta acepta marcadores con llaves cuando el mapeo de campos usa la ubicación «Ruta URL».</figcaption>
+</figure>
+
+<div class="tip"><strong>Consejo</strong>Si un endpoint va a ser invocado desde otro módulo, ponle un nombre descriptivo y estable (por ejemplo <code>n8n_post_negociacion</code>). El código de los módulos llama a ese nombre literal.</div>
+
+<h3>6.4 Mapeo Campos</h3>
+
+<p>Es la pestaña más potente: define cada dato que se envía y de dónde sale. Se puede filtrar por endpoint y se puede tener un mapeo distinto por endpoint.</p>
+
+<table>
+    <tr><th style="width:180px">Campo</th><th>Descripción</th></tr>
+    <tr><td>Endpoint</td><td>A qué endpoint pertenece el mapeo.</td></tr>
+    <tr><td>Tipo de Campo</td><td><em>Estático</em>, <em>Campo de Tabla</em>, <em>Consulta</em>, <em>Calculado</em> o <em>Personalizado</em>. Es descriptivo: documenta la intención del mapeo.</td></tr>
+    <tr><td>Tipo de Origen</td><td><em>Estático</em> (valor fijo), <em>Base de Datos</em> (tabla y columna), <em>Consulta SQL</em> (sólo lectura) o <em>Función</em>.</td></tr>
+    <tr><td>Ubicación del Campo</td><td>Dónde viaja el dato: <em>Parámetro URL (?key=value)</em>, <em>Ruta URL ({campo})</em>, <em>Cuerpo JSON (body)</em> o <em>Cabecera HTTP (header)</em>.</td></tr>
+    <tr><td>Tabla / Campo de Origen</td><td>Cuando el origen es Base de Datos, los desplegables se llenan con las tablas y columnas reales de la base de datos.</td></tr>
+    <tr><td>Consulta SQL</td><td>Cuando el origen es Consulta SQL. Se admite <code>SELECT</code> y <code>WITH</code>; se usa el primer valor de la primera fila y, si la consulta no devuelve filas, se envía el Valor por Defecto.</td></tr>
+    <tr><td>Valor por Defecto</td><td>Valor que se envía si el campo queda vacío o si la consulta no devuelve datos.</td></tr>
+    <tr><td>Campo Clave</td><td>El nombre de la clave que viaja en el cuerpo o en la URL. También es la clave con la que un módulo puede sobrescribir el valor al ejecutar.</td></tr>
+    <tr><td>Campo Valor</td><td>El valor fijo o el marcador de variable del que se toma el dato.</td></tr>
+    <tr><td>Obligatoriedad</td><td><em>Requerido</em> u <em>Opcional</em>. El sistema usa esta marca para generar el ejemplo de código de la pestaña <em>Integración</em> y para separar los valores que el módulo debería enviar siempre.</td></tr>
+    <tr><td>Subitems</td><td>Para armar objetos u <strong>arreglos</strong> anidados (por ejemplo una lista de ítems): se elige la estructura <em>Object</em> o <em>Array</em>, se agregan los subcampos y, en modo Array, la consulta SQL que devuelve las filas.</td></tr>
+</table>
+
+<figure>
+    <img src="capturas/10-edit-mapeo-campos.png" alt="Pestaña Mapeo Campos">
+    <figcaption><strong>Figura 11.</strong> Pestaña Mapeo Campos: lista de mapeos de los endpoints de ChatLevel.ai, con su clave, ubicación, origen, obligatoriedad y estado.</figcaption>
+</figure>
+
+<figure>
+    <img src="capturas/11-edit-mapeo-modal.png" alt="Modal para agregar un mapeo de campos">
+    <figcaption><strong>Figura 12.</strong> Modal «Agregar Mapeo»: endpoint, tipo de campo, tipo de origen, tabla y campo de origen, ubicación del campo, valor por defecto, obligatoriedad y la sección de subitems para estructuras <em>Object</em> o <em>Array</em>.</figcaption>
+</figure>
+
+<div class="warn"><strong>Sólo consultas de lectura</strong>En los mapeos con origen «Consulta SQL», en los subitems y en las consultas guardadas sólo se aceptan sentencias <code>SELECT</code>/<code>WITH</code>. El sistema bloquea <code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code>, <code>TRUNCATE</code>, <code>CREATE/ALTER/DROP</code>, <code>CALL</code>, <code>GRANT</code> y similares, y rechaza varias sentencias en el mismo texto.</div>
+
+<div class="tip"><strong>Marcadores de ruta</strong>Si un mapeo usa la ubicación «Ruta URL», la ruta del endpoint debe contener el marcador <code>{campo}</code>; en caso contrario el sistema rechaza el mapeo con el mensaje «La ruta del endpoint debe contener el placeholder {campo}».</div>
+
+<h3>6.5 Programación</h3>
+
+<p>Permite ejecutar automáticamente, por expresión cron, un endpoint de la integración o una API interna del módulo.</p>
+
+<table>
+    <tr><th style="width:220px">Campo</th><th>Descripción</th></tr>
+    <tr><td>Frecuencia sugerida</td><td>Ayuda para armar la expresión: cada cierta cantidad de minutos, cada hora, diario, semanal, mensual o una expresión personalizada.</td></tr>
+    <tr><td>Qué debe ejecutar</td><td><em>Endpoint de esta integración</em> o <em>API REST del módulo Integrationhub</em>. En el segundo caso se elige la ruta por su nombre y se envía un JSON como carga útil.</td></tr>
+    <tr><td>Endpoint a ejecutar</td><td>Uno de los endpoints de la integración. Si no se elige ninguno, la programación ejecuta todos los endpoints activos.</td></tr>
+    <tr><td>Expresión Cron</td><td>Cinco campos (minuto hora día mes día-semana), por ejemplo <code>*/20 * * * *</code> para cada 20 minutos.</td></tr>
+    <tr><td>Estado</td><td>Activo / Inactivo.</td></tr>
+</table>
+
+<figure>
+    <img src="capturas/12-edit-programacion.png" alt="Pestaña Programación">
+    <figcaption><strong>Figura 13.</strong> Pestaña Programación con las dos programaciones reales: <code>get_contact</code> cada 20 minutos y <code>send_text</code> cada minuto, ambas sobre ChatLevel.ai, mostrando su última y su próxima ejecución.</figcaption>
+</figure>
+
+<figure>
+    <img src="capturas/13-edit-programacion-modal.png" alt="Modal para agregar una programación">
+    <figcaption><strong>Figura 14.</strong> Modal «Agregar Programación». Se ve el bloque para programar una API REST interna: elección de la ruta por nombre y el JSON que se le envía.</figcaption>
+</figure>
+
+<div class="note"><strong>Cómo se ejecutan</strong>Las programaciones las procesa el comando <code>integrationhub:run-scheduled</code>, que el planificador ejecuta <strong>cada minuto</strong> (sin solapamiento). Cuando el destino es una API interna del módulo, la llamada se hace desde el propio servidor con host <code>localhost</code>, que es lo que exige el filtro de esa ruta. Detalles en la sección 9.</div>
+
+<h3>6.6 Ejecutar (pruebas)</h3>
+
+<p>Es el banco de pruebas del módulo: permite probar un endpoint real y ver exactamente qué se envió y qué respondió la API externa.</p>
+
+<ol>
+    <li>Se elige el endpoint en el desplegable.</li>
+    <li>Aparecen los campos del mapeo. Los marcados como <strong>requeridos</strong> se muestran como valores obligatorios y los opcionales como <em>(Opcional)</em>. En los campos de origen «Consulta SQL» el campo se puede dejar vacío para que se ejecute la consulta configurada, o escribir un valor para forzarlo.</li>
+    <li>Si hace falta, se abre <em>Parámetros Extra</em> y se agregan pares clave/valor en cuatro pestañas: <strong>Body</strong>, <strong>Query</strong>, <strong>Path</strong> y <strong>Headers</strong>. En <em>Body</em> hay un interruptor «Modo JSON» para pegar un JSON crudo (se valida antes de enviar).</li>
+    <li>Se pulsa <strong>Ejecutar Ahora</strong>.</li>
+</ol>
+
+<figure>
+    <img src="capturas/14-edit-ejecutar.png" alt="Pestaña Ejecutar">
+    <figcaption><strong>Figura 15.</strong> Pestaña Ejecutar en su estado inicial. Al elegir un endpoint aparecen sus campos de prueba, los parámetros extra y el botón «Ejecutar Ahora».</figcaption>
+</figure>
+
+<h4>Qué devuelve una ejecución</h4>
+<table>
+    <tr><th style="width:190px">Elemento</th><th>Significado</th></tr>
+    <tr><td>Ejecución exitosa / Error</td><td>Resultado general. Se considera exitoso cuando el código HTTP está entre 200 y 299.</td></tr>
+    <tr><td>Código de estado</td><td>El código HTTP devuelto por la API externa.</td></tr>
+    <tr><td>Mensaje</td><td>Mensaje del sistema o, si la API externa falló, el mensaje que ella devolvió (por ejemplo <code>message</code> o <code>error</code> del JSON de respuesta).</td></tr>
+    <tr><td>Ver datos enviados</td><td>El detalle completo de la petición: método, URL, cabeceras, query y cuerpo, con los datos sensibles enmascarados.</td></tr>
+    <tr><td>Ver datos recibidos</td><td>El detalle de la respuesta: código, cabeceras y cuerpo.</td></tr>
+    <tr><td>«Mostrar detalle completo»</td><td>Amplía o resume el JSON mostrado.</td></tr>
+</table>
+
+<div class="warn"><strong>Antes de probar en producción</strong>El botón ejecuta la llamada de verdad contra el servicio externo. En integraciones apuntadas a producción, una prueba con datos reales crea o modifica información en el sistema de destino. Para probar sin efectos, cambia temporalmente la URL base a un servidor de pruebas o usa un endpoint cuyo único efecto sea consultar.</div>
+
+<h3>6.7 Integración (código)</h3>
+
+<p>Genera automáticamente el código PHP que otro módulo necesita para invocar ese endpoint. Se elige el endpoint y el sistema escribe el ejemplo con las claves requeridas y las opcionales, listo para copiar.</p>
+
+<figure>
+    <img src="capturas/15-edit-integracion-codigo.png" alt="Pestaña Integración con el código de ejemplo">
+    <figcaption><strong>Figura 16.</strong> Pestaña Integración: ejemplo generado con <code>runEndpoint()</code>, incluyendo los valores requeridos del endpoint, los opcionales comentados y las variantes de <code>extra_params</code>, <code>track_results</code> y <code>batch_id</code>.</figcaption>
+</figure>
+
+<h3>6.8 Historial</h3>
+
+<p>Muestra las ejecuciones registradas de la integración, de la más reciente a la más antigua, con filtros y paginación.</p>
+
+<table>
+    <tr><th style="width:150px">Filtro</th><th>Uso</th></tr>
+    <tr><td>Estado</td><td>Todos, éxito o error.</td></tr>
+    <tr><td>Lote</td><td>Desplegable con los lotes (<code>batch_id</code>) disponibles.</td></tr>
+    <tr><td>Buscar lote</td><td>Se pega el <code>batch_id</code> devuelto por una ejecución por API REST para ver todas sus llamadas juntas.</td></tr>
+    <tr><td>Buscar</td><td>Busca por nombre de endpoint, mensaje de error o lote.</td></tr>
+    <tr><td>Desde / Hasta</td><td>Rango de fechas de ejecución.</td></tr>
+    <tr><td>Registros por página</td><td>10, 25, 50 o 100 (el servidor no devuelve más de 100 por página).</td></tr>
+</table>
+
+<figure>
+    <img src="capturas/16-edit-historial.png" alt="Pestaña Historial con las ejecuciones registradas">
+    <figcaption><strong>Figura 17.</strong> Historial real de ChatLevel.ai: fecha y hora, lote, endpoint, estado, código HTTP y tiempo de ejecución (milisegundos) de cada llamada.</figcaption>
+</figure>
+
+<p>El icono de detalle abre la ficha completa de la ejecución:</p>
+
+<figure>
+    <img src="capturas/17-edit-historial-detalle.png" alt="Detalle de una ejecución del historial">
+    <figcaption><strong>Figura 18.</strong> Detalle de una ejecución real: estado, endpoint, código HTTP, tiempo, y los bloques desplegables <em>Request Payload</em> y <em>Response Body</em>. Se aprecia el enmascarado del token de acceso (todo <code>x</code>) mientras el resto de la petición y la respuesta se guardan completos.</figcaption>
+</figure>
+
+<div class="note"><strong>Cuánto historial se guarda</strong>Por cada integración se conservan las últimas <strong>300</strong> ejecuciones que no tienen lote; las más antiguas se van descartando automáticamente. Las ejecuciones con <code>batch_id</code> (lotes de procesos masivos) no entran en esa limpieza.</div>
+
+<h3>6.9 Errores</h3>
+
+<p>Muestra los errores registrados por el módulo; se puede buscar por texto, filtrar por fechas, ver el detalle y borrar. Cada error trae su <strong>origen</strong>, que normalmente es la clase que lo provocó (por ejemplo el job <code>ProcessWhatsappFlow</code>).</p>
+
+<figure>
+    <img src="capturas/18-edit-errores.png" alt="Pestaña Errores de una integración">
+    <figcaption><strong>Figura 19.</strong> Pestaña Errores dentro de la edición de una integración, con sus filtros de búsqueda y fechas. En el sistema real no hay errores registrados actualmente.</figcaption>
+</figure>
+
+<div class="tip"><strong>Errores del historial vs. errores de esta pestaña</strong>El <em>Historial</em> registra todas las ejecuciones, exitosas o no, con todo el detalle técnico. Esta pestaña registra <strong>excepciones</strong> de los procesos de integración (por ejemplo, si un job de WhatsApp falla al llamar a un endpoint), con el mensaje y el origen del fallo.</div>
+
+<!-- ============================ 7 ============================ -->
+<h2><span class="num">7.</span> Páginas globales: Errores de Integración y Plantillas / Flujos</h2>
+
+<h3>7.1 Errores de Integración</h3>
+<p>Es la vista transversal de errores de <em>todas</em> las integraciones (<code>integrationhub/errores</code>). Tiene buscador, rango de fechas, botón «Limpiar filtros» y, por registro, el detalle y la opción de eliminar; además permite vaciar el registro completo.</p>
+
+<figure>
+    <img src="capturas/19-errores-global.png" alt="Página global de errores de integración">
+    <figcaption><strong>Figura 20.</strong> Página «Errores de Integración»: buscador por texto del error, rango de fechas, limpieza de filtros y, si hubiera registros, el listado con fecha, mensaje y origen.</figcaption>
+</figure>
+
+<h3>7.2 Plantillas / Flujos</h3>
+<p>Guarda los identificadores de las plantillas de WhatsApp (<em>flow ids</em>) que usan los procesos de integración. El sistema crea automáticamente las dos claves que necesita y sólo hay que mantener al día el identificador.</p>
+
+<figure>
+    <img src="capturas/20-flow-ids.png" alt="Página de plantillas y flujos">
+    <figcaption><strong>Figura 21.</strong> Página «Plantillas / Flujos» con las dos claves reales: <code>birthday_greeting</code> (Saludo de cumpleaños) y <code>birthday_greeting_teacher</code> (Saludo de cumpleaños para Docentes). Cada tarjeta permite guardar su identificador de flujo.</figcaption>
+</figure>
+
+<table>
+    <tr><th style="width:250px">Clave</th><th>Qué proceso la usa</th></tr>
+    <tr><td><code>birthday_greeting</code></td><td>Saludo de cumpleaños para alumnos (job <code>ProcessBirthdayWhatsapp</code>).</td></tr>
+    <tr><td><code>birthday_greeting_teacher</code></td><td>Saludo de cumpleaños para docentes: se elige automáticamente cuando la persona tiene el rol Docente.</td></tr>
+</table>
+
+<!-- ============================ 8 ============================ -->
+<h2><span class="num">8.</span> Ejecutar integraciones desde otros módulos</h2>
+
+<p>La forma recomendada de usar una integración desde el código es <code>runEndpoint()</code>. Sólo hay que pasar el nombre del endpoint y los valores; el módulo se encarga de la URL, la autenticación, los mapeos y el registro en el historial.</p>
+
+<pre>use Modules\Integrationhub\Http\Controllers\IntegrationhubController;
+
+// Ejecución simple: se envían sólo los valores que el endpoint necesita
+$respuesta = app(IntegrationhubController::class)->runEndpoint('create_contact', [
+    'phone'      => '51987654321',
+    'email'      => 'persona@correo.com',
+    'first_name' => 'Nombre Apellido',
+]);
+
+// Respuesta JSON: message, status_code, request, received, response, executed_at
+if ($respuesta->getData(true)['status_code'] === 200) {
+    // la API externa aceptó la llamada
+}</pre>
+
+<table>
+    <tr><th style="width:210px">Parámetro</th><th>Para qué sirve</th></tr>
+    <tr><td><code>$endpoint</code></td><td>Nombre exacto del endpoint (único en todo el sistema).</td></tr>
+    <tr><td><code>$fieldValues</code></td><td>Valores que sobrescriben los mapeos del endpoint, indexados por <em>Campo Clave</em>. Si no se envía un valor, se usa lo configurado en el mapeo (valor fijo, tabla o consulta).</td></tr>
+    <tr><td><code>$extraParams</code></td><td>Datos adicionales fuera del mapeo, en <code>path</code>, <code>query</code>, <code>body</code> y <code>headers</code>. Es la vía que usa, por ejemplo, el módulo Commercial para publicar el JSON completo de una negociación en el <code>body</code>.</td></tr>
+    <tr><td><code>$trackResults</code></td><td>Si es <code>true</code> (por defecto), la ejecución se guarda en el Historial. Con <code>false</code> la llamada se hace igual, pero no deja registro.</td></tr>
+    <tr><td><code>$batchId</code></td><td>Identificador de lote para agrupar varias ejecuciones y poder verlas juntas en el Historial (y para que la limpieza automática no las borre).</td></tr>
+</table>
+
+<h4>Errores típicos al invocar por nombre</h4>
+<table>
+    <tr><th style="width:110px">Código</th><th>Cuándo ocurre</th></tr>
+    <tr><td><code>404</code></td><td>No existe ningún endpoint con ese nombre en ninguna integración. Ocurre, por ejemplo, cuando el endpoint se creó sólo en producción y no en el entorno local.</td></tr>
+    <tr><td><code>422</code></td><td>El nombre del endpoint está duplicado en varias integraciones; hay que dejar un único endpoint con ese nombre.</td></tr>
+</table>
+
+<h4>Ejecución por HTTP</h4>
+<p>Además de la vía interna, el módulo expone dos rutas POST protegidas con sesión y permiso de ejecución, útiles para pruebas o para herramientas externas que ya tengan sesión del sistema:</p>
+<table class="compact">
+    <tr><th style="width:420px">Ruta</th><th>Cuerpo de la petición</th></tr>
+    <tr><td><code>POST /integrationhub/execute-by-endpoint/{endpoint}</code></td><td><code>field_values</code>, <code>extra_params</code>, <code>track_results</code>, <code>batch_id</code>. Se resuelve por nombre de endpoint.</td></tr>
+    <tr><td><code>POST /integrationhub/execute-by-name/{integration}/{endpoint}</code></td><td>Igual, pero además hay que indicar a qué integración pertenece el endpoint.</td></tr>
+    <tr><td><code>POST /integrationhub/execute/{id}</code></td><td>Igual, pero indicando el identificador de la integración y el <code>endpoint_id</code>.</td></tr>
+</table>
+
+<h4>Qué módulos ya consumen el Centro de Integraciones</h4>
+<table>
+    <tr><th style="width:250px">Quién</th><th>Endpoint que usa</th><th>Contexto</th></tr>
+    <tr><td>Commercial — al verificar/aprobar una negociación</td><td><code>n8n_post_negociacion</code></td><td>Envía el JSON completo de la negociación (negociación, persona, usuario, estudiante, comprobante e items) al webhook de n8n.</td></tr>
+    <tr><td>Onlineshop — al completar una compra</td><td><code>n8n_post_compra</code></td><td>Publica la compra en n8n.</td></tr>
+    <tr><td>Jobs de WhatsApp (registro público, carrito abandonado, cumpleaños)</td><td><code>create_contact</code>, <code>set_value_in_custom_fields_for_contact_id</code>, <code>Inicio_contacto_con_flow_id</code></td><td>Crean o actualizan el contacto y disparan el flujo de WhatsApp.</td></tr>
+    <tr><td>API interna de cumpleaños</td><td><code>create_contact</code>, <code>start_flow_birthdays</code></td><td>Recorre las personas que cumplen años hoy y lanza el flujo, evitando duplicados con caché diaria.</td></tr>
+</table>
+
+<!-- ============================ 9 ============================ -->
+<h2><span class="num">9.</span> Operación y mantenimiento</h2>
+
+<h3>9.1 Procesos automáticos</h3>
+<table>
+    <tr><th style="width:330px">Comando</th><th>Frecuencia</th><th>Qué hace</th></tr>
+    <tr><td><code>integrationhub:run-scheduled</code></td><td>Cada minuto (sin solapamiento)</td><td>Ejecuta las programaciones activas cuya hora ya venció: el endpoint elegido, todos los endpoints activos de la integración, o la API interna configurada. Actualiza la última y la próxima ejecución.</td></tr>
+    <tr><td><code>integrationhub:carrito-abandonado</code></td><td>Cada minuto</td><td>Busca carritos sin pagar de más de 10 minutos y encola el envío por WhatsApp (máximo 5 avisos por carrito).</td></tr>
+    <tr><td><code>integrationhub:birthday-whatsapp-send</code></td><td>Diario a las 09:09 (hora de Lima)</td><td>Busca a quienes cumplen años hoy y encola el saludo por WhatsApp usando el flow id de Plantillas / Flujos.</td></tr>
+</table>
+
+<div class="note"><strong>Requisito</strong>Los dos comandos de negocio encolan trabajos (<em>jobs</em>) que necesitan un worker de colas en ejecución (<code>queue:work</code>). Si el worker no está activo, las llamadas a la integración no se realizan.</div>
+
+<h3>9.2 Seguridad de los datos</h3>
+<ul>
+    <li><strong>Enmascarado en el historial:</strong> al guardar una ejecución, los valores cuyo nombre sea <code>password</code>, <code>token</code>, <code>api_key</code>, <code>secret</code>, <code>authorization</code>, <code>credential</code>, <code>bearer</code>, <code>private_key</code> (o los de la autenticación de la integración) se reemplazan por <code>x</code>. Lo mismo se aplica a los parámetros sensibles de la URL.</li>
+    <li><strong>Sólo lectura en SQL:</strong> todas las consultas configurables pasan por el validador que rechaza sentencias de escritura y múltiples sentencias.</li>
+    <li><strong>Verificación TLS desactivada:</strong> las llamadas salientes se hacen sin validar el certificado del servidor externo. Es cómodo en pruebas, pero conviene activarlo si el servicio de destino lo soporta.</li>
+    <li><strong>Credenciales en texto plano:</strong> los tokens y contraseñas se guardan tal cual en la base de datos; el cuidado debe estar en los permisos de la base y del módulo.</li>
+</ul>
+
+<h3>9.3 Comportamientos que conviene conocer</h3>
+<table>
+    <tr><th style="width:290px">Comportamiento</th><th>Detalle</th></tr>
+    <tr><td>Reintentos</td><td>El campo «Intentos de reintento» se guarda en la configuración pero <strong>no se aplica</strong> hoy: si la llamada falla, no se reintenta automáticamente.</td></tr>
+    <tr><td>Tiempo de espera</td><td>Sí se aplica (valor de la integración; 30 s por defecto). Un tiempo excedido se registra como error con código 500.</td></tr>
+    <tr><td>Limpieza del historial</td><td>Se conservan las últimas 300 ejecuciones por integración <em>sin lote</em>. Los lotes se conservan siempre.</td></tr>
+    <tr><td>Cuerpo tipo <em>Raw</em></td><td>Se envía el primer valor del cuerpo; si es un arreglo, se convierte a JSON.</td></tr>
+    <tr><td>Cuerpo tipo <em>XML</em></td><td>El cuerpo se convierte automáticamente de arreglo a XML.</td></tr>
+    <tr><td>Pestaña de consultas guardadas</td><td>La tabla de consultas (<code>integration_queries</code>) y su pantalla existen en el código pero <strong>no están enlazadas a ninguna pestaña</strong> de la interfaz: hoy las consultas se definen directamente en los mapeos de campos.</td></tr>
+    <tr><td>Cambiar el nombre de un endpoint</td><td>Rompe las llamadas que lo invocan por nombre desde otros módulos. Si hay que renombrarlo, hay que actualizar el código que lo llama.</td></tr>
+</table>
+
+<!-- ============================ 10 ============================ -->
+<h2><span class="num">10.</span> Solución de problemas</h2>
+
+<table>
+    <tr><th style="width:290px">Síntoma</th><th>Causa y solución</th></tr>
+    <tr><td>«No existe el endpoint 'X' en ninguna integración»</td><td>El nombre no coincide con ningún endpoint (suele ser un endpoint que existe en producción pero no en el entorno donde se ejecuta). Verifica el nombre en la pestaña Endpoints y que la integración sea la correcta.</td></tr>
+    <tr><td>«El endpoint 'X' está duplicado en varias integraciones»</td><td>Hay dos endpoints con el mismo nombre. Renombra uno para poder ejecutar por nombre.</td></tr>
+    <tr><td>«Ya existe un endpoint con ese nombre»</td><td>El nombre debe ser único en todo el sistema, no sólo dentro de la integración.</td></tr>
+    <tr><td>«La ruta del endpoint debe contener el placeholder {campo}»</td><td>El mapeo usa la ubicación «Ruta URL» pero la ruta no tiene ese marcador. Añádelo a la ruta del endpoint.</td></tr>
+    <tr><td>«Solo se permiten consultas SELECT…»</td><td>La consulta del mapeo, del subitem o de la consulta guardada contiene una sentencia de escritura o varias sentencias. Deja una única consulta de lectura.</td></tr>
+    <tr><td>La ejecución queda en error con código 500 y mensaje de <em>timeout</em></td><td>La API externa no respondió dentro del tiempo configurado. Sube el «Tiempo de espera» de la integración (máximo 300 s) o revisa el servicio externo.</td></tr>
+    <tr><td>Error 404 del webhook de n8n</td><td>La ruta del webhook cambió en n8n. Copia la nueva URL del webhook en la pestaña Endpoints.</td></tr>
+    <tr><td>La ejecución funciona pero no aparece en el Historial</td><td>Se ejecutó con <code>track_results = false</code> (desde código o desde una API). Actívalo para que quede registrada.</td></tr>
+    <tr><td>Un dato llega vacío a la API externa</td><td>Revisa el mapeo: si el origen es «Base de Datos» o «Consulta SQL» y no hay datos, se envía el Valor por Defecto; si tampoco lo hay, llega vacío.</td></tr>
+    <tr><td>La programación no se ejecuta</td><td>Comprueba que la programación esté activa, que la integración esté activa, que el planificador del sistema esté corriendo (<code>schedule:run</code> cada minuto) y que el worker de colas esté levantado.</td></tr>
+</table>
+
+<!-- ============================ ANEXO A ============================ -->
+<h2><span class="num">A.</span> Anexo A — Rutas del módulo</h2>
+
+<p>Prefijo <code>/integrationhub</code>. Todas exigen sesión iniciada y correo verificado; se indica además el permiso o la condición especial de cada grupo.</p>
+
+<table class="compact">
+    <tr><th style="width:80px">Método</th><th style="width:400px">Ruta</th><th>Nombre</th><th>Permiso</th></tr>
+    <tr><td>GET</td><td>/integrationhub/listado</td><td><code>integrationhub_listado</code></td><td><code>_listado</code></td></tr>
+    <tr><td>GET</td><td>/integrationhub/create</td><td><code>integrationhub_create</code></td><td><code>_crear</code></td></tr>
+    <tr><td>POST</td><td>/integrationhub/store</td><td><code>integrationhub_store</code></td><td>—</td></tr>
+    <tr><td>GET</td><td>/integrationhub/editar/{id}</td><td><code>integrationhub_editar</code></td><td><code>_editar</code></td></tr>
+    <tr><td>PUT</td><td>/integrationhub/update/{id}</td><td><code>integrationhub_update</code></td><td>—</td></tr>
+    <tr><td>DELETE</td><td>/integrationhub/destroy/{id}</td><td><code>integrationhub_destroy</code></td><td><code>_eliminar</code></td></tr>
+    <tr><td>PUT</td><td>/integrationhub/update-auth/{id}<br>DELETE /destroy-auth/{id}<br>PUT /update-status-auth/{id}</td><td><code>integrationhub_update_auth</code><br><code>integrationhub_destroy_auth</code><br><code>integrationhub_update_status_auth</code></td><td>—</td></tr>
+    <tr><td>PUT</td><td>/integrationhub/update-endpoints/{id}<br>DELETE /destroy-endpoints/{id}<br>PUT /update-status-endpoints/{id}</td><td><code>integrationhub_update_endpoints</code><br><code>integrationhub_destroy_endpoints</code><br><code>integrationhub_update_status_endpoints</code></td><td>—</td></tr>
+    <tr><td>PUT</td><td>/integrationhub/update-fieldmap/{id}<br>PUT /update-subitems/{id}<br>DELETE /destroy-fieldmap/{id}<br>PUT /update-status-fieldmap/{id}</td><td><code>integrationhub_update_fieldmap</code><br><code>integrationhub_update_subitems</code><br><code>integrationhub_destroy_fieldmap</code><br><code>integrationhub_update_status_fieldmap</code></td><td>—</td></tr>
+    <tr><td>GET</td><td>/integrationhub/get-tables<br>/integrationhub/get-table-columns</td><td><code>integrationhub_get_tables</code><br><code>integrationhub_get_table_columns</code></td><td>—</td></tr>
+    <tr><td>PUT</td><td>/integrationhub/update-query/{id}<br>DELETE /destroy-query/{id}<br>PUT /update-status-query/{id}</td><td><code>integrationhub_update_query</code><br><code>integrationhub_destroy_query</code><br><code>integrationhub_update_status_query</code></td><td>—</td></tr>
+    <tr><td>PUT</td><td>/integrationhub/update-schedule/{id}<br>DELETE /destroy-schedule/{id}</td><td><code>integrationhub_update_schedule</code><br><code>integrationhub_destroy_schedule</code></td><td>—</td></tr>
+    <tr><td>GET</td><td>/integrationhub/logs/{id}</td><td><code>integrationhub_logs</code></td><td>—</td></tr>
+    <tr><td>GET</td><td>/integrationhub/errores<br>/integrationhub/errors</td><td><code>integrationhub_errores</code><br><code>integrationhub_errors</code></td><td>—</td></tr>
+    <tr><td>DELETE</td><td>/integrationhub/errors<br>/integrationhub/errors/{id}</td><td><code>integrationhub_errors_clear</code><br><code>integrationhub_errors_destroy</code></td><td>—</td></tr>
+    <tr><td>GET</td><td>/integrationhub/flow-ids</td><td><code>integrationhub_flow_ids</code></td><td>—</td></tr>
+    <tr><td>PUT</td><td>/integrationhub/flow-ids/{key}</td><td><code>integrationhub_flow_ids_update</code></td><td>—</td></tr>
+    <tr><td>POST</td><td>/integrationhub/execute/{id}<br>/integrationhub/execute-by-name/{integration}/{endpoint}<br>/integrationhub/execute-by-endpoint/{endpoint}</td><td><code>integrationhub_execute</code><br><code>integrationhub_execute_by_name</code><br><code>integrationhub_execute_by_endpoint</code></td><td><code>_ejecutar</code></td></tr>
+    <tr><td>POST</td><td>api/integrationhub/birthday_benefits</td><td><code>integrationhub.birthday_benefits</code></td><td>Sólo desde localhost</td></tr>
+    <tr><td>GET</td><td>api/v1/integrationhub</td><td><code>api.integrationhub</code></td><td>Token Sanctum</td></tr>
+</table>
+
+<!-- ============================ ANEXO B ============================ -->
+<h2><span class="num">B.</span> Anexo B — Permisos del módulo</h2>
+<table class="compact">
+    <tr><th style="width:260px">Permiso</th><th>Uso</th></tr>
+    <tr><td><code>integrationhub_dashboard</code></td><td>Indicadores del módulo.</td></tr>
+    <tr><td><code>integrationhub_listado</code></td><td>Ver listado, historial, errores y plantillas/flujos; también da acceso al menú.</td></tr>
+    <tr><td><code>integrationhub_crear</code></td><td>Crear integraciones.</td></tr>
+    <tr><td><code>integrationhub_editar</code></td><td>Editar integraciones y toda su configuración.</td></tr>
+    <tr><td><code>integrationhub_eliminar</code></td><td>Eliminar integraciones.</td></tr>
+    <tr><td><code>integrationhub_ejecutar</code></td><td>Ejecutar endpoints (pantalla Ejecutar y rutas HTTP de ejecución).</td></tr>
+</table>
+<p>El módulo se registra como <code>M020</code> («Centro de integraciónes», icono <code>faPuzzlePiece</code>) y el rol de administrador recibe estos permisos al instalar el módulo.</p>
+
+<!-- ============================ ANEXO C ============================ -->
+<h2><span class="num">C.</span> Anexo C — Diccionario de tablas</h2>
+
+<table>
+    <tr><th style="width:230px">Tabla</th><th>Contenido y campos relevantes</th></tr>
+    <tr><td><code>integrations</code></td><td>Una fila por servicio externo: <code>name</code>, <code>url_base</code>, <code>description</code>, <code>execution_type</code>, <code>is_active</code>, <code>config</code> (aquí viven el tiempo de espera y los reintentos), <code>last_executed_at</code>.</td></tr>
+    <tr><td><code>integration_endpoints</code></td><td>Operaciones de cada integración: <code>integration_id</code>, <code>name</code> (único), <code>endpoint_path</code>, <code>http_method</code>, <code>body_type</code>, <code>is_active</code>, <code>sort_order</code>.</td></tr>
+    <tr><td><code>integration_auth</code></td><td>Credenciales: <code>field_name</code>, <code>field_type</code>, <code>field_value</code>, <code>auth_location</code>, <code>is_enabled</code>, <code>sort_order</code>.</td></tr>
+    <tr><td><code>integration_field_maps</code></td><td>Mapeos de campos: <code>endpoint_id</code>, <code>field_key</code>, <code>field_value</code>, <code>field_type</code>, <code>field_location</code>, <code>source_type</code>, <code>source_table</code>, <code>source_field</code>, <code>default_value</code>, <code>is_required</code>, <code>is_enabled</code>, <code>transform_rule</code>, <code>sort_order</code>, <code>has_subitems</code>, <code>subitems</code>, <code>structure_type</code>, <code>array_query</code>, <code>default_type</code>, <code>default_table</code>, <code>default_field</code>.</td></tr>
+    <tr><td><code>integration_exec_logs</code></td><td>Historial: <code>integration_id</code>, <code>endpoint_id</code>, <code>batch_id</code>, <code>executed_at</code>, <code>status</code> (success/failed/partial), <code>request_payload</code> (método, URL, cabeceras, query y cuerpo enviados), <code>response_body</code>, <code>response_status_code</code>, <code>error_message</code>, <code>execution_time_ms</code>.</td></tr>
+    <tr><td><code>integration_schedules</code></td><td>Programaciones: <code>target_type</code>, <code>endpoint_id</code> o <code>api_route_name</code>, <code>cron_expression</code>, <code>payload</code>, <code>is_active</code>, <code>last_executed_at</code>, <code>next_execution_at</code>.</td></tr>
+    <tr><td><code>integration_errors</code></td><td>Errores de procesos de integración: <code>message</code>, <code>source</code> (clase o job que lo generó), <code>created_at</code>.</td></tr>
+    <tr><td><code>integration_flow_ids</code></td><td>Claves e identificadores de plantillas: <code>key</code>, <code>flow_id</code>, <code>label</code>.</td></tr>
+    <tr><td><code>integration_headers</code></td><td>Cabeceras de la integración (estructura heredada; las cabeceras se configuran hoy desde la autenticación y los mapeos).</td></tr>
+    <tr><td><code>integration_queries</code></td><td>Consultas guardadas (<code>query_name</code>, <code>query_sql</code>, <code>query_type</code>, <code>parameters</code>, <code>is_active</code>). Su pantalla no está enlazada en la interfaz actual.</td></tr>
+</table>
+
+<!-- ============================ ANEXO D ============================ -->
+<h2><span class="num">D.</span> Anexo D — Checklist: agregar una integración nueva</h2>
+
+<ol>
+    <li><strong>Crear la integración</strong> en <em>Nueva Integración</em>: nombre, URL base, tipo de ejecución y estado.</li>
+    <li><strong>Configurar la autenticación</strong> en la pestaña <em>Autenticación</em>: nombre del campo (tal como lo espera la API externa), tipo, valor y ubicación.</li>
+    <li><strong>Crear el endpoint</strong> en <em>Endpoints</em>: nombre único y descriptivo, ruta, método y tipo de cuerpo.</li>
+    <li><strong>Mapear los campos</strong> en <em>Mapeo Campos</em>: para cada dato que se envía, definir ubicación, origen, valor por defecto y obligatoriedad. Si el dato depende de un identificador que envía el módulo llamador, márcalo como requerido y usa su <em>Campo Clave</em> para recibirlo.</li>
+    <li><strong>Probar</strong> en la pestaña <em>Ejecutar</em>, primero con datos de prueba; revisar el código de estado, los datos enviados y los recibidos.</li>
+    <li><strong>Revisar el Historial</strong> para confirmar que la ejecución quedó registrada, que el request se ve correcto y que no hay datos sensibles expuestos.</li>
+    <li><strong>Programar</strong> (si corresponde) en <em>Programación</em>, verificando la próxima ejecución calculada.</li>
+    <li><strong>Integrar desde el módulo que la va a usar</strong>: copiar el ejemplo de la pestaña <em>Integración</em> y comprobar que la llamada se hace con el nombre exacto del endpoint.</li>
+    <li><strong>Documentar</strong> para qué sirve ese endpoint y qué módulos lo invocan.</li>
+</ol>
+
+<!-- ============================ ANEXO E ============================ -->
+<h2><span class="num">E.</span> Anexo E — Caso real: N8N_Global y el webhook de negociaciones</h2>
+
+<p>Es la integración más usada del sistema y sirve como ejemplo completo de todo lo explicado.</p>
+
+<table>
+    <tr><th style="width:230px">Elemento</th><th>Valor real</th></tr>
+    <tr><td>Integración</td><td><code>N8N_Global</code>, tipo <em>Webhook</em>, activa</td></tr>
+    <tr><td>URL base</td><td><code>https://academy-cpa.app.n8n.cloud/webhook/</code></td></tr>
+    <tr><td>Endpoints</td><td><code>n8n_post_negociacion</code> (publica la negociación aprobada) y <code>n8n_post_compra</code> (publica una compra del Online Shop)</td></tr>
+    <tr><td>Quién la invoca</td><td>El módulo Commercial al verificar/aprobar una negociación y el módulo Onlineshop al completar una compra</td></tr>
+    <tr><td>Cómo se envía el contenido</td><td>El módulo que la usa arma el JSON y lo pasa como <code>extra_params.body</code>; los mapeos de campos del endpoint completan el resto</td></tr>
+</table>
+
+<p>El cuerpo que recibe n8n incluye, entre otras claves, <code>evento</code>, <code>fecha</code>, <code>origen</code>, <code>negociacion</code>, <code>persona</code>, <code>usuario</code>, <code>estudiante</code>, <code>comprobante</code> e <code>items</code>. Los valores se toman de la negociación y, cuando un dato no se declaró en el formulario, se completan desde la ficha de la persona: es la regla «la negociación manda, la ficha rellena».</p>
+
+<pre class="light">// Forma de invocación real (módulo Commercial)
+app(IntegrationhubController::class)->runEndpoint(
+    'n8n_post_negociacion',
+    [],                                  // los valores no vienen del mapeo…
+    ['body' => $payload],                // …sino del JSON que arma el módulo
+    true                                 // y la ejecución queda en el Historial
+);</pre>
+
+<div class="tip"><strong>Comprobar el resultado</strong>Cada envío queda en el Historial de <code>N8N_Global</code> con su código HTTP y su tiempo. Si n8n responde 200 pero el flujo no se ejecuta, el problema suele estar en el flujo de n8n y no en el sistema: el request y la respuesta exactos están en el detalle de la ejecución.</div>
+
+<div class="note" style="margin-top:18px"><strong>Sobre este documento</strong>Las capturas incluidas se tomaron del sistema en ejecución con los datos reales de las integraciones configuradas. Las únicas pantallas que no muestran una ejecución real son las de prueba, porque no se lanzó ninguna llamada contra los servicios externos de producción.</div>
+
+</div>
+</body>
+</html>

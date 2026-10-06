@@ -22,6 +22,13 @@ const props = defineProps({
     paymentMethods: { type: Array, default: () => [] },
     stepsStatus: { type: Object, default: () => ({}) },
     existingAccount: { type: Object, default: () => ({}) },
+    // Fecha de emision del comprobante (elegida por el administrador o, por defecto,
+    // la fecha en que el cliente registro sus datos).
+    issueDate: { type: String, default: null },
+    clientConfirmedAt: { type: String, default: null },
+    // TC vigente para el equivalente en soles cuando la negociacion es USD.
+    multiCurrencyEnabled: { type: Boolean, default: false },
+    exchangeRate: { type: Number, default: null },
 });
 
 const hasCourses = computed(() => props.negotiation.items?.some((item) => item.item_type === "course") ?? false);
@@ -139,6 +146,16 @@ const steps = ref([
 ]);
 
 const processing = ref(false);
+
+// Fecha de emision del comprobante: se guarda en la negociacion antes de iniciar
+// el proceso para que la venta y el comprobante se emitan con esa fecha.
+const issueDateInput = ref(
+    props.issueDate
+        ? String(props.issueDate).slice(0, 10)
+        : (props.clientConfirmedAt ? String(props.clientConfirmedAt).slice(0, 10) : "")
+);
+const savingIssueDate = ref(false);
+
 const allStepsDone = computed(() =>
     steps.value.filter((s) => !s.skipped).every((s) => s.status === "done" || s.status === "omitted"),
 );
@@ -299,8 +316,36 @@ const skipStep = async (step) => {
     }
 };
 
-const run = () => {
+// Guarda la fecha de emision en la negociacion. Devuelve false si no se pudo guardar
+// para que el proceso no arranque con una fecha sin persistir.
+const saveIssueDate = () => {
+    if (savingIssueDate.value) return Promise.resolve(true);
+
+    savingIssueDate.value = true;
+
+    return axios.post(route("comm_negotiations_issue_date", props.negotiation.id), {
+        invoice_issue_date: issueDateInput.value || null,
+    }).then((res) => {
+        if (!res.data?.success) {
+            toast(res.data?.message || "No se pudo guardar la fecha de emision.", "error");
+            return false;
+        }
+
+        return true;
+    }).catch((error) => {
+        toast(error.response?.data?.message || "No se pudo guardar la fecha de emision.", "error");
+        return false;
+    }).finally(() => {
+        savingIssueDate.value = false;
+    });
+};
+
+const run = async () => {
     if (processing.value || finished.value) return;
+
+    // La fecha de emision se persiste antes de ejecutar los pasos.
+    if (!(await saveIssueDate())) return;
+
     processing.value = true;
     runRemaining();
 };
@@ -323,6 +368,12 @@ const run = () => {
                         {{ statusByValue(negotiation.status)?.label || negotiation.status }}
                     </span>
                     <span class="text-sm text-gray-500">{{ negotiation.currency }} {{ negotiation.total_price }}</span>
+                    <span
+                        v-if="String(negotiation.currency || '').toUpperCase() === 'USD' && Number(exchangeRate) > 0"
+                        class="text-sm text-blue-600 dark:text-blue-400"
+                    >
+                        ≈ S/ {{ (Number(negotiation.total_price || 0) * Number(exchangeRate)).toFixed(2) }} (TC: {{ Number(exchangeRate).toFixed(4) }})
+                    </span>
                     <span class="text-sm text-gray-500">{{ clientName }}</span>
                 </div>
             </div>
@@ -332,6 +383,21 @@ const run = () => {
                     Volver al detalle
                 </Link>
             </div>
+        </div>
+
+        <div class="mt-5 panel">
+            <h3 class="font-semibold dark:text-white">Fecha de emision del comprobante</h3>
+            <p class="text-sm text-gray-500">
+                Por defecto, la fecha en que el cliente registro sus datos. Se usara al generar la venta y el comprobante.
+            </p>
+            <input
+                id="issue_date"
+                v-model="issueDateInput"
+                type="date"
+                class="form-input mt-2 block max-w-[200px]"
+                :disabled="processing || savingIssueDate"
+                @change="saveIssueDate"
+            />
         </div>
 
         <div class="mt-5 panel">

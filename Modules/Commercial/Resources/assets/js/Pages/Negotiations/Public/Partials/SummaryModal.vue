@@ -29,6 +29,9 @@ const props = defineProps({
     // Mercado Pago declarando un pago ya hecho (evidencia) en lugar de pagar con tarjeta.
     paymentEvidence: { type: Boolean, default: false },
     totalLabel: { type: String, default: null },
+    // Equivalentes en soles cuando la negociacion esta en dolares (PTM0004).
+    totalSolesLabel: { type: String, default: null },
+    firstInstallmentSolesLabel: { type: String, default: null },
 });
 
 const emit = defineEmits(["confirm", "cancel"]);
@@ -52,6 +55,7 @@ const clientFullName = computed(() => {
 });
 
 const occupationLabel = computed(() => props.form.ocupacion?.description ?? props.form.ocupacion ?? null);
+const professionLabel = computed(() => props.form.profesion?.description ?? props.form.profesion ?? null);
 const industryLabel = computed(() => props.form.industry_id?.description ?? null);
 
 const countryLabel = computed(() =>
@@ -106,6 +110,7 @@ const summaryHtml = () => {
     rows.push(summaryRow("Direccion", form.address));
     rows.push(summaryRow(props.foreignLocation ? "Pais / Estado / Ciudad" : "Ubicacion", locationLabel.value));
     rows.push(summaryRow("Cargo u ocupacion", occupationLabel.value));
+    rows.push(summaryRow("Profesion", professionLabel.value));
     rows.push(summaryRow("Empresa", form.company));
     rows.push(summaryRow("Industria", industryLabel.value));
 
@@ -127,9 +132,13 @@ const summaryHtml = () => {
     rows.push(summarySection("Acuerdo y pago"));
     rows.push(summaryRow("Modalidad", props.negotiation.payment_type === "installments" ? `${scheduleRows.value.length} cuotas` : "Pago unico"));
     rows.push(summaryRow("Monto total", props.totalLabel));
+    if (props.totalSolesLabel) {
+        rows.push(summaryRow("Equivale a soles", props.totalSolesLabel));
+    }
 
     if (props.negotiation.payment_type === "installments" && scheduleRows.value.length) {
-        rows.push(summaryRow("Primera cuota", `${props.negotiation.currency} ${Number(scheduleRows.value[0]?.amount || 0).toFixed(2)}`));
+        const primeraCuota = `${props.negotiation.currency} ${Number(scheduleRows.value[0]?.amount || 0).toFixed(2)}${props.firstInstallmentSolesLabel ? ` (${props.firstInstallmentSolesLabel})` : ""}`;
+        rows.push(summaryRow("Primera cuota", primeraCuota));
         rows.push(summaryRow("Vencimiento 1ra cuota", scheduleRows.value[0]?.due_date ?? null));
     }
 

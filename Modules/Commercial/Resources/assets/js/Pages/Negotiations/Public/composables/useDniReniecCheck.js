@@ -18,24 +18,17 @@ export function useDniReniecCheck({ form, token, isDni, normalizeNumber }) {
     const dniLoading = ref(false);
     const dniValidated = ref(false);
     const dniNotice = ref("");
-    // Aviso para rellenar los datos con RENIEC al completar el DNI.
-    const dniHint = ref("");
-    // DNI para el que ya se pregunto si queria rellenar con RENIEC (no repetir).
-    const reniecAskedFor = ref("");
 
     /** Descarta la validacion del DNI (cambio de documento o de numero). */
     const resetDniCheck = () => {
         dniValidated.value = false;
         dniNotice.value = "";
-        dniHint.value = "";
-        reniecAskedFor.value = "";
     };
 
     /** Los datos ya estan verificados (busqueda interna o cuenta existente): no hace falta RENIEC. */
     const markPersonVerified = () => {
         dniValidated.value = true;
         dniNotice.value = "";
-        dniHint.value = "";
     };
 
     const applyReniecNames = (person) => {
@@ -107,7 +100,8 @@ export function useDniReniecCheck({ form, token, isDni, normalizeNumber }) {
     };
 
     // Al cambiar el DNI manualmente se invalida la validacion anterior y, al completar
-    // los 8 digitos, se ofrece rellenar los nombres con RENIEC.
+    // los 8 digitos, se consulta RENIEC automaticamente: los datos se llenan y los
+    // campos de nombres quedan habilitados para editarlos.
     const onNumberInput = () => {
         normalizeNumber();
         resetDniCheck();
@@ -115,37 +109,16 @@ export function useDniReniecCheck({ form, token, isDni, normalizeNumber }) {
         if (!isDni.value) return;
 
         const dni = String(form.number || "");
-        if (dni.length !== 8) return;
 
-        dniHint.value = "Puedes rellenar tus nombres y apellidos automaticamente con RENIEC.";
+        if (dni.length !== 8 || dniLoading.value) return;
 
-        if (dniLoading.value || dniValidated.value || reniecAskedFor.value === dni) return;
-
-        reniecAskedFor.value = dni;
-
-        Swal2.fire({
-            title: "Rellenar datos con RENIEC",
-            text: "¿Deseas completar tus nombres y apellidos con los datos de RENIEC?",
-            icon: "question",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Si, rellenar con RENIEC",
-            cancelButtonText: "No, escribir manualmente",
-            padding: "2em",
-            customClass: "sweet-alerts",
-        }).then((result) => {
-            if (result.isConfirmed) {
-                validateDni();
-            }
-        });
+        validateDni();
     };
 
     return {
         dniLoading,
         dniValidated,
         dniNotice,
-        dniHint,
         onNumberInput,
         validateDni,
         resetDniCheck,

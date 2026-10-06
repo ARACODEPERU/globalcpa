@@ -50,12 +50,15 @@ class AcaSaleDocumentController extends Controller
     }
 
     public function generateBoleta(Request $request)
-    {
-
-        $pedido = $request->get('pedido');
+    {                $pedido = $request->get('pedido');
 
         try {
             $res = DB::transaction(function () use ($pedido) {
+
+                // Fecha de emision del comprobante: por defecto hoy, pero se respeta la
+                // fecha indicada por el flujo de negociaciones (fecha en que el cliente
+                // registro sus datos) para no emitir con la fecha de aprobacion.
+                $issueDate = $this->resolveIssueDate($pedido['issue_date'] ?? null);
 
                 $venta = $pedido['venta'];
                 $localId = $pedido['local'];
@@ -69,6 +72,57 @@ class AcaSaleDocumentController extends Controller
 
                 $sale = Sale::find($saleId);
                 $person = Person::find($sale->client_id);
+
+                // Moneda del comprobante: PEN por defecto; USD requiere PTM0004 activo.
+                // El TC lo resuelve el SERVIDOR (ExchangeRateService) para que la
+                // facturacion electronica sea exacta. Los precios de los productos
+                // (SaleProduct) siempre estan en soles: si el comprobante es USD se
+                // convierten aqui con el TC vigente.
+                $currency = strtoupper((string) ($pedido['currency'] ?? 'PEN'));
+                $exchangeRate = null;
+
+                // Compras web (Onlineshop): la moneda y el TC se guardan en onli_sales
+                // al momento del pago del cliente; si el documento se emite dias
+                // despues se respeta ese TC historico de la fecha de la compra.
+                if (empty($pedido['currency'])) {
+                    $onliSale = \Modules\Onlineshop\Entities\OnliSale::find($onlisale_id);
+
+                    if ($onliSale && strtoupper((string) $onliSale->currency) !== 'PEN' && $onliSale->currency !== null && $onliSale->currency !== '') {
+                        $currency = strtoupper($onliSale->currency);
+                        $exchangeRate = $onliSale->exchange_rate !== null ? (float) $onliSale->exchange_rate : null;
+                    }
+
+                    // Sin TC guardado pero con fecha de compra: usar el TC historico de ese dia.
+                    if ($currency !== 'PEN' && $exchangeRate === null) {
+                        try {
+                            $historicRate = app(\Modules\Sales\Services\ExchangeRateService::class)
+                                ->getCurrentRateForDate($currency, $onliSale?->created_at?->toDateString());
+                            $exchangeRate = $historicRate ? (float) $historicRate['rate'] : null;
+                        } catch (\Throwable $e) {
+                            $exchangeRate = null;
+                        }
+                    }
+                }
+
+                if ($currency !== 'PEN') {
+                    $exchangeRateService = app(\Modules\Sales\Services\ExchangeRateService::class);
+
+                    if (! $exchangeRateService->isMultiCurrencyEnabled()) {
+                        throw new \Exception('El sistema está configurado para operar solo en soles (parámetro PTM0004 desactivado).');
+                    }
+
+                    // En compras web el TC historico de la fecha de compra ya fue
+                    // resuelto arriba: no se sobreescribe con el TC de hoy.
+                    if ($exchangeRate === null) {
+                        $rate = $exchangeRateService->getCurrentRate($currency);
+
+                        if (! $rate || (float) $rate['rate'] <= 0) {
+                            throw new \Exception("No hay tipo de cambio vigente para {$currency}. Usa el botón «Cambio de moneda» del header para consultarlo a SUNAT.");
+                        }
+
+                        $exchangeRate = (float) $rate['rate'];
+                    }
+                }
 
                 if ($sale->invoice_type == 1) {
                     $dtype =  $sale->invoice_type;
@@ -140,12 +194,13 @@ class AcaSaleDocumentController extends Controller
                     'invoice_type_doc'              => $tido->sunat_id,
                     'invoice_serie'                 => $serie->description,
                     'invoice_correlative'           => $serie->number,
-                    'invoice_type_currency'         => 'PEN',
-                    'invoice_broadcast_date'        => Carbon::now()->format('Y-m-d'),
-                    'invoice_due_date'              => Carbon::now()->format('Y-m-d'),
+                    'invoice_type_currency'         => $currency,
+                    'exchange_rate'                 => $exchangeRate,
+                    'invoice_broadcast_date'        => $issueDate,
+                    'invoice_due_date'              => $issueDate,
                     'invoice_send_date'             => Carbon::now()->format('Y-m-d'),
                     'invoice_legend_code'           => '1000',
-                    'invoice_legend_description'    => $numberletters->convertToLetter($sale->total),
+                    'invoice_legend_description'    => $numberletters->convertToLetter($sale->total, $currency === 'USD' ? 'DÓLARES AMERICANOS' : 'SOLES'),
                     'invoice_status'                => 'registrado',
                     'user_id'                       => $userId,
                     'additional_description'        => null,
@@ -510,5 +565,23 @@ class AcaSaleDocumentController extends Controller
             'error' => $error,
             'status' => 'Fin del proceso'
         ]);
+    }
+
+    /**
+     * Normaliza la fecha de emision recibida en el pedido. Acepta una fecha
+     * parseable (normalmente 'Y-m-d') y cae en hoy cuando falta o es invalida,
+     * de modo que los demas flujos que no la envian siguen emitiendo igual.
+     */
+    private function resolveIssueDate($value): string
+    {
+        if (is_string($value) && trim($value) !== '') {
+            try {
+                return Carbon::parse($value)->format('Y-m-d');
+            } catch (\Throwable $e) {
+                // Fecha invalida: se emite con la fecha actual.
+            }
+        }
+
+        return Carbon::now()->format('Y-m-d');
     }
 }
