@@ -1,20 +1,39 @@
-@extends('layouts.webpage')
 
-@section('title', ' - Testimonios')
 
-@section('etiquetasmeta')
-    <x-seo title="Testimonios - CPA Academy"
-        description="Historias reales de profesionales que transformaron su carrera con CPA Academy. Conoce los testimonios de nuestros egresados en LATAM." />
-@endsection
+<?php $__env->startSection('title', ' - Testimonios'); ?>
 
-@section('content')
+<?php $__env->startSection('etiquetasmeta'); ?>
+    <?php if (isset($component)) { $__componentOriginal42da61123f891e63201d7be28f403427 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal42da61123f891e63201d7be28f403427 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.seo','data' => ['title' => 'Testimonios - CPA Academy','description' => 'Historias reales de profesionales que transformaron su carrera con CPA Academy. Conoce los testimonios de nuestros egresados en LATAM.']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('seo'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['title' => 'Testimonios - CPA Academy','description' => 'Historias reales de profesionales que transformaron su carrera con CPA Academy. Conoce los testimonios de nuestros egresados en LATAM.']); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal42da61123f891e63201d7be28f403427)): ?>
+<?php $attributes = $__attributesOriginal42da61123f891e63201d7be28f403427; ?>
+<?php unset($__attributesOriginal42da61123f891e63201d7be28f403427); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal42da61123f891e63201d7be28f403427)): ?>
+<?php $component = $__componentOriginal42da61123f891e63201d7be28f403427; ?>
+<?php unset($__componentOriginal42da61123f891e63201d7be28f403427); ?>
+<?php endif; ?>
+<?php $__env->stopSection(); ?>
 
-    {{-- Schema markup (JSON-LD): organizacion con valoracion agregada y resenas --}}
-    @if (!empty($schema))
+<?php $__env->startSection('content'); ?>
+
+    
+    <?php if(!empty($schema)): ?>
         <script type="application/ld+json">
-            {!! json_encode($schema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) !!}
+            <?php echo json_encode($schema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>
+
         </script>
-    @endif
+    <?php endif; ?>
 
     <style>
         /* =========================================
@@ -741,20 +760,58 @@
     <!-- page-wrapper Start-->
     <div class="page-wrapper" id="pageWrapper">
         <!-- Page Header Start-->
-        <x-header />
+        <?php if (isset($component)) { $__componentOriginal2a2e454b2e62574a80c8110e5f128b60 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal2a2e454b2e62574a80c8110e5f128b60 = $attributes; } ?>
+<?php $component = App\View\Components\Header::resolve([] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('header'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\App\View\Components\Header::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal2a2e454b2e62574a80c8110e5f128b60)): ?>
+<?php $attributes = $__attributesOriginal2a2e454b2e62574a80c8110e5f128b60; ?>
+<?php unset($__attributesOriginal2a2e454b2e62574a80c8110e5f128b60); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal2a2e454b2e62574a80c8110e5f128b60)): ?>
+<?php $component = $__componentOriginal2a2e454b2e62574a80c8110e5f128b60; ?>
+<?php unset($__componentOriginal2a2e454b2e62574a80c8110e5f128b60); ?>
+<?php endif; ?>
         <!-- Page Header Ends-->
 
         <!-- Page Body Start-->
         <div class="page-body-wrapper">
             <!-- Page Sidebar Start-->
-            <x-sidebar />
+            <?php if (isset($component)) { $__componentOriginald31f0a1d6e85408eecaaa9471b609820 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginald31f0a1d6e85408eecaaa9471b609820 = $attributes; } ?>
+<?php $component = App\View\Components\Sidebar::resolve([] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('sidebar'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\App\View\Components\Sidebar::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginald31f0a1d6e85408eecaaa9471b609820)): ?>
+<?php $attributes = $__attributesOriginald31f0a1d6e85408eecaaa9471b609820; ?>
+<?php unset($__attributesOriginald31f0a1d6e85408eecaaa9471b609820); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginald31f0a1d6e85408eecaaa9471b609820)): ?>
+<?php $component = $__componentOriginald31f0a1d6e85408eecaaa9471b609820; ?>
+<?php unset($__componentOriginald31f0a1d6e85408eecaaa9471b609820); ?>
+<?php endif; ?>
             <!-- Page Sidebar Ends-->
 
             <div class="page-body" style="padding-bottom: 40px;">
 
-                {{-- ============================================ --}}
-                {{-- 1. HERO --}}
-                {{-- ============================================ --}}
+                
+                
+                
                 <div class="container-fluid mt-5">
                     <div class="card tst-hero shadow mb-4" data-aos="fade-in">
                         <div class="card-body p-4 p-lg-5 position-relative">
@@ -763,7 +820,7 @@
                                     <nav aria-label="breadcrumb" class="mb-3">
                                         <ol class="breadcrumb mb-0">
                                             <li class="breadcrumb-item">
-                                                <a href="{{ route('index_main') }}"
+                                                <a href="<?php echo e(route('index_main')); ?>"
                                                     class="text-white-50 text-decoration-none text-uppercase small fw-bold"
                                                     style="letter-spacing: 1px;">
                                                     <i class="fa fa-home me-1"></i> Inicio
@@ -787,12 +844,9 @@
                                     <div class="d-flex flex-wrap gap-3">
                                         <span class="tst-hero-tag">
                                             <i class="fa fa-star text-warning"></i>
-                                            {{ $stats['total'] }} testimonios
+                                            <?php echo e($stats['total']); ?> testimonios
                                         </span>
-                                        {{-- <span class="tst-hero-tag">
-                                            <i class="fa fa-graduation-cap text-warning"></i>
-                                            {{ $stats['courses'] }} cursos opinados
-                                        </span> --}}
+                                        
                                         <span class="tst-hero-tag">
                                             <i class="fa fa-globe text-warning"></i> +10 países de LATAM
                                         </span>
@@ -803,38 +857,34 @@
                     </div>
                 </div>
 
-                {{-- ============================================ --}}
-                {{-- 2. ESTADÍSTICAS (calculadas con testimonios reales) --}}
-                {{-- ============================================ --}}
+                
+                
+                
                 <section class="tst-section pt-0">
                     <div class="container">
                         <div class="tst-stats-band shadow" data-aos="fade-up">
                             <div class="row  g-4 position-relative">
                                 <div class="col-4 tst-stat">
                                     <i class="fa fa-thumbs-up"></i>
-                                    <strong>{{ $stats['recommend'] }}%</strong>
+                                    <strong><?php echo e($stats['recommend']); ?>%</strong>
                                     <span>Nos recomiendan</span>
                                 </div>
                                 <div class="col-4 tst-stat">
                                     <i class="fa fa-comments"></i>
-                                    <strong>{{ number_format($stats['total']) }}</strong>
+                                    <strong><?php echo e(number_format($stats['total'])); ?></strong>
                                     <span>Testimonios publicados</span>
                                 </div>
                                 <div class="col-4 tst-stat">
                                     <i class="fa fa-star"></i>
-                                    <strong>{{ $stats['average'] ?: '—' }}/5</strong>
+                                    <strong><?php echo e($stats['average'] ?: '—'); ?>/5</strong>
                                     <span>Puntuación promedio</span>
                                 </div>
-                                {{-- <div class="col tst-stat">
-                                    <i class="fa fa-briefcase"></i>
-                                    <strong>{{ number_format($stats['courses']) }}</strong>
-                                    <span>Cursos con opiniones</span>
-                                </div> --}}
+                                
                             </div>
                             <div class="row">
                                 <div class="tst-cta text-center" data-aos="fade-up">
                                     <div class="d-flex flex-wrap justify-content-center gap-3">
-                                        <a href="{{ route('web_courses') }}" class="btn-cta-white text-decoration-none">
+                                        <a href="<?php echo e(route('web_courses')); ?>" class="btn-cta-white text-decoration-none">
                                             <i class="fa fa-graduation-cap me-2"></i>Ver programas
                                         </a>
                                     </div>
@@ -844,49 +894,50 @@
                     </div>
                 </section>
 
-                {{-- ============================================ --}}
-                {{-- 3. TESTIMONIO DESTACADO --}}
-                {{-- ============================================ --}}
-                @if ($featured)
+                
+                
+                
+                <?php if($featured): ?>
                     <section class="tst-section pt-0">
                         <div class="container">
                             <div class="tst-featured shadow" data-aos="zoom-in">
                                 <div class="row align-items-center position-relative">
                                     <div class="col-lg-9">
-                                        @if ($featured['program'])
+                                        <?php if($featured['program']): ?>
                                             <p class="tst-featured-program">
-                                                {{ \Illuminate\Support\Str::limit($featured['program'], 90) }}
+                                                <?php echo e(\Illuminate\Support\Str::limit($featured['program'], 90)); ?>
+
                                             </p>
-                                        @endif
+                                        <?php endif; ?>
                                         <div class="tst-featured-stars mb-3">
-                                            @for ($i = 1; $i <= 5; $i++)
-                                                <i class="fa fa-star{{ $i <= $featured['rating'] ? '' : '-o' }}"></i>
-                                            @endfor
+                                            <?php for($i = 1; $i <= 5; $i++): ?>
+                                                <i class="fa fa-star<?php echo e($i <= $featured['rating'] ? '' : '-o'); ?>"></i>
+                                            <?php endfor; ?>
                                         </div>
                                         <blockquote>
-                                            "{{ $featured['quote'] }}"
+                                            "<?php echo e($featured['quote']); ?>"
                                         </blockquote>
                                         <div class="d-flex align-items-center gap-3">
-                                            <img src="{{ $featured['photo'] ?: $featured['avatar'] }}"
-                                                alt="{{ $featured['author'] }}" class="tst-featured-avatar">
+                                            <img src="<?php echo e($featured['photo'] ?: $featured['avatar']); ?>"
+                                                alt="<?php echo e($featured['author']); ?>" class="tst-featured-avatar">
                                             <div>
-                                                <p class="tst-featured-name mb-0">{{ $featured['author'] }}</p>
-                                                <p class="tst-featured-role mb-0">{{ $featured['role'] }}</p>
+                                                <p class="tst-featured-name mb-0"><?php echo e($featured['author']); ?></p>
+                                                <p class="tst-featured-role mb-0"><?php echo e($featured['role']); ?></p>
                                             </div>
                                         </div>
-                                        @if ($featured['video'])
-                                            @php
+                                        <?php if($featured['video']): ?>
+                                            <?php
                                                 $featuredTarget = $testimonies->pluck('id')->contains($featured['id'])
                                                     ? 'tstVideo' . $featured['id']
                                                     : 'tstVideoFeatured';
-                                            @endphp
+                                            ?>
                                             <div class="tst-featured-video">
                                                 <button type="button" class="btn" data-bs-toggle="modal"
-                                                    data-bs-target="#{{ $featuredTarget }}">
+                                                    data-bs-target="#<?php echo e($featuredTarget); ?>">
                                                     <i class="fa fa-play-circle me-2"></i>Ver video testimonio
                                                 </button>
                                             </div>
-                                        @endif
+                                        <?php endif; ?>
                                     </div>
                                     <div class="col-lg-3 text-center d-none d-lg-block">
                                         <i class="fa fa-quote-right" style="font-size: 7rem; opacity: 0.15;"></i>
@@ -895,62 +946,63 @@
                             </div>
                         </div>
                     </section>
-                @endif
+                <?php endif; ?>
 
-                {{-- ============================================ --}}
-                {{-- 4. MURO DE TESTIMONIOS (agrupado por categoría) --}}
-                {{-- ============================================ --}}
+                
+                
+                
                 <section class="tst-section tst-section-alt">
                     <div class="container">
                         <div class="text-center mb-4" data-aos="fade-up">
                             <h2 class="fw-bold text-navy-custom">Lo que dicen nuestros egresados</h2>
                             <p class="text-muted-custom mx-auto" style="max-width: 700px;">
-                                @if ($total > 0)
-                                    {{ number_format($total) }}
-                                    {{ \Illuminate\Support\Str::plural('testimonio', $total) }} de profesionales que
+                                <?php if($total > 0): ?>
+                                    <?php echo e(number_format($total)); ?>
+
+                                    <?php echo e(\Illuminate\Support\Str::plural('testimonio', $total)); ?> de profesionales que
                                     confiaron en CPA Academy para dar el siguiente paso.
-                                @else
+                                <?php else: ?>
                                     Muy pronto verás aquí las opiniones de nuestros egresados.
-                                @endif
+                                <?php endif; ?>
                             </p>
                         </div>
 
-                        @if ($categoryOptions->count() > 0)
+                        <?php if($categoryOptions->count() > 0): ?>
                             <div class="d-flex flex-wrap justify-content-center gap-2 mb-3" data-aos="fade-up">
-                                <a href="{{ route('web_testimonials') }}"
-                                    class="tst-filter-chip {{ !$filters['categoria'] && !$filters['curso'] ? 'is-active' : '' }}">
+                                <a href="<?php echo e(route('web_testimonials')); ?>"
+                                    class="tst-filter-chip <?php echo e(!$filters['categoria'] && !$filters['curso'] ? 'is-active' : ''); ?>">
                                     Todas las categorías
                                 </a>
-                                @foreach ($categoryOptions as $option)
-                                    <a href="{{ route('web_testimonials', ['categoria' => $option->category]) }}"
-                                        class="tst-filter-chip {{ $filters['categoria'] === $option->category ? 'is-active' : '' }}">
-                                        {{ $option->category }} ({{ $option->total }})
+                                <?php $__currentLoopData = $categoryOptions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $option): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <a href="<?php echo e(route('web_testimonials', ['categoria' => $option->category])); ?>"
+                                        class="tst-filter-chip <?php echo e($filters['categoria'] === $option->category ? 'is-active' : ''); ?>">
+                                        <?php echo e($option->category); ?> (<?php echo e($option->total); ?>)
                                     </a>
-                                @endforeach
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </div>
 
-                            @if ($courseOptions->count() > 0)
-                                <form method="GET" action="{{ route('web_testimonials') }}"
+                            <?php if($courseOptions->count() > 0): ?>
+                                <form method="GET" action="<?php echo e(route('web_testimonials')); ?>"
                                     class="d-flex justify-content-center mb-4" data-aos="fade-up">
-                                    @if ($filters['categoria'])
-                                        <input type="hidden" name="categoria" value="{{ $filters['categoria'] }}">
-                                    @endif
+                                    <?php if($filters['categoria']): ?>
+                                        <input type="hidden" name="categoria" value="<?php echo e($filters['categoria']); ?>">
+                                    <?php endif; ?>
                                     <select name="curso" class="form-select w-auto" onchange="this.form.submit()">
                                         <option value="">Todos los cursos</option>
-                                        @foreach ($courseOptions as $option)
-                                            @if ($option->slug)
-                                                <option value="{{ $option->slug }}"
-                                                    {{ $filters['curso'] === $option->slug ? 'selected' : '' }}>
-                                                    {{ $option->description }} ({{ $option->total }})
+                                        <?php $__currentLoopData = $courseOptions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $option): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <?php if($option->slug): ?>
+                                                <option value="<?php echo e($option->slug); ?>"
+                                                    <?php echo e($filters['curso'] === $option->slug ? 'selected' : ''); ?>>
+                                                    <?php echo e($option->description); ?> (<?php echo e($option->total); ?>)
                                                 </option>
-                                            @endif
-                                        @endforeach
+                                            <?php endif; ?>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     </select>
                                 </form>
-                            @endif
-                        @endif
+                            <?php endif; ?>
+                        <?php endif; ?>
 
-                        @if ($testimonies->count() === 0)
+                        <?php if($testimonies->count() === 0): ?>
                             <div class="text-center py-5 bg-card-custom rounded-4" data-aos="fade-up">
                                 <i class="fa fa-comments-o" style="font-size: 3rem; color: #cbd5e1;"></i>
                                 <h3 class="h5 fw-bold text-navy-custom mt-3">Todavía no hay testimonios publicados</h3>
@@ -958,17 +1010,18 @@
                                     Los testimonios de nuestros alumnos pasan por revisión antes de publicarse.
                                 </p>
                             </div>
-                        @else
-                            @foreach ($groups as $group)
+                        <?php else: ?>
+                            <?php $__currentLoopData = $groups; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $group): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <div class="mb-5" data-aos="fade-up">
                                     <h3 class="tst-group-title text-navy-custom">
                                         <i class="fa fa-folder-open text-warning"></i>
-                                        {{ $group['category'] }}
-                                        <span class="badge bg-secondary">{{ $group['testimonies']->count() }}</span>
+                                        <?php echo e($group['category']); ?>
+
+                                        <span class="badge bg-secondary"><?php echo e($group['testimonies']->count()); ?></span>
                                     </h3>
                                     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-                                        @foreach ($group['testimonies'] as $t)
-                                            @php
+                                        <?php $__currentLoopData = $group['testimonies']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $t): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <?php
                                                 $quote = (string) $t['quote'];
                                                 $quoteLimit = 220;
                                                 $isLongQuote = mb_strlen($quote) > $quoteLimit;
@@ -978,76 +1031,79 @@
                                                 $quoteRest = $isLongQuote
                                                     ? \Illuminate\Support\Str::substr($quote, $quoteLimit)
                                                     : '';
-                                            @endphp
+                                            ?>
                                             <div class="col">
                                                 <div class="tst-card bg-card-custom shadow-sm">
-                                                    @if ($t['program'])
+                                                    <?php if($t['program']): ?>
                                                         <h3 class="tst-card-title">
-                                                            {{ \Illuminate\Support\Str::limit($t['program'], 90) }}
+                                                            <?php echo e(\Illuminate\Support\Str::limit($t['program'], 90)); ?>
+
                                                         </h3>
-                                                    @endif
-                                                    @if ($t['cover'] || $t['video'])
+                                                    <?php endif; ?>
+                                                    <?php if($t['cover'] || $t['video']): ?>
                                                         <div class="tst-card-media">
-                                                            @if ($t['cover'])
-                                                                <img src="{{ $t['cover'] }}"
-                                                                    alt="{{ \Illuminate\Support\Str::limit($t['program'], 50) }}"
+                                                            <?php if($t['cover']): ?>
+                                                                <img src="<?php echo e($t['cover']); ?>"
+                                                                    alt="<?php echo e(\Illuminate\Support\Str::limit($t['program'], 50)); ?>"
                                                                     loading="lazy">
-                                                            @endif
-                                                            @if ($t['video'])
+                                                            <?php endif; ?>
+                                                            <?php if($t['video']): ?>
                                                                 <span class="tst-video-tag">
                                                                     <i class="fa fa-video-camera"></i> Video
                                                                 </span>
                                                                 <button type="button" class="tst-play"
                                                                     data-bs-toggle="modal"
-                                                                    data-bs-target="#tstVideo{{ $t['id'] }}"
+                                                                    data-bs-target="#tstVideo<?php echo e($t['id']); ?>"
                                                                     title="Ver video testimonio">
                                                                     <i class="fa fa-play"></i>
                                                                 </button>
-                                                            @endif
+                                                            <?php endif; ?>
                                                         </div>
-                                                    @endif
+                                                    <?php endif; ?>
                                                     <div>
                                                         <div class="tst-stars">
-                                                            @for ($i = 1; $i <= 5; $i++)
+                                                            <?php for($i = 1; $i <= 5; $i++): ?>
                                                                 <i
-                                                                    class="fa fa-star{{ $i <= $t['rating'] ? '' : '-o' }}"></i>
-                                                            @endfor
+                                                                    class="fa fa-star<?php echo e($i <= $t['rating'] ? '' : '-o'); ?>"></i>
+                                                            <?php endfor; ?>
                                                         </div>
                                                         <div class="tst-quote-mark">"</div>
                                                         <p class="tst-text">
-                                                            {{ $quoteShort }}@if ($isLongQuote)
+                                                            <?php echo e($quoteShort); ?><?php if($isLongQuote): ?>
                                                                 <details class="tst-quote-details"
-                                                                    id="tstQuote{{ $t['id'] }}" open>
+                                                                    id="tstQuote<?php echo e($t['id']); ?>" open>
                                                                     <summary class="tst-quote-summary">
-                                                                        <span class="tst-text">{{ $quoteRest }}</span>
+                                                                        <span class="tst-text"><?php echo e($quoteRest); ?></span>
                                                                         <span class="tst-read-more tst-read-more-summary">
                                                                             <i class="fa fa-chevron-down"></i> Leer más
                                                                         </span>
                                                                     </summary>
                                                                 </details>
-                                                            @endif
+                                                            <?php endif; ?>
                                                         </p>
                                                     </div>
                                                     <div class="tst-author">
-                                                        <img src="{{ $t['photo'] ?: $t['avatar'] }}"
-                                                            alt="{{ $t['author'] }}" class="tst-avatar" loading="lazy">
+                                                        <img src="<?php echo e($t['photo'] ?: $t['avatar']); ?>"
+                                                            alt="<?php echo e($t['author']); ?>" class="tst-avatar" loading="lazy">
                                                         <div>
-                                                            <p class="tst-name text-navy-custom mb-0">{{ $t['author'] }}
+                                                            <p class="tst-name text-navy-custom mb-0"><?php echo e($t['author']); ?>
+
                                                             </p>
-                                                            <p class="tst-role text-muted-custom mb-0">{{ $t['role'] }}
+                                                            <p class="tst-role text-muted-custom mb-0"><?php echo e($t['role']); ?>
+
                                                             </p>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        @endforeach
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     </div>
                                 </div>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
-                            @if ($hasMore)
+                            <?php if($hasMore): ?>
                                 <div class="text-center mt-4" data-aos="fade-up">
-                                    <a href="{{ route(
+                                    <a href="<?php echo e(route(
                                         'web_testimonials',
                                         array_filter([
                                             'categoria' => $filters['categoria'],
@@ -1055,23 +1111,23 @@
                                             'rating' => $filters['rating'],
                                             'page' => $page + 1,
                                         ]),
-                                    ) }}"
+                                    )); ?>"
                                         class="tst-filter-chip is-active" style="padding: 12px 28px;">
                                         <i class="fa fa-chevron-down"></i> Ver más testimonios
                                     </a>
                                     <p class="text-muted-custom mt-2 mb-0" style="font-size: 0.85rem;">
-                                        Mostrando {{ $testimonies->count() }} de {{ $total }} testimonios.
+                                        Mostrando <?php echo e($testimonies->count()); ?> de <?php echo e($total); ?> testimonios.
                                     </p>
                                 </div>
-                            @endif
-                        @endif
+                            <?php endif; ?>
+                        <?php endif; ?>
                     </div>
                 </section>
 
-                {{-- ============================================ --}}
-                {{-- Modales de video de los testimonios --}}
-                {{-- ============================================ --}}
-                @php
+                
+                
+                
+                <?php
                     $videoModals = collect();
 
                     foreach ($testimonies as $t) {
@@ -1087,35 +1143,37 @@
                     ) {
                         $videoModals->push(['modal_id' => 'tstVideoFeatured', 'data' => $featured]);
                     }
-                @endphp
+                ?>
 
-                @foreach ($videoModals as $videoModal)
-                    <div class="modal fade" id="{{ $videoModal['modal_id'] }}" tabindex="-1"
-                        aria-labelledby="{{ $videoModal['modal_id'] }}Label" aria-hidden="true">
+                <?php $__currentLoopData = $videoModals; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $videoModal): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <div class="modal fade" id="<?php echo e($videoModal['modal_id']); ?>" tabindex="-1"
+                        aria-labelledby="<?php echo e($videoModal['modal_id']); ?>Label" aria-hidden="true">
                         <div class="modal-dialog modal-lg modal-dialog-centered">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title h6" id="{{ $videoModal['modal_id'] }}Label">
-                                        {{ $videoModal['data']['author'] }} ·
-                                        {{ \Illuminate\Support\Str::limit($videoModal['data']['program'], 70) }}
+                                    <h5 class="modal-title h6" id="<?php echo e($videoModal['modal_id']); ?>Label">
+                                        <?php echo e($videoModal['data']['author']); ?> ·
+                                        <?php echo e(\Illuminate\Support\Str::limit($videoModal['data']['program'], 70)); ?>
+
                                     </h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                         aria-label="Cerrar"></button>
                                 </div>
                                 <div class="modal-body p-0 bg-black">
                                     <div class="ratio ratio-16x9">
-                                        {!! $videoModal['data']['video'] !!}
+                                        <?php echo $videoModal['data']['video']; ?>
+
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                @endforeach
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
-                {{-- ============================================ --}}
-                {{-- 5. CARRUSEL MARQUEE --}}
-                {{-- ============================================ --}}
-                @if ($testimonies->count() > 0)
+                
+                
+                
+                <?php if($testimonies->count() > 0): ?>
                     <section class="tst-section">
                         <div class="container-fluid">
                             <div class="text-center mb-4" data-aos="fade-up">
@@ -1123,42 +1181,44 @@
                             </div>
                             <div class="tst-marquee-viewport" data-aos="fade-up">
                                 <div class="tst-marquee-track">
-                                    @php
+                                    <?php
                                         $miniTestimonials = $testimonies->take(6);
                                         $loopSet = $miniTestimonials->concat($miniTestimonials);
-                                    @endphp
+                                    ?>
 
-                                    @foreach ($loopSet as $t)
+                                    <?php $__currentLoopData = $loopSet; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $t): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <div class="tst-mini-card bg-card-custom shadow-sm">
-                                            @if ($t['program'])
+                                            <?php if($t['program']): ?>
                                                 <p class="tst-mini-title">
-                                                    {{ \Illuminate\Support\Str::limit($t['program'], 45) }}
+                                                    <?php echo e(\Illuminate\Support\Str::limit($t['program'], 45)); ?>
+
                                                 </p>
-                                            @endif
+                                            <?php endif; ?>
                                             <p class="tst-mini-quote text-muted-custom">
-                                                "{{ \Illuminate\Support\Str::limit($t['quote'], 150) }}"
+                                                "<?php echo e(\Illuminate\Support\Str::limit($t['quote'], 150)); ?>"
                                             </p>
                                             <div class="tst-mini-author">
-                                                <img src="{{ $t['photo'] ?: $t['avatar'] }}" alt="{{ $t['author'] }}"
+                                                <img src="<?php echo e($t['photo'] ?: $t['avatar']); ?>" alt="<?php echo e($t['author']); ?>"
                                                     class="tst-mini-avatar" loading="lazy">
                                                 <div>
-                                                    <p class="tst-mini-name text-navy-custom mb-0">{{ $t['author'] }}</p>
+                                                    <p class="tst-mini-name text-navy-custom mb-0"><?php echo e($t['author']); ?></p>
                                                     <p class="tst-mini-role text-muted-custom mb-0">
-                                                        {{ \Illuminate\Support\Str::limit($t['program'], 40) }}
+                                                        <?php echo e(\Illuminate\Support\Str::limit($t['program'], 40)); ?>
+
                                                     </p>
                                                 </div>
                                             </div>
                                         </div>
-                                    @endforeach
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </div>
                             </div>
                         </div>
                     </section>
-                @endif
+                <?php endif; ?>
 
-                {{-- ============================================ --}}
-                {{-- 6. CTA FINAL --}}
-                {{-- ============================================ --}}
+                
+                
+                
                 <section class="tst-section pt-0">
                     <div class="container">
                         <div class="tst-cta text-center" data-aos="fade-up">
@@ -1170,7 +1230,7 @@
                                 Empieza hoy el tuyo.
                             </p>
                             <div class="d-flex flex-wrap justify-content-center gap-3">
-                                <a href="{{ route('web_courses') }}" class="btn-cta-white text-decoration-none">
+                                <a href="<?php echo e(route('web_courses')); ?>" class="btn-cta-white text-decoration-none">
                                     <i class="fa fa-graduation-cap me-2"></i>Ver programas
                                 </a>
                                 <a href="https://wa.me/51967052506?text=/Agente%20Principal" target="_blank"
@@ -1186,11 +1246,30 @@
         </div>
 
         <!-- footer start-->
-        <x-footer />
+        <?php if (isset($component)) { $__componentOriginal99051027c5120c83a2f9a5ae7c4c3cfa = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal99051027c5120c83a2f9a5ae7c4c3cfa = $attributes; } ?>
+<?php $component = App\View\Components\Footer::resolve([] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('footer'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\App\View\Components\Footer::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal99051027c5120c83a2f9a5ae7c4c3cfa)): ?>
+<?php $attributes = $__attributesOriginal99051027c5120c83a2f9a5ae7c4c3cfa; ?>
+<?php unset($__attributesOriginal99051027c5120c83a2f9a5ae7c4c3cfa); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal99051027c5120c83a2f9a5ae7c4c3cfa)): ?>
+<?php $component = $__componentOriginal99051027c5120c83a2f9a5ae7c4c3cfa; ?>
+<?php unset($__componentOriginal99051027c5120c83a2f9a5ae7c4c3cfa); ?>
+<?php endif; ?>
     </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('javascripts')
+<?php $__env->startSection('javascripts'); ?>
     <script>
         $(document).ready(function() {
             // Inicializar AOS si la librería está disponible
@@ -1204,4 +1283,6 @@
             }
         });
     </script>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.webpage', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\globalcpa\resources\views/pages/testimonios.blade.php ENDPATH**/ ?>

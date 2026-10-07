@@ -6822,6 +6822,14 @@ button.gridjs-sort-desc:is(.dark *) {
 .collapse {
     visibility: collapse;
 }
+/* Override del tema: el Tailwind define .collapse { visibility: collapse }, lo que
+   hace que los elementos con clase .collapse (como los cuerpos de los acordeones
+   del FAQ y las tarjetas de testimonios en /testimonios) queden invisibles aun
+   cuando Bootstrap/Tailwind los active. Para que el botón "Leer más" y el
+   acordeón funcionen, se fuerza siempre visibilidad. */
+.collapse, .collapse-show {
+    visibility: visible !important;
+}
 .static {
     position: static;
 }

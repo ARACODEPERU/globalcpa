@@ -2,9 +2,9 @@
     <div class="sidebar-wrapper" data-layout="stroke-svg">
         <div>
             <div class="logo-wrapper">
-                <a href="{{ route('index_main') }}">
+                <a href="<?php echo e(route('index_main')); ?>">
                     <img class="img-fluid"
-                        src="{{ asset('themes/webpage/images/Logo_isotipo_negativo.png') }}" alt="">
+                        src="<?php echo e(asset('themes/webpage/images/Logo_isotipo_negativo.png')); ?>" alt="">
                 </a>
                 <div class="back-btn"><i class="fa fa-angle-left"> </i></div>
             </div>
@@ -20,7 +20,7 @@
                             <div></div>
                         </li>
                         <li class="sidebar-list" style="padding: 15px 0px;">
-                            <a class="sidebar-link sidebar-title" href="{{ route('index_main') }}">
+                            <a class="sidebar-link sidebar-title" href="<?php echo e(route('index_main')); ?>">
                                 <span class="sb-item">
                                     <span class="sb-icon-box"><i class="fa fa-home" aria-hidden="true" style="font-size: 20px;" ></i></span>
                                     Home
@@ -36,48 +36,49 @@
                             </a>
                             <ul class="sidebar-submenu custom-scrollbar">
                                 <li class="sidebar-head">Formación</li>
-                                @foreach ($types as $type)
+                                <?php $__currentLoopData = $types; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $type): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <li class="main-submenu">
                                         <a class="d-flex sidebar-menu" href="javascript:void(0)">
                                             <svg class="stroke-icon">
                                                 <use
-                                                    href="{{ asset('themes/webpage/assets/svg/icon-sprite.svg#stroke-others') }}">
+                                                    href="<?php echo e(asset('themes/webpage/assets/svg/icon-sprite.svg#stroke-others')); ?>">
                                                 </use>
                                             </svg>
                                             <svg class="fill-icon">
                                                 <use
-                                                    href="{{ asset('themes/webpage/assets/svg/icon-sprite.svg#stroke-others') }}">
+                                                    href="<?php echo e(asset('themes/webpage/assets/svg/icon-sprite.svg#stroke-others')); ?>">
                                                 </use>
-                                            </svg>{{ $type == 'Programas de Especialización' ? 'Especialización' : $type }}
+                                            </svg><?php echo e($type == 'Programas de Especialización' ? 'Especialización' : $type); ?>
+
                                             <svg class="arrow">
                                                 <use
-                                                    href="{{ asset('themes/webpage/assets/svg/icon-sprite.svg#Arrow-right') }}">
+                                                    href="<?php echo e(asset('themes/webpage/assets/svg/icon-sprite.svg#Arrow-right')); ?>">
                                                 </use>
                                             </svg>
                                         </a>
                                         <ul class="submenu-wrapper">
-                                            @php
+                                            <?php
                                                 $x = 0;
-                                            @endphp
-                                            @foreach ($courses as $course)
-                                                @if (strtolower($course->additional) == strtolower($type) && $x < $p)
+                                            ?>
+                                            <?php $__currentLoopData = $courses; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $course): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <?php if(strtolower($course->additional) == strtolower($type) && $x < $p): ?>
                                                     <li>
-                                                        @php
+                                                        <?php
                                                             $landing = $course->course?->landing;
                                                             $hasPublishedLanding = filled($landing?->url_slug) && ($landing?->is_published ?? false);
-                                                        @endphp
+                                                        ?>
                                                         <a class="truncated-link"
-                                                            href="{{ $hasPublishedLanding ? route('course_url_slug', $landing->url_slug) : route('web_course_description', $course->id) }}"
-                                                            title="{{ $course->name }}">{{ $course->name }}</a>
+                                                            href="<?php echo e($hasPublishedLanding ? route('course_url_slug', $landing->url_slug) : route('web_course_description', $course->id)); ?>"
+                                                            title="<?php echo e($course->name); ?>"><?php echo e($course->name); ?></a>
                                                     </li>
-                                                    @php
+                                                    <?php
                                                         $x++;
-                                                    @endphp
-                                                @endif
-                                            @endforeach
+                                                    ?>
+                                                <?php endif; ?>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                             <li>
                                                 <div class="btn-showcase" style="text-align: center;">
-                                                    <a href="{{ route('web_courses') }}">
+                                                    <a href="<?php echo e(route('web_courses')); ?>">
                                                         <button class="btn btn-pill btn-primary btn-air-primary btn-sm"
                                                             type="button"
                                                             data-bs-original-title="btn btn-pill btn-primary btn-air-primary btn-sm">
@@ -90,32 +91,16 @@
                                             </li>
                                         </ul>
                                     </li>
-                                @endforeach
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
                             </ul>
                         </li>
-                        {{-- <li class="sidebar-list" style="padding: 15px 0px;">
-                            <a class="sidebar-link sidebar-title" href="{{ route('web_subscriptions') }}">
-                                <span>
-                                    <i class="fa fa-briefcase" aria-hidden="true" style="font-size: 26px;"></i><br>
-                                    Empresas
-                                </span>
-                            </a>
-                        </li> --}}
+                        
 
-                        {{-- ENLACE DE BLOG --}}
-                        {{-- <li class="sidebar-list" style="padding: 15px 0px;">
-                            <a class="sidebar-link sidebar-title" href="{{ route('blog_principal') }}">
-                                <span class="sb-item">
-                                    <span class="sb-icon-box">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><line x1="2" y1="10" x2="22" y2="10"/><line x1="8" y1="4" x2="8" y2="8"/><line x1="12" y1="4" x2="12" y2="8"/><line x1="16" y1="4" x2="16" y2="8"/></svg>
-                                    </span>
-                                    Blog
-                                </span>
-                            </a>
-                        </li> --}}
+                        
+                        
                         <li class="sidebar-list" style="padding: 15px 0px;">
-                            <a class="sidebar-link sidebar-title" href="{{ route('blog_principal') }}">
+                            <a class="sidebar-link sidebar-title" href="<?php echo e(route('blog_principal')); ?>">
                                 <span class="sb-item">
                                     <span class="sb-icon-box"><i class="fa fa-blog" aria-hidden="true" style="font-size: 20px;" ></i></span>
                                     Blog
@@ -123,7 +108,7 @@
                             </a>
                         </li>
                         <li class="sidebar-list" style="padding: 15px 0px;">
-                            <a class="sidebar-link sidebar-title" href="{{ route('web_book_amauta') }}">
+                            <a class="sidebar-link sidebar-title" href="<?php echo e(route('web_book_amauta')); ?>">
                                 <span class="sb-item">
                                     <span class="sb-icon-box"><i class="fa fa-book" aria-hidden="true" style="font-size: 20px;" ></i></span>
                                     Publicación
@@ -139,7 +124,7 @@
         /* Clase principal para truncar el texto */
         .truncated-link:first-letter {
             display: block;
-            max-height: {{ 1.2 * $lines }}em;
+            max-height: <?php echo e(1.2 * $lines); ?>em;
             /* Altura de 2 líneas (1.2em * 2) */
             line-height: 1.2em;
             overflow: hidden;
@@ -187,8 +172,8 @@
            rail se vean idénticas en todo el sitio. */
         @font-face {
             font-family: 'CpaRailIcons';
-            src: url('{{ asset('themes/personalLanding/assets/font/webfonts/fa-solid-900.woff2') }}') format('woff2'),
-                 url('{{ asset('themes/personalLanding/assets/font/webfonts/fa-solid-900.ttf') }}') format('truetype');
+            src: url('<?php echo e(asset('themes/personalLanding/assets/font/webfonts/fa-solid-900.woff2')); ?>') format('woff2'),
+                 url('<?php echo e(asset('themes/personalLanding/assets/font/webfonts/fa-solid-900.ttf')); ?>') format('truetype');
             font-style: normal;
             font-weight: 400;
             font-display: block;
@@ -285,3 +270,4 @@
         });
     </script>
 </div>
+<?php /**PATH C:\laragon\www\globalcpa\resources\views/components/sidebar.blade.php ENDPATH**/ ?>
