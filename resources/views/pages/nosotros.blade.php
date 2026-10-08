@@ -342,9 +342,8 @@
                                     retos del mundo real.
                                 </p>
                                 <p class="text-muted-custom" style="line-height: 1.8; font-size: 1.02rem;">
-
-                                    Estudia con la garantía de ser la <strong> única escuela peruana reconocida como Approved Learning Partner 
-                                    por la ACCA, </strong> y únete a una red de profesionales en más de 10 países. Prepárate para 
+                                    Estudia con la garantía de ser la <b> única escuela peruana reconocida como Approved Learning Partner 
+                                    por la ACCA, </b>y únete a una red de profesionales en más de 10 países. Prepárate para 
                                     liderar las áreas financieras de las corporaciones más exigentes.
                                 </p>
                             </div>
@@ -352,7 +351,7 @@
                                 <div class="nos-image-frame" style="min-height: 380px;">
                                     <img src="{{ asset('themes/webpage/images/alumnos.jpeg') }}"
                                         alt="Equipo de profesionales de CPA Academy">
-                                    <div class="nos-stats-float">
+                                    {{-- <div class="nos-stats-float">
                                         <div class="float-stat">
                                             <strong>+10</strong>
                                             <span>Años formando profesionales</span>
@@ -361,7 +360,7 @@
                                             <strong>+10</strong>
                                             <span>Países de LATAM</span>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </div>
                         </div>

@@ -1,16 +1,16 @@
-<?php $__env->startSection('title', ' - Política de Privacidad'); ?>
+<?php $__env->startSection('title', ' - El Amauta de las NIIF'); ?>
 
 <?php $__env->startSection('etiquetasmeta'); ?>
     <?php if (isset($component)) { $__componentOriginal42da61123f891e63201d7be28f403427 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal42da61123f891e63201d7be28f403427 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.seo','data' => ['title' => 'Política de Privacidad - CPA Academy','description' => 'Política de Privacidad de CPA Academy: cómo recopilamos, usamos, conservamos y protegemos los datos personales de nuestros usuarios, alumnos, interesados y visitantes conforme a la Ley N.° 29733 y normativa peruana aplicable.']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.seo','data' => ['title' => 'El Amauta de las NIIF - CPA Academy','description' => 'El Amauta de las NIIF: guía práctica y visual para dominar las normas internacionales de información financiera, con enfoque directo al grano para contadores, auditores y directivos.']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('seo'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['title' => 'Política de Privacidad - CPA Academy','description' => 'Política de Privacidad de CPA Academy: cómo recopilamos, usamos, conservamos y protegemos los datos personales de nuestros usuarios, alumnos, interesados y visitantes conforme a la Ley N.° 29733 y normativa peruana aplicable.']); ?>
+<?php $component->withAttributes(['title' => 'El Amauta de las NIIF - CPA Academy','description' => 'El Amauta de las NIIF: guía práctica y visual para dominar las normas internacionales de información financiera, con enfoque directo al grano para contadores, auditores y directivos.']); ?>
 <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginal42da61123f891e63201d7be28f403427)): ?>
@@ -287,7 +287,7 @@
     <?php if (isset($component)) { $__componentOriginal2a2e454b2e62574a80c8110e5f128b60 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal2a2e454b2e62574a80c8110e5f128b60 = $attributes; } ?>
 <?php $component = App\View\Components\Header::resolve(['breadcrumb' => [
-        ['label' => 'Política de Privacidad'],
+        ['label' => 'El Amauta de las NIIF'],
     ]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('header'); ?>
 <?php if ($component->shouldRender()): ?>
@@ -341,16 +341,16 @@
                             <div class="why-hero text-center">
                                 <div class="position-relative" style="z-index:2;">
                                     <span class="why-hero-tag mb-3 mt-3">
-                                        <i class="fa fa-lock"></i> Política de Privacidad
+                                        <i class="fa fa-book-open"></i> El Amauta de las NIIF
                                     </span>
                                     <h1 class="display-4 fw-bold mb-3 text-white" style="text-transform:uppercase; letter-spacing:1px;">
-                                        POLITICAS DE PRIVACIDAD
+                                        EL AMAUTA DE LAS NIIF
                                     </h1>
                                     <p class="text-white mb-4" style="font-size:1.05rem; max-width:800px; margin:0 auto;">
-                                        Última actualización: 06 de octubre de 2026
+                                        Última actualización: 6 de octubre de 2026
                                     </p>
                                     <p class="text-white mb-4" style="font-size:1rem; opacity:0.95;">
-                                        En CPA ACADEMY (en adelante, "nosotros", "nuestro" o "la empresa"), valoramos tu privacidad y nos comprometemos a proteger la información personal que compartes con nosotros. Esta política de privacidad describe cómo recopilamos, usamos y protegemos tus datos personales cuando accedes a nuestros cursos en línea a través de nuestro sitio web https://academy.globalcpaeru.com/.
+                                        Domina la normativa internacional con un enfoque visual, práctico y directo al grano. Una guía pensada para que entiendas las NIIF como nunca te lo han explicado.
                                     </p>
                                 </div>
                             </div>
@@ -365,89 +365,83 @@
                     <div class="row text-center mb-5">
                         <div class="col-lg-8 mx-auto">
                             <p class="text-muted-custom mb-2" style="text-transform:uppercase; letter-spacing:1px; font-size:0.85rem;">
-                                Información clave de la privacidad
+                                Información clave del recurso
                             </p>
-                            <h2 class="h1 mb-4 text-navy-custom" style="font-size:2rem;">Cómo protegemos tu información personal</h2>
+                            <h2 class="h1 mb-4 text-navy-custom" style="font-size:2rem;">Qué encontrarás en esta obra</h2>
                         </div>
                     </div>
 
                     <div class="row g-4 mb-3">
                         <div class="col-md-4">
                             <div class="why-count-box">
-                                <h3>10</h3>
-                                <p>Secciones clave de la privacidad</p>
+                                <h3>1</h3>
+                                <p>Edición actualizada</p>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="why-count-box">
                                 <h3>3</h3>
-                                <p>Bloques principales de información</p>
+                                <p>Áreas clave de formación</p>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="why-count-box">
-                                <h3>5</h3>
-                                <p>Derechos del usuario</p>
+                                <h3>3</h3>
+                                <p>Ediciones disponibles</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Secciones de la política -->
-            <div id="privacidad" class="why-section">
+            <!-- Secciones del producto -->
+            <div id="amauta" class="why-section">
                 <div class="container">
                     <div class="why-list-title mb-4">
-                        Política de Privacidad
+                        El Amauta de las NIIF
                     </div>
 
                     <div class="why-list-item">
                         <div class="why-list-head">
                             <span class="why-list-num">1</span>
-                            RESPONSABLE DEL TRATAMIENTO
+                            QUÉ ES EL AMAUTA DE LAS NIIF
                         </div>
                         <div class="why-list-body">
-                            <p>CPA Academy es responsable del tratamiento de los datos personales que recopila a través de sus canales y servicios. Para consultas, solicitudes relacionadas con datos personales o ejercicio de derechos, puedes comunicarte a:</p>
-                            <ul>
-                                <li>Correo: <strong>informes@globalcpaperu.com</strong></li>
-                                <li>Sitio web: <a href="https://academy.globalcpaperu.com" target="_blank">academy.globalcpaperu.com</a></li>
-                            </ul>
+                            <p>El Amauta de las NIIF es una obra dirigida a contadores públicos, auditores, consultores, directivos y gerentes financieros, así como a estudiantes de facultades de Contabilidad que necesitan comprender la normativa internacional de información financiera con claridad y práctica.</p>
+                            <p>Su propósito es explicar las NIIF de forma visual y directa, con el nivel de detalle que exige el ejercicio profesional sin perder el enfoque en lo que realmente importa para la toma de decisiones.</p>
                         </div>
                     </div>
 
                     <div class="why-list-item">
                         <div class="why-list-head">
                             <span class="why-list-num">2</span>
-                            DATOS PERSONALES QUE PODEMOS RECOPILAR
+                            EDICIÓN Y APLICACIÓN
                         </div>
                         <div class="why-list-body">
-                            <p>Dependiendo de la interacción que mantengas con CPA Academy, podemos recopilar:</p>
+                            <p><strong>El Amauta de las NIIF | Edición 2025</strong> está dirigido a:</p>
                             <ul>
-                                <li>Nombres y apellidos.</li>
-                                <li>Documento de identidad, cuando resulte necesario para determinados servicios.</li>
-                                <li>Correo electrónico, número de teléfono y WhatsApp.</li>
-                                <li>Información profesional, académica o laboral que decidas proporcionar.</li>
-                                <li>Información relacionada con tu matrícula, participación, evaluaciones y certificaciones.</li>
-                                <li>Información necesaria para procesar pagos y gestionar operaciones comerciales.</li>
-                                <li>Información proporcionada mediante formularios, consultas, encuestas o comunicaciones.</li>
-                                <li>Información técnica y de navegación, como dirección IP, navegador, dispositivo, páginas visitadas y comportamiento de navegación.</li>
+                                <li>Contadores públicos y auditores que necesitan una referencia actualizada.</li>
+                                <li>Consultores, directivos y gerentes financieros de empresas obligadas a aplicar las NIIF Plenas o las NIIF para PYMES.</li>
+                                <li>Funcionarios públicos de la alta dirección de empresas del Estado sujetas a las NICSP.</li>
+                                <li>Estudiantes de facultades de Contabilidad.</li>
                             </ul>
-                            <p>No solicitamos datos personales que no sean necesarios para las finalidades informadas.</p>
+                            <p>En cada edición se consideran las novedades normativas, los enfoques prácticos y los temas que más incidencia tienen en la labor profesional.</p>
                         </div>
                     </div>
 
                     <div class="why-list-item">
                         <div class="why-list-head">
                             <span class="why-list-num">3</span>
-                            FINALIDADES DEL TRATAMIENTO
+                            ENFOQUE Y METODOLOGÍA
                         </div>
                         <div class="why-list-body">
-                            <p>Podemos utilizar los datos personales para las siguientes finalidades:</p>
+                            <p>El libro combina explicación teórica y aplicación práctica. No se limita a repetir el texto normativo: traduce los criterios a situaciones reales y ayuda a la rápida identificación de lo que importa en cada tema.</p>
+                            <p><strong>Algunos pilares del formato:</strong></p>
                             <ul>
-                                <li><strong>Prestación de servicios:</strong> Gestionar consultas, registros y matrículas. Procesar pagos y operaciones relacionadas con los servicios contratados. Proporcionar acceso a programas, clases, plataformas, materiales y recursos. Gestionar asistencia, evaluaciones y certificaciones. Brindar soporte académico, administrativo y tecnológico. Comunicar cambios, reprogramaciones, incidencias y demás información relacionada con los servicios contratados.</li>
-                                <li><strong>Gestión comercial:</strong> Cuando corresponda y conforme a la normativa aplicable, podemos utilizar los datos para atender solicitudes de información, realizar seguimiento comercial y gestionar procesos de admisión o inscripción.</li>
-                                <li><strong>Marketing y prospección comercial:</strong> Con el consentimiento que corresponda, podremos utilizar los datos de contacto para enviar información sobre programas, eventos, promociones, novedades y otros servicios. El titular podrá retirar su consentimiento u oponerse a comunicaciones comerciales.</li>
-                                <li><strong>Mejora de nuestros servicios:</strong> Podemos utilizar información de uso y navegación para analizar el funcionamiento de nuestros canales digitales.</li>
+                                <li>Explicación clara y directa al grano.</li>
+                                <li>Ejemplos visuales y comparaciones prácticas.</li>
+                                <li>Enfoque en la aplicación, no solo en la teoría.</li>
+                                <li>Material de soporte pensado para el estudio y la consulta rápida.</li>
                             </ul>
                         </div>
                     </div>
@@ -455,104 +449,64 @@
                     <div class="why-list-item">
                         <div class="why-list-head">
                             <span class="why-list-num">4</span>
-                            COOKIES Y TECNOLOGÍAS SIMILARES
+                            PROGRAMAS Y MODALIDADES
                         </div>
                         <div class="why-list-body">
-                            <p>Nuestro sitio web puede utilizar cookies, píxeles, etiquetas y tecnologías similares para permitir el funcionamiento del sitio, recordar preferencias y obtener estadísticas. El usuario puede gestionar determinadas preferencias de cookies desde su navegador.</p>
+                            <p>La obra se presenta en ediciones actualizadas y puede estar disponible en distintas modalidades según la promoción o el programa de formación. CPA Academy informa las opciones disponibles en los canales oficiales.</p>
                         </div>
                     </div>
 
                     <div class="why-list-item">
                         <div class="why-list-head">
                             <span class="why-list-num">5</span>
-                            COMPARTICIÓN Y ENCARGADOS DEL TRATAMIENTO
+                            PREÇIOS, PAGOS Y PROMOCIONES
                         </div>
                         <div class="why-list-body">
-                            <p>CPA Academy podrá utilizar proveedores especializados para operar sus servicios (plataformas educativas, procesadores de pago, etc.).</p>
-                            <p><strong>Uso del Servicio de Resultados de ACCA:</strong> Informamos a los estudiantes de los programas de la cualificación ACCA que sus datos personales serán compartidos directamente con ACCA (Association of Chartered Certified Accountants) para el uso de su Servicio de Resultados. Este servicio es el mecanismo mediante el cual ACCA recopila datos de los estudiantes para permitir el análisis de las tasas de aprobación. Cuando corresponda, podremos realizar transferencias nacionales o internacionales de datos, adoptando las medidas exigidas por la normativa. Podremos comunicar información cuando exista una obligación legal.</p>
+                            <p>Los precios se comunican en los canales oficiales. El costo de acceso o adquisición se aclara antes de realizar cualquier pago. CPA Academy puede modificar precios para futuras ediciones o promociones.</p>
                         </div>
                     </div>
 
                     <div class="why-list-item">
                         <div class="why-list-head">
                             <span class="why-list-num">6</span>
-                            CONSERVACIÓN DE LOS DATOS
+                            REPROGRAMACIONES, CANCELACIONES Y DEVOLUCIONES
                         </div>
                         <div class="why-list-body">
-                            <p>Conservaremos los datos personales durante el tiempo necesario para cumplir las finalidades para las cuales fueron recopilados, atender obligaciones legales o resolver controversias.</p>
+                            <p>Las condiciones de acceso, reprogramación, cancelación y devolución se regirán por nuestra Política de Devoluciones, Reembolsos y Transferencias, que forma parte íntegra de los Términos y Condiciones.</p>
                         </div>
                     </div>
 
                     <div class="why-list-item">
                         <div class="why-list-head">
                             <span class="why-list-num">7</span>
-                            SEGURIDAD DE LA INFORMACIÓN
+                            MATERIALES Y PROPIEDAD INTELECTUAL
                         </div>
                         <div class="why-list-body">
-                            <p>Adoptamos medidas técnicas, organizativas y de seguridad razonables destinadas a proteger los datos personales. Ningún sistema electrónico puede garantizar una seguridad absoluta.</p>
+                            <p>Los contenidos de El Amauta de las NIIF están protegidos por derechos de autor. Queda prohibido compartir credenciales, copiar, reproducir, comercializar o grabar clases sin autorización.</p>
                         </div>
                     </div>
 
                     <div class="why-list-item">
                         <div class="why-list-head">
                             <span class="why-list-num">8</span>
-                            DERECHOS DEL TITULAR DE LOS DATOS
+                            PLATAFORMAS Y SERVICIOS DE TERCEROS
                         </div>
                         <div class="why-list-body">
-                            <p>El titular puede ejercer los derechos de información, acceso, rectificación, cancelación/supresión, oposición y revocación del consentimiento. Las solicitudes podrán enviarse a: <strong>informes@globalcpaperu.com</strong>.</p>
+                            <p>Algunos servicios o accesos complementarios pueden depender de plataformas de terceros. CPA Academy realizará esfuerzos razonables para mantener la continuidad del servicio, pero no será responsable por interrupciones ajenas a su control.</p>
                         </div>
                     </div>
 
                     <div class="why-list-item">
                         <div class="why-list-head">
                             <span class="why-list-num">9</span>
-                            COMUNICACIONES COMERCIALES
-                        </div>
-                        <div class="why-list-body">
-                            <p>El titular puede solicitar en cualquier momento dejar de recibir comunicaciones comerciales. Esto no afecta las comunicaciones indispensables para la prestación del servicio.</p>
-                        </div>
-                    </div>
-
-                    <div class="why-list-item">
-                        <div class="why-list-head">
-                            <span class="why-list-num">10</span>
-                            MENORES DE EDAD
-                        </div>
-                        <div class="why-list-body">
-                            <p>Nuestros servicios están dirigidos a mayores de edad. Si se recopilan datos de menores, se aplicarán las condiciones exigidas por la normativa vigente.</p>
-                        </div>
-                    </div>
-
-                    <div class="why-list-item">
-                        <div class="why-list-head">
-                            <span class="why-list-num">11</span>
-                            ENLACES Y SERVICIOS DE TERCEROS
-                        </div>
-                        <div class="why-list-body">
-                            <p>Nuestro sitio web puede contener enlaces a terceros. CPA Academy no controla sus políticas de privacidad.</p>
-                        </div>
-                    </div>
-
-                    <div class="why-list-item">
-                        <div class="why-list-head">
-                            <span class="why-list-num">12</span>
-                            CAMBIOS EN ESTA POLÍTICA
-                        </div>
-                        <div class="why-list-body">
-                            <p>CPA Academy podrá actualizar esta Política, publicando la versión vigente en el sitio web.</p>
-                        </div>
-                    </div>
-
-                    <div class="why-list-item">
-                        <div class="why-list-head">
-                            <span class="why-list-num">13</span>
                             CONTACTO
                         </div>
                         <div class="why-list-body">
                             <div class="why-highlight-box" style="background:none; border:1px solid #002060; color:#002060; padding:18px 20px;">
                                 <p style="margin:0 0 8px; font-size:0.9rem; font-weight:600; text-transform:uppercase; letter-spacing:0.6px;">Contacto</p>
                                 <p style="margin:0; font-size:1rem;">
-                                    Correo: <strong>informes@globalcpaperu.com</strong> |
+                                    Correo: <strong>capacitacion@globalcpaperu.com</strong><br>
+                                    WhatsApp: <strong>+51 967 052 506</strong><br>
                                     Web: <a href="https://academy.globalcpaperu.com" target="_blank">academy.globalcpaperu.com</a>
                                 </p>
                             </div>
@@ -588,4 +542,4 @@
 
 <?php $__env->stopSection(); ?>
 
-<?php echo $__env->make('layouts.webpage', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\globalcpa\resources\views/pages/politicas_privacidad.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts.webpage', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\globalcpa\resources\views/pages/amauta-niif.blade.php ENDPATH**/ ?>

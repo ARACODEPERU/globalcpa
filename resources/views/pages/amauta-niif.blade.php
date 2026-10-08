@@ -1,29 +1,15 @@
-<?php $__env->startSection('title', ' - Términos y Condiciones'); ?>
+@extends('layouts.webpage')
 
-<?php $__env->startSection('etiquetasmeta'); ?>
-    <?php if (isset($component)) { $__componentOriginal42da61123f891e63201d7be28f403427 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal42da61123f891e63201d7be28f403427 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.seo','data' => ['title' => 'Términos y Condiciones - CPA Academy','description' => 'Términos y condiciones de uso de CPA Academy: registro, matrícula, requisitos técnicos, servicios académicos, pagos, propiedad intelectual y canales de contacto.']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('seo'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['title' => 'Términos y Condiciones - CPA Academy','description' => 'Términos y condiciones de uso de CPA Academy: registro, matrícula, requisitos técnicos, servicios académicos, pagos, propiedad intelectual y canales de contacto.']); ?>
-<?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginal42da61123f891e63201d7be28f403427)): ?>
-<?php $attributes = $__attributesOriginal42da61123f891e63201d7be28f403427; ?>
-<?php unset($__attributesOriginal42da61123f891e63201d7be28f403427); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginal42da61123f891e63201d7be28f403427)): ?>
-<?php $component = $__componentOriginal42da61123f891e63201d7be28f403427; ?>
-<?php unset($__componentOriginal42da61123f891e63201d7be28f403427); ?>
-<?php endif; ?>
-<?php $__env->stopSection(); ?>
+@section('title', ' - El Amauta de las NIIF')
 
-<?php $__env->startSection('content'); ?>
+@section('etiquetasmeta')
+    <x-seo
+        title="El Amauta de las NIIF - CPA Academy"
+        description="El Amauta de las NIIF: guía práctica y visual para dominar las normas internacionales de información financiera, con enfoque directo al grano para contadores, auditores y directivos."
+    />
+@endsection
+
+@section('content')
 
 <style>
     .text-navy-custom { color:#002060 !important; }
@@ -273,63 +259,25 @@
 
 <!-- Loader starts-->
 <div class="loader-wrapper">
-    <img src="<?php echo e(asset('themes/webpage/images/Logo_cpa_modificado.png')); ?>" alt="CPA Logo" class="loader-logo">
+    <img src="{{ asset('themes/webpage/images/Logo_cpa_modificado.png') }}" alt="CPA Logo" class="loader-logo">
     <p class="loader-text">Cargando</p>
 </div>
 <!-- Loader ends-->
 <!-- tap on top starts-->
 <div class="tap-top"><i data-feather="chevrons-up"></i></div>
-<!-- tap on top ends-->
+<!-- tap on tap ends-->
 
 <!-- page-wrapper Start-->
 <div class="page-wrapper" id="pageWrapper">
     <!-- Page Header Start-->
-    <?php if (isset($component)) { $__componentOriginal2a2e454b2e62574a80c8110e5f128b60 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal2a2e454b2e62574a80c8110e5f128b60 = $attributes; } ?>
-<?php $component = App\View\Components\Header::resolve(['breadcrumb' => [
-        ['label' => 'Términos y Condiciones'],
-    ]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('header'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\App\View\Components\Header::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes([]); ?>
-<?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginal2a2e454b2e62574a80c8110e5f128b60)): ?>
-<?php $attributes = $__attributesOriginal2a2e454b2e62574a80c8110e5f128b60; ?>
-<?php unset($__attributesOriginal2a2e454b2e62574a80c8110e5f128b60); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginal2a2e454b2e62574a80c8110e5f128b60)): ?>
-<?php $component = $__componentOriginal2a2e454b2e62574a80c8110e5f128b60; ?>
-<?php unset($__componentOriginal2a2e454b2e62574a80c8110e5f128b60); ?>
-<?php endif; ?>
+    <x-header :breadcrumb="[
+        ['label' => 'El Amauta de las NIIF'],
+    ]" />
     <!-- Page Header Ends-->
     <!-- Page Body Start-->
     <div class="page-body-wrapper">
         <!-- Page Sidebar Start-->
-        <?php if (isset($component)) { $__componentOriginald31f0a1d6e85408eecaaa9471b609820 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginald31f0a1d6e85408eecaaa9471b609820 = $attributes; } ?>
-<?php $component = App\View\Components\Sidebar::resolve([] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('sidebar'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\App\View\Components\Sidebar::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes([]); ?>
-<?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginald31f0a1d6e85408eecaaa9471b609820)): ?>
-<?php $attributes = $__attributesOriginald31f0a1d6e85408eecaaa9471b609820; ?>
-<?php unset($__attributesOriginald31f0a1d6e85408eecaaa9471b609820); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginald31f0a1d6e85408eecaaa9471b609820)): ?>
-<?php $component = $__componentOriginald31f0a1d6e85408eecaaa9471b609820; ?>
-<?php unset($__componentOriginald31f0a1d6e85408eecaaa9471b609820); ?>
-<?php endif; ?>
+        <x-sidebar />
         <!-- Page Sidebar Ends-->
         <div class="page-body">
 
@@ -341,16 +289,16 @@
                             <div class="why-hero text-center">
                                 <div class="position-relative" style="z-index:2;">
                                     <span class="why-hero-tag mb-3 mt-3">
-                                        <i class="fa fa-sync-alt"></i> Términos y Condiciones
+                                        <i class="fa fa-book-open"></i> El Amauta de las NIIF
                                     </span>
                                     <h1 class="display-4 fw-bold mb-3 text-white" style="text-transform:uppercase; letter-spacing:1px;">
-                                        TÉRMINOS Y CONDICIONES
+                                        EL AMAUTA DE LAS NIIF
                                     </h1>
                                     <p class="text-white mb-4" style="font-size:1.05rem; max-width:800px; margin:0 auto;">
                                         Última actualización: 6 de octubre de 2026
                                     </p>
                                     <p class="text-white mb-4" style="font-size:1rem; opacity:0.95;">
-                                        Bienvenido a CPA Academy. Estos Términos y Condiciones regulan el uso de academy.globalcpaperu.com y la contratación de nuestros programas académicos.
+                                        Domina la normativa internacional con un enfoque visual, práctico y directo al grano. Una guía pensada para que entiendas las NIIF como nunca te lo han explicado.
                                     </p>
                                 </div>
                             </div>
@@ -365,75 +313,83 @@
                     <div class="row text-center mb-5">
                         <div class="col-lg-8 mx-auto">
                             <p class="text-muted-custom mb-2" style="text-transform:uppercase; letter-spacing:1px; font-size:0.85rem;">
-                                Información clave de los términos
+                                Información clave del recurso
                             </p>
-                            <h2 class="h1 mb-4 text-navy-custom" style="font-size:2rem;">Qué debes saber sobre el uso de la plataforma</h2>
+                            <h2 class="h1 mb-4 text-navy-custom" style="font-size:2rem;">Qué encontrarás en esta obra</h2>
                         </div>
                     </div>
 
                     <div class="row g-4 mb-3">
                         <div class="col-md-4">
                             <div class="why-count-box">
-                                <h3>9</h3>
-                                <p>Secciones clave de los términos</p>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="why-count-box">
-                                <h3>5</h3>
-                                <p>Puntos técnicos de acceso</p>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="why-count-box">
                                 <h3>1</h3>
-                                <p>Política de devoluciones asociada</p>
+                                <p>Edición actualizada</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="why-count-box">
+                                <h3>3</h3>
+                                <p>Áreas clave de formación</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="why-count-box">
+                                <h3>3</h3>
+                                <p>Ediciones disponibles</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Secciones de los términos -->
-            <div id="terminos" class="why-section">
+            <!-- Secciones del producto -->
+            <div id="amauta" class="why-section">
                 <div class="container">
                     <div class="why-list-title mb-4">
-                        Términos y Condiciones de Uso
+                        El Amauta de las NIIF
                     </div>
 
                     <div class="why-list-item">
                         <div class="why-list-head">
                             <span class="why-list-num">1</span>
-                            ALCANCE Y SERVICIOS
+                            QUÉ ES EL AMAUTA DE LAS NIIF
                         </div>
                         <div class="why-list-body">
-                            <p>CPA Academy ofrece servicios de formación y capacitación profesional. Estos Términos regulan el uso del sitio, pagos, accesos a plataformas, evaluaciones y certificaciones.</p>
+                            <p>El Amauta de las NIIF es una obra dirigida a contadores públicos, auditores, consultores, directivos y gerentes financieros, así como a estudiantes de facultades de Contabilidad que necesitan comprender la normativa internacional de información financiera con claridad y práctica.</p>
+                            <p>Su propósito es explicar las NIIF de forma visual y directa, con el nivel de detalle que exige el ejercicio profesional sin perder el enfoque en lo que realmente importa para la toma de decisiones.</p>
                         </div>
                     </div>
 
                     <div class="why-list-item">
                         <div class="why-list-head">
                             <span class="why-list-num">2</span>
-                            REGISTRO, MATRÍCULA Y CUENTAS DE USUARIO
+                            EDICIÓN Y APLICACIÓN
                         </div>
                         <div class="why-list-body">
-                            <p>El participante deberá proporcionar información verdadera. Las cuentas son personales e intransferibles.</p>
-                            <p><strong>Aviso Legal de Inscripción:</strong> Para concretar la matrícula, el estudiante debe marcar la casilla obligatoria habilitada en el formulario de inscripción virtual, mediante la cual confirma expresamente que ha leído y comprendido todos los presentes Términos y Condiciones, así como nuestras políticas asociadas.</p>
+                            <p><strong>El Amauta de las NIIF | Edición 2025</strong> está dirigido a:</p>
+                            <ul>
+                                <li>Contadores públicos y auditores que necesitan una referencia actualizada.</li>
+                                <li>Consultores, directivos y gerentes financieros de empresas obligadas a aplicar las NIIF Plenas o las NIIF para PYMES.</li>
+                                <li>Funcionarios públicos de la alta dirección de empresas del Estado sujetas a las NICSP.</li>
+                                <li>Estudiantes de facultades de Contabilidad.</li>
+                            </ul>
+                            <p>En cada edición se consideran las novedades normativas, los enfoques prácticos y los temas que más incidencia tienen en la labor profesional.</p>
                         </div>
                     </div>
 
                     <div class="why-list-item">
                         <div class="why-list-head">
                             <span class="why-list-num">3</span>
-                            REQUISITOS TÉCNICOS Y DE ACCESO (MODALIDAD EN LÍNEA Y MIXTA)
+                            ENFOQUE Y METODOLOGÍA
                         </div>
                         <div class="why-list-body">
-                            <p>Previo a la matrícula, el estudiante debe asegurar que cumple con los siguientes requisitos técnicos para acceder a la plataforma de aprendizaje:</p>
+                            <p>El libro combina explicación teórica y aplicación práctica. No se limita a repetir el texto normativo: traduce los criterios a situaciones reales y ayuda a la rápida identificación de lo que importa en cada tema.</p>
+                            <p><strong>Algunos pilares del formato:</strong></p>
                             <ul>
-                                <li><strong>Requisitos de software:</strong> El uso de la plataforma puede requerir acceso a software ofimático básico como Microsoft Excel o Word, y un lector de PDF.</li>
-                                <li><strong>Navegadores compatibles:</strong> Nuestra plataforma de aprendizaje está optimizada para funcionar en navegadores específicos, preferentemente Google Chrome, Mozilla Firefox o Safari en sus versiones más recientes.</li>
-                                <li><strong>Velocidad de Internet:</strong> Se requiere una conexión a Internet de banda ancha (velocidad mínima recomendada de 5 Mbps a 10 Mbps) para utilizar todos los recursos, participar en clases en directo sin interrupciones y reproducir las clases grabadas.</li>
-                                <li><strong>Fechas de inicio y caducidad:</strong> Al momento de adquirir el acceso a la plataforma de aprendizaje en línea, se le notificará claramente al estudiante (en la página de pago y/o vía correo electrónico de confirmación) la fecha exacta en la que podrá acceder a todos los materiales de su curso, así como la fecha de caducidad y cierre de dicho acceso.</li>
+                                <li>Explicación clara y directa al grano.</li>
+                                <li>Ejemplos visuales y comparaciones prácticas.</li>
+                                <li>Enfoque en la aplicación, no solo en la teoría.</li>
+                                <li>Material de soporte pensado para el estudio y la consulta rápida.</li>
                             </ul>
                         </div>
                     </div>
@@ -441,66 +397,56 @@
                     <div class="why-list-item">
                         <div class="why-list-head">
                             <span class="why-list-num">4</span>
-                            SOLICITUDES DE VISADO
+                            PROGRAMAS Y MODALIDADES
                         </div>
                         <div class="why-list-body">
-                            <p>CPA Academy imparte formación en modalidad presencial, virtual y mixta. Para estudiantes extranjeros que deseen asistir presencialmente a nuestras instalaciones, informamos que CPA Academy no asume ninguna responsabilidad ni brinda asistencia respecto a las solicitudes de visado. Es de plena y exclusiva responsabilidad del estudiante gestionar y cumplir con cualquier requisito de visado aplicable. Si la solicitud de visado de un estudiante es rechazada, esto no le otorga derecho a un reembolso extraordinario, rigiéndose estrictamente por nuestra Política de Devoluciones.</p>
+                            <p>La obra se presenta en ediciones actualizadas y puede estar disponible en distintas modalidades según la promoción o el programa de formación. CPA Academy informa las opciones disponibles en los canales oficiales.</p>
                         </div>
                     </div>
 
                     <div class="why-list-item">
                         <div class="why-list-head">
                             <span class="why-list-num">5</span>
-                            PROGRAMAS ACADÉMICOS
+                            PREÇIOS, PAGOS Y PROMOCIONES
                         </div>
                         <div class="why-list-body">
-                            <p>Cada programa tendrá condiciones particulares. CPA Academy podrá realizar ajustes razonables en docentes o metodologías para garantizar la calidad.</p>
+                            <p>Los precios se comunican en los canales oficiales. El costo de acceso o adquisición se aclara antes de realizar cualquier pago. CPA Academy puede modificar precios para futuras ediciones o promociones.</p>
                         </div>
                     </div>
 
                     <div class="why-list-item">
                         <div class="why-list-head">
                             <span class="why-list-num">6</span>
-                            PRECIOS, PAGOS Y PROMOCIONES
+                            REPROGRAMACIONES, CANCELACIONES Y DEVOLUCIONES
                         </div>
                         <div class="why-list-body">
-                            <p>Los precios serán comunicados en los canales oficiales y el costo de acceso a la matrícula se aclarará antes de que el estudiante realice cualquier pago. CPA Academy podrá modificar precios para futuras matrículas.</p>
+                            <p>Las condiciones de acceso, reprogramación, cancelación y devolución se regirán por nuestra Política de Devoluciones, Reembolsos y Transferencias, que forma parte íntegra de los Términos y Condiciones.</p>
                         </div>
                     </div>
 
                     <div class="why-list-item">
                         <div class="why-list-head">
                             <span class="why-list-num">7</span>
-                            REPROGRAMACIONES, CANCELACIONES Y DEVOLUCIONES
+                            MATERIALES Y PROPIEDAD INTELECTUAL
                         </div>
                         <div class="why-list-body">
-                            <p>CPA Academy podrá reprogramar sesiones por razones de fuerza mayor. Las devoluciones, cancelaciones o transferencias se regirán por nuestra Política de Devoluciones, Reembolsos y Transferencias, que forma parte íntegra de estos Términos.</p>
+                            <p>Los contenidos de El Amauta de las NIIF están protegidos por derechos de autor. Queda prohibido compartir credenciales, copiar, reproducir, comercializar o grabar clases sin autorización.</p>
                         </div>
                     </div>
 
                     <div class="why-list-item">
                         <div class="why-list-head">
                             <span class="why-list-num">8</span>
-                            GRABACIONES, MATERIALES Y PROPIEDAD INTELECTUAL
+                            PLATAFORMAS Y SERVICIOS DE TERCEROS
                         </div>
                         <div class="why-list-body">
-                            <p>Los contenidos están protegidos por derechos de autor. Queda prohibido compartir credenciales, copiar, reproducir, comercializar o grabar clases sin autorización.</p>
+                            <p>Algunos servicios o accesos complementarios pueden depender de plataformas de terceros. CPA Academy realizará esfuerzos razonables para mantener la continuidad del servicio, pero no será responsable por interrupciones ajenas a su control.</p>
                         </div>
                     </div>
 
                     <div class="why-list-item">
                         <div class="why-list-head">
                             <span class="why-list-num">9</span>
-                            PLATAFORMAS, SERVICIOS DE TERCEROS Y FUERZA MAYOR
-                        </div>
-                        <div class="why-list-body">
-                            <p>Algunos servicios dependen de plataformas de terceros. CPA Academy realizará esfuerzos razonables para mantener la continuidad del servicio, pero no será responsable por interrupciones ajenas a su control.</p>
-                        </div>
-                    </div>
-
-                    <div class="why-list-item">
-                        <div class="why-list-head">
-                            <span class="why-list-num">10</span>
                             CONTACTO
                         </div>
                         <div class="why-list-body">
@@ -519,29 +465,8 @@
 
         </div>
         <!-- footer start-->
-        <?php if (isset($component)) { $__componentOriginal99051027c5120c83a2f9a5ae7c4c3cfa = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal99051027c5120c83a2f9a5ae7c4c3cfa = $attributes; } ?>
-<?php $component = App\View\Components\Footer::resolve([] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('footer'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\App\View\Components\Footer::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes([]); ?>
-<?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginal99051027c5120c83a2f9a5ae7c4c3cfa)): ?>
-<?php $attributes = $__attributesOriginal99051027c5120c83a2f9a5ae7c4c3cfa; ?>
-<?php unset($__attributesOriginal99051027c5120c83a2f9a5ae7c4c3cfa); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginal99051027c5120c83a2f9a5ae7c4c3cfa)): ?>
-<?php $component = $__componentOriginal99051027c5120c83a2f9a5ae7c4c3cfa; ?>
-<?php unset($__componentOriginal99051027c5120c83a2f9a5ae7c4c3cfa); ?>
-<?php endif; ?>
+        <x-footer />
     </div>
 </div>
 
-<?php $__env->stopSection(); ?>
-
-<?php echo $__env->make('layouts.webpage', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\globalcpa\resources\views/pages/terminos-y-condiciones.blade.php ENDPATH**/ ?>
+@stop

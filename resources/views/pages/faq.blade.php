@@ -436,9 +436,40 @@
                 </div>
 
                 {{-- ============================================ --}}
-                {{-- 2. BUSCADOR --}}
+                {{-- 4. FRANJA DE ESTADÍSTICAS --}}
                 {{-- ============================================ --}}
                 <section class="faq-section">
+                    <div class="container">
+                        <div class="faq-stats-band shadow" data-aos="fade-up">
+                            <div class="row row-cols-2 row-cols-lg-4 g-4 position-relative">
+                                <div class="col faq-stat">
+                                    <i class="fa fa-graduation-cap"></i>
+                                    <strong>+1,000</strong>
+                                    <span>Alumnos formados</span>
+                                </div>
+                                <div class="col faq-stat">
+                                    <i class="fa fa-globe-americas"></i>
+                                    <strong>+10</strong>
+                                    <span>Países de LATAM</span>
+                                </div>
+                                <div class="col faq-stat">
+                                    <i class="fa fa-chalkboard-teacher"></i>
+                                    <strong>+40</strong>
+                                    <span>Docentes expertos</span>
+                                </div>
+                                <div class="col faq-stat">
+                                    <i class="fa fa-book-open"></i>
+                                    <strong>+25</strong>
+                                    <span>Programas de especialización</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                {{-- ============================================ --}}
+                {{-- 2. BUSCADOR --}}
+                {{-- ============================================ --}}
+                {{-- <section class="faq-section">
                     <div class="container">
                         <div class="faq-search-box text-center" data-aos="fade-up">
                             <h4 class="fw-bold text-navy-custom mb-3">¿Buscas algo específico?</h4>
@@ -457,7 +488,7 @@
                             </form>
                         </div>
                     </div>
-                </section>
+                </section> --}}
 
                 {{-- ============================================ --}}
                 {{-- 3. PREGUNTAS POR CATEGORÍA --}}
@@ -707,37 +738,7 @@
                     </div>
                 </section>
 
-                {{-- ============================================ --}}
-                {{-- 4. FRANJA DE ESTADÍSTICAS --}}
-                {{-- ============================================ --}}
-                <section class="faq-section">
-                    <div class="container">
-                        <div class="faq-stats-band shadow" data-aos="fade-up">
-                            <div class="row row-cols-2 row-cols-lg-4 g-4 position-relative">
-                                <div class="col faq-stat">
-                                    <i class="fa fa-graduation-cap"></i>
-                                    <strong>+5,000</strong>
-                                    <span>Alumnos formados</span>
-                                </div>
-                                <div class="col faq-stat">
-                                    <i class="fa fa-globe-americas"></i>
-                                    <strong>+10</strong>
-                                    <span>Países de LATAM</span>
-                                </div>
-                                <div class="col faq-stat">
-                                    <i class="fa fa-chalkboard-teacher"></i>
-                                    <strong>+40</strong>
-                                    <span>Docentes expertos</span>
-                                </div>
-                                <div class="col faq-stat">
-                                    <i class="fa fa-book-open"></i>
-                                    <strong>+25</strong>
-                                    <span>Programas de especialización</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
+                
 
                 {{-- ============================================ --}}
                 {{-- 5. CTA FINAL --}}
