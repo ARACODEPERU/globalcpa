@@ -1,15 +1,29 @@
-@extends('layouts.webpage')
+<?php $__env->startSection('title', ' - Términos y Condiciones'); ?>
 
-@section('title', ' - Políticas de Devoluciones')
+<?php $__env->startSection('etiquetasmeta'); ?>
+    <?php if (isset($component)) { $__componentOriginal42da61123f891e63201d7be28f403427 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal42da61123f891e63201d7be28f403427 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.seo','data' => ['title' => 'Términos y Condiciones - CPA Academy','description' => 'Términos y condiciones de uso de CPA Academy: registro, matrícula, requisitos técnicos, servicios académicos, pagos, propiedad intelectual y canales de contacto.']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('seo'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['title' => 'Términos y Condiciones - CPA Academy','description' => 'Términos y condiciones de uso de CPA Academy: registro, matrícula, requisitos técnicos, servicios académicos, pagos, propiedad intelectual y canales de contacto.']); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal42da61123f891e63201d7be28f403427)): ?>
+<?php $attributes = $__attributesOriginal42da61123f891e63201d7be28f403427; ?>
+<?php unset($__attributesOriginal42da61123f891e63201d7be28f403427); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal42da61123f891e63201d7be28f403427)): ?>
+<?php $component = $__componentOriginal42da61123f891e63201d7be28f403427; ?>
+<?php unset($__componentOriginal42da61123f891e63201d7be28f403427); ?>
+<?php endif; ?>
+<?php $__env->stopSection(); ?>
 
-@section('etiquetasmeta')
-    <x-seo
-        title="Políticas de Devoluciones - CPA Academy"
-        description="Lee las políticas de devoluciones, reembolsos y transferencias de CPA Academy: condiciones de cancelación, acceso a contenidos, reprogramación y canales de atención."
-    />
-@endsection
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 
 <style>
     .text-navy-custom { color:#002060 !important; }
@@ -259,25 +273,63 @@
 
 <!-- Loader starts-->
 <div class="loader-wrapper">
-    <img src="{{ asset('themes/webpage/images/Logo_cpa_modificado.png') }}" alt="CPA Logo" class="loader-logo">
+    <img src="<?php echo e(asset('themes/webpage/images/Logo_cpa_modificado.png')); ?>" alt="CPA Logo" class="loader-logo">
     <p class="loader-text">Cargando</p>
 </div>
 <!-- Loader ends-->
 <!-- tap on top starts-->
 <div class="tap-top"><i data-feather="chevrons-up"></i></div>
-<!-- tap on tap ends-->
+<!-- tap on top ends-->
 
 <!-- page-wrapper Start-->
 <div class="page-wrapper" id="pageWrapper">
     <!-- Page Header Start-->
-    <x-header :breadcrumb="[
-        ['label' => 'Políticas de Devoluciones'],
-    ]" />
+    <?php if (isset($component)) { $__componentOriginal2a2e454b2e62574a80c8110e5f128b60 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal2a2e454b2e62574a80c8110e5f128b60 = $attributes; } ?>
+<?php $component = App\View\Components\Header::resolve(['breadcrumb' => [
+        ['label' => 'Términos y Condiciones'],
+    ]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('header'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\App\View\Components\Header::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal2a2e454b2e62574a80c8110e5f128b60)): ?>
+<?php $attributes = $__attributesOriginal2a2e454b2e62574a80c8110e5f128b60; ?>
+<?php unset($__attributesOriginal2a2e454b2e62574a80c8110e5f128b60); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal2a2e454b2e62574a80c8110e5f128b60)): ?>
+<?php $component = $__componentOriginal2a2e454b2e62574a80c8110e5f128b60; ?>
+<?php unset($__componentOriginal2a2e454b2e62574a80c8110e5f128b60); ?>
+<?php endif; ?>
     <!-- Page Header Ends-->
     <!-- Page Body Start-->
     <div class="page-body-wrapper">
         <!-- Page Sidebar Start-->
-        <x-sidebar />
+        <?php if (isset($component)) { $__componentOriginald31f0a1d6e85408eecaaa9471b609820 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginald31f0a1d6e85408eecaaa9471b609820 = $attributes; } ?>
+<?php $component = App\View\Components\Sidebar::resolve([] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('sidebar'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\App\View\Components\Sidebar::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginald31f0a1d6e85408eecaaa9471b609820)): ?>
+<?php $attributes = $__attributesOriginald31f0a1d6e85408eecaaa9471b609820; ?>
+<?php unset($__attributesOriginald31f0a1d6e85408eecaaa9471b609820); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginald31f0a1d6e85408eecaaa9471b609820)): ?>
+<?php $component = $__componentOriginald31f0a1d6e85408eecaaa9471b609820; ?>
+<?php unset($__componentOriginald31f0a1d6e85408eecaaa9471b609820); ?>
+<?php endif; ?>
         <!-- Page Sidebar Ends-->
         <div class="page-body">
 
@@ -289,16 +341,16 @@
                             <div class="why-hero text-center">
                                 <div class="position-relative" style="z-index:2;">
                                     <span class="why-hero-tag mb-3 mt-3">
-                                        <i class="fa fa-shield-alt"></i> Políticas de Devoluciones
+                                        <i class="fa fa-sync-alt"></i> Términos y Condiciones
                                     </span>
                                     <h1 class="display-4 fw-bold mb-3 text-white" style="text-transform:uppercase; letter-spacing:1px;">
-                                        POLITICAS DE DEVOLUCIONES
+                                        TÉRMINOS Y CONDICIONES
                                     </h1>
                                     <p class="text-white mb-4" style="font-size:1.05rem; max-width:800px; margin:0 auto;">
                                         Última actualización: 6 de octubre de 2026
                                     </p>
                                     <p class="text-white mb-4" style="font-size:1rem; opacity:0.95;">
-                                        La presente Política establece las condiciones aplicables a la cancelación, devolución, transferencia de matrícula y saldo a favor de los programas académicos, cursos, especializaciones, talleres y demás servicios ofrecidos por CPA Academy. Esta Política forma parte de nuestros Términos y Condiciones y se aplica conjuntamente con ellos.
+                                        Bienvenido a CPA Academy. Estos Términos y Condiciones regulan el uso de academy.globalcpaperu.com y la contratación de nuestros programas académicos.
                                     </p>
                                 </div>
                             </div>
@@ -313,78 +365,75 @@
                     <div class="row text-center mb-5">
                         <div class="col-lg-8 mx-auto">
                             <p class="text-muted-custom mb-2" style="text-transform:uppercase; letter-spacing:1px; font-size:0.85rem;">
-                                Información clave de la política
+                                Información clave de los términos
                             </p>
-                            <h2 class="h1 mb-4 text-navy-custom" style="font-size:2rem;">Todo lo que necesitas saber sobre devoluciones y reembolsos</h2>
+                            <h2 class="h1 mb-4 text-navy-custom" style="font-size:2rem;">Qué debes saber sobre el uso de la plataforma</h2>
                         </div>
                     </div>
 
                     <div class="row g-4 mb-3">
                         <div class="col-md-4">
                             <div class="why-count-box">
-                                <h3>7</h3>
-                                <p>Días calendario para solicitar cancelación</p>
+                                <h3>9</h3>
+                                <p>Secciones clave de los términos</p>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="why-count-box">
                                 <h3>5</h3>
-                                <p>Días hábiles para la evaluación de la solicitud</p>
+                                <p>Puntos técnicos de acceso</p>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="why-count-box">
-                                <h3>15</h3>
-                                <p>Días hábiles para reembolso en reprogramaciones</p>
+                                <h3>1</h3>
+                                <p>Política de devoluciones asociada</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Secciones de la política -->
-            <div id="politicas" class="why-section">
+            <!-- Secciones de los términos -->
+            <div id="terminos" class="why-section">
                 <div class="container">
                     <div class="why-list-title mb-4">
-                        Política de Devoluciones y Reembolsos
+                        Términos y Condiciones de Uso
                     </div>
 
                     <div class="why-list-item">
                         <div class="why-list-head">
                             <span class="why-list-num">1</span>
-                            CANCELACIÓN Y SOLICITUD DE DEVOLUCIÓN
+                            ALCANCE Y SERVICIOS
                         </div>
                         <div class="why-list-body">
-                            <p>El participante podrá solicitar la cancelación de su matrícula y la devolución del importe abonado cuando:</p>
-                            <ul>
-                                <li>La solicitud se realice con una anticipación mínima de <strong>siete (7) días calendario</strong> antes de la fecha de inicio del programa.</li>
-                                <li>El programa aún no haya iniciado.</li>
-                                <li>No se haya iniciado la prestación del servicio ni habilitado el acceso a contenidos o recursos digitales del programa. Las solicitudes que cumplan estas condiciones serán evaluadas por CPA Academy conforme al procedimiento establecido. El costo de acceso a la matrícula es transparente y se detalla al momento de la compra; no existen comisiones ocultas que afecten el importe base del reembolso.</li>
-                            </ul>
+                            <p>CPA Academy ofrece servicios de formación y capacitación profesional. Estos Términos regulan el uso del sitio, pagos, accesos a plataformas, evaluaciones y certificaciones.</p>
                         </div>
                     </div>
 
                     <div class="why-list-item">
                         <div class="why-list-head">
                             <span class="why-list-num">2</span>
-                            PROGRAMAS INICIADOS Y ACCESO A CONTENIDOS
+                            REGISTRO, MATRÍCULA Y CUENTAS DE USUARIO
                         </div>
                         <div class="why-list-body">
-                            <p>Una vez iniciado el programa, o cuando se haya habilitado al participante el acceso a la plataforma o recursos, no procederá la devolución por desistimiento voluntario, salvo que corresponda conforme a la legislación aplicable. La habilitación del acceso a contenidos digitales podrá considerarse inicio de la prestación del servicio. CPA Academy podrá revocar los accesos en caso de devolución.</p>
+                            <p>El participante deberá proporcionar información verdadera. Las cuentas son personales e intransferibles.</p>
+                            <p><strong>Aviso Legal de Inscripción:</strong> Para concretar la matrícula, el estudiante debe marcar la casilla obligatoria habilitada en el formulario de inscripción virtual, mediante la cual confirma expresamente que ha leído y comprendido todos los presentes Términos y Condiciones, así como nuestras políticas asociadas.</p>
                         </div>
                     </div>
 
                     <div class="why-list-item">
                         <div class="why-list-head">
                             <span class="why-list-num">3</span>
-                            ALTERNATIVAS A LA DEVOLUCIÓN Y TRANSFERENCIAS
+                            REQUISITOS TÉCNICOS Y DE ACCESO (MODALIDAD EN LÍNEA Y MIXTA)
                         </div>
                         <div class="why-list-body">
-                            <p>Antes del inicio del programa, el participante podrá solicitar, sujeto a aprobación de CPA Academy:</p>
+                            <p>Previo a la matrícula, el estudiante debe asegurar que cumple con los siguientes requisitos técnicos para acceder a la plataforma de aprendizaje:</p>
                             <ul>
-                                <li><strong>Saldo a favor:</strong> el importe abonado podrá aplicarse a un futuro programa.</li>
-                                <li><strong>Transferencia a otra persona:</strong> la matrícula podrá transferirse a otra persona, siempre que cumpla los requisitos académicos.</li>
-                                <li><strong>Transferencias de curso o sesión de examen:</strong> El participante podrá solicitar la transferencia de su matrícula a otro curso o a una sesión de examen distinta una vez que ha pagado, siempre y cuando la solicitud se envíe por escrito con una anticipación mínima de siete (7) días calendario antes del inicio original del curso o acceso a la plataforma. Si el participante no cumple con este plazo o si el curso ya ha comenzado, la institución no permitirá la transferencia de curso ni de sesión de examen.</li>
+                                <li><strong>Requisitos de software:</strong> El uso de la plataforma puede requerir acceso a software ofimático básico como Microsoft Excel o Word, y un lector de PDF.</li>
+                                <li><strong>Navegadores compatibles:</strong> Nuestra plataforma de aprendizaje está optimizada para funcionar en navegadores específicos, preferentemente Google Chrome, Mozilla Firefox o Safari en sus versiones más recientes.</li>
+                                <li><strong>Velocidad de Internet:</strong> Se requiere una conexión a Internet de banda ancha (velocidad mínima recomendada de 5 Mbps a 10 Mbps) para utilizar todos los recursos, participar en clases en directo sin interrupciones y reproducir las clases grabadas.</li>
+                                <li><strong>Fechas de inicio y caducidad:</strong> Al momento de adquirir el acceso a la plataforma de aprendizaje en línea, se le notificará claramente al estudiante (en la página de pago y/o vía correo electrónico de confirmación) la fecha exacta en la que podrá acceder a todos los materiales de su curso, así como la fecha de caducidad y cierre de dicho acceso.</li>
                             </ul>
                         </div>
                     </div>
@@ -392,74 +441,74 @@
                     <div class="why-list-item">
                         <div class="why-list-head">
                             <span class="why-list-num">4</span>
-                            REPROGRAMACIÓN O CANCELACIÓN POR CPA ACADEMY
+                            SOLICITUDES DE VISADO
                         </div>
                         <div class="why-list-body">
-                            <p>Si CPA Academy no pudiera desarrollar un programa, podrá reprogramarlo o cancelarlo y gestionar la devolución del importe abonado en un plazo máximo de <strong>quince (15) días hábiles</strong>.</p>
+                            <p>CPA Academy imparte formación en modalidad presencial, virtual y mixta. Para estudiantes extranjeros que deseen asistir presencialmente a nuestras instalaciones, informamos que CPA Academy no asume ninguna responsabilidad ni brinda asistencia respecto a las solicitudes de visado. Es de plena y exclusiva responsabilidad del estudiante gestionar y cumplir con cualquier requisito de visado aplicable. Si la solicitud de visado de un estudiante es rechazada, esto no le otorga derecho a un reembolso extraordinario, rigiéndose estrictamente por nuestra Política de Devoluciones.</p>
                         </div>
                     </div>
 
                     <div class="why-list-item">
                         <div class="why-list-head">
                             <span class="why-list-num">5</span>
-                            INASISTENCIA DEL PARTICIPANTE
+                            PROGRAMAS ACADÉMICOS
                         </div>
                         <div class="why-list-body">
-                            <p>La inasistencia a clases o actividades académicas no genera automáticamente derecho a devolución.</p>
+                            <p>Cada programa tendrá condiciones particulares. CPA Academy podrá realizar ajustes razonables en docentes o metodologías para garantizar la calidad.</p>
                         </div>
                     </div>
 
                     <div class="why-list-item">
                         <div class="why-list-head">
                             <span class="why-list-num">6</span>
-                            PROMOCIONES, DESCUENTOS Y BECAS
+                            PRECIOS, PAGOS Y PROMOCIONES
                         </div>
                         <div class="why-list-body">
-                            <p>Las matrículas realizadas mediante promociones podrán estar sujetas a condiciones particulares que serán comunicadas antes de confirmar la matrícula.</p>
+                            <p>Los precios serán comunicados en los canales oficiales y el costo de acceso a la matrícula se aclarará antes de que el estudiante realice cualquier pago. CPA Academy podrá modificar precios para futuras matrículas.</p>
                         </div>
                     </div>
 
                     <div class="why-list-item">
                         <div class="why-list-head">
                             <span class="why-list-num">7</span>
-                            PROCEDIMIENTO PARA SOLICITAR UNA DEVOLUCIÓN
+                            REPROGRAMACIONES, CANCELACIONES Y DEVOLUCIONES
                         </div>
                         <div class="why-list-body">
-                            <p>Las solicitudes deberán enviarse a: <strong>capacitacion@globalcpaperu.com</strong> indicando <strong>Nombres</strong>, <strong>Programa</strong>, <strong>Comprobante de pago</strong> y <strong>Motivo</strong>. Se evaluará en un máximo de <strong>cinco (5) días hábiles</strong>.</p>
+                            <p>CPA Academy podrá reprogramar sesiones por razones de fuerza mayor. Las devoluciones, cancelaciones o transferencias se regirán por nuestra Política de Devoluciones, Reembolsos y Transferencias, que forma parte íntegra de estos Términos.</p>
                         </div>
                     </div>
 
                     <div class="why-list-item">
                         <div class="why-list-head">
                             <span class="why-list-num">8</span>
-                            MEDIO Y PLAZO DEL REEMBOLSO
+                            GRABACIONES, MATERIALES Y PROPIEDAD INTELECTUAL
                         </div>
                         <div class="why-list-body">
-                            <p>Las devoluciones aprobadas se realizarán, de ser posible, mediante el mismo medio de pago utilizado.</p>
+                            <p>Los contenidos están protegidos por derechos de autor. Queda prohibido compartir credenciales, copiar, reproducir, comercializar o grabar clases sin autorización.</p>
                         </div>
                     </div>
 
                     <div class="why-list-item">
                         <div class="why-list-head">
                             <span class="why-list-num">9</span>
-                            DERECHOS DEL PARTICIPANTE
+                            PLATAFORMAS, SERVICIOS DE TERCEROS Y FUERZA MAYOR
                         </div>
                         <div class="why-list-body">
-                            <p>Esta Política no limita los derechos conforme a la legislación peruana aplicable.</p>
+                            <p>Algunos servicios dependen de plataformas de terceros. CPA Academy realizará esfuerzos razonables para mantener la continuidad del servicio, pero no será responsable por interrupciones ajenas a su control.</p>
                         </div>
                     </div>
 
                     <div class="why-list-item">
                         <div class="why-list-head">
                             <span class="why-list-num">10</span>
-                            CANALES DE ATENCIÓN
+                            CONTACTO
                         </div>
                         <div class="why-list-body">
                             <div class="why-highlight-box" style="background:none; border:1px solid #002060; color:#002060; padding:18px 20px;">
-                                <p style="margin:0 0 8px; font-size:0.9rem; font-weight:600; text-transform:uppercase; letter-spacing:0.6px;">Contactos oficiales</p>
+                                <p style="margin:0 0 8px; font-size:0.9rem; font-weight:600; text-transform:uppercase; letter-spacing:0.6px;">Contacto</p>
                                 <p style="margin:0; font-size:1rem;">
-                                    Correo: <a href="mailto:capacitacion@globalcpaperu.com">capacitacion@globalcpaperu.com</a> |
-                                    WhatsApp: <a href="tel:+51967052506">+51 967 052 506</a> |
+                                    Correo: <strong>capacitacion@globalcpaperu.com</strong><br>
+                                    WhatsApp: <strong>+51 967 052 506</strong><br>
                                     Web: <a href="https://academy.globalcpaperu.com" target="_blank">academy.globalcpaperu.com</a>
                                 </p>
                             </div>
@@ -470,8 +519,29 @@
 
         </div>
         <!-- footer start-->
-        <x-footer />
+        <?php if (isset($component)) { $__componentOriginal99051027c5120c83a2f9a5ae7c4c3cfa = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal99051027c5120c83a2f9a5ae7c4c3cfa = $attributes; } ?>
+<?php $component = App\View\Components\Footer::resolve([] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('footer'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\App\View\Components\Footer::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal99051027c5120c83a2f9a5ae7c4c3cfa)): ?>
+<?php $attributes = $__attributesOriginal99051027c5120c83a2f9a5ae7c4c3cfa; ?>
+<?php unset($__attributesOriginal99051027c5120c83a2f9a5ae7c4c3cfa); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal99051027c5120c83a2f9a5ae7c4c3cfa)): ?>
+<?php $component = $__componentOriginal99051027c5120c83a2f9a5ae7c4c3cfa; ?>
+<?php unset($__componentOriginal99051027c5120c83a2f9a5ae7c4c3cfa); ?>
+<?php endif; ?>
     </div>
 </div>
 
-@stop
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.webpage', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\globalcpa\resources\views/pages/terminos-y-condiciones.blade.php ENDPATH**/ ?>

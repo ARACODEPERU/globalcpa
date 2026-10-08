@@ -77,6 +77,10 @@
         }
     </style>
 
+    @if (file_exists(public_path('build/manifest.json')))
+        @vite(['resources/js/webpage.js'])
+    @endif
+
     <!-- Javascript Assets -->
     <!-- Carrito JS -->
     <script src="{{ asset('themes/webpage/js/app.js') }}" defer></script>

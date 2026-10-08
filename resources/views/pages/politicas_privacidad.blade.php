@@ -1,11 +1,11 @@
 @extends('layouts.webpage')
 
-@section('title', ' - Políticas de Devoluciones')
+@section('title', ' - Política de Privacidad')
 
 @section('etiquetasmeta')
     <x-seo
-        title="Políticas de Devoluciones - CPA Academy"
-        description="Lee las políticas de devoluciones, reembolsos y transferencias de CPA Academy: condiciones de cancelación, acceso a contenidos, reprogramación y canales de atención."
+        title="Política de Privacidad - CPA Academy"
+        description="Política de Privacidad de CPA Academy: cómo recopilamos, usamos, conservamos y protegemos los datos personales de nuestros usuarios, alumnos, interesados y visitantes conforme a la Ley N.° 29733 y normativa peruana aplicable."
     />
 @endsection
 
@@ -271,7 +271,7 @@
 <div class="page-wrapper" id="pageWrapper">
     <!-- Page Header Start-->
     <x-header :breadcrumb="[
-        ['label' => 'Políticas de Devoluciones'],
+        ['label' => 'Política de Privacidad'],
     ]" />
     <!-- Page Header Ends-->
     <!-- Page Body Start-->
@@ -289,16 +289,16 @@
                             <div class="why-hero text-center">
                                 <div class="position-relative" style="z-index:2;">
                                     <span class="why-hero-tag mb-3 mt-3">
-                                        <i class="fa fa-shield-alt"></i> Políticas de Devoluciones
+                                        <i class="fa fa-lock"></i> Política de Privacidad
                                     </span>
                                     <h1 class="display-4 fw-bold mb-3 text-white" style="text-transform:uppercase; letter-spacing:1px;">
-                                        POLITICAS DE DEVOLUCIONES
+                                        POLITICAS DE PRIVACIDAD
                                     </h1>
                                     <p class="text-white mb-4" style="font-size:1.05rem; max-width:800px; margin:0 auto;">
-                                        Última actualización: 6 de octubre de 2026
+                                        Última actualización: 06 de octubre de 2026
                                     </p>
                                     <p class="text-white mb-4" style="font-size:1rem; opacity:0.95;">
-                                        La presente Política establece las condiciones aplicables a la cancelación, devolución, transferencia de matrícula y saldo a favor de los programas académicos, cursos, especializaciones, talleres y demás servicios ofrecidos por CPA Academy. Esta Política forma parte de nuestros Términos y Condiciones y se aplica conjuntamente con ellos.
+                                        En CPA ACADEMY (en adelante, "nosotros", "nuestro" o "la empresa"), valoramos tu privacidad y nos comprometemos a proteger la información personal que compartes con nosotros. Esta política de privacidad describe cómo recopilamos, usamos y protegemos tus datos personales cuando accedes a nuestros cursos en línea a través de nuestro sitio web https://academy.globalcpaeru.com/.
                                     </p>
                                 </div>
                             </div>
@@ -313,29 +313,29 @@
                     <div class="row text-center mb-5">
                         <div class="col-lg-8 mx-auto">
                             <p class="text-muted-custom mb-2" style="text-transform:uppercase; letter-spacing:1px; font-size:0.85rem;">
-                                Información clave de la política
+                                Información clave de la privacidad
                             </p>
-                            <h2 class="h1 mb-4 text-navy-custom" style="font-size:2rem;">Todo lo que necesitas saber sobre devoluciones y reembolsos</h2>
+                            <h2 class="h1 mb-4 text-navy-custom" style="font-size:2rem;">Cómo protegemos tu información personal</h2>
                         </div>
                     </div>
 
                     <div class="row g-4 mb-3">
                         <div class="col-md-4">
                             <div class="why-count-box">
-                                <h3>7</h3>
-                                <p>Días calendario para solicitar cancelación</p>
+                                <h3>10</h3>
+                                <p>Secciones clave de la privacidad</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="why-count-box">
+                                <h3>3</h3>
+                                <p>Bloques principales de información</p>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="why-count-box">
                                 <h3>5</h3>
-                                <p>Días hábiles para la evaluación de la solicitud</p>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="why-count-box">
-                                <h3>15</h3>
-                                <p>Días hábiles para reembolso en reprogramaciones</p>
+                                <p>Derechos del usuario</p>
                             </div>
                         </div>
                     </div>
@@ -343,23 +343,22 @@
             </div>
 
             <!-- Secciones de la política -->
-            <div id="politicas" class="why-section">
+            <div id="privacidad" class="why-section">
                 <div class="container">
                     <div class="why-list-title mb-4">
-                        Política de Devoluciones y Reembolsos
+                        Política de Privacidad
                     </div>
 
                     <div class="why-list-item">
                         <div class="why-list-head">
                             <span class="why-list-num">1</span>
-                            CANCELACIÓN Y SOLICITUD DE DEVOLUCIÓN
+                            RESPONSABLE DEL TRATAMIENTO
                         </div>
                         <div class="why-list-body">
-                            <p>El participante podrá solicitar la cancelación de su matrícula y la devolución del importe abonado cuando:</p>
+                            <p>CPA Academy es responsable del tratamiento de los datos personales que recopila a través de sus canales y servicios. Para consultas, solicitudes relacionadas con datos personales o ejercicio de derechos, puedes comunicarte a:</p>
                             <ul>
-                                <li>La solicitud se realice con una anticipación mínima de <strong>siete (7) días calendario</strong> antes de la fecha de inicio del programa.</li>
-                                <li>El programa aún no haya iniciado.</li>
-                                <li>No se haya iniciado la prestación del servicio ni habilitado el acceso a contenidos o recursos digitales del programa. Las solicitudes que cumplan estas condiciones serán evaluadas por CPA Academy conforme al procedimiento establecido. El costo de acceso a la matrícula es transparente y se detalla al momento de la compra; no existen comisiones ocultas que afecten el importe base del reembolso.</li>
+                                <li>Correo: <strong>informes@globalcpaperu.com</strong></li>
+                                <li>Sitio web: <a href="https://academy.globalcpaperu.com" target="_blank">academy.globalcpaperu.com</a></li>
                             </ul>
                         </div>
                     </div>
@@ -367,24 +366,36 @@
                     <div class="why-list-item">
                         <div class="why-list-head">
                             <span class="why-list-num">2</span>
-                            PROGRAMAS INICIADOS Y ACCESO A CONTENIDOS
+                            DATOS PERSONALES QUE PODEMOS RECOPILAR
                         </div>
                         <div class="why-list-body">
-                            <p>Una vez iniciado el programa, o cuando se haya habilitado al participante el acceso a la plataforma o recursos, no procederá la devolución por desistimiento voluntario, salvo que corresponda conforme a la legislación aplicable. La habilitación del acceso a contenidos digitales podrá considerarse inicio de la prestación del servicio. CPA Academy podrá revocar los accesos en caso de devolución.</p>
+                            <p>Dependiendo de la interacción que mantengas con CPA Academy, podemos recopilar:</p>
+                            <ul>
+                                <li>Nombres y apellidos.</li>
+                                <li>Documento de identidad, cuando resulte necesario para determinados servicios.</li>
+                                <li>Correo electrónico, número de teléfono y WhatsApp.</li>
+                                <li>Información profesional, académica o laboral que decidas proporcionar.</li>
+                                <li>Información relacionada con tu matrícula, participación, evaluaciones y certificaciones.</li>
+                                <li>Información necesaria para procesar pagos y gestionar operaciones comerciales.</li>
+                                <li>Información proporcionada mediante formularios, consultas, encuestas o comunicaciones.</li>
+                                <li>Información técnica y de navegación, como dirección IP, navegador, dispositivo, páginas visitadas y comportamiento de navegación.</li>
+                            </ul>
+                            <p>No solicitamos datos personales que no sean necesarios para las finalidades informadas.</p>
                         </div>
                     </div>
 
                     <div class="why-list-item">
                         <div class="why-list-head">
                             <span class="why-list-num">3</span>
-                            ALTERNATIVAS A LA DEVOLUCIÓN Y TRANSFERENCIAS
+                            FINALIDADES DEL TRATAMIENTO
                         </div>
                         <div class="why-list-body">
-                            <p>Antes del inicio del programa, el participante podrá solicitar, sujeto a aprobación de CPA Academy:</p>
+                            <p>Podemos utilizar los datos personales para las siguientes finalidades:</p>
                             <ul>
-                                <li><strong>Saldo a favor:</strong> el importe abonado podrá aplicarse a un futuro programa.</li>
-                                <li><strong>Transferencia a otra persona:</strong> la matrícula podrá transferirse a otra persona, siempre que cumpla los requisitos académicos.</li>
-                                <li><strong>Transferencias de curso o sesión de examen:</strong> El participante podrá solicitar la transferencia de su matrícula a otro curso o a una sesión de examen distinta una vez que ha pagado, siempre y cuando la solicitud se envíe por escrito con una anticipación mínima de siete (7) días calendario antes del inicio original del curso o acceso a la plataforma. Si el participante no cumple con este plazo o si el curso ya ha comenzado, la institución no permitirá la transferencia de curso ni de sesión de examen.</li>
+                                <li><strong>Prestación de servicios:</strong> Gestionar consultas, registros y matrículas. Procesar pagos y operaciones relacionadas con los servicios contratados. Proporcionar acceso a programas, clases, plataformas, materiales y recursos. Gestionar asistencia, evaluaciones y certificaciones. Brindar soporte académico, administrativo y tecnológico. Comunicar cambios, reprogramaciones, incidencias y demás información relacionada con los servicios contratados.</li>
+                                <li><strong>Gestión comercial:</strong> Cuando corresponda y conforme a la normativa aplicable, podemos utilizar los datos para atender solicitudes de información, realizar seguimiento comercial y gestionar procesos de admisión o inscripción.</li>
+                                <li><strong>Marketing y prospección comercial:</strong> Con el consentimiento que corresponda, podremos utilizar los datos de contacto para enviar información sobre programas, eventos, promociones, novedades y otros servicios. El titular podrá retirar su consentimiento u oponerse a comunicaciones comerciales.</li>
+                                <li><strong>Mejora de nuestros servicios:</strong> Podemos utilizar información de uso y navegación para analizar el funcionamiento de nuestros canales digitales.</li>
                             </ul>
                         </div>
                     </div>
@@ -392,74 +403,104 @@
                     <div class="why-list-item">
                         <div class="why-list-head">
                             <span class="why-list-num">4</span>
-                            REPROGRAMACIÓN O CANCELACIÓN POR CPA ACADEMY
+                            COOKIES Y TECNOLOGÍAS SIMILARES
                         </div>
                         <div class="why-list-body">
-                            <p>Si CPA Academy no pudiera desarrollar un programa, podrá reprogramarlo o cancelarlo y gestionar la devolución del importe abonado en un plazo máximo de <strong>quince (15) días hábiles</strong>.</p>
+                            <p>Nuestro sitio web puede utilizar cookies, píxeles, etiquetas y tecnologías similares para permitir el funcionamiento del sitio, recordar preferencias y obtener estadísticas. El usuario puede gestionar determinadas preferencias de cookies desde su navegador.</p>
                         </div>
                     </div>
 
                     <div class="why-list-item">
                         <div class="why-list-head">
                             <span class="why-list-num">5</span>
-                            INASISTENCIA DEL PARTICIPANTE
+                            COMPARTICIÓN Y ENCARGADOS DEL TRATAMIENTO
                         </div>
                         <div class="why-list-body">
-                            <p>La inasistencia a clases o actividades académicas no genera automáticamente derecho a devolución.</p>
+                            <p>CPA Academy podrá utilizar proveedores especializados para operar sus servicios (plataformas educativas, procesadores de pago, etc.).</p>
+                            <p><strong>Uso del Servicio de Resultados de ACCA:</strong> Informamos a los estudiantes de los programas de la cualificación ACCA que sus datos personales serán compartidos directamente con ACCA (Association of Chartered Certified Accountants) para el uso de su Servicio de Resultados. Este servicio es el mecanismo mediante el cual ACCA recopila datos de los estudiantes para permitir el análisis de las tasas de aprobación. Cuando corresponda, podremos realizar transferencias nacionales o internacionales de datos, adoptando las medidas exigidas por la normativa. Podremos comunicar información cuando exista una obligación legal.</p>
                         </div>
                     </div>
 
                     <div class="why-list-item">
                         <div class="why-list-head">
                             <span class="why-list-num">6</span>
-                            PROMOCIONES, DESCUENTOS Y BECAS
+                            CONSERVACIÓN DE LOS DATOS
                         </div>
                         <div class="why-list-body">
-                            <p>Las matrículas realizadas mediante promociones podrán estar sujetas a condiciones particulares que serán comunicadas antes de confirmar la matrícula.</p>
+                            <p>Conservaremos los datos personales durante el tiempo necesario para cumplir las finalidades para las cuales fueron recopilados, atender obligaciones legales o resolver controversias.</p>
                         </div>
                     </div>
 
                     <div class="why-list-item">
                         <div class="why-list-head">
                             <span class="why-list-num">7</span>
-                            PROCEDIMIENTO PARA SOLICITAR UNA DEVOLUCIÓN
+                            SEGURIDAD DE LA INFORMACIÓN
                         </div>
                         <div class="why-list-body">
-                            <p>Las solicitudes deberán enviarse a: <strong>capacitacion@globalcpaperu.com</strong> indicando <strong>Nombres</strong>, <strong>Programa</strong>, <strong>Comprobante de pago</strong> y <strong>Motivo</strong>. Se evaluará en un máximo de <strong>cinco (5) días hábiles</strong>.</p>
+                            <p>Adoptamos medidas técnicas, organizativas y de seguridad razonables destinadas a proteger los datos personales. Ningún sistema electrónico puede garantizar una seguridad absoluta.</p>
                         </div>
                     </div>
 
                     <div class="why-list-item">
                         <div class="why-list-head">
                             <span class="why-list-num">8</span>
-                            MEDIO Y PLAZO DEL REEMBOLSO
+                            DERECHOS DEL TITULAR DE LOS DATOS
                         </div>
                         <div class="why-list-body">
-                            <p>Las devoluciones aprobadas se realizarán, de ser posible, mediante el mismo medio de pago utilizado.</p>
+                            <p>El titular puede ejercer los derechos de información, acceso, rectificación, cancelación/supresión, oposición y revocación del consentimiento. Las solicitudes podrán enviarse a: <strong>informes@globalcpaperu.com</strong>.</p>
                         </div>
                     </div>
 
                     <div class="why-list-item">
                         <div class="why-list-head">
                             <span class="why-list-num">9</span>
-                            DERECHOS DEL PARTICIPANTE
+                            COMUNICACIONES COMERCIALES
                         </div>
                         <div class="why-list-body">
-                            <p>Esta Política no limita los derechos conforme a la legislación peruana aplicable.</p>
+                            <p>El titular puede solicitar en cualquier momento dejar de recibir comunicaciones comerciales. Esto no afecta las comunicaciones indispensables para la prestación del servicio.</p>
                         </div>
                     </div>
 
                     <div class="why-list-item">
                         <div class="why-list-head">
                             <span class="why-list-num">10</span>
-                            CANALES DE ATENCIÓN
+                            MENORES DE EDAD
+                        </div>
+                        <div class="why-list-body">
+                            <p>Nuestros servicios están dirigidos a mayores de edad. Si se recopilan datos de menores, se aplicarán las condiciones exigidas por la normativa vigente.</p>
+                        </div>
+                    </div>
+
+                    <div class="why-list-item">
+                        <div class="why-list-head">
+                            <span class="why-list-num">11</span>
+                            ENLACES Y SERVICIOS DE TERCEROS
+                        </div>
+                        <div class="why-list-body">
+                            <p>Nuestro sitio web puede contener enlaces a terceros. CPA Academy no controla sus políticas de privacidad.</p>
+                        </div>
+                    </div>
+
+                    <div class="why-list-item">
+                        <div class="why-list-head">
+                            <span class="why-list-num">12</span>
+                            CAMBIOS EN ESTA POLÍTICA
+                        </div>
+                        <div class="why-list-body">
+                            <p>CPA Academy podrá actualizar esta Política, publicando la versión vigente en el sitio web.</p>
+                        </div>
+                    </div>
+
+                    <div class="why-list-item">
+                        <div class="why-list-head">
+                            <span class="why-list-num">13</span>
+                            CONTACTO
                         </div>
                         <div class="why-list-body">
                             <div class="why-highlight-box" style="background:none; border:1px solid #002060; color:#002060; padding:18px 20px;">
-                                <p style="margin:0 0 8px; font-size:0.9rem; font-weight:600; text-transform:uppercase; letter-spacing:0.6px;">Contactos oficiales</p>
+                                <p style="margin:0 0 8px; font-size:0.9rem; font-weight:600; text-transform:uppercase; letter-spacing:0.6px;">Contacto</p>
                                 <p style="margin:0; font-size:1rem;">
-                                    Correo: <a href="mailto:capacitacion@globalcpaperu.com">capacitacion@globalcpaperu.com</a> |
-                                    WhatsApp: <a href="tel:+51967052506">+51 967 052 506</a> |
+                                    Correo: <strong>informes@globalcpaperu.com</strong> |
                                     Web: <a href="https://academy.globalcpaperu.com" target="_blank">academy.globalcpaperu.com</a>
                                 </p>
                             </div>

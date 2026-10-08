@@ -496,17 +496,18 @@ class WebPageController extends Controller
 
     public function privacypolicies()
     {
-        return view('pages/privacy-policies');
+        return view('pages/politicas_privacidad');
     }
 
     public function politicas_devoluciones()
     {
         return view('pages/politicas_devoluciones');
     }
+    
 
     public function terms()
     {
-        return view('pages/terms');
+        return view('pages/terminos-y-condiciones');
     }
 
     public function courses()

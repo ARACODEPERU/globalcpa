@@ -77,6 +77,10 @@
         }
     </style>
 
+    <?php if(file_exists(public_path('build/manifest.json'))): ?>
+        <?php echo app('Illuminate\Foundation\Vite')(['resources/js/webpage.js']); ?>
+    <?php endif; ?>
+
     <!-- Javascript Assets -->
     <!-- Carrito JS -->
     <script src="<?php echo e(asset('themes/webpage/js/app.js')); ?>" defer></script>
