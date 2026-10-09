@@ -274,7 +274,12 @@ Route::middleware('auth')->group(function () {
                     'person' => $person,
                     'identityDocumentTypes' => $identityDocumentTypes,
                     'ubigeo' => $ubigeo,
-                    'countries' => $countries
+                    'countries' => $countries,
+                    // Catalogos para que el alumno complete profesion, cargo,
+                    // industria y empresa en su perfil forzado.
+                    'professions' => DB::table('professions')->select('id', 'description')->orderBy('description')->get(),
+                    'occupations' => DB::table('occupations')->select('id', 'description')->orderBy('description')->get(),
+                    'industries' => DB::table('industries')->select('id', 'description')->orderBy('description')->get(),
                 ]);
             }
 

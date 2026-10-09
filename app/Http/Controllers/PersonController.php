@@ -208,6 +208,10 @@ class PersonController extends Controller
             'names'             => 'required|max:255',
             'father_lastname'   => 'required|max:255',
             'mother_lastname'   => 'required|max:255',
+            'profession_id'     => 'nullable',
+            'occupation_id'     => 'nullable',
+            'industry_id'       => 'nullable',
+            'company'           => 'nullable|string|max:200',
         ];
 
         if ($isForeign) {
@@ -246,6 +250,23 @@ class PersonController extends Controller
             }
         }
 
+        // Los catalogos solo guardan la descripcion: en people se persiste el
+        // id y el texto, que es lo que leen n8n y otras pantallas. Los ids se
+        // normalizan porque el formulario puede enviar "" al no seleccionar.
+        $professionId = $request->filled('profession_id') ? (int) $request->get('profession_id') : null;
+        $occupationId = $request->filled('occupation_id') ? (int) $request->get('occupation_id') : null;
+        $industryId = $request->filled('industry_id') ? (int) $request->get('industry_id') : null;
+
+        $professionDescription = $professionId
+            ? DB::table('professions')->where('id', $professionId)->value('description')
+            : null;
+        $occupationDescription = $occupationId
+            ? DB::table('occupations')->where('id', $occupationId)->value('description')
+            : null;
+        $industryDescription = $industryId
+            ? DB::table('industries')->where('id', $industryId)->value('description')
+            : null;
+
         $updateData = [
             'document_type_id'      => $request->get('document_type_id'),
             'short_name'            => trim($request->get('names')),
@@ -262,6 +283,13 @@ class PersonController extends Controller
             'names'                 => trim($request->get('names')),
             'father_lastname'       => trim($request->get('father_lastname')),
             'mother_lastname'       => trim($request->get('mother_lastname')),
+            'profession_id'         => $professionId,
+            'profession'            => $professionDescription,
+            'occupation_id'         => $occupationId,
+            'ocupacion'             => $occupationDescription,
+            'industry_id'           => $industryId,
+            'industry'              => $industryDescription,
+            'company'               => $request->get('company'),
         ];
 
         if ($isForeign) {
@@ -281,6 +309,10 @@ class PersonController extends Controller
 
         Person::find($person_id)->update($updateData);
 
+        // Solo la primera vez que completa su perfil se notifica a n8n; las
+        // ediciones posteriores no reenvian el evento.
+        $firstCompletion = ! $user->updated_information;
+
         $user->update([
             'name'          => $request->get('names'),
             'email'         => $request->get('email'),
@@ -293,6 +325,10 @@ class PersonController extends Controller
         DB::table('aca_students')->where('id', $student_id)->update([
             'student_code'  => $request->get('number'),
         ]);
+
+        if ($firstCompletion) {
+            \Modules\Integrationhub\Jobs\SendStudentProfileToN8n::dispatch($person_id);
+        }
 
         return redirect()->route('aca_mycourses')
             ->with('updateMessageStudent', __('Informacion del estudiante actualizado con éxito'));

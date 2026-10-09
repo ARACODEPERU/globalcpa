@@ -32,6 +32,18 @@ const props = defineProps({
         type: [Array, Object],
         default: () => [],
     },
+    professions: {
+        type: [Array, Object],
+        default: () => [],
+    },
+    occupations: {
+        type: [Array, Object],
+        default: () => [],
+    },
+    industries: {
+        type: [Array, Object],
+        default: () => [],
+    },
 });
 
 // Computed seguras
@@ -69,6 +81,20 @@ const countryOptions = computed(() => {
     }));
 });
 
+// Catalogos de profesion, cargo e industria para el perfil forzado.
+const catalogOptions = (list) => {
+    const items = Array.isArray(list) ? list : Object.values(list || {});
+
+    return items.map((row) => ({
+        value: row?.id,
+        label: row?.description ?? '',
+    }));
+};
+
+const professionOptions = computed(() => catalogOptions(props.professions));
+const occupationOptions = computed(() => catalogOptions(props.occupations));
+const industryOptions = computed(() => catalogOptions(props.industries));
+
 // Detectar si el tipo de documento es extranjero (OTROS = sunat_code '00', id '0')
 const isForeignDocument = computed(() => {
     return String(form.document_type_id) === '0';
@@ -94,6 +120,10 @@ const form = useForm({
     foreign_country_id: props.person?.foreign_country_id ?? null,
     foreign_state: props.person?.foreign_state ?? '',
     foreign_city: props.person?.foreign_city ?? '',
+    profession_id: props.person?.profession_id ?? null,
+    occupation_id: props.person?.occupation_id ?? null,
+    industry_id: props.person?.industry_id ?? null,
+    company: props.person?.company ?? '',
 });
 
 const filterOption = (input, option) => {
@@ -323,6 +353,60 @@ const updateInfoPerson = () => {
                                 class="block w-full mt-1"
                             />
                             <InputError :message="form.errors.email" class="mt-2" />
+                        </div>
+
+                        <!-- Profesion -->
+                        <div class="col-span-6 sm:col-span-2">
+                            <InputLabel for="profession_id" value="Profesión" />
+                            <Select
+                                v-model:value="form.profession_id"
+                                show-search
+                                placeholder="Seleccione una profesión"
+                                style="width: 100%"
+                                :options="professionOptions"
+                                :filter-option="filterOption"
+                            />
+                            <InputError :message="form.errors.profession_id" class="mt-2" />
+                        </div>
+
+                        <!-- Cargo -->
+                        <div class="col-span-6 sm:col-span-2">
+                            <InputLabel for="occupation_id" value="Cargo" />
+                            <Select
+                                v-model:value="form.occupation_id"
+                                show-search
+                                placeholder="Seleccione un cargo"
+                                style="width: 100%"
+                                :options="occupationOptions"
+                                :filter-option="filterOption"
+                            />
+                            <InputError :message="form.errors.occupation_id" class="mt-2" />
+                        </div>
+
+                        <!-- Industria -->
+                        <div class="col-span-6 sm:col-span-2">
+                            <InputLabel for="industry_id" value="Industria" />
+                            <Select
+                                v-model:value="form.industry_id"
+                                show-search
+                                placeholder="Seleccione una industria"
+                                style="width: 100%"
+                                :options="industryOptions"
+                                :filter-option="filterOption"
+                            />
+                            <InputError :message="form.errors.industry_id" class="mt-2" />
+                        </div>
+
+                        <!-- Empresa -->
+                        <div class="col-span-6 sm:col-span-3">
+                            <InputLabel for="company" value="Empresa" />
+                            <Input
+                                id="company"
+                                v-model:value="form.company"
+                                type="text"
+                                class="block w-full mt-1"
+                            />
+                            <InputError :message="form.errors.company" class="mt-2" />
                         </div>
                     </div>
                 </div>
