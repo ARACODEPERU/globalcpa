@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <!-- Meta tags  -->
+    <meta name="facebook-domain-verification" content="3qhwpfunszdc5ag3cwum3r70v123vo" />
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WXX1QVD5Y0"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'G-WXX1QVD5Y0');
+    </script>
+
+
+    <!-- Meta Pixel Code -->
+    <?php echo app('Illuminate\Foundation\Vite')(['resources/js/webpage.js']); ?>
+
+    <script>
+        ! function(f, b, e, v, n, t, s) {
+            if (f.fbq) return;
+            n = f.fbq = function() {
+                n.callMethod ?
+                    n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+            };
+            if (!f._fbq) f._fbq = n;
+            n.push = n;
+            n.loaded = !0;
+            n.version = '2.0';
+            n.queue = [];
+            t = b.createElement(e);
+            t.async = !0;
+            t.src = v;
+            s = b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t, s)
+        }(window, document, 'script',
+            'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '791233956872790');
+        fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+            src="https://www.facebook.com/tr?id=791233956872790&ev=PageView&noscript=1" /></noscript>
+    <!-- End Meta Pixel Code -->
+
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
+
+
+    <title>CPA Academy <?php echo $__env->yieldContent('title'); ?></title>
+    <link rel="icon" type="image/png" href="<?php echo e(asset('themes/webpage/images/Logo_isotipo.png')); ?>" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+    <!-- latest jquery-->
+    <script src="<?php echo e(asset('themes/webpage/assets/js/jquery.min.js')); ?>"></script>
+
+    <!-- Font Awesome 4 (ANTES de app.css) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="<?php echo e(asset('themes/webpage/css/app.css')); ?>" />
+
+    <!-- Override FA6: forzar FA4 para .fa (DESPUES de app.css) -->
+    <style>
+        .fa,
+        .fa-classic,
+        .fa-serif {
+            font-family: FontAwesome !important;
+            font-weight: normal !important;
+        }
+    </style>
+
+    <!-- Javascript Assets -->
+    <!-- Carrito JS -->
+    <script src="<?php echo e(asset('themes/webpage/js/app.js')); ?>" defer></script>
+
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+        rel="stylesheet" />
+
+    <!-- Themify icon-->
+    <link rel="stylesheet" type="text/css" href="<?php echo e(asset('themes/webpage/assets/css/vendors/themify.css')); ?>">
+    <!-- Flag icon-->
+    <link rel="stylesheet" type="text/css" href="<?php echo e(asset('themes/webpage/assets/css/vendors/flag-icon.css')); ?>">
+    <!-- Feather icon-->
+    <link rel="stylesheet" type="text/css" href="<?php echo e(asset('themes/webpage/assets/css/vendors/feather-icon.css')); ?>">
+
+    <!-- Plugins css start-->
+    <link rel="stylesheet" type="text/css" href="<?php echo e(asset('themes/webpage/assets/css/vendors/slick.css')); ?>">
+    <link rel="stylesheet" type="text/css" href="<?php echo e(asset('themes/webpage/assets/css/vendors/slick-theme.css')); ?>">
+    <link rel="stylesheet" type="text/css" href="<?php echo e(asset('themes/webpage/assets/css/vendors/scrollbar.css')); ?>">
+    <link rel="stylesheet" type="text/css" href="<?php echo e(asset('themes/webpage/assets/css/vendors/animate.css')); ?>">
+    <link rel="stylesheet" type="text/css" href="<?php echo e(asset('themes/webpage/assets/css/vendors/datatables.css')); ?>">
+    <link rel="stylesheet" type="text/css"
+        href="<?php echo e(asset('themes/webpage/assets/css/vendors/datatable/select.dataTables.min.css')); ?>">
+
+    <!-- Plugins css Ends-->
+
+    <!-- Bootstrap css-->
+    <link rel="stylesheet" type="text/css" href="<?php echo e(asset('themes/webpage/assets/css/vendors/bootstrap.css')); ?>">
+    <!-- App css-->
+    <link rel="stylesheet" type="text/css" href="<?php echo e(asset('themes/webpage/assets/css/style.css')); ?>">
+    <link id="color" rel="stylesheet" href="<?php echo e(asset('themes/webpage/assets/css/color-1.css')); ?>" media="screen">
+    <!-- Responsive css-->
+    <link rel="stylesheet" type="text/css" href="<?php echo e(asset('themes/webpage/assets/css/responsive.css')); ?>">
+
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+
+    <script>
+        /**
+         * PREVENCIÓN DE PARPADEO Y SINCRONIZACIÓN DE MODO OSCURO
+         */
+        (function() {
+            const isDark = localStorage.getItem("cion_mode") === "dark-only"
+                || localStorage.getItem("_x_darkMode_on") === "true";
+            document.documentElement.classList.toggle("dark", isDark);
+            document.body.classList.toggle("dark-only", isDark);
+            if (isDark) {
+                localStorage.setItem("cion_mode", "dark-only");
+                localStorage.setItem("_x_darkMode_on", "true");
+            } else {
+                localStorage.setItem("cion_mode", "light");
+                localStorage.setItem("_x_darkMode_on", "false");
+            }
+        })();
+    </script>
+    <?php echo $__env->yieldContent('etiquetasmeta'); ?>
+    <?php echo $__env->yieldContent('styles'); ?>
+
+    
+    <script src="<?php echo e(asset('js/traffic-tracking.js')); ?>"></script>
+</head>
+
+<body>
+
+    <?php echo $__env->yieldContent('content'); ?>
+    <?php if (isset($component)) { $__componentOriginalc7f8ba02c3653242a743283d36df496b = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginalc7f8ba02c3653242a743283d36df496b = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.whatsapp','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('whatsapp'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginalc7f8ba02c3653242a743283d36df496b)): ?>
+<?php $attributes = $__attributesOriginalc7f8ba02c3653242a743283d36df496b; ?>
+<?php unset($__attributesOriginalc7f8ba02c3653242a743283d36df496b); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginalc7f8ba02c3653242a743283d36df496b)): ?>
+<?php $component = $__componentOriginalc7f8ba02c3653242a743283d36df496b; ?>
+<?php unset($__componentOriginalc7f8ba02c3653242a743283d36df496b); ?>
+<?php endif; ?>
+
+    <div id="x-teleport-target"></div>
+
+    <!-- Bootstrap js-->
+    <script src="<?php echo e(asset('themes/webpage/assets/js/bootstrap/bootstrap.bundle.min.js')); ?>"></script>
+    <!-- feather icon js-->
+    <script src="<?php echo e(asset('themes/webpage/assets/js/icons/feather-icon/feather.min.js')); ?>"></script>
+    <script src="<?php echo e(asset('themes/webpage/assets/js/icons/feather-icon/feather-icon.js')); ?>"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <!-- scrollbar js-->
+    <script src="<?php echo e(asset('themes/webpage/assets/js/scrollbar/simplebar.js')); ?>"></script>
+    <script src="<?php echo e(asset('themes/webpage/assets/js/scrollbar/custom.js')); ?>"></script>
+    <!-- Sidebar jquery-->
+    <script src="<?php echo e(asset('themes/webpage/assets/js/config.js')); ?>"></script>
+    <!-- Plugins JS start-->
+    <script src="<?php echo e(asset('themes/webpage/assets/js/sidebar-menu.js')); ?>"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script>
+    <script src="<?php echo e(asset('themes/webpage/assets/js/slick/slick.min.js')); ?>"></script>
+    <script src="<?php echo e(asset('themes/webpage/assets/js/slick/slick.js')); ?>"></script>
+    <script src="<?php echo e(asset('themes/webpage/assets/js/header-slick.js')); ?>"></script>
+
+    <script src="<?php echo e(asset('themes/webpage/assets/js/custom-card/custom-card.js')); ?>"></script>
+    <script src="<?php echo e(asset('themes/webpage/assets/js/notify/bootstrap-notify.min.js')); ?>"></script>
+
+    
+    <?php if(!Route::is(['course_url_slug', 'landing_preview'])): ?>
+        <script src="<?php echo e(asset('themes/webpage/assets/js/datatable/datatables/jquery.dataTables.min.js')); ?>"></script>
+        <script src="<?php echo e(asset('themes/webpage/assets/js/animation/wow/wow.min.js')); ?>"></script>
+    <?php endif; ?>
+
+    <!-- Plugins JS Ends-->
+    <!-- Theme js-->
+    <script src="<?php echo e(asset('themes/webpage/assets/js/script.js')); ?>"></script>
+
+    <?php echo $__env->yieldPushContent('content_after'); ?>
+    <?php echo $__env->yieldContent('javascripts'); ?>
+
+    <script src="<?php echo e(asset('themes/webpage/assets/js/modalpage/validation-modal.js')); ?>"></script>
+    <script src="<?php echo e(asset('themes/globalcpa/carrito.js')); ?>" defer></script>
+    <?php echo $__env->yieldPushContent('modals'); ?>
+
+</body>
+
+
+</html>
+<?php /**PATH D:\laragon\www\globalcpa\resources\views/layouts/webpage.blade.php ENDPATH**/ ?>

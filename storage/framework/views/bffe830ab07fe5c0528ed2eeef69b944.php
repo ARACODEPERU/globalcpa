@@ -1,0 +1,938 @@
+<?php $__env->startSection('etiquetasmeta'); ?>
+    <meta name="description" content="<?php echo e($landingPage->description_short); ?>" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" />
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('content'); ?>
+
+    <!-- Loader starts-->
+    <!-- <div class="loader-wrapper">
+                                                                                                                                                                  <div class="loader"></div>
+                                                                                                                                                                </div> -->
+    <!-- Loader ends-->
+    <!-- tap on top starts-->
+    <div class="tap-top"><i data-feather="chevrons-up"></i></div>
+    <!-- tap on tap ends-->
+
+
+
+
+    <!-- page-wrapper Start-->
+    <div class="page-wrapper" id="pageWrapper">
+        <!-- Page Header Start-->
+        <?php if (isset($component)) { $__componentOriginal2a2e454b2e62574a80c8110e5f128b60 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal2a2e454b2e62574a80c8110e5f128b60 = $attributes; } ?>
+<?php $component = App\View\Components\Header::resolve([] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('header'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\App\View\Components\Header::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal2a2e454b2e62574a80c8110e5f128b60)): ?>
+<?php $attributes = $__attributesOriginal2a2e454b2e62574a80c8110e5f128b60; ?>
+<?php unset($__attributesOriginal2a2e454b2e62574a80c8110e5f128b60); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal2a2e454b2e62574a80c8110e5f128b60)): ?>
+<?php $component = $__componentOriginal2a2e454b2e62574a80c8110e5f128b60; ?>
+<?php unset($__componentOriginal2a2e454b2e62574a80c8110e5f128b60); ?>
+<?php endif; ?>
+        <!-- Page Header Ends-->
+        <!-- Page Body Start-->
+        <div class="page-body-wrapper">
+            <!-- Page Sidebar Start-->
+            <?php if (isset($component)) { $__componentOriginald31f0a1d6e85408eecaaa9471b609820 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginald31f0a1d6e85408eecaaa9471b609820 = $attributes; } ?>
+<?php $component = App\View\Components\Sidebar::resolve([] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('sidebar'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\App\View\Components\Sidebar::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginald31f0a1d6e85408eecaaa9471b609820)): ?>
+<?php $attributes = $__attributesOriginald31f0a1d6e85408eecaaa9471b609820; ?>
+<?php unset($__attributesOriginald31f0a1d6e85408eecaaa9471b609820); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginald31f0a1d6e85408eecaaa9471b609820)): ?>
+<?php $component = $__componentOriginald31f0a1d6e85408eecaaa9471b609820; ?>
+<?php unset($__componentOriginald31f0a1d6e85408eecaaa9471b609820); ?>
+<?php endif; ?>
+
+            <!-- Page Sidebar Ends-->
+            <div class="page-body" style="padding: 80px 0px;">
+                <div class="container-fluid crm_dashboard">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <div class="card">
+                                <div class="blog-box blog-list row">
+                                    <div class="col-sm-7">
+                                        <img class="img-fluid sm-100-w"
+                                            src="<?php echo e(asset('storage/' . $landingPage->main_image)); ?>"alt="">
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <div class="blog-details">
+                                            
+                                            <h3><?php echo e($landingPage->title); ?> </h3>
+                                            <div class="blog-bottom-content">
+                                                <hr>
+                                                <div><?php echo $landingPage->description_long; ?></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="container-fluid" style="padding: 40px 0px;">
+                    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+                    <form method="POST" action="<?php echo e(route('landing_store_course_free')); ?>">
+                        <?php echo csrf_field(); ?>
+                        <div class="row">
+                            <div class="col-md-1"></div>
+                            <div class="col-md-10">
+                                <div class="row">
+                                    <h2>Seleccionar Formación Gratis</h2>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <?php $__currentLoopData = $coursesFree; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <div class="col-md-3 box-col-4">
+                                            <div class="card weekend-card">
+                                                <!-- Aracode -->
+                                                <label class="c-container">
+                                                    <input value="<?php echo e($item->id); ?>" type="radio" name="courseFree">
+                                                    <div class="c-checkmark">
+                                                        <svg viewBox="0 0 50 50" version="1.1"
+                                                            xmlns="http://www.w3.org/2000/svg" class="c-icon">
+                                                            <path
+                                                                d="M 24.10 6.29 Q 28.34 7.56 28.00 12.00 Q 27.56 15.10 27.13 18.19 A 0.45 0.45 4.5 0 0 27.57 18.70 Q 33.16 18.79 38.75 18.75 Q 42.13 18.97 43.23 21.45 Q 43.91 22.98 43.27 26.05 Q 40.33 40.08 40.19 40.44 Q 38.85 43.75 35.50 43.75 Q 21.75 43.75 7.29 43.75 A 1.03 1.02 0.0 0 1 6.26 42.73 L 6.42 19.43 A 0.54 0.51 -89.4 0 1 6.93 18.90 L 14.74 18.79 A 2.52 2.31 11.6 0 0 16.91 17.49 L 22.04 7.17 A 1.74 1.73 21.6 0 1 24.10 6.29 Z M 21.92 14.42 Q 20.76 16.58 19.74 18.79 Q 18.74 20.93 18.72 23.43 Q 18.65 31.75 18.92 40.06 A 0.52 0.52 88.9 0 0 19.44 40.56 L 35.51 40.50 A 1.87 1.83 5.9 0 0 37.33 39.05 L 40.51 23.94 Q 40.92 22.03 38.96 21.97 L 23.95 21.57 A 0.49 0.47 2.8 0 1 23.47 21.06 Q 23.76 17.64 25.00 12.00 Q 25.58 9.36 24.28 10.12 Q 23.80 10.40 23.50 11.09 Q 22.79 12.80 21.92 14.42 Z M 15.57 22.41 A 0.62 0.62 0 0 0 14.95 21.79 L 10.01 21.79 A 0.62 0.62 0 0 0 9.39 22.41 L 9.39 40.07 A 0.62 0.62 0 0 0 10.01 40.69 L 14.95 40.69 A 0.62 0.62 0 0 0 15.57 40.07 L 15.57 22.41 Z"
+                                                                fill-opacity="1.000">
+                                                            </path>
+                                                            <circle r="1.51" cy="37.50" cx="12.49"
+                                                                fill-opacity="1.000">
+                                                            </circle>
+                                                        </svg>
+                                                    </div>
+                                                </label>
+                                                <div class="card-body">
+                                                    
+                                                    <img class="w-100 mb-3" src="<?php echo e(asset('storage/' . $item->image)); ?>"
+                                                        alt="">
+                                                    <h4 style=" height: 30px; color: #000;">
+                                                        <?php echo e($item->description); ?>
+
+                                                    </h4>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                </div>
+                            </div>
+                            <div class="col-md-1"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-1"></div>
+                            <div class="col-md-10">
+                                <div class="row">
+                                    <h2>Seleccionar Area de Interes</h2>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <?php $__currentLoopData = $coursesFree; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <div class="col-md-3 box-col-4">
+                                            <div class="card weekend-card">
+                                                <label class="c-container">
+                                                    <input value="<?php echo e($item->id); ?>" type="checkbox" name="courseInterest[]">
+                                                    <div class="c-checkmark">
+                                                        <svg viewBox="0 0 50 50" version="1.1"
+                                                            xmlns="http://www.w3.org/2000/svg" class="c-icon">
+                                                            <path
+                                                                d="M 24.10 6.29 Q 28.34 7.56 28.00 12.00 Q 27.56 15.10 27.13 18.19 A 0.45 0.45 4.5 0 0 27.57 18.70 Q 33.16 18.79 38.75 18.75 Q 42.13 18.97 43.23 21.45 Q 43.91 22.98 43.27 26.05 Q 40.33 40.08 40.19 40.44 Q 38.85 43.75 35.50 43.75 Q 21.75 43.75 7.29 43.75 A 1.03 1.02 0.0 0 1 6.26 42.73 L 6.42 19.43 A 0.54 0.51 -89.4 0 1 6.93 18.90 L 14.74 18.79 A 2.52 2.31 11.6 0 0 16.91 17.49 L 22.04 7.17 A 1.74 1.73 21.6 0 1 24.10 6.29 Z M 21.92 14.42 Q 20.76 16.58 19.74 18.79 Q 18.74 20.93 18.72 23.43 Q 18.65 31.75 18.92 40.06 A 0.52 0.52 88.9 0 0 19.44 40.56 L 35.51 40.50 A 1.87 1.83 5.9 0 0 37.33 39.05 L 40.51 23.94 Q 40.92 22.03 38.96 21.97 L 23.95 21.57 A 0.49 0.47 2.8 0 1 23.47 21.06 Q 23.76 17.64 25.00 12.00 Q 25.58 9.36 24.28 10.12 Q 23.80 10.40 23.50 11.09 Q 22.79 12.80 21.92 14.42 Z M 15.57 22.41 A 0.62 0.62 0 0 0 14.95 21.79 L 10.01 21.79 A 0.62 0.62 0 0 0 9.39 22.41 L 9.39 40.07 A 0.62 0.62 0 0 0 10.01 40.69 L 14.95 40.69 A 0.62 0.62 0 0 0 15.57 40.07 L 15.57 22.41 Z"
+                                                                fill-opacity="1.000">
+                                                            </path>
+                                                            <circle r="1.51" cy="37.50" cx="12.49"
+                                                                fill-opacity="1.000">
+                                                            </circle>
+                                                        </svg>
+                                                    </div>
+                                                </label>
+                                                <div class="card-body">
+                                                    <img class="w-100 mb-3" src="<?php echo e(asset('storage/' . $item->image)); ?>"
+                                                        alt="">
+                                                    <h4 style=" height: 30px; color: #000;">
+                                                        <?php echo e($item->description); ?>
+
+                                                    </h4>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                </div>
+                            </div>
+                            <div class="col-md-1"></div>
+                        </div>
+                        <div class="row">
+                            <div class="d-flex justify-content-center">
+                                <div class="card col-md-10">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <h2>Registrarse</h2>
+                                        </div>
+                                        <br>
+                                        <div class="row g-3">
+                                            <div class="col-4">
+                                                <label class="form-label" for="nombres">Nombres</label>
+                                                <input class="form-control" id="nombres" name="nombres" type="text"
+                                                    required value="<?php echo e(old('nombres')); ?>">
+                                            </div>
+
+                                            <div class="col-4">
+                                                <label class="form-label" for="apaterno">Apellido
+                                                    Paterno</label>
+                                                <input class="form-control" id="apaterno" name="apaterno" type="text"
+                                                    required value="<?php echo e(old('apaterno')); ?>">
+                                            </div>
+
+                                            <div class="col-4">
+                                                <label class="form-label" for="amaterno">Apellido
+                                                    Materno</label>
+                                                <input class="form-control" id="amaterno" name="amaterno"
+                                                    type="text" required value="<?php echo e(old('amaterno')); ?>">
+                                            </div>
+
+                                            <div class="col-6">
+                                                <label class="form-label" for="tidocumento">Tipo
+                                                    Identificación</label>
+                                                <select class="form-control" id="tidocumento" name="tidocumento">
+                                                    <?php $__currentLoopData = $documentTypes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $documentType): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                        <option value="<?php echo e($documentType->id); ?>"
+                                                            <?php echo e(old('tidocumento', 1) == $documentType->id ? 'selected' : ''); ?>>
+                                                            <?php echo e($documentType->description); ?>
+
+                                                        </option>
+                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                </select>
+                                            </div>
+
+                                            <div class="col-6">
+                                                <label class="form-label" for="numero">Número</label>
+                                                <input class="form-control" id="numero" name="numero" type="number"
+                                                    value="<?php echo e(old('numero')); ?>">
+                                            </div>
+
+                                            <div class="col-6">
+                                                <label class="form-label" for="email">Correo
+                                                    electrónico</label>
+                                                <input class="form-control" id="email" name="email" type="email"
+                                                    value="<?php echo e(old('email')); ?>">
+                                            </div>
+
+                                            <div class="col-6">
+                                                <label class="form-label" for="phone">Teléfono</label>
+                                                <input class="form-control" id="phone" name="phone" type="text"
+                                                    value="<?php echo e(old('phone')); ?>">
+                                            </div>
+
+                                            <div class="col-6">
+                                                <label class="form-label" for="select-countries">País</label>
+                                                <select class="form-select" id="select-countries" name="pais">
+                                                    <?php $__currentLoopData = $countries; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $country): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                        <option value="<?php echo e($country->id); ?>"
+                                                            <?php echo e(old('pais', 'PE') == $country->country_code ? 'selected' : ''); ?>>
+                                                            <?php echo e($country->description); ?>
+
+                                                        </option>
+                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                </select>
+                                            </div>
+
+                                            <div id="divSelectCity" class="col-6">
+                                                <label class="form-label" for="select-city">Ciudad</label>
+                                                <select class="form-select" id="select-city" name="ciudad">
+                                                    <option value="">Seleccionar ciudad</option>
+                                                    <?php $__currentLoopData = $ubigeo; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $city): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                        <option value="<?php echo e($city->id); ?>"
+                                                            <?php echo e(old('ciudad') == $city->id ? 'selected' : ''); ?>>
+                                                            <?php echo e($city->department->name); ?> -
+                                                            <?php echo e($city->province->name); ?> -
+                                                            <?php echo e($city->name); ?>
+
+                                                        </option>
+                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                </select>
+                                                <input class="form-control" id="ubigeo" name="ubigeo" type="hidden"
+                                                    value="<?php echo e(old('ubigeo')); ?>">
+                                            </div>
+
+                                            <div id="divInputCity" class="col-12">
+                                                <label class="form-label" for="ciudad">Ciudad</label>
+                                                <input class="form-control" id="ciudad" name="ciudad" type="text"
+                                                    value="<?php echo e(old('ciudad')); ?>">
+                                            </div>
+
+                                            <div class="col-6">
+                                                <label class="form-label" for="fecha_nacimiento">Fecha de
+                                                    nacimiento</label>
+                                                <input class="form-control" id="fecha_nacimiento" name="fecha_nacimiento"
+                                                    type="date" value="<?php echo e(old('fecha_nacimiento')); ?>">
+                                            </div>
+
+                                            <div class="col-6">
+                                                <label class="form-label" for="genero">Género</label>
+                                                <select class="form-control" id="genero" name="genero">
+                                                    <option value="">Seleccionar</option>
+                                                    <option value="M" <?php echo e(old('genero') == 'M' ? 'selected' : ''); ?>>
+                                                        Masculino</option>
+                                                    <option value="F" <?php echo e(old('genero') == 'F' ? 'selected' : ''); ?>>
+                                                        Femenino</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="col-12 checkbox-checked">
+                                                <input class="form-check-input" id="politicas" name="politicas"
+                                                    type="checkbox" <?php echo e(old('politicas') ? 'checked' : ''); ?>>
+                                                <label class="form-check-label" for="politicas">
+                                                    Estoy de acuerdo con las
+                                                    <a target="_blank" href="<?php echo e('politicas_privacidad'); ?>">
+                                                        políticas de privacidad
+                                                    </a>
+                                                </label>
+                                            </div>
+
+                                        </div>
+                                        <br>
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <button type="submit"
+                                                    class="btn btn-pill btn-primary btn-air-primary btn-sm"
+                                                    data-bs-original-title="btn btn-pill btn-primary btn-air-primary btn-sm">
+                                                    Enviar
+                                                </button>
+                                            </div>
+
+                                            
+                                            <div class="mt-6">
+                                                <?php if($errors->any()): ?>
+                                                    <div class="alert alert-danger">
+                                                        <ul class="mb-0">
+                                                            <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                                <li><?php echo e($error); ?></li>
+                                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                        </ul>
+                                                    </div>
+                                                <?php endif; ?>
+
+                                                <?php if(session('success')): ?>
+                                                    <div class="alert alert-success">
+                                                        <?php echo e(session('success')); ?>
+
+                                                    </div>
+                                                <?php endif; ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div class="modal_wrapper">
+                        <div class="shadow"></div>
+                        <div class="success_wrap">
+                            <span class="modal_icon"><ion-icon name="checkmark-sharp"></ion-icon></span>
+                            <p>You have successfully completed the process.</p>
+                        </div>
+                    </div>
+                </div>
+
+
+                
+            </div>
+
+            <!-- footer start-->
+            <?php if (isset($component)) { $__componentOriginal99051027c5120c83a2f9a5ae7c4c3cfa = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal99051027c5120c83a2f9a5ae7c4c3cfa = $attributes; } ?>
+<?php $component = App\View\Components\Footer::resolve([] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('footer'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\App\View\Components\Footer::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal99051027c5120c83a2f9a5ae7c4c3cfa)): ?>
+<?php $attributes = $__attributesOriginal99051027c5120c83a2f9a5ae7c4c3cfa; ?>
+<?php unset($__attributesOriginal99051027c5120c83a2f9a5ae7c4c3cfa); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal99051027c5120c83a2f9a5ae7c4c3cfa)): ?>
+<?php $component = $__componentOriginal99051027c5120c83a2f9a5ae7c4c3cfa; ?>
+<?php unset($__componentOriginal99051027c5120c83a2f9a5ae7c4c3cfa); ?>
+<?php endif; ?>
+        </div>
+
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap');
+
+            :root {
+                --primary: #6a4c93;
+                --secondary: #bfc0c0;
+                --white: #fff;
+                --text-clr: #5b6475;
+                --header-clr: #25273d;
+                --next-btn-hover: #6a4c93;
+                --back-btn-hover: #8b8c8c;
+            }
+
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                list-style: none;
+                outline: none;
+                font-family: 'Open Sans', sans-serif;
+            }
+
+            body {
+                background: var(--primary);
+                color: var(--text-clr);
+                font-size: 16px;
+                position: relative;
+            }
+
+            .wrapper {
+                width: 100%;
+                max-width: 100%;
+                /* background: var(--white); */
+                margin: 50px auto 0;
+                padding: 50px;
+                border-radius: 5px;
+            }
+
+            .wrapper .header {
+                margin-bottom: 35px;
+                display: flex;
+                justify-content: center;
+            }
+
+            .wrapper .header ul {
+                display: flex;
+            }
+
+            .wrapper .header ul li {
+                margin-right: 50px;
+                position: relative;
+            }
+
+            .wrapper .header ul li:last-child {
+                margin-right: 0;
+            }
+
+            .wrapper .header ul li:before {
+                content: "";
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                left: 55px;
+                width: 100%;
+                height: 2px;
+                background: var(--secondary);
+            }
+
+            .wrapper .header ul li:last-child:before {
+                display: none;
+            }
+
+            .wrapper .header ul li div {
+                padding: 5px;
+                border-radius: 50%;
+            }
+
+            .wrapper .header ul li p {
+                width: 50px;
+                height: 50px;
+                background: var(--secondary);
+                color: var(--white);
+                text-align: center;
+                line-height: 50px;
+                border-radius: 50%;
+            }
+
+            .wrapper .header ul li.active:before {
+                background: var(--primary);
+            }
+
+            .wrapper .header ul li.active p {
+                background: var(--primary);
+            }
+
+            .wrapper .form_wrap {
+                margin-bottom: 35px;
+            }
+
+            .wrapper .form_wrap h2 {
+                color: var(--header-clr);
+                text-align: center;
+                text-transform: uppercase;
+                margin-bottom: 20px;
+            }
+
+            .wrapper .form_wrap .input_wrap {
+                width: 350px;
+                max-width: 100%;
+                margin: 0 auto 20px;
+            }
+
+            .wrapper .form_wrap .input_wrap:last-child {
+                margin-bottom: 0;
+            }
+
+            .wrapper .form_wrap .input_wrap label {
+                display: block;
+                margin-bottom: 5px;
+            }
+
+            .wrapper .form_wrap .input_wrap .input {
+                border: 2px solid var(--secondary);
+                border-radius: 3px;
+                padding: 10px;
+                display: block;
+                width: 100%;
+                font-size: 16px;
+                transition: 0.5s ease;
+            }
+
+            .wrapper .form_wrap .input_wrap .input:focus {
+                border-color: var(--primary);
+            }
+
+            .wrapper .btns_wrap {
+                width: 350px;
+                max-width: 100%;
+                margin: 0 auto;
+            }
+
+            .wrapper .btns_wrap .common_btns {
+                display: flex;
+                justify-content: space-between;
+            }
+
+            .wrapper .btns_wrap .common_btns.form_1_btns {
+                justify-content: flex-end;
+            }
+
+            .wrapper .btns_wrap .common_btns button {
+                border: 0;
+                padding: 12px 15px;
+                background: var(--primary);
+                color: var(--white);
+                width: 135px;
+                justify-content: center;
+                display: flex;
+                align-items: center;
+                font-size: 16px;
+                border-radius: 3px;
+                transition: 0.5s ease;
+                cursor: pointer;
+            }
+
+            .wrapper .btns_wrap .common_btns button.btn_back {
+                background: var(--secondary);
+            }
+
+            .wrapper .btns_wrap .common_btns button.btn_next .icon {
+                display: flex;
+                margin-left: 10px;
+            }
+
+            .wrapper .btns_wrap .common_btns button.btn_back .icon {
+                display: flex;
+                margin-right: 10px;
+            }
+
+            .wrapper .btns_wrap .common_btns button.btn_next:hover,
+            .wrapper .btns_wrap .common_btns button.btn_done:hover {
+                background: var(--next-btn-hover);
+            }
+
+            .wrapper .btns_wrap .common_btns button.btn_back:hover {
+                background: var(--back-btn-hover);
+            }
+
+            .modal_wrapper {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                visibility: hidden;
+            }
+
+            .modal_wrapper .shadow {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.8);
+                opacity: 0;
+                transition: 0.2s ease;
+            }
+
+            .modal_wrapper .success_wrap {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -800px);
+                background: var(--white);
+                padding: 50px;
+                display: flex;
+                align-items: center;
+                border-radius: 5px;
+                transition: 0.5s ease;
+            }
+
+            .modal_wrapper .success_wrap .modal_icon {
+                margin-right: 20px;
+                width: 50px;
+                height: 50px;
+                background: var(--primary);
+                color: var(--white);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 32px;
+                font-weight: 700;
+            }
+
+            .modal_wrapper.active {
+                visibility: visible;
+            }
+
+            .modal_wrapper.active .shadow {
+                opacity: 1;
+            }
+
+            .modal_wrapper.active .success_wrap {
+                transform: translate(-50%, -50%);
+            }
+
+            /* Aracode */
+        </style>
+
+        <style>
+            /* Hide the default checkbox */
+
+            .c-container input {
+                opacity: 0;
+                cursor: pointer;
+                height: 0;
+                width: 0;
+            }
+
+            .c-container {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                /* ✅ centra vertical y horizontal */
+                gap: 0.5em;
+                /* espacio entre icono y texto */
+                position: absolute;
+                inset: 0;
+                cursor: pointer;
+                font-size: 12px;
+                user-select: none;
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity .3s ease;
+                z-index: 2;
+            }
+
+            /* Caja del check */
+            .c-checkmark {
+                height: 60px;
+                width: 60px;
+                padding: 10px;
+                background-color: #171717;
+                border-radius: 50%;
+                transition: .2s ease-in-out;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .c-like {
+                font-size: 0.3em;
+                text-align: center;
+                color: white;
+                opacity: 0;
+                /* oculto hasta check */
+                margin-top: 0;
+                /* ✅ eliminamos el empuje hacia arriba */
+            }
+
+            .c-icon {
+                fill: white;
+                transition: .4s ease-in-out;
+            }
+
+            /* Hover animaciones */
+            .c-checkmark:hover {
+                background-color: white;
+            }
+
+            .c-checkmark:hover .c-icon {
+                fill: black;
+                transform: rotate(-8deg);
+                transform-origin: bottom left;
+            }
+
+            /* Si está marcado */
+            .c-container input:checked~.c-checkmark {
+                /* background-color: limegreen; */
+                background-color: #3c4a99;
+            }
+
+            .c-container input:checked~.c-like {
+                opacity: 1;
+                animation: 0.6s up_3951;
+            }
+
+            .c-container input:checked~.c-checkmark .c-icon {
+                fill: white;
+                transform: none;
+                animation: 0.5s jump_3951;
+            }
+
+            @keyframes up_3951 {
+                100% {
+                    transform: translateY(-2em);
+                }
+            }
+
+            @keyframes jump_3951 {
+                50% {
+                    transform-origin: center;
+                    transform: translateY(-0.5em) rotate(-8deg);
+                }
+
+                100% {
+                    transform-origin: center;
+                    transform: translateY(0em);
+                }
+            }
+
+            /* Card con overlay */
+            .weekend-card {
+                position: relative;
+                overflow: hidden;
+            }
+
+            .weekend-card::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.5);
+                opacity: 0;
+                transition: opacity .3s ease;
+                z-index: 1;
+            }
+
+            /* Mostrar al hacer hover */
+            .weekend-card:hover::before,
+            .weekend-card:hover .c-container {
+                opacity: 1;
+                pointer-events: auto;
+            }
+
+            /* ✅ Mantener visible si el input está checked */
+            .c-container input:checked~.c-checkmark,
+            .c-container input:checked~.c-like,
+            .c-container input:checked~.c-icon {
+                opacity: 1;
+            }
+
+            .weekend-card:has(.c-container input:checked)::before,
+            .weekend-card:has(.c-container input:checked) .c-container {
+                opacity: 1 !important;
+                pointer-events: auto;
+            }
+        </style>
+    </div>
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('javascripts'); ?>
+    <script>
+        $('#divSelectCity').css('display', 'block');
+        $('#divInputCity').css('display', 'none');
+
+
+        var form_1 = document.querySelector(".form_1");
+        var form_2 = document.querySelector(".form_2");
+        var form_3 = document.querySelector(".form_3");
+
+
+        var form_1_btns = document.querySelector(".form_1_btns");
+        var form_2_btns = document.querySelector(".form_2_btns");
+        var form_3_btns = document.querySelector(".form_3_btns");
+
+
+        var form_1_next_btn = document.querySelector(".form_1_btns .btn_next");
+        var form_2_back_btn = document.querySelector(".form_2_btns .btn_back");
+        var form_2_next_btn = document.querySelector(".form_2_btns .btn_next");
+        var form_3_back_btn = document.querySelector(".form_3_btns .btn_back");
+
+        var form_2_progessbar = document.querySelector(".form_2_progessbar");
+        var form_3_progessbar = document.querySelector(".form_3_progessbar");
+
+        var btn_done = document.querySelector(".btn_done");
+        var modal_wrapper = document.querySelector(".modal_wrapper");
+        var shadow = document.querySelector(".shadow");
+
+        form_1_next_btn.addEventListener("click", function() {
+            form_1.style.display = "none";
+            form_2.style.display = "block";
+
+            form_1_btns.style.display = "none";
+            form_2_btns.style.display = "flex";
+
+            form_2_progessbar.classList.add("active");
+        });
+
+        form_2_back_btn.addEventListener("click", function() {
+            form_1.style.display = "block";
+            form_2.style.display = "none";
+
+            form_1_btns.style.display = "flex";
+            form_2_btns.style.display = "none";
+
+            form_2_progessbar.classList.remove("active");
+        });
+
+        form_2_next_btn.addEventListener("click", function() {
+            form_2.style.display = "none";
+            form_3.style.display = "block";
+
+            form_3_btns.style.display = "flex";
+            form_2_btns.style.display = "none";
+
+            form_3_progessbar.classList.add("active");
+        });
+
+        form_3_back_btn.addEventListener("click", function() {
+            form_2.style.display = "block";
+            form_3.style.display = "none";
+
+            form_3_btns.style.display = "none";
+            form_2_btns.style.display = "flex";
+
+            form_3_progessbar.classList.remove("active");
+        });
+
+        // btn_done.addEventListener("click", function() {
+        //     modal_wrapper.classList.add("active");
+        // })
+
+        shadow.addEventListener("click", function() {
+            modal_wrapper.classList.remove("active");
+        })
+    </script>
+
+    <script>
+        let currentIndex = 0;
+        const slides = document.querySelector('.slides');
+        const totalSlides = document.querySelectorAll('.slide').length;
+
+        function showNextSlide() {
+            currentIndex = (currentIndex + 1) % totalSlides;
+            const offset = -currentIndex * 100;
+            slides.style.transform = `translateX(${offset}%)`;
+        }
+
+        setInterval(showNextSlide, 3000); // Cambia cada 3 segundos
+    </script>
+
+
+    <script>
+        const headers = document.querySelectorAll('.accordion-header-aracode');
+        headers.forEach(header => {
+            header.addEventListener('click', function() {
+                const content = this.nextElementSibling;
+                const isVisible = content.style.maxHeight;
+
+                // Ocultar todos los contenidos y resetear iconos
+                document.querySelectorAll('.accordion-content-aracode').forEach(item => {
+                    item.style.maxHeight = null;
+                    item.style.padding = '0';
+                    item.setAttribute('aria-hidden', 'true');
+                });
+                headers.forEach(h => {
+                    h.classList.remove('active');
+                    h.querySelector('.accordion-icon-aracode').textContent =
+                        '►'; // Restablecer icono
+                    h.setAttribute('aria-expanded', 'false');
+                });
+
+                // Mostrar el contenido del header clicado
+                if (!isVisible) {
+                    content.style.maxHeight = content.scrollHeight + "px";
+                    content.style.padding = '15px';
+                    this.classList.add('active'); // Añadir clase activa al encabezado clicado
+                    this.querySelector('.accordion-icon-aracode').textContent =
+                        '▼'; // Cambiar icono al expandido
+                    this.setAttribute('aria-expanded', 'true');
+                    content.setAttribute('aria-hidden', 'false');
+                }
+            });
+        });
+    </script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.full.min.js"></script>
+    <script>
+        $('#select-countries').select2({
+            theme: 'bootstrap-5'
+        });
+
+        $('#select-countries').on('change', function() {
+            let valor = $(this).val();
+
+            if (valor == 1) {
+                // Mostrar divSelectCity y ocultar divInputCity
+                $('#divSelectCity').css('display', 'block');
+                $('#divInputCity').css('display', 'none');
+            } else {
+                // Mostrar divInputCity y ocultar divSelectCity
+                $('#divSelectCity').css('display', 'none');
+                $('#divInputCity').css('display', 'block');
+            }
+        });
+
+        $('#select-city').select2({
+            placeholder: "Seleccionar ciudad",
+            allowClear: true,
+            theme: 'bootstrap-5'
+        });
+
+        $('#select-city').on('change', function() {
+            let valor = $(this).val();
+            let texto = $('#select-city option:selected').text();
+            $('#ubigeo').val(valor);
+            $('#ciudad').val(texto);
+        });
+    </script>
+
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.webpage', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\laragon\www\globalcpa\resources\views/pages/landing.blade.php ENDPATH**/ ?>
