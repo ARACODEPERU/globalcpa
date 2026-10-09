@@ -1,15 +1,29 @@
-@extends('layouts.webpage')
+<?php $__env->startSection('title', ' - ¿Por qué CPA Academy?'); ?>
 
-@section('title', ' - ¿Por qué CPA Academy?')
+<?php $__env->startSection('etiquetasmeta'); ?>
+    <?php if (isset($component)) { $__componentOriginal42da61123f891e63201d7be28f403427 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal42da61123f891e63201d7be28f403427 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.seo','data' => ['title' => '¿Por qué CPA Academy?','description' => 'Descubre por qué elegir CPA Academy: respaldo ACCA, docentes de Big Four, metodología práctica y alumnos en más de 10 países de LATAM.']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('seo'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['title' => '¿Por qué CPA Academy?','description' => 'Descubre por qué elegir CPA Academy: respaldo ACCA, docentes de Big Four, metodología práctica y alumnos en más de 10 países de LATAM.']); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal42da61123f891e63201d7be28f403427)): ?>
+<?php $attributes = $__attributesOriginal42da61123f891e63201d7be28f403427; ?>
+<?php unset($__attributesOriginal42da61123f891e63201d7be28f403427); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal42da61123f891e63201d7be28f403427)): ?>
+<?php $component = $__componentOriginal42da61123f891e63201d7be28f403427; ?>
+<?php unset($__componentOriginal42da61123f891e63201d7be28f403427); ?>
+<?php endif; ?>
+<?php $__env->stopSection(); ?>
 
-@section('etiquetasmeta')
-    <x-seo
-        title="¿Por qué CPA Academy?"
-        description="Descubre por qué elegir CPA Academy: respaldo ACCA, docentes de Big Four, metodología práctica y alumnos en más de 10 países de LATAM."
-    />
-@endsection
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 
     <style>
         /* =========================================
@@ -298,20 +312,58 @@
     <!-- page-wrapper Start-->
     <div class="page-wrapper" id="pageWrapper">
         <!-- Page Header Start-->
-        <x-header />
+        <?php if (isset($component)) { $__componentOriginal2a2e454b2e62574a80c8110e5f128b60 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal2a2e454b2e62574a80c8110e5f128b60 = $attributes; } ?>
+<?php $component = App\View\Components\Header::resolve([] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('header'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\App\View\Components\Header::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal2a2e454b2e62574a80c8110e5f128b60)): ?>
+<?php $attributes = $__attributesOriginal2a2e454b2e62574a80c8110e5f128b60; ?>
+<?php unset($__attributesOriginal2a2e454b2e62574a80c8110e5f128b60); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal2a2e454b2e62574a80c8110e5f128b60)): ?>
+<?php $component = $__componentOriginal2a2e454b2e62574a80c8110e5f128b60; ?>
+<?php unset($__componentOriginal2a2e454b2e62574a80c8110e5f128b60); ?>
+<?php endif; ?>
         <!-- Page Header Ends-->
 
         <!-- Page Body Start-->
         <div class="page-body-wrapper">
             <!-- Page Sidebar Start-->
-            <x-sidebar />
+            <?php if (isset($component)) { $__componentOriginald31f0a1d6e85408eecaaa9471b609820 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginald31f0a1d6e85408eecaaa9471b609820 = $attributes; } ?>
+<?php $component = App\View\Components\Sidebar::resolve([] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('sidebar'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\App\View\Components\Sidebar::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginald31f0a1d6e85408eecaaa9471b609820)): ?>
+<?php $attributes = $__attributesOriginald31f0a1d6e85408eecaaa9471b609820; ?>
+<?php unset($__attributesOriginald31f0a1d6e85408eecaaa9471b609820); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginald31f0a1d6e85408eecaaa9471b609820)): ?>
+<?php $component = $__componentOriginald31f0a1d6e85408eecaaa9471b609820; ?>
+<?php unset($__componentOriginald31f0a1d6e85408eecaaa9471b609820); ?>
+<?php endif; ?>
             <!-- Page Sidebar Ends-->
 
             <div class="page-body" style="padding-bottom: 40px;">
 
-                {{-- ============================================ --}}
-                {{-- 1. HERO --}}
-                {{-- ============================================ --}}
+                
+                
+                
                 <div class="container-fluid mt-5">
                     <div class="card why-hero shadow mb-4" data-aos="fade-in">
                         <div class="card-body p-4 p-lg-5 position-relative">
@@ -320,7 +372,7 @@
                                     <nav aria-label="breadcrumb" class="mb-3">
                                         <ol class="breadcrumb mb-0">
                                             <li class="breadcrumb-item">
-                                                <a href="{{ route('index_main') }}"
+                                                <a href="<?php echo e(route('index_main')); ?>"
                                                     class="text-white-50 text-decoration-none text-uppercase small fw-bold"
                                                     style="letter-spacing: 1px;">
                                                     <i class="fa fa-home me-1"></i> Inicio
@@ -342,19 +394,9 @@
                                         comienza a liderar.
                                     </p>
 
-                                    {{-- <div class="d-flex flex-wrap gap-3 mb-4">
-                                        <span class="why-hero-tag">
-                                            <i class="fa fa-certificate text-warning"></i> Respaldo ACCA
-                                        </span>
-                                        <span class="why-hero-tag">
-                                            <i class="fa fa-briefcase text-warning"></i> Docentes de Big Four
-                                        </span>
-                                        <span class="why-hero-tag">
-                                            <i class="fa fa-globe text-warning"></i> +10 países de LATAM
-                                        </span>
-                                    </div> --}}
+                                    
 
-                                    <a href="{{ route('web_courses') }}" class="btn-cta-white text-decoration-none">
+                                    <a href="<?php echo e(route('web_courses')); ?>" class="btn-cta-white text-decoration-none">
                                         <i class="fa fa-graduation-cap me-2"></i>Explorar programas
                                     </a>
                                 </div>
@@ -363,9 +405,9 @@
                     </div>
                 </div>
 
-                {{-- ============================================ --}}
-                {{-- 2. DIFERENCIALES --}}
-                {{-- ============================================ --}}
+                
+                
+                
                 <section class="why-section">
                     <div class="container">
                         <div class="text-center mb-5" data-aos="fade-up">
@@ -450,9 +492,9 @@
                 </section>
 
 
-                {{-- ============================================ --}}
-                {{-- 4. COMPARATIVA --}}
-                {{-- ============================================ --}}
+                
+                
+                
                 <section class="why-section why-section-alt">
                     <div class="container">
                         <div class="text-center mb-5" data-aos="fade-up">
@@ -531,9 +573,9 @@
                 </section>
 
                 
-                {{-- ============================================ --}}
-                {{-- 3. CPA EN NÚMEROS --}}
-                {{-- ============================================ --}}
+                
+                
+                
                 <section class="why-section pt-0">
                     <div class="container">
                         <div class="why-stats-band shadow" data-aos="fade-up">
@@ -563,66 +605,42 @@
                     </div>
                 </section>
 
-                {{-- ============================================ --}}
-                {{-- 5. METODOLOGÍA EN 4 PASOS --}}
-                {{-- ============================================ --}}
-                {{-- <section class="why-section">
-                    <div class="container">
-                        <div class="text-center mb-5" data-aos="fade-up">
-                            <h2 class="fw-bold text-navy-custom">Así aprendes en CPA Academy</h2>
-                            <p class="text-muted-custom mx-auto" style="max-width: 700px;">
-                                Una metodología pensada para que el conocimiento se convierta en resultados.
-                            </p>
-                        </div>
-                        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 why-steps-row">
-                            <div class="col why-step" data-aos="fade-up" data-aos-delay="100">
-                                <div class="step-number">1</div>
-                                <h4 class="text-navy-custom">Aprende de expertos</h4>
-                                <p class="text-muted-custom">
-                                    Clases con socios y gerentes que resuelven estos desafíos a diario
-                                    en las mejores firmas.
-                                </p>
-                            </div>
-                            <div class="col why-step" data-aos="fade-up" data-aos-delay="200">
-                                <div class="step-number">2</div>
-                                <h4 class="text-navy-custom">Practica casos reales</h4>
-                                <p class="text-muted-custom">
-                                    Ejercicios basados en situaciones reales de empresas peruanas y
-                                    de la región.
-                                </p>
-                            </div>
-                            <div class="col why-step" data-aos="fade-up" data-aos-delay="300">
-                                <div class="step-number">3</div>
-                                <h4 class="text-navy-custom">Certifica tu logro</h4>
-                                <p class="text-muted-custom">
-                                    Obtén tu certificado de especialización con verificación en línea
-                                    y respaldo ACCA.
-                                </p>
-                            </div>
-                            <div class="col why-step" data-aos="fade-up" data-aos-delay="400">
-                                <div class="step-number">4</div>
-                                <h4 class="text-navy-custom">Aplica y crece</h4>
-                                <p class="text-muted-custom">
-                                    Implementa lo aprendido en tu trabajo y haz visible tu nuevo
-                                    valor profesional.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </section> --}}
+                
+                
+                
+                
 
-                {{-- ============================================ --}}
-                {{-- 6. DOCENTES EXPERTOS --}}
-                {{-- ============================================ --}}
+                
+                
+                
                 <section class="why-section why-section-alt">
                     <div class="container-fluid" data-aos="fade-up">
-                        <x-teachers />
+                        <?php if (isset($component)) { $__componentOriginal707a56286bf9ae6f3609992841846927 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal707a56286bf9ae6f3609992841846927 = $attributes; } ?>
+<?php $component = App\View\Components\Teachers::resolve([] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('teachers'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\App\View\Components\Teachers::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal707a56286bf9ae6f3609992841846927)): ?>
+<?php $attributes = $__attributesOriginal707a56286bf9ae6f3609992841846927; ?>
+<?php unset($__attributesOriginal707a56286bf9ae6f3609992841846927); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal707a56286bf9ae6f3609992841846927)): ?>
+<?php $component = $__componentOriginal707a56286bf9ae6f3609992841846927; ?>
+<?php unset($__componentOriginal707a56286bf9ae6f3609992841846927); ?>
+<?php endif; ?>
                     </div>
                 </section>
 
-                {{-- ============================================ --}}
-                {{-- 7. CTA FINAL --}}
-                {{-- ============================================ --}}
+                
+                
+                
                 <section class="why-section pt-0">
                     <div class="container">
                         <div class="why-cta text-center" data-aos="fade-up">
@@ -634,7 +652,7 @@
                                 El siguiente lugar es tuyo.
                             </p>
                             <div class="d-flex flex-wrap justify-content-center gap-3">
-                                <a href="{{ route('web_courses') }}" class="btn-cta-white text-decoration-none">
+                                <a href="<?php echo e(route('web_courses')); ?>" class="btn-cta-white text-decoration-none">
                                     <i class="fa fa-graduation-cap me-2"></i>Ver programas
                                 </a>
                                 <a href="https://wa.me/51967052506?text=/Agente%20Principal" target="_blank"
@@ -650,11 +668,30 @@
         </div>
 
         <!-- footer start-->
-        <x-footer />
+        <?php if (isset($component)) { $__componentOriginal99051027c5120c83a2f9a5ae7c4c3cfa = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal99051027c5120c83a2f9a5ae7c4c3cfa = $attributes; } ?>
+<?php $component = App\View\Components\Footer::resolve([] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('footer'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\App\View\Components\Footer::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal99051027c5120c83a2f9a5ae7c4c3cfa)): ?>
+<?php $attributes = $__attributesOriginal99051027c5120c83a2f9a5ae7c4c3cfa; ?>
+<?php unset($__attributesOriginal99051027c5120c83a2f9a5ae7c4c3cfa); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal99051027c5120c83a2f9a5ae7c4c3cfa)): ?>
+<?php $component = $__componentOriginal99051027c5120c83a2f9a5ae7c4c3cfa; ?>
+<?php unset($__componentOriginal99051027c5120c83a2f9a5ae7c4c3cfa); ?>
+<?php endif; ?>
     </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('javascripts')
+<?php $__env->startSection('javascripts'); ?>
     <script>
         $(document).ready(function() {
             // Inicializar AOS si la librería está disponible
@@ -668,4 +705,6 @@
             }
         });
     </script>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.webpage', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\globalcpa\resources\views/pages/por-que-cpa-academy.blade.php ENDPATH**/ ?>

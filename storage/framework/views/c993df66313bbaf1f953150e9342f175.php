@@ -482,24 +482,36 @@
                 
                 <section class="faq-section">
                     <div class="container">
-                        <div class="faq-search-box text-center" data-aos="fade-up">
-                            <h4 class="fw-bold text-navy-custom mb-3">¿Buscas algo específico?</h4>
-                            <p class="text-muted-custom mb-4" style="font-size: 0.9rem; max-width: 500px; margin: 0 auto 20px;">
-                                Escribe una palabra clave y encuentra la pregunta que necesitas.
-                            </p>
-                            <form class="d-flex gap-3 justify-content-center">
-                                <input type="text"
-                                    class="faq-search-input"
-                                    id="faqSearchInput"
-                                    placeholder="Ej: certificado, ACCA, inscripción..."
-                                    aria-label="Buscar en preguntas frecuentes">
-                                <button type="button" class="faq-search-btn" id="faqSearchBtn">
-                                    <i class="fa fa-search me-2"></i>Buscar
-                                </button>
-                            </form>
+                        <div class="faq-stats-band shadow" data-aos="fade-up">
+                            <div class="row row-cols-2 row-cols-lg-4 g-4 position-relative">
+                                <div class="col faq-stat">
+                                    <i class="fa fa-graduation-cap"></i>
+                                    <strong>+1,000</strong>
+                                    <span>Alumnos formados</span>
+                                </div>
+                                <div class="col faq-stat">
+                                    <i class="fa fa-globe-americas"></i>
+                                    <strong>+10</strong>
+                                    <span>Países de LATAM</span>
+                                </div>
+                                <div class="col faq-stat">
+                                    <i class="fa fa-chalkboard-teacher"></i>
+                                    <strong>+40</strong>
+                                    <span>Docentes expertos</span>
+                                </div>
+                                <div class="col faq-stat">
+                                    <i class="fa fa-book-open"></i>
+                                    <strong>+25</strong>
+                                    <span>Programas de especialización</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </section>
+                
+                
+                
+                
 
                 
                 
@@ -750,36 +762,6 @@
                 </section>
 
                 
-                
-                
-                <section class="faq-section">
-                    <div class="container">
-                        <div class="faq-stats-band shadow" data-aos="fade-up">
-                            <div class="row row-cols-2 row-cols-lg-4 g-4 position-relative">
-                                <div class="col faq-stat">
-                                    <i class="fa fa-graduation-cap"></i>
-                                    <strong>+5,000</strong>
-                                    <span>Alumnos formados</span>
-                                </div>
-                                <div class="col faq-stat">
-                                    <i class="fa fa-globe-americas"></i>
-                                    <strong>+10</strong>
-                                    <span>Países de LATAM</span>
-                                </div>
-                                <div class="col faq-stat">
-                                    <i class="fa fa-chalkboard-teacher"></i>
-                                    <strong>+40</strong>
-                                    <span>Docentes expertos</span>
-                                </div>
-                                <div class="col faq-stat">
-                                    <i class="fa fa-book-open"></i>
-                                    <strong>+25</strong>
-                                    <span>Programas de especialización</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
 
                 
                 
