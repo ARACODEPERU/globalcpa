@@ -156,14 +156,14 @@ const summaryHtml = () => {
 /** Muestra el resumen y avisa si el cliente acepta o vuelve al formulario. */
 const show = () => {
     Swal2.fire({
-        title: "Revisa tus datos",
+        title: "¿Estas seguro y de acuerdo?",
         html: summaryHtml(),
         icon: "question",
         width: 640,
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
-        confirmButtonText: "Si, mis datos son correctos",
+        confirmButtonText: "Si, estoy seguro y de acuerdo",
         cancelButtonText: "No, corregir datos",
         reverseButtons: true,
         padding: "2em",

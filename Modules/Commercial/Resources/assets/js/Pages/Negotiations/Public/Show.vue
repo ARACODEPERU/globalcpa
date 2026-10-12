@@ -78,6 +78,10 @@ const form = useForm({
     boleta_numero: null,
     boleta_nombre: null,
     voucher: null,
+    // Documentos legales que el cliente debe aceptar antes de enviar/guardar.
+    terms_accepted: false,
+    refund_accepted: false,
+    privacy_accepted: false,
     // Mercado Pago: 'card' (pagar ahora con tarjeta) o 'evidence' (el cliente ya
     // pago por fuera y adjunta la captura). El metodo de pago sigue siendo mercadopago.
     payment_option: "card",
@@ -119,6 +123,11 @@ const isMercadoPagoEvidence = computed(() => isMercadoPago.value && mpPaymentMod
 // El bloque de voucher (imagen) y el boton de enviar se usan en todos los medios de
 // pago, incluido Mercado Pago cuando el cliente declara que ya pago por fuera.
 const showVoucherUpload = computed(() => props.negotiation.payment_method !== "mercadopago" || isMercadoPagoEvidence.value);
+
+// Los 3 checks de documentos legales deben estar marcados antes de guardar.
+const allLegalAccepted = computed(() =>
+    Boolean(form.terms_accepted && form.refund_accepted && form.privacy_accepted)
+);
 
 const documentTypeOptions = computed(() => {
     const seen = new Set();
@@ -532,7 +541,23 @@ const setMpPaymentMode = (mode) => {
 // negociacion.
 const summaryModal = ref(null);
 
+// Antes de guardar el cliente debe declarar que leyo los 3 documentos legales.
+const enforceLegalChecks = () => {
+    if (allLegalAccepted.value) return true;
+
+    Swal2.fire({
+        title: "Acepta los documentos",
+        text: "Marca los tres checks (terminos y condiciones, politica de devoluciones y reembolsos, y politica de privacidad) antes de enviar tu confirmacion.",
+        icon: "warning",
+        padding: "2em",
+        customClass: "sweet-alerts",
+    });
+
+    return false;
+};
+
 const submit = () => {
+    if (!enforceLegalChecks()) return;
     if (!validateRucBeforeSubmit()) return;
     if (!validateDniBeforeSubmit()) return;
     if (!validatePersonRucBeforeSubmit()) return;
@@ -1439,6 +1464,51 @@ watch(brickFormVisible, async (visible) => {
                                 <img v-if="voucherPreview" :src="voucherPreview" alt="Voucher" class="mt-3 max-h-48 rounded-md border border-gray-200 object-contain dark:border-gray-700" />
                             </div>
                             <InputError :message="form.errors.voucher" class="mt-2" />
+                        </div>
+
+                        <div v-if="showVoucherUpload" class="mt-6 border-t border-gray-200 pt-5 dark:border-gray-700">
+                            <h3 class="mb-1 font-semibold dark:text-white">Antes de enviar</h3>
+                            <p class="mb-3 text-sm text-gray-500 dark:text-gray-400">
+                                Para continuar debes leer y aceptar los siguientes documentos.
+                            </p>
+
+                            <div class="space-y-3">
+                                <label class="flex items-start gap-3">
+                                    <input
+                                        v-model="form.terms_accepted"
+                                        type="checkbox"
+                                        class="mt-1 h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                                    />
+                                    <span class="text-sm text-gray-700 dark:text-gray-300">
+                                        He leído los
+                                        <a :href="route('terms_main')" target="_blank" rel="noopener noreferrer" class="font-medium text-primary hover:underline">términos y condiciones</a>
+                                    </span>
+                                </label>
+
+                                <label class="flex items-start gap-3">
+                                    <input
+                                        v-model="form.refund_accepted"
+                                        type="checkbox"
+                                        class="mt-1 h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                                    />
+                                    <span class="text-sm text-gray-700 dark:text-gray-300">
+                                        He leído la
+                                        <a :href="route('politicas_devoluciones')" target="_blank" rel="noopener noreferrer" class="font-medium text-primary hover:underline">Política de devoluciones y Reembolsos - CPA Academy</a>
+                                    </span>
+                                </label>
+
+                                <label class="flex items-start gap-3">
+                                    <input
+                                        v-model="form.privacy_accepted"
+                                        type="checkbox"
+                                        class="mt-1 h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                                    />
+                                    <span class="text-sm text-gray-700 dark:text-gray-300">
+                                        He leído la
+                                        <a :href="route('politicas_privacidad')" target="_blank" rel="noopener noreferrer" class="font-medium text-primary hover:underline">Política de Privacidad</a>
+                                    </span>
+                                </label>
+                            </div>
                         </div>
 
                         <div v-if="showVoucherUpload" class="mt-6 flex justify-end">
