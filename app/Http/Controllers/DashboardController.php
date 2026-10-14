@@ -18,13 +18,16 @@ use Modules\Academic\Entities\AcaThemeComment;
 use Modules\Blog\Entities\BlogArticle;
 use Modules\Blog\Entities\BlogCategory;
 use Modules\Onlineshop\Entities\OnliItem;
+use Modules\Academic\Services\CourseAccessService;
 
 class DashboardController extends Controller
 {
     protected $P000009;
+    protected $courseAccess;
 
-    public function __construct()
+    public function __construct(CourseAccessService $courseAccess)
     {
+        $this->courseAccess = $courseAccess;
         $this->P000009 = Parameter::where('parameter_code', 'P000009')->value('value_default');
     }
     public function index()
@@ -122,9 +125,24 @@ class DashboardController extends Controller
                     ->from('aca_cap_registrations AS i')
                     ->where('student_id', $student_id);
             })
+            ->with('landing:id,course_id,url_slug,is_published')
             ->orderByDesc('registrations')
             ->take(8)
-            ->get();
+            ->get()
+            ->map(function ($course) use ($student_id) {
+                // El boton del dashboard decide entre entrar al curso (si el alumno
+                // ya tiene acceso) o abrir su ficha publica. Todo se resuelve aqui
+                // para que el front no tenga que consultar nada extra.
+                $course->can_view = $this->courseAccess->canAccess($student_id, $course);
+
+                // Ficha publica: landing publicada de un curso activo.
+                $course->url_slug = $course->landing?->url_slug;
+                $course->landing_published = (bool) ($course->landing?->is_published);
+                $course->course_active = (bool) $course->status;
+                $course->unsetRelation('landing');
+
+                return $course;
+            });
 
         $articles = BlogArticle::orderByDesc('views')->take('4')->get();
 

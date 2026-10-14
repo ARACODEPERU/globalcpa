@@ -40,6 +40,7 @@ use Modules\Academic\Entities\AcaStudentAttendance;
 use Modules\Academic\Entities\AcaStudentParticipation;
 use Modules\Academic\Entities\AcaStudentGrade;
 use Modules\Onlineshop\Entities\OnliItem;
+use Modules\Academic\Services\CourseAccessService;
 
 class AcaStudentController extends Controller
 {
@@ -50,14 +51,16 @@ class AcaStudentController extends Controller
     private $top;
     private $icbper;
     private $displayVideo = false;
+    private $courseAccess;
 
     /**
      * Display a listing of the resource.
      * @return Renderable
      */
 
-    public function __construct()
+    public function __construct(CourseAccessService $courseAccess)
     {
+        $this->courseAccess = $courseAccess;
         $this->ubl = Parameter::where('parameter_code', 'P000003')->value('value_default');
         $this->igv = Parameter::where('parameter_code', 'P000001')->value('value_default');
         $this->top = Parameter::where('parameter_code', 'P000002')->value('value_default');
@@ -768,12 +771,7 @@ class AcaStudentController extends Controller
      */
     private function hasPremiumVipSubscription(int $studentId): bool
     {
-        return AcaStudentSubscription::where('student_id', $studentId)
-            ->where('status', true)
-            ->whereHas('subscription', function ($query) {
-                $query->where('title', 'LIKE', '%Premium VIP%');
-            })
-            ->exists();
+        return $this->courseAccess->hasPremiumVip($studentId);
     }
 
     public function checkCourseAccess(int $studentId, int $courseId): bool
@@ -786,60 +784,9 @@ class AcaStudentController extends Controller
             return false;
         }
 
-        // Verificar si el estudiante tiene Premium VIP
-        $hasPremiumVip = $this->hasPremiumVipSubscription($studentId);
-
-        // Condición VIP: Si tiene Premium VIP, puede ver TODOS los cursos (incluido especialización)
-        if ($hasPremiumVip) {
-            return true;
-        }
-
-        // Condición 4: Si el tipo es 'Programas de especialización', NO pasa (a menos que haya lógica de compra/pago específica)
-        if ($course->type_description === 'Programas de especialización') {
-
-            $isRegistered = AcaCapRegistration::where('student_id', $studentId)
-                                          ->where('course_id', $courseId)
-                                          ->exists();
-            if ($isRegistered) {
-                return true;
-            }else{
-                 return false;
-            }
-        }
-
-        // Condición 3: Si el estudiante tiene una suscripción activa, pasa
-        $hasActiveSubscription = AcaStudentSubscription::where('student_id', $studentId)
-                                                      ->where('status', true)
-                                                      ->exists();
-
-        if ($hasActiveSubscription) {
-            return true;
-        }
-
-        $today = Carbon::today();
-
-        // Condición 2: Si el estudiante está matriculado en este curso, pasa
-        $isRegistered = AcaCapRegistration::where('student_id', $studentId)
-                                            ->where('course_id', $courseId)
-                                            ->where(function ($query) use ($today) {
-                                                $query->where('unlimited', true) // cursos ilimitados siempre cuentan
-                                                    ->orWhere(function ($q) use ($today) {
-                                                        $q->where('unlimited', false) // explícito: solo cursos no ilimitados
-                                                            ->whereDate('date_end', '>=', $today); // aún vigentes
-                                                    });
-                                            })
-                                            ->exists();
-        if ($isRegistered) {
-            return true;
-        }
-
-        // Condición 1: Si el curso es gratis, pasa
-        if ($course->price == 0 || is_null($course->price)) {
-            return true;
-        }
-
-        // Si ninguna de las condiciones anteriores se cumple, el estudiante no tiene acceso
-        return false;
+        // La decisión completa vive en CourseAccessService para que el dashboard
+        // y las pantallas de cursos no divergan.
+        return $this->courseAccess->canAccess($studentId, $course);
     }
 
     public function courseLessons($id)

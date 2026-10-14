@@ -185,6 +185,31 @@
             // Si falla la llamada al backend, al menos ya se guardó en localStorage
         });
     }
+
+    // Boton de los cursos populares. Prioridad:
+    //  1. Si el alumno ya tiene acceso (lo compro, lo matricularon o tiene
+    //     suscripcion activa) entra a los modulos de su curso.
+    //  2. Si el curso esta activo y tiene landing publicada, abre /curso/{slug}.
+    //  3. En cualquier otro caso, abre /curso-descripcion/{id}.
+    // La ficha publica (2 y 3) se abre en una pestana nueva.
+    const courseButtonLabel = (course) => (course.can_view ? 'Ingresar' : 'Ver Detalles');
+
+    const openCourse = (course) => {
+        if (course.can_view) {
+            router.visit(route('aca_mycourses_lessons', course.id));
+            return;
+        }
+
+        const hasPublicLanding = course.course_active
+            && course.url_slug
+            && (course.landing_published === true || course.landing_published === 1);
+
+        const url = hasPublicLanding
+            ? route('course_url_slug', course.url_slug)
+            : route('web_course_description', course.onitem_id);
+
+        window.open(url, '_blank');
+    };
 </script>
 <template>
     <AppLayout title="Dashboard">
@@ -401,7 +426,9 @@
                                 </div>
                             </template>
                             <template v-if="item.onitem_price > 0">
-                                <a :href="route('web_curso_descripcion',item.slug)" class="btn btn-primary">Ingresar</a>
+                                <button type="button" class="btn btn-primary" @click="openCourse(item)">
+                                    {{ courseButtonLabel(item) }}
+                                </button>
                             </template>
                         </div>
                     </template>
