@@ -194,6 +194,9 @@
     <script src="{{ asset('themes/globalcpa/carrito.js') }}" defer></script>
     @stack('modals')
 
+    {{-- Aviso de cookies: solo en la primera visita. --}}
+    <x-cookies-notice />
+
 </body>
 
 

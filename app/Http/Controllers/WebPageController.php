@@ -503,6 +503,11 @@ class WebPageController extends Controller
     {
         return view('pages/politicas_devoluciones');
     }
+
+    public function politicas_cookies()
+    {
+        return view('pages/politicas_cookies');
+    }
     
 
     public function terms()

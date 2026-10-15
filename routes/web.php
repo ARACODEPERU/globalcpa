@@ -54,6 +54,7 @@ Route::get('/politicas-de-devolucion', [WebPageController::class, 'politicas_dev
 
 Route::get('/Terminos-y-condiciones', [WebPageController::class, 'terms'])->name('terms_main');  //terminos y condiciones
 Route::get('/politicas_privacidad', [WebPageController::class, 'privacypolicies'])->name('politicas_privacidad');
+Route::get('/politicas-de-cookies', [WebPageController::class, 'politicas_cookies'])->name('politicas_cookies');
 //Route::get('/terminos-y-condiciones', [WebPageController::class, 'terms'])->name('terms_main'); //ya está hecho
 
 Route::get('/cursos', [WebPageController::class, 'courses'])->name('web_courses');
