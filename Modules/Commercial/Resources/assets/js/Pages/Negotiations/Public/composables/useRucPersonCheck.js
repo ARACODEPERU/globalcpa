@@ -1,13 +1,13 @@
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import Swal2 from "sweetalert2";
 
 /**
  * RUC del cliente principal en el formulario publico de negociacion.
  *
  * Equivalente RUC del composable de DNI/RENIEC: al consultar el RUC en SUNAT se
- * llena la razon social (y la direccion/ubicacion disponibles) y se habilita el
- * campo para que el cliente lo edite. La razon social solo se escribe cuando la
- * respuesta fue aceptada por SUNAT.
+ * llena la razon social (y la direccion/ubicacion disponibles). La razon social
+ * autollenada queda de SOLO LECTURA: solo se habilita cuando SUNAT no devolvio
+ * datos, para escribirla a mano.
  *
  * @param {object}   options
  * @param {object}   options.form          Formulario de Inertia.
@@ -19,13 +19,31 @@ import Swal2 from "sweetalert2";
  *                                         ubigeo_description}) o null si no hubo match.
  */
 export function useRucPersonCheck({ form, token, isRuc, ubigeoOptions, selectUbigeo }) {
+    // 'idle'      : aun no se consulto (razon social bloqueada y vacia).
+    // 'found'     : SUNAT devolvio datos (razon social bloqueada y autollenada).
+    // 'verified'  : los datos vienen de una fuente interna confiable (bloqueada).
+    // 'not_found' : la consulta no devolvio datos (razon social editable a mano).
+    const personRucStatus = ref("idle");
     const personRucLoading = ref(false);
-    const personRucValidated = ref(false);
     const personRucNotice = ref("");
+
+    // Razon social: de solo lectura mientras haya datos verificados.
+    const personRucLocked = computed(() => personRucStatus.value !== "not_found");
+
+    // Datos confiables cargados (SUNAT o fuente interna): habilita el envio.
+    const personRucValidated = computed(() =>
+        personRucStatus.value === "found" || personRucStatus.value === "verified"
+    );
 
     /** Descarta la validacion del RUC (cambio de documento o de numero). */
     const resetPersonRucCheck = () => {
-        personRucValidated.value = false;
+        personRucStatus.value = "idle";
+        personRucNotice.value = "";
+    };
+
+    /** Los datos ya estan verificados (busqueda interna o cuenta existente): no hace falta SUNAT. */
+    const markPersonRucVerified = () => {
+        personRucStatus.value = "verified";
         personRucNotice.value = "";
     };
 
@@ -52,8 +70,10 @@ export function useRucPersonCheck({ form, token, isRuc, ubigeoOptions, selectUbi
         axios.post(route("comm_negotiations_public_validate_ruc", token), { ruc })
             .then((res) => {
                 if (!res.data || !res.data.success) {
+                    // Sin datos: la razon social queda editable para escribirla a mano.
                     resetPersonRucCheck();
-                    personRucNotice.value = res.data?.error || "No se pudo validar el RUC.";
+                    personRucStatus.value = "not_found";
+                    personRucNotice.value = res.data?.error || "No se encontro el RUC en SUNAT. Completa la razon social manualmente.";
                     return;
                 }
 
@@ -83,12 +103,13 @@ export function useRucPersonCheck({ form, token, isRuc, ubigeoOptions, selectUbi
                     selectUbigeo?.(match);
                 }
 
-                personRucValidated.value = true;
+                // Datos cargados: la razon social queda bloqueada.
+                personRucStatus.value = "found";
                 personRucNotice.value = "";
 
                 Swal2.fire({
                     title: "RUC validado",
-                    text: "La razon social fue cargada desde SUNAT. Verificala antes de continuar.",
+                    text: "La razon social fue cargada desde SUNAT y no es editable. Si algo esta mal, vuelve a buscar por RUC.",
                     icon: "success",
                     padding: "2em",
                     customClass: "sweet-alerts",
@@ -96,25 +117,29 @@ export function useRucPersonCheck({ form, token, isRuc, ubigeoOptions, selectUbi
             })
             .catch(() => {
                 resetPersonRucCheck();
-                personRucNotice.value = "No se pudo validar el RUC en este momento. Intenta nuevamente.";
+                personRucStatus.value = "not_found";
+                personRucNotice.value = "No se pudo validar el RUC en este momento. Completa la razon social manualmente.";
             })
             .finally(() => {
                 personRucLoading.value = false;
             });
     };
 
-    // Al cambiar el numero de documento se invalida la validacion anterior.
+    // Al cambiar el numero de documento se limpian y re-bloquean los datos anteriores.
     const onPersonRucInput = () => {
         if (!isRuc.value) return;
         resetPersonRucCheck();
     };
 
     return {
+        personRucStatus,
         personRucLoading,
         personRucValidated,
+        personRucLocked,
         personRucNotice,
         validatePersonRuc,
         onPersonRucInput,
         resetPersonRucCheck,
+        markPersonRucVerified,
     };
 }

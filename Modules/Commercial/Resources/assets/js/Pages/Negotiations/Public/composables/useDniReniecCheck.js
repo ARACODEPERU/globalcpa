@@ -1,12 +1,13 @@
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import Swal2 from "sweetalert2";
 
 /**
  * DNI del cliente principal en el formulario publico de negociacion.
  *
- * Al completar los 8 digitos se avisa y se ofrece rellenar nombres y apellidos con
- * RENIEC (la API la expone el propio modulo del publico). La validacion tambien es la
- * que habilita el envio del formulario.
+ * Al completar los 8 digitos se consulta RENIEC y se autollenan nombres y apellidos.
+ * Los datos que devuelve la API (o una busqueda interna / cuenta existente) quedan
+ * de SOLO LECTURA: si estan correctos no se editan. Los campos solo se habilitan
+ * cuando la consulta no devolvio datos, para que el cliente los escriba a mano.
  *
  * @param {object}   options
  * @param {object}   options.form            Formulario de Inertia (fuente del DNI).
@@ -15,20 +16,40 @@ import Swal2 from "sweetalert2";
  * @param {Function} options.normalizeNumber Deja solo digitos en el numero de documento.
  */
 export function useDniReniecCheck({ form, token, isDni, normalizeNumber }) {
+    // 'idle'      : aun no se consulto (campos bloqueados y vacios).
+    // 'found'     : RENIEC/migo devolvio datos (campos bloqueados y autollenados).
+    // 'verified'  : los datos vienen de una fuente interna confiable (bloqueados).
+    // 'not_found' : la consulta no devolvio datos (campos editables a mano).
+    const dniStatus = ref("idle");
     const dniLoading = ref(false);
-    const dniValidated = ref(false);
     const dniNotice = ref("");
+
+    // Nombres y apellidos: de solo lectura mientras haya datos verificados. Solo se
+    // habilitan cuando la busqueda no encontro nada.
+    const dniLocked = computed(() => dniStatus.value !== "not_found");
+
+    // Datos confiables cargados (RENIEC o fuente interna): habilita el envio.
+    const dniValidated = computed(() =>
+        dniStatus.value === "found" || dniStatus.value === "verified"
+    );
 
     /** Descarta la validacion del DNI (cambio de documento o de numero). */
     const resetDniCheck = () => {
-        dniValidated.value = false;
+        dniStatus.value = "idle";
         dniNotice.value = "";
     };
 
     /** Los datos ya estan verificados (busqueda interna o cuenta existente): no hace falta RENIEC. */
     const markPersonVerified = () => {
-        dniValidated.value = true;
+        dniStatus.value = "verified";
         dniNotice.value = "";
+    };
+
+    /** Al cambiar el numero se descartan los datos autollenados: hay que volver a buscar. */
+    const clearReniecNames = () => {
+        form.names = null;
+        form.father_lastname = null;
+        form.mother_lastname = null;
     };
 
     const applyReniecNames = (person) => {
@@ -52,7 +73,7 @@ export function useDniReniecCheck({ form, token, isDni, normalizeNumber }) {
         }
     };
 
-    // Consulta el DNI del cliente principal en la API (obligatoria para enviar).
+    // Consulta el DNI del cliente principal en la API.
     const validateDni = () => {
         if (dniLoading.value) return;
 
@@ -74,37 +95,39 @@ export function useDniReniecCheck({ form, token, isDni, normalizeNumber }) {
             dni: form.number,
         }).then((res) => {
             if (!res.data?.success) {
-                dniValidated.value = false;
-                dniNotice.value = res.data?.error || "No se pudo validar el DNI. Intenta nuevamente.";
+                // Sin datos: los campos quedan editables para escribir a mano.
+                dniStatus.value = "not_found";
+                dniNotice.value = res.data?.error || "No se encontro el DNI en RENIEC. Completa tus datos manualmente.";
                 return;
             }
 
             applyReniecNames(res.data.person || {});
 
-            // Los datos ya se cargaron desde RENIEC: el aviso deja de tener sentido.
-            markPersonVerified();
+            // Datos cargados: los campos de nombres quedan bloqueados.
+            dniStatus.value = "found";
+            dniNotice.value = "";
 
             Swal2.fire({
                 title: "DNI validado",
-                text: "Tus datos fueron cargados desde RENIEC. Verificalos antes de continuar.",
+                text: "Tus datos fueron cargados desde RENIEC y no son editables. Si algo esta mal, vuelve a buscar por DNI.",
                 icon: "success",
                 padding: "2em",
                 customClass: "sweet-alerts",
             });
         }).catch(() => {
-            dniValidated.value = false;
-            dniNotice.value = "No se pudo validar el DNI en este momento. Intenta nuevamente.";
+            dniStatus.value = "not_found";
+            dniNotice.value = "No se pudo validar el DNI en este momento. Completa tus datos manualmente.";
         }).finally(() => {
             dniLoading.value = false;
         });
     };
 
-    // Al cambiar el DNI manualmente se invalida la validacion anterior y, al completar
-    // los 8 digitos, se consulta RENIEC automaticamente: los datos se llenan y los
-    // campos de nombres quedan habilitados para editarlos.
+    // Al cambiar el DNI manualmente se limpian y re-bloquean los datos anteriores y,
+    // al completar los 8 digitos, se consulta RENIEC automaticamente.
     const onNumberInput = () => {
         normalizeNumber();
         resetDniCheck();
+        clearReniecNames();
 
         if (!isDni.value) return;
 
@@ -116,8 +139,10 @@ export function useDniReniecCheck({ form, token, isDni, normalizeNumber }) {
     };
 
     return {
+        dniStatus,
         dniLoading,
         dniValidated,
+        dniLocked,
         dniNotice,
         onNumberInput,
         validateDni,
