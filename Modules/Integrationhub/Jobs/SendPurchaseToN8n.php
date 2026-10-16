@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Modules\Integrationhub\Entities\IntegrationError;
+use Modules\Integrationhub\Support\IntegrationAlert;
 use Modules\Integrationhub\Http\Controllers\IntegrationhubController;
 use Modules\Integrationhub\Support\PurchaseWebhookPayload;
 
@@ -64,9 +64,9 @@ class SendPurchaseToN8n implements ShouldQueue
      */
     public function failed(\Throwable $exception): void
     {
-        IntegrationError::create([
-            'message' => 'SendPurchaseToN8n (onli_sale_id='.$this->onliSaleId.'): '.$exception->getMessage(),
-            'source' => 'SendPurchaseToN8n',
-        ]);
+        IntegrationAlert::notify(
+            'SendPurchaseToN8n (onli_sale_id='.$this->onliSaleId.'): '.$exception->getMessage(),
+            'SendPurchaseToN8n'
+        );
     }
 }

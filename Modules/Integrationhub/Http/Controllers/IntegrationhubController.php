@@ -19,6 +19,7 @@ use Modules\Integrationhub\Entities\IntegrationQuery;
 use Modules\Integrationhub\Entities\IntegrationError;
 use Modules\Integrationhub\Entities\IntegrationExecLog;
 use Modules\Integrationhub\Entities\IntegrationFlowId;
+use Modules\Integrationhub\Support\IntegrationAlert;
 use Illuminate\Validation\ValidationException;
 use Carbon\Carbon;
 use App\Services\IntegrationhubCronExpression;
@@ -741,6 +742,23 @@ class IntegrationhubController extends Controller
      * Método helper para ejecutar un endpoint por nombre sin necesidad de
      * construir un objeto Request manualmente.
      *
+     * Pensado para el codigo de la aplicacion (jobs, servicios, controladores),
+     * no para la pantalla del modulo, y por eso cumple dos garantias:
+     *
+     *   1. Nunca lanza excepciones. Si el endpoint no existe, esta duplicado o
+     *      la llamada se rompe antes de salir (validacion, base de datos), se
+     *      devuelve una respuesta JSON de error en vez de interrumpir al que
+     *      llamo: el flujo sigue (la compra se registra, la campana continua, el
+     *      perfil se guarda) aunque la integracion haya fallado.
+     *   2. Todo fallo (HTTP >= 400 o excepcion) queda en las alertas del panel
+     *      via IntegrationAlert, que tampoco puede fallar el flujo.
+     *
+     * La respuesta conserva la forma de siempre (message, status_code, ...),
+     * asi que quien ya revisaba `getStatusCode() >= 400` para abortar su propio
+     * paso lo sigue haciendo; en ese caso es normal que ademas registre su
+     * propia alerta, porque para el son dos hechos distintos: fallo el endpoint
+     * y fallo este paso.
+     *
      * @param  string       $endpoint     Nombre exacto del endpoint en Integrationhub
      * @param  array        $fieldValues  Variables obligatorias y opcionales del endpoint (field_values)
      * @param  array        $extraParams  Parámetros extra opcionales (path, query, body, headers)
@@ -773,7 +791,35 @@ class IntegrationhubController extends Controller
 
         $request = Request::create('/', 'POST', $requestData);
 
-        return $this->executeByEndpointName($request, $endpoint);
+        try {
+            $response = $this->executeByEndpointName($request, $endpoint);
+        } catch (\Throwable $e) {
+            IntegrationAlert::notify(
+                'El endpoint "' . $endpoint . '" no se pudo ejecutar: ' . $e->getMessage(),
+                IntegrationAlert::SOURCE_ENDPOINT
+            );
+
+            return response()->json([
+                'message' => 'Error al ejecutar la integración: ' . $e->getMessage(),
+                'status_code' => 500,
+                'executed_at' => now(),
+            ], 500);
+        }
+
+        $statusCode = (int) $response->getStatusCode();
+
+        if ($statusCode >= 400) {
+            $payload = method_exists($response, 'getData') ? (array) $response->getData(true) : [];
+            $detail = $payload['message'] ?? 'sin detalle';
+
+            IntegrationAlert::notify(
+                'El endpoint "' . $endpoint . '" respondió HTTP ' . $statusCode . ': '
+                    . (is_scalar($detail) ? $detail : json_encode($detail)),
+                IntegrationAlert::SOURCE_ENDPOINT
+            );
+        }
+
+        return $response;
     }
 
     public function logs(Request $request, int $id)

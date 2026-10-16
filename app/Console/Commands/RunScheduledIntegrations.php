@@ -5,8 +5,10 @@ namespace App\Console\Commands;
 use App\Services\IntegrationhubCronExpression;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 use Modules\Integrationhub\Entities\IntegrationSchedule;
 use Modules\Integrationhub\Jobs\RunIntegrationSchedule;
+use Modules\Integrationhub\Support\IntegrationAlert;
 
 class RunScheduledIntegrations extends Command
 {
@@ -41,24 +43,46 @@ class RunScheduledIntegrations extends Command
             ->get();
 
         foreach ($schedules as $schedule) {
-            $nextExecution = $cron->nextRunDate($schedule->cron_expression, $now);
+            try {
+                $nextExecution = $cron->nextRunDate($schedule->cron_expression, $now);
 
-            // Programación nueva que aún no toca: solo le fijamos la próxima
-            // ejecución para que el scheduler sepa cuándo volver a mirarla.
-            if (is_null($schedule->next_execution_at) && ! $cron->isDue($schedule->cron_expression, $now)) {
-                $schedule->update(['next_execution_at' => $nextExecution]);
-                continue;
+                // Programación nueva que aún no toca: solo le fijamos la próxima
+                // ejecución para que el scheduler sepa cuándo volver a mirarla.
+                if (is_null($schedule->next_execution_at) && ! $cron->isDue($schedule->cron_expression, $now)) {
+                    $schedule->update(['next_execution_at' => $nextExecution]);
+                    continue;
+                }
+
+                // Se adelanta next_execution_at al encolar para no lanzar otro job
+                // para la misma programación en el siguiente tick. El trabajo pesado
+                // (HTTP, reintentos, last_status/last_error) vive en el job.
+                $schedule->update([
+                    'next_execution_at' => $nextExecution,
+                    'last_status' => 'pending',
+                ]);
+
+                RunIntegrationSchedule::dispatch($schedule->id);
+            } catch (\Throwable $e) {
+                // Una programación con problemas (por ejemplo una expresión cron
+                // inválida) no puede frenar a las demás: sin esto, la primera
+                // fila rota abortaba el tick y ninguna programación posterior se
+                // encolaba nunca, en silencio.
+                //
+                // Se apaga sola para no repetir el error en cada tick (el
+                // comando corre cada minuto), deja el motivo en su ficha y el
+                // fallo queda en las alertas del panel. La alerta está protegida:
+                // si no se puede guardar, se registra en los logs y el tick sigue.
+                $schedule->update([
+                    'is_active' => false,
+                    'last_status' => 'failed',
+                    'last_error' => Str::limit($e->getMessage(), 1000),
+                ]);
+
+                IntegrationAlert::notify(
+                    'Programación #' . $schedule->id . ' desactivada: ' . $e->getMessage(),
+                    'integrationhub_schedule_detector'
+                );
             }
-
-            // Se adelanta next_execution_at al encolar para no lanzar otro job
-            // para la misma programación en el siguiente tick. El trabajo pesado
-            // (HTTP, reintentos, last_status/last_error) vive en el job.
-            $schedule->update([
-                'next_execution_at' => $nextExecution,
-                'last_status' => 'pending',
-            ]);
-
-            RunIntegrationSchedule::dispatch($schedule->id);
         }
 
         return self::SUCCESS;

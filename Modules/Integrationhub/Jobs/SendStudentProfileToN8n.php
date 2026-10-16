@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Modules\Integrationhub\Entities\IntegrationError;
+use Modules\Integrationhub\Support\IntegrationAlert;
 use Modules\Integrationhub\Http\Controllers\IntegrationhubController;
 use Modules\Integrationhub\Support\StudentProfileWebhookPayload;
 
@@ -64,9 +64,9 @@ class SendStudentProfileToN8n implements ShouldQueue
      */
     public function failed(\Throwable $exception): void
     {
-        IntegrationError::create([
-            'message' => 'SendStudentProfileToN8n (person_id='.$this->personId.'): '.$exception->getMessage(),
-            'source' => 'SendStudentProfileToN8n',
-        ]);
+        IntegrationAlert::notify(
+            'SendStudentProfileToN8n (person_id='.$this->personId.'): '.$exception->getMessage(),
+            'SendStudentProfileToN8n'
+        );
     }
 }

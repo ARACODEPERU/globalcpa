@@ -27,7 +27,7 @@ use Modules\Academic\Http\Controllers\AcaSaleDocumentController;
 use Modules\Commercial\Emails\CommercialNegotiationDocumentMail;
 use Modules\Commercial\Entities\CommercialNegotiation;
 use Modules\Commercial\Support\NegotiationWebhookPayload;
-use Modules\Integrationhub\Entities\IntegrationError;
+use Modules\Integrationhub\Support\IntegrationAlert;
 use Modules\Integrationhub\Http\Controllers\IntegrationhubController;
 use Modules\Sales\Entities\SalePaymentSchedule;
 
@@ -959,10 +959,12 @@ class CommercialNegotiationProcessController extends Controller
                 'message' => 'Datos de la negociacion enviados a n8n correctamente.',
             ]);
         } catch (\Throwable $e) {
-            IntegrationError::create([
-                'message' => 'CommercialNegotiation::processWebhook (negociacion '.$id.'): '.$e->getMessage(),
-                'source' => 'CommercialNegotiation::processWebhook',
-            ]);
+            // El paso no se marca como completado, pero la alerta no puede
+            // romper la respuesta al aprobador: IntegrationAlert la protege.
+            IntegrationAlert::notify(
+                'CommercialNegotiation::processWebhook (negociacion '.$id.'): '.$e->getMessage(),
+                'CommercialNegotiation::processWebhook'
+            );
 
             return response()->json([
                 'success' => false,

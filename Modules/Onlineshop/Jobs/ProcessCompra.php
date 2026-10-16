@@ -9,7 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Modules\Integrationhub\Entities\IntegrationError;
+use Modules\Integrationhub\Support\IntegrationAlert;
 use Modules\Integrationhub\Http\Controllers\IntegrationhubController;
 use Modules\Integrationhub\Jobs\SendPurchaseToN8n;
 use Modules\Onlineshop\Entities\OnliSale;
@@ -148,10 +148,12 @@ class ProcessCompra implements ShouldQueue
                 SendPurchaseToN8n::dispatch($this->onliSaleId);
             }
         } catch (\Throwable $e) {
-            IntegrationError::create([
-                'message' => 'ProcessCompra (sale_id=' . $this->onliSaleId . '): ' . $e->getMessage(),
-                'source'  => 'ProcessCompra',
-            ]);
+            // El error queda en las alertas; la venta y el pedido siguen su
+            // curso aunque el aviso a n8n haya fallado.
+            IntegrationAlert::notify(
+                'ProcessCompra (sale_id=' . $this->onliSaleId . '): ' . $e->getMessage(),
+                'ProcessCompra'
+            );
         }
     }
 }

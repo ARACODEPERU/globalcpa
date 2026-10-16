@@ -18,7 +18,7 @@ use Carbon\Carbon;
 use Spatie\Permission\Models\Role;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Cache;
-use Modules\Integrationhub\Entities\IntegrationError;
+use Modules\Integrationhub\Support\IntegrationAlert;
 use Modules\Integrationhub\Jobs\ProcessWhatsappFlow;
 use Modules\Integrationhub\Support\TrafficSourceResolver;
 
@@ -146,10 +146,12 @@ class CmsSubscriberController extends Controller
                     );
                 }
             } catch (\Throwable $th) {
-                IntegrationError::create([
-                    'message' => (string) $th,
-                    'source' => 'CmsSubscriberController::apiStore - WhatsApp flow -> curso'. $request->get('subject'),
-                ]);
+                // La alerta registra el fallo del flujo y la suscripcion sigue
+                // su curso: el visitante igual queda registrado.
+                IntegrationAlert::notify(
+                    (string) $th,
+                    'CmsSubscriberController::apiStore - WhatsApp flow -> curso'. $request->get('subject')
+                );
             }
         }
 
