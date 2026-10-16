@@ -137,7 +137,7 @@ const showVoucherUpload = computed(() => !isFree.value && (props.negotiation.pay
 
 // Los 3 checks de documentos legales deben estar marcados antes de guardar.
 const allLegalAccepted = computed(() =>
-    Boolean(form.terms_accepted && form.refund_accepted && form.privacy_accepted)
+    Boolean(form.terms_accepted && (isFree.value || form.refund_accepted) && form.privacy_accepted)
 );
 
 const documentTypeOptions = computed(() => {
@@ -576,7 +576,9 @@ const enforceLegalChecks = () => {
 
     Swal2.fire({
         title: "Acepta los documentos",
-        text: "Marca los tres checks (terminos y condiciones, politica de devoluciones y reembolsos, y politica de privacidad) antes de enviar tu confirmacion.",
+        text: isFree.value
+            ? "Marca los checks de terminos y condiciones y de politica de privacidad antes de enviar tu confirmacion."
+            : "Marca los tres checks (terminos y condiciones, politica de devoluciones y reembolsos, y politica de privacidad) antes de enviar tu confirmacion.",
         icon: "warning",
         padding: "2em",
         customClass: "sweet-alerts",
@@ -1533,7 +1535,7 @@ watch(brickFormVisible, async (visible) => {
                             <InputError :message="form.errors.voucher" class="mt-2" />
                         </div>
 
-                        <div v-if="showVoucherUpload" class="mt-6 border-t border-gray-200 pt-5 dark:border-gray-700">
+                        <div v-if="showVoucherUpload || isFree" class="mt-6 border-t border-gray-200 pt-5 dark:border-gray-700">
                             <h3 class="mb-1 font-semibold dark:text-white">Antes de enviar</h3>
                             <p class="mb-3 text-sm text-gray-500 dark:text-gray-400">
                                 Para continuar debes leer y aceptar los siguientes documentos.
@@ -1552,7 +1554,7 @@ watch(brickFormVisible, async (visible) => {
                                     </span>
                                 </label>
 
-                                <label class="flex items-start gap-3">
+                                <label v-if="!isFree" class="flex items-start gap-3">
                                     <input
                                         v-model="form.refund_accepted"
                                         type="checkbox"
