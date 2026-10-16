@@ -144,7 +144,11 @@ class CommercialNegotiationPublicController extends Controller
             'invoice_distrito' => ['nullable', 'string', 'max:255'],
             'invoice_provincia' => ['nullable', 'string', 'max:255'],
             'invoice_departamento' => ['nullable', 'string', 'max:255'],
-            'voucher' => [Rule::requiredIf(fn () => $this->voucherRequired($negotiation, $request->input('payment_option'))), 'file', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
+            // "nullable" es imprescindible: Inertia envia los campos nulos como cadena
+            // vacia y ConvertEmptyStringsToNull los convierte en null; sin nullable las
+            // reglas file/image/mimes corrian sobre ese null y rechazaban el envio (en
+            // gratis y en Mercado Pago con tarjeta, donde no hay voucher que adjuntar).
+            'voucher' => ['nullable', Rule::requiredIf(fn () => $this->voucherRequired($negotiation, $request->input('payment_option'))), 'file', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
         ]);
 
         $isRuc = (string) $data['document_type_id'] === '6';

@@ -707,6 +707,21 @@ const confirmNegotiation = () => {
                 window.location.reload();
             });
         },
+        // El resumen ya se cerro: si el servidor rechaza el envio hay que decirlo, en
+        // lugar de dejar al cliente de vuelta en el formulario sin ninguna explicacion.
+        onError: (errors) => {
+            const first = Object.values(errors || {})[0];
+
+            Swal2.fire({
+                title: "No se pudo enviar",
+                text: typeof first === "string" && first
+                    ? first
+                    : "Revisa los datos del formulario e intentalo nuevamente.",
+                icon: "error",
+                padding: "2em",
+                customClass: "sweet-alerts",
+            });
+        },
     });
 };
 
