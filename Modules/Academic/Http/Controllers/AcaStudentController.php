@@ -652,7 +652,19 @@ class AcaStudentController extends Controller
                 return $course;
             });
 
-        ///dd($coursesRegistered);
+        // El listado no debe exponer contenido que el alumno no puede ver: los
+        // cursos sin acceso sueltan su arbol de contenido y en los accesibles se
+        // quitan los tipos que el plan no permite (Meet/Zoom y webinar). El
+        // personal ve todo. Se hace despues de calcular contents_total y los
+        // certificados, que si necesitan los contenidos completos.
+        if ($student_id && ! $user->hasAnyRole(['admin', 'Docente', 'Administrador'])) {
+            $this->courseAccess->hideContentsNotAllowed(
+                $mycourses->merge($coursesRegistered->pluck('course')->filter()),
+                $this->courseAccess->accessFlags($student_id),
+                $student_id
+            );
+        }
+
         return Inertia::render('Academic::Students/Courses', [
             'mycourses' => $mycourses,
             'courses' => $courses,
@@ -671,19 +683,9 @@ class AcaStudentController extends Controller
 
         $today = Carbon::today();
 
-        // 1. Verificar si el estudiante tiene una suscripción activa
-        $hasActiveSubscription = AcaStudentSubscription::where('student_id', $studentId)
-            ->where(function ($query) use ($today) {
-                $query->where('status', true)
-                    ->orWhere(function ($q) use ($today) {
-                        $q->whereDate('date_start', '<=', $today)
-                            ->whereDate('date_end', '>=', $today);
-                    });
-            })
-            ->exists();
-
-        // 1.1 Verificar si el estudiante tiene Premium VIP
-        $hasPremiumVip = $this->hasPremiumVipSubscription($studentId);
+        // 1. Permisos efectivos del alumno: union de los flags de sus planes
+        // activos. El acceso ya no depende del nombre del plan.
+        $accessFlags = $this->courseAccess->accessFlags($studentId);
 
         // 2. Obtener los IDs de los cursos en los que el estudiante está matriculado
         $registeredCourseIds = AcaCapRegistration::where('student_id', $studentId)
@@ -717,32 +719,20 @@ class AcaStudentController extends Controller
                 ->get();
 
         // 5. Procesar cada curso para determinar 'can_view'
-        $coursesWithAccess = $allCourses->map(function ($course) use ($hasActiveSubscription, $hasPremiumVip, $registeredCourseIds, $webProductCourseIds) {
+        $coursesWithAccess = $allCourses->map(function ($course) use ($accessFlags, $registeredCourseIds, $webProductCourseIds) {
             $canView = false; // Valor por defecto
 
-            // Condición VIP: Si tiene Premium VIP, puede ver TODOS los cursos (incluido especialización)
-            if ($hasPremiumVip) {
+            if (in_array($course->id, $registeredCourseIds)) {
+                // Matriculado en el curso
                 $canView = true;
-            }
-            // Condición 4: Si el tipo es 'Programas de especialización', solo matriculados
-            elseif (strcasecmp($course->type_description, 'Programas de Especialización') === 0) {
-                if (in_array($course->id, $registeredCourseIds)) {
-                    $canView = true;
-                } else {
-                    $canView = false;
-                }
-            }
-            // Condición 3: Suscripción activa (siempre puede ver, excepto los de especialización)
-            elseif ($hasActiveSubscription) {
-                $canView = true;
-            }
-            // Condición 2: El estudiante está matriculado en el curso
-            elseif (in_array($course->id, $registeredCourseIds)) {
-                $canView = true;
-            }
-            // Condición 1: El curso es gratis
-            elseif ($course->price == 0 || is_null($course->price)) {
-                $canView = true;
+            } else {
+                // Suscripción activa según la categoría del curso: cursos/talleres
+                // (los gratis quedan abiertos), especialización o webinars.
+                $canView = $this->courseAccess->canAccessCategory(
+                    $accessFlags,
+                    $course->type_description,
+                    $course->price == 0 || is_null($course->price)
+                );
             }
 
             // Un curso sin producto web activo no forma parte del catalogo que
@@ -764,14 +754,6 @@ class AcaStudentController extends Controller
         })->filter()->values();
 
         return $coursesWithAccess;
-    }
-
-    /**
-     * Verificar si el estudiante tiene una suscripción Premium VIP activa
-     */
-    private function hasPremiumVipSubscription(int $studentId): bool
-    {
-        return $this->courseAccess->hasPremiumVip($studentId);
     }
 
     public function checkCourseAccess(int $studentId, int $courseId): bool
@@ -919,9 +901,11 @@ class AcaStudentController extends Controller
         $nextModule = $currentModuleIndex !== false ? $courseModules->get($currentModuleIndex + 1) : null;
 
         $isEnrolled = false;
-        $isVipStudent = false;
         $isMatriculated = false;
         $isSpecializationCourse = strcasecmp($course->type_description, 'Programas de Especialización') === 0;
+        $isFreeCourse = ($course->price == 0 || is_null($course->price));
+        // Permisos de contenido del plan del alumno (Meet/Zoom y webinar).
+        $accessFlags = CourseAccessService::emptyFlags();
 
         $user = Auth::user();
         if ($user->hasAnyRole(['admin', 'Docente', 'Administrador'])) {
@@ -930,10 +914,12 @@ class AcaStudentController extends Controller
 
         if($studentId){
             $isEnrolled = $this->checkCourseAccess($studentId, $course->id);
-            $isVipStudent = $this->hasPremiumVipSubscription($studentId);
             $isMatriculated = AcaCapRegistration::where('student_id', $studentId)
                 ->where('course_id', $course->id)
                 ->exists();
+            // Acceso a los tipos de contenido (Meet/Zoom y webinar), editable por
+            // cada tipo de suscripción.
+            $accessFlags = $this->courseAccess->accessFlags($studentId);
         }
 
         // Denegar acceso si no está matriculado y el curso no es gratis
@@ -942,35 +928,17 @@ class AcaStudentController extends Controller
         }
 
         // Filtrar contenido según reglas de acceso
-        $module->themes->each(function ($theme) use ($isVipStudent, $isMatriculated, $isSpecializationCourse, $user) {
-            $theme->contents = $theme->contents->filter(function ($content) use ($isVipStudent, $isMatriculated, $isSpecializationCourse, $user) {
+        $module->themes->each(function ($theme) use ($accessFlags, $isMatriculated, $isFreeCourse, $user) {
+            $theme->contents = $theme->contents->filter(function ($content) use ($accessFlags, $isMatriculated, $isFreeCourse, $user) {
                 // Admin/Docentes ven todo
                 if ($user->hasAnyRole(['admin', 'Docente', 'Administrador'])) {
                     return true;
                 }
 
-                // Zoom/Meet (is_file = 3)
-                if ($content->is_file == 3) {
-                    // VIP en programa de especialización NO ve Zoom/Meet
-                    if ($isVipStudent && $isSpecializationCourse) {
-                        return false;
-                    }
-                    // Matriculados SÍ ven Zoom/Meet
-                    return true;
-                }
-
-                // Webinars (is_file = 5)
-                if ($content->is_file == 5) {
-                    // Matriculados NO ven webinars (ellos tienen Zoom/Meet)
-                    if ($isMatriculated) {
-                        return false;
-                    }
-                    // VIP SÍ ven webinars
-                    return true;
-                }
-
-                // Todo lo demás (videos, PDFs, links, exámenes) siempre visible
-                return true;
+                // Meet/Zoom (is_file = 3) y webinar (is_file = 5) dependen del
+                // permiso de contenido del plan; la matrícula y los cursos gratis
+                // muestran el contenido completo.
+                return $this->courseAccess->canSeeContent($accessFlags, $content->is_file, $isMatriculated, $isFreeCourse);
             })->values();
         });
 
@@ -986,7 +954,7 @@ class AcaStudentController extends Controller
             'module' => $module,
             'previousModule' => $previousModule,
             'nextModule' => $nextModule,
-            'isVipStudent' => $isVipStudent,
+            'hasSpecializationAccess' => $accessFlags['specializations'],
             'isSpecializationCourse' => $isSpecializationCourse,
         ]);
     }

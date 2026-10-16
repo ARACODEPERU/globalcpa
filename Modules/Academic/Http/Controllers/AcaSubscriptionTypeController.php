@@ -63,7 +63,7 @@ class AcaSubscriptionTypeController extends Controller
             'status' => $request->get('status') ?? false,
             'period' => $request->get('period'),
             'order_number' => $request->get('order_number'),
-        ]);
+        ] + $this->accessFlagsFromRequest($request));
 
         return redirect()->route('aca_subscriptions_list')
             ->with('message', __('Creado con éxito'));
@@ -118,7 +118,28 @@ class AcaSubscriptionTypeController extends Controller
             'status' => $request->get('status') ?? false,
             'period' => $request->get('period'),
             'order_number' => $request->get('order_number'),
-        ]);
+        ] + $this->accessFlagsFromRequest($request));
+
+        return redirect()->route('aca_subscriptions_list')
+            ->with('message', __('Actualizado con éxito'));
+    }
+
+    /**
+     * Permisos editables de acceso de una suscripcion. Se guardan siempre como
+     * booleanos: marcar o no cada check es lo unico que decide el acceso, de modo
+     * que renombrar un plan no cambia su comportamiento.
+     *
+     * @return array<string, bool>
+     */
+    private function accessFlagsFromRequest(Request $request): array
+    {
+        return [
+            'allow_all_courses' => $request->boolean('allow_all_courses'),
+            'allow_all_specializations' => $request->boolean('allow_all_specializations'),
+            'allow_all_webinars' => $request->boolean('allow_all_webinars'),
+            'allow_zoom_content' => $request->boolean('allow_zoom_content'),
+            'allow_webinar_content' => $request->boolean('allow_webinar_content'),
+        ];
     }
 
     /**

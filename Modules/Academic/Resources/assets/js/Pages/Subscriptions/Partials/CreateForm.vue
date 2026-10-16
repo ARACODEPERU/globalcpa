@@ -39,7 +39,12 @@ const form = useForm({
     }],
     status: true,
     period: null,
-    order_number: 1
+    order_number: 1,
+    allow_all_courses: true,
+    allow_all_specializations: false,
+    allow_all_webinars: false,
+    allow_zoom_content: true,
+    allow_webinar_content: false
 });
 
 const createSubscription = () => {
@@ -161,6 +166,43 @@ const removePrice = (indexToRemove) => {
                     <input v-model="form.status" type="checkbox" class="form-checkbox rounded-full" />
                     <span>Activo</span>
                 </label>
+            </div>
+            <div class="col-span-6">
+                <div class="p-4 border border-[#888ea8] dark:border-[#1b2e4b] rounded">
+                    <h5 class="font-semibold text-lg dark:text-white-light mb-1">Acceso y permisos</h5>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mb-4">Marca lo que desbloquea este plan. El acceso depende de estos checks, no del nombre del plan.</p>
+
+                    <p class="font-semibold text-sm mb-2 text-gray-700 dark:text-gray-300">Contenido incluido</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-5">
+                        <label class="inline-flex items-center">
+                            <input v-model="form.allow_all_courses" type="checkbox" class="form-checkbox rounded-full" />
+                            <span class="ml-2">Acceso a todos los cursos o talleres</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input v-model="form.allow_all_specializations" type="checkbox" class="form-checkbox rounded-full" />
+                            <span class="ml-2">Acceso a todos los programas de especialización</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input v-model="form.allow_all_webinars" type="checkbox" class="form-checkbox rounded-full" />
+                            <span class="ml-2">Acceso a todos los webinars</span>
+                        </label>
+                    </div>
+
+                    <p class="font-semibold text-sm mb-2 text-gray-700 dark:text-gray-300">Tipos de contenido</p>
+                    <div v-if="form.allow_all_specializations" class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                        <label class="inline-flex items-center">
+                            <input v-model="form.allow_zoom_content" type="checkbox" class="form-checkbox rounded-full" />
+                            <span class="ml-2">Acceso a contenido Meet/Zoom</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input v-model="form.allow_webinar_content" type="checkbox" class="form-checkbox rounded-full" />
+                            <span class="ml-2">Acceso a contenido tipo Webinar</span>
+                        </label>
+                    </div>
+                    <p v-else class="text-xs text-gray-500 dark:text-gray-400">
+                        Los tipos de contenido Meet/Zoom y Webinar solo aplican con "Acceso a todos los programas de especialización": si el plan no incluye esos programas, ese contenido se oculta al alumno.
+                    </p>
+                </div>
             </div>
             <div class="col-span-6 sm:col-span-3">
                 <div class="p-4 border border-[#888ea8] dark:border-[#1b2e4b] rounded" >
