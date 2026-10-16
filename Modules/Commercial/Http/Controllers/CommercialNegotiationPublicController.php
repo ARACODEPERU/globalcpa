@@ -238,8 +238,9 @@ class CommercialNegotiationPublicController extends Controller
                 $clientId = $person->id;
             }
 
+            // En negociaciones gratuitas no se guarda ninguna evidencia de pago.
             $voucherPath = null;
-            if ($request->hasFile('voucher')) {
+            if (! $negotiation->isFree() && $request->hasFile('voucher')) {
                 $voucherPath = $request->file('voucher')->store('negotiations/vouchers', 'public');
 
                 if ($negotiation->voucher_path) {
@@ -534,6 +535,11 @@ class CommercialNegotiationPublicController extends Controller
      */
     private function voucherRequired(CommercialNegotiation $negotiation, ?string $paymentOption): bool
     {
+        // Negociacion gratuita: no hay pago que respaldar, no se pide evidencia.
+        if ($negotiation->isFree()) {
+            return false;
+        }
+
         if ($negotiation->payment_method !== 'mercadopago') {
             return true;
         }
@@ -547,6 +553,10 @@ class CommercialNegotiationPublicController extends Controller
      */
     private function paymentDeclared(CommercialNegotiation $negotiation, ?string $paymentOption): bool
     {
+        if ($negotiation->isFree()) {
+            return false;
+        }
+
         return $negotiation->payment_method === 'mercadopago' && $paymentOption === 'evidence';
     }
 

@@ -58,6 +58,8 @@ class NegotiationWebhookPayload
                 'descripcion' => $negotiation->body,
                 'moneda' => $negotiation->currency,
                 'total' => (float) $negotiation->total_price,
+                // Gratis: total 0, sin comprobante ni venta; n8n lo distingue por este flag.
+                'es_gratis' => $negotiation->isFree(),
                 'tipo_pago' => $negotiation->payment_type,
                 'monto_inicial' => $negotiation->initial_amount !== null ? (float) $negotiation->initial_amount : null,
                 'cuotas' => collect($negotiation->schedule ?? [])->map(fn ($row, $index) => [

@@ -133,8 +133,9 @@ class CommercialNegotiationProcessController extends Controller
             'student' => $statusOf('student'),
             'registrations' => $hasCourses ? $statusOf('registrations') : 'skipped',
             'subscriptions' => $hasSubscriptions ? $statusOf('subscriptions') : 'skipped',
-            'installments' => $isInstallments ? $statusOf('installments') : 'skipped',
-            'document' => $statusOf('document'),
+            // Negociacion gratuita: no hay venta en cuotas ni comprobante.
+            'installments' => ($isInstallments && ! $negotiation->isFree()) ? $statusOf('installments') : 'skipped',
+            'document' => $negotiation->isFree() ? 'skipped' : $statusOf('document'),
             'email' => $statusOf('email'),
             'webhook' => $statusOf('webhook'),
             'complete' => $statusOf('complete'),
@@ -482,6 +483,14 @@ class CommercialNegotiationProcessController extends Controller
     {
         $negotiation = $this->negotiation($id);
 
+        if ($negotiation->isFree()) {
+            return response()->json([
+                'success' => true,
+                'skipped' => true,
+                'message' => 'Negociacion gratuita: no genera venta en cuotas.',
+            ]);
+        }
+
         if ($negotiation->payment_type !== 'installments') {
             return response()->json([
                 'success' => true,
@@ -558,6 +567,15 @@ class CommercialNegotiationProcessController extends Controller
     public function processDocument(Request $request, $id)
     {
         $negotiation = $this->negotiation($id);
+
+        // Negociacion gratuita: no se genera venta ni comprobante.
+        if ($negotiation->isFree()) {
+            return response()->json([
+                'success' => true,
+                'skipped' => true,
+                'message' => 'Negociacion gratuita: no genera comprobante.',
+            ]);
+        }
 
         $isInstallments = $negotiation->payment_type === 'installments';
 
@@ -828,7 +846,8 @@ class CommercialNegotiationProcessController extends Controller
     {
         $negotiation = $this->negotiation($id);
 
-        if (! $negotiation->sale_document_id) {
+        // Gratis: no hay comprobante, el correo solo confirma la inscripcion.
+        if (! $negotiation->isFree() && ! $negotiation->sale_document_id) {
             return response()->json([
                 'success' => false,
                 'message' => 'Primero debe generarse el comprobante de venta.',
@@ -859,7 +878,7 @@ class CommercialNegotiationProcessController extends Controller
             ]);
         }
 
-        $document = SaleDocument::find($negotiation->sale_document_id);
+        $document = $negotiation->isFree() ? null : SaleDocument::find($negotiation->sale_document_id);
 
         $user = User::where('person_id', $person->id)->first();
 
@@ -869,7 +888,7 @@ class CommercialNegotiationProcessController extends Controller
         ] : null;
 
         try {
-            $dataFile = app(AcaSaleDocumentController::class)->generateBoletaPDF($document->id);
+            $dataFile = $document ? app(AcaSaleDocumentController::class)->generateBoletaPDF($document->id) : null;
 
             Mail::to($recipient)->queue(
                 new CommercialNegotiationDocumentMail($negotiation, $document, $dataFile, $credentials)
@@ -883,7 +902,9 @@ class CommercialNegotiationProcessController extends Controller
             return response()->json([
                 'success' => true,
                 'queued' => true,
-                'message' => 'Correo con los detalles del acuerdo, su comprobante y credenciales de acceso puesto en cola correctamente.',
+                'message' => $document
+                    ? 'Correo con los detalles del acuerdo, su comprobante y credenciales de acceso puesto en cola correctamente.'
+                    : 'Correo de inscripcion gratuita con sus credenciales de acceso puesto en cola correctamente.',
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -965,7 +986,9 @@ class CommercialNegotiationProcessController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Proceso completado: la negociacion y su comprobante quedaron registrados.',
+            'message' => $negotiation->isFree()
+                ? 'Proceso completado: la inscripcion gratuita quedo registrada.'
+                : 'Proceso completado: la negociacion y su comprobante quedaron registrados.',
         ]);
     }
 

@@ -130,7 +130,10 @@ const isMercadoPagoEvidence = computed(() => isMercadoPago.value && mpPaymentMod
 
 // El bloque de voucher (imagen) y el boton de enviar se usan en todos los medios de
 // pago, incluido Mercado Pago cuando el cliente declara que ya pago por fuera.
-const showVoucherUpload = computed(() => props.negotiation.payment_method !== "mercadopago" || isMercadoPagoEvidence.value);
+// Negociacion gratuita (total 0): el cliente solo completa sus datos, sin pago ni voucher.
+const isFree = computed(() => Number(props.negotiation.total_price || 0) <= 0);
+
+const showVoucherUpload = computed(() => !isFree.value && (props.negotiation.payment_method !== "mercadopago" || isMercadoPagoEvidence.value));
 
 // Los 3 checks de documentos legales deben estar marcados antes de guardar.
 const allLegalAccepted = computed(() =>
@@ -1395,7 +1398,12 @@ watch(brickFormVisible, async (visible) => {
                             </template>
                         </div>
 
-                        <div class="mt-6 border-t border-gray-200 pt-5 dark:border-gray-700">
+                        <div v-if="isFree" class="mt-6 rounded-md border border-success/40 bg-success/5 p-4 dark:bg-success/10">
+                            <p class="text-sm font-semibold text-success">Esta negociacion es gratuita.</p>
+                            <p class="mt-1 text-xs text-gray-600 dark:text-gray-300">Solo completa tus datos y envia la confirmacion. No necesitas realizar ningun pago ni adjuntar voucher.</p>
+                        </div>
+
+                        <div v-if="!isFree" class="mt-6 border-t border-gray-200 pt-5 dark:border-gray-700">
                             <h3 class="mb-3 font-semibold dark:text-white">Como realizar el pago</h3>
 
                             <div v-if="negotiation.payment_method === 'transferencia'" class="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -1569,7 +1577,7 @@ watch(brickFormVisible, async (visible) => {
                             </div>
                         </div>
 
-                        <div v-if="showVoucherUpload" class="mt-6 flex justify-end">
+                        <div v-if="showVoucherUpload || isFree" class="mt-6 flex justify-end">
                             <button type="submit" class="btn btn-primary" :class="{ 'opacity-50': form.processing }" :disabled="form.processing" @mousedown="markSubmitting">
                                 <IconLoader v-if="form.processing" class="w-4 h-4 mr-2 animate-spin" />
                                 {{ isRejected ? "Reenviar confirmacion" : "Enviar confirmacion" }}

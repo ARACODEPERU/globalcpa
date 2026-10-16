@@ -21,19 +21,20 @@ class CommercialNegotiationDocumentMail extends Mailable implements ShouldQueue
     use Queueable, SerializesModels;
 
     public CommercialNegotiation $negotiation;
-    public SaleDocument $document;
-    /** @var array<string, mixed> */
-    public array $dataFile;
+    /** Null en negociaciones gratuitas: no hay comprobante que adjuntar. */
+    public ?SaleDocument $document;
+    /** @var array<string, mixed>|null */
+    public ?array $dataFile;
     /** @var array<string, string>|null */
     public ?array $credentials;
     public int $tries = 3;
     public array $backoff = [60, 300];
 
     /**
-     * @param array<string, mixed> $dataFile
+     * @param array<string, mixed>|null $dataFile
      * @param array<string, string>|null $credentials
      */
-    public function __construct(CommercialNegotiation $negotiation, SaleDocument $document, array $dataFile, ?array $credentials = null)
+    public function __construct(CommercialNegotiation $negotiation, ?SaleDocument $document, ?array $dataFile, ?array $credentials = null)
     {
         $this->negotiation = $negotiation;
         $this->document = $document;
@@ -68,6 +69,12 @@ class CommercialNegotiationDocumentMail extends Mailable implements ShouldQueue
     public function attachments(): array
     {
         $attachments = [];
+
+        // Negociacion gratuita: el correo va sin comprobante adjunto.
+        if (! $this->document || ! $this->dataFile) {
+            return $attachments;
+        }
+
         $pdf = $this->dataFile['pdf'] ?? null;
 
         if (! is_array($pdf) || empty($pdf['filePath'])) {
@@ -113,7 +120,7 @@ class CommercialNegotiationDocumentMail extends Mailable implements ShouldQueue
 
         Log::error('CommercialNegotiationDocumentMail failed', [
             'negotiation_id' => $this->negotiation->getKey(),
-            'document_id' => $this->document->getKey(),
+            'document_id' => $this->document?->getKey(),
             'message' => $exception->getMessage(),
         ]);
     }

@@ -67,6 +67,15 @@ class CommercialNegotiation extends Model
     protected $appends = ['contact_channel_label'];
 
     /**
+     * Negociacion gratuita: el precio total es 0 (por ejemplo, cursos regalados).
+     * No genera comprobante ni venta; solo se registra al alumno y se le avisa.
+     */
+    public function isFree(): bool
+    {
+        return (float) $this->total_price <= 0;
+    }
+
+    /**
      * Opciones del campo "Fuente de Contacto" (antes "Canal de contacto").
      * Los canales antiguos se mantienen en el mapa para que los registros previos
      * sigan mostrando una etiqueta legible.

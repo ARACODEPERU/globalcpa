@@ -258,7 +258,12 @@ const negotiationFormError = () => {
     return first ?? "No se pudo registrar la negociacion. Verifica los datos e intentalo nuevamente.";
 };
 
-const submit = () => {
+// Negociacion gratuita: total 0 (ej. cursos regalados). No genera comprobante ni venta.
+const isFreeNegotiation = computed(
+    () => form.total_price !== null && form.total_price !== "" && form.total_price !== undefined && Number(form.total_price) === 0
+);
+
+const submit = async () => {
     form.clearErrors();
 
     const items = buildItems();
@@ -282,6 +287,23 @@ const submit = () => {
     }
 
     form.items = items;
+
+    if (!isEdit.value && isFreeNegotiation.value) {
+        const confirmation = await Swal2.fire({
+            title: "Negociacion gratuita",
+            text: "Vas a generar una negociacion GRATIS. ¿Estas seguro?",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonText: "Si, generar gratis",
+            cancelButtonText: "Cancelar",
+            padding: "2em",
+            customClass: "sweet-alerts",
+        });
+
+        if (!confirmation.isConfirmed) {
+            return;
+        }
+    }
 
     const options = {
         preserveScroll: true,
@@ -308,17 +330,6 @@ const submit = () => {
         onError: () => {
             closeContractLoader();
 
-            Swal2.fire({
-                title: "Atencion",
-                text: negotiationFormError(),
-                icon: "warning",
-                padding: "2em",
-                customClass: "sweet-alerts",
-            }).then(() => {
-                router.visit(route("comm_negotiations"));
-            });
-        },
-        onError: () => {
             if (form.errors.items) {
                 Swal2.fire({
                     title: "Atencion",
@@ -328,7 +339,6 @@ const submit = () => {
                     customClass: "sweet-alerts",
                 });
             }
-
         },
     };
 
@@ -403,6 +413,9 @@ const submit = () => {
                 <InputLabel for="total_price" value="Precio total *" />
                 <TextInput id="total_price" v-model="form.total_price" type="number" step="0.01" min="0" />
                 <InputError :message="form.errors.total_price" class="mt-2" />
+                <p v-if="isFreeNegotiation" class="mt-2 text-sm font-semibold text-success">
+                    Negociacion GRATIS: no se generara comprobante de pago ni venta. El alumno solo completara sus datos.
+                </p>
             </div>
 
             <!-- Moneda: el combo solo aparece con el modo multi-moneda (PTM0004) activo;

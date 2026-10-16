@@ -40,6 +40,8 @@ const isRuc = computed(() => String(props.form.document_type_id) === "6");
 const isBoleta = computed(() => props.form.invoice_type === "boleta");
 const isFactura = computed(() => props.form.invoice_type === "factura");
 const isMercadoPago = computed(() => props.negotiation.payment_method === "mercadopago");
+// Negociacion gratuita (total 0): no hay pago ni voucher que resumir.
+const isFree = computed(() => Number(props.negotiation.total_price || 0) <= 0);
 
 const documentTypeLabel = computed(() =>
     props.documentTypeOptions.find((option) => String(option.value) === String(props.form.document_type_id))?.label
@@ -142,11 +144,13 @@ const summaryHtml = () => {
         rows.push(summaryRow("Vencimiento 1ra cuota", scheduleRows.value[0]?.due_date ?? null));
     }
 
-    if (isMercadoPago.value) {
+    if (isFree.value) {
+        rows.push(summaryRow("Negociacion", "GRATUITA (sin pago)"));
+    } else if (isMercadoPago.value) {
         rows.push(summaryRow("Forma de pago", props.paymentEvidence ? "Declaro que ya pague (adjunto voucher)" : "Pago ahora con tarjeta"));
     }
 
-    if (form.voucher?.name) {
+    if (!isFree.value && form.voucher?.name) {
         rows.push(summaryRow("Voucher adjunto", form.voucher.name));
     }
 

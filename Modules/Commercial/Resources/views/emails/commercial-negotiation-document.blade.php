@@ -157,6 +157,7 @@
         $approvalDate = ($negotiation->verified_at ?? now())->format('d/m/Y H:i');
         $totalPaid = number_format((float) $negotiation->total_price, 2);
         $hasCredentials = ! empty($credentials) && ($credentials['username'] ?? null);
+        $isFree = $negotiation->isFree();
     @endphp
 
     <br>
@@ -169,7 +170,15 @@
             aprobada con éxito. En este correo encontrarás tus credenciales de acceso y el detalle de tu compra.
         </p>
 
-        @if ($document)
+        @if ($isFree)
+            <div class="card">
+                <p style="margin: 0; text-align: center;">
+                    🎁 <b>Tu inscripción es GRATUITA.</b> No necesitas realizar ningún pago ni enviar comprobante.
+                </p>
+            </div>
+        @endif
+
+        @if ($document && ! $isFree)
             <p style="text-align: center;">
                 <span class="badge">📄 Comprobante: {{ $documentNumber }}</span>
             </p>
@@ -215,6 +224,7 @@
             </ul>
         @endif
 
+        @unless ($isFree)
         <p style="margin: 16px 0 0; font-weight: bold;">TOTAL PAGADO:</p>
         <p class="total">{{ $negotiation->currency }} {{ $totalPaid }}</p>
 
@@ -232,8 +242,9 @@
             <b>Medio de pago:</b> {{ \Modules\Commercial\Entities\CommercialNegotiation::paymentMethodLabel($negotiation->payment_method) }}<br>
             <b>Fecha de aprobación:</b> {{ $approvalDate }}
         </p>
+        @endunless
 
-        @if (($negotiation->invoice->invoice_type ?? null) === 'factura')
+        @if (! $isFree && ($negotiation->invoice->invoice_type ?? null) === 'factura')
             <h2>Datos de facturación</h2>
             <p>
                 <b>RUC:</b> {{ $negotiation->invoice->ruc ?? 'No registrado' }}<br>
