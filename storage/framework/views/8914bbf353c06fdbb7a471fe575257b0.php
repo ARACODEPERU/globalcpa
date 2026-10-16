@@ -148,6 +148,7 @@
                         <li><a href="<?php echo e(route('politicas_privacidad')); ?>">Políticas de privacidad</a></li>
                         <li><a href="<?php echo e(route('politicas_devoluciones')); ?>">Políticas de devoluciones</a></li>
                         <li><a href="<?php echo e(route('terms_main')); ?>">Términos <br>y condiciones</a></li>
+                        <li><a href="<?php echo e(route('politicas_cookies')); ?>">Política sobre las cookies</a></li>
                     </ul>
                 </div>
 
