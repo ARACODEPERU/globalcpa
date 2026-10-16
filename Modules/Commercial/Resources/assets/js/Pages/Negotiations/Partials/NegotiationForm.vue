@@ -8,7 +8,7 @@ import EditorAracode from "@/Components/EditorAracode.vue";
 import IconLoader from "@/Components/vristo/icon/icon-loader.vue";
 
 import { Link, router, useForm, usePage } from "@inertiajs/vue3";
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { Select } from "ant-design-vue";
 import Swal2 from "sweetalert2";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
@@ -263,8 +263,20 @@ const isFreeNegotiation = computed(
     () => form.total_price !== null && form.total_price !== "" && form.total_price !== undefined && Number(form.total_price) === 0
 );
 
+// Gratis: sin pago no hay cuotas ni medio de pago, se fuerza pago unico y se limpian cuotas.
+watch(isFreeNegotiation, (isFree) => {
+    if (!isFree) return;
+    form.payment_type = "single";
+    form.schedule = [];
+});
+
 const submit = async () => {
     form.clearErrors();
+
+    if (isFreeNegotiation.value) {
+        form.payment_type = "single";
+        form.schedule = [];
+    }
 
     const items = buildItems();
     if (!items.length) {
@@ -443,7 +455,7 @@ const submit = async () => {
 
             <div class="col-span-6 sm:col-span-2">
                 <InputLabel value="Tipo de pago *" />
-                <select v-model="form.payment_type" class="form-select text-white-dark">
+                <select v-model="form.payment_type" class="form-select text-white-dark" :disabled="isFreeNegotiation">
                     <option value="single">Pago unico</option>
                     <option value="installments">Cuotas</option>
                 </select>
@@ -458,7 +470,7 @@ const submit = async () => {
 
             <div v-else class="col-span-6 sm:col-span-2">
                 <InputLabel for="single_payment_days" value="Plazo de pago (dias)" />
-                <TextInput id="single_payment_days" v-model="form.single_payment_days" type="number" min="1" />
+                <TextInput id="single_payment_days" v-model="form.single_payment_days" type="number" min="1" :disabled="isFreeNegotiation" />
                 <InputError :message="form.errors.single_payment_days" class="mt-2" />
             </div>
 
@@ -517,19 +529,20 @@ const submit = async () => {
                 <InputLabel value="Medio de pago *" />
                 <Select
                     v-model:value="form.payment_method"
+                    :disabled="isFreeNegotiation"
                     :options="paymentMethodOptions"
                     style="width: 100%"
                 />
                 <InputError :message="form.errors.payment_method" class="mt-2" />
             </div>
 
-            <div v-if="form.payment_method === 'enlace'" class="col-span-6 sm:col-span-3">
+            <div v-if="!isFreeNegotiation && form.payment_method === 'enlace'" class="col-span-6 sm:col-span-3">
                 <InputLabel for="payment_link" value="Enlace de pago" />
                 <TextInput id="payment_link" v-model="form.payment_link" type="url" placeholder="https://..." />
                 <InputError :message="form.errors.payment_link" class="mt-2" />
             </div>
 
-            <div v-if="form.payment_method === 'billetera_digital'" class="col-span-6 sm:col-span-4">
+            <div v-if="!isFreeNegotiation && form.payment_method === 'billetera_digital'" class="col-span-6 sm:col-span-4">
                 <InputLabel value="Billetera digital *" />
                 <Select
                     v-model:value="form.company_billetera_ids"
@@ -547,7 +560,7 @@ const submit = async () => {
                 <p class="text-xs text-gray-500 mt-1">En la confirmacion del cliente se mostrara el titular y el codigo QR de cada billetera seleccionada.</p>
             </div>
 
-            <div v-if="form.payment_method !== 'billetera_digital'" class="col-span-6 sm:col-span-3">
+            <div v-if="!isFreeNegotiation && form.payment_method !== 'billetera_digital'" class="col-span-6 sm:col-span-3">
                 <div class="pt-5 text-xs text-gray-500">
                     <template v-if="form.payment_method === 'transferencia'">
                         Se mostraran las cuentas bancarias de la empresa al cliente.

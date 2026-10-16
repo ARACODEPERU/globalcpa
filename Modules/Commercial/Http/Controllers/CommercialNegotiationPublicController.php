@@ -97,7 +97,8 @@ class CommercialNegotiationPublicController extends Controller
             // Mercado Pago: 'card' (pago con tarjeta) o 'evidence' (el cliente ya pago
             // por fuera y adjunta la captura). En los otros medios no se envia.
             'payment_option' => ['nullable', Rule::in(['card', 'evidence'])],
-            'invoice_type' => ['required', Rule::in(['boleta', 'factura'])],
+            // En negociaciones gratuitas no se genera comprobante, asi que no se pide tipo.
+            'invoice_type' => ['nullable', Rule::requiredIf(fn () => ! $negotiation->isFree()), Rule::in(['boleta', 'factura'])],
             'document_type_id' => ['required', 'string', 'exists:identity_document_type,id'],
             'number' => ['required', 'string', 'max:20'],
             'full_name' => ['required_if:document_type_id,6', 'nullable', 'string', 'max:255'],
@@ -268,29 +269,32 @@ class CommercialNegotiationPublicController extends Controller
 
             // Boleta a nombre de terceros: solo se guarda si el cliente la activo
             // y el DNI fue validado (numero + nombre completados por la consulta).
-            $boletaTercero = $data['invoice_type'] === 'boleta'
-                && ! empty($data['boleta_documento_tipo'])
-                && ! empty($data['boleta_numero'])
-                && ! empty($data['boleta_nombre']);
+            // Negociacion gratuita: no hay comprobante, asi que no se guarda registro de factura/boleta.
+            if (! $negotiation->isFree()) {
+                $boletaTercero = $data['invoice_type'] === 'boleta'
+                    && ! empty($data['boleta_documento_tipo'])
+                    && ! empty($data['boleta_numero'])
+                    && ! empty($data['boleta_nombre']);
 
-            CommercialNegotiationInvoice::updateOrCreate(
-                ['negotiation_id' => $negotiation->id],
-                [
-                    'invoice_type' => $data['invoice_type'],
-                    'boleta_documento_tipo' => $boletaTercero ? $data['boleta_documento_tipo'] : null,
-                    'boleta_numero' => $boletaTercero ? trim($data['boleta_numero']) : null,
-                    'boleta_nombre' => $boletaTercero ? trim($data['boleta_nombre']) : null,
-                    'ruc' => $data['invoice_type'] === 'factura' ? trim($data['ruc']) : null,
-                    'razon_social' => $data['invoice_razon_social'] ?? null,
-                    'direccion' => $data['invoice_direccion'] ?? null,
-                    'estado' => $data['invoice_estado'] ?? null,
-                    'condicion' => $data['invoice_condicion'] ?? null,
-                    'ubigeo' => $data['invoice_ubigeo'] ?? null,
-                    'distrito' => $data['invoice_distrito'] ?? null,
-                    'provincia' => $data['invoice_provincia'] ?? null,
-                    'departamento' => $data['invoice_departamento'] ?? null,
-                ]
-            );
+                CommercialNegotiationInvoice::updateOrCreate(
+                    ['negotiation_id' => $negotiation->id],
+                    [
+                        'invoice_type' => $data['invoice_type'],
+                        'boleta_documento_tipo' => $boletaTercero ? $data['boleta_documento_tipo'] : null,
+                        'boleta_numero' => $boletaTercero ? trim($data['boleta_numero']) : null,
+                        'boleta_nombre' => $boletaTercero ? trim($data['boleta_nombre']) : null,
+                        'ruc' => $data['invoice_type'] === 'factura' ? trim($data['ruc']) : null,
+                        'razon_social' => $data['invoice_razon_social'] ?? null,
+                        'direccion' => $data['invoice_direccion'] ?? null,
+                        'estado' => $data['invoice_estado'] ?? null,
+                        'condicion' => $data['invoice_condicion'] ?? null,
+                        'ubigeo' => $data['invoice_ubigeo'] ?? null,
+                        'distrito' => $data['invoice_distrito'] ?? null,
+                        'provincia' => $data['invoice_provincia'] ?? null,
+                        'departamento' => $data['invoice_departamento'] ?? null,
+                    ]
+                );
+            }
 
             DB::commit();
         } catch (\Exception $e) {

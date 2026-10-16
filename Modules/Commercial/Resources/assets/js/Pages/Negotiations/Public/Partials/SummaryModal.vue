@@ -116,19 +116,22 @@ const summaryHtml = () => {
     rows.push(summaryRow("Empresa", form.company));
     rows.push(summaryRow("Industria", industryLabel.value));
 
-    rows.push(summarySection("Comprobante"));
-    rows.push(summaryRow("Tipo de comprobante", isFactura.value ? "Factura electronica" : "Boleta electronica"));
+    // Gratis: no hay comprobante que resumir.
+    if (!isFree.value) {
+        rows.push(summarySection("Comprobante"));
+        rows.push(summaryRow("Tipo de comprobante", isFactura.value ? "Factura electronica" : "Boleta electronica"));
 
-    if (isFactura.value) {
-        rows.push(summaryRow("RUC", form.ruc));
-        rows.push(summaryRow("Razon social", form.invoice_razon_social));
-        rows.push(summaryRow("Direccion fiscal", form.invoice_direccion));
-        rows.push(summaryRow("Estado / Condicion", [form.invoice_estado, form.invoice_condicion].filter(Boolean).join(" / ")));
-        rows.push(summaryRow("Ubicacion fiscal", [form.invoice_departamento, form.invoice_provincia, form.invoice_distrito].filter(Boolean).join(" - ")));
-    }
+        if (isFactura.value) {
+            rows.push(summaryRow("RUC", form.ruc));
+            rows.push(summaryRow("Razon social", form.invoice_razon_social));
+            rows.push(summaryRow("Direccion fiscal", form.invoice_direccion));
+            rows.push(summaryRow("Estado / Condicion", [form.invoice_estado, form.invoice_condicion].filter(Boolean).join(" / ")));
+            rows.push(summaryRow("Ubicacion fiscal", [form.invoice_departamento, form.invoice_provincia, form.invoice_distrito].filter(Boolean).join(" - ")));
+        }
 
-    if (isBoleta.value && props.boletaTercero) {
-        rows.push(summaryRow("Boleta a nombre de", [form.boleta_nombre, form.boleta_numero ? `DNI ${form.boleta_numero}` : null].filter(Boolean).join(" - "), true));
+        if (isBoleta.value && props.boletaTercero) {
+            rows.push(summaryRow("Boleta a nombre de", [form.boleta_nombre, form.boleta_numero ? `DNI ${form.boleta_numero}` : null].filter(Boolean).join(" - "), true));
+        }
     }
 
     rows.push(summarySection("Acuerdo y pago"));

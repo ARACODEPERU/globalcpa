@@ -84,7 +84,7 @@ class CommercialNegotiationController extends Controller
             ]));
 
             $this->syncItems($negotiation, $data['items']);
-            $this->syncCompanyBilleteras($negotiation, $data['company_billetera_ids'] ?? []);
+            $this->syncCompanyBilleteras($negotiation, (float) $data['total_price'] > 0 ? ($data['company_billetera_ids'] ?? []) : []);
 
             DB::commit();
         } catch (\Exception $e) {
@@ -137,7 +137,7 @@ class CommercialNegotiationController extends Controller
             }
 
             $this->syncItems($negotiation, $data['items']);
-            $this->syncCompanyBilleteras($negotiation, $data['company_billetera_ids'] ?? []);
+            $this->syncCompanyBilleteras($negotiation, (float) $data['total_price'] > 0 ? ($data['company_billetera_ids'] ?? []) : []);
 
             DB::commit();
         } catch (\Exception $e) {
@@ -608,7 +608,8 @@ class CommercialNegotiationController extends Controller
             // lo que llegue en la peticion se ignora.
             'contact_detail' => ['nullable', 'string', 'max:255'],
             'email' => ['nullable', 'email', 'max:255'],
-            'payment_method' => ['required', Rule::in(['billetera_digital', 'mercadopago', 'transferencia', 'enlace'])],
+            // Sin medio de pago cuando el total es 0 (negociacion gratuita).
+            'payment_method' => ['nullable', Rule::requiredIf(fn () => (float) $request->input('total_price', 0) > 0), Rule::in(['billetera_digital', 'mercadopago', 'transferencia', 'enlace'])],
             'company_billetera_ids' => ['nullable', 'array'],
             'company_billetera_ids.*' => ['nullable', 'integer', 'exists:company_billeteras,id'],
             'payment_link' => ['nullable', 'url', 'max:500'],
@@ -620,8 +621,14 @@ class CommercialNegotiationController extends Controller
         ])->after(function ($validator) {
             $data = $validator->getData();
 
+            // Negociacion gratuita (total 0): no hay pago, asi que no aplican cuotas ni medio de pago.
+            $isFree = (float) ($data['total_price'] ?? 0) <= 0;
+            if ($isFree && ($data['payment_type'] ?? null) === 'installments') {
+                $validator->errors()->add('payment_type', 'Una negociacion gratuita no puede tener cuotas.');
+            }
+
             // Si el medio de pago es billetera digital, debe elegirse al menos una.
-            if (($data['payment_method'] ?? null) === 'billetera_digital') {
+            if (! $isFree && ($data['payment_method'] ?? null) === 'billetera_digital') {
                 $billeteraIds = array_values(array_filter((array) ($data['company_billetera_ids'] ?? [])));
 
                 if (count($billeteraIds) === 0) {
@@ -665,22 +672,25 @@ class CommercialNegotiationController extends Controller
 
     private function payload(array $data): array
     {
+        // Negociacion gratuita: no hay pago, asi que no se guardan cuotas, medio ni enlace de pago.
+        $isFree = (float) $data['total_price'] <= 0;
+
         return [
             'title' => $data['title'],
             'body' => $data['body'] ?? null,
             'total_price' => $data['total_price'],
             'currency' => $data['currency'] ?? 'PEN',
-            'payment_type' => $data['payment_type'],
-            'initial_amount' => $data['initial_amount'] ?? null,
-            'schedule' => $data['schedule'] ?? null,
+            'payment_type' => $isFree ? 'single' : $data['payment_type'],
+            'initial_amount' => $isFree ? null : ($data['initial_amount'] ?? null),
+            'schedule' => $isFree ? null : ($data['schedule'] ?? null),
             'single_payment_days' => $data['single_payment_days'] ?? null,
             'link_days' => $data['link_days'] ?? null,
             'contact_channel' => $data['contact_channel'] ?? null,
             // contact_detail no viaja aqui: se fija al crear (advisorName) y al
             // editar se conserva el asesor guardado, sin poder cambiarlo.
             'email' => $data['email'] ?? null,
-            'payment_method' => $data['payment_method'],
-            'payment_link' => $data['payment_link'] ?? null,
+            'payment_method' => $isFree ? null : $data['payment_method'],
+            'payment_link' => $isFree ? null : ($data['payment_link'] ?? null),
         ];
     }
 

@@ -111,6 +111,7 @@
             $presentationNames = \App\Helpers\Invoice\DocumentPresentation::names($negotiation->items);
             $presentationTotal = number_format((float) $negotiation->total_price, 2);
             $advisorName = $negotiation->creator?->name ?: ($negotiation->contact_detail ?: 'No registrado');
+            $isFree = $negotiation->isFree();
         @endphp
 
         <p>
@@ -202,19 +203,26 @@
             </table>
         @endif
 
-        <p class="total">TOTAL A PAGAR</p>
-        <p class="total">{{ $negotiation->currency }} {{ $presentationTotal }}</p>
+        @if ($isFree)
+            <p class="total">INSCRIPCION GRATUITA</p>
+            <p style="text-align: center; margin: 0 0 16px;">No necesitas pagar ni enviar comprobante.</p>
+        @else
+            <p class="total">TOTAL A PAGAR</p>
+            <p class="total">{{ $negotiation->currency }} {{ $presentationTotal }}</p>
+        @endif
 
         <table class="data-table">
             <tr>
                 <th>Asesor de la negociacion</th>
                 <td>{{ $advisorName }}</td>
             </tr>
+            @unless ($isFree)
             <tr>
                 <th>Medio de pago</th>
                 <td>{{ \Modules\Commercial\Entities\CommercialNegotiation::paymentMethodLabel($negotiation->payment_method) ?: 'Por definir' }}</td>
             </tr>
-            @if ($negotiation->single_payment_days)
+            @endunless
+            @if ($negotiation->single_payment_days && ! $isFree)
                 <tr>
                     <th>Plazo de pago</th>
                     <td>{{ $negotiation->single_payment_days }} dias</td>

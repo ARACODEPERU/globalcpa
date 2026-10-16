@@ -756,7 +756,7 @@ const validatePersonRucBeforeSubmit = () => {
 
 // Si la boleta va a nombre de otra persona, su DNI tambien debe estar validado.
 const validateBoletaTerceroBeforeSubmit = () => {
-    if (isBoleta.value && boletaTercero.value) {
+    if (!isFree.value && isBoleta.value && boletaTercero.value) {
         if (!form.boleta_numero || !form.boleta_nombre) {
             Swal2.fire({
                 title: "Datos incompletos",
@@ -1273,7 +1273,8 @@ watch(brickFormVisible, async (visible) => {
                                 </div>
                             </template>
 
-                            <div class="col-span-6 mt-4 border-t border-gray-200 pt-4 dark:border-gray-700">
+                            <!-- Gratis: no se genera comprobante, asi que no se elige tipo. -->
+                            <div v-if="!isFree" class="col-span-6 mt-4 border-t border-gray-200 pt-4 dark:border-gray-700">
                                 <InputLabel value="Tipo de comprobante *" />
                                 <div class="flex flex-wrap gap-4 mt-2">
                                     <label class="inline-flex items-center">
@@ -1291,7 +1292,7 @@ watch(brickFormVisible, async (visible) => {
                                 <InputError :message="form.errors.invoice_type" class="mt-1" />
                             </div>
 
-                            <template v-if="isBoleta">
+                            <template v-if="!isFree && isBoleta">
                                 <div class="col-span-6">
                                     <div class="rounded-md border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800/40">
                                         <label class="inline-flex cursor-pointer items-center gap-3">
@@ -1341,7 +1342,7 @@ watch(brickFormVisible, async (visible) => {
                                 </div>
                             </template>
 
-                            <template v-if="isFactura">
+                            <template v-if="!isFree && isFactura">
                                 <div class="col-span-6 pt-2">
                                     <h3 class="font-semibold dark:text-white">Datos de la factura</h3>
                                     <p class="text-xs text-gray-500">Estos datos se usaran solo para la factura electronica.</p>
