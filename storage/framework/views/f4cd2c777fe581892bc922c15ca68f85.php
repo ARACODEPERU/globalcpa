@@ -213,6 +213,28 @@
     <script src="<?php echo e(asset('themes/globalcpa/carrito.js')); ?>" defer></script>
     <?php echo $__env->yieldPushContent('modals'); ?>
 
+    
+    <?php if (isset($component)) { $__componentOriginal9dafd0dec85bc67c15122bf1f9f7a23a = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal9dafd0dec85bc67c15122bf1f9f7a23a = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.cookies-notice','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('cookies-notice'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal9dafd0dec85bc67c15122bf1f9f7a23a)): ?>
+<?php $attributes = $__attributesOriginal9dafd0dec85bc67c15122bf1f9f7a23a; ?>
+<?php unset($__attributesOriginal9dafd0dec85bc67c15122bf1f9f7a23a); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal9dafd0dec85bc67c15122bf1f9f7a23a)): ?>
+<?php $component = $__componentOriginal9dafd0dec85bc67c15122bf1f9f7a23a; ?>
+<?php unset($__componentOriginal9dafd0dec85bc67c15122bf1f9f7a23a); ?>
+<?php endif; ?>
+
 </body>
 
 
