@@ -78,6 +78,13 @@ Route::middleware(['auth', 'verified', 'user_activity_log'])->prefix('crm')->gro
         ->delete('conversations/messages/destroy', [CrmMessagesController::class, 'destroyMessage'])
         ->name('crm_chat_message_destroy');
 
+    // Editar el propio mensaje mientras no pasen los primeros 90 segundos.
+    // crm_clientes_preguntas_ia: asi tambien puede editarlos el alumno en el
+    // chat de asesorias (studentDashboard), que opera con ese permiso.
+    Route::middleware(['middleware' => 'permission:crm_chat_messages|crm_chat_asistente|crm_clientes_preguntas_ia'])
+        ->post('conversations/messages/update', [CrmMessagesController::class, 'updateMessage'])
+        ->name('crm_chat_message_update');
+
     Route::middleware(['middleware' => 'permission:crm_chat_dashboard|crm_chat_asistente'])
         ->post('conversations/messages/upload/audio', [CrmMessagesController::class, 'uploadMessagesAudio'])
         ->name('crm_upload_message_audio');

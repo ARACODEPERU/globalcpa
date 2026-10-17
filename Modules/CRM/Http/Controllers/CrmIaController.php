@@ -175,7 +175,13 @@ class CrmIaController extends Controller
             ->values()
             ->all();
 
-        $client = new Client();
+        // Con limites de tiempo: sin ellos un servidor socket inaccesible puede
+        // dejar esta peticion colgada y el navegador aborta (timeout global de
+        // 20 s), mostrando un aviso generico en vez del motivo real.
+        $client = new Client([
+            'connect_timeout' => 2,
+            'timeout' => 3,
+        ]);
 
         $dom = env('VITE_SOCKET_IO_SERVER', 'https://localhost:3000');
         $url = "{$dom}/api/crm/broadcast";

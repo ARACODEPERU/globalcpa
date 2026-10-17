@@ -29,6 +29,13 @@ class CrmMessagesController extends Controller
     use ValidatesRequests;
     use ResuelveIdentidadAsistente;
 
+    /**
+     * Segundos durante los que el autor todavia puede corregir su propio mensaje.
+     * La ventana se valida aqui (en el servidor): la interfaz solo evita mostrar
+     * el boton cuando ya vencio.
+     */
+    public const SEGUNDOS_EDICION = 90;
+
     public function sendMessage(Request $request)
     {
         $this->validate(
@@ -135,7 +142,13 @@ class CrmMessagesController extends Controller
             ->values()
             ->all();
 
-        $client = new Client();
+        // Con limites de tiempo: sin ellos un servidor socket inaccesible puede
+        // dejar esta peticion colgada y el navegador aborta (timeout global de
+        // 20 s), mostrando un aviso generico en vez del motivo real.
+        $client = new Client([
+            'connect_timeout' => 2,
+            'timeout' => 3,
+        ]);
 
         $dom = env('VITE_SOCKET_IO_SERVER', 'https://localhost:3000');
         $url = "{$dom}/api/crm/broadcast";
@@ -187,6 +200,9 @@ class CrmMessagesController extends Controller
             $message->toUserId = ($message->person_id == $AuthpersonId ? 0 : $personId);
             $message->text = $message->content;
             $message->time = timeElapsed($message->created_at);
+            // Marca de mensaje corregido: updated_at solo cambia cuando se edita,
+            // asi que basta con compararlo con created_at.
+            $message->edited = $message->created_at && $message->updated_at && ! $message->updated_at->eq($message->created_at);
             $message->sent_by_name = $message->sent_by_user_id ? ($auditores[$message->sent_by_user_id] ?? null) : null;
             return $message;
         });
@@ -407,6 +423,79 @@ class CrmMessagesController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'No se pudo eliminar el mensaje. Intenta nuevamente.'
+            ], 500);
+        }
+    }
+
+    /**
+     * Permite al autor corregir su mensaje mientras no hayan pasado los primeros
+     * SEGUNDOS_EDICION segundos. Cualquier usuario del chat puede usarlo: la unica
+     * exigencia es ser quien escribio el mensaje (o el admin que lo escribio
+     * actuando como asistente) y que sea de texto.
+     */
+    public function updateMessage(Request $request)
+    {
+        $this->validate($request, [
+            'message_id' => 'required',
+            'text' => 'required|string',
+        ]);
+
+        try {
+            $msg = CrmMessage::findOrFail($request->get('message_id'));
+
+            if ($msg->person_id != $this->personaEfectiva($request)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Solo puedes editar tus propios mensajes.'
+                ], 403);
+            }
+
+            if ($msg->type !== 'text') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Solo se pueden editar mensajes de texto.'
+                ], 403);
+            }
+
+            if (!$msg->created_at || $msg->created_at->lt(now()->subSeconds(self::SEGUNDOS_EDICION))) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Solo puedes editar tus mensajes durante los primeros ' . self::SEGUNDOS_EDICION . ' segundos.'
+                ], 403);
+            }
+
+            if (trim((string) $request->get('text')) === '') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'El mensaje no puede quedar vacío.'
+                ], 422);
+            }
+
+            $msg->content = $request->get('text');
+            $msg->save();
+
+            // Se avisa al resto de la conversacion para que el texto corregido
+            // reemplace al anterior en el mismo mensaje (is_edicion le dice a los
+            // clientes que actualicen en lugar de pintar uno nuevo).
+            $participants = CrmParticipant::where('conversation_id', $msg->conversation_id)
+                ->where('user_id', '<>', $this->usuarioEfectivo($request))
+                ->pluck('user_id');
+
+            $broadcast = clone $msg;
+            $broadcast->is_edition = true;
+
+            $this->broadcastSend($participants, $broadcast, $msg->person_id);
+
+            return response()->json([
+                'success' => true,
+                'message' => $msg
+            ]);
+        } catch (\Exception $e) {
+            Log::error('CRM updateMessage: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'No se pudo editar el mensaje. Intenta nuevamente.'
             ], 500);
         }
     }

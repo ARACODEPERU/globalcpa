@@ -17,6 +17,7 @@
     import IconVideo from '@/Components/vristo/icon/icon-video.vue';
     import IconCopy from '@/Components/vristo/icon/icon-copy.vue';
     import IconTrashLines from '@/Components/vristo/icon/icon-trash-lines.vue';
+    import IconPencil from '@/Components/vristo/icon/icon-pencil.vue';
     import IconShare from '@/Components/vristo/icon/icon-share.vue';
     import IconMoodSmile from '@/Components/vristo/icon/icon-mood-smile.vue';
     import IconSend from '@/Components/vristo/icon/icon-send.vue';
@@ -204,6 +205,8 @@
                 existente.fromUserId = esMio ? mio : 0;
             }
             if (msg.time) existente.time = msg.time;
+            if (msg.created_at && !existente.created_at) existente.created_at = msg.created_at;
+            if (msg.edited != null) existente.edited = msg.edited;
             scrollToBottom();
             return;
         }
@@ -226,7 +229,9 @@
                 text: textMessage.value,
                 time: 'En este momento',
                 type: 'text',
-                id: null
+                id: null,
+                // Fecha real de envio: habilita el boton Editar durante 90 s.
+                created_at: new Date().toISOString()
             };
             registrarPropio(msg);
             chatPost(route('crm_send_message'),msg).then((response) => {
@@ -388,6 +393,20 @@
             // mio; si no, va como del alumno.
             const ofUserId = Number(result.data.ofUserId);
             const mensajeEco = result.data.message ?? {};
+
+            // Eco de una edicion: reemplaza el texto del mensaje que ya esta en
+            // pantalla (y avisa con "Editado") en lugar de pintar uno nuevo.
+            if (mensajeEco.is_edition) {
+                fetchPosts(); // por si el mensaje editado es el ultimo de la conversacion
+                if (selectedUser.value && mismoMensaje(conversationId, selectedUser.value.conversationId)) {
+                    const existente = listaMensajes().find((m) => mismoMensaje(m.id, mensajeEco.id));
+                    if (existente) {
+                        existente.text = mensajeEco.content;
+                        existente.edited = true;
+                    }
+                }
+                return;
+            }
             // Se compara contra todas mis identidades: la persona suplantada (si
             // estoy respondiendo como un asistente) y mi propia persona. El
             // person_id que guarda el mensaje es el dato de la base, asi que sirve
@@ -412,6 +431,7 @@
                 time: 'En este momento',
                 type: mensajeEco.type,
                 id: mensajeEco.id,
+                created_at: mensajeEco.created_at ?? null,
                 sent_by_name: mensajeEco.sent_by_name ?? null
             };
 
@@ -801,6 +821,96 @@ Limitate a responder las consultas, y no ofrescas algo más para continuar.`;
 
     const hasAnyRole = (rolesToCheck) => {
         return (authUser.roles || []).some(role => rolesToCheck.includes(role.name));
+    };
+
+    // ---------------------------------------------------------------------
+    // Edicion del propio mensaje dentro de los primeros SEGUNDOS_EDICION
+    // segundos: el boton aparece al pasar el mouse sobre el mensaje y la
+    // verificacion definitiva la hace el backend (aqui solo se decide si
+    // mostrar la opcion).
+    // ---------------------------------------------------------------------
+    const SEGUNDOS_EDICION = 90;
+    // Holgura del viaje de la peticion: la interfaz deja de ofrecer la edicion
+    // un par de segundos antes de que venza la ventana del servidor, para que
+    // un clic "a ultimo segundo" no caiga fuera de los 90 segundos al llegar.
+    const SEGUNDOS_MARGEN = 3;
+    const hoverId = ref(null);
+    const editState = reactive({ id: null, texto: '', procesando: false, error: null });
+
+    const canEditMessage = (message) => {
+        if (!message || !message.id || message.type !== 'text') return false;
+        // mismoMensaje compara como texto: el id del contacto puede llegar como
+        // cadena desde el listado de contactos.
+        if (!selectedUser.value || !mismoMensaje(message.fromUserId, selectedUser.value.userId)) return false;
+        const creado = new Date(message.created_at);
+        if (isNaN(creado.getTime())) return false;
+        return Date.now() - creado.getTime() < (SEGUNDOS_EDICION - SEGUNDOS_MARGEN) * 1000;
+    };
+
+    const startEditMessage = (message) => {
+        if (!canEditMessage(message)) {
+            showMessage(`Solo puedes editar tus mensajes durante los primeros ${SEGUNDOS_EDICION} segundos.`, 'info');
+            return;
+        }
+        editState.id = message.id;
+        editState.texto = message.text ?? '';
+        editState.error = null;
+        editState.procesando = false;
+    };
+
+    const cancelEditMessage = () => {
+        editState.id = null;
+        editState.texto = '';
+        editState.error = null;
+        editState.procesando = false;
+    };
+
+    const saveEditMessage = (message) => {
+        // Un Enter repetido no debe disparar varias peticiones a la vez.
+        if (editState.procesando) return;
+
+        const texto = editState.texto.trim();
+
+        if (!texto) {
+            editState.error = 'El mensaje no puede quedar vacío.';
+            return;
+        }
+
+        if (!canEditMessage(message)) {
+            showMessage(`Solo puedes editar tus mensajes durante los primeros ${SEGUNDOS_EDICION} segundos.`, 'info');
+            cancelEditMessage();
+            return;
+        }
+
+        editState.procesando = true;
+        editState.error = null;
+
+        chatPost(route('crm_chat_message_update'), {
+            message_id: message.id,
+            text: texto,
+        }).then(({ data }) => {
+            if (data.success) {
+                message.text = data.message.content;
+                message.edited = true;
+                showMessage('Mensaje actualizado.', 'success');
+                cancelEditMessage();
+            } else {
+                editState.error = data.message || 'No se pudo editar el mensaje.';
+            }
+        }).catch((error) => {
+            // Separamos tres casos: el servidor respondio y lo rechazo (mostramos
+            // su mensaje), no llego respuesta (timeout/red) y errores de la propia
+            // interfaz, para no pintar nunca el mismo aviso genérico.
+            if (!error.isAxiosError) {
+                editState.error = 'No se pudo actualizar la vista: ' + (error.message || 'error inesperado en la interfaz.');
+            } else if (error.response) {
+                editState.error = error.response.data?.message || `No se pudo editar el mensaje (código ${error.response.status}).`;
+            } else {
+                editState.error = 'No hubo respuesta del servidor. Revisa tu conexión e inténtalo de nuevo.';
+            }
+        }).finally(() => {
+            editState.procesando = false;
+        });
     };
 
     const canDeleteMessage = (message) => {
@@ -1505,7 +1615,7 @@ Limitate a responder las consultas, y no ofrescas algo más para continuar.`;
                                         </div>
                                         <template v-if="selectedUser.messages && selectedUser.messages.length">
                                             <div v-for="(message, index) in selectedUser.messages" :key="index">
-                                                <div class="flex items-start gap-3 group" :class="{ 'justify-end': selectedUser.userId === message.fromUserId }">
+                                                <div class="flex items-start gap-3 group" :class="{ 'justify-end': selectedUser.userId === message.fromUserId }" @mouseenter="hoverId = message.id">
                                                     <div class="flex-none" :class="{ 'order-2': selectedUser.userId === message.fromUserId }">
                                                         <template v-if="selectedUser.userId === message.fromUserId">
                                                             <img v-if="$page.props.auth.user.avatar" :src="getImage($page.props.auth.user.avatar)" class="rounded-full h-10 w-10 object-cover" />
@@ -1529,7 +1639,47 @@ Limitate a responder las consultas, y no ofrescas algo más para continuar.`;
                                                                     <icon-trash-lines class="w-4.5 h-4.5" />
                                                                 </button>
 
-                                                                <div class="dark:bg-gray-800 p-4 py-2 rounded-md bg-black/10"
+                                                                <button
+                                                                    v-if="hoverId === message.id && canEditMessage(message)"
+                                                                    type="button"
+                                                                    class="hidden group-hover:flex items-center text-white-dark hover:text-primary"
+                                                                    title="Editar mensaje"
+                                                                    @click="startEditMessage(message)"
+                                                                >
+                                                                    <icon-pencil class="w-4.5 h-4.5" />
+                                                                </button>
+
+                                                                <div v-if="editState.id === message.id" class="w-72 bg-white dark:bg-gray-900 border border-primary rounded-md p-3 space-y-2 shadow">
+                                                                    <textarea
+                                                                        v-model="editState.texto"
+                                                                        rows="3"
+                                                                        class="form-textarea w-full text-sm text-gray-900 dark:text-white"
+                                                                        style="border-color:#3b5bdb"
+                                                                        title="Enter para guardar · Shift+Enter para salto de línea"
+                                                                        @keydown.enter.exact.prevent="saveEditMessage(message)"
+                                                                        @keyup.enter.exact.ctrl="saveEditMessage(message)"
+                                                                    ></textarea>
+                                                                    <p v-if="editState.error" class="text-xs text-danger">{{ editState.error }}</p>
+                                                                    <div class="flex items-center justify-end gap-2">
+                                                                        <button
+                                                                            type="button"
+                                                                            class="px-3 py-1 text-xs rounded bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-gray-800 dark:text-gray-200"
+                                                                            :disabled="editState.procesando"
+                                                                            @click="cancelEditMessage"
+                                                                        >
+                                                                            Cancelar
+                                                                        </button>
+                                                                        <button
+                                                                            type="button"
+                                                                            class="px-3 py-1 text-xs rounded bg-primary text-white hover:bg-primary-dark disabled:opacity-50"
+                                                                            :disabled="editState.procesando || !editState.texto.trim()"
+                                                                            @click="saveEditMessage(message)"
+                                                                        >
+                                                                            {{ editState.procesando ? 'Guardando...' : 'Guardar' }}
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                                <div v-else class="dark:bg-gray-800 p-4 py-2 rounded-md bg-black/10"
                                                                     :class="message.fromUserId == selectedUser.userId ? 'ltr:rounded-br-none rtl:rounded-bl-none !bg-primary text-white': 'ltr:rounded-tl-none rtl:rounded-tr-none'"
                                                                 >
                                                                     <template v-if="message.type == 'text'">
@@ -1560,6 +1710,13 @@ Limitate a responder las consultas, y no ofrescas algo más para continuar.`;
                                                             :class="{ 'ltr:text-right rtl:text-left': selectedUser.userId === message.fromUserId }"
                                                         >
                                                             {{ message.time ? message.time : '5h ago' }}
+                                                        </div>
+                                                        <div
+                                                            v-if="message.edited"
+                                                            class="text-[11px] italic text-white-dark"
+                                                            :class="{ 'ltr:text-right rtl:text-left': selectedUser.userId === message.fromUserId }"
+                                                        >
+                                                            Editado
                                                         </div>
                                                         <div
                                                             v-if="message.sent_by_name"
