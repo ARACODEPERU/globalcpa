@@ -486,6 +486,9 @@ Limitate a responder las consultas, y no ofrescas algo más para continuar.`;
     const censoredResponse = ref(null);
     // Bandera: tras guardar en banco de consultas, ¿se debe enviar la respuesta al usuario?
     const sendAfterSave = ref(false);
+    // Marca cuando la respuesta ya salio al usuario dentro del flujo
+    // "guardar y enviar", para no volver a enviarla ni preguntar por ella.
+    const envioYaRealizado = ref(false);
 
     const openModalQuestionAI = (item) => {
         formIaconsulta.messageText = item.content
@@ -506,6 +509,7 @@ Limitate a responder las consultas, y no ofrescas algo más para continuar.`;
         censoredQuestion.value = null;
         censoredResponse.value = null;
         sendAfterSave.value = false;
+        envioYaRealizado.value = false;
         formIaconsulta.reset();
     };
 
@@ -568,7 +572,7 @@ Limitate a responder las consultas, y no ofrescas algo más para continuar.`;
         if (formIaconsulta.respond?.trim()) {
             Swal.fire({
                 title: '¿Quieres guardar la respuesta en el banco de consultas?',
-                text: 'Si eliges sí, podrás revisarla antes de enviarla.',
+                text: 'Si eliges sí, la respuesta se enviará al usuario de inmediato y luego podrás revisarla y guardarla.',
                 icon: 'question',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -587,8 +591,11 @@ Limitate a responder las consultas, y no ofrescas algo más para continuar.`;
         }
     };
 
-    const doSendMessageAi = () => {
-        if (!formIaconsulta.respond?.trim()) return;
+    // Envia la respuesta al usuario. Por defecto cierra todos los modales de IA;
+    // con cerrarModales en false los deja abiertos para seguir con la revision
+    // (flujo "guardar y enviar"). Resuelve true cuando el envio fue efectivo.
+    const doSendMessageAi = (cerrarModales = true) => {
+        if (!formIaconsulta.respond?.trim()) return Promise.resolve(false);
         isShowLoadingSend.value = true;
         const msg = {
             fromUserId: selectedUser.value.userId,
@@ -612,9 +619,36 @@ Limitate a responder las consultas, y no ofrescas algo más para continuar.`;
                 showMessage('No puede enviar mensajes en este momento. Por favor, complete su información personal en su perfil para habilitar esta función.','info');
             }
             isShowLoadingSend.value = false;
+            return res.success === true;
+        }).catch(() => {
+            isShowLoadingSend.value = false;
+            showMessage('No se pudo enviar la respuesta. Intenta nuevamente.', 'error');
+            return false;
         }).finally(() => {
-            closeModalQuestionAI();
+            if (cerrarModales) closeModalQuestionAI();
         });
+    };
+
+    // Flujo "Sí, guardar y enviar": la respuesta sale al usuario de inmediato y,
+    // enseguida, se avisa que el texto fue censurado por privacidad para que se
+    // revise (y se modifique de ser necesario) antes de guardarlo en el banco.
+    const enviarYRevisarCensura = () => {
+        doSendMessageAi(false)
+            .then((enviado) => {
+                envioYaRealizado.value = enviado === true;
+            })
+            .finally(() => {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'La consulta ha sido censurada por privacidad',
+                    text: 'Revisa la consulta y la respuesta, y modifícalas de ser necesario antes de guardarlas en el banco de consultas.',
+                    confirmButtonText: 'Revisar',
+                    confirmButtonColor: '#3b5bdb',
+                    allowOutsideClick: false,
+                }).then(() => {
+                    displayModalConfirmarAi.value = true;
+                });
+            });
     };
 
     // Tras guardar en banco de consultas (desde el botón Guardar), preguntar si enviar al usuario
@@ -691,7 +725,14 @@ Limitate a responder las consultas, y no ofrescas algo más para continuar.`;
                 censoredQuestion.value = result.data.questionText;
                 censoredResponse.value = result.data.responseText;
                 displayModalRespuestaAi.value = false;
-                displayModalConfirmarAi.value = true;
+
+                // "Sí, guardar y enviar": se envia antes de abrir la revision.
+                if (sendAfterSave.value) {
+                    sendAfterSave.value = false;
+                    enviarYRevisarCensura();
+                } else {
+                    displayModalConfirmarAi.value = true;
+                }
             } else {
                 showMessage(result.data.message || 'No se pudo censurar la respuesta.', 'error')
             }
@@ -703,6 +744,14 @@ Limitate a responder las consultas, y no ofrescas algo más para continuar.`;
     }
 
     const closeModalConfirmarAI = () => {
+        // La respuesta ya salio al usuario: volver al modal de respuesta haria que
+        // se enviara dos veces, asi que solo se cierra y se aclara que no se guardo.
+        if (envioYaRealizado.value) {
+            showMessage('La respuesta ya fue enviada al usuario, pero no se guardó en el banco de consultas.', 'info');
+            closeModalQuestionAI();
+            return;
+        }
+
         displayModalConfirmarAi.value = false;
         displayModalRespuestaAi.value = true;
         sendAfterSave.value = false;
@@ -728,6 +777,9 @@ Limitate a responder las consultas, y no ofrescas algo más para continuar.`;
                 if (sendAfterSave.value) {
                     sendAfterSave.value = false;
                     doSendMessageAi();
+                } else if (envioYaRealizado.value) {
+                    // Ya se envio en el paso anterior: solo queda cerrar.
+                    closeModalQuestionAI();
                 } else {
                     askSendAfterSave();
                 }
