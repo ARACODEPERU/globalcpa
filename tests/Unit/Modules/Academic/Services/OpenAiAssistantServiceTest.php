@@ -4,6 +4,7 @@ namespace Tests\Unit\Modules\Academic\Services;
 
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Schema;
 use Modules\Academic\Services\OpenAiAssistantService;
 use RuntimeException;
 use Tests\TestCase;
@@ -15,6 +16,18 @@ class OpenAiAssistantServiceTest extends TestCase
         parent::setUp();
 
         Cache::flush();
+
+        if (!Schema::hasTable('parameters')) {
+            Schema::create('parameters', function ($table) {
+                $table->id();
+                $table->string('parameter_code')->unique();
+                $table->string('description');
+                $table->char('control_type', 3)->nullable();
+                $table->text('json_query_data')->nullable();
+                $table->text('value_default')->nullable();
+                $table->timestamps();
+            });
+        }
 
         // Por defecto, resolver la key por .env para no depender de la base de datos.
         config([
@@ -59,7 +72,7 @@ class OpenAiAssistantServiceTest extends TestCase
 
     public function test_resolves_api_key_from_system_parameter(): void
     {
-        config(['academic.openai.api_key_parameter' => 'P000025']);
+        config(['academic.openai.api_key_parameter' => 'IA-00003']);
 
         $service = new class extends OpenAiAssistantService {
             protected function apiKeyFromParameter(): ?string
@@ -147,7 +160,7 @@ class OpenAiAssistantServiceTest extends TestCase
         $service = app(OpenAiAssistantService::class);
 
         $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('P000025');
+        $this->expectExceptionMessage('IA-00003');
 
         $service->sendPrompt(11, 'hola');
     }

@@ -23,19 +23,18 @@ class CrmChatController extends Controller
     /**
      * Display a listing of the resource.
      */
-    protected $P000015;
     protected $P000010;
 
     public function __construct()
     {
-        $this->P000015 = Parameter::where('parameter_code', 'P000015')->value('value_default');
-        $this->P000010  = Parameter::where('parameter_code', 'P000010')->value('value_default');
+        $this->P000010 = Parameter::where('parameter_code', 'P000010')->value('value_default');
     }
 
     public function index(Request $request)
     {
         return Inertia::render('CRM::Chat/Dashboard', [
-            'P000015' => $this->P000015,
+            'P000015' => Parameter::where('parameter_code', config('academic.openai.provider_parameter', 'IA-00001'))
+                ->value('value_default') ?? Parameter::where('parameter_code', 'P000015')->value('value_default'),
             'P000010' => $this->P000010
         ]);
     }

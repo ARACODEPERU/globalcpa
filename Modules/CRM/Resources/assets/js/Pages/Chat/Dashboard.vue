@@ -543,6 +543,9 @@ Limitate a responder las consultas, y no ofrescas algo más para continuar.`;
         }
     }
 
+    // Aviso cuando el agente de OpenAI falla y responde el modelo por defecto.
+    const agentFallbackNotice = ref(null);
+
     const sendPromptOpenAI = () => {
         formIaconsulta.processing = true;
         const url = route('crm_application_ai_prompt_send_message_openai');
@@ -554,6 +557,10 @@ Limitate a responder las consultas, y no ofrescas algo más para continuar.`;
         }).then((result) => {
             if (result.data.success) {
                 formIaconsulta.respond = result.data.responseText
+                agentFallbackNotice.value = result.data.notice || null
+                if (agentFallbackNotice.value) {
+                    showMessage(agentFallbackNotice.value, 'info')
+                }
                 openModalRespuestaAI()
             } else {
                 showMessage(result.data.message || 'No se pudo consultar la IA.', 'error')
@@ -570,21 +577,24 @@ Limitate a responder las consultas, y no ofrescas algo más para continuar.`;
 
     const sendPromptGeminiAI = () => {
         formIaconsulta.processing = true;
-        const url = import.meta.env.VITE_SOCKET_IO_SERVER + '/api/ai/basicquestion'; // Cambia por la URL de tu API
-        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        formIaconsulta.csrfToken = csrfToken;
+        const url = route('crm_application_ai_prompt_send_message_gemini');
 
-        axios.post(url,formIaconsulta,{
+        chatPost(url, formIaconsulta, {
             headers: {
                 'Content-Type': 'application/json'
             },
             timeout: 0,
         }).then((result) => {
-            formIaconsulta.respond = result.data.responseText
-            //zformIaconsulta.respond = clearHTMLdelimiters(result.data.responseText)
-            openModalRespuestaAI()
-        }).finally(()=>{
-            formIaconsulta.processing = false;;
+            if (result.data.success) {
+                formIaconsulta.respond = result.data.responseText;
+                openModalRespuestaAI();
+            } else {
+                showMessage(result.data.message || 'No se pudo consultar Gemini.', 'error');
+            }
+        }).catch((error) => {
+            showMessage(error.response?.data?.message || 'Error al consultar Gemini. Intenta nuevamente.', 'error');
+        }).finally(() => {
+            formIaconsulta.processing = false;
         });
     }
 
@@ -695,53 +705,21 @@ Limitate a responder las consultas, y no ofrescas algo más para continuar.`;
     }
 
     const saveQuestionResult = () => {
-        // formIaconsulta
-        if(props.P000015 == 1){
-            sendCensorTextOpenAI();
-        }else if(props.P000015 == 2){
-            sendCensorTextGeminiAI();
-        }
+        sendCensorText();
     }
 
     const censorLoader = ref(false);
-    const sendCensorTextGeminiAI = () => {
+    const sendCensorText = () => {
         censorLoader.value = true;
-        const url = import.meta.env.VITE_SOCKET_IO_SERVER + '/api/ai/basiccensortext'; // Cambia por la URL de tu API
-        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        formIaconsulta.csrfToken = csrfToken;
-        formIaconsulta.routeBackend = route('crm_chat_frequently_questions_store');
-        formIaconsulta.userId = authUser.id;
-
-        axios.post(url, formIaconsulta,{
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            timeout: 0,
-        }).then((result) => {
-            if(result.data.success){
-                showMessage('Información guardada correctamente.','success');
-                if (sendAfterSave.value) {
-                    sendAfterSave.value = false;
-                    doSendMessageAi();
-                } else {
-                    askSendAfterSave();
-                }
-            }
-        }).finally(()=>{
-            censorLoader.value = false;
-        });
-    }
-
-    const sendCensorTextOpenAI = () => {
-        formIaconsulta.processing = true;
         const url = route('crm_respond_frequently_questions_store');
-        chatPost(url,formIaconsulta,{
+
+        chatPost(url, formIaconsulta, {
             headers: {
                 'Content-Type': 'application/json'
             },
             timeout: 0,
         }).then((result) => {
-            if(result.data.success){
+            if (result.data.success) {
                 censoredQuestion.value = result.data.questionText;
                 censoredResponse.value = result.data.responseText;
                 displayModalRespuestaAi.value = false;
@@ -754,12 +732,12 @@ Limitate a responder las consultas, y no ofrescas algo más para continuar.`;
                     displayModalConfirmarAi.value = true;
                 }
             } else {
-                showMessage(result.data.message || 'No se pudo censurar la respuesta.', 'error')
+                showMessage(result.data.message || 'No se pudo censurar la respuesta.', 'error');
             }
         }).catch((error) => {
-            showMessage(error.response?.data?.message || 'Error al censurar la respuesta. Intenta nuevamente.', 'error')
-        }).finally(()=>{
-            formIaconsulta.processing = false;;
+            showMessage(error.response?.data?.message || 'Error al censurar la respuesta. Intenta nuevamente.', 'error');
+        }).finally(() => {
+            censorLoader.value = false;
         });
     }
 
@@ -1095,6 +1073,12 @@ Limitate a responder las consultas, y no ofrescas algo más para continuar.`;
                     <template #message>Respuesta generada</template>
                     <template #content>
                         <div class="space-y-4">
+                            <div
+                                v-if="agentFallbackNotice"
+                                class="bg-amber-50 border border-amber-200 text-amber-800 text-sm rounded-md p-3"
+                            >
+                                {{ agentFallbackNotice }}
+                            </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Consulta del usuario</label>
                                 <textarea

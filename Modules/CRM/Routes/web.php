@@ -161,6 +161,10 @@ Route::middleware(['auth', 'verified', 'user_activity_log'])->prefix('crm')->gro
         ->post('application-ai-prompt/send/messages/openai', [CrmIaController::class, 'basicQuestionService'])
         ->name('crm_application_ai_prompt_send_message_openai');
 
+    Route::middleware(['middleware' => 'permission:crm_clientes_preguntas_ia|crm_chat_asistente'])
+        ->post('application-ai-prompt/send/messages/gemini', [CrmIaController::class, 'basicQuestionGeminiService'])
+        ->name('crm_application_ai_prompt_send_message_gemini');
+
     Route::post('persons/search/company', [CrmPersonController::class, 'searchPerson'])
         ->name('crm_persons_search_company');
 

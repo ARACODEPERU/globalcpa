@@ -214,13 +214,27 @@ class CrmIaController extends Controller
     public function basicQuestionService(Request $request)
     {
         try {
+            $this->validate($request, [
+                'messageText' => 'required|string|max:20000',
+                'instructions' => 'nullable|string|max:10000',
+            ]);
+
             $messageText = $request->input('messageText');
             $instructions = $request->input('instructions');
-            $response = $this->sendPromptOpenAI($messageText, $instructions, null, $this->usuarioEfectivo($request));
+            // Respuesta del chat a alumnos: primero el agente guardado y, si
+            // no responde, el modelo por defecto con un aviso informativo.
+            $result = app(OpenAiAssistantService::class)->sendPromptWithAgent(
+                $this->usuarioEfectivo($request) ?: Auth::id(),
+                (string) $messageText,
+                $instructions
+            );
 
             return response()->json([
                 'success' => true,
-                'responseText' => $response,
+                'responseText' => $result['text'],
+                'agent_used' => $result['agent_used'],
+                'ai_source' => $result['source'],
+                'notice' => $result['notice'],
             ]);
         } catch (\Throwable $e) {
             Log::error('CRM basicQuestionService: ' . $e->getMessage());
@@ -232,10 +246,36 @@ class CrmIaController extends Controller
         }
     }
 
+    public function basicQuestionGeminiService(Request $request)
+    {
+        try {
+            $this->validate($request, [
+                'messageText' => 'required|string|max:20000',
+                'instructions' => 'nullable|string|max:10000',
+            ]);
+
+            $response = app(OpenAiAssistantService::class)->sendGeminiPrompt(
+                $request->input('messageText'),
+                $request->input('instructions')
+            );
+
+            return response()->json(['success' => true, 'responseText' => $response]);
+        } catch (\Throwable $e) {
+            Log::error('CRM basicQuestionGeminiService: ' . $e->getMessage());
+
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 200);
+        }
+    }
+
     public function censorTextService(Request $request)
     {
         try {
             $service = app(OpenAiAssistantService::class);
+
+            $this->validate($request, [
+                'messageText' => 'required|string|max:20000',
+                'respond' => 'nullable|string|max:30000',
+            ]);
 
             $questionText = $request->input('messageText');
             $responseText = $request->input('respond') ?: $questionText;
@@ -272,7 +312,10 @@ class CrmIaController extends Controller
         }
 
         try {
-            $censored = $service->censorText(Auth::id(), $text);
+            // Se censura con el mismo proveedor que respondio la consulta.
+            $censored = $service->chatProvider() === 'gemini'
+                ? $service->censorGeminiText($text)
+                : $service->censorText(Auth::id(), $text);
 
             // Alucinación: la IA devolvió una respuesta inventada (mucho más larga)
             if (trim($censored) === '' || mb_strlen($censored) > mb_strlen($text) * 1.5) {

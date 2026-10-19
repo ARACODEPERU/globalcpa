@@ -5,11 +5,30 @@ return [
 
     'openai' => [
         'api_key' => env('API_KEY_IA', env('OPENAI_API_KEY')),
-        // Parametro del sistema (tabla parameters) que contiene la API Key de OpenAI.
-        'api_key_parameter' => env('OPENAI_API_KEY_PARAMETER', 'P000025'),
+        // Parametros del sistema para OpenAI (tabla parameters).
+        'api_key_parameter' => env('OPENAI_API_KEY_PARAMETER', 'IA-00003'),
+        'legacy_api_key_parameter' => 'P000025',
+        'agent_id_parameter' => env('OPENAI_AGENT_ID_PARAMETER', 'IA-00002'),
+        'provider_parameter' => env('ACADEMIC_AI_PROVIDER_PARAMETER', 'IA-00001'),
+        'agent_id' => env('OPENAI_AGENT_ID'),
+        // Espera maxima del agente antes de responder con el modelo, en segundos.
+        'agent_timeout' => (int) env('OPENAI_AGENT_TIMEOUT', 90),
+        // Milisegundos entre consultas del estado de la sesion del agente.
+        'agent_poll_interval_ms' => (int) env('OPENAI_AGENT_POLL_INTERVAL_MS', 1000),
+        // Minutos que se conserva la sesion del agente para continuar el hilo.
+        'agent_session_minutes' => (int) env('OPENAI_AGENT_SESSION_MINUTES', 720),
         'model' => env('OPENAI_MODEL', 'gpt-4.1-mini'),
         'instructions' => env('OPENAI_INSTRUCTIONS', 'Responde como docente de CPA Academy. Se claro, util y cuidadoso con datos personales.'),
         'timeout' => env('OPENAI_TIMEOUT', 60),
+    ],
+
+    // Credenciales de Gemini en la tabla parameters.
+    'gemini' => [
+        'api_key_parameter' => env('GEMINI_API_KEY_PARAMETER', 'IA-00004'),
+        'api_key' => env('API_KEY_GEMINI'),
+        // gemini-2.0-flash cerro el 1 de junio de 2026.
+        'model' => env('GEMINI_MODEL', 'gemini-3.8-flash'),
+        'timeout' => env('GEMINI_TIMEOUT', 60),
     ],
 
     /*

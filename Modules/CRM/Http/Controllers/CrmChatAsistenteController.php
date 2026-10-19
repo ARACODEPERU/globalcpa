@@ -36,7 +36,8 @@ class CrmChatAsistenteController extends Controller
         }
 
         return Inertia::render('CRM::Chat/Dashboard', [
-            'P000015' => Parameter::where('parameter_code', 'P000015')->value('value_default'),
+            'P000015' => Parameter::where('parameter_code', config('academic.openai.provider_parameter', 'IA-00001'))
+                ->value('value_default') ?? Parameter::where('parameter_code', 'P000015')->value('value_default'),
             'P000010' => Parameter::where('parameter_code', 'P000010')->value('value_default'),
             'modoAsistentes' => true,
             'asistentes' => $asistentes,
