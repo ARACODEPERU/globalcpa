@@ -11,6 +11,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
+use Modules\Academic\Services\OpenAiAssistantService;
 use Modules\CRM\Entities\CrmConversation;
 use Modules\CRM\Entities\CrmMessage;
 use Modules\CRM\Entities\CrmParticipant;
@@ -35,7 +36,9 @@ class CrmChatController extends Controller
         return Inertia::render('CRM::Chat/Dashboard', [
             'P000015' => Parameter::where('parameter_code', config('academic.openai.provider_parameter', 'IA-00001'))
                 ->value('value_default') ?? Parameter::where('parameter_code', 'P000015')->value('value_default'),
-            'P000010' => $this->P000010
+            'P000010' => $this->P000010,
+            // Limite de espera del agente (parametro IA-00005) para el loader.
+            'agentTimeoutSeconds' => app(OpenAiAssistantService::class)->agentTimeoutSeconds(),
         ]);
     }
 

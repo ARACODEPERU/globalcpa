@@ -7,6 +7,7 @@ use App\Models\Parameter;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Modules\Academic\Services\OpenAiAssistantService;
 
 /**
  * Vista de chat para admin/Administrador: se elige un asistente y desde ahi se
@@ -43,6 +44,8 @@ class CrmChatAsistenteController extends Controller
             'asistentes' => $asistentes,
             'asistenteSeleccionado' => $seleccionado,
             'avisoAsistentes' => $this->avisoAsistentes($asistentes, $request, $seleccionado),
+            // Limite de espera del agente (parametro IA-00005) para el loader.
+            'agentTimeoutSeconds' => app(OpenAiAssistantService::class)->agentTimeoutSeconds(),
         ]);
     }
 

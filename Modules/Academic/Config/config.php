@@ -11,8 +11,12 @@ return [
         'agent_id_parameter' => env('OPENAI_AGENT_ID_PARAMETER', 'IA-00002'),
         'provider_parameter' => env('ACADEMIC_AI_PROVIDER_PARAMETER', 'IA-00001'),
         'agent_id' => env('OPENAI_AGENT_ID'),
+        // Parametro del sistema con la espera maxima del agente (IA-00005).
+        // Tiene prioridad sobre OPENAI_AGENT_TIMEOUT.
+        'agent_timeout_parameter' => env('OPENAI_AGENT_TIMEOUT_PARAMETER', 'IA-00005'),
         // Espera maxima del agente antes de responder con el modelo, en segundos.
-        'agent_timeout' => (int) env('OPENAI_AGENT_TIMEOUT', 90),
+        // 360 = 6 minutos: el agente de OpenAI suele tardar ~5 minutos.
+        'agent_timeout' => (int) env('OPENAI_AGENT_TIMEOUT', 360),
         // Milisegundos entre consultas del estado de la sesion del agente.
         'agent_poll_interval_ms' => (int) env('OPENAI_AGENT_POLL_INTERVAL_MS', 1000),
         // Minutos que se conserva la sesion del agente para continuar el hilo.

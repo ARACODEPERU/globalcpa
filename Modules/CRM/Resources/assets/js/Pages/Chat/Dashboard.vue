@@ -31,6 +31,7 @@
     import FileDownload from './Partials/FileDownload.vue';
     import Swal from 'sweetalert2';
     import ModalLargeX from '@/Components/ModalLargeX.vue';
+    import AiAgentLoader from '@/Components/AiAgentLoader.vue';
     import PrimaryButton from '@/Components/PrimaryButton.vue';
     import Editor from '@tinymce/tinymce-vue';
 
@@ -61,6 +62,11 @@
         avisoAsistentes: {
             type: String,
             default: null
+        },
+        // Espera maxima del agente de OpenAI (parametro IA-00005), en segundos.
+        agentTimeoutSeconds: {
+            type: Number,
+            default: 360
         }
     });
 
@@ -1022,6 +1028,13 @@ Limitate a responder las consultas, y no ofrescas algo más para continuar.`;
             </div>
 
             <div class="flex gap-5 relative sm:h-[calc(100vh_-_150px)] h-full sm:min-h-0" :class="{ 'min-h-[999px]': isShowChatMenu }">
+                <!-- La consulta al agente de OpenAI tarda ~5 minutos: se muestra un
+                     loader futurista con el tiempo transcurrido y el limite real. -->
+                <AiAgentLoader
+                    v-if="formIaconsulta.processing && P000015 == 1"
+                    :max-seconds="agentTimeoutSeconds"
+                />
+
                 <!-- Modal de Consulta AI - Primera pantalla -->
                 <ModalLargeX :show="displayModalAi" :onClose="closeModalQuestionAI" :icon="'/img/ai.png'" :loading="formIaconsulta.processing">
                     <template #title>Inteligencia Artificial</template>

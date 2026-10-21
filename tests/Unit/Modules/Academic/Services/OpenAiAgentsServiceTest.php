@@ -224,6 +224,44 @@ class OpenAiAgentsServiceTest extends TestCase
         Http::assertNotSent(fn ($request) => str_contains($request->url(), '/agents/'));
     }
 
+    public function test_agent_wait_time_comes_from_its_system_parameter(): void
+    {
+        config(['academic.openai.agent_timeout_parameter' => 'IA-00005']);
+        Parameter::create([
+            'parameter_code' => 'IA-00005',
+            'description' => 'Agent wait time for test',
+            'control_type' => 'tx',
+            'json_query_data' => null,
+            'value_default' => '360',
+        ]);
+
+        $service = app(OpenAiAssistantService::class);
+
+        $this->assertSame(360, $service->agentTimeoutSeconds());
+        $this->assertSame('6 minutos', $service->agentTimeoutLabel());
+    }
+
+    public function test_agent_wait_time_accepts_minutes_in_the_parameter(): void
+    {
+        config(['academic.openai.agent_timeout_parameter' => 'IA-00005']);
+        Parameter::create([
+            'parameter_code' => 'IA-00005',
+            'description' => 'Agent wait time for test',
+            'control_type' => 'tx',
+            'json_query_data' => null,
+            'value_default' => '6 min',
+        ]);
+
+        $this->assertSame(360, app(OpenAiAssistantService::class)->agentTimeoutSeconds());
+    }
+
+    public function test_agent_wait_time_falls_back_to_config_when_the_parameter_is_empty(): void
+    {
+        config(['academic.openai.agent_timeout_parameter' => 'IA-00005']);
+
+        $this->assertSame(5, app(OpenAiAssistantService::class)->agentTimeoutSeconds());
+    }
+
     public function test_sends_gemini_prompt_using_server_side_api_key(): void
     {
         Http::fake([
