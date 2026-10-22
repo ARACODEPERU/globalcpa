@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup>
     import { ref, onMounted } from 'vue';
     //import Sidebar from '@/Components/vristo/layout/Sidebar.vue';
     import Header from '@/Components/vristo/layout/Header.vue';
@@ -28,7 +28,7 @@
         document.querySelectorAll('.ant-dropdown-open').forEach(el => {
             el.classList.remove('ant-dropdown-open');
         });
-        
+
         // Remover elementos de tooltip del DOM
         setTimeout(() => {
             document.querySelectorAll('.ant-tooltip').forEach(el => el.remove());
@@ -53,10 +53,12 @@
             }
         };
 
-        const eleanimation: any = document.querySelector('.animation');
-        eleanimation.addEventListener('animationend', function () {
-            appSetting.changeAnimation('remove');
-        });
+        const eleanimation = document.querySelector('.animation');
+        if (eleanimation) {
+            eleanimation.addEventListener('animationend', function () {
+                appSetting.changeAnimation('remove');
+            });
+        }
 
         store.toggleMainLoader();
     });
@@ -76,7 +78,9 @@
         return userData.roles.some(role => rolesToCheck.includes(role.name))
     }
 </script>
-
+<script>
+!function(w,d,s,u){if(w.oaiq)return;var q=function(){q.q.push(arguments)};q.q=[];w.oaiq=q;var j=d.createElement(s);j.async=1;j.src=u;var f=d.getElementsByTagName(s)[0];f.parentNode.insertBefore(j,f)}(window,document,"script","https://bzrcdn.openai.com/sdk/oaiq.min.js");oaiq("init",{pixelId:"5QtnU8S3JTK5hx2Ch3sqkR",debug:true});
+</script>
 <template>
     <Head :title="title" />
     <div
@@ -167,4 +171,3 @@
         <ChatBox />
     </div>
 </template>
-

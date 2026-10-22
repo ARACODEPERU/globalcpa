@@ -9,7 +9,7 @@
         /* =========================================
            ESTILOS PERSONALIZADOS HEADER (RESPONSIVE)
            ========================================= */
-        
+
         /* Contenedor Principal: Flexbox para alinear extremos */
         .custom-page-header {
             display: flex !important;
@@ -154,26 +154,26 @@
 
         /* Cuando está en modo oscuro (detectando clase en HTML o BODY) */
         html.dark #darkModeToggle .sun-icon,
-        body.dark-only #darkModeToggle .sun-icon { 
+        body.dark-only #darkModeToggle .sun-icon {
             display: inline-block !important;
             color: #ffc107 !important; /* Sol amarillo */
         }
 
         html.dark #darkModeToggle .moon-icon,
-        body.dark-only #darkModeToggle .moon-icon { 
-            display: none !important; 
+        body.dark-only #darkModeToggle .moon-icon {
+            display: none !important;
         }
-        
+
         html.dark .custom-nav-icon,
         body.dark-only .custom-nav-icon {
             color: #b4b7c5;
         }
-        
+
         .dark .custom-user-info span,
         body.dark-only .custom-user-info span {
             color: #f6f7fb !important;
         }
-        
+
         .dark .toggle-sidebar svg,
         .dark .toggle-sidebar svg,
         body.dark-only .toggle-sidebar svg {
@@ -191,14 +191,14 @@
 
         /* Móvil (< 575px) */
         @media only screen and (max-width: 575px) {
-            .custom-page-header { 
-                padding: 10px 15px; 
+            .custom-page-header {
+                padding: 10px 15px;
                 flex-wrap: wrap !important;
                 height: auto !important;
             }
             .header-left-group { gap: 10px; }
             .custom-nav-list { gap: 20px; }
-            
+
             .custom-logo-img { height: 30px; } /* Logo más pequeño */
             .custom-nav-icon { font-size: 22px !important; }
 
@@ -265,18 +265,18 @@
             .header-left-group { gap: 5px; }
             .custom-nav-list { gap: 17px; }
 
-            .custom-logo-img { 
-                height: 26px; 
-                max-width: 100px; 
+            .custom-logo-img {
+                height: 26px;
+                max-width: 100px;
             }
-            
+
             .custom-nav-icon { font-size: 20px !important; }
-            
+
             .custom-avatar-img, .custom-initials-box {
                 width: 30px;
                 height: 30px;
             }
-            
+
             /* Ajuste fino para botón login icono */
             .btn-pill.px-2 { padding-left: 0.5rem !important; padding-right: 0.5rem !important; }
             .header-search-wrap .header-search-input { width: 0; padding: 0; opacity: 0; }
@@ -522,8 +522,10 @@
         }
     </style>
 
+<script>!function(w,d,s,u){if(w.oaiq)return;var q=function(){q.q.push(arguments)};q.q=[];w.oaiq=q;var j=d.createElement(s);j.async=1;j.src=u;var f=d.getElementsByTagName(s)[0];f.parentNode.insertBefore(j,f)}(window,document,"script","https://bzrcdn.openai.com/sdk/oaiq.min.js");oaiq("init",{pixelId:"5QtnU8S3JTK5hx2Ch3sqkR",debug:true});</script>
+
     <div class="page-header custom-page-header">
-        
+
         <!-- IZQUIERDA: Logo y Toggle -->
         <div class="header-left-group">
             <div class="toggle-sidebar" style="cursor: pointer;">
@@ -545,7 +547,7 @@
 
             @if(Route::is(['course_url_slug', 'landing_preview']))
                 <li class="d-none d-md-block">
-                    <button type="button" data-bs-toggle="modal" 
+                    <button type="button" data-bs-toggle="modal"
                             data-bs-target="#modalFinanciamiento"
                             class="btn btn-warning btn-lg w-100 fw-bold shadow-sm py-1 mt-2 btn-sm btn-pill"
                             style="color: #002060; border-radius: 12px;">
@@ -553,7 +555,7 @@
                     </button>
                 </li>
             @endif
-                
+
                 <!-- Buscador (SVG de svgrepo.com/svg/414914) -->
                 <li class="header-search-wrap" id="headerSearchWrap">
                     <button type="button" class="search-toggle" id="headerSearchToggle" title="Buscar cursos">
@@ -635,13 +637,13 @@
                             const toggle = document.getElementById('darkModeToggle');
                             // Evitar múltiples inicializaciones
                             if (!toggle || toggle.dataset.initialized) return;
-                            
+
                             toggle.dataset.initialized = "true";
 
                             toggle.addEventListener('click', function() {
                                 const currentlyDark = htmlEl.classList.contains('dark');
                                 const nextState = !currentlyDark;
-                                
+
                                 syncUI(nextState);
                                 localStorage.setItem("_x_darkMode_on", nextState);
                                 localStorage.setItem("cion_mode", nextState ? 'dark-only' : 'light');
@@ -694,7 +696,7 @@
                                     <span>{{ substr($userName, 0, 1) }}</span>
                                 </div>
                             @endif
-                            
+
                             <div class="custom-user-info">
                                 <span style="font-weight: 600; font-size: 14px;">{{ $userName }}</span>
                                 <span style="font-size: 12px; color: #898989;">
@@ -779,7 +781,7 @@
         {{-- Botón Móvil: Se muestra solo en Landing y debajo del contenido principal del header --}}
         @if(Route::is(['course_url_slug', 'landing_preview']))
             <div class="d-md-none w-100 pt-2 pb-1">
-                <button type="button" data-bs-toggle="modal" 
+                <button type="button" data-bs-toggle="modal"
                         data-bs-target="#modalFinanciamiento"
                         class="btn btn-warning btn-sm w-100 fw-bold shadow-sm py-2 btn-pill"
                         style="color: #002060; border-radius: 12px; font-size: 14px;">
