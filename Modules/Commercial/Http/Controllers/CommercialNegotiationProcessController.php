@@ -10,6 +10,7 @@ use App\Models\SaleDocument;
 use App\Models\SaleDocumentItem;
 use App\Models\SaleProduct;
 use App\Models\User;
+use App\Support\PersonRegistrationGuard;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -274,6 +275,7 @@ class CommercialNegotiationProcessController extends Controller
     }    public function processUser(Request $request, $id)
     {        $negotiation = $this->negotiation($id);
         $person = $this->person($negotiation);
+        $clientData = $negotiation->client_data ?? [];
 
         $user = User::where('person_id', $person->id)->first();
 
@@ -303,6 +305,26 @@ class CommercialNegotiationProcessController extends Controller
         }
 
         $user->assignRole('Alumno');
+
+        // Verificacion final: la persona y su usuario deben existir en people y users
+        // con los datos recientes de la negociacion.
+        $registration = app(PersonRegistrationGuard::class)->ensure($person, [
+            'short_name' => $clientData['short_name'] ?? $clientData['names'] ?? ($person->short_name ?: $person->names),
+            'full_name' => $clientData['full_name'] ?? $person->full_name,
+            'document_type_id' => $clientData['document_type_id'] ?? $person->document_type_id,
+            'number' => $clientData['number'] ?? $person->number,
+            'names' => $clientData['names'] ?? $person->names,
+            'father_lastname' => $clientData['father_lastname'] ?? $person->father_lastname,
+            'mother_lastname' => $clientData['mother_lastname'] ?? $person->mother_lastname,
+            'email' => $clientData['email'] ?? $person->email,
+            'telephone' => $clientData['telephone'] ?? $person->telephone,
+            'status' => true,
+        ], [
+            'name' => $clientData['full_name'] ?? ($person->full_name ?: $person->short_name),
+            'email' => $clientData['email'] ?? ($user->email ?: $person->email),
+        ], $user);
+
+        $user = $registration['user'];
 
         $this->markStepDone($negotiation, 'user');
 

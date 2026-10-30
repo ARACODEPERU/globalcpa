@@ -18,6 +18,7 @@ use App\Models\SaleDocumentType;
 use App\Models\SaleProduct;
 use App\Models\Serie;
 use App\Models\User;
+use App\Support\PersonRegistrationGuard;
 use Carbon\Carbon;
 use DataTables;
 use Illuminate\Database\Eloquent\Builder;
@@ -328,6 +329,24 @@ class AccountsReceivableController extends Controller
                     ]
                 );
 
+                // Verificacion final: persona y usuario registrados con los datos recientes.
+                $registration = app(PersonRegistrationGuard::class)->ensure($person, [
+                    'document_type_id' => $request->get('alu_document_type'),
+                    'number' => $request->get('alu_number'),
+                    'names' => $request->get('names'),
+                    'father_lastname' => $request->get('afather'),
+                    'mother_lastname' => $request->get('amother'),
+                    'full_name' => trim($request->get('afather') . ' ' . $request->get('amother') . ' ' . $request->get('names')),
+                    'email' => $request->get('email'),
+                    'telephone' => $request->get('telephone'),
+                    'address' => $request->get('address'),
+                    'status' => true,
+                ], [
+                    'name' => $request->get('names'),
+                    'email' => $request->get('email'),
+                ], $user);
+
+                $user = $registration['user'];
                 $user->assignRole('Alumno');
 
                 $payments = json_encode($request->get('payments'));

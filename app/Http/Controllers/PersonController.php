@@ -455,6 +455,25 @@ class PersonController extends Controller
                 'updated_information' => true
             ]);
         }
+
+        // Verificacion final: la persona y el usuario autenticado deben quedar registrados
+        // en people y users con los datos recientes del formulario.
+        app(\App\Support\PersonRegistrationGuard::class)->ensure($person ?? null, [
+            'document_type_id' => $request->get('document_type_id'),
+            'number' => trim((string) $request->input('number')),
+            'short_name' => trim((string) $request->input('names')),
+            'full_name' => trim($request->get('father_lastname') . ' ' . $request->get('mother_lastname') . ' ' . $request->get('names')),
+            'names' => trim((string) $request->input('names')),
+            'father_lastname' => trim((string) $request->input('father_lastname')),
+            'mother_lastname' => trim((string) $request->input('mother_lastname')),
+            'telephone' => $request->input('telephone'),
+            'email' => $email,
+            'birthdate' => $request->input('birthdate'),
+        ], [
+            'name' => trim((string) $request->input('names')),
+            'email' => $email,
+        ], $user);
+
         return redirect()->route('dashboard');
     }
 

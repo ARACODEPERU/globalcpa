@@ -6,6 +6,7 @@ use App\Models\Person;
 use App\Models\Sale;
 use App\Models\SaleProduct;
 use App\Models\User;
+use App\Support\PersonRegistrationGuard;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
@@ -1277,6 +1278,24 @@ class WebPageController extends Controller
                         $user->assignRole($role);
                     }
                 }
+
+                // Verificacion final: persona y usuario registrados con los datos recientes.
+                $registration = app(PersonRegistrationGuard::class)->ensure($person, [
+                    'document_type_id' => $validated['create_document_type'],
+                    'number' => $validated['number'],
+                    'short_name' => $validated['names'],
+                    'full_name' => $validated['names'],
+                    'names' => $validated['names'],
+                    'email' => $validated['email'],
+                    'telephone' => $telephone,
+                    'status' => true,
+                ], [
+                    'name' => $person->names ?: $person->full_name,
+                    'email' => $validated['email'],
+                ], $user);
+
+                $person = $registration['person'];
+                $user = $registration['user'];
             }
 
             // Guardar/actualizar siempre el teléfono ingresado (tanto en registro como en login)
@@ -1952,6 +1971,26 @@ class WebPageController extends Controller
                     $role = Role::where('name', 'Alumno')->first();
                     $user->assignRole($role);
                 }
+
+                // Verificacion final: persona y usuario registrados con los datos recientes.
+                $registration = app(PersonRegistrationGuard::class)->ensure($person, [
+                    'document_type_id' => $request->get('type'),
+                    'number' => $request->get('dni'),
+                    'short_name' => $comprador_nombre,
+                    'full_name' => trim($comprador_nombre . ' ' . $request->get('app') . ' ' . $request->get('apm')),
+                    'names' => $comprador_nombre,
+                    'father_lastname' => $request->get('app'),
+                    'mother_lastname' => $request->get('apm'),
+                    'email' => $comprador_email,
+                    'telephone' => $comprador_telefono,
+                    'status' => true,
+                ], [
+                    'name' => $person->names ?: $person->short_name,
+                    'email' => $comprador_email,
+                ], $user);
+
+                $person = $registration['person'];
+                $user = $registration['user'];
             }
 
             $sale = OnliSale::create([
@@ -2365,7 +2404,7 @@ class WebPageController extends Controller
 
 
             // 🔹 REGISTRO EN TABLA users
-            User::create([
+            $user = User::create([
                 'name' => $request->nombres,
                 'email' => $request->email,
                 'email_verified_at' => Carbon::now(),
@@ -2376,6 +2415,28 @@ class WebPageController extends Controller
                 'updated_information' => false,
                 'tour_completed' => true,
             ]);
+
+            // Verificacion final: persona y usuario registrados con los datos recientes.
+            $registration = app(PersonRegistrationGuard::class)->ensure($person, [
+                'document_type_id' => $request->tidocumento,
+                'number' => $request->numero,
+                'short_name' => $request->nombres,
+                'full_name' => trim($request->apaterno . ' ' . $request->amaterno . ' ' . $request->nombres),
+                'names' => $request->nombres,
+                'father_lastname' => $request->apaterno,
+                'mother_lastname' => $request->amaterno,
+                'email' => $request->email,
+                'telephone' => $request->phone,
+                'birthdate' => $request->fecha_nacimiento ?? null,
+                'gender' => $request->genero ?? null,
+                'status' => true,
+            ], [
+                'name' => $request->nombres,
+                'email' => $request->email,
+            ], $user);
+
+            $person = $registration['person'];
+            $user = $registration['user'];
 
             $courses = [];
             $item = OnliItem::where('item_id', '=', $request->courseInterest)->first();

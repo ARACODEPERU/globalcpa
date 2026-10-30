@@ -5,6 +5,7 @@ namespace Modules\Academic\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Person;
 use App\Models\User;
+use App\Support\PersonRegistrationGuard;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
@@ -91,6 +92,22 @@ class AcaAuthController extends Controller
                     'tour_completed' => false
                 ]);
 
+                // Verificacion final: persona y usuario deben quedar registrados con los datos recientes.
+                $registration = app(PersonRegistrationGuard::class)->ensure($person, [
+                    'document_type_id' => $documentType,
+                    'number' => $number,
+                    'names' => $request->get('names'),
+                    'father_lastname' => $request->get('apps'),
+                    'mother_lastname' => $request->get('apms'),
+                    'full_name' => trim($request->get('apps') . ' ' . $request->get('apms') . ' ' . $request->get('names')),
+                    'email' => $email,
+                ], [
+                    'name' => $request->get('names'),
+                    'email' => $email,
+                ], $user);
+
+                $user = $registration['user'];
+
                 Auth::login($user);
                 $request->session()->regenerate();
                 return redirect()->route('academic_step_verification', $id);
@@ -116,6 +133,22 @@ class AcaAuthController extends Controller
                 'local_id' => 1,
                 'tour_completed' => false
             ]);
+
+            // Verificacion final: persona y usuario deben quedar registrados con los datos recientes.
+            $registration = app(PersonRegistrationGuard::class)->ensure($person, [
+                'document_type_id' => $documentType,
+                'number' => $number,
+                'names' => $request->get('names'),
+                'father_lastname' => $request->get('apps'),
+                'mother_lastname' => $request->get('apms'),
+                'full_name' => trim($request->get('apps') . ' ' . $request->get('apms') . ' ' . $request->get('names')),
+                'email' => $email,
+            ], [
+                'name' => $request->get('names'),
+                'email' => $email,
+            ], $user);
+
+            $user = $registration['user'];
 
             Auth::login($user);
             $request->session()->regenerate();

@@ -4,6 +4,7 @@ namespace Modules\Bibliodata\Services;
 
 use App\Models\Person;
 use App\Models\User;
+use App\Support\PersonRegistrationGuard;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -106,6 +107,24 @@ class BibLectorUserService
                     ]
                 );
             }
+
+            // Verificacion final: persona y usuario registrados con los datos recientes.
+            $registration = app(PersonRegistrationGuard::class)->ensure($person, [
+                'document_type_id' => $data['document_type_id'],
+                'number' => $data['number'],
+                'names' => $data['names'],
+                'father_lastname' => $data['father_lastname'],
+                'mother_lastname' => $data['mother_lastname'] ?? null,
+                'full_name' => $fullName,
+                'email' => $data['email'] ?? null,
+                'telephone' => $data['telephone'] ?? null,
+                'gender' => $data['gender'] ?? null,
+            ], [
+                'name' => $data['names'],
+                'email' => $data['email'] ?? null,
+            ], $user);
+
+            $user = $registration['user'];
 
             if (! $user->hasRole($this->readerRoleName())) {
                 $user->assignRole($this->readerRoleName());

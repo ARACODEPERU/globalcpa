@@ -1,0 +1,1 @@
+<x-header :breadcrumb="$breadcrumb" />

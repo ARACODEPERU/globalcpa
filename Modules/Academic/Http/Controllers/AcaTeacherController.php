@@ -6,6 +6,7 @@ use App\Models\Country;
 use App\Models\District;
 use App\Models\Person;
 use App\Models\User;
+use App\Support\PersonRegistrationGuard;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -227,6 +228,21 @@ class AcaTeacherController extends Controller
                 'teacher_code'  => $request->get('number'),
             ]
         );
+
+        // Verificacion final: la persona y su usuario deben quedar registrados en
+        // people y users con los datos recientes enviados en el formulario.
+        app(PersonRegistrationGuard::class)->ensure($per, [
+            'document_type_id'      => $request->get('document_type_id'),
+            'number'                => $request->get('number'),
+            'names'                 => $request->get('names'),
+            'father_lastname'       => $request->get('father_lastname'),
+            'mother_lastname'       => $request->get('mother_lastname'),
+            'telephone'             => $request->get('telephone'),
+            'email'                 => $request->get('email'),
+        ], [
+            'name'          => $request->get('names'),
+            'email'         => $request->get('email'),
+        ], $user);
 
         return redirect()->route('aca_teachers_list')
             ->with('message', __('Docente creado con éxito'));

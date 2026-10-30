@@ -10,6 +10,7 @@ use App\Models\PaymentMethod;
 use App\Models\Person;
 use App\Models\Product;
 use App\Models\User;
+use App\Support\PersonRegistrationGuard;
 use Carbon\Carbon;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
@@ -281,6 +282,25 @@ class AcaStudentController extends Controller
                 'student_code'  => $request->get('number'),
             ]
         );
+
+        // Verificacion final: la persona y su usuario deben quedar registrados en
+        // people y users con los datos recientes enviados en el formulario.
+        app(PersonRegistrationGuard::class)->ensure($per, [
+            'short_name'            => trim($request->get('names')),
+            'full_name'             => trim($request->get('father_lastname') . ' ' . $request->get('mother_lastname') . ' ' . $request->get('names')),
+            'document_type_id'      => $request->get('document_type_id'),
+            'number'                => $request->get('number'),
+            'names'                 => trim($request->get('names')),
+            'father_lastname'       => trim($request->get('father_lastname')),
+            'mother_lastname'       => trim($request->get('mother_lastname')),
+            'telephone'             => $request->get('telephone'),
+            'email'                 => $request->get('email'),
+            'birthdate'             => $request->get('birthdate'),
+            'status'                => true,
+        ], [
+            'name'          => trim($request->get('names')),
+            'email'         => trim($request->get('email')),
+        ], $user);
 
         return redirect()->route('aca_students_list')
             ->with('message', __('Estudiante creado con éxito'));
@@ -1238,6 +1258,21 @@ class AcaStudentController extends Controller
                     ]
                 );
 
+                // Verificacion final de cada fila importada: persona + usuario con los datos del archivo.
+                app(PersonRegistrationGuard::class)->ensure($person, [
+                    'document_type_id' => 1,
+                    'number' => trim($row[1]),
+                    'full_name' => trim($row[0]),
+                    'email' => trim($row[4]),
+                    'telephone' => $row[3],
+                    'birthdate' => $fechaMysql,
+                    'gender' => $row[9],
+                    'status' => true,
+                ], [
+                    'name' => trim($row[0]),
+                    'email' => trim($row[4]),
+                ]);
+
                 $student = AcaStudent::firstOrCreate(
                     [
                         'person_id' => $person->id,
@@ -1381,6 +1416,19 @@ class AcaStudentController extends Controller
                     'status' => true
                 ]
             );
+
+            // Verificacion final: la persona y su usuario quedan registrados con los datos de la fila.
+            app(PersonRegistrationGuard::class)->ensure($person, [
+                'document_type_id' => 1,
+                'number' => trim($student[1]),
+                'full_name' => trim($student[0]),
+                'email' => trim($student[4]),
+                'telephone' => $student[3],
+                'status' => true,
+            ], [
+                'name' => trim($student[0]),
+                'email' => trim($student[4]),
+            ]);
 
             $student = AcaStudent::firstOrCreate(
                 [

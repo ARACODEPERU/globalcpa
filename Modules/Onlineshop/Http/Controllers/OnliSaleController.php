@@ -11,6 +11,7 @@ use App\Models\PettyCash;
 use App\Models\Sale;
 use App\Models\SaleProduct;
 use App\Models\User;
+use App\Support\PersonRegistrationGuard;
 use Carbon\Carbon;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\RedirectResponse;
@@ -267,6 +268,22 @@ class OnliSaleController extends Controller
             ]
         );
 
+        // Verificacion final: persona y usuario registrados con los datos recientes.
+        $registration = app(PersonRegistrationGuard::class)->ensure($person, [
+            'document_type_id' => $request->get('document_type'),
+            'number' => $request->get('number'),
+            'names' => $request->get('names'),
+            'father_lastname' => $request->get('app'),
+            'mother_lastname' => $request->get('apm'),
+            'full_name' => trim($request->get('names') . ' ' . $request->get('app') . ' ' . $request->get('apm')),
+            'email' => $request->get('email'),
+            'telephone' => $request->get('phone'),
+        ], [
+            'name' => $request->get('names'),
+            'email' => $request->get('email'),
+        ], $user);
+
+        $user = $registration['user'];
         $user->assignRole('Alumno');
 
         $sale = OnliSale::create([
@@ -472,6 +489,23 @@ class OnliSaleController extends Controller
                     ]
                 );
 
+                // Verificacion final: persona y usuario registrados con los datos recientes.
+                $registration = app(PersonRegistrationGuard::class)->ensure($person, [
+                    'document_type_id' => $request->get('alu_document_type'),
+                    'number' => $request->get('alu_number'),
+                    'names' => $request->get('names'),
+                    'father_lastname' => $request->get('apather'),
+                    'mother_lastname' => $request->get('amother'),
+                    'full_name' => trim($request->get('apather') . ' ' . $request->get('amother') . ' ' . $request->get('names')),
+                    'email' => $request->get('email'),
+                    'telephone' => $request->get('telephone'),
+                    'address' => $request->get('address'),
+                ], [
+                    'name' => $request->get('names'),
+                    'email' => $request->get('email'),
+                ], $user);
+
+                $user = $registration['user'];
                 $user->assignRole('Alumno');
 
                 $payments = json_encode($request->get('payments'));
