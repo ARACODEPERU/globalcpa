@@ -663,7 +663,7 @@ const reactivate = () => {
 
         <div class="mt-5 grid grid-cols-1 gap-4 lg:grid-cols-3">
             <div class="panel lg:col-span-2">
-                <h3 class="mb-4 font-semibold dark:text-white">Detalle del acuerdo</h3>
+                <h3 class="mb-4 font-semibold dark:text-white">Detalle del acuerdo (precios del sistema)</h3>
 
                 <div class="mb-4 overflow-hidden rounded-md border border-gray-200 dark:border-gray-700">
                     <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
@@ -682,6 +682,9 @@ const reactivate = () => {
                     </table>
                 </div>
 
+                <div class="mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+                    Precios acordados por el/los curso/s o suscripciones
+                </div>
                 <div class="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
                     <div class="rounded-md border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-800/40">
                         <p class="text-xs font-semibold uppercase text-gray-500 dark:text-gray-400">Tipo de pago</p>

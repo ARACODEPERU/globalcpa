@@ -21,7 +21,6 @@ use Inertia\Inertia;
 use Modules\Academic\Entities\AcaCapRegistration;
 use Modules\Academic\Entities\AcaCourse;
 use Modules\Academic\Entities\AcaStudent;
-use Modules\Academic\Entities\AcaStudentSubscription;
 use Modules\Academic\Entities\AcaSubscriptionType;
 use Modules\Academic\Http\Controllers\AcaSaleDocumentController;
 use Modules\Commercial\Emails\CommercialNegotiationDocumentMail;
@@ -423,37 +422,41 @@ class CommercialNegotiationProcessController extends Controller
             ]);
         }
 
-        foreach ($subscriptionItems as $item) {
-            $subscription = AcaSubscriptionType::find($item->item_id);
+        DB::transaction(function () use ($subscriptionItems, $student, $isInstallments, $nextPaymentDate) {
+            foreach ($subscriptionItems as $item) {
+                $subscription = AcaSubscriptionType::find($item->item_id);
 
-            if (! $subscription) {
-                continue;
-            }
+                if (! $subscription) {
+                    continue;
+                }
 
-            $dateStart = Carbon::today();
+                $dateStart = Carbon::today();
 
-            if ($isInstallments) {
-                $dateEnd = $nextPaymentDate ? Carbon::parse($nextPaymentDate) : null;
-            } else {
-                $dateEnd = $this->calculateDateEnd($subscription->period, $dateStart);
-            }
+                if ($isInstallments) {
+                    $dateEnd = $nextPaymentDate ? Carbon::parse($nextPaymentDate) : null;
+                } else {
+                    $dateEnd = $this->calculateDateEnd($subscription->period, $dateStart);
+                }
 
-            $amount = (float) ($item->price ?? 0);
+                $amount = (float) ($item->price ?? 0);
 
-            if (! $amount && $subscription->prices) {
-                foreach (json_decode($subscription->prices, true) ?: [] as $price) {
-                    if (($price['currency'] ?? null) === 'PEN') {
-                        $amount = (float) ($price['amount'] ?? 0);
+                if (! $amount && $subscription->prices) {
+                    // prices ya se castea a array en AcaSubscriptionType; aceptar
+                    // tambien JSON antiguo sin pasar el array a json_decode.
+                    $prices = $subscription->prices;
+                    $prices = is_string($prices) ? (json_decode($prices, true) ?: []) : $prices;
+
+                    foreach (is_array($prices) ? $prices : [] as $price) {
+                        if (is_array($price) && ($price['currency'] ?? null) === 'PEN') {
+                            $amount = (float) ($price['amount'] ?? 0);
+                        }
                     }
                 }
-            }
 
-            AcaStudentSubscription::updateOrCreate(
-                [
-                    'student_id' => $student->id,
-                    'subscription_id' => $item->item_id,
-                ],
-                [
+                $subscriptionRecord = DB::table('aca_student_subscriptions')
+                    ->where('student_id', $student->id)
+                    ->where('subscription_id', $item->item_id);
+                $values = [
                     'date_start' => $dateStart->format('Y-m-d'),
                     'date_end' => $dateEnd ? $dateEnd->format('Y-m-d') : null,
                     'status' => true,
@@ -461,9 +464,23 @@ class CommercialNegotiationProcessController extends Controller
                     'renewals' => false,
                     'registration_user_id' => Auth::id(),
                     'amount_paid' => $amount,
-                ]
-            );
-        }
+                    'updated_at' => now(),
+                ];
+
+                // aca_student_subscriptions usa clave primaria compuesta. El modelo
+                // Eloquent no puede guardar esa clave como atributo escalar, por lo
+                // que se consulta/actualiza directamente por sus dos columnas.
+                if ($subscriptionRecord->exists()) {
+                    $subscriptionRecord->update($values);
+                } else {
+                    DB::table('aca_student_subscriptions')->insert(array_merge($values, [
+                        'student_id' => $student->id,
+                        'subscription_id' => $item->item_id,
+                        'created_at' => now(),
+                    ]));
+                }
+            }
+        });
 
         $this->markStepDone($negotiation, 'subscriptions');
 
