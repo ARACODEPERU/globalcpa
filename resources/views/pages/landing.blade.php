@@ -297,6 +297,22 @@
                                                     <div class="alert alert-success">
                                                         {{ session('success') }}
                                                     </div>
+
+                                                    {{-- Conversión: el flash 'success' solo existe tras un registro válido,
+                                                         así que se envía una única vez y nunca con errores de validación. --}}
+                                                    <script>
+                                                        if (typeof window.cpaTrack === 'function') {
+                                                            window.cpaTrack('Lead', {
+                                                                content_name: @json($landingPage->title ?? 'Landing'),
+                                                                content_category: 'landing_formacion_gratis'
+                                                            }, 'generate_lead');
+
+                                                            window.cpaTrack('CompleteRegistration', {
+                                                                content_name: @json($landingPage->title ?? 'Landing'),
+                                                                content_category: 'landing_registro_completo'
+                                                            }, 'sign_up');
+                                                        }
+                                                    </script>
                                                 @endif
                                             </div>
                                         </div>

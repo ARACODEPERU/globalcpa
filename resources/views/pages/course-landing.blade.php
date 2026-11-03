@@ -338,7 +338,18 @@
                         // 3. Mostrar la alerta
                         showSweetAlertAndContinue();
 
-
+                        // 4. Conversión: solo con respuesta 200 del servidor (nunca en 422 ni en error).
+                        if (typeof window.cpaTrack === 'function') {
+                            window.cpaTrack('Lead', {
+                                content_name: @json($landing->course->description ?? 'Curso'),
+                                content_category: formId === 'modalContactForm' ? 'curso_modal_brochure' :
+                                    'curso_landing_form',
+                                @if (((float) ($landing->investment_section['items'][0]['price_now'] ?? $landing->course->price ?? 0)) > 0)
+                                value: {{ (float) ($landing->investment_section['items'][0]['price_now'] ?? $landing->course->price ?? 0) }},
+                                currency: 'PEN',
+                                @endif
+                            }, 'generate_lead');
+                        }
 
                     } else if (xhr.status === 422) {
                         var errorResponse = JSON.parse(xhr.responseText);

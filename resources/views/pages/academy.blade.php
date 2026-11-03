@@ -1131,6 +1131,14 @@
                         }
                     });
                     formulario.reset();
+
+                    // Conversión: solo con respuesta 200 del servidor (nunca en 422 ni en error).
+                    if (typeof window.cpaTrack === 'function') {
+                        window.cpaTrack('Lead', {
+                            content_name: 'academy_formulario_contacto',
+                            content_category: 'Academy'
+                        }, 'generate_lead');
+                    }
                 } else if (xhr.status === 422) {
                     var errorResponse = JSON.parse(xhr.responseText);
                     var errorMessages = errorResponse.errors;

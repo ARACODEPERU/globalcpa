@@ -48,6 +48,33 @@
             src="https://www.facebook.com/tr?id=791233956872790&ev=PageView&noscript=1" /></noscript>
     <!-- End Meta Pixel Code -->
 
+    <!-- Helper de conversiones: Meta Pixel + GA4/GTM -->
+    <script>
+        /**
+         * cpaTrack(metaEvent, params, gaEvent)
+         *  - metaEvent: evento estándar de Meta ('Lead', 'CompleteRegistration', ...)
+         *  - params:    parámetros opcionales (content_name, content_category, value, currency)
+         *  - gaEvent:   nombre del evento para dataLayer/GA4 (por defecto, el de Meta en minúsculas)
+         *
+         * Se invoca ÚNICAMENTE cuando el servidor confirmó el envío del formulario,
+         * nunca al hacer clic, para no contar leads que fallaron la validación.
+         */
+        window.cpaTrack = function(metaEvent, params, gaEvent) {
+            params = params || {};
+
+            if (typeof window.fbq === 'function') {
+                window.fbq('track', metaEvent, params);
+            }
+
+            if (Array.isArray(window.dataLayer)) {
+                window.dataLayer.push(Object.assign({
+                    event: gaEvent || String(metaEvent).toLowerCase(),
+                    meta_event: metaEvent
+                }, params));
+            }
+        };
+    </script>
+
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport"
