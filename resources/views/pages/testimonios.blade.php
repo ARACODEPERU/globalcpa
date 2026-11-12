@@ -1173,7 +1173,7 @@
                                 <a href="{{ route('web_courses') }}" class="btn-cta-white text-decoration-none">
                                     <i class="fa fa-graduation-cap me-2"></i>Ver programas
                                 </a>
-                                <a href="https://wa.me/51967052506?text=/Agente%20Principal" target="_blank"
+                                <a href="https://wa.link/3aaore" target="_blank"
                                     class="btn-cta-wa text-decoration-none">
                                     <i class="fa-brands fa-whatsapp me-2"></i>Hablar con un experto
                                 </a>

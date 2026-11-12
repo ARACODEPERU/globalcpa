@@ -357,7 +357,7 @@
                         <div class="why-list-body">
                             <p>CPA Academy es responsable del tratamiento de los datos personales que recopila a través de sus canales y servicios. Para consultas, solicitudes relacionadas con datos personales o ejercicio de derechos, puedes comunicarte a:</p>
                             <ul>
-                                <li>Correo: <strong>informes@globalcpaperu.com</strong></li>
+                                <li>Correo: <strong>capacitacion@globalcpaperu.com</strong></li>
                                 <li>Sitio web: <a href="https://academy.globalcpaperu.com" target="_blank">academy.globalcpaperu.com</a></li>
                             </ul>
                         </div>
@@ -447,7 +447,7 @@
                             DERECHOS DEL TITULAR DE LOS DATOS
                         </div>
                         <div class="why-list-body">
-                            <p>El titular puede ejercer los derechos de información, acceso, rectificación, cancelación/supresión, oposición y revocación del consentimiento. Las solicitudes podrán enviarse a: <strong>informes@globalcpaperu.com</strong>.</p>
+                            <p>El titular puede ejercer los derechos de información, acceso, rectificación, cancelación/supresión, oposición y revocación del consentimiento. Las solicitudes podrán enviarse a: <strong>capacitacion@globalcpaperu.com</strong>.</p>
                         </div>
                     </div>
 
@@ -500,7 +500,7 @@
                             <div class="why-highlight-box" style="background:none; border:1px solid #002060; color:#002060; padding:18px 20px;">
                                 <p style="margin:0 0 8px; font-size:0.9rem; font-weight:600; text-transform:uppercase; letter-spacing:0.6px;">Contacto</p>
                                 <p style="margin:0; font-size:1rem;">
-                                    Correo: <strong>informes@globalcpaperu.com</strong> |
+                                    Correo: <strong>capacitacion@globalcpaperu.com</strong> |
                                     Web: <a href="https://academy.globalcpaperu.com" target="_blank">academy.globalcpaperu.com</a>
                                 </p>
                             </div>

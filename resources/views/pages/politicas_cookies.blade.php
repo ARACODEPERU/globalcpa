@@ -545,7 +545,7 @@
                             <div class="why-highlight-box" style="background:none; border:1px solid #002060; color:#002060; padding:18px 20px;">
                                 <p style="margin:0 0 8px; font-size:0.9rem; font-weight:600; text-transform:uppercase; letter-spacing:0.6px;">Contacto</p>
                                 <p style="margin:0; font-size:1rem;">
-                                    Correo: <strong>informes@globalcpaperu.com</strong> |
+                                    Correo: <strong>capacitacion@globalcpaperu.com</strong> |
                                     Web: <a href="https://academy.globalcpaperu.com" target="_blank">academy.globalcpaperu.com</a>
                                 </p>
                             </div>

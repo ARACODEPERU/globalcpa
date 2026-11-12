@@ -76,7 +76,7 @@
     </main>
 
     <div id="whatsapp">
-        <a href="https://wa.link/4bu45u" class="wtsapp" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        <a href="https://wa.link/3aaore" class="wtsapp" data-bs-toggle="modal" data-bs-target="#exampleModal">
             <i class="fa fa-whatsapp" aria-hidden="true"></i>
         </a>
     </div>

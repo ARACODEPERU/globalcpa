@@ -456,7 +456,7 @@
                              <h3 id="account-conflict-title">Revisemos tus datos</h3>
                              <p id="account-conflict-message"></p>
                              <div class="account-conflict-support">
-                                 <a href="mailto:informes@globalcpaperu.com">informes@globalcpaperu.com</a>
+                                 <a href="mailto:capacitacion@globalcpaperu.com">capacitacion@globalcpaperu.com</a>
                                  <a href="tel:+51967052506">+51 967052506</a>
                              </div>
                              <div class="account-conflict-actions">

@@ -134,7 +134,7 @@
                             <li>N°. 977627207</li>
                         </ul>
                         <br>
-                        <a href="https://wa.link/4bu45u">
+                        <a href="https://wa.link/3aaore">
                             <button class="mt-8 boton-degradado-transferencia">
                                 <b>TRANSFERENCIA | YAPE ó PLIN</b>
                             </button>

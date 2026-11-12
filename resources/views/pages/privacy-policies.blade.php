@@ -165,7 +165,7 @@
                                 <p>
                                     Si tienes preguntas o inquietudes sobre nuestra política de privacidad o el manejo de tu
                                     información personal,
-                                    puedes contactarnos a través de <b> informes@globalcpaperu.com</b>
+                                    puedes contactarnos a través de <b> capacitacion@globalcpaperu.com</b>
                                 </p>
                             </div>
                         </div>

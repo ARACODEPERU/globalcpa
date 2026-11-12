@@ -486,7 +486,7 @@
                                                 </b>
                                             </button>
                                         </a>
-                                        <a href="https://wa.link/yibjj7" target="_blank">
+                                        <a href="https://wa.link/3aaore" target="_blank">
                                             <button class="boton-degradado-courses">
                                                 <b style="font-size: 15px;">
                                                     <i class="fa fa-cart-plus" aria-hidden="true"

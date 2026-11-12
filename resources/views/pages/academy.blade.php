@@ -1025,7 +1025,7 @@
 
                                         <div class="text-center mt-5 p-4 rounded-4" style="background-color: #f8f9fa; border: 1px dashed #dee2e6;">
                                             <p class="mb-3 fw-bold" style="color: #002060;">¿Aún tienes dudas específicas?</p>
-                                            <a href="https://wa.me/tu-numero" class="btn btn-success rounded-pill px-4 shadow-sm">
+                                            <a href="https://wa.link/3aaore" class="btn btn-success rounded-pill px-4 shadow-sm">
                                                 <i class="fa fa-whatsapp me-2"></i> Hablar con un Asesor
                                             </a>
                                         </div>
