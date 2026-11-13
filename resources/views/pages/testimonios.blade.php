@@ -867,7 +867,7 @@
                                             "{{ $featured['quote'] }}"
                                         </blockquote>
                                         <div class="d-flex align-items-center gap-3">
-                                            <img src="{{ $featured['photo'] ?: $featured['avatar'] }}"
+                                            <img decoding="async" src="{{ $featured['photo'] ?: $featured['avatar'] }}"
                                                 alt="{{ $featured['author'] }}" class="tst-featured-avatar">
                                             <div>
                                                 <p class="tst-featured-name mb-0">{{ $featured['author'] }}</p>
@@ -991,7 +991,7 @@
                                                             @if ($t['cover'])
                                                                 <img src="{{ $t['cover'] }}"
                                                                     alt="{{ \Illuminate\Support\Str::limit($t['program'], 50) }}"
-                                                                    loading="lazy">
+                                                                    loading="lazy" decoding="async">
                                                             @endif
                                                             @if ($t['video'])
                                                                 <span class="tst-video-tag">
@@ -1030,7 +1030,7 @@
                                                     </div>
                                                     <div class="tst-author">
                                                         <img src="{{ $t['photo'] ?: $t['avatar'] }}"
-                                                            alt="{{ $t['author'] }}" class="tst-avatar" loading="lazy">
+                                                            alt="{{ $t['author'] }}" class="tst-avatar" loading="lazy" decoding="async">
                                                         <div>
                                                             <p class="tst-name text-navy-custom mb-0">{{ $t['author'] }}
                                                             </p>
@@ -1104,7 +1104,7 @@
                                 </div>
                                 <div class="modal-body p-0 bg-black">
                                     <div class="ratio ratio-16x9">
-                                        {!! $videoModal['data']['video'] !!}
+                                        {!! \App\Support\LazyContent::process($videoModal['data']['video']) !!}
                                     </div>
                                 </div>
                             </div>
@@ -1140,7 +1140,7 @@
                                             </p>
                                             <div class="tst-mini-author">
                                                 <img src="{{ $t['photo'] ?: $t['avatar'] }}" alt="{{ $t['author'] }}"
-                                                    class="tst-mini-avatar" loading="lazy">
+                                                    class="tst-mini-avatar" loading="lazy" decoding="async">
                                                 <div>
                                                     <p class="tst-mini-name text-navy-custom mb-0">{{ $t['author'] }}</p>
                                                     <p class="tst-mini-role text-muted-custom mb-0">

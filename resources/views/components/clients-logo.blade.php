@@ -132,7 +132,7 @@
                 @foreach ($logos as $logo)
                     <div class="client-logo-card" data-aos="fade-up" data-aos-delay="{{ $loop->index * 50 }}">
                         <img src="{{ asset('themes/webpage/images/clients/' . $logo) }}" alt="Cliente CPA Academy"
-                            loading="lazy">
+                            loading="lazy" decoding="async">
                     </div>
                 @endforeach
             </div>

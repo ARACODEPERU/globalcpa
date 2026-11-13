@@ -208,37 +208,68 @@ class AcaStudentController extends Controller
         $destination = 'uploads/students';
         $file = $request->file('image');
         //dd($request->get('industry_id'));
+        $countryProvided = $request->filled('country_id');
+
+        $personData = [
+            'short_name'            => $request->get('names'),
+            'full_name'             => trim($request->get('father_lastname') . ' ' .  $request->get('mother_lastname') . ' ' . $request->get('names')),
+            'telephone'             => $request->get('telephone'),
+            'email'                 => $request->get('email'),
+            'address'               => $request->get('address'),
+            'names'                 => trim($request->get('names')),
+            'father_lastname'       => trim($request->get('father_lastname')),
+            'mother_lastname'       => trim($request->get('mother_lastname')),
+        ];
+
+        // Los campos opcionales solo se escriben cuando llegan con valor: un
+        // re-guardado del alumno no debe borrar lo que ya tenia su ficha.
+        foreach (['description', 'ubigeo', 'ubigeo_description', 'birthdate'] as $field) {
+            if ($request->filled($field)) {
+                $personData[$field] = $request->get($field);
+            }
+        }
+
+        if ($request->filled('gender')) {
+            $personData['gender'] = $request->get('gender');
+        }
+
+        if ($countryProvided) {
+            $personData['country_id'] = $request->get('country_id');
+        }
+
+        $catalogs = [
+            'industry_id'   => 'industry',
+            'profession_id' => 'profession',
+            'occupation_id' => 'ocupacion',
+        ];
+
+        foreach ($catalogs as $field => $descriptionField) {
+            $value = $request->get($field);
+
+            if (is_array($value) && ! empty($value['id'])) {
+                $personData[$field] = $value['id'];
+                $personData[$descriptionField] = $value['description'] ?? null;
+            }
+        }
+
         $per = Person::updateOrCreate(
             [
                 'document_type_id'      => $request->get('document_type_id'),
                 'number'                => $request->get('number'),
             ],
-            [
-                'short_name'            => $request->get('names'),
-                'full_name'             => trim($request->get('father_lastname') . ' ' .  $request->get('mother_lastname') . ' ' . $request->get('names')),
-                'description'           => $request->get('description'),
-                'telephone'             => $request->get('telephone'),
-                'email'                 => $request->get('email'),
-                'image'                 => $path,
-                'address'               => $request->get('address'),
-                'is_provider'           => false,
-                'is_client'             => true,
-                'ubigeo'                => $request->get('ubigeo'),
-                'ubigeo_description'    => $request->get('ubigeo_description'),
-                'birthdate'             => $request->get('birthdate'),
-                'names'                 => trim($request->get('names')),
-                'father_lastname'       => trim($request->get('father_lastname')),
-                'mother_lastname'       => trim($request->get('mother_lastname')),
-                'gender'                => $request->get('gender') ?? 'M',
-                'industry_id'           => $request->get('industry_id') ? $request->get('industry_id')['id'] : null,
-                'profession_id'         => $request->get('profession_id') ? $request->get('profession_id')['id'] : null,
-                'occupation_id'         => $request->get('occupation_id') ? $request->get('occupation_id')['id'] : null,
-                'ocupacion'             => $request->get('occupation_id') ? $request->get('occupation_id')['description'] : null,
-                'profession'            => $request->get('profession_id') ? $request->get('profession_id')['description'] : null,
-                'industry'              => $request->get('industry_id') ? $request->get('industry_id')['description'] : null,
-                'country_id'            => $request->get('country_id') ?? 1,
-            ]
+            $personData
         );
+
+        if ($per->wasRecentlyCreated) {
+            // Solo al crear se aplican los valores por defecto; un alumno
+            // existente conserva su pais, genero y marcas de cliente/proveedor.
+            $per->forceFill([
+                'is_provider' => false,
+                'is_client'   => true,
+                'country_id'  => $countryProvided ? $request->get('country_id') : 1,
+                'gender'      => $request->filled('gender') ? $request->get('gender') : 'M',
+            ])->save();
+        }
 
         if ($file) {
             $original_name = strtolower(trim($file->getClientOriginalName()));
@@ -256,21 +287,31 @@ class AcaStudentController extends Controller
         }
 
 
-        $user = User::updateOrCreate(
-            [
-                'email'         => trim($request->get('email')),
-                'person_id'     => $per->id
-            ],
-            [
-                'name'          => trim($request->get('names')),
-                'password'      => Hash::make(trim($request->get('number'))),
-                'information'   => $request->get('description'),
-                'avatar'        => $path,
-                'person_id'     => $per->id,
-                'local_id'      => 1,
-                'tour_completed'=> false
-            ]
-        );
+        $user = User::firstOrNew([
+            'email'         => trim($request->get('email')),
+            'person_id'     => $per->id
+        ]);
+
+        $user->name = trim($request->get('names'));
+        $user->person_id = $per->id;
+        $user->local_id = 1;
+
+        if ($request->filled('description')) {
+            $user->information = $request->get('description');
+        }
+
+        if ($path) {
+            $user->avatar = $path;
+        }
+
+        if (! $user->exists) {
+            // La contrasena solo se define al crear la cuenta; re-guardar al
+            // alumno no debe resetearla.
+            $user->password = Hash::make(trim($request->get('number')));
+            $user->tour_completed = false;
+        }
+
+        $user->save();
 
         $user->assignRole('Alumno');
 
@@ -421,40 +462,67 @@ class AcaStudentController extends Controller
 
         $person = Person::find($person_id);
 
-        $person->update([
+        if (! $person) {
+            return redirect()->route('aca_students_list')
+                ->with('error', __('El estudiante no tiene una persona asociada.'));
+        }
+
+        $personData = [
             'document_type_id'      => $request->get('document_type_id'),
             'short_name'            => trim($request->get('names')),
             'full_name'             => trim($request->get('father_lastname') . ' ' .  $request->get('mother_lastname') . ' ' . $request->get('names')),
-            'description'           => $request->get('description'),
             'number'                => trim($request->get('number')),
             'telephone'             => $request->get('telephone'),
             'email'                 => trim($request->get('email')),
-            'address'               => $request->get('address'),
-            'is_provider'           => false,
-            'is_client'             => true,
-            'ubigeo'                => $request->get('ubigeo'),
-            'ubigeo_description'    => $request->get('ubigeo_description'),
-            'birthdate'             => $request->get('birthdate'),
             'names'                 => trim($request->get('names')),
             'father_lastname'       => trim($request->get('father_lastname')),
             'mother_lastname'       => trim($request->get('mother_lastname')),
-            'gender'                => $request->get('gender') ?? 'M',
-            'industry_id'           => $request->get('industry_id') ? $request->get('industry_id')['id'] : null,
-            'profession_id'         => $request->get('profession_id') ? $request->get('profession_id')['id'] : null,
-            'occupation_id'         => $request->get('occupation_id') ? $request->get('occupation_id')['id'] : null,
-            'ocupacion'             => $request->get('occupation_id') ? $request->get('occupation_id')['description'] : null,
-            'profession'            => $request->get('profession_id') ? $request->get('profession_id')['description'] : null,
-            'industry'              => $request->get('industry_id') ? $request->get('industry_id')['description'] : null,
-            'country_id'            => $request->get('country_id') ?? 1,
-        ]);
+        ];
+
+        // Los campos opcionales solo se escriben cuando llegan con valor: un
+        // re-guardado del alumno no debe borrar lo que ya tenia su ficha.
+        foreach (['description', 'address', 'ubigeo', 'ubigeo_description', 'birthdate'] as $field) {
+            if ($request->filled($field)) {
+                $personData[$field] = $request->get($field);
+            }
+        }
+
+        if ($request->filled('gender')) {
+            $personData['gender'] = $request->get('gender');
+        }
+
+        if ($request->filled('country_id')) {
+            $personData['country_id'] = $request->get('country_id');
+        }
+
+        $catalogs = [
+            'industry_id'   => 'industry',
+            'profession_id' => 'profession',
+            'occupation_id' => 'ocupacion',
+        ];
+
+        foreach ($catalogs as $field => $descriptionField) {
+            $value = $request->get($field);
+
+            if (is_array($value) && ! empty($value['id'])) {
+                $personData[$field] = $value['id'];
+                $personData[$descriptionField] = $value['description'] ?? null;
+            }
+        }
+
+        $person->update($personData);
 
         if($user){
-            $user->update([
+            $userData = [
                 'name'          => $request->get('names'),
                 'email'         => $request->get('email'),
-                //'password'      => Hash::make($request->get('number')),
-                'information'   => $request->get('description'),
-            ]);
+            ];
+
+            if ($request->filled('description')) {
+                $userData['information'] = $request->get('description');
+            }
+
+            $user->update($userData);
         }
 
         $path = null;

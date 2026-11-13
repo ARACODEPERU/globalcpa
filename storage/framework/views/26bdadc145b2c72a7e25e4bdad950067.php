@@ -6,8 +6,13 @@
                     <?php $__currentLoopData = $sliders; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $k => $slide): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <div class="slide">
                             <a href="<?php echo e($slide->item->items[1]->content); ?>">
-                                <img src="<?php echo e(asset('storage/' . $slide->item->items[0]->content)); ?>" alt="Imagen"
-                                    class="w-full">
+                                <?php if($k === 0): ?>
+                                    <img src="<?php echo e(asset('storage/' . $slide->item->items[0]->content)); ?>" alt="Imagen"
+                                        class="w-full" fetchpriority="high" decoding="async">
+                                <?php else: ?>
+                                    <img src="<?php echo e(asset('storage/' . $slide->item->items[0]->content)); ?>" alt="Imagen"
+                                        class="w-full" loading="lazy" decoding="async">
+                                <?php endif; ?>
                             </a>
                         </div>
                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>

@@ -30,28 +30,28 @@
                                 <div>
                                     <ul>
                                         <li class="d-inline-block">
-                                            <img class="img-50 rounded-circle"
+                                            <img loading="lazy" decoding="async" class="img-50 rounded-circle"
                                                 src="themes/webpage/assets/images/flags/peru.png" alt="flags">
                                         </li>
                                         <li class="d-inline-block">
-                                            <img class="img-50 rounded-circle"
+                                            <img loading="lazy" decoding="async" class="img-50 rounded-circle"
                                                 src="themes/webpage/assets/images/flags/colombia.png"
                                                 alt="flags">
                                         </li>
                                         <li class="d-inline-block">
-                                            <img class="img-50 rounded-circle"
+                                            <img loading="lazy" decoding="async" class="img-50 rounded-circle"
                                                 src="themes/webpage/assets/images/flags/bolivia.png" alt="flags">
                                         </li>
                                         <li class="d-inline-block">
-                                            <img class="img-50 rounded-circle"
+                                            <img loading="lazy" decoding="async" class="img-50 rounded-circle"
                                                 src="themes/webpage/assets/images/flags/chile.png" alt="flags">
                                         </li>
                                         <li class="d-inline-block">
-                                            <img class="img-50 rounded-circle"
+                                            <img loading="lazy" decoding="async" class="img-50 rounded-circle"
                                                 src="themes/webpage/assets/images/flags/ecuador.png" alt="flags">
                                         </li>
                                         <li class="d-inline-block">
-                                            <img class="img-50 rounded-circle"
+                                            <img loading="lazy" decoding="async" class="img-50 rounded-circle"
                                                 src="themes/webpage/assets/images/flags/argentina.png"
                                                 alt="flags">
                                         </li>
@@ -92,7 +92,7 @@
                             <p>
                                 Única escuela de negocios peruana reconocida oficialmente.
                             </p>
-                            <img style="width: 170px; text-align:center;" src="themes/webpage/images/acca.png"
+                            <img loading="lazy" decoding="async" style="width: 170px; text-align:center;" src="themes/webpage/images/acca.png"
                                 alt="">
                         </div>
                         <div class="card eleva-card"

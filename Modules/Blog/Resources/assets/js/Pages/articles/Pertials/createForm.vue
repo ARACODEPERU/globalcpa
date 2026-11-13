@@ -30,6 +30,7 @@ import BlogAiAssistant from '@/Components/BlogAiAssistant.vue';
         description:'',
         status: true,
         file: '',
+        pdf: null,
         keywords: []
     });
 
@@ -218,6 +219,20 @@ import BlogAiAssistant from '@/Components/BlogAiAssistant.vue';
 
                     <InputError :message="form.errors.file" class="mt-2" />
                 </div>
+            </div>
+            <div class="col-span-6 sm:col-span-6">
+                <InputLabel for="pdf" value="PDF adjunto (opcional)" />
+                <input
+                    id="pdf"
+                    type="file"
+                    accept="application/pdf"
+                    class="form-input mt-1"
+                    @change="form.pdf = $event.target.files[0]"
+                >
+                <p class="mt-1 text-xs text-gray-500">
+                    Solo usuarios con rol Administrador. Formato PDF, máximo 10 MB.
+                </p>
+                <InputError :message="form.errors.pdf" class="mt-2" />
             </div>
             <div class="col-span-6 sm:col-span-3">
                 <InputLabel for="category_id" value="Categoría *" />

@@ -4,8 +4,14 @@
     $company = \App\Models\Company::first();
 @endphp
 <head>
+    @php
+        $gtm = \App\Support\PageSnippet::parts();
+    @endphp
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    {{-- Google Tag Manager (parametro P000022) --}}
+    {!! $gtm['head'] !!}
 
     <title inertia>{{ config('app.name', 'Laravel') }}</title>
     @if($company && $company->isotipo)
@@ -18,13 +24,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap"
         rel="stylesheet" />
-
-    {{-- @php
-        $parameters = new \App\Models\Parameter();
-        $P000022=$parameters->where('parameter_code', 'P000022')->value('value_default')?? "";
-        $cadena_decodificada = htmlspecialchars_decode($P000022, ENT_QUOTES);
-    @endphp
-    {!! $cadena_decodificada !!} --}}
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
@@ -49,6 +48,8 @@
 </head>
 
 <body>
+    {{-- Google Tag Manager (noscript) --}}
+    {!! $gtm['body'] !!}
     @inertia
     <script>
         window.assetUrl = @json(asset(''));

@@ -6,8 +6,13 @@
                     @foreach ($sliders as $k => $slide)
                         <div class="slide">
                             <a href="{{ $slide->item->items[1]->content }}">
-                                <img src="{{ asset('storage/' . $slide->item->items[0]->content) }}" alt="Imagen"
-                                    class="w-full">
+                                @if ($k === 0)
+                                    <img src="{{ asset('storage/' . $slide->item->items[0]->content) }}" alt="Imagen"
+                                        class="w-full" fetchpriority="high" decoding="async">
+                                @else
+                                    <img src="{{ asset('storage/' . $slide->item->items[0]->content) }}" alt="Imagen"
+                                        class="w-full" loading="lazy" decoding="async">
+                                @endif
                             </a>
                         </div>
                     @endforeach

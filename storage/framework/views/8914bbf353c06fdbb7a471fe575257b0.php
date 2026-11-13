@@ -161,39 +161,50 @@
                     </div>
                     <div class="contact-item">
                         <i class="fa fa-envelope"></i>
-                        <span>informes@globalcpaperu.com</span>
+                        <span>capacitacion@globalcpaperu.com</span>
                     </div>
 
                     <div class="social-icons-modern">
-                        <a href="https://www.facebook.com/globalcpaperu" target="_blank" class="social-icon-link"
+                        <a href="https://www.facebook.com/CPAacademy" target="_blank" class="social-icon-link"
                             aria-label="Facebook">
-                            <img style="width: 30px; height: 30px;"
+                            <img loading="lazy" decoding="async" style="width: 30px; height: 30px;"
                                 src="<?php echo e(asset('themes/webpage/images/logos/facebook-round.svg')); ?>" alt="Facebook">
                         </a>
-                        <a href="https://www.instagram.com/academycpa?igsh=ano2ZGNoNjkyeGdk" target="_blank"
+                        <a href="https://www.instagram.com/academycpa" target="_blank"
                             class="social-icon-link" aria-label="Instagram">
-                            <img style="width: 30px; height: 30px;"
+                            <img loading="lazy" decoding="async" style="width: 30px; height: 30px;"
                                 src="<?php echo e(asset('themes/webpage/images/logos/instagram-round.svg')); ?>" alt="Instagram">
                         </a>
-                        <a href="https://www.tiktok.com/@globalcpa" target="_blank" class="social-icon-link"
+                        <a href="https://www.tiktok.com/@cpaacademyperu" target="_blank" class="social-icon-link"
                             aria-label="TikTok">
-                            <img style="width: 30px; height: 30px;"
+                            <img loading="lazy" decoding="async" style="width: 30px; height: 30px;"
                                 src="<?php echo e(asset('themes/webpage/images/logos/tik_tok-round.svg')); ?>" alt="TikTok">
                         </a>
-                        <a href="https://www.youtube.com/@globalcpaperu" target="_blank" class="social-icon-link"
+                        <a href="https://www.youtube.com/@CPAAcademyPeru" target="_blank" class="social-icon-link"
                             aria-label="YouTube">
-                            <img style="width: 30px; height: 30px;"
+                            <img loading="lazy" decoding="async" style="width: 30px; height: 30px;"
                                 src="<?php echo e(asset('themes/webpage/images/logos/youtube-round.svg')); ?>" alt="YouTube">
                         </a>
-                        <a href="https://www.linkedin.com/school/academy-cpa/" target="_blank" class="social-icon-link"
+                        <a href="https://www.linkedin.com/school/academy-cpa/?viewAsMember=true" target="_blank" class="social-icon-link"
                             aria-label="LinkedIn">
-                            <img style="width: 30px; height: 30px;"
+                            <img loading="lazy" decoding="async" style="width: 30px; height: 30px;"
                                 src="<?php echo e(asset('themes/webpage/images/logos/linkedin.png')); ?>" alt="LinkedIn">
                         </a>
-                        <a href="https://wa.me/51967052506?text=/Agente%20Principal" target="_blank"
-                            class="social-icon-link" aria-label="WhatsApp">
-                            <img style="width: 30px; height: 30px;"
-                                src="<?php echo e(asset('themes/webpage/images/logos/whatsapp.png')); ?>" alt="WhatsApp">
+                        <a href="https://wa.link/3aaore" target="_blank"
+                            class="social-icon-link" aria-label="WhatsApp asesor" title="WhatsApp asesor">
+                            <img loading="lazy" decoding="async" style="width: 30px; height: 30px;"
+                                src="<?php echo e(asset('themes/webpage/images/logos/whatsapp.png')); ?>" alt="WhatsApp asesor">
+                        </a>
+                    </div>
+
+                    <div class="d-flex flex-column mt-3" style="gap: 8px;">
+                        <a href="https://open.spotify.com/show/5U5IbzbehsV7zxIgdtDZBo" target="_blank" rel="noopener"
+                            style="color: #9ca3af; font-size: 0.9rem;">
+                            <i class="fa fa-headphones me-2" style="color: #1DB954;" aria-hidden="true"></i>Spotify
+                        </a>
+                        <a href="https://whatsapp.com/channel/0029VasF8Tl84Om6bo0ZdA2o" target="_blank" rel="noopener"
+                            style="color: #9ca3af; font-size: 0.9rem;">
+                            <i class="fa fa-whatsapp me-2" style="color: #25D366;" aria-hidden="true"></i>Canal de WhatsApp
                         </a>
                     </div>
                 </div>
@@ -201,7 +212,7 @@
                 <!-- Columna 4: Libro de Reclamaciones -->
                 <div class="col-lg-3 col-md-6 text-lg-end text-start">
                     <a href="<?php echo e(route('complaints_book')); ?>" class="complaints-book-wrapper">
-                        <img src="<?php echo e(asset('themes/webpage/images/libroReclamaciones2.png')); ?>"
+                        <img loading="lazy" decoding="async" src="<?php echo e(asset('themes/webpage/images/libroReclamaciones2.png')); ?>"
                             alt="Libro de Reclamaciones" class="img-fluid" style="max-width: 150px;">
                     </a>
                 </div>

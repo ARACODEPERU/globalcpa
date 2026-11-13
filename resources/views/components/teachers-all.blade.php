@@ -86,7 +86,7 @@
                         <div class="teacher-card-opt3" data-bs-toggle="modal"
                             data-bs-target="#modalOpt2{{ $k }}">
                             <div class="teacher-img-wrapper-opt3">
-                                <img src="{{ asset('storage/' . $teacher->item->items[3]->content) }}"
+                                <img loading="lazy" decoding="async" src="{{ asset('storage/' . $teacher->item->items[3]->content) }}"
                                     alt="{{ $teacher->item->items[0]->content }}" class="teacher-img-opt3">
                             </div>
                             <div class="teacher-content-opt3">

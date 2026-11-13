@@ -183,7 +183,7 @@
                     <div class="grid grid-cols-12 gap-4 mt-4 w-full transition-all duration-[.25s]  sm:gap-5 lg:gap-6">
                         <div class="col-span-12 lg:col-span-4">
                             <div class="card p-4 sm:p-5">
-                                <img src="{{ asset('themes/webpage/images/suscripcion.jpg') }}" alt="Imagen promocional de los planes de suscripción de CPA Academy">
+                                <img loading="lazy" decoding="async" src="{{ asset('themes/webpage/images/suscripcion.jpg') }}" alt="Imagen promocional de los planes de suscripción de CPA Academy">
                             </div>
                         </div>
                         <div class="col-span-12 lg:col-span-8">

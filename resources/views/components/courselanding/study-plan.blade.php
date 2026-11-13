@@ -41,7 +41,7 @@
                         <!-- Columna de Imagen -->
                         <div class="col-lg-5 mb-4 mb-lg-0" data-aos="fade-right">
                             <div class="position-relative">
-                                <img src="{{ asset("storage/".$landing->study_plan_section['image']) }}"
+                                <img loading="lazy" decoding="async" src="{{ asset("storage/".$landing->study_plan_section['image']) }}"
                                     alt="Temario Especializado" class="img-fluid rounded-4 shadow-lg img-border-custom">
                                 <div
                                     class="position-absolute bottom-0 start-0 m-3 p-3 bg-warning rounded-3 shadow d-none d-sm-block">

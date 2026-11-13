@@ -14,7 +14,7 @@
         <div class="scrollbar-sm mt-1 flex space-x-4 overflow-x-auto px-4 sm:px-5 lg:mt-0 lg:pl-0">
             <div class="flex w-36 shrink-0 flex-col items-center">
                 <a href="https://whatsapp.com/channel/0029VasF8Tl84Om6bo0ZdA2o" class="z-10" target="_blank" rel="noopener">
-                    <img  style="width: 50px;" src="{{ asset('themes/webpage/images/logos/whatsapp.png') }}" alt="flag">
+                    <img loading="lazy" decoding="async"  style="width: 50px;" src="{{ asset('themes/webpage/images/logos/whatsapp.png') }}" alt="flag">
                 </a>
                 <div class="card -mt-5 w-full rounded-2xl px-3 py-3 text-center">
                     <a href="https://whatsapp.com/channel/0029VasF8Tl84Om6bo0ZdA2o" target="_blank" rel="noopener">
@@ -32,7 +32,7 @@
             </div>
             <div class="flex w-36 shrink-0 flex-col items-center">
                 <a href="https://www.facebook.com/CPAacademy" class="z-10" target="_blank" rel="noopener">
-                    <img  style="width: 50px;" src="{{ asset('themes/webpage/images/logos/facebook-round.svg') }}" alt="flag">
+                    <img loading="lazy" decoding="async"  style="width: 50px;" src="{{ asset('themes/webpage/images/logos/facebook-round.svg') }}" alt="flag">
                 </a>
                 <div class="card -mt-5 w-full rounded-2xl px-3 py-3 text-center">
                     <a href="https://www.facebook.com/CPAacademy" target="_blank" rel="noopener">
@@ -49,7 +49,7 @@
             </div>
             <div class="flex w-36 shrink-0 flex-col items-center">
                 <a href="https://www.instagram.com/academycpa" class="z-10" target="_blank" rel="noopener">
-                    <img style="width: 50px;" src="{{ asset('themes/webpage/images/logos/instagram-round.svg') }}" alt="flag">
+                    <img loading="lazy" decoding="async" style="width: 50px;" src="{{ asset('themes/webpage/images/logos/instagram-round.svg') }}" alt="flag">
                 </a>
                 <div class="card -mt-5 w-full rounded-2xl px-3 py-3 text-center">
                     <a href="https://www.instagram.com/academycpa" target="_blank" rel="noopener">
@@ -66,7 +66,7 @@
             </div>
             <div class="flex w-36 shrink-0 flex-col items-center">
                 <a href="https://www.tiktok.com/@cpaacademyperu" class="z-10" target="_blank" rel="noopener">
-                    <img style="width: 50px;" src="{{ asset('themes/webpage/images/logos/tik_tok-round.svg') }}" alt="flag">
+                    <img loading="lazy" decoding="async" style="width: 50px;" src="{{ asset('themes/webpage/images/logos/tik_tok-round.svg') }}" alt="flag">
                 </a>
                 <div class="card -mt-5 w-full rounded-2xl px-3 py-3 text-center">
                     <a href="https://www.tiktok.com/@cpaacademyperu" target="_blank" rel="noopener">
@@ -83,7 +83,7 @@
             </div>
             <div class="flex w-36 shrink-0 flex-col items-center">
                 <a href="https://www.youtube.com/@CPAAcademyPeru" class="z-10" target="_blank" rel="noopener">
-                    <img style="width: 50px;" src="{{ asset('themes/webpage/images/logos/youtube-round.svg') }}" alt="flag">
+                    <img loading="lazy" decoding="async" style="width: 50px;" src="{{ asset('themes/webpage/images/logos/youtube-round.svg') }}" alt="flag">
                 </a>
                 <div class="card -mt-5 w-full rounded-2xl px-3 py-3 text-center">
                     <a href="https://www.youtube.com/@CPAAcademyPeru" target="_blank" rel="noopener">

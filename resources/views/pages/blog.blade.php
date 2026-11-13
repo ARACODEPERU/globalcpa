@@ -348,7 +348,7 @@
 
     <!-- Loader -->
     <div class="loader-wrapper">
-        <img src="{{ asset('themes/webpage/images/Logo_cpa_modificado.png') }}" alt="CPA Logo" class="loader-logo">
+        <img loading="lazy" decoding="async" src="{{ asset('themes/webpage/images/Logo_cpa_modificado.png') }}" alt="CPA Logo" class="loader-logo">
         <p class="loader-text">Cargando</p>
     </div>
 
@@ -383,7 +383,7 @@
                                     <div class="col-lg-6 col-md-6">
                                         <div class="blog-card">
                                             <a href="{{ route('blog_article_by_url', $article->url) }}">
-                                                <img src="{{ $article->imagen }}" alt="{{ $article->title }}"
+                                                <img loading="lazy" decoding="async" src="{{ $article->imagen }}" alt="{{ $article->title }}"
                                                     class="card-img">
                                             </a>
                                             <div class="card-body">
@@ -556,7 +556,7 @@
                                             @forelse($catArticles as $index => $catArticle)
                                                 <div class="cat-article-item cat-article-{{ $category->id }}"
                                                     @if ($index >= 5) style="display:none;" @endif>
-                                                    <img src="{{ $catArticle->imagen }}" alt="">
+                                                    <img loading="lazy" decoding="async" src="{{ $catArticle->imagen }}" alt="">
                                                     <div>
                                                         <a
                                                             href="{{ route('blog_article_by_url', $catArticle->url) }}">{{ Str::limit($catArticle->title, 45) }}</a>
@@ -585,7 +585,7 @@
                                 @foreach ($latest_articles as $latest)
                                     <div class="blog-latest-item">
                                         <a href="{{ route('blog_article_by_url', $latest->url) }}">
-                                            <img src="{{ $latest->imagen }}" alt="{{ $latest->title }}">
+                                            <img loading="lazy" decoding="async" src="{{ $latest->imagen }}" alt="{{ $latest->title }}">
                                         </a>
                                         <div class="latest-info">
                                             <a

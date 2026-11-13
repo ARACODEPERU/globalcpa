@@ -199,7 +199,7 @@
             <!-- Columna Central (Imagen) -->
             <div class="col-lg-4 order-1 order-lg-2 mb-5 mb-lg-0">
                 <div class="solutions-center-image" data-aos="zoom-in">
-                    <img src="{{ asset('themes/webpage/images/soluciones-equipo.jpg') }}" alt="Equipo de profesionales colaborando">
+                    <img loading="lazy" decoding="async" src="{{ asset('themes/webpage/images/soluciones-equipo.jpg') }}" alt="Equipo de profesionales colaborando">
                 </div>
             </div>
 

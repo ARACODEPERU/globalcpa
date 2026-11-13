@@ -73,7 +73,7 @@
                                         onclick="openTeacherModal(this)">
 
                                         <div style="height: 240px; overflow: hidden; position: relative;">
-                                            <img src="{{ $teacher['img'] }}"
+                                            <img loading="lazy" decoding="async" src="{{ $teacher['img'] }}"
                                                 class="card-img-top h-100 w-100"
                                                 style="object-fit: cover;"
                                                 alt="{{ $teacher['name'] }}">
@@ -118,7 +118,7 @@
             <div class="grid grid-cols-1 md:grid-cols-12 gap-0">
                 <!-- Imagen del Docente -->
                 <div class="md:col-span-5 bg-gray-50 dark:bg-slate-800/50 flex items-center justify-center p-4">
-                    <img id="modalTeacherImage" src="" alt="" class="rounded-lg mx-auto" style="width: 100% !important; max-width: 300px !important; height: auto !important; max-height: 300px !important; object-fit: contain !important;">
+                    <img loading="lazy" decoding="async" id="modalTeacherImage" src="" alt="" class="rounded-lg mx-auto" style="width: 100% !important; max-width: 300px !important; height: auto !important; max-height: 300px !important; object-fit: contain !important;">
                 </div>
 
                 <!-- Información -->

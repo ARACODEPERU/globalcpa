@@ -2,8 +2,14 @@
 <html lang="es">
 
 <head>
+    @php
+        $gtm = \App\Support\PageSnippet::parts();
+    @endphp
     <!-- Meta tags  -->
     <meta name="facebook-domain-verification" content="3qhwpfunszdc5ag3cwum3r70v123vo" />
+
+    {{-- Google Tag Manager (parametro P000022) --}}
+    {!! $gtm['head'] !!}
 
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-WXX1QVD5Y0"></script>
@@ -104,9 +110,6 @@
         }
     </style>
 
-    @if (file_exists(public_path('build/manifest.json')))
-        @vite(['resources/js/webpage.js'])
-    @endif
 
     <!-- Javascript Assets -->
     <!-- Carrito JS -->
@@ -171,11 +174,21 @@
     @yield('etiquetasmeta')
     @yield('styles')
 
+    {{-- El cliente no quiere el preloader de las paginas publicas. --}}
+    <style>
+        .loader-wrapper {
+            display: none !important;
+        }
+    </style>
+
     {{-- Tracking de tráfico (first-touch): UTM, fbclid, gclid, referrer --}}
     <script src="{{ asset('js/traffic-tracking.js') }}"></script>
 </head>
 
 <body>
+
+    {{-- Google Tag Manager (noscript) --}}
+    {!! $gtm['body'] !!}
 
     @yield('content')
     <x-whatsapp />

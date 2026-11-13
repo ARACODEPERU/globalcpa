@@ -127,7 +127,7 @@
                         <div class="teacher-card-opt3" data-bs-toggle="modal"
                             data-bs-target="#modalOpt2<?php echo e($k); ?>">
                             <div class="teacher-img-wrapper-opt3">
-                                <img src="<?php echo e(asset('storage/' . $teacher->item->items[3]->content)); ?>"
+                                <img loading="lazy" decoding="async" src="<?php echo e(asset('storage/' . $teacher->item->items[3]->content)); ?>"
                                     alt="<?php echo e($teacher->item->items[0]->content); ?>" class="teacher-img-opt3">
                             </div>
                             <div class="teacher-content-opt3">

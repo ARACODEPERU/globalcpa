@@ -121,7 +121,7 @@
                                 </div>
                                 <div class="col-lg-4 text-center d-none d-lg-block position-relative"
                                     style="min-height: 250px;">
-                                    <img src="{{ asset('themes/molde.jpeg') }}"
+                                    <img loading="lazy" decoding="async" src="{{ asset('themes/molde.jpeg') }}"
                                         alt="Especialización en IA para Contabilidad" class="img-fluid"
                                         style="max-height: 250px;">
                                 </div>
@@ -316,7 +316,7 @@
                                     <!-- Columna de Imagen -->
                                     <div class="col-lg-5 mb-4 mb-lg-0" data-aos="fade-right">
                                         <div class="position-relative">
-                                            <img src="https://images.unsplash.com/photo-1591453089816-0fbb971b454c?q=80&w=2070&auto=format&fit=crop"
+                                            <img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1591453089816-0fbb971b454c?q=80&w=2070&auto=format&fit=crop"
                                                 alt="Temario Especializado" class="img-fluid rounded-4 shadow-lg"
                                                 style="border: 8px solid #f8f9fa;">
                                             <div
@@ -508,7 +508,7 @@
                                     <div class="teacher-carousel-item">
                                         <div class="teacher-card-opt3 m-0">
                                             <div class="teacher-img-wrapper-opt3">
-                                                <img src="https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?q=80&w=2070&auto=format&fit=crop"
+                                                <img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?q=80&w=2070&auto=format&fit=crop"
                                                     alt="{{ $teacher['name'] }}" class="teacher-img-opt3">
                                             </div>
                                             <div class="teacher-content-opt3">
@@ -555,7 +555,7 @@
                                         <div class="col-md-6 col-lg-3" data-aos="zoom-in" data-aos-delay="{{ $loop->index * 100 }}">
                                             <div class="card border-0 shadow-sm h-100 transition-all rounded-4 overflow-hidden bg-white">
                                                 <div style="height: 280px; overflow: hidden; position: relative;">
-                                                    <img src="{{ $teacher['img'] }}" 
+                                                    <img loading="lazy" decoding="async" src="{{ $teacher['img'] }}"
                                                          class="card-img-top h-100 w-100" 
                                                          style="object-fit: cover; transition: transform 0.5s ease;" 
                                                          onmouseover="this.style.transform='scale(1.1)'" 
@@ -614,7 +614,7 @@
                                             <div class="teacher-carousel-item" style="width: 280px;">
                                                 <div class="card border-0 shadow-sm h-100 transition-all rounded-4 overflow-hidden bg-white mx-2">
                                                     <div style="height: 240px; overflow: hidden; position: relative;">
-                                                        <img src="{{ $teacher['img'] }}" 
+                                                        <img loading="lazy" decoding="async" src="{{ $teacher['img'] }}"
                                                              class="card-img-top h-100 w-100" 
                                                              style="object-fit: cover;" 
                                                              alt="{{ $teacher['name'] }}">
@@ -839,7 +839,7 @@
                                                 <div class="testimonial-card mx-2">
                                                     <p class="testimonial-quote">"{{ $testimonial['quote'] }}"</p>
                                                     <div class="testimonial-author-info">
-                                                        <img src="{{ $testimonial['avatar'] }}" alt="{{ $testimonial['author'] }}" class="testimonial-avatar">
+                                                        <img loading="lazy" decoding="async" src="{{ $testimonial['avatar'] }}" alt="{{ $testimonial['author'] }}" class="testimonial-avatar">
                                                         <div>
                                                             <h5 class="testimonial-name">{{ $testimonial['author'] }}</h5>
                                                             <p class="testimonial-title">{{ $testimonial['title'] }}</p>
@@ -1063,7 +1063,7 @@
                         </div>
                         <div class="col-md-4">
                             <div style="place-items: center; padding: 40px 20px;">
-                                <img style="width: 100%;"
+                                <img loading="lazy" decoding="async" style="width: 100%;"
                                     src="https://academy.globalcpaperu.com/themes/webpage/images/certificado.jpg"
                                     alt="">
                                 <p style="font-size: 17px; line-height: 1.3; margin-top: 10px;">

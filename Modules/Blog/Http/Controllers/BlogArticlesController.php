@@ -10,7 +10,9 @@ use Inertia\Inertia;
 use Modules\Blog\Entities\BlogArticle;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 use Modules\Blog\Entities\BlogCategory;
 use Modules\Blog\Entities\BlogComment;
 
@@ -92,7 +94,8 @@ class BlogArticlesController extends Controller
             'title' => 'required|max:255|unique:blog_articles,title',
             'content_text' => 'required',
             'description' => 'required|max:255',
-            'category_id' => 'required'
+            'category_id' => 'required',
+            'pdf' => 'nullable|file|mimes:pdf|max:10240'
         ]);
 
         $path = 'img/imagen-no-disponible.jpeg';
@@ -108,6 +111,8 @@ class BlogArticlesController extends Controller
                 'public'
             );
         }
+
+        $pdfPath = $this->storePdfFile($request);
 
         $baseUrl = env('APP_URL'); // Ruta base de tu aplicación
         $content = $request->get('content_text');
@@ -125,6 +130,7 @@ class BlogArticlesController extends Controller
             'status'        => $request->get('status'),
             'category_id'   => $request->get('category_id'),
             'imagen'        => $path,
+            'pdf_path'      => $pdfPath,
             'user_id'       => Auth::id(),
             'keywords'      => $request->get('keywords') ? json_encode($request->get('keywords')) : null
         ]);
@@ -160,7 +166,8 @@ class BlogArticlesController extends Controller
             'title' => 'required|max:255|unique:blog_articles,title,' . $blogArticle->id,
             'content_text' => 'required',
             'description' => 'required|max:255',
-            'category_id' => 'required'
+            'category_id' => 'required',
+            'pdf' => 'nullable|file|mimes:pdf|max:10240'
         ]);
 
         $path = 'img/imagen-no-disponible.jpeg';
@@ -177,6 +184,8 @@ class BlogArticlesController extends Controller
             );
         }
 
+        $pdfPath = $this->storePdfFile($request);
+
         $baseUrl = env('APP_URL');
         $content = $request->get('content_text');
         $contentWithAbsoluteImagePaths = preg_replace('/src="\/storage\/articles\/([^"]+)"/', 'src="' . $baseUrl . '/storage/articles/$1"', $content);
@@ -191,6 +200,7 @@ class BlogArticlesController extends Controller
             'status'        => $request->get('status'),
             'category_id'   => $request->get('category_id'),
             'imagen'        => $path,
+            'pdf_path'      => $pdfPath ?: $blogArticle->pdf_path,
             'user_id'       => Auth::id(),
             'keywords'      => $request->get('keywords') ? json_encode($request->get('keywords')) : null
         ]);
@@ -206,6 +216,8 @@ class BlogArticlesController extends Controller
      */
     public function destroy(BlogArticle $blogArticle)
     {
+        $this->deletePdfFile($blogArticle);
+
         $blogArticle->delete();
 
         return redirect()->route('blog-article.index')
@@ -218,7 +230,10 @@ class BlogArticlesController extends Controller
         $this->validate($request, [
             'title' => 'required|max:255|unique:blog_articles,title,' . $blogArticle->id,
             'content_text' => 'required',
+            'pdf' => 'nullable|file|mimes:pdf|max:10240'
         ]);
+
+        $pdfPath = $this->storePdfFile($request);
 
         $baseUrl = env('APP_URL'); // Ruta base de tu aplicación
         $content = $request->get('content_text');
@@ -235,6 +250,7 @@ class BlogArticlesController extends Controller
         $blogArticle->status = $request->get('status');
         $blogArticle->category_id = $request->get('category_id');
         $blogArticle->keywords = $request->get('keywords') ? json_encode($request->get('keywords')) : null;
+        $blogArticle->pdf_path = $pdfPath ?: $blogArticle->pdf_path;
 
         $path = 'img/imagen-no-disponible.jpeg';
         $destination = 'uploads/blog/articles';
@@ -302,6 +318,63 @@ class BlogArticlesController extends Controller
         $blogArticle->update(['imagen' => $path]);
 
         return response()->json(['imagen' => asset('storage/' . $path)]);
+    }
+
+    /**
+     * Descarga (o abre en el navegador) el PDF adjunto al artículo.
+     *
+     * Solo está disponible para usuarios autenticados: la ruta vive dentro
+     * del grupo `auth` del módulo Blog.
+     */
+    public function downloadPdf($url)
+    {
+        $article = BlogArticle::where('url', $url)->firstOrFail();
+
+        if (! $article->pdf_path || ! Storage::disk('public')->exists($article->pdf_path)) {
+            abort(404);
+        }
+
+        return Storage::disk('public')->download(
+            $article->pdf_path,
+            Str::slug($article->title) . '.pdf'
+        );
+    }
+
+    /**
+     * Guarda el PDF opcional del artículo en el disco público.
+     *
+     * Solo los roles Administrador/admin pueden adjuntar el archivo; para el
+     * resto de roles con permiso de artículos el campo simplemente se ignora.
+     */
+    private function storePdfFile(Request $request): ?string
+    {
+        $file = $request->file('pdf');
+
+        if (! $file) {
+            return null;
+        }
+
+        $user = $request->user();
+
+        if (! $user || ! $user->hasAnyRole(['admin', 'Administrador'])) {
+            throw ValidationException::withMessages([
+                'pdf' => 'Solo los usuarios con rol Administrador pueden adjuntar un PDF.',
+            ]);
+        }
+
+        $file_name = strtolower(Str::random(12) . '-' . date('dmY') . '.pdf');
+
+        return $file->storeAs('uploads/blog/pdfs', $file_name, 'public');
+    }
+
+    /**
+     * Elimina el PDF del artículo cuando se borra la entrada.
+     */
+    private function deletePdfFile(BlogArticle $blogArticle): void
+    {
+        if ($blogArticle->pdf_path && Storage::disk('public')->exists($blogArticle->pdf_path)) {
+            Storage::disk('public')->delete($blogArticle->pdf_path);
+        }
     }
 
     public function show($url)

@@ -15,7 +15,7 @@
             <div class="flex items-center justify-between space-x-2">
                 <div class="flex items-center space-x-2">
                 <div class="avatar size-10">
-                    <img class="mask is-hexagon" src="{{ $blog->imagen }}" alt="avatar">
+                    <img loading="lazy" decoding="async" class="mask is-hexagon" src="{{ $blog->imagen }}" alt="avatar">
                 </div>
                 <div>
                     <p class="font-medium text-slate-600 line-clamp-1 dark:text-navy-100">

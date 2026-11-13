@@ -2,8 +2,15 @@
 <html lang="es">
 
 <head>
+    <?php
+        $gtm = \App\Support\PageSnippet::parts();
+    ?>
     <!-- Meta tags  -->
     <meta name="facebook-domain-verification" content="3qhwpfunszdc5ag3cwum3r70v123vo" />
+
+    
+    <?php echo $gtm['head']; ?>
+
 
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-WXX1QVD5Y0"></script>
@@ -104,9 +111,6 @@
         }
     </style>
 
-    <?php if(file_exists(public_path('build/manifest.json'))): ?>
-        <?php echo app('Illuminate\Foundation\Vite')(['resources/js/webpage.js']); ?>
-    <?php endif; ?>
 
     <!-- Javascript Assets -->
     <!-- Carrito JS -->
@@ -172,10 +176,21 @@
     <?php echo $__env->yieldContent('styles'); ?>
 
     
+    <style>
+        .loader-wrapper {
+            display: none !important;
+        }
+    </style>
+
+    
     <script src="<?php echo e(asset('js/traffic-tracking.js')); ?>"></script>
 </head>
 
 <body>
+
+    
+    <?php echo $gtm['body']; ?>
+
 
     <?php echo $__env->yieldContent('content'); ?>
     <?php if (isset($component)) { $__componentOriginalc7f8ba02c3653242a743283d36df496b = $component; } ?>

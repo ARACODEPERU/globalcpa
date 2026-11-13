@@ -270,24 +270,26 @@ class AccountsReceivableController extends Controller
                 if ($person_id) {
                     $person = Person::find($person_id);
 
-                    $person->update([
+                    $personData = [
                         // 'document_type_id' => $request->get('alu_document_type'),
                         'short_name' => $request->get('names'),
                         'full_name' => $request->get('afather').' '.$request->get('amother').' '.$request->get('names'),
                         // 'number' => $request->get('alu_number'),
-                        'telephone' => $request->get('telephone'),
                         'email' => $request->get('email'),
-                        'address' => $request->get('address'),
                         'names' => $request->get('names'),
                         'father_lastname' => $request->get('afather'),
                         'mother_lastname' => $request->get('amother'),
-                        'birthdate' => $request->get('birthdate'),
-                        'gender' => $request->get('gender'),
-                        'status' => true,
-                        'ubigeo' => $request->get('ubigeo'),
-                        'ubigeo_description' => $request->get('ubigeo_description'),
-                        'country_id' => $request->get('country_id'),
-                    ]);
+                    ];
+
+                    // Solo se actualizan los datos que el formulario envia con valor:
+                    // un campo ausente no debe borrar el dato que ya tiene la persona.
+                    foreach (['telephone', 'address', 'birthdate', 'gender', 'ubigeo', 'ubigeo_description', 'country_id'] as $field) {
+                        if ($request->filled($field)) {
+                            $personData[$field] = $request->get($field);
+                        }
+                    }
+
+                    $person->update($personData);
 
                 } else {
                     $person = Person::create([

@@ -150,7 +150,7 @@
 
                                     <div class="ct-author">
                                         <img src="{{ $t['photo'] ?: $t['avatar'] }}"
-                                            alt="{{ $t['author'] }}" class="ct-avatar" loading="lazy">
+                                            alt="{{ $t['author'] }}" class="ct-avatar" loading="lazy" decoding="async">
                                         <div>
                                             <p class="ct-name text-navy-custom mb-0">{{ $t['author'] }}</p>
                                             <p class="ct-role mb-0">{{ $t['role'] }}</p>
@@ -190,7 +190,7 @@
                         </div>
                         <div class="modal-body p-0 bg-black">
                             <div class="ratio ratio-16x9">
-                                {!! $t['video'] !!}
+                                {!! \App\Support\LazyContent::process($t['video']) !!}
                             </div>
                         </div>
                     </div>

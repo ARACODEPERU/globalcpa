@@ -37,6 +37,8 @@ Route::prefix('blog')->group(function () {
         Route::middleware(['middleware' => 'permission:blog_articulos_editar'])
             ->post('blog-article-upload-image', 'BlogArticlesController@uploadImageCkeditor')
             ->name('blog_article_uploa_image_tiny');
+        Route::get('article/{url}/pdf', [BlogArticlesController::class, 'downloadPdf'])
+            ->name('blog_article_pdf');
         Route::middleware(['middleware' => 'role:Alumno'])
             ->get('article/{url}/show', [BlogArticlesController::class, 'show'])
             ->name('blog_article_show_studante');

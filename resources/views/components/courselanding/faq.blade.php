@@ -49,7 +49,7 @@
                                                 <div id="faq-answer-{{ $loop->index }}"
                                                     class="faq-answer p-3 text-[#334155] dark:text-gray-400 bg-[#f8f9fa] dark:bg-slate-800/40"
                                                     style="display: none; line-height: 1.7; font-size: 0.95rem; border-top: 1px solid rgba(0,0,0,0.03);">
-                                                    {!! $faq['answer'] !!}
+                                                    {!! \App\Support\LazyContent::process($faq['answer']) !!}
                                                 </div>
                                             </div>
                                         @endif

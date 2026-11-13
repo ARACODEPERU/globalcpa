@@ -191,10 +191,17 @@ class PersonController extends Controller
 
     public function updateInformationPerson(Request $request)
     {
-        $person_id = $request->get('id');
-        $student_id = $request->get('student_id');
+        $user = Auth::user();
 
-        $user = User::where('person_id', $person_id)->first();
+        if (! $user) {
+            return redirect()->route('login');
+        }
+
+        // El perfil pertenece siempre al usuario autenticado: no se confia en el
+        // id que llega en el formulario.
+        $person = $user->person_id ? Person::find($user->person_id) : null;
+        $person_id = $person ? $person->id : null;
+        $student_id = $request->get('student_id');
 
         $isForeign = IdentityDocumentType::isForeign($request->get('document_type_id'));
 
@@ -225,10 +232,15 @@ class PersonController extends Controller
         $this->validate($request, $rules);
 
         $path = null;
+        $hasNewImage = false;
         $destination = 'uploads/students';
         $base64Image = $request->get('image');
 
-        if ($base64Image) {
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $file_name = trim($request->get('number')) . '.' . $file->getClientOriginalExtension();
+            $path = $file->storeAs($destination, $file_name, 'public');
+        } elseif (is_string($base64Image) && str_starts_with($base64Image, 'data:image/')) {
             $fileData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $base64Image));
             if (PHP_OS == 'WINNT') {
                 $tempFile = tempnam(sys_get_temp_dir(), 'img');
@@ -249,6 +261,10 @@ class PersonController extends Controller
                 $path = Storage::disk('public')->putFileAs($destination, $file, $file_name);
             }
         }
+
+        // Solo se reemplaza la foto si el formulario trae una imagen nueva; la
+        // ruta ya guardada que inicializa el formulario no debe procesarse.
+        $hasNewImage = (bool) $path;
 
         // Los catalogos solo guardan la descripcion: en people se persiste el
         // id y el texto, que es lo que leen n8n y otras pantallas. Los ids se
@@ -271,14 +287,10 @@ class PersonController extends Controller
             'document_type_id'      => $request->get('document_type_id'),
             'short_name'            => trim($request->get('names')),
             'full_name'             => trim($request->get('father_lastname') . ' ' .  $request->get('mother_lastname') . ' ' . $request->get('names')),
-            'description'           => $request->get('description'),
             'number'                => $request->get('number'),
             'telephone'             => $request->get('telephone'),
             'email'                 => $request->get('email'),
-            'image'                 => $path,
             'address'               => $request->get('address'),
-            'is_provider'           => false,
-            'is_client'             => true,
             'birthdate'             => $request->get('birthdate'),
             'names'                 => trim($request->get('names')),
             'father_lastname'       => trim($request->get('father_lastname')),
@@ -291,6 +303,15 @@ class PersonController extends Controller
             'industry'              => $industryDescription,
             'company'               => $request->get('company'),
         ];
+
+        // Si el formulario no envia descripcion, se conserva la que ya tiene.
+        if ($request->has('description')) {
+            $updateData['description'] = $request->get('description');
+        }
+
+        if ($hasNewImage) {
+            $updateData['image'] = $path;
+        }
 
         if ($isForeign) {
             $country = \App\Models\Country::find($request->get('foreign_country_id'));
@@ -307,27 +328,44 @@ class PersonController extends Controller
             $updateData['foreign_city'] = null;
         }
 
-        Person::find($person_id)->update($updateData);
+        if ($person) {
+            $person->update($updateData);
+        } else {
+            $updateData['is_client'] = true;
+            $updateData['is_provider'] = false;
+            $updateData['status'] = true;
+            $person = Person::create($updateData);
+            $user->person_id = $person->id;
+        }
 
         // Solo la primera vez que completa su perfil se notifica a n8n; las
         // ediciones posteriores no reenvian el evento.
         $firstCompletion = ! $user->updated_information;
 
-        $user->update([
+        $userData = [
             'name'          => $request->get('names'),
             'email'         => $request->get('email'),
-            //'password'      => Hash::make($request->get('number')),
-            'information'   => $request->get('description'),
-            'avatar'        => $path,
-            'updated_information' => true
-        ]);
+            'updated_information' => true,
+        ];
 
-        DB::table('aca_students')->where('id', $student_id)->update([
-            'student_code'  => $request->get('number'),
-        ]);
+        if ($request->has('description')) {
+            $userData['information'] = $request->get('description');
+        }
+
+        if ($hasNewImage) {
+            $userData['avatar'] = $path;
+        }
+
+        $user->update($userData);
+
+        if ($person) {
+            DB::table('aca_students')->where('person_id', $person->id)->update([
+                'student_code'  => $request->get('number'),
+            ]);
+        }
 
         if ($firstCompletion) {
-            \Modules\Integrationhub\Jobs\SendStudentProfileToN8n::dispatch($person_id);
+            \Modules\Integrationhub\Jobs\SendStudentProfileToN8n::dispatch($person->id);
         }
 
         return redirect()->route('aca_mycourses')
@@ -336,7 +374,6 @@ class PersonController extends Controller
 
     public function createdOrUpdated(Request $request)
     {
-        $person_id = $request->get('id');
         $user = Auth::user();
 
         $isForeign = IdentityDocumentType::isForeign($request->get('document_type_id'));
@@ -384,77 +421,61 @@ class PersonController extends Controller
             $foreignCity = null;
         }
 
-        if ($person_id) {
-            $person = Person::find($person_id);
-            if ($person) {
-            $person->update([
-                'document_type_id' => $request->get('document_type_id'),
-                'number' => trim($request->input('number')),
-                'short_name' => trim($request->input('names')),
-                'full_name' => trim($request->get('father_lastname') . ' ' .  $request->get('mother_lastname') . ' ' . $request->get('names')),
-                'description' => trim($request->input('description')),
-                'telephone' => $request->input('telephone'),
-                'email' => $email,
-                'address' => trim($request->input('address')),
-                'ubigeo' => $ubigeoValue,
-                'birthdate' => $request->input('birthdate'),
-                'names' => trim($request->input('names')),
-                'father_lastname' => trim($request->input('father_lastname')),
-                'mother_lastname' => trim($request->input('mother_lastname')),
-                'ocupacion' => $request->input('ocupacion'),
-                'presentacion' => $request->input('presentacion'),
-                'gender' => $request->input('gender'),
-                'is_provider'           => false,
-                'is_client'             => true,
-                'status' => true,
-                'social_networks' => json_encode($request->input('social_networks')),
-                'ubigeo_description' => $ubigeoDescription,
-                'foreign_country_id' => $foreignCountryId,
-                'foreign_state' => $foreignState,
-                'foreign_city' => $foreignCity,
-            ]);
+        $person = $user->person_id ? Person::find($user->person_id) : null;
 
-            User::find(Auth::id())->update([
-                'email' => $email,
-                'name' => trim($request->input('names')),
-                'updated_information' => true
-            ]);
+        $personData = [
+            'document_type_id' => $request->get('document_type_id'),
+            'number' => trim($request->input('number')),
+            'short_name' => trim($request->input('names')),
+            'full_name' => trim($request->get('father_lastname') . ' ' .  $request->get('mother_lastname') . ' ' . $request->get('names')),
+            'email' => $email,
+            'names' => trim($request->input('names')),
+            'father_lastname' => trim($request->input('father_lastname')),
+            'mother_lastname' => trim($request->input('mother_lastname')),
+        ];
+
+        // Si un campo no viene en el request se conserva el valor actual de la persona.
+        foreach (['description', 'telephone', 'address', 'birthdate', 'ocupacion', 'presentacion', 'gender'] as $field) {
+            if ($request->has($field)) {
+                $personData[$field] = $request->input($field);
             }
+        }
+
+        if ($request->has('social_networks')) {
+            $personData['social_networks'] = json_encode($request->input('social_networks'));
+        }
+
+        if ($isForeign || $request->has('ubigeo')) {
+            $personData['ubigeo'] = $ubigeoValue;
+            $personData['ubigeo_description'] = $ubigeoDescription;
+            $personData['foreign_country_id'] = $foreignCountryId;
+            $personData['foreign_state'] = $foreignState;
+            $personData['foreign_city'] = $foreignCity;
+        }
+
+        if ($person) {
+            // Nunca se reapunta a otra persona si el usuario ya tiene la suya.
+            $person->update($personData);
         } else {
             $person = Person::updateOrCreate(
                 [
                     'document_type_id' => $request->get('document_type_id'),
-                    'number' => $request->input('number')
+                    'number' => trim((string) $request->input('number'))
                 ], // Buscamos a la persona
-                [
-                    'short_name' => $request->input('names'),
-                    'full_name' => trim($request->get('father_lastname') . ' ' .  $request->get('mother_lastname') . ' ' . $request->get('names')),
-                    'description' => $request->input('description'),
-                    'telephone' => $request->input('telephone'),
-                    'email' => $email,
-                    'address' => trim($request->input('address')),
-                    'ubigeo' => $ubigeoValue,
-                    'birthdate' => $request->input('birthdate'),
-                    'names' => trim($request->input('names')),
-                    'father_lastname' => trim($request->input('father_lastname')),
-                    'mother_lastname' => trim($request->input('mother_lastname')),
-                    'ocupacion' => $request->input('ocupacion'),
-                    'presentacion' => $request->input('presentacion'),
-                    'gender' => $request->input('gender'),
-                    'status' => true,
-                    'social_networks' => json_encode($request->input('social_networks')),
-                    'ubigeo_description' => $ubigeoDescription,
-                    'foreign_country_id' => $foreignCountryId,
-                    'foreign_state' => $foreignState,
-                    'foreign_city' => $foreignCity,
-                ]
+                $personData
             );
 
-            User::find(Auth::id())->update([
+            $user->update([
                 'person_id' => $person->id,
                 'updated_information' => true
             ]);
         }
+
+        $user->update([
+            'email' => $email,
+            'name' => trim($request->input('names')),
+            'updated_information' => true
+        ]);
 
         // Verificacion final: la persona y el usuario autenticado deben quedar registrados
         // en people y users con los datos recientes del formulario.
@@ -627,7 +648,7 @@ class PersonController extends Controller
                 'names'              => $request->get('names'),
                 'father_lastname'    => $request->get('father_lastname'),
                 'mother_lastname'    => $request->get('mother_lastname'),
-                'gender'             => $request->get('gender') ?? 'M',
+                'gender'             => $request->filled('gender') ? $request->get('gender') : ($person?->gender ?? 'M'),
             ];
 
             if ($isForeign) {

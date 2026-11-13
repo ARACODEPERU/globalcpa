@@ -34,9 +34,23 @@ import IconGoogle from '@/Components/vristo/icon/icon-google.vue';
         return baseUrl  + `/themes/vristo/images/flags/${i18n.locale.toUpperCase()}.svg`;
     });
 
+const props = defineProps({
+    countries: {
+        type: Array,
+        default: () => [],
+    },
+    blog_curso: {
+        type: String,
+        default: '',
+    },
+});
+
 const form = useForm({
     name: '',
     email: '',
+    phone: '',
+    country_id: '',
+    blog_curso: props.blog_curso,
     password: '',
     password_confirmation: '',
     terms: false,
@@ -170,6 +184,43 @@ const company = usePage().props.company;
                                         </span>
                                     </div>
                                     <InputError class="mt-2" :message="form.errors.email" />
+                                </div>
+                                <div>
+                                    <label for="phone">Teléfono / Celular</label>
+                                    <div class="relative text-white-dark">
+                                        <TextInput
+                                            id="phone"
+                                            type="tel"
+                                            class="ps-10 placeholder:text-white-dark"
+                                            v-model="form.phone"
+                                            placeholder="+51 999 999 999"
+                                            required
+                                            autocomplete="tel"
+                                        />
+                                        <span class="absolute start-4 top-1/2 -translate-y-1/2">
+                                            <icon-user :fill="true" />
+                                        </span>
+                                    </div>
+                                    <InputError class="mt-2" :message="form.errors.phone" />
+                                </div>
+                                <div>
+                                    <label for="country_id">País</label>
+                                    <select
+                                        id="country_id"
+                                        v-model="form.country_id"
+                                        class="form-select text-white-dark"
+                                        required
+                                    >
+                                        <option value="" disabled>Selecciona tu país</option>
+                                        <option
+                                            v-for="country in props.countries"
+                                            :key="country.id"
+                                            :value="country.id"
+                                        >
+                                            {{ country.description }}
+                                        </option>
+                                    </select>
+                                    <InputError class="mt-2" :message="form.errors.country_id" />
                                 </div>
                                 <div>
                                     <label for="password">Contraseña</label>

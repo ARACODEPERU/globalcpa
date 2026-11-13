@@ -67,14 +67,16 @@ class ParametersController extends Controller
         $this->validate($request, [
             'parameter_code'        => 'required|max:10',
             'parameter_code'        => 'unique:parameters,parameter_code',
-            'description'           => 'required|max:255',
+            'description'           => 'required|max:30000',
             'control_type'          => 'required',
             'value_default'         => 'required'
         ]);
 
         $valor_seguro = $request->get('value_default');
 
-        if($request->get('control_type') == 'tx'){
+        // P000022 guarda el codigo de Google Tag Manager tal cual; el resto de
+        // textareas se sigue escapando para no inyectar HTML.
+        if($request->get('control_type') == 'tx' && $request->get('parameter_code') !== 'P000022'){
             $value_default = $request->get('value_default');
             // Convertir los caracteres especiales a entidades HTML
             $valor_seguro = htmlspecialchars($value_default, ENT_QUOTES, 'UTF-8');
@@ -103,14 +105,16 @@ class ParametersController extends Controller
         $this->validate($request, [
             'parameter_code'        => 'required|max:10',
             'parameter_code'        => 'unique:parameters,parameter_code,' . $id,
-            'description'           => 'required|max:255',
+            'description'           => 'required|max:30000',
             'control_type'          => 'required',
             'value_default'         => 'required'
         ]);
 
         $valor_seguro = $request->get('value_default');
 
-        if($request->get('control_type') == 'tx'){
+        // P000022 guarda el codigo de Google Tag Manager tal cual; el resto de
+        // textareas se sigue escapando para no inyectar HTML.
+        if($request->get('control_type') == 'tx' && $request->get('parameter_code') !== 'P000022'){
             $value_default = $request->get('value_default');
             // Convertir los caracteres especiales a entidades HTML
             $valor_seguro = htmlspecialchars($value_default, ENT_QUOTES, 'UTF-8');

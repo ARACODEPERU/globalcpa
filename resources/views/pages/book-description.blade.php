@@ -34,7 +34,7 @@
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-md-4">
-                            <img src="{{ asset('themes/webpage/images/amauta-book.jpeg') }}" alt="">
+                            <img loading="lazy" decoding="async" src="{{ asset('themes/webpage/images/amauta-book.jpeg') }}" alt="">
                         </div>
                         <div class="col-md-8">
 
@@ -525,7 +525,7 @@
                     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6 xl:grid-cols-3">
                         <div class="card">
                             <div class="flex grow flex-col items-center px-4 pb-4 sm:px-5">
-                                <img style="width: 100%; margin-top: 20px;"
+                                <img loading="lazy" decoding="async" style="width: 100%; margin-top: 20px;"
                                     src="{{ asset('themes/webpage/images/amauta_2020.jpg') }}" alt="">
                                 <h3 class="pt-3 text-lg font-medium text-slate-700 dark:text-navy-100">
                                     EL AMAUTA DE LAS NIIF
@@ -546,7 +546,7 @@
                         </div>
                         <div class="card">
                             <div class="flex grow flex-col items-center px-4 pb-4 sm:px-5">
-                                <img style="width: 100%; margin-top: 20px;"
+                                <img loading="lazy" decoding="async" style="width: 100%; margin-top: 20px;"
                                     src="{{ asset('themes/webpage/images/amauta_2021.jpg') }}" alt="">
                                 <h3 class="pt-3 text-lg font-medium text-slate-700 dark:text-navy-100">
                                     EL AMAUTA DE LAS NIIF
@@ -566,7 +566,7 @@
                         </div>
                         <div class="card">
                             <div class="flex grow flex-col items-center px-4 pb-4 sm:px-5">
-                                <img style="width: 100%; margin-top: 20px;"
+                                <img loading="lazy" decoding="async" style="width: 100%; margin-top: 20px;"
                                     src="{{ asset('themes/webpage/images/amauta_2023.jpg') }}" alt="">
                                 <h3 class="pt-3 text-lg font-medium text-slate-700 dark:text-navy-100">
                                     EL AMAUTA DE LAS NIIF

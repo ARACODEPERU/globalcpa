@@ -167,32 +167,32 @@
                     <div class="social-icons-modern">
                         <a href="https://www.facebook.com/CPAacademy" target="_blank" class="social-icon-link"
                             aria-label="Facebook">
-                            <img style="width: 30px; height: 30px;"
+                            <img loading="lazy" decoding="async" style="width: 30px; height: 30px;"
                                 src="{{ asset('themes/webpage/images/logos/facebook-round.svg') }}" alt="Facebook">
                         </a>
                         <a href="https://www.instagram.com/academycpa" target="_blank"
                             class="social-icon-link" aria-label="Instagram">
-                            <img style="width: 30px; height: 30px;"
+                            <img loading="lazy" decoding="async" style="width: 30px; height: 30px;"
                                 src="{{ asset('themes/webpage/images/logos/instagram-round.svg') }}" alt="Instagram">
                         </a>
                         <a href="https://www.tiktok.com/@cpaacademyperu" target="_blank" class="social-icon-link"
                             aria-label="TikTok">
-                            <img style="width: 30px; height: 30px;"
+                            <img loading="lazy" decoding="async" style="width: 30px; height: 30px;"
                                 src="{{ asset('themes/webpage/images/logos/tik_tok-round.svg') }}" alt="TikTok">
                         </a>
                         <a href="https://www.youtube.com/@CPAAcademyPeru" target="_blank" class="social-icon-link"
                             aria-label="YouTube">
-                            <img style="width: 30px; height: 30px;"
+                            <img loading="lazy" decoding="async" style="width: 30px; height: 30px;"
                                 src="{{ asset('themes/webpage/images/logos/youtube-round.svg') }}" alt="YouTube">
                         </a>
                         <a href="https://www.linkedin.com/school/academy-cpa/?viewAsMember=true" target="_blank" class="social-icon-link"
                             aria-label="LinkedIn">
-                            <img style="width: 30px; height: 30px;"
+                            <img loading="lazy" decoding="async" style="width: 30px; height: 30px;"
                                 src="{{ asset('themes/webpage/images/logos/linkedin.png') }}" alt="LinkedIn">
                         </a>
                         <a href="https://wa.link/3aaore" target="_blank"
                             class="social-icon-link" aria-label="WhatsApp asesor" title="WhatsApp asesor">
-                            <img style="width: 30px; height: 30px;"
+                            <img loading="lazy" decoding="async" style="width: 30px; height: 30px;"
                                 src="{{ asset('themes/webpage/images/logos/whatsapp.png') }}" alt="WhatsApp asesor">
                         </a>
                     </div>
@@ -212,7 +212,7 @@
                 <!-- Columna 4: Libro de Reclamaciones -->
                 <div class="col-lg-3 col-md-6 text-lg-end text-start">
                     <a href="{{ route('complaints_book') }}" class="complaints-book-wrapper">
-                        <img src="{{ asset('themes/webpage/images/libroReclamaciones2.png') }}"
+                        <img loading="lazy" decoding="async" src="{{ asset('themes/webpage/images/libroReclamaciones2.png') }}"
                             alt="Libro de Reclamaciones" class="img-fluid" style="max-width: 150px;">
                     </a>
                 </div>

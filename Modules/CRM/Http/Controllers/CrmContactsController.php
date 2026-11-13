@@ -347,7 +347,9 @@ class CrmContactsController extends Controller
 
         $industry = $request->get('industry');
 
-        $per = Person::find($update_id)->update(
+        $person = Person::findOrFail($update_id);
+
+        $person->update(
             [
                 'document_type_id'      => $request->get('document_type_id'),
                 'number'                => trim($request->get('number')),
@@ -356,7 +358,6 @@ class CrmContactsController extends Controller
                 'names'                 => strtoupper(trim($request->get('short_name'))),
                 'telephone'             => trim($request->get('telephone')),
                 'email'                 => trim($request->get('email')),
-                'image'                 => $path,
                 'address'               => $request->get('address'),
                 'ubigeo'                => $request->get('ubigeo'),
                 'industry_id'           => $industry['id'],
@@ -378,8 +379,8 @@ class CrmContactsController extends Controller
                 'public'
             );
 
-            $per->image = $path;
-            $per->save();
+            $person->image = $path;
+            $person->save();
         }
     }
 

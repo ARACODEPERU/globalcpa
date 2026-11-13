@@ -41,15 +41,15 @@
                             <div class="card">
                                 <div class="blog-box blog-list row">
                                     <div class="col-sm-7">
-                                        <img class="img-fluid sm-100-w"
-                                            src="{{ asset('storage/' . $landingPage->main_image) }}"alt="">
+                                        <img fetchpriority="high" class="img-fluid sm-100-w"
+                                            src="{{ asset('storage/' . $landingPage->main_image) }}" alt="">
                                     </div>
                                     <div class="col-sm-5">
                                         <div class="blog-details">
                                             <h3>{{ $landingPage->title }} </h3>
                                             <div class="blog-bottom-content">
                                                 <hr>
-                                                <div>{!! $landingPage->description_long !!}</div>
+                                                <div>{!! \App\Support\LazyContent::process($landingPage->description_long) !!}</div>
                                             </div>
                                         </div>
                                     </div>
@@ -90,7 +90,7 @@
                                                     </div>
                                                 </label>
                                                 <div class="card-body">
-                                                    <img class="w-100 mb-3" src="{{ asset('storage/' . $item->image) }}"
+                                                    <img loading="lazy" decoding="async" class="w-100 mb-3" src="{{ asset('storage/' . $item->image) }}"
                                                         alt="">
                                                     <h4 style=" height: 30px; color: #000;">
                                                         {{ $item->description }}
@@ -133,7 +133,7 @@
                                                     </div>
                                                 </label>
                                                 <div class="card-body">
-                                                    <img class="w-100 mb-3" src="{{ asset('storage/' . $item->image) }}"
+                                                    <img loading="lazy" decoding="async" class="w-100 mb-3" src="{{ asset('storage/' . $item->image) }}"
                                                         alt="">
                                                     <h4 style=" height: 30px; color: #000;">
                                                         {{ $item->description }}

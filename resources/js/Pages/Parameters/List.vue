@@ -142,7 +142,7 @@
                                                 v-model:value="parameter.value_default"
                                                 style="width: 100%"
                                                 show-count
-                                                :maxlength="parameter.parameter_code === 'P000026' || parameter.parameter_code === 'P000027' ? 100000 : 5000"
+                                                :maxlength="['P000022', 'P000026', 'P000027'].includes(parameter.parameter_code) ? 100000 : 5000"
                                                 :autoSize="{ minRows: 3, maxRows: 20 }"
                                                 @blur="updateDefaultValue(parameter.id, parameter.value_default)"
                                                 >

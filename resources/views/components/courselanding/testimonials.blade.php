@@ -153,7 +153,7 @@
                                                 "{{ $testimonial['description'] ?? '' }}"</p>
                                             <div class="testimonial-author-info">
                                                 @if (isset($testimonial['image']) && !empty($testimonial['image']))
-                                                    <img src="{{ asset('storage/' . $testimonial['image']) }}"
+                                                    <img loading="lazy" decoding="async" src="{{ asset('storage/' . $testimonial['image']) }}"
                                                         alt="{{ $testimonial['name'] ?? 'Usuario' }}"
                                                         class="testimonial-avatar">
                                                 @endif

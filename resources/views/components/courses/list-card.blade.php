@@ -54,13 +54,13 @@
                                                     <div class="card-body">
                                                         @if ($hasPublishedLanding)
                                                             <a href="{{ route('course_url_slug', $item->course?->landing?->url_slug) }}">
-                                                                <img class="w-100 mb-3"
+                                                                <img loading="lazy" decoding="async" class="w-100 mb-3"
                                                                     src="{{ asset('storage/' . $item->course->image) }}"
                                                                     alt="{{ $item->name }}">
                                                             </a>
                                                         @else
                                                             <a href="{{ route('web_course_description', $item->id) }}">
-                                                                <img class="w-100 mb-3"
+                                                                <img loading="lazy" decoding="async" class="w-100 mb-3"
                                                                     src="{{ asset('storage/' . $item->course->image) }}"
                                                                     alt="{{ $item->name }}">
                                                             </a>
@@ -148,14 +148,14 @@
                                                                 <a
                                                                     href="{{ route('course_url_slug', $item->course?->landing?->url_slug) }}">
                                                                     @if($item->course?->image)
-                                                                        <img class="w-100 mb-3" src="{{ asset('storage/' . $item->course->image) }}" alt="{{ $item->name }}">
+                                                                        <img loading="lazy" decoding="async" class="w-100 mb-3" src="{{ asset('storage/' . $item->course->image) }}" alt="{{ $item->name }}">
                                                                     @endif
                                                                 </a>
                                                                 @else
                                                                     <a
                                                                         href="{{ route('web_course_description', $item->id) }}">
                                                                         @if($item->course?->image)
-                                                                            <img class="w-100 mb-3" src="{{ asset('storage/' . $item->course->image) }}" alt="{{ $item->name }}">
+                                                                            <img loading="lazy" decoding="async" class="w-100 mb-3" src="{{ asset('storage/' . $item->course->image) }}" alt="{{ $item->name }}">
                                                                         @endif
                                                                     </a>
                                                                 @endif

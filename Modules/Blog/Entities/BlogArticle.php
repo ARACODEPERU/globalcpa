@@ -26,7 +26,8 @@ class BlogArticle extends Model
         'keywords',
         'short_description',
         'category_id',
-        'user_id'
+        'user_id',
+        'pdf_path'
     ];
 
     protected static function newFactory()

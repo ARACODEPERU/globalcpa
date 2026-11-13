@@ -55,13 +55,13 @@
                                                     <div class="card-body">
                                                         <?php if($hasPublishedLanding): ?>
                                                             <a href="<?php echo e(route('course_url_slug', $item->course?->landing?->url_slug)); ?>">
-                                                                <img class="w-100 mb-3"
+                                                                <img loading="lazy" decoding="async" class="w-100 mb-3"
                                                                     src="<?php echo e(asset('storage/' . $item->course->image)); ?>"
                                                                     alt="<?php echo e($item->name); ?>">
                                                             </a>
                                                         <?php else: ?>
                                                             <a href="<?php echo e(route('web_course_description', $item->id)); ?>">
-                                                                <img class="w-100 mb-3"
+                                                                <img loading="lazy" decoding="async" class="w-100 mb-3"
                                                                     src="<?php echo e(asset('storage/' . $item->course->image)); ?>"
                                                                     alt="<?php echo e($item->name); ?>">
                                                             </a>
@@ -152,14 +152,14 @@
                                                                 <a
                                                                     href="<?php echo e(route('course_url_slug', $item->course?->landing?->url_slug)); ?>">
                                                                     <?php if($item->course?->image): ?>
-                                                                        <img class="w-100 mb-3" src="<?php echo e(asset('storage/' . $item->course->image)); ?>" alt="<?php echo e($item->name); ?>">
+                                                                        <img loading="lazy" decoding="async" class="w-100 mb-3" src="<?php echo e(asset('storage/' . $item->course->image)); ?>" alt="<?php echo e($item->name); ?>">
                                                                     <?php endif; ?>
                                                                 </a>
                                                                 <?php else: ?>
                                                                     <a
                                                                         href="<?php echo e(route('web_course_description', $item->id)); ?>">
                                                                         <?php if($item->course?->image): ?>
-                                                                            <img class="w-100 mb-3" src="<?php echo e(asset('storage/' . $item->course->image)); ?>" alt="<?php echo e($item->name); ?>">
+                                                                            <img loading="lazy" decoding="async" class="w-100 mb-3" src="<?php echo e(asset('storage/' . $item->course->image)); ?>" alt="<?php echo e($item->name); ?>">
                                                                         <?php endif; ?>
                                                                     </a>
                                                                 <?php endif; ?>

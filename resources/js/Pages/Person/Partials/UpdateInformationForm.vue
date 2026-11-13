@@ -108,8 +108,10 @@ const form = useForm({
     number: props.person?.number ?? '',
     telephone: props.person?.telephone ?? '',
     email: props.person?.email ?? '',
-    image: props.person?.image ?? null,
-    image_preview: props.person?.image_preview ?? null,
+    // Solo se envia una imagen cuando el usuario elige o recorta una nueva;
+    // la ruta ya guardada se muestra aparte y no debe reenviarse como base64.
+    image: null,
+    image_preview: props.person?.image ?? null,
     address: props.person?.address ?? '',
     ubigeo: props.person?.ubigeo ?? null,
     birthdate: props.person?.birthdate ?? '',

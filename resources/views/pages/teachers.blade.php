@@ -64,14 +64,14 @@
                                 <div class="col-lg-5 d-none d-lg-block">
                                     <div class="teacher-avatar-cloud-4 position-relative" style="min-height: 280px;">
                                         <!-- Avatares flotantes de docentes (más cantidad) -->
-                                        <img src="https://i.pravatar.cc/150?img=12" class="avatar-item item-1 shadow-lg" alt="Docente 1">
-                                        <img src="https://i.pravatar.cc/150?img=28" class="avatar-item item-2 shadow" alt="Docente 2">
-                                        <img src="https://i.pravatar.cc/150?img=35" class="avatar-item item-3 shadow" alt="Docente 3">
-                                        <img src="https://i.pravatar.cc/150?img=45" class="avatar-item item-4 shadow" alt="Docente 4">
-                                        <img src="https://i.pravatar.cc/150?img=5" class="avatar-item item-5 shadow" alt="Docente 5">
-                                        <img src="https://i.pravatar.cc/150?img=52" class="avatar-item item-6 shadow" alt="Docente 6">
-                                        <img src="https://i.pravatar.cc/150?img=56" class="avatar-item item-7 shadow" alt="Docente 7">
-                                        <img src="https://i.pravatar.cc/150?img=68" class="avatar-item item-8 shadow" alt="Docente 8">
+                                        <img loading="lazy" decoding="async" src="https://i.pravatar.cc/150?img=12" class="avatar-item item-1 shadow-lg" alt="Docente 1">
+                                        <img loading="lazy" decoding="async" src="https://i.pravatar.cc/150?img=28" class="avatar-item item-2 shadow" alt="Docente 2">
+                                        <img loading="lazy" decoding="async" src="https://i.pravatar.cc/150?img=35" class="avatar-item item-3 shadow" alt="Docente 3">
+                                        <img loading="lazy" decoding="async" src="https://i.pravatar.cc/150?img=45" class="avatar-item item-4 shadow" alt="Docente 4">
+                                        <img loading="lazy" decoding="async" src="https://i.pravatar.cc/150?img=5" class="avatar-item item-5 shadow" alt="Docente 5">
+                                        <img loading="lazy" decoding="async" src="https://i.pravatar.cc/150?img=52" class="avatar-item item-6 shadow" alt="Docente 6">
+                                        <img loading="lazy" decoding="async" src="https://i.pravatar.cc/150?img=56" class="avatar-item item-7 shadow" alt="Docente 7">
+                                        <img loading="lazy" decoding="async" src="https://i.pravatar.cc/150?img=68" class="avatar-item item-8 shadow" alt="Docente 8">
                                     </div>
                                 </div>
                             </div>

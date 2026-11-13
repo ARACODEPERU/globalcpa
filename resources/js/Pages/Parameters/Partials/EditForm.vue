@@ -89,7 +89,7 @@ const updateParameter = () => {
                     id="value_default"
                     v-model="form.value_default"
                     :rows="form.parameter_code === 'P000026' || form.parameter_code === 'P000027' ? 15 : 5"
-                    :maxlength="form.parameter_code === 'P000026' || form.parameter_code === 'P000027' ? 100000 : 5000"
+                    :maxlength="['P000022', 'P000026', 'P000027'].includes(form.parameter_code) ? 100000 : 5000"
                 ></textarea>
                 <small class="text-gray-500">{{ form.value_default?.length || 0 }} / {{ form.parameter_code === 'P000026' || form.parameter_code === 'P000027' ? 100000 : 5000 }} caracteres</small>
                 <InputError :message="form.errors.value_default" class="mt-2" />

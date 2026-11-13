@@ -34,6 +34,7 @@
         status: props.article.status ? true : false,
         file_view: props.article.imagen,
         file: '',
+        pdf: null,
         description: props.article.short_description,
         category_id: props.article.category_id,
         keywords: props.article.keywords ?? []
@@ -228,6 +229,27 @@
 
                     <InputError :message="form.errors.file" class="mt-2" />
                 </div>
+            </div>
+            <div class="col-span-6 sm:col-span-6">
+                <InputLabel for="pdf" value="PDF adjunto (opcional)" />
+                <div v-if="article.pdf_path" class="mt-2 mb-2">
+                    <a :href="route('blog_article_pdf', article.url)" target="_blank" rel="noopener"
+                        class="text-primary hover:underline text-sm">
+                        Ver PDF actual
+                    </a>
+                </div>
+                <input
+                    id="pdf"
+                    type="file"
+                    accept="application/pdf"
+                    class="form-input mt-1"
+                    @change="form.pdf = $event.target.files[0]"
+                >
+                <p class="mt-1 text-xs text-gray-500">
+                    Solo usuarios con rol Administrador. Formato PDF, máximo 10 MB.
+                    Si no seleccionas un archivo, se conserva el PDF actual.
+                </p>
+                <InputError :message="form.errors.pdf" class="mt-2" />
             </div>
             <div class="col-span-6 sm:col-span-3">
                 <InputLabel for="category_id" value="Categoría *" />

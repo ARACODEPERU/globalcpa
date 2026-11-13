@@ -393,7 +393,7 @@
                             </div>
                             <div class="col-lg-6" data-aos="fade-left">
                                 <div class="fag-image-frame" style="min-height: 380px;">
-                                    <img src="{{ asset('themes/webpage/images/soluciones-equipo.jpg') }}"
+                                    <img loading="lazy" decoding="async" src="{{ asset('themes/webpage/images/soluciones-equipo.jpg') }}"
                                         alt="Profesionales de CPA Academy en clase">
                                     <div class="fag-stats-float">
                                         <div class="float-stat">
@@ -598,7 +598,7 @@
                                 </div>
                             </div>
                             <div class="col-lg-6" data-aos="fade-left">
-                                <img src="{{ asset('themes/webpage/images/soluciones-equipo.jpg') }}"
+                                <img loading="lazy" decoding="async" src="{{ asset('themes/webpage/images/soluciones-equipo.jpg') }}"
                                     alt="Beneficios del programa FAG"
                                     class="img-fluid rounded-4 shadow-sm"
                                     style="border: 1px solid #eef2f7; max-width: 100%;">

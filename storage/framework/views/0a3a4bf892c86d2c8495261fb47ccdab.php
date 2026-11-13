@@ -132,7 +132,7 @@
                 <?php $__currentLoopData = $logos; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $logo): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                     <div class="client-logo-card" data-aos="fade-up" data-aos-delay="<?php echo e($loop->index * 50); ?>">
                         <img src="<?php echo e(asset('themes/webpage/images/clients/' . $logo)); ?>" alt="Cliente CPA Academy"
-                            loading="lazy">
+                            loading="lazy" decoding="async">
                     </div>
                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </div>

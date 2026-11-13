@@ -2,8 +2,14 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
+    @php
+        $gtm = \App\Support\PageSnippet::parts();
+    @endphp
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    {{-- Google Tag Manager (parametro P000022) --}}
+    {!! $gtm['head'] !!}
 
     <title inertia>{{ config('app.name', 'Laravel') }}</title>
     <link rel="icon" href="{{ asset('img/isotipo.png') }}">
@@ -29,6 +35,8 @@
 </head>
 
 <body class="overflow-x-hidden">
+    {{-- Google Tag Manager (noscript) --}}
+    {!! $gtm['body'] !!}
     @inertia
     <script>
         window.assetUrl = @json(asset(''));

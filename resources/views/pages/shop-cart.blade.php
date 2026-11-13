@@ -26,7 +26,7 @@
                                 <div class="payment-brand">
                                     <span>
                                         <strong>
-                                            <img class="payment-brand-logo" src="https://academy.globalcpaperu.com/themes/webpage/images/Logo_cpa_modificado.png" alt="CPA Academy">
+                                            <img loading="lazy" decoding="async" class="payment-brand-logo" src="https://academy.globalcpaperu.com/themes/webpage/images/Logo_cpa_modificado.png" alt="CPA Academy">
                                         </strong>
                                         <small>Formación que impulsa tu futuro</small>
                                     </span>
@@ -215,7 +215,7 @@
                                 <div class="security-check-card security-check-card-static security-check-card-mercado">
                                     <span>
                                         <strong>Con el respaldo de</strong>
-                                        <img class="security-check-logo-wide" src="{{ asset('img/mercadopago.png') }}" alt="Mercado Pago">
+                                        <img loading="lazy" decoding="async" class="security-check-logo-wide" src="{{ asset('img/mercadopago.png') }}" alt="Mercado Pago">
                                     </span>
                                 </div>
                                 <div class="security-check-card security-check-card-static">
@@ -3177,7 +3177,7 @@
                     <td colspan="4" class="cart-summary-cell">
                         <div class="cart-summary-item">
                             <div class="cart-summary-media">
-                                <img src="${item.image}" alt="curso">
+                                <img loading="lazy" decoding="async" src="${item.image}" alt="curso">
                             </div>
                             <div class="cart-summary-content">
                                 <strong class="cart-summary-name">

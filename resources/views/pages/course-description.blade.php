@@ -183,7 +183,7 @@
                                     @if ($course->brochure)
                                         <div class="course-content" style="font-size: 1.05rem; line-height: 1.7;"
                                             :class="$store.global.isDarkModeEnabled ? 'text-gray-300' : 'text-gray-600'">
-                                            <div class="tinymce-output">{!! $course->brochure->presentation !!}</div>
+                                            <div class="tinymce-output">{!! \App\Support\LazyContent::process($course->brochure->presentation) !!}</div>
                                         </div>
                                     @endif
                                 </div>
@@ -206,7 +206,7 @@
                                                         'bg-light shadow-sm'">
 
                                                     <div class="flex-shrink-0 mb-3 mb-md-0 me-md-4 text-center">
-                                                        <img class="rounded-circle shadow-sm"
+                                                        <img loading="lazy" decoding="async" class="rounded-circle shadow-sm"
                                                             style="width: 100px; height: 100px; object-fit: cover;"
                                                             src="{{ asset('storage/' . $teach->teacher->person->image) }}"
                                                             alt="{{ $teach->teacher->person->names }}">
@@ -314,7 +314,7 @@
                             <div class="sticky-top" style="top: 100px; z-index: 1;">
                                 <div class="card shadow border-0" data-aos="fade-left">
                                     <div class="position-relative">
-                                        <img src="{{ asset('storage/' . $item->course->image) }}" class="card-img-top"
+                                        <img loading="lazy" decoding="async" src="{{ asset('storage/' . $item->course->image) }}" class="card-img-top"
                                             alt="portada_curso">
                                     </div>
                                     <div class="card-body p-4">
@@ -428,7 +428,7 @@
                         </div>
                         <div class="col-md-4">
                             <div style="place-items: center; padding: 40px 20px;">
-                                <img style="width: 100%;"
+                                <img loading="lazy" decoding="async" style="width: 100%;"
                                     src="https://academy.globalcpaperu.com/themes/webpage/images/certificado.jpg"
                                     alt="">
                                 <p style="font-size: 17px; line-height: 1.3; margin-top: 10px;">

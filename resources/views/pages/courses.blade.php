@@ -203,7 +203,7 @@
                                                                 <div class="card-body">
                                                                     <a href="{{ $courseUrl }}">
                                                                         @if ($item->course?->image)
-                                                                            <img class="w-100 mb-3"
+                                                                            <img loading="lazy" decoding="async" class="w-100 mb-3"
                                                                                 src="{{ asset('storage/' . $item->course->image) }}"
                                                                                 alt="{{ $item->name }}">
                                                                         @endif
@@ -282,7 +282,7 @@
                                                                         <a href="{{ $courseUrl }}">
                                                                             @if ($item->course?->image)
                                                                                 {{-- Si hay imagen, la mostramos --}}
-                                                                                <img class="w-100 mb-3"
+                                                                                <img loading="lazy" decoding="async" class="w-100 mb-3"
                                                                                     src="{{ asset('storage/' . $item->course->image) }}"
                                                                                     alt="{{ $item->name }}">
                                                                             @else

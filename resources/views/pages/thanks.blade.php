@@ -40,7 +40,7 @@
                                     <td class="thanks-product-cell px-4 py-3 sm:px-5">
                                         <div class="flex items-center space-x-4">
                                             <div class="avatar">
-                                                <img
+                                                <img loading="lazy" decoding="async"
                                                     class="rounded-full"
                                                     src="{{ $course->image ?: asset('themes/webpage/images/object/object-15.jpg') }}"
                                                     alt="curso"

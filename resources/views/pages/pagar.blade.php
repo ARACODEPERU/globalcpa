@@ -28,7 +28,7 @@
                                 <td class="td-img text-left">
                                     <div style="display: flex; align-items: center;">
                                         <a href="#" style="margin-right: 10px;">
-                                            <img style="width: 100px;" src="{{ $product['image'] }}" alt="course_img" />
+                                            <img loading="lazy" decoding="async" style="width: 100px;" src="{{ $product['image'] }}" alt="course_img" />
                                         </a>
 
                                     </div>
@@ -315,7 +315,7 @@
                                         <td class="whitespace-nowrap px-4 py-3 sm:px-5">
                                             <div class="flex items-center space-x-4">
                                                 <div class="avatar">
-                                                <img
+                                                <img loading="lazy" decoding="async"
                                                     class="rounded-full"
                                                     src="` + image + `"
                                                     alt="avatar"

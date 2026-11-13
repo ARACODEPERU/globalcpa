@@ -318,7 +318,7 @@
                                 </div>
 
                                 <div class="col-lg-5 d-none d-lg-block text-center">
-                                    <img src="{{ asset('themes/webpage/images/Logo_cpa_blanco.png') }}"
+                                    <img loading="lazy" decoding="async" src="{{ asset('themes/webpage/images/Logo_cpa_blanco.png') }}"
                                         alt="CPA Academy" class="img-fluid" style="max-width: 320px; opacity: 0.95;">
                                 </div>
                             </div>
@@ -349,7 +349,7 @@
                             </div>
                             <div class="col-lg-6" data-aos="fade-left">
                                 <div class="nos-image-frame" style="min-height: 380px;">
-                                    <img src="{{ asset('themes/webpage/images/alumnos.jpeg') }}"
+                                    <img loading="lazy" decoding="async" src="{{ asset('themes/webpage/images/alumnos.jpeg') }}"
                                         alt="Equipo de profesionales de CPA Academy">
                                     {{-- <div class="nos-stats-float">
                                         <div class="float-stat">
@@ -478,7 +478,7 @@
                 <section class="nos-section">
                     <div class="container">
                         <div class="nos-acca bg-card-custom shadow-sm mb-5" data-aos="fade-up">
-                            <img style="width: 280px;" src="{{ asset('themes/webpage/images/acca.png') }}" alt="ACCA Approved Learning Partner">
+                            <img loading="lazy" decoding="async" style="width: 280px;" src="{{ asset('themes/webpage/images/acca.png') }}" alt="ACCA Approved Learning Partner">
                             <div>
                                 <h3 class="fw-bold text-navy-custom mb-2">
                                     {{-- <i class="fa fa-certificate" style="color: #e30613;"></i> --}}

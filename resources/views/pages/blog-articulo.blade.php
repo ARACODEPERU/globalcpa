@@ -501,17 +501,17 @@
                         <!-- Contenido del Artículo -->
                         <div class="col-lg-9 col-md-9" data-aos="fade-up">
                             <div class="article-content">
-                                <img src="{{ $article->imagen }}" alt="{{ $article->title }}" class="article-image">
+                                <img src="{{ $article->imagen }}" alt="{{ $article->title }}" class="article-image" fetchpriority="high">
 
                                 <div class="article-meta">
                                     @if ($article->author)
                                         <div class="author-block">
                                             @php $userName = $article->author->name; @endphp
                                             @if ($article->author->avatar && Storage::disk('public')->exists($article->author->avatar))
-                                                <img src="{{ asset('storage/' . $article->author->avatar) }}"
+                                                <img decoding="async" src="{{ asset('storage/' . $article->author->avatar) }}"
                                                     class="author-avatar" alt="{{ $userName }}">
                                             @else
-                                                <img src="https://ui-avatars.com/api/?name={{ urlencode($userName) }}&size=80&rounded=true"
+                                                <img decoding="async" src="https://ui-avatars.com/api/?name={{ urlencode($userName) }}&size=80&rounded=true"
                                                     class="author-avatar" alt="{{ $userName }}">
                                             @endif
                                             <span class="author">{{ $userName }}</span>
@@ -530,7 +530,7 @@
 
                                 <div class="article-body-wrap {{ $isGuestLocked ? 'is-locked' : '' }}">
                                     <div class="article-body">
-                                        {!! $article->content_html !!}
+                                        {!! \App\Support\LazyContent::process($article->content_html) !!}
                                     </div>
                                     @if ($isGuestLocked)
                                         <div class="article-lock-fade" aria-hidden="true"></div>
@@ -539,7 +539,7 @@
 
                                 @if (!Auth::check())
                                     <div class="text-center p-4 article-lock-box {{ $isGuestLocked ? 'is-overlap' : '' }}">
-                                        <img src="{{ asset('img/svg/book-open.svg') }}" alt="" width="72" height="72"
+                                        <img loading="lazy" decoding="async" src="{{ asset('img/svg/book-open.svg') }}" alt="" width="72" height="72"
                                             class="article-lock-icon mb-3">
                                         <h3 class="fw-bold text-navy-custom mb-3">¿Quieres leer el artículo completo?</h3>
                                         <p class="text-muted mb-4">Si quieres leer esta información completa debes loguearte. Si no tienes una cuenta, regístrate.</p>
@@ -576,7 +576,7 @@
                                             <div class="col-md-6">
                                                 <div class="related-card">
                                                     <a href="{{ route('blog_article_by_url', $related->url) }}">
-                                                        <img src="{{ $related->imagen }}" alt="{{ $related->title }}">
+                                                        <img loading="lazy" decoding="async" src="{{ $related->imagen }}" alt="{{ $related->title }}">
                                                     </a>
                                                     <div class="rc-body">
                                                         <h6><a
@@ -628,7 +628,7 @@
                                             @php $catArticles = $articlesByCategory[$category->id]; @endphp
                                             @forelse($catArticles as $index => $catArticle)
                                                 <div class="cat-article-item cat-article-{{ $category->id }}" @if($index >= 5) style="display:none;" @endif>
-                                                    <img src="{{ $catArticle->imagen }}" alt="">
+                                                    <img loading="lazy" decoding="async" src="{{ $catArticle->imagen }}" alt="">
                                                     <div>
                                                         <a href="{{ route('blog_article_by_url', $catArticle->url) }}">{{ Str::limit($catArticle->title, 45) }}</a>
                                                         <span>{{ \Carbon\Carbon::parse($catArticle->created_at)->format('d M Y') }}</span>
@@ -653,7 +653,7 @@
                                 @foreach ($latest_articles as $latest)
                                     <div class="latest-item">
                                         <a href="{{ route('blog_article_by_url', $latest->url) }}">
-                                            <img src="{{ $latest->imagen }}" alt="{{ $latest->title }}">
+                                            <img loading="lazy" decoding="async" src="{{ $latest->imagen }}" alt="{{ $latest->title }}">
                                         </a>
                                         <div class="info">
                                             <a

@@ -101,13 +101,14 @@
 
                         <div class="w-100">
                             <div class="ratio ratio-16x9 rounded overflow-hidden">
-                                {!! $landing->banner_video_link !!}
+                                {!! \App\Support\LazyContent::process($landing->banner_video_link) !!}
                             </div>
                         </div>
 
                     @else
 
                         <img
+                            fetchpriority="high"
                             src="{{ asset('storage/'.$landing->course->image) }}"
                             alt="{{ $landing->course->description ?? 'Curso' }}"
                             class="img-fluid rounded"
