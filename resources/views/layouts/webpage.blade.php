@@ -11,6 +11,8 @@
     {{-- Google Tag Manager (parametro P000022) --}}
     {!! $gtm['head'] !!}
 
+    {{-- GA4 fijo solo si P000022 no trae ya su propio gtag.js (evita contar dos veces) --}}
+    @unless(\App\Support\PageSnippet::contains('googletagmanager.com/gtag/js'))
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-WXX1QVD5Y0"></script>
     <script>
@@ -23,6 +25,7 @@
 
         gtag('config', 'G-WXX1QVD5Y0');
     </script>
+    @endunless
 
 
     <!-- Meta Pixel Code -->

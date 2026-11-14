@@ -64,16 +64,36 @@ class PageSnippet
             ];
         }
 
-        // 3. Solo el script de GTM: el noscript se genera con el ID.
-        if (preg_match('/GTM-[A-Z0-9]+/i', $html, $matches)) {
-            $containerId = strtoupper($matches[0]);
+        // 3. Solo el script de GTM: el noscript se genera con el ID, salvo que
+        //    ya venga en el codigo. Los <noscript> que haya (p. ej. un pixel) van al body.
+        if (preg_match('/GTM-[A-Z0-9]+/', $html, $matches)) {
+            $containerId = $matches[0];
+            $noscripts = [];
 
-            return [
-                'head' => trim($html),
-                'body' => self::GTM_NOSCRIPT_MARKER . "\n"
+            $head = preg_replace_callback(
+                '/<noscript\b[^>]*>.*?<\/noscript>/is',
+                function (array $found) use (&$noscripts) {
+                    $noscripts[] = $found[0];
+
+                    return '';
+                },
+                $html
+            );
+
+            $body = [];
+
+            if (! str_contains($html, 'googletagmanager.com/ns.html')) {
+                $body[] = self::GTM_NOSCRIPT_MARKER . "\n"
                     . '<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=' . $containerId . '"'
                     . ' height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>' . "\n"
-                    . '<!-- End Google Tag Manager (noscript) -->',
+                    . '<!-- End Google Tag Manager (noscript) -->';
+            }
+
+            array_push($body, ...$noscripts);
+
+            return [
+                'head' => trim($head),
+                'body' => trim(implode("\n", $body)),
             ];
         }
 
@@ -92,6 +112,14 @@ class PageSnippet
 
         // 6. Scripts, estilos, metas y links se quedan en el head.
         return ['head' => trim($html), 'body' => ''];
+    }
+
+    /**
+     * Indica si el contenido guardado en P000022 incluye el texto dado.
+     */
+    public static function contains(string $needle): bool
+    {
+        return $needle !== '' && str_contains(self::raw(), $needle);
     }
 
     private static function raw(): string

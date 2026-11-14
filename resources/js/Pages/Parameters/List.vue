@@ -148,6 +148,7 @@
                                                 >
                                             </Textarea>
                                             <small v-if="parameter.parameter_code === 'P000026' || parameter.parameter_code === 'P000027'">El contenido se sincroniza al perder el foco</small>
+                                            <small v-if="parameter.parameter_code === 'P000022'" class="block text-blue-700">Pega aquí el código completo de GTM, GA4 o píxeles, o solo el ID GTM-XXXXXXX. No pegues el mismo contenedor dos veces ni dejes el ID GA4 fijo en el layout. Se guarda al salir del campo. Ver detalles en Editar.</small>
                                         </template>
                                         <template v-else-if="parameter.control_type == 'rdj'">
                                             <div>

@@ -1,0 +1,507 @@
+# Tarea: parámetro P000022 genérico (GTM/GA4/píxeles) + canales UTM de Spotify en las landings de cursos
+
+Trabaja en este proyecto Laravel + Inertia + Vue. Implementa DOS cosas que ya están
+funcionando en un proyecto hermano con la misma estructura. Adáptate a los nombres
+reales de este repo (modelos, tablas, layouts, rutas y componentes), pero conserva
+el comportamiento descrito. No agregues dependencias nuevas ni cambies de framework.
+
+Antes de editar, localiza en este proyecto:
+- El modelo y la tabla `parameters` (parámetro con `parameter_code = 'P000022'`,
+  columnas `description`, `control_type`, `value_default`, `json_query_data`).
+- El controlador de parámetros con `store()` y `update()`.
+- Los layouts Blade que envuelven las páginas públicas y las landings
+  (equivalencias de `layouts/webpage.blade.php`, `layouts/landing.blade.php`,
+  `app.blade.php`).
+- El componente Vue que genera los enlaces UTM de las landings de cursos
+  (equivalente a `Modules/Academic/.../Courses/Partials/LandingUtmLinks.vue`).
+- El script público de atribución (equivalente a `public/js/traffic-tracking.js`).
+
+---
+
+## PARTE A — P000022 debe imprimir cualquier snippet en head/body
+
+Objetivo: que en P000022 se pueda pegar cualquier código de GTM, Google Analytics,
+Meta Pixel o combinaciones, y que el sistema decida solo qué va al `<head>` y qué
+al `<body>`. Debe aceptar: snippet completo de GTM, solo el script de GTM, solo un
+ID `GTM-XXXXXXX`, GA4 (`gtag/js`), Meta Pixel, o GTM + píxel juntos. Nada debe
+duplicarse ni quedar en la sección equivocada.
+
+### A1. Crear `app/Support/PageSnippet.php`
+
+Crea la clase EXACTAMENTE con esta lógica (cópiala tal cual; solo ajusta el
+namespace del modelo si en este proyecto es distinto a `App\Models\Parameter`):
+
+```php
+<?php
+
+namespace App\Support;
+
+use App\Models\Parameter;
+
+/**
+ * Reparte el HTML/scripts guardados en el parametro P000022 entre el head y el
+ * body de las paginas. Acepta codigo arbitrario y el snippet completo de GTM.
+ *
+ * Reglas:
+ *  - Los marcadores <!-- HEAD --> y <!-- BODY --> separan explicitamente ambas partes.
+ *  - Un snippet completo de GTM se corta en su comentario "Google Tag Manager (noscript)".
+ *  - Si solo viene el script de GTM, el noscript se genera con el ID del contenedor.
+ *  - Los bloques <noscript> se envian al body.
+ *  - El HTML de cuerpo (div, iframe, img, etc.) se envia al body.
+ *  - Scripts, estilos, metas y links se quedan en el head.
+ */
+class PageSnippet
+{
+    public const PARAMETER_CODE = 'P000022';
+
+    private const GTM_NOSCRIPT_MARKER = '<!-- Google Tag Manager (noscript) -->';
+
+    private const BODY_MARKER = '/<!--\s*(?:P000022:)?BODY\s*-->/i';
+
+    private const HEAD_MARKER = '/<!--\s*(?:P000022:)?HEAD\s*-->/i';
+
+    private const BODY_ONLY_TAGS = '/<(?:div|section|article|header|footer|main|aside|nav|p|span|a|img|picture|iframe|video|audio|canvas|svg|table|form|input|select|textarea|button|ul|ol|li|h[1-6])\b/i';
+
+    /**
+     * @return array{head: string, body: string}
+     */
+    public static function parts(): array
+    {
+        $html = self::raw();
+
+        if ($html === '') {
+            return ['head' => '', 'body' => ''];
+        }
+
+        // 1. Separacion explicita con marcadores.
+        if (preg_match(self::BODY_MARKER, $html)) {
+            [$head, $body] = preg_split(self::BODY_MARKER, $html, 2);
+            $head = preg_replace(self::HEAD_MARKER, '', $head);
+
+            return ['head' => trim($head), 'body' => trim($body)];
+        }
+
+        if (preg_match(self::HEAD_MARKER, $html)) {
+            return [
+                'head' => trim(preg_replace(self::HEAD_MARKER, '', $html)),
+                'body' => '',
+            ];
+        }
+
+        // 2. Snippet completo de Google Tag Manager (script + noscript).
+        if (str_contains($html, self::GTM_NOSCRIPT_MARKER)) {
+            [$head, $body] = explode(self::GTM_NOSCRIPT_MARKER, $html, 2);
+
+            return [
+                'head' => trim($head),
+                'body' => self::GTM_NOSCRIPT_MARKER . "\n" . trim($body),
+            ];
+        }
+
+        // 3. Solo el script de GTM: el noscript se genera con el ID, salvo que
+        //    ya venga en el codigo. Los <noscript> que haya (p. ej. un pixel) van al body.
+        if (preg_match('/GTM-[A-Z0-9]+/', $html, $matches)) {
+            $containerId = $matches[0];
+            $noscripts = [];
+
+            $head = preg_replace_callback(
+                '/<noscript\b[^>]*>.*?<\/noscript>/is',
+                function (array $found) use (&$noscripts) {
+                    $noscripts[] = $found[0];
+
+                    return '';
+                },
+                $html
+            );
+
+            $body = [];
+
+            if (! str_contains($html, 'googletagmanager.com/ns.html')) {
+                $body[] = self::GTM_NOSCRIPT_MARKER . "\n"
+                    . '<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=' . $containerId . '"'
+                    . ' height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>' . "\n"
+                    . '<!-- End Google Tag Manager (noscript) -->';
+            }
+
+            array_push($body, ...$noscripts);
+
+            return [
+                'head' => trim($head),
+                'body' => trim(implode("\n", $body)),
+            ];
+        }
+
+        // 4. Cualquier <noscript> pertenece al body.
+        if (preg_match_all('/<noscript\b[^>]*>.*?<\/noscript>/is', $html, $matches)) {
+            return [
+                'head' => trim(str_replace($matches[0], '', $html)),
+                'body' => trim(implode("\n", $matches[0])),
+            ];
+        }
+
+        // 5. Etiquetas de contenido (widgets, imagenes, iframes...) van al body.
+        if (preg_match(self::BODY_ONLY_TAGS, $html)) {
+            return ['head' => '', 'body' => trim($html)];
+        }
+
+        // 6. Scripts, estilos, metas y links se quedan en el head.
+        return ['head' => trim($html), 'body' => ''];
+    }
+
+    /**
+     * Indica si el contenido guardado en P000022 incluye el texto dado.
+     */
+    public static function contains(string $needle): bool
+    {
+        return $needle !== '' && str_contains(self::raw(), $needle);
+    }
+
+    private static function raw(): string
+    {
+        $value = trim((string) Parameter::query()
+            ->where('parameter_code', self::PARAMETER_CODE)
+            ->value('value_default'));
+
+        // El parametro pudo guardarse escapado una o varias veces desde el
+        // formulario de parametros; se decodifica hasta obtener el HTML real.
+        for ($i = 0; $i < 3; $i++) {
+            $decoded = htmlspecialchars_decode($value, ENT_QUOTES);
+
+            if ($decoded === $value) {
+                break;
+            }
+
+            $value = $decoded;
+        }
+
+        return trim($value);
+    }
+}
+```
+
+Puntos que NO debes "mejorar" ni simplificar, porque son correcciones de errores
+reales ya detectados:
+- En la regla 3 el `<noscript>` debe salir del head con `preg_replace_callback` y
+  viajar al body. Si el body se llenara solo con el iframe de GTM, un Meta Pixel
+  pegado junto a GTM terminaría en el head y no dispararía.
+- Solo genera el `<noscript>` de GTM si el código no trae ya
+  `googletagmanager.com/ns.html`, para no duplicarlo.
+- `raw()` decodifica entidades hasta 3 veces porque el formulario pudo guardar el
+  HTML escapado.
+
+### A2. El controlador de parámetros no debe escapar P000022
+
+En `store()` y en `update()`, hoy los `control_type = 'tx'` pasan por
+`htmlspecialchars()`. P000022 debe guardarse TAL CUAL. Deja el resto igual:
+
+```php
+$valor_seguro = $request->get('value_default');
+
+// P000022 guarda el codigo de Google Tag Manager tal cual; el resto de
+// textareas se sigue escapando para no inyectar HTML.
+if ($request->get('control_type') == 'tx' && $request->get('parameter_code') !== 'P000022') {
+    $value_default = $request->get('value_default');
+    $valor_seguro = htmlspecialchars($value_default, ENT_QUOTES, 'UTF-8');
+}
+```
+
+No cambies la validación existente. No escapes P000022 en ningún otro punto.
+
+### A3. Imprimir head y body en TODOS los layouts públicos
+
+En cada layout que renderiza páginas públicas y landings, al inicio del `<head>`:
+
+```blade
+@php
+    $gtm = \App\Support\PageSnippet::parts();
+@endphp
+...
+{{-- Google Tag Manager / scripts (parametro P000022) --}}
+{!! $gtm['head'] !!}
+```
+
+y justo después de abrir `<body>`:
+
+```blade
+<body>
+    {{-- Google Tag Manager (noscript) --}}
+    {!! $gtm['body'] !!}
+```
+
+Los layouts que en el proyecto hermano lo usan son: `layouts/webpage.blade.php`,
+`layouts/landing.blade.php` y `app.blade.php` (Inertia). Si aquí hay más layouts
+públicos, agrégalo también. No lo pongas en layouts de PDF, correos ni en el panel
+administrativo si no corresponde.
+
+**Evitar GA4 duplicado.** En el proyecto hermano `webpage.blade.php` tiene el GA4
+`G-XXXXXXXXXX` fijo en el layout. Si este proyecto también lo tiene, envuélvelo
+para que se omita cuando P000022 ya traiga su propio `gtag/js`:
+
+```blade
+{{-- GA4 fijo solo si P000022 no trae ya su propio gtag.js (evita contar dos veces) --}}
+@unless(\App\Support\PageSnippet::contains('googletagmanager.com/gtag/js'))
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-XXXXXXXXXX');
+    </script>
+@endunless
+```
+
+Busca otros lugares con IDs de GA/GTM/píxel fijos (footers, parciales) y aplica el
+mismo criterio: un solo origen por etiqueta.
+
+### A4. Migración(es) idempotentes para P000022
+
+Crea UNA migración con la fecha de hoy y un nombre que no choque con las
+existentes, por ejemplo `2026_11_14_000001_configure_page_snippet_parameter.php`.
+Debe poder ejecutarse varias veces sin error y sin destruir datos:
+
+```php
+<?php
+
+use App\Models\Parameter;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    private const DESCRIPTION = 'Codigo HTML/scripts para insertar en las paginas (Blade y Vue). Todo va al head; use <!-- BODY --> para separar lo que debe ir despues de <body>. Los bloques <noscript> y el HTML de cuerpo se envian al body automaticamente. Acepta el snippet completo de Google Tag Manager.';
+
+    public function up(): void
+    {
+        if (! Schema::hasTable('parameters')) {
+            return;
+        }
+
+        $this->expandTextColumns();
+
+        $parameter = Parameter::where('parameter_code', 'P000022')->first();
+
+        if (! $parameter) {
+            Parameter::create([
+                'parameter_code'  => 'P000022',
+                'description'     => self::DESCRIPTION,
+                'control_type'    => 'tx',
+                'json_query_data' => null,
+                'value_default'   => null,
+            ]);
+
+            return;
+        }
+
+        $value = (string) $parameter->value_default;
+
+        // Si el valor solo repite un GA4 que ya esta fijo en el layout, se
+        // respalda y se limpia para no duplicar metricas al imprimirlo.
+        if (! preg_match('/GTM-[A-Z0-9]+/i', $value) && str_contains($value, 'G-XXXXXXXXXX')) {
+            $backup = storage_path('app/p000022-legacy.html');
+
+            if (! File::exists($backup)) {
+                File::put($backup, $value);
+            }
+
+            $parameter->value_default = null;
+        }
+
+        $parameter->description = self::DESCRIPTION;
+        $parameter->save();
+    }
+
+    /**
+     * Amplia las columnas para que acepten HTML/scripts largos. Es idempotente:
+     * volver a aplicar el mismo tipo no cambia nada. En sqlite TEXT ya no tiene
+     * el limite practico de varchar(255), por eso solo se altera MySQL.
+     */
+    private function expandTextColumns(): void
+    {
+        if (! Schema::hasColumn('parameters', 'description')
+            || ! Schema::hasColumn('parameters', 'value_default')
+            || DB::getDriverName() !== 'mysql') {
+            return;
+        }
+
+        DB::statement('ALTER TABLE `parameters` MODIFY `description` TEXT NOT NULL');
+        DB::statement('ALTER TABLE `parameters` MODIFY `value_default` LONGTEXT NULL');
+    }
+
+    public function down(): void
+    {
+        // No se revierten los tipos para no truncar el contenido guardado, ni se
+        // restaura el valor anterior para no reactivar etiquetas duplicadas.
+    }
+};
+```
+
+Requisitos de la migración:
+- Sustituye `G-XXXXXXXXXX` por el ID de GA4 que este proyecto tenga fijo. Si no
+  tiene ninguno, elimina ese bloque entero y deja solo la descripción y las
+  columnas.
+- Nunca sobrescribas un P000022 que ya tenga contenido válido (GTM, GA4 propio o
+  píxeles); solo actualiza la `description` y limpia el caso legacy descrito.
+- El respaldo debe crearse solo si no existe (`File::exists`).
+- `down()` vacío a propósito, con el comentario incluido.
+- Si `parameters` no existe aún en este proyecto, la migración sale sin hacer nada
+  (`Schema::hasTable`).
+- No modifiques migraciones antiguas ya ejecutadas.
+
+### A5. Ayudas y avisos en la pantalla de parámetros
+
+El usuario final debe saber qué pegar y qué no. Sin crear páginas nuevas.
+
+1. En el listado de parámetros, el campo de P000022 debe permitir textos largos
+   (100000 caracteres, igual que ya hacen otros parámetros extensos) y mostrar una
+   nota corta debajo del campo:
+
+```html
+<small v-if="parameter.parameter_code === 'P000022'" class="block text-blue-700">
+    Pega aquí el código completo de GTM, GA4 o píxeles, o solo el ID GTM-XXXXXXX.
+    No pegues el mismo contenedor dos veces ni dejes el ID GA4 fijo en el layout.
+    Se guarda al salir del campo. Ver detalles en Editar.
+</small>
+```
+
+2. En el formulario de edición (`EditForm.vue`), debajo del valor, solo cuando
+   `form.parameter_code === 'P000022'`, un recuadro informativo:
+
+```html
+<div v-if="form.parameter_code === 'P000022'" class="mt-2 p-3 text-sm rounded-lg bg-blue-50 text-blue-900 dark:bg-gray-800 dark:text-blue-200">
+    <p class="font-semibold mb-1">Código de Google Tag Manager, Google Analytics o píxeles</p>
+    <p class="mb-1"><strong>Qué pegar:</strong> el código completo que entrega la plataforma (scripts y, si aplica, el bloque <code>&lt;noscript&gt;</code>). También puedes pegar solo el ID de GTM (<code>GTM-XXXXXXX</code>) y el sistema genera el resto.</p>
+    <p class="mb-1"><strong>Qué no hacer:</strong> no pongas el ID de GA4 (<code>G-XXXX</code>) aquí y en el código fijo a la vez; no pegues dos veces el mismo contenedor de GTM; no pegues código sin revisar, porque se imprime tal cual en todas las páginas.</p>
+    <p><strong>Cómo probar:</strong> guarda, abre el sitio en una ventana privada y revisa en las herramientas de desarrollador (Red) que cargue la etiqueta de GTM o el píxel una sola vez.</p>
+</div>
+```
+
+Usa los componentes y clases del sistema de diseño existente; no introduzcas
+libertades visuales nuevas.
+
+---
+
+## PARTE B — Canales UTM de Spotify en las landings de cursos
+
+Objetivo: que el generador de enlaces UTM de cada landing de curso incluya Spotify,
+y que el dashboard de atribución lo muestre correctamente. NO se necesita migración:
+la configuración se guarda en el JSON `utm_config` de la landing.
+
+### B1. Agregar tres canales en el arreglo `baseChannels`
+
+En el componente que genera los UTM de las landings de cursos
+(`LandingUtmLinks.vue` o su equivalente), dentro de `baseChannels`, añade estas
+entradas antes del bloque de Email:
+
+```js
+// Spotify
+{ id: 'spotify_bio', label: 'Spotify Bio', icon: 'fa-brands fa-spotify', color: '#1DB954', utm_source: 'spotify', utm_medium: 'social', origen: 'Social' },
+{ id: 'spotify_playlist', label: 'Spotify Playlist', icon: 'fa-brands fa-spotify', color: '#1DB954', utm_source: 'spotify', utm_medium: 'referral', origen: 'Social' },
+{ id: 'spotify_ads', label: 'Spotify Ads', icon: 'fa-brands fa-spotify', color: '#1DB954', utm_source: 'spotify', utm_medium: 'cpc', origen: 'Spotify' },
+```
+
+Detalles que importan:
+- El desglose "Social" del dashboard se arma con `channelByKey`, que se deriva de
+  `baseChannels` (clave `${utm_source}_${utm_medium}`). Al añadir los canales aquí,
+  sus nombres e íconos aparecen solos en el reporte; no hay que tocar el
+  controlador ni el arreglo `originRows`.
+- `spotify_bio` usa `utm_medium=social` y `spotify_playlist` usa `referral` para
+  que el clasificador los cuente como Social. `spotify_ads` usa `cpc` porque es
+  publicidad pagada y debe contarse como CPC, con origen "Spotify".
+- No agregues una fila nueva a `originRows`: agruparía mal los datos.
+- Los enlaces se generan con el formato existente:
+  `<base>/curso/{slug}?utm_source=spotify&utm_medium=...&utm_campaign=curso_<slug>`
+  y, si el usuario llena `utm_term`/`utm_content`, se añaden. La campaña por
+  defecto es `curso_` + el slug con guiones cambiados por guiones bajos. No cambies
+  esa lógica, solo se alimenta de los canales nuevos.
+- No toques el resolver de fuentes del CRM (`TrafficSourceResolver`) para esto: no
+  participa en el reporte de la landing.
+
+### B2. Clasificar Spotify como Social en `public/js/traffic-tracking.js`
+
+El script de atribución clasifica el tráfico y guarda `traffic_source` en
+`localStorage` (clave `traffic_tracking`, TTL 24h, first-touch). Añade Spotify a la
+rama de redes sociales, DESPUÉS de las ramas de pago:
+
+```js
+if (fbclid || (isFacebook && isPaidMedium)) {
+    trafficSource = 'facebook_ads';
+} else if (gclid || (isGoogle && isPaidMedium)) {
+    trafficSource = 'google_ads';
+} else if (isFacebook || /(instagram|tiktok|youtube|linkedin|twitter|threads|whatsapp|^x$)/.test(src) || (src === 'spotify' && !isPaidMedium)) {
+    trafficSource = 'social';
+} else if (isGoogle) {
+    trafficSource = 'organic';
+} else if (isPaidMedium) {
+    trafficSource = 'cpc';
+} else if (/social/.test(med)) {
+    trafficSource = 'social';
+}
+// ... resto igual
+```
+
+La condición `(src === 'spotify' && !isPaidMedium)` es la clave: sin ella, Spotify
+caería en `referrer` (por el referrer) o en `cpc`, y el desglose Social quedaría
+vacío. `isPaidMedium` ya existe en el archivo (`/(paid|cpc|ppc|ads)/`) y debe seguir
+evaluándose antes, para que `spotify_ads` cuente como CPC.
+
+Comprueba además que el script esté cargado en el layout de la landing pública
+(`<script src="{{ asset('js/traffic-tracking.js') }}"></script>`). Si solo está en
+un layout y las landings usan otro, agrégalo en el que corresponda. No dupliques la
+etiqueta si ya está incluida.
+
+---
+
+## Verificación obligatoria antes de terminar
+
+Usa el PHP del proyecto (por ejemplo el de Laragon en la versión compatible) y
+ejecuta, sin dejar archivos temporales en el repo:
+
+1. `php -l app/Support/PageSnippet.php`
+2. `php artisan view:cache` (debe compilar sin errores; si borra vistas
+   versionadas, restáuralas con `git checkout -- storage/framework/views`).
+3. Prueba funcional de `PageSnippet::parts()` con estos casos y resultado esperado:
+
+| Caso pegado en P000022 | head | body |
+|---|---|---|
+| vacío | vacío | vacío |
+| snippet completo de GTM | script de GTM, sin `<noscript>` | comentario + iframe noscript de GTM |
+| solo el script de GTM | script de GTM | noscript de GTM generado, 1 sola vez |
+| solo ID `GTM-XXXXXXX` | el texto pegado | noscript de GTM generado |
+| GA4 `gtag/js` solo | todo el bloque | vacío |
+| Meta Pixel solo | script `fbq` | `<noscript><img ...>` |
+| GTM + Meta Pixel | script de GTM, sin `<noscript>` | noscript de GTM (1) + píxel |
+| GTM + `<noscript>` de GTM ya incluido | script | sin iframe duplicado (1 solo) |
+| `<!-- BODY -->` presente | lo de arriba | lo de abajo |
+
+4. `npm run build` (o el comando de build del proyecto) sin errores nuevos.
+5. Prueba de guardado real: en una transacción que revierte al final, escribe un
+   GTM + píxel en P000022, lee el valor con Eloquent, ejecuta `parts()` y confirma
+   head/body; luego haz rollback y verifica que el valor original sigue igual.
+6. Clasificación de tráfico con Node sobre el archivo real: `spotify/social` y
+   `spotify/referral` → `social`; `spotify/cpc` y `spotify/paid` → `cpc`;
+   `facebook/cpc` → `facebook_ads`; `instagram/post` → `social`. Deben pasar todos.
+
+## Reglas
+
+- No agregues dependencias, rutas nuevas, ni cambies el esquema más allá de las
+  columnas de `parameters`.
+- No modifiques migraciones ya ejecutadas; todo cambio de datos va en una migración
+  nueva e idempotente.
+- No toques datos de producción: la limpieza del valor legacy solo ocurre dentro de
+  la migración y con respaldo previo en `storage/app/p000022-legacy.html`.
+- No dejes archivos de prueba dentro del repositorio.
+- No hagas commit ni deploy.
+
+## Criterio de aceptación
+
+- Pegar en P000022 un GTM completo, un GTM simple, un GA4, un Meta Pixel o una
+  combinación funciona: cada etiqueta se imprime una sola vez, en la sección
+  correcta, sin romper la página.
+- Si P000022 está vacío, el sitio se comporta como antes y no imprime nada extra.
+- El GA4 fijo del layout no se duplica cuando P000022 trae su propio `gtag/js`.
+- La pantalla de parámetros explica qué pegar, qué no hacer y cómo verificar.
+- Las landings de cursos ofrecen Spotify Bio, Spotify Playlist y Spotify Ads; los
+  dos primeros aparecen en el desglose Social del dashboard y Spotify Ads en CPC.
+- `php -l`, compilación de vistas, build del frontend y la tabla de casos pasan.
