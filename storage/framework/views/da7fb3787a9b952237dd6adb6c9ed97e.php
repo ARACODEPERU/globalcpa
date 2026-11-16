@@ -277,6 +277,73 @@
             }
         }
 
+        /* Navegación de scroll del artículo (inicio / final del contenido) */
+        .article-scroll-nav {
+            position: fixed;
+            right: 18px;
+            bottom: 24px;
+            z-index: 1040;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .article-scroll-nav__btn {
+            width: 42px;
+            height: 42px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            border: 1px solid rgba(0, 32, 96, 0.12);
+            border-radius: 50%;
+            background: #fff;
+            color: #002060;
+            font-size: 15px;
+            line-height: 1;
+            cursor: pointer;
+            box-shadow: 0 6px 16px rgba(0, 32, 96, 0.18);
+            transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+        }
+
+        .article-scroll-nav__btn:hover,
+        .article-scroll-nav__btn:focus-visible {
+            background: #002060;
+            color: #fff;
+            transform: translateY(-1px);
+        }
+
+        body.dark-only .article-scroll-nav__btn {
+            background: #1f2937;
+            color: #e5e7eb;
+            border-color: #374558;
+        }
+
+        body.dark-only .article-scroll-nav__btn:hover,
+        body.dark-only .article-scroll-nav__btn:focus-visible {
+            background: #e30613;
+            color: #fff;
+            border-color: #e30613;
+        }
+
+        @media (max-width: 991.98px) {
+            .article-scroll-nav {
+                flex-direction: row;
+                right: 16px;
+                bottom: 20px;
+            }
+
+            /* Deja libre la esquina del botón flotante de PDF */
+            .article-scroll-nav.has-pdf-float {
+                right: 86px;
+            }
+
+            .article-scroll-nav__btn {
+                width: 40px;
+                height: 40px;
+            }
+        }
+
         /* Bloqueo de contenido para invitados (el HTML se carga completo y se oculta con CSS) */
         .article-body-wrap {
             position: relative;
@@ -690,6 +757,17 @@
                 </div>
             <?php endif; ?>
         <?php endif; ?>
+
+        <div class="article-scroll-nav" id="articleScrollNav">
+            <button type="button" class="article-scroll-nav__btn" id="articleScrollTop"
+                title="Ir al inicio del artículo" aria-label="Ir al inicio del artículo">
+                <i class="fa fa-chevron-up" aria-hidden="true"></i>
+            </button>
+            <button type="button" class="article-scroll-nav__btn" id="articleScrollBottom"
+                title="Ir al final del artículo" aria-label="Ir al final del artículo">
+                <i class="fa fa-chevron-down" aria-hidden="true"></i>
+            </button>
+        </div>
 
         <div class="page-body-wrapper">
             <?php if (isset($component)) { $__componentOriginald31f0a1d6e85408eecaaa9471b609820 = $component; } ?>
@@ -1170,6 +1248,61 @@ function toggleVerMas(btn, catId, total) {
                 passive: true
             });
             window.addEventListener('resize', evaluate);
+        })();
+
+        // Flechas para ir al inicio o al final del contenido del artículo.
+        (function() {
+            var scrollNav = document.getElementById('articleScrollNav');
+            if (!scrollNav) return;
+
+            var topBtn = document.getElementById('articleScrollTop');
+            var bottomBtn = document.getElementById('articleScrollBottom');
+            var articleContent = document.querySelector('.article-content');
+
+            if (!articleContent) {
+                scrollNav.hidden = true;
+                return;
+            }
+
+            // En móvil el botón de PDF ocupa la esquina inferior derecha.
+            if (document.getElementById('articlePdfFloat')) {
+                scrollNav.classList.add('has-pdf-float');
+            }
+
+            function scrollToY(top) {
+                var target = Math.max(0, Math.round(top));
+
+                if ('scrollBehavior' in document.documentElement.style) {
+                    window.scrollTo({
+                        top: target,
+                        behavior: 'smooth'
+                    });
+                } else {
+                    window.scrollTo(0, target);
+                }
+            }
+
+            function absoluteTop(element) {
+                return element.getBoundingClientRect().top +
+                    (window.pageYOffset || document.documentElement.scrollTop);
+            }
+
+            if (topBtn) {
+                topBtn.addEventListener('click', function() {
+                    // El header es fijo: deja el titular bajo él.
+                    scrollToY(absoluteTop(articleContent) - 88);
+                });
+            }
+
+            if (bottomBtn) {
+                bottomBtn.addEventListener('click', function() {
+                    var viewport = window.innerHeight || document.documentElement.clientHeight;
+                    var contentBottom = articleContent.getBoundingClientRect().bottom +
+                        (window.pageYOffset || document.documentElement.scrollTop);
+
+                    scrollToY(contentBottom - viewport + 24);
+                });
+            }
         })();
     </script>
 <?php $__env->stopSection(); ?>
