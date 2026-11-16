@@ -109,6 +109,176 @@
             border-radius: 8px;
         }
 
+        /* Descarga flotante del PDF del artículo (solo lectores autenticados) */
+        .article-pdf-float {
+            position: fixed;
+            top: 50%;
+            right: 18px;
+            transform: translateY(-50%);
+            z-index: 1040;
+            opacity: 0;
+            transition: opacity 0.25s ease;
+        }
+
+        .article-pdf-float[hidden] {
+            display: none !important;
+        }
+
+        .article-pdf-float.is-visible {
+            opacity: 1;
+        }
+
+        .article-pdf-float__link {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            width: 58px;
+            padding: 10px;
+            overflow: hidden;
+            background: #002060;
+            color: #fff !important;
+            border-radius: 999px;
+            text-decoration: none !important;
+            box-shadow: 0 10px 24px rgba(0, 32, 96, 0.28);
+            transition: width 0.28s ease, gap 0.28s ease, background-color 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .article-pdf-float__link:hover,
+        .article-pdf-float__link:focus-visible {
+            width: 238px;
+            gap: 10px;
+            background: #00174a;
+            color: #fff !important;
+        }
+
+        .article-pdf-float__icon {
+            flex: 0 0 38px;
+            width: 38px;
+            height: 38px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #e30613;
+            font-size: 18px;
+        }
+
+        .article-pdf-float__label {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .article-pdf-float__link:hover .article-pdf-float__label,
+        .article-pdf-float__link:focus-visible .article-pdf-float__label {
+            opacity: 1;
+        }
+
+        .article-pdf-float__label strong {
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .article-pdf-float__label small {
+            font-size: 0.7rem;
+            opacity: 0.8;
+        }
+
+        body.dark-only .article-pdf-float__link {
+            border: 1px solid rgba(255, 255, 255, 0.16);
+        }
+
+        @media (max-width: 991.98px) {
+            .article-pdf-float {
+                top: auto;
+                bottom: 20px;
+                right: 16px;
+                transform: none;
+            }
+
+            .article-pdf-float__link:hover,
+            .article-pdf-float__link:focus-visible {
+                width: 58px;
+                gap: 0;
+            }
+
+            .article-pdf-float__label {
+                display: none;
+            }
+        }
+
+        /* Aviso con flecha que apunta al botón de descarga */
+        .article-pdf-hint {
+            position: fixed;
+            top: 50%;
+            right: 88px;
+            transform: translateY(-50%);
+            z-index: 1039;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 14px;
+            background: #002060;
+            color: #fff;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            box-shadow: 0 10px 22px rgba(0, 32, 96, 0.25);
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 0.2s ease, visibility 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .article-pdf-hint.is-visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .article-pdf-hint::after {
+            content: "";
+            position: absolute;
+            right: -5px;
+            top: 50%;
+            width: 11px;
+            height: 11px;
+            background: #002060;
+            transform: translateY(-50%) rotate(45deg);
+        }
+
+        .article-pdf-hint__text {
+            position: relative;
+        }
+
+        .article-pdf-hint__arrow {
+            position: relative;
+            animation: articlePdfArrow 1s ease-in-out infinite;
+        }
+
+        @keyframes articlePdfArrow {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(6px); }
+        }
+
+        .article-pdf-float.is-highlighted .article-pdf-float__link {
+            animation: articlePdfPulse 1.1s ease-in-out 3;
+        }
+
+        @keyframes articlePdfPulse {
+            0%, 100% { box-shadow: 0 10px 24px rgba(0, 32, 96, 0.28); }
+            50% { box-shadow: 0 0 0 10px rgba(227, 6, 19, 0.18), 0 10px 24px rgba(0, 32, 96, 0.28); }
+        }
+
+        @media (max-width: 991.98px), (hover: none) {
+            .article-pdf-hint {
+                display: none !important;
+            }
+        }
+
         /* Bloqueo de contenido para invitados (el HTML se carga completo y se oculta con CSS) */
         .article-body-wrap {
             position: relative;
@@ -477,6 +647,33 @@
     <div class="page-wrapper" id="pageWrapper">
         <x-header />
 
+        @auth
+            @if (!empty($article->pdf_path) && Storage::disk('public')->exists($article->pdf_path))
+                @php
+                    $pdfBytes = Storage::disk('public')->size($article->pdf_path);
+                    $pdfLabel = $pdfBytes >= 1048576
+                        ? number_format($pdfBytes / 1048576, 1) . ' MB'
+                        : max(1, (int) round($pdfBytes / 1024)) . ' KB';
+                @endphp
+                <div class="article-pdf-float" id="articlePdfFloat" hidden>
+                    <a href="{{ route('blog_article_pdf', $article->url) }}"
+                        class="article-pdf-float__link"
+                        title="Descargar el PDF de este artículo"
+                        aria-label="Descargar el PDF de este artículo">
+                        <span class="article-pdf-float__icon"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></span>
+                        <span class="article-pdf-float__label">
+                            <strong>Descargar PDF</strong>
+                            <small>Documento · {{ $pdfLabel }}</small>
+                        </span>
+                    </a>
+                </div>
+                <div class="article-pdf-hint" id="articlePdfHint" aria-hidden="true">
+                    <span class="article-pdf-hint__text">Descargar PDF</span>
+                    <i class="fa fa-arrow-right article-pdf-hint__arrow" aria-hidden="true"></i>
+                </div>
+            @endif
+        @endauth
+
         <div class="page-body-wrapper">
             <x-sidebar />
 
@@ -790,5 +987,133 @@ function toggleVerMas(btn, catId, total) {
                 });
             }
         });
+
+        (function() {
+            var pdfBox = document.getElementById('articlePdfFloat');
+            if (!pdfBox) return;
+
+            var articleContent = document.querySelector('.article-content');
+            var revealed = false;
+
+            function reveal() {
+                if (revealed) return;
+                revealed = true;
+                pdfBox.hidden = false;
+                window.requestAnimationFrame(function() {
+                    pdfBox.classList.add('is-visible');
+                });
+            }
+
+            // Proporción del artículo visible en la ventana. Se normaliza contra
+            // la altura de la ventana: un artículo más alto que la pantalla
+            // alcanza el 100% cuando ocupa la ventana completa.
+            function visibleRatio() {
+                if (!articleContent) return 1;
+
+                var rect = articleContent.getBoundingClientRect();
+                var viewport = window.innerHeight || document.documentElement.clientHeight;
+                var visible = Math.min(rect.bottom, viewport) - Math.max(rect.top, 0);
+
+                if (visible <= 0) return 0;
+
+                var reference = Math.min(rect.height, viewport);
+                if (reference <= 0) return 0;
+
+                return Math.min(visible / reference, 1);
+            }
+
+            function evaluate() {
+                if (revealed) return;
+                if (visibleRatio() >= 0.5) reveal();
+            }
+
+            var ticking = false;
+
+            function onScroll() {
+                if (ticking || revealed) return;
+                ticking = true;
+                window.requestAnimationFrame(function() {
+                    ticking = false;
+                    evaluate();
+                });
+            }
+
+            // Aviso con flecha hacia el botón: se muestra una vez al pasar el
+            // mouse por la zona central del artículo y no reaparece hasta que
+            // pasen al menos 15 segundos.
+            var pdfHint = document.getElementById('articlePdfHint');
+            var HINT_COOLDOWN = 15000;
+            var HINT_DURATION = 4200;
+            var lastHintAt = 0;
+            var hintTimer = null;
+            var highlighted = false;
+
+            function hideHint() {
+                if (hintTimer) {
+                    window.clearTimeout(hintTimer);
+                    hintTimer = null;
+                }
+
+                if (pdfHint) pdfHint.classList.remove('is-visible');
+
+                if (highlighted) {
+                    highlighted = false;
+                    pdfBox.classList.remove('is-highlighted');
+                }
+            }
+
+            function showHint() {
+                if (!pdfHint) return;
+
+                lastHintAt = Date.now();
+                pdfHint.classList.add('is-visible');
+
+                if (!highlighted) {
+                    highlighted = true;
+                    pdfBox.classList.add('is-highlighted');
+                }
+
+                hintTimer = window.setTimeout(hideHint, HINT_DURATION);
+            }
+
+            // Zona central: mitad central del ancho del artículo y banda
+            // central de la parte que está visible en la ventana.
+            function inCentralArea(event) {
+                if (!articleContent) return false;
+
+                var rect = articleContent.getBoundingClientRect();
+                var viewport = window.innerHeight || document.documentElement.clientHeight;
+                var top = Math.max(rect.top, 0);
+                var bottom = Math.min(rect.bottom, viewport);
+
+                if (bottom <= top || rect.width <= 0) return false;
+                if (event.clientY < top || event.clientY > bottom) return false;
+
+                var ratioX = (event.clientX - rect.left) / rect.width;
+                var ratioY = (event.clientY - top) / (bottom - top);
+
+                return ratioX >= 0.25 && ratioX <= 0.75 && ratioY >= 0.2 && ratioY <= 0.8;
+            }
+
+            document.addEventListener('mousemove', function(event) {
+                if (!revealed || !pdfHint) return;
+                if (Date.now() - lastHintAt < HINT_COOLDOWN) return;
+                if (!inCentralArea(event)) return;
+
+                showHint();
+            }, {
+                passive: true
+            });
+
+            // Si el lector va directo al botón, el aviso deja de estorbar.
+            pdfBox.addEventListener('mouseenter', hideHint);
+
+            evaluate();
+            window.addEventListener('load', evaluate);
+            window.addEventListener('scroll', onScroll, {
+                passive: true
+            });
+            window.addEventListener('resize', evaluate);
+        })();
     </script>
 @endsection
