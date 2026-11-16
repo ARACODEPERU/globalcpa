@@ -1,0 +1,11 @@
+{
+    "name": "Performance",
+    "alias": "performance",
+    "description": "Auditoria y optimizacion de imagenes del sitio",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\Performance\\Providers\\PerformanceServiceProvider"
+    ],
+    "files": []
+}

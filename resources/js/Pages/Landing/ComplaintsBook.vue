@@ -50,7 +50,7 @@
 
 <template>
     <Head>
-        <title>Aracode</title>
+        <title>Reclamaciones</title>
         <!-- Meta para Facturación Electrónica -->
         <meta name="description" content="Simplifica tu facturación electrónica con nuestra solución. Envía facturas y boletas electrónicas a SUNAT de forma rápida, segura y eficiente.">
         <meta name="keywords" content="facturación electrónica, enviar facturas SUNAT, boletas electrónicas, software SUNAT, sistema de facturación Perú, boletas Perú, SUNAT online">

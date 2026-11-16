@@ -18,6 +18,7 @@ import menuOnlineshop from 'Modules/Onlineshop/Resources/assets/js/Menu.js';
 import menuBibliodata from 'Modules/Bibliodata/Resources/assets/js/Menu.js';
 import menuCommercial from 'Modules/Commercial/Resources/assets/js/Menu.js';
 import menuIntegrationhub from 'Modules/Integrationhub/Resources/assets/js/Menu.js';
+import menuPerformance from 'Modules/Performance/Resources/assets/js/Menu.js';
 
 const MenuData = ref([
     {
@@ -44,6 +45,7 @@ const MenuData = ref([
         // ]
     },
     menuConfig,
+    menuPerformance,
     //menuPurchases,
     menuSales[0],
     menuSales[1],

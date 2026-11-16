@@ -9,6 +9,7 @@ use Illuminate\Support\ServiceProvider;
 use App\Rules\SizeExistence;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 
@@ -24,6 +25,21 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // El sitio puede servirse en un host distinto al APP_URL (por ejemplo
+        // globalcpa.test mientras APP_URL es localhost). Sin esto, route() y
+        // Ziggy generan enlaces absolutos al host equivocado y la navegacion
+        // del sidebar termina en un 404.
+        if (!app()->runningInConsole() && request()->getHost()) {
+            URL::forceRootUrl(request()->root());
+        }
+
+        // Un aviso de deprecacion impreso por PHP se cuela en el cuerpo de las
+        // respuestas JSON (Inertia, axios) y las rompe. Los errores reales se
+        // siguen mostrando.
+        if (!app()->runningInConsole()) {
+            error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
+        }
+
         Validator::extend('size_existence', function ($attribute, $value, $parameters, $validator) {
             $rule = new SizeExistence($parameters);
 

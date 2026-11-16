@@ -12,7 +12,8 @@
     "Restaurant": true,
     "Socialevents": true,
     "CRM": true,
-	"Integrationhub": true,
-	"Bibliodata": true,
-	"Commercial": true
+    "Integrationhub": true,
+    "Bibliodata": true,
+    "Commercial": true,
+    "Performance": true
 }
