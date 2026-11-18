@@ -35,6 +35,23 @@
 
             <!-- Page Sidebar Ends-->
             <div class="page-body" style="padding: 80px 0px;">
+                @if (!empty($previewMode))
+                    <div class="container-fluid">
+                        <div class="alert alert-warning d-flex flex-wrap align-items-center justify-content-between gap-2"
+                            role="alert">
+                            <span>
+                                <strong>Vista previa:</strong> así verán esta landing los visitantes.
+                                El formulario está deshabilitado y no registra datos.
+                            </span>
+                            @if (!empty($landingPage?->slug))
+                                <a class="btn btn-sm btn-primary" href="{{ route('web_landing', $landingPage->slug) }}"
+                                    target="_blank">
+                                    Ver landing publicada
+                                </a>
+                            @endif
+                        </div>
+                    </div>
+                @endif
                 <div class="container-fluid crm_dashboard">
                     <div class="row">
                         <div class="col-xl-12">
@@ -66,7 +83,7 @@
                             <div class="col-md-1"></div>
                             <div class="col-md-10">
                                 <div class="row">
-                                    <h2>Seleccionar Formación Gratis</h2>
+                                    <h2>{{ $landingPage->additional_field1 ?? null ?: 'Seleccionar Formación Gratis' }}</h2>
                                 </div>
                                 <br>
                                 <div class="row">
@@ -109,7 +126,7 @@
                             <div class="col-md-1"></div>
                             <div class="col-md-10">
                                 <div class="row">
-                                    <h2>Seleccionar Area de Interes</h2>
+                                    <h2>{{ $landingPage->additional_field2 ?? null ?: 'Seleccionar Area de Interes' }}</h2>
                                 </div>
                                 <br>
                                 <div class="row">
@@ -153,7 +170,7 @@
                                 <div class="card col-md-10">
                                     <div class="card-body">
                                         <div class="row">
-                                            <h2>Registrarse</h2>
+                                            <h2>{{ $landingPage->additional_field3 ?? null ?: 'Registrarse' }}</h2>
                                         </div>
                                         <br>
                                         <div class="row g-3">
@@ -277,6 +294,7 @@
                                             <div class="col-md-3">
                                                 <button type="submit"
                                                     class="btn btn-pill btn-primary btn-air-primary btn-sm"
+                                                    {{ !empty($previewMode) ? 'disabled' : '' }}
                                                     data-bs-original-title="btn btn-pill btn-primary btn-air-primary btn-sm">
                                                     Enviar
                                                 </button>

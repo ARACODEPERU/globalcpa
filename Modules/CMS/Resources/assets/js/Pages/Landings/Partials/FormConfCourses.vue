@@ -194,6 +194,71 @@
         form.slug = generateSlug(form.title)
     }
 
+    const userRoles = computed(() => page.props.auth?.roles ?? []);
+
+    // La vista previa de la landing solo esta disponible para admin y Administrador.
+    const canPreview = computed(() =>
+        userRoles.value.some((role) => ['admin', 'Administrador'].includes(role))
+    );
+
+    // Ruta publica final de la landing, armada con el slug que se va a guardar.
+    const finalUrl = computed(() => {
+        if (!form.slug) return '';
+
+        try {
+            return route('web_landing', { slug: form.slug });
+        } catch (error) {
+            return '';
+        }
+    });
+
+    const copied = ref(false);
+
+    const copyFinalUrl = async () => {
+        if (!finalUrl.value) return;
+
+        try {
+            if (navigator.clipboard && window.isSecureContext) {
+                await navigator.clipboard.writeText(finalUrl.value);
+            } else {
+                const textarea = document.createElement('textarea');
+                textarea.value = finalUrl.value;
+                textarea.style.position = 'fixed';
+                textarea.style.opacity = '0';
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+            }
+
+            copied.value = true;
+            setTimeout(() => { copied.value = false }, 2000);
+        } catch (error) {
+            Swal.fire({
+                title: 'No se pudo copiar',
+                text: 'Selecciona la ruta y cópiala manualmente.',
+                icon: 'error',
+                padding: '2em',
+                customClass: 'sweet-alerts',
+            });
+        }
+    };
+
+    const openPreview = () => {
+        if (!props.landingPage?.id) {
+            Swal.fire({
+                title: 'Guarda la landing',
+                text: 'La vista previa usa los datos guardados. Guarda los cambios para verla.',
+                icon: 'info',
+                padding: '2em',
+                customClass: 'sweet-alerts',
+            });
+            return;
+        }
+
+        window.open(route('cms_landing_course_free_preview', { menu_id: form.menu_id }), '_blank');
+    };
+
     const dateRange = ref(null);
 
     onMounted(() => {
@@ -208,6 +273,46 @@
 </script>
 <template>
     <form class="space-y-5" @submit.prevent="createLanding">
+        <div class="rounded-lg border border-blue-200 bg-blue-50/60 p-4 dark:border-gray-700 dark:bg-gray-800/60">
+            <div class="flex flex-col gap-3 lg:flex-row lg:items-end">
+                <div class="flex-1">
+                    <label for="txtfinalurl" class="mb-1 block text-sm font-semibold">Ruta final de la landing</label>
+                    <input
+                        id="txtfinalurl"
+                        :value="finalUrl || 'Escribe el título para generar la ruta'"
+                        type="text"
+                        readonly
+                        class="form-input font-mono text-xs"
+                        @focus="$event.target.select()"
+                    />
+                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                        Dirección pública que se comparte con los usuarios para captar su información.
+                        <span v-if="!landingPage?.id" class="font-semibold">Aún no se ha guardado la landing.</span>
+                    </p>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <button
+                        type="button"
+                        class="btn btn-outline-primary"
+                        :disabled="!finalUrl"
+                        @click="copyFinalUrl"
+                    >
+                        {{ copied ? '¡Ruta copiada!' : 'Copiar ruta' }}
+                    </button>
+                    <button
+                        v-if="canPreview"
+                        type="button"
+                        class="btn btn-outline-success"
+                        @click="openPreview"
+                    >
+                        Vista previa
+                    </button>
+                </div>
+            </div>
+            <p v-if="canPreview" class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                La vista previa muestra los datos guardados con los cursos seleccionados.
+            </p>
+        </div>
         <div class="flex sm:flex-row flex-col">
             <label for="txttitle" class="mb-0 sm:w-1/4 sm:ltr:mr-2 rtl:ml-2">Título*</label>
             <div class="flex-1">
@@ -293,14 +398,14 @@
         <div class="flex sm:flex-row flex-col">
             <label for="txtaditional1" class="mb-0 sm:w-1/4 sm:ltr:mr-2 rtl:ml-2">Título del formulario paso 1</label>
             <div class="flex-1">
-                <input v-model="form.additional_field1" id="txtaditional1" type="text" placeholder="Título del formulario" class="form-input flex-1" />
+                <input v-model="form.additional_field1" id="txtaditional1" type="text" placeholder="Seleccionar Formación Gratis" class="form-input flex-1" />
                 <InputError :message="form.errors.additional_field1" class="mt-2" />
             </div>
         </div>
         <div class="flex sm:flex-row flex-col">
             <label for="txtaditional2" class="mb-0 sm:w-1/4 sm:ltr:mr-2 rtl:ml-2">Título del formulario paso 2</label>
             <div class="flex-1">
-                <input v-model="form.additional_field2" id="txtaditional2" type="text" placeholder="adicional 2" class="form-input flex-1" />
+                <input v-model="form.additional_field2" id="txtaditional2" type="text" placeholder="Seleccionar Area de Interes" class="form-input flex-1" />
                 <InputError :message="form.errors.additional_field2" class="mt-2" />
             </div>
         </div>
@@ -334,9 +439,9 @@
         </div>
 
         <div class="flex sm:flex-row flex-col">
-            <label for="txtaditional3" class="mb-0 sm:w-1/4 sm:ltr:mr-2 rtl:ml-2">Campo adicional 3</label>
+            <label for="txtaditional3" class="mb-0 sm:w-1/4 sm:ltr:mr-2 rtl:ml-2">Título del formulario paso 3</label>
             <div class="flex-1">
-                <input v-model="form.additional_field3" id="txtaditional3" type="text" placeholder="adicional 3" class="form-input flex-1" />
+                <input v-model="form.additional_field3" id="txtaditional3" type="text" placeholder="Registrarse" class="form-input flex-1" />
                 <InputError :message="form.errors.additional_field3" class="mt-2" />
             </div>
         </div>

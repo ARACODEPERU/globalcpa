@@ -75,16 +75,36 @@ class WebPageController extends Controller
 
     public function landing($slug)
     {
+        $landingPage = CmsLanding::where('menu_id', '01')->first();
+
+        return view('pages.landing', $this->freeCourseLandingData($landingPage));
+    }
+
+    /**
+     * Vista previa de la landing de curso gratis.
+     *
+     * Solo accesible para los roles admin y Administrador (ver
+     * Modules/CMS/Routes/web.php). Usa la misma vista publica para que el
+     * administrador vea exactamente como quedara con los cursos elegidos.
+     */
+    public function freeCourseLandingPreview()
+    {
+        $landingPage = CmsLanding::where('menu_id', '01')->firstOrFail();
+
+        return view('pages.landing', $this->freeCourseLandingData($landingPage, true));
+    }
+
+    /**
+     * Datos compartidos por la landing publica de curso gratis y su vista previa.
+     */
+    private function freeCourseLandingData(?CmsLanding $landingPage, bool $previewMode = false): array
+    {
         $courses = OnliItem::whereHas('course')->with('course')->latest()->get();
         //$courses = $courses->shuffle();
         $categories = AcaCategoryCourse::all();
         $types = getEnumValues('onli_items', 'additional', 0, 1);
 
-        //$landingPage = CmsLanding::where('slug', $slug)->first();
-        $landingPage = CmsLanding::where('menu_id', '01')->first();
-
-
-        $ids = $landingPage->data_related['items'] ?? [];
+        $ids = $landingPage ? ($landingPage->data_related['items'] ?? []) : [];
 
         $coursesFree = AcaCourse::whereIn('id', $ids)->get();
 
@@ -106,7 +126,7 @@ class WebPageController extends Controller
 
         $p = 12; //numero de cursos mostrados PAGINACION
 
-        return view('pages.landing', [
+        return [
             'courses' => $courses,
             'categories' => $categories,
             'title' => $title,
@@ -116,8 +136,9 @@ class WebPageController extends Controller
             'coursesFree' => $coursesFree,
             'countries' => $countries,
             'documentTypes' => $documentTypes,
-            'ubigeo' => $ubigeo
-        ]);
+            'ubigeo' => $ubigeo,
+            'previewMode' => $previewMode,
+        ];
     }
 
     public function about()

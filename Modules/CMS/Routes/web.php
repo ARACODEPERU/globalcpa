@@ -22,6 +22,7 @@ use Modules\CMS\Http\Controllers\CmsSectionItemController;
 use Modules\CMS\Http\Controllers\CmsSubscriberController;
 use Modules\CMS\Http\Controllers\CmsTestimonyController;
 use Modules\CMS\Http\Controllers\OneFreeCourseController;
+use App\Http\Controllers\WebPageController;
 use Modules\CMS\Http\Controllers\CmsContactMessageController;
 use Modules\CMS\Http\Controllers\CmsBlogSubscribersController;
 
@@ -100,6 +101,11 @@ Route::middleware(['auth', 'verified', 'user_activity_log'])->prefix('cms')->gro
     Route::middleware(['permission:cms_landing_curso_gratis'])
         ->post('one/free/course/store', [OneFreeCourseController::class, 'store'])
         ->name('cms_landing_course_free_store');
+
+    // Vista previa de la landing de curso gratis: solo admin y Administrador.
+    Route::middleware(['role:admin|Administrador'])
+        ->get('one/free/course/{menu_id}/preview', [WebPageController::class, 'freeCourseLandingPreview'])
+        ->name('cms_landing_course_free_preview');
 
     // Mensajes de Contacto
     Route::middleware(['permission:cms_mensajes_contacto'])
