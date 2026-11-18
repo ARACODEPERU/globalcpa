@@ -110,6 +110,14 @@ Route::middleware(['auth', 'verified', 'user_activity_log'])->prefix('cms')->gro
         ->get('one/free/course/{menu_id}/utm-stats', [OneFreeCourseController::class, 'utmStats'])
         ->name('cms_landing_course_free_utm_stats');
 
+    // Registros obtenidos por la landing de curso gratis y su exportacion.
+    Route::middleware(['permission:cms_landing_curso_gratis'])
+        ->get('one/free/course/{menu_id}/registrations', [OneFreeCourseController::class, 'freeCourseRegistrations'])
+        ->name('cms_landing_course_free_registrations');
+    Route::middleware(['permission:cms_landing_curso_gratis'])
+        ->get('one/free/course/{menu_id}/registrations/export/{format}', [OneFreeCourseController::class, 'exportFreeCourseRegistrations'])
+        ->name('cms_landing_course_free_registrations_export');
+
     // Vista previa de la landing de curso gratis: solo admin y Administrador.
     Route::middleware(['role:admin|Administrador'])
         ->get('one/free/course/{menu_id}/preview', [WebPageController::class, 'freeCourseLandingPreview'])

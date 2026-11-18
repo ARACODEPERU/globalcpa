@@ -10,6 +10,7 @@
     import 'flatpickr/dist/flatpickr.css';
     import { Spanish } from "flatpickr/dist/l10n/es.js"
     import FormConfCoursesUtm from './FormConfCoursesUtm.vue';
+    import FormConfCoursesRegistrations from './FormConfCoursesRegistrations.vue';
 
     const rangeCalendar = ref({
         dateFormat: 'Y-m-d',
@@ -316,6 +317,7 @@
             </p>
 
             <FormConfCoursesUtm :landing="landingPage" :landing-url="finalUrl" :menu-id="form.menu_id" />
+            <FormConfCoursesRegistrations :landing="landingPage" :menu-id="form.menu_id" />
         </div>
         <div class="flex sm:flex-row flex-col">
             <label for="txttitle" class="mb-0 sm:w-1/4 sm:ltr:mr-2 rtl:ml-2">Título*</label>

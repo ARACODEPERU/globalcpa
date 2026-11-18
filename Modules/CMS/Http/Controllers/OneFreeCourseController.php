@@ -4,6 +4,7 @@ namespace Modules\CMS\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Parameter;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -14,6 +15,9 @@ use Modules\Academic\Entities\AcaCourse;
 use Modules\CMS\Entities\CmsLanding;
 use Modules\CMS\Entities\CmsLandingLead;
 use Modules\CMS\Http\Requests\CmsLandingRequest;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class OneFreeCourseController extends Controller
 {
@@ -213,6 +217,141 @@ class OneFreeCourseController extends Controller
             'referrers' => $referrers,
             'leads' => $leads,
         ]);
+    }
+
+    /**
+     * Registros (llegadas) obtenidos desde la landing de curso gratis, paginados.
+     */
+    public function freeCourseRegistrations(Request $request, $menu_id)
+    {
+        $landing = CmsLanding::where('menu_id', $menu_id)->first();
+        $perPage = max(5, min(100, (int) $request->get('per_page', 20)));
+
+        if (!$landing) {
+            return response()->json([
+                'total' => 0,
+                'current_page' => 1,
+                'last_page' => 1,
+                'per_page' => $perPage,
+                'rows' => [],
+            ]);
+        }
+
+        $leads = $this->freeCourseLeadsQuery($landing, $request->get('dates'))
+            ->orderByDesc('id')
+            ->paginate($perPage, $this->freeCourseRegistrationsColumns(), 'page', (int) $request->get('page', 1));
+
+        return response()->json([
+            'total' => $leads->total(),
+            'current_page' => $leads->currentPage(),
+            'last_page' => $leads->lastPage(),
+            'per_page' => $leads->perPage(),
+            'rows' => collect($leads->items())->map(fn ($lead) => $this->freeCourseRegistrationRow($lead))->values(),
+        ]);
+    }
+
+    /**
+     * Exporta los registros de la landing en Excel (xlsx) o PDF.
+     */
+    public function exportFreeCourseRegistrations(Request $request, $menu_id, $format)
+    {
+        $landing = CmsLanding::where('menu_id', $menu_id)->first();
+        $format = $format === 'pdf' ? 'pdf' : 'excel';
+        $dates = $request->get('dates');
+
+        $rows = $landing
+            ? $this->freeCourseLeadsQuery($landing, $dates)
+                ->orderByDesc('id')
+                ->get($this->freeCourseRegistrationsColumns())
+                ->map(fn ($lead) => $this->freeCourseRegistrationRow($lead))
+                ->all()
+            : [];
+
+        $headers = [
+            'Fecha', 'Nombre', 'Correo', 'Teléfono', 'Origen',
+            'utm_source', 'utm_medium', 'utm_campaign', 'Referer', 'URL de la landing',
+        ];
+
+        $fileName = 'registros-' . ($landing->slug ?: 'curso-gratis') . '-' . now()->format('Ymd-His');
+
+        if ($format === 'pdf') {
+            return Pdf::loadView('cms::landings.free-course-registrations-pdf', [
+                'landing' => $landing,
+                'headers' => $headers,
+                'rows' => $rows,
+                'range' => $dates,
+            ])->setPaper('a4', 'landscape')->download($fileName . '.pdf');
+        }
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Registros');
+        $sheet->fromArray($headers, null, 'A1');
+        $sheet->getStyle('A1:J1')->getFont()->setBold(true);
+
+        $rowNumber = 2;
+        foreach ($rows as $row) {
+            $column = 'A';
+            foreach (array_values($row) as $value) {
+                $sheet->setCellValueExplicit($column . $rowNumber, (string) $value, DataType::TYPE_STRING);
+                $column++;
+            }
+            $rowNumber++;
+        }
+
+        foreach (range('A', 'J') as $column) {
+            $sheet->getColumnDimension($column)->setAutoSize(true);
+        }
+
+        return response()->streamDownload(function () use ($spreadsheet) {
+            (new Xlsx($spreadsheet))->save('php://output');
+        }, $fileName . '.xlsx', [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ]);
+    }
+
+    /**
+     * Consulta base de registros de la landing, con filtro opcional de fechas.
+     */
+    private function freeCourseLeadsQuery(CmsLanding $landing, $dates = null)
+    {
+        [$start, $end] = $this->parseDateRange($dates);
+
+        $query = CmsLandingLead::where('landing_id', $landing->id);
+
+        if ($start && $end) {
+            $query->whereDate('created_at', '>=', $start)
+                ->whereDate('created_at', '<=', $end);
+        }
+
+        return $query;
+    }
+
+    private function freeCourseRegistrationsColumns(): array
+    {
+        return [
+            'name', 'email', 'phone', 'traffic_source', 'utm_source', 'utm_medium',
+            'utm_campaign', 'referer', 'landing_url', 'created_at',
+        ];
+    }
+
+    /**
+     * Fila de registro con el mismo orden que las columnas de la tabla y la exportacion.
+     */
+    private function freeCourseRegistrationRow($lead): array
+    {
+        return [
+            'fecha' => optional($lead->created_at)->format('d/m/Y H:i') ?: '',
+            'nombre' => $lead->name ?: '',
+            'email' => $lead->email ?: '',
+            'telefono' => $lead->phone ?: '',
+            'origen' => $lead->traffic_source ?: 'organic',
+            'utm_source' => $lead->utm_source ?: '',
+            'utm_medium' => $lead->utm_medium ?: '',
+            'utm_campaign' => $lead->utm_campaign ?: '',
+            'referer' => $lead->referer ?: '',
+            'landing_url' => $lead->landing_url ?: '',
+        ];
     }
 
     /**

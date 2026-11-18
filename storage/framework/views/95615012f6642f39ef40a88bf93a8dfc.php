@@ -180,6 +180,8 @@
                                         Elige de aquí lo que quieres estudiar.
                                         <?php if($freeCoursesCount > 1): ?>
                                             Puedes marcar hasta <?php echo e($freeCoursesCount); ?> cursos.
+                                        <?php else: ?>
+                                            Solo puedes elegir 1 curso.
                                         <?php endif; ?>
                                     </p>
                                 </div>
@@ -190,11 +192,7 @@
                                             <div class="card weekend-card">
                                                 <!-- Aracode -->
                                                 <label class="c-container">
-                                                    <?php if($freeCoursesCount > 1): ?>
-                                                        <input value="<?php echo e($item->id); ?>" type="checkbox" name="courseFree[]">
-                                                    <?php else: ?>
-                                                        <input value="<?php echo e($item->id); ?>" type="radio" name="courseFree">
-                                                    <?php endif; ?>
+                                                    <input value="<?php echo e($item->id); ?>" type="checkbox" name="courseFree[]">
                                                     <div class="c-checkmark">
                                                         <svg viewBox="0 0 50 50" version="1.1"
                                                             xmlns="http://www.w3.org/2000/svg" class="c-icon">
@@ -220,11 +218,13 @@
                                         </div>
                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </div>
+                                <p id="freeCoursesLimitMsg" class="text-danger small mt-2 mb-0 d-none" role="alert"></p>
                                 <hr>
                             </div>
                             <div class="col-md-1"></div>
                         </div>
                         <br>
+                        <hr class="my-4" style="border: 0; border-top: 2px solid #3c4a99; opacity: .35;">
                         <div class="row">
                             <div class="col-md-1"></div>
                             <div class="col-md-10">
@@ -1057,30 +1057,41 @@
         })();
     </script>
 
-    <?php if($freeCoursesCount > 1): ?>
-        <script>
-            // Limita la seleccion de formaciones gratis al maximo configurado en la landing.
-            (function() {
-                var limit = <?php echo e($freeCoursesCount); ?>;
-                var inputs = Array.prototype.slice.call(document.querySelectorAll('input[name="courseFree[]"]'));
+    <script>
+        // Avisa cuando se intenta elegir mas formaciones gratis de las permitidas.
+        (function() {
+            var limit = <?php echo e($freeCoursesCount); ?>;
+            var inputs = Array.prototype.slice.call(document.querySelectorAll('input[name="courseFree[]"]'));
+            var message = document.getElementById('freeCoursesLimitMsg');
+            var timer = null;
+            var text = limit === 1 ?
+                'Solo puedes elegir 1 curso gratis.' :
+                'Solo puedes elegir hasta ' + limit + ' cursos gratis.';
 
-                var sync = function() {
-                    var checked = inputs.filter(function(input) {
-                        return input.checked;
+            var warn = function() {
+                if (!message) return;
+                message.textContent = text;
+                message.classList.remove('d-none');
+                window.clearTimeout(timer);
+                timer = window.setTimeout(function() {
+                    message.classList.add('d-none');
+                }, 6000);
+            };
+
+            inputs.forEach(function(input) {
+                input.addEventListener('change', function() {
+                    var checked = inputs.filter(function(item) {
+                        return item.checked;
                     }).length;
 
-                    inputs.forEach(function(input) {
-                        input.disabled = !input.checked && checked >= limit;
-                    });
-                };
-
-                inputs.forEach(function(input) {
-                    input.addEventListener('change', sync);
+                    if (input.checked && checked > limit) {
+                        input.checked = false;
+                        warn();
+                    }
                 });
-                sync();
-            })();
-        </script>
-    <?php endif; ?>
+            });
+        })();
+    </script>
 
 <?php $__env->stopSection(); ?>
 
