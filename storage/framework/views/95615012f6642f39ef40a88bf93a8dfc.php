@@ -104,6 +104,23 @@
                         </div>
                     </div>
                 <?php endif; ?>
+                <div class="container-fluid">
+                    <?php if(!empty($promoExpired)): ?>
+                        <div class="alert alert-danger" role="alert">
+                            <strong>Promoción terminada.</strong>
+                            La promoción estuvo disponible hasta el <?php echo e($promoEnd->format('d/m/Y')); ?>.
+                        </div>
+                    <?php elseif(!empty($promoEnd)): ?>
+                        <div class="alert alert-info" role="alert">
+                            <strong>Promoción disponible hasta el <?php echo e($promoEnd->format('d/m/Y')); ?>.</strong>
+                            Regístrate antes de esa fecha para no perder tu vacante.
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if($errors->has('promocion')): ?>
+                        <div class="alert alert-warning" role="alert"><?php echo e($errors->first('promocion')); ?></div>
+                    <?php endif; ?>
+                </div>
                 <div class="container-fluid crm_dashboard">
                     <div class="row">
                         <div class="col-xl-12">
@@ -129,6 +146,24 @@
                 </div>
                 <div class="container-fluid" style="padding: 40px 0px;">
                     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+                    <?php if(!empty($promoExpired)): ?>
+                        <div class="row">
+                            <div class="d-flex justify-content-center">
+                                <div class="card col-md-10">
+                                    <div class="card-body text-center" style="padding: 60px 20px;">
+                                        <h2 class="mb-3">Promoción terminada</h2>
+                                        <p class="mb-4">
+                                            El registro gratuito estuvo disponible hasta el
+                                            <strong><?php echo e($promoEnd->format('d/m/Y')); ?></strong>.
+                                            Escríbenos si quieres conocer las próximas convocatorias.
+                                        </p>
+                                        <a class="btn btn-pill btn-primary btn-air-primary btn-sm"
+                                            href="<?php echo e(route('web_courses')); ?>">Ver cursos disponibles</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <?php else: ?>
                     <form method="POST" action="<?php echo e(route('landing_store_course_free')); ?>">
                         <?php echo csrf_field(); ?>
                         <div class="row">
@@ -397,6 +432,7 @@
                             </div>
                         </div>
                     </form>
+                    <?php endif; ?>
 
                     <div class="modal_wrapper">
                         <div class="shadow"></div>

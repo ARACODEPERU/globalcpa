@@ -52,6 +52,23 @@
                         </div>
                     </div>
                 @endif
+                <div class="container-fluid">
+                    @if (!empty($promoExpired))
+                        <div class="alert alert-danger" role="alert">
+                            <strong>Promoción terminada.</strong>
+                            La promoción estuvo disponible hasta el {{ $promoEnd->format('d/m/Y') }}.
+                        </div>
+                    @elseif (!empty($promoEnd))
+                        <div class="alert alert-info" role="alert">
+                            <strong>Promoción disponible hasta el {{ $promoEnd->format('d/m/Y') }}.</strong>
+                            Regístrate antes de esa fecha para no perder tu vacante.
+                        </div>
+                    @endif
+
+                    @if ($errors->has('promocion'))
+                        <div class="alert alert-warning" role="alert">{{ $errors->first('promocion') }}</div>
+                    @endif
+                </div>
                 <div class="container-fluid crm_dashboard">
                     <div class="row">
                         <div class="col-xl-12">
@@ -77,6 +94,24 @@
                 </div>
                 <div class="container-fluid" style="padding: 40px 0px;">
                     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+                    @if (!empty($promoExpired))
+                        <div class="row">
+                            <div class="d-flex justify-content-center">
+                                <div class="card col-md-10">
+                                    <div class="card-body text-center" style="padding: 60px 20px;">
+                                        <h2 class="mb-3">Promoción terminada</h2>
+                                        <p class="mb-4">
+                                            El registro gratuito estuvo disponible hasta el
+                                            <strong>{{ $promoEnd->format('d/m/Y') }}</strong>.
+                                            Escríbenos si quieres conocer las próximas convocatorias.
+                                        </p>
+                                        <a class="btn btn-pill btn-primary btn-air-primary btn-sm"
+                                            href="{{ route('web_courses') }}">Ver cursos disponibles</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @else
                     <form method="POST" action="{{ route('landing_store_course_free') }}">
                         @csrf
                         <div class="row">
@@ -339,6 +374,7 @@
                             </div>
                         </div>
                     </form>
+                    @endif
 
                     <div class="modal_wrapper">
                         <div class="shadow"></div>

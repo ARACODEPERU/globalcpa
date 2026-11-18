@@ -108,6 +108,11 @@ class WebPageController extends Controller
 
         $coursesFree = AcaCourse::whereIn('id', $ids)->get();
 
+        // Vigencia de la promocion: pasado el ultimo dia, la landing se muestra
+        // como terminada y deja de aceptar registros.
+        $promoEnd = $this->freeCoursePromoEnd($landingPage);
+        $promoExpired = $this->freeCoursePromoExpired($landingPage);
+
         $title = CmsSection::where('component_id', 'cursos_titulo_area_15')  //siempre cambiar el id del componente
             ->join('cms_section_items', 'section_id', 'cms_sections.id')
             ->join('cms_items', 'cms_section_items.item_id', 'cms_items.id')
@@ -138,7 +143,36 @@ class WebPageController extends Controller
             'documentTypes' => $documentTypes,
             'ubigeo' => $ubigeo,
             'previewMode' => $previewMode,
+            'promoEnd' => $promoEnd,
+            'promoExpired' => $promoExpired,
         ];
+    }
+
+    /**
+     * Ultimo dia de la promocion de la landing de curso gratis.
+     * Devuelve null cuando la landing no define fecha de fin.
+     */
+    private function freeCoursePromoEnd(?CmsLanding $landingPage): ?Carbon
+    {
+        if (!$landingPage || !filled($landingPage->date_end)) {
+            return null;
+        }
+
+        try {
+            return Carbon::parse($landingPage->date_end)->endOfDay();
+        } catch (\Throwable $e) {
+            return null;
+        }
+    }
+
+    /**
+     * Indica si la promocion ya vencio (se cuenta completo el dia de fin).
+     */
+    private function freeCoursePromoExpired(?CmsLanding $landingPage): bool
+    {
+        $promoEnd = $this->freeCoursePromoEnd($landingPage);
+
+        return $promoEnd !== null && Carbon::now()->greaterThan($promoEnd);
     }
 
     public function about()
@@ -2325,6 +2359,18 @@ class WebPageController extends Controller
 
     public function storeCourseFree(Request $request)
     {
+        $landingPage = CmsLanding::where('menu_id', '01')->first();
+
+        // Sin importar lo que envie el navegador, no se aceptan registros de una
+        // promocion vencida.
+        if ($this->freeCoursePromoExpired($landingPage)) {
+            return redirect()->back()
+                ->withErrors([
+                    'promocion' => 'La promoción terminó el ' . $this->freeCoursePromoEnd($landingPage)->format('d/m/Y') . ' y ya no acepta registros.',
+                ])
+                ->withInput();
+        }
+
 
         // 🔹 VALIDACIÓN
         $validator = Validator::make($request->all(), [
