@@ -9,6 +9,7 @@
     import flatPickr from 'vue-flatpickr-component';
     import 'flatpickr/dist/flatpickr.css';
     import { Spanish } from "flatpickr/dist/l10n/es.js"
+    import FormConfCoursesUtm from './FormConfCoursesUtm.vue';
 
     const rangeCalendar = ref({
         dateFormat: 'Y-m-d',
@@ -73,6 +74,7 @@
         additional_field1: props.landingPage?.additional_field1,
         additional_field2: props.landingPage?.additional_field2,
         additional_field3: props.landingPage?.additional_field3,
+        free_courses_count: props.landingPage?.free_courses_count ?? 1,
         date_start: props.landingPage?.date_start,
         date_end: props.landingPage?.date_end,
         status: props.landingPage?.status,
@@ -312,6 +314,8 @@
             <p v-if="canPreview" class="mt-2 text-xs text-gray-500 dark:text-gray-400">
                 La vista previa muestra los datos guardados con los cursos seleccionados.
             </p>
+
+            <FormConfCoursesUtm :landing="landingPage" :landing-url="finalUrl" :menu-id="form.menu_id" />
         </div>
         <div class="flex sm:flex-row flex-col">
             <label for="txttitle" class="mb-0 sm:w-1/4 sm:ltr:mr-2 rtl:ml-2">Título*</label>
@@ -427,6 +431,21 @@
                     </template>
                 </Select>
                 <InputError :message="form.errors.data_related" class="mt-2" />
+            </div>
+        </div>
+
+        <div class="flex sm:flex-row flex-col">
+            <label for="txtfreecourses" class="mb-0 sm:w-1/4 sm:ltr:mr-2 rtl:ml-2">Cursos gratis que puede elegir el usuario</label>
+            <div class="flex-1">
+                <select v-model="form.free_courses_count" id="txtfreecourses" class="form-select">
+                    <option :value="1">1 curso</option>
+                    <option :value="2">2 cursos</option>
+                    <option :value="3">3 cursos</option>
+                </select>
+                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                    En "Seleccionar Formación Gratis" el usuario podrá marcar esa cantidad de cursos (máximo 3).
+                </p>
+                <InputError :message="form.errors.free_courses_count" class="mt-2" />
             </div>
         </div>
 

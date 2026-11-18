@@ -35,6 +35,7 @@ class CmsLandingRequest extends FormRequest
             'additional_field3'  => ['nullable'],
             'date_start'         => ['nullable', 'date'],
             'date_end'           => ['nullable', 'date'],
+            'free_courses_count' => ['nullable', 'integer', 'min:1', 'max:3'],
         ];
     }
 
@@ -74,6 +75,10 @@ class CmsLandingRequest extends FormRequest
 
             'date_start.date'            => 'La fecha de inicio no tiene un formato válido.',
             'date_end.date'              => 'La fecha de fin no tiene un formato válido.',
+
+            'free_courses_count.integer' => 'La cantidad de cursos gratis debe ser un número.',
+            'free_courses_count.min'     => 'La cantidad de cursos gratis debe ser al menos 1.',
+            'free_courses_count.max'     => 'La cantidad de cursos gratis no puede ser mayor a 3.',
 
             'image.image'           => 'El archivo debe ser una imagen.',
             'image.mimes'           => 'La imagen debe ser en formato JPG o PNG.',

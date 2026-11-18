@@ -114,11 +114,22 @@
                     @else
                     <form method="POST" action="{{ route('landing_store_course_free') }}">
                         @csrf
+                        {{-- Atribución de campaña: traffic-tracking.js completa estos valores --}}
+                        @foreach (['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'utm_id', 'fbclid', 'gclid', 'referer', 'landing_url', 'traffic_source'] as $trackingField)
+                            <input type="hidden" name="{{ $trackingField }}" id="tracking_{{ $trackingField }}"
+                                value="{{ request()->get($trackingField) }}">
+                        @endforeach
                         <div class="row">
                             <div class="col-md-1"></div>
                             <div class="col-md-10">
                                 <div class="row">
                                     <h2>{{ $landingPage->additional_field1 ?? null ?: 'Seleccionar Formación Gratis' }}</h2>
+                                    <p class="text-muted small mb-0">
+                                        Elige de aquí lo que quieres estudiar.
+                                        @if ($freeCoursesCount > 1)
+                                            Puedes marcar hasta {{ $freeCoursesCount }} cursos.
+                                        @endif
+                                    </p>
                                 </div>
                                 <br>
                                 <div class="row">
@@ -127,7 +138,11 @@
                                             <div class="card weekend-card">
                                                 <!-- Aracode -->
                                                 <label class="c-container">
-                                                    <input value="{{ $item->id }}" type="radio" name="courseFree">
+                                                    @if ($freeCoursesCount > 1)
+                                                        <input value="{{ $item->id }}" type="checkbox" name="courseFree[]">
+                                                    @else
+                                                        <input value="{{ $item->id }}" type="radio" name="courseFree">
+                                                    @endif
                                                     <div class="c-checkmark">
                                                         <svg viewBox="0 0 50 50" version="1.1"
                                                             xmlns="http://www.w3.org/2000/svg" class="c-icon">
@@ -162,6 +177,7 @@
                             <div class="col-md-10">
                                 <div class="row">
                                     <h2>{{ $landingPage->additional_field2 ?? null ?: 'Seleccionar Area de Interes' }}</h2>
+                                    <p class="text-muted small mb-0">Elige qué te gustaría aprender para tenerlo en cuenta más adelante.</p>
                                 </div>
                                 <br>
                                 <div class="row">
@@ -939,5 +955,54 @@
             $('#ciudad').val(texto);
         });
     </script>
+
+    <script>
+        // Rellena la atribución de campaña (UTM, referer, origen) que guarda traffic-tracking.js.
+        (function() {
+            var tracking = {};
+            try {
+                tracking = JSON.parse(localStorage.getItem('traffic_tracking') || '{}') || {};
+            } catch (e) {
+                tracking = {};
+            }
+
+            var fields = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'utm_id',
+                'fbclid', 'gclid', 'referer', 'landing_url', 'traffic_source'
+            ];
+
+            fields.forEach(function(key) {
+                var input = document.getElementById('tracking_' + key);
+                if (input && tracking[key]) input.value = tracking[key];
+            });
+
+            var landingInput = document.getElementById('tracking_landing_url');
+            if (landingInput && !landingInput.value) landingInput.value = window.location.href;
+        })();
+    </script>
+
+    @if ($freeCoursesCount > 1)
+        <script>
+            // Limita la seleccion de formaciones gratis al maximo configurado en la landing.
+            (function() {
+                var limit = {{ $freeCoursesCount }};
+                var inputs = Array.prototype.slice.call(document.querySelectorAll('input[name="courseFree[]"]'));
+
+                var sync = function() {
+                    var checked = inputs.filter(function(input) {
+                        return input.checked;
+                    }).length;
+
+                    inputs.forEach(function(input) {
+                        input.disabled = !input.checked && checked >= limit;
+                    });
+                };
+
+                inputs.forEach(function(input) {
+                    input.addEventListener('change', sync);
+                });
+                sync();
+            })();
+        </script>
+    @endif
 
 @stop

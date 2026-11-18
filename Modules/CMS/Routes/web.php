@@ -102,6 +102,14 @@ Route::middleware(['auth', 'verified', 'user_activity_log'])->prefix('cms')->gro
         ->post('one/free/course/store', [OneFreeCourseController::class, 'store'])
         ->name('cms_landing_course_free_store');
 
+    // Enlaces UTM y llegadas de la landing de curso gratis.
+    Route::middleware(['permission:cms_landing_curso_gratis'])
+        ->post('one/free/course/{menu_id}/utm-config', [OneFreeCourseController::class, 'updateUtmConfig'])
+        ->name('cms_landing_course_free_utm_config');
+    Route::middleware(['permission:cms_landing_curso_gratis'])
+        ->get('one/free/course/{menu_id}/utm-stats', [OneFreeCourseController::class, 'utmStats'])
+        ->name('cms_landing_course_free_utm_stats');
+
     // Vista previa de la landing de curso gratis: solo admin y Administrador.
     Route::middleware(['role:admin|Administrador'])
         ->get('one/free/course/{menu_id}/preview', [WebPageController::class, 'freeCourseLandingPreview'])

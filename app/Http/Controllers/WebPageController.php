@@ -38,6 +38,7 @@ use Modules\Academic\Entities\AcaCourseLanding;
 use Illuminate\Support\Facades\DB;
 use Modules\Academic\Entities\AcaStudentCoursesInterest;
 use Modules\CMS\Entities\CmsLanding;
+use Modules\CMS\Entities\CmsLandingLead;
 use Modules\CMS\Entities\CmsTestimony;
 use Modules\Onlineshop\Entities\OnliCarritoAbandonado;
 use Modules\Onlineshop\Entities\OnliPaymentProblem;
@@ -108,6 +109,9 @@ class WebPageController extends Controller
 
         $coursesFree = AcaCourse::whereIn('id', $ids)->get();
 
+        // Cuantos cursos gratis puede elegir el usuario en la landing (1 a 3).
+        $freeCoursesCount = max(1, min(3, (int) ($landingPage->free_courses_count ?? 1) ?: 1));
+
         // Vigencia de la promocion: pasado el ultimo dia, la landing se muestra
         // como terminada y deja de aceptar registros.
         $promoEnd = $this->freeCoursePromoEnd($landingPage);
@@ -143,6 +147,7 @@ class WebPageController extends Controller
             'documentTypes' => $documentTypes,
             'ubigeo' => $ubigeo,
             'previewMode' => $previewMode,
+            'freeCoursesCount' => $freeCoursesCount,
             'promoEnd' => $promoEnd,
             'promoExpired' => $promoExpired,
         ];
@@ -2372,9 +2377,23 @@ class WebPageController extends Controller
         }
 
 
+        // La cantidad de cursos gratis permitidos la define la landing (1 a 3).
+        $freeCoursesCount = max(1, min(3, (int) ($landingPage->free_courses_count ?? 1) ?: 1));
+
+        // El formulario envia un radio (un curso) o varios checkbox (courseFree[]).
+        $courseFreeIds = collect((array) $request->input('courseFree', []))
+            ->filter(fn ($id) => $id !== null && $id !== '')
+            ->map(fn ($id) => (int) $id)
+            ->unique()
+            ->values()
+            ->all();
+
+        $request->merge(['courseFree' => $courseFreeIds]);
+
         // 🔹 VALIDACIÓN
         $validator = Validator::make($request->all(), [
-            'courseFree' => 'required',
+            'courseFree' => 'required|array|min:1|max:' . $freeCoursesCount,
+            'courseFree.*' => 'integer|exists:aca_courses,id',
             'courseInterest' => 'required',
             'nombres' => 'required|string|max:255',
             'apaterno' => 'required|string|max:255',
@@ -2404,6 +2423,9 @@ class WebPageController extends Controller
             'fecha_nacimiento' => 'required',
             'politicas' => 'accepted', // debe estar marcado
         ], [
+            'courseFree.required' => 'Selecciona al menos una formación gratis.',
+            'courseFree.min' => 'Selecciona al menos una formación gratis.',
+            'courseFree.max' => 'Solo puedes elegir hasta :max cursos gratis.',
             'required' => 'El campo :attribute es obligatorio.',
             'email.email' => 'Debe ingresar un correo electrónico válido.',
             'email.unique' => 'El correo electrónico ya está registrado.',
@@ -2447,15 +2469,17 @@ class WebPageController extends Controller
                 'arrival_source_information' => '01'
             ]);
 
-            // 🔹 REGISTRO EN TABLA aca_cap_registrations
-            AcaCapRegistration::create([
-                'student_id' => $student->id,
-                'course_id' => $request->courseFree,
-                'status' => true,
-                'certificate_date' => Carbon::now(),
-                'arrival_source_id' => 1,
-                'arrival_source_information' => '01'
-            ]);
+            // 🔹 REGISTRO EN TABLA aca_cap_registrations (una por curso gratis elegido)
+            foreach ($courseFreeIds as $courseFreeId) {
+                AcaCapRegistration::create([
+                    'student_id' => $student->id,
+                    'course_id' => $courseFreeId,
+                    'status' => true,
+                    'certificate_date' => Carbon::now(),
+                    'arrival_source_id' => 1,
+                    'arrival_source_information' => '01'
+                ]);
+            }
 
             $coursesInterest = $request->courseInterest ?? [];
 
@@ -2506,15 +2530,18 @@ class WebPageController extends Controller
             $user = $registration['user'];
 
             $courses = [];
-            $item = OnliItem::where('item_id', '=', $request->courseInterest)->first();
-            $courses[0] = [
-                'image'       => $item->image,
-                'name'        => $item->name,
-                'description' => $item->description,
-                'type'        => $item->additional,
-                'modality'    => $item->additional1,
-                'price'      => "Gratis",
-            ];
+            $item = OnliItem::whereIn('item_id', array_filter((array) $request->courseInterest))->first();
+
+            if ($item) {
+                $courses[0] = [
+                    'image'       => $item->image,
+                    'name'        => $item->name,
+                    'description' => $item->description,
+                    'type'        => $item->additional,
+                    'modality'    => $item->additional1,
+                    'price'      => "Gratis",
+                ];
+            }
 
             //////////codigo enviar correo /////
             Mail::to($request->email)->queue(new StudentRegistrationMailable([
@@ -2525,6 +2552,9 @@ class WebPageController extends Controller
             ]));
             // 3. CONFIRMACIÓN (COMMIT)
             DB::commit();
+
+            // Guarda la llegada con su origen de campana (UTM).
+            $this->storeFreeCourseLead($request, $person?->id);
             // 🔹 MENSAJE DE ÉXITO
             return redirect()->back()->with('success', 'Registro completado exitosamente, Revisa tu correo donde recibirás mas información.');
 
@@ -2535,6 +2565,39 @@ class WebPageController extends Controller
             return redirect()->back()->with('fail', 'Registro fallido. Reintentar.');
         }
 
+    }
+
+    /**
+     * Guarda la llegada (registro) de la landing con su atribucion UTM.
+     * Un fallo aqui no debe romper el registro del estudiante.
+     */
+    private function storeFreeCourseLead(Request $request, $personId = null): void
+    {
+        try {
+            $landing = CmsLanding::where('menu_id', '01')->first();
+
+            CmsLandingLead::create([
+                'landing_id' => $landing?->id,
+                'menu_id' => '01',
+                'person_id' => $personId,
+                'name' => trim(($request->nombres ?? '') . ' ' . ($request->apaterno ?? '') . ' ' . ($request->amaterno ?? '')) ?: null,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'utm_source' => $request->get('utm_source'),
+                'utm_medium' => $request->get('utm_medium'),
+                'utm_campaign' => $request->get('utm_campaign'),
+                'utm_term' => $request->get('utm_term'),
+                'utm_content' => $request->get('utm_content'),
+                'utm_id' => $request->get('utm_id'),
+                'fbclid' => $request->get('fbclid') ? Str::limit($request->get('fbclid'), 500, '') : null,
+                'gclid' => $request->get('gclid') ? Str::limit($request->get('gclid'), 500, '') : null,
+                'referer' => $request->get('referer') ? Str::limit($request->get('referer'), 490, '') : null,
+                'landing_url' => $request->get('landing_url') ? Str::limit($request->get('landing_url'), 490, '') : null,
+                'traffic_source' => $request->get('traffic_source') ?: 'organic',
+            ]);
+        } catch (\Throwable $e) {
+            // La atribucion no debe bloquear el registro del estudiante.
+        }
     }
 
     // ==================== ABANDONED CART ====================

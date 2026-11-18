@@ -26,12 +26,15 @@ class CmsLanding extends Model
         'additional_field3',
         'date_start',
         'date_end',
+        'utm_config',
+        'free_courses_count',
         'menu_id'
     ];
 
     protected $casts = [
         'data_related' => 'array',
         'data_related2' => 'array',
+        'utm_config' => 'array',
     ];
 
     // 🔹 Accessor para decodificar JSON automáticamente
