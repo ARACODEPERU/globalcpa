@@ -286,11 +286,17 @@ class SubscriptionUtmStatsService
             ->when($start && $end, fn ($query) => $query->whereBetween('s.created_at', [$start, $end]));
     }
 
+    /**
+     * Agrupa por la expresion calculada dentro de una subconsulta: asi el
+     * GROUP BY usa una columna real y funciona igual en MySQL y MariaDB
+     * (con ONLY_FULL_GROUP_BY no siempre aceptan agrupar por la expresion).
+     */
     private function countBySource(Builder $query, string $expression): Collection
     {
-        return $query
-            ->selectRaw($expression . ' as source_key, COUNT(*) as total')
-            ->groupByRaw($expression)
+        return DB::query()
+            ->fromSub($query->selectRaw($expression . ' as source_key'), 'sources')
+            ->selectRaw('source_key, COUNT(*) as total')
+            ->groupBy('source_key')
             ->pluck('total', 'source_key');
     }
 }
