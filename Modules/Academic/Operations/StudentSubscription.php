@@ -74,11 +74,14 @@ class StudentSubscription
         }
 
         $amount = 0;
-        if ($subscription->prices) {
-            foreach (json_decode($subscription->prices) as $price) {
-                if ($price->currency == 'PEN') {
-                    $amount = $price->amount;
-                }
+        $prices = $subscription->prices;
+        $prices = is_string($prices) ? (json_decode($prices, true) ?: []) : (array) $prices;
+
+        foreach ($prices as $price) {
+            $price = (array) $price;
+
+            if (($price['currency'] ?? null) === 'PEN') {
+                $amount = $price['amount'] ?? 0;
             }
         }
 
