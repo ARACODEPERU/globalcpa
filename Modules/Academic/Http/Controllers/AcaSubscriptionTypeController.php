@@ -67,6 +67,8 @@ class AcaSubscriptionTypeController extends Controller
                 'title' => 'required|unique:aca_subscription_types,title',
                 'description' => 'required',
                 'details.*.label' => 'required',
+                'price_note' => 'nullable|string|max:2000',
+                'price_note_below' => 'nullable|string|max:2000',
                 'prices.0.currency' => 'required',
                 'prices.0.amount' => 'required',
                 'period' => 'required'
@@ -83,6 +85,8 @@ class AcaSubscriptionTypeController extends Controller
             'description' => $request->get('description'),
             'details' => $request->get('details'),
             'prices' => $request->get('prices'),
+            'price_note' => $request->get('price_note'),
+            'price_note_below' => $request->get('price_note_below'),
             'status' => $request->get('status') ?? false,
             'show_dollar_price' => $request->has('show_dollar_price')
                 ? $request->boolean('show_dollar_price')
@@ -130,6 +134,8 @@ class AcaSubscriptionTypeController extends Controller
                 'title' => ['required', Rule::unique('aca_subscription_types', 'title')->ignore($id)],
                 'description' => 'required',
                 'details.*.label' => 'required',
+                'price_note' => 'nullable|string|max:2000',
+                'price_note_below' => 'nullable|string|max:2000',
                 'prices.0.currency' => 'required',
                 'prices.0.amount' => 'required',
                 'prices.0.detail' => 'required',
@@ -147,6 +153,8 @@ class AcaSubscriptionTypeController extends Controller
             'description' => $request->get('description'),
             'details' => $request->get('details'),
             'prices' => $request->get('prices'),
+            'price_note' => $request->get('price_note'),
+            'price_note_below' => $request->get('price_note_below'),
             'status' => $request->get('status') ?? false,
             'show_dollar_price' => $request->has('show_dollar_price')
                 ? $request->boolean('show_dollar_price')

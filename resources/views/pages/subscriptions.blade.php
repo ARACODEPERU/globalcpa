@@ -255,6 +255,30 @@
         letter-spacing: 0;
     }
     .subsx-amt--text { font-size: 22px; }
+    /* Texto libre encima del precio ("Antes S/ 1800", aviso de aumento...).
+       Si el administrador no aplico formato, se muestra subrayado por defecto. */
+    .subsx-before {
+        font-size: 13px;
+        line-height: 1.45;
+        font-weight: 600;
+        color: #6C6E86;
+        margin-bottom: 8px;
+        overflow-wrap: break-word;
+    }
+    .subsx-before--plain { text-decoration: underline; }
+    .subsx-before b,
+    .subsx-before strong { font-weight: 800; }
+    /* Texto libre debajo del precio (vigencia, condiciones, avisos...). */
+    .subsx-after {
+        font-size: 13px;
+        line-height: 1.45;
+        font-weight: 600;
+        color: #6C6E86;
+        margin-top: 10px;
+        overflow-wrap: break-word;
+    }
+    .subsx-after b,
+    .subsx-after strong { font-weight: 800; }
     .subsx-per {
         font-size: 13px;
         font-weight: 600;
@@ -402,6 +426,8 @@
     body.dark-only .subsx-plan h3,
     body.dark-only .subsx-amt,
     body.dark-only .subsx-usd b { color: #FFFFFF; }
+    body.dark-only .subsx-before,
+    body.dark-only .subsx-after { color: #A7ABC4; }
     body.dark-only .subsx-details li { color: #CBD5E1; }
     body.dark-only .subsx-tab { background: #1b2537; border-color: #2a3650; color: #CBD5E1; }
     body.dark-only .subsx-tab.is-active { background: #ED1B26; border-color: #ED1B26; color: #FFFFFF; }
@@ -1015,6 +1041,11 @@
                                             $usd = $prices->firstWhere('currency', 'USD');
                                             $details = collect($subscription->details ?? []);
 
+                                            $priceNote = $subscription->price_note ?? null;
+                                            $priceNoteBelow = $subscription->price_note_below ?? null;
+                                            // Sin formato guardado se subraya, como se pidio por defecto.
+                                            $priceNoteIsPlain = filled($priceNote) && strip_tags($priceNote) === $priceNote;
+
                                             $penAmount = $pen['amount'] ?? null;
                                             $penDetail = $pen['detail'] ?? $subscription->period;
 
@@ -1030,6 +1061,10 @@
                                             <p class="subsx-for">{{ $subscription->description }}</p>
 
                                             <div class="subsx-price">
+                                                @if (filled($priceNote))
+                                                    <div class="subsx-before{{ $priceNoteIsPlain ? ' subsx-before--plain' : '' }}">{!! $priceNote !!}</div>
+                                                @endif
+
                                                 @if (filled($penAmount))
                                                     <div class="subsx-amt"><small>S/</small> {{ $formatAmount($penAmount) }}</div>
                                                     <div class="subsx-per">{{ $penDetail }}</div>
@@ -1048,6 +1083,10 @@
                                                             <span>Precio en dólares</span>
                                                         @endif
                                                     </div>
+                                                @endif
+
+                                                @if (filled($priceNoteBelow))
+                                                    <div class="subsx-after">{!! $priceNoteBelow !!}</div>
                                                 @endif
                                             </div>
 

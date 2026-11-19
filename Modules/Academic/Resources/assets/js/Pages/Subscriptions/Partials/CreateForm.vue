@@ -12,6 +12,7 @@ import IconPlus from '@/Components/vristo/icon/icon-plus.vue';
 import IconX from '@/Components/vristo/icon/icon-x.vue';
 import IconMinus from '@/Components/vristo/icon/icon-minus.vue';
 import { NumberSpinner } from 'vue3-number-spinner';
+import PriceNoteEditor from './PriceNoteEditor.vue';
 
 const props = defineProps({
     periods: {
@@ -37,6 +38,8 @@ const form = useForm({
         amount: null,
         detail: null
     }],
+    price_note: '',
+    price_note_below: '',
     status: true,
     show_dollar_price: true,
     period: null,
@@ -240,6 +243,36 @@ const removePrice = (indexToRemove) => {
                             <InputError :message="form.errors[`details.${ixdex}.label`]" class="mt-2" />
                         </template>
                     </div>
+                </div>
+            </div>
+            <div class="col-span-6">
+                <div class="p-4 border border-[#888ea8] dark:border-[#1b2e4b] rounded">
+                    <h5 class="font-semibold text-lg dark:text-white-light mb-1">Texto encima del precio (opcional)</h5>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mb-3">
+                        Esto irá encima del precio actual en la página de planes. Puedes escribir lo que quieras, por
+                        ejemplo «Antes S/ 1800» o «El precio subirá el 25 de Noviembre S/ 1950». Selecciona todo o
+                        parte del texto y usa la barra para cambiar el color, la letra, el subrayado o el tachado.
+                    </p>
+                    <PriceNoteEditor v-model="form.price_note" placeholder="Antes S/ 1800" />
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                        Si lo dejas vacío, el plan no muestra nada encima del precio.
+                    </p>
+                    <InputError :message="form.errors.price_note" class="mt-2" />
+                </div>
+            </div>
+            <div class="col-span-6">
+                <div class="p-4 border border-[#888ea8] dark:border-[#1b2e4b] rounded">
+                    <h5 class="font-semibold text-lg dark:text-white-light mb-1">Texto debajo del precio (opcional)</h5>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mb-3">
+                        Esto irá debajo del precio actual en la página de planes. Escribe lo que quieras, por ejemplo
+                        «Precio válido hasta el 24 de Noviembre» o «Incluye IGV». Selecciona todo o parte del texto y
+                        usa la barra para cambiar el color, la letra, el subrayado o el tachado.
+                    </p>
+                    <PriceNoteEditor v-model="form.price_note_below" placeholder="Precio válido hasta el 24 de Noviembre" />
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                        Si lo dejas vacío, el plan no muestra nada debajo del precio.
+                    </p>
+                    <InputError :message="form.errors.price_note_below" class="mt-2" />
                 </div>
             </div>
             <div class="col-span-6 sm:col-span-3">
