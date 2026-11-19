@@ -269,6 +269,30 @@
         letter-spacing: 0;
     }
     .subsx-amt--text { font-size: 22px; }
+    /* Texto libre encima del precio ("Antes S/ 1800", aviso de aumento...).
+       Si el administrador no aplico formato, se muestra subrayado por defecto. */
+    .subsx-before {
+        font-size: 13px;
+        line-height: 1.45;
+        font-weight: 600;
+        color: #6C6E86;
+        margin-bottom: 8px;
+        overflow-wrap: break-word;
+    }
+    .subsx-before--plain { text-decoration: underline; }
+    .subsx-before b,
+    .subsx-before strong { font-weight: 800; }
+    /* Texto libre debajo del precio (vigencia, condiciones, avisos...). */
+    .subsx-after {
+        font-size: 13px;
+        line-height: 1.45;
+        font-weight: 600;
+        color: #6C6E86;
+        margin-top: 10px;
+        overflow-wrap: break-word;
+    }
+    .subsx-after b,
+    .subsx-after strong { font-weight: 800; }
     .subsx-per {
         font-size: 13px;
         font-weight: 600;
@@ -416,6 +440,8 @@
     body.dark-only .subsx-plan h3,
     body.dark-only .subsx-amt,
     body.dark-only .subsx-usd b { color: #FFFFFF; }
+    body.dark-only .subsx-before,
+    body.dark-only .subsx-after { color: #A7ABC4; }
     body.dark-only .subsx-details li { color: #CBD5E1; }
     body.dark-only .subsx-tab { background: #1b2537; border-color: #2a3650; color: #CBD5E1; }
     body.dark-only .subsx-tab.is-active { background: #ED1B26; border-color: #ED1B26; color: #FFFFFF; }
@@ -751,7 +777,7 @@
                             <div class="subsx-actions">
                                 <a class="subsx-btn" href="#planes">Ver planes</a>
                                 <a class="subsx-btn subsx-btn--ghost"
-                                    href="https://wa.me/51967052506?text=Hola%2C%20quiero%20informaci%C3%B3n%20sobre%20la%20Suscripci%C3%B3n%20CPA%20Academy%20%5BWEB-SUS%5D"
+                                    href="https://wa.link/ex0jd5"
                                     target="_blank" rel="noopener">
                                     <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.6.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3z"/></svg>
                                     Escríbenos por WhatsApp
@@ -928,7 +954,7 @@
                                     <div class="sx-mcard2"><b>hasta 93 %</b><p>menos tiempo midieron <strong>nuestros alumnos de IA Contable</strong> en los procesos que automatizaron en sus proyectos finales.</p></div>
                                 </div>
                                 <div class="sx-ctas">
-                                    <a class="sx-btn sx-btn-red" href="https://wa.me/51967052506?text=Hola%2C%20quiero%20elegir%20mi%20proceso%20para%20automatizar%20con%20la%20Suscripci%C3%B3n%20CPA%20Academy%20%5BWEB-SUS-AUTO%5D" target="_blank" rel="noopener">
+                                    <a class="sx-btn sx-btn-red" href="https://wa.link/ex0jd5" target="_blank" rel="noopener">
                                         <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.6.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3z"/></svg>
                                         Elegir mi proceso
                                     </a>
@@ -1002,12 +1028,8 @@
                                         </div>
                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </div>
-                                <div class="sx-dirs">
-                                    <h4>LIDERAZGO<span>Equipo directivo</span></h4>
-                                    <div class="sx-dir"><img loading="lazy" src="<?php echo e(asset('img/suscripcion/d_cuzcano.webp')); ?>" alt="Alex Cuzcano"><div><b>Alex Cuzcano</b><span>Director académico · Autor de El Amauta de las NIIF</span></div></div>
-                                    <div class="sx-dir"><img loading="lazy" src="<?php echo e(asset('img/suscripcion/d_godoy.webp')); ?>" alt="Roberto Godoy"><div><b>Roberto Godoy</b><span>Director de consultoría</span></div></div>
-                                    <div class="sx-dir"><img loading="lazy" src="<?php echo e(asset('img/suscripcion/d_suclupe.webp')); ?>" alt="José Súclupe"><div><b>José Súclupe</b><span>Director de estrategia y crecimiento</span></div></div>
-                                </div>
+
+
                             </div>
                         </section>
 
@@ -1071,6 +1093,18 @@
                                             $usd = $prices->firstWhere('currency', 'USD');
                                             $details = collect($subscription->details ?? []);
 
+                                            // La descripcion puede venir con formato; si no lo tiene se
+                                            // muestra el texto plano ya escapado.
+                                            $descriptionHtml = $subscription->description_html ?? null;
+                                            $descriptionMarkup = filled($descriptionHtml) && strip_tags($descriptionHtml) !== $descriptionHtml
+                                                ? $descriptionHtml
+                                                : e($subscription->description ?: $descriptionHtml);
+
+                                            $priceNote = $subscription->price_note ?? null;
+                                            $priceNoteBelow = $subscription->price_note_below ?? null;
+                                            // Sin formato guardado se subraya, como se pidio por defecto.
+                                            $priceNoteIsPlain = filled($priceNote) && strip_tags($priceNote) === $priceNote;
+
                                             $penAmount = $pen['amount'] ?? null;
                                             $penDetail = $pen['detail'] ?? $subscription->period;
 
@@ -1083,9 +1117,13 @@
                                         <article class="subsx-plan" data-subsx-period="<?php echo e($subscription->period); ?>">
                                             <span class="subsx-flag"><?php echo e($subscription->period); ?></span>
                                             <h3><?php echo e($subscription->title); ?></h3>
-                                            <p class="subsx-for"><?php echo e($subscription->description); ?></p>
+                                            <p class="subsx-for"><?php echo $descriptionMarkup; ?></p>
 
                                             <div class="subsx-price">
+                                                <?php if(filled($priceNote)): ?>
+                                                    <div class="subsx-before<?php echo e($priceNoteIsPlain ? ' subsx-before--plain' : ''); ?>"><?php echo $priceNote; ?></div>
+                                                <?php endif; ?>
+
                                                 <?php if(filled($penAmount)): ?>
                                                     <div class="subsx-amt"><small>S/</small> <?php echo e($formatAmount($penAmount)); ?></div>
                                                     <div class="subsx-per"><?php echo e($penDetail); ?></div>
@@ -1104,6 +1142,10 @@
                                                             <span>Precio en dólares</span>
                                                         <?php endif; ?>
                                                     </div>
+                                                <?php endif; ?>
+
+                                                <?php if(filled($priceNoteBelow)): ?>
+                                                    <div class="subsx-after"><?php echo $priceNoteBelow; ?></div>
                                                 <?php endif; ?>
                                             </div>
 

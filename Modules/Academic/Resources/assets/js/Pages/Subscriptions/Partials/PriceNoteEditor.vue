@@ -31,10 +31,17 @@ const active = ref({
 const buttonClass = 'rounded px-2 py-1 text-sm font-semibold text-gray-700 hover:bg-gray-100 focus:outline-none dark:text-gray-200 dark:hover:bg-gray-600';
 const activeClass = 'bg-gray-200 dark:bg-gray-600 text-gray-900 dark:text-white';
 
+// Se conserva el HTML tal cual (los espacios finales incluidos, para no
+// descolocar el cursor); solo el contenido sin texto se considera vacio.
 const normalize = (html) => {
-    const value = (html || '').trim();
+    const value = html || '';
+    const texto = value
+        .replace(/<br\s*\/?>/gi, '')
+        .replace(/<[^>]*>/g, '')
+        .replace(/&nbsp;/gi, ' ')
+        .trim();
 
-    return value === '<br>' || value === '<div><br></div>' ? '' : value;
+    return texto === '' ? '' : value;
 };
 
 const lastValid = ref(normalize(props.modelValue));
@@ -103,14 +110,21 @@ const sync = () => {
     emit('update:modelValue', html);
 };
 
+// El salto se inserta siempre como <br> (y no como <div> del navegador), asi
+// el cursor se queda donde esta y la pagina publica lo pinta igual.
 const onKeydown = (event) => {
-    if (props.maxLines <= 0 || event.key !== 'Enter' || event.isComposing) {
+    if (event.key !== 'Enter' || event.isComposing) {
         return;
     }
 
-    if (linesOf(currentHtml()) >= props.maxLines) {
-        event.preventDefault();
+    event.preventDefault();
+
+    if (props.maxLines > 0 && linesOf(currentHtml()) >= props.maxLines) {
+        return;
     }
+
+    document.execCommand('insertLineBreak');
+    sync();
 };
 
 const refreshActive = () => {
@@ -208,11 +222,16 @@ onMounted(() => {
 onBeforeUnmount(() => document.removeEventListener('selectionchange', onSelectionChange));
 
 watch(() => props.modelValue, (value) => {
-    if (editor.value && editor.value.innerHTML !== (value || '')) {
-        editor.value.innerHTML = value || '';
+    const next = value || '';
+
+    // Mientras el usuario escribe no se reescribe el contenido (perderia el
+    // cursor); el DOM ya es la fuente de verdad en ese momento.
+    if (!editor.value || editor.value === document.activeElement || editor.value.innerHTML === next) {
+        return;
     }
 
-    lastValid.value = normalize(value);
+    editor.value.innerHTML = next;
+    lastValid.value = normalize(next);
 });
 </script>
 

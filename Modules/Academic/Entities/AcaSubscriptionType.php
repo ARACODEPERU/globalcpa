@@ -89,7 +89,10 @@ class AcaSubscriptionType extends Model
         // <br> para conservar el texto como un bloque simple en la pagina.
         $html = preg_replace('#<(?:div|p|h[1-6]|li|blockquote)\b[^>]*>#i', '<br>', $html);
         $html = preg_replace('#</(?:div|p|h[1-6]|li|blockquote)>#i', '', $html);
+        // Los saltos sobrantes del principio y del final no aportan nada al
+        // bloque de texto; los saltos dobles se conservan como separacion.
         $html = preg_replace('#^(?:\s*<br\s*/?>)+#i', '', (string) $html);
+        $html = preg_replace('#(?:<br\s*/?>(?:\s|<br\s*/?>)*)+$#i', '', (string) $html);
         $html = preg_replace('#(?:<br\s*/?>\s*){3,}#i', '<br><br>', (string) $html);
 
         $html = strip_tags(
