@@ -950,12 +950,8 @@
                                         </div>
                                     @endforeach
                                 </div>
-                                <div class="sx-dirs">
-                                    <h4>LIDERAZGO<span>Equipo directivo</span></h4>
-                                    <div class="sx-dir"><img loading="lazy" src="{{ asset('img/suscripcion/d_cuzcano.webp') }}" alt="Alex Cuzcano"><div><b>Alex Cuzcano</b><span>Director académico · Autor de El Amauta de las NIIF</span></div></div>
-                                    <div class="sx-dir"><img loading="lazy" src="{{ asset('img/suscripcion/d_godoy.webp') }}" alt="Roberto Godoy"><div><b>Roberto Godoy</b><span>Director de consultoría</span></div></div>
-                                    <div class="sx-dir"><img loading="lazy" src="{{ asset('img/suscripcion/d_suclupe.webp') }}" alt="José Súclupe"><div><b>José Súclupe</b><span>Director de estrategia y crecimiento</span></div></div>
-                                </div>
+
+
                             </div>
                         </section>
 
