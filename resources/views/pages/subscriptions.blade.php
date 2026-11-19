@@ -725,7 +725,7 @@
                             <div class="subsx-actions">
                                 <a class="subsx-btn" href="#planes">Ver planes</a>
                                 <a class="subsx-btn subsx-btn--ghost"
-                                    href="https://wa.me/51967052506?text=Hola%2C%20quiero%20informaci%C3%B3n%20sobre%20la%20Suscripci%C3%B3n%20CPA%20Academy%20%5BWEB-SUS%5D"
+                                    href="https://wa.link/ex0jd5"
                                     target="_blank" rel="noopener">
                                     <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.6.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3z"/></svg>
                                     Escríbenos por WhatsApp
@@ -902,7 +902,7 @@
                                     <div class="sx-mcard2"><b>hasta 93 %</b><p>menos tiempo midieron <strong>nuestros alumnos de IA Contable</strong> en los procesos que automatizaron en sus proyectos finales.</p></div>
                                 </div>
                                 <div class="sx-ctas">
-                                    <a class="sx-btn sx-btn-red" href="https://wa.me/51967052506?text=Hola%2C%20quiero%20elegir%20mi%20proceso%20para%20automatizar%20con%20la%20Suscripci%C3%B3n%20CPA%20Academy%20%5BWEB-SUS-AUTO%5D" target="_blank" rel="noopener">
+                                    <a class="sx-btn sx-btn-red" href="https://wa.link/ex0jd5" target="_blank" rel="noopener">
                                         <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.6.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3z"/></svg>
                                         Elegir mi proceso
                                     </a>
