@@ -21,8 +21,8 @@ const props = defineProps({
         default: null,
     },
     personInvoice:{
-        type: Array,
-        default: {},
+        type: [Object, Array],
+        default: () => ({}),
     }
 });
 

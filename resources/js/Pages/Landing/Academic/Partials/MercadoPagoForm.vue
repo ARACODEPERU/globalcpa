@@ -23,8 +23,8 @@ const props = defineProps({
         default: null,
     },
     personInvoice:{
-        type: Array,
-        default: {},
+        type: [Object, Array],
+        default: () => ({}),
     }
 });
 
@@ -45,12 +45,21 @@ onMounted(async () => {
     await renderCardPaymentBrick(bricksBuilder);
 });
 
+const penAmount = () => {
+    const prices = Array.isArray(props.subscription?.prices) ? props.subscription.prices : [];
+    const pen = prices.find((price) => (price?.currency ?? price?.currency_id) === 'PEN');
+
+    return Number(pen?.amount ?? 0);
+};
+
 const renderCardPaymentBrick = async (bricksBuilder) => {
+    // El Brick cardPayment solo inicializa con "amount" (y "payer" opcional).
+    // Enviar "preferenceId" aqui provoca "Bricks component initialization failed".
     const settings = {
         initialization: {
-            preferenceId: props.preference,
-            amount: props.samount,
+            amount: Number(props.samount) || penAmount(),
         },
+        locale: "es",
         customization: {
             visual: {
                 style: {
