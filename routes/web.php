@@ -50,6 +50,10 @@ Route::post('/blog/{url}/vista', [WebPageController::class, 'blog_article_view']
     
 Route::get('/el-amauta-de-las-niif', [WebPageController::class, 'bookamauta'])->name('web_book_amauta');
 Route::get('/planes-de-suscripcion', [WebPageController::class, 'subscriptions'])->name('web_subscriptions');
+
+Route::post('/planes-de-suscripcion/tracking', [WebPageController::class, 'trackSubscription'])
+    ->middleware('throttle:120,1')
+    ->name('web_subscriptions_track');
 Route::get('/politicas-de-devolucion', [WebPageController::class, 'politicas_devoluciones'])->name('politicas_devoluciones');
 
 Route::get('/Terminos-y-condiciones', [WebPageController::class, 'terms'])->name('terms_main');  //terminos y condiciones

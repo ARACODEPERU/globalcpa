@@ -9,19 +9,36 @@ use Illuminate\Http\Response;
 use Inertia\Inertia;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
+use Carbon\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Modules\Academic\Entities\AcaSubscriptionType;
+use Modules\Academic\Services\SubscriptionUtmStatsService;
 
 class AcaSubscriptionTypeController extends Controller
 {
     use ValidatesRequests;
+
+    public function __construct(private SubscriptionUtmStatsService $utmStats)
+    {
+    }
+
     /**
-     * Display a listing of the resource.
+     * Listado de tipos de suscripcion. La atribucion UTM es compartida por
+     * todos los planes, por eso el panel vive aqui.
      */
     public function index()
     {
         $subscriptions = AcaSubscriptionType::orderBy('order_number')->get();
+
         return Inertia::render('Academic::Subscriptions/List', [
-            'subscriptions' => $subscriptions
+            'subscriptions' => $subscriptions,
+            'subscriptionsUrl' => route('web_subscriptions'),
+            'utmConfig' => $this->utmStats->configuration(),
+            'utmStats' => $this->utmStatsPayload(null, null),
         ]);
     }
 
@@ -42,15 +59,21 @@ class AcaSubscriptionTypeController extends Controller
     public function store(Request $request): RedirectResponse
     {
         //dd($request->all());
+        $request->merge(['title' => trim((string) $request->get('title'))]);
+
         $this->validate(
             $request,
             [
-                'title' => 'required',
+                'title' => 'required|unique:aca_subscription_types,title',
                 'description' => 'required',
                 'details.*.label' => 'required',
                 'prices.0.currency' => 'required',
                 'prices.0.amount' => 'required',
                 'period' => 'required'
+            ],
+            [
+                'title.required' => 'El título del plan es obligatorio.',
+                'title.unique' => 'Ya existe un plan con ese título. Los planes no pueden llamarse igual: usa un nombre diferente.',
             ]
         );
 
@@ -61,6 +84,9 @@ class AcaSubscriptionTypeController extends Controller
             'details' => $request->get('details'),
             'prices' => $request->get('prices'),
             'status' => $request->get('status') ?? false,
+            'show_dollar_price' => $request->has('show_dollar_price')
+                ? $request->boolean('show_dollar_price')
+                : true,
             'period' => $request->get('period'),
             'order_number' => $request->get('order_number'),
         ] + $this->accessFlagsFromRequest($request));
@@ -96,16 +122,22 @@ class AcaSubscriptionTypeController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $request->merge(['title' => trim((string) $request->get('title'))]);
+
         $this->validate(
             $request,
             [
-                'title' => 'required',
+                'title' => ['required', Rule::unique('aca_subscription_types', 'title')->ignore($id)],
                 'description' => 'required',
                 'details.*.label' => 'required',
                 'prices.0.currency' => 'required',
                 'prices.0.amount' => 'required',
                 'prices.0.detail' => 'required',
                 'period' => 'required'
+            ],
+            [
+                'title.required' => 'El título del plan es obligatorio.',
+                'title.unique' => 'Ya existe un plan con ese título. Los planes no pueden llamarse igual: usa un nombre diferente.',
             ]
         );
 
@@ -116,12 +148,216 @@ class AcaSubscriptionTypeController extends Controller
             'details' => $request->get('details'),
             'prices' => $request->get('prices'),
             'status' => $request->get('status') ?? false,
+            'show_dollar_price' => $request->has('show_dollar_price')
+                ? $request->boolean('show_dollar_price')
+                : true,
             'period' => $request->get('period'),
             'order_number' => $request->get('order_number'),
         ] + $this->accessFlagsFromRequest($request));
 
         return redirect()->route('aca_subscriptions_list')
             ->with('message', __('Actualizado con éxito'));
+    }
+
+    /**
+     * Guarda la configuracion UTM compartida (campana y canales).
+     */
+    public function updateUtmConfig(Request $request)
+    {
+        $this->validate(
+            $request,
+            [
+                'campaign' => 'nullable|string|max:255',
+                'channels' => 'nullable|array',
+                'channels.*.id' => 'required|string|max:100',
+                'channels.*.term' => 'nullable|string|max:500',
+                'channels.*.content' => 'nullable|string|max:500',
+                'channels.*.active' => 'nullable|boolean',
+            ]
+        );
+
+        $channels = collect($request->input('channels', []))
+            ->filter(fn ($channel) => is_array($channel) && ! empty($channel['id']))
+            ->map(fn ($channel) => [
+                'id' => (string) $channel['id'],
+                'term' => mb_substr(trim((string) ($channel['term'] ?? '')), 0, 500),
+                'content' => mb_substr(trim((string) ($channel['content'] ?? '')), 0, 500),
+                'active' => filter_var($channel['active'] ?? true, FILTER_VALIDATE_BOOLEAN),
+            ])
+            ->values()
+            ->all();
+
+        $campaign = trim((string) $request->input('campaign'));
+
+        return response()->json([
+            'success' => true,
+            'config' => $this->utmStats->saveConfiguration(
+                $campaign !== '' ? $campaign : SubscriptionUtmStatsService::DEFAULT_CAMPAIGN,
+                $channels
+            ),
+        ]);
+    }
+
+    /**
+     * Estadisticas de atribucion compartidas (JSON para el panel).
+     */
+    public function getUtmStats(Request $request)
+    {
+        return response()->json($this->utmStatsPayload(
+            $request->input('dates'),
+            $request->input('month')
+        ));
+    }
+
+    /**
+     * Reporte Excel de vistas, clics y suscripciones atribuidas.
+     */
+    public function exportUtmStatsExcel(Request $request)
+    {
+        [$start, $end] = $this->utmStats->range($request->input('dates'), $request->input('month'));
+        $payload = $this->utmStatsPayload($request->input('dates'), $request->input('month'));
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Resumen');
+
+        $sheet->fromArray([
+            ['Planes de suscripción'],
+            ['Campaña', $payload['campaign']],
+            ['Rango', $payload['range']['label']],
+            ['Generado', now()->format('d/m/Y H:i')],
+            [],
+            ['Vistas', 'Clics en planes', 'Suscripciones'],
+            [$payload['totals']['views'], $payload['totals']['clicks'], $payload['totals']['subscriptions']],
+            [],
+            ['Origen', 'Vistas', 'Clics', 'Suscripciones'],
+        ], null, 'A1');
+
+        $row = 10;
+        foreach ($payload['origins'] as $origin) {
+            $sheet->fromArray([
+                $origin['label'],
+                $origin['views'],
+                $origin['clicks'],
+                $origin['subscriptions'],
+            ], null, 'A' . $row);
+            $row++;
+        }
+
+        $row += 1;
+        $sheet->fromArray(['Planes elegidos', 'Suscripciones'], null, 'A' . $row);
+        $row++;
+        foreach ($payload['plans'] as $chosen) {
+            $sheet->fromArray([$chosen['title'], $chosen['total']], null, 'A' . $row);
+            $row++;
+        }
+
+        $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(13);
+        $sheet->getStyle('A6:C6')->getFont()->setBold(true);
+        $sheet->getStyle('A9:D9')->getFont()->setBold(true);
+        $sheet->getColumnDimension('A')->setWidth(42);
+        $sheet->getColumnDimension('B')->setWidth(28);
+
+        $eventsSheet = $spreadsheet->createSheet();
+        $eventsSheet->setTitle('Eventos');
+        $eventsSheet->fromArray([
+            'Fecha', 'Evento', 'Plan', 'Origen', 'utm_source', 'utm_medium',
+            'utm_campaign', 'utm_term', 'utm_content', 'landing_url', 'referer',
+        ], null, 'A1');
+
+        $row = 2;
+        foreach ($this->utmStats->eventRows($start, $end, $payload['campaign']) as $event) {
+            $eventsSheet->fromArray([
+                $event->created_at ? Carbon::parse($event->created_at)->format('d/m/Y H:i') : '',
+                $event->event === 'click' ? 'Clic en plan' : 'Visita',
+                $event->plan_title,
+                $this->utmStats->label($event->traffic_source),
+                $event->utm_source,
+                $event->utm_medium,
+                $event->utm_campaign,
+                $event->utm_term,
+                $event->utm_content,
+                $event->landing_url,
+                $event->referer,
+            ], null, 'A' . $row);
+            $row++;
+        }
+        $eventsSheet->getStyle('A1:K1')->getFont()->setBold(true);
+
+        $subsSheet = $spreadsheet->createSheet();
+        $subsSheet->setTitle('Suscripciones');
+        $subsSheet->fromArray([
+            'Fecha', 'Alumno', 'Plan', 'Origen', 'utm_source', 'utm_medium',
+            'utm_campaign', 'utm_content', 'landing_url',
+        ], null, 'A1');
+
+        $row = 2;
+        foreach ($this->utmStats->subscriptionRows($start, $end) as $sub) {
+            $subsSheet->fromArray([
+                $sub->created_at ? Carbon::parse($sub->created_at)->format('d/m/Y H:i') : '',
+                $sub->student_name,
+                $sub->plan_title,
+                $this->utmStats->label($sub->traffic_source),
+                $sub->utm_source,
+                $sub->utm_medium,
+                $sub->utm_campaign,
+                $sub->utm_content,
+                $sub->landing_url,
+            ], null, 'A' . $row);
+            $row++;
+        }
+        $subsSheet->getStyle('A1:I1')->getFont()->setBold(true);
+
+        $temp = tempnam(sys_get_temp_dir(), 'utm_excel_');
+        (new Xlsx($spreadsheet))->save($temp);
+
+        $fileName = 'UTM_SUSCRIPCIONES_' . now()->format('Ymd_His') . '.xlsx';
+
+        return response()->download($temp, $fileName)->deleteFileAfterSend(true);
+    }
+
+    /**
+     * Reporte PDF (resumen, origenes, planes elegidos y afiliaciones).
+     */
+    public function exportUtmStatsPdf(Request $request)
+    {
+        [$start, $end, $label] = $this->utmStats->range($request->input('dates'), $request->input('month'));
+        $payload = $this->utmStatsPayload($request->input('dates'), $request->input('month'));
+        $subscriptions = $this->utmStats->subscriptionRows($start, $end);
+
+        $pdf = Pdf::loadView('academic::subscriptions.utm_stats_pdf', [
+            'campaign' => $payload['campaign'],
+            'rangeLabel' => $label,
+            'totals' => $payload['totals'],
+            'origins' => $payload['origins'],
+            'plans' => $payload['plans'],
+            'subscriptions' => $subscriptions->take(200),
+            'truncated' => $subscriptions->count() > 200,
+            'sourceLabels' => SubscriptionUtmStatsService::SOURCE_LABELS,
+            'generatedAt' => now()->format('d/m/Y H:i'),
+        ]);
+
+        $fileName = 'UTM_SUSCRIPCIONES_' . now()->format('Ymd_His') . '.pdf';
+
+        return $pdf->setPaper('a4', 'landscape')->download($fileName);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function utmStatsPayload(?string $dates, ?string $month): array
+    {
+        [$start, $end, $label] = $this->utmStats->range($dates, $month);
+        $config = $this->utmStats->configuration();
+
+        return array_merge([
+            'campaign' => $config['campaign'],
+            'range' => [
+                'label' => $label,
+                'start' => $start?->toDateString(),
+                'end' => $end?->toDateString(),
+            ],
+        ], $this->utmStats->summary($start, $end, $config['campaign']));
     }
 
     /**

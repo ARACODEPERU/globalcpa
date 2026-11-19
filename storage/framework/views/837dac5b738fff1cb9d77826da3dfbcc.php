@@ -95,7 +95,14 @@
 
                             </ul>
                         </li>
-                        
+                        <li class="sidebar-list" style="padding: 15px 0px;">
+                            <a class="sidebar-link sidebar-title" href="<?php echo e(route('web_subscriptions')); ?>">
+                                <span class="sb-item">
+                                    <span class="sb-icon-box"><i class="fa fa-id-card" aria-hidden="true" style="font-size: 20px;" ></i></span>
+                                    Suscripciones
+                                </span>
+                            </a>
+                        </li>
 
                         
                         

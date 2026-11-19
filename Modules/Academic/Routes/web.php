@@ -420,6 +420,22 @@ Route::middleware(['auth', 'verified', 'invalid_updated_information', 'user_acti
         ->put('subscriptions/update/{id}', 'AcaSubscriptionTypeController@update')
         ->name('aca_subscriptions_update');
 
+    Route::middleware(['middleware' => 'permission:aca_suscripciones'])
+        ->put('subscriptions/utm-config', 'AcaSubscriptionTypeController@updateUtmConfig')
+        ->name('aca_subscriptions_utm_config');
+
+    Route::middleware(['middleware' => 'permission:aca_suscripciones'])
+        ->get('subscriptions/utm-stats', 'AcaSubscriptionTypeController@getUtmStats')
+        ->name('aca_subscriptions_utm_stats');
+
+    Route::middleware(['middleware' => 'permission:aca_suscripciones'])
+        ->get('subscriptions/utm-export/excel', 'AcaSubscriptionTypeController@exportUtmStatsExcel')
+        ->name('aca_subscriptions_utm_export_excel');
+
+    Route::middleware(['middleware' => 'permission:aca_suscripciones'])
+        ->get('subscriptions/utm-export/pdf', 'AcaSubscriptionTypeController@exportUtmStatsPdf')
+        ->name('aca_subscriptions_utm_export_pdf');
+
     Route::middleware(['middleware' => 'permission:aca_suscripciones_eliminar'])
         ->delete('subscriptions/destroy/{id}', 'AcaSubscriptionTypeController@destroy')
         ->name('aca_subscriptions_destroy');

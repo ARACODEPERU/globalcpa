@@ -12,6 +12,8 @@
     <?php echo $gtm['head']; ?>
 
 
+    
+    <?php if (! (\App\Support\PageSnippet::contains('googletagmanager.com/gtag/js'))): ?>
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-WXX1QVD5Y0"></script>
     <script>
@@ -24,6 +26,7 @@
 
         gtag('config', 'G-WXX1QVD5Y0');
     </script>
+    <?php endif; ?>
 
 
     <!-- Meta Pixel Code -->

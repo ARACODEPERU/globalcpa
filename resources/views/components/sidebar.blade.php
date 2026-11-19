@@ -94,14 +94,14 @@
 
                             </ul>
                         </li>
-                        {{-- <li class="sidebar-list" style="padding: 15px 0px;">
+                        <li class="sidebar-list" style="padding: 15px 0px;">
                             <a class="sidebar-link sidebar-title" href="{{ route('web_subscriptions') }}">
-                                <span>
-                                    <i class="fa fa-briefcase" aria-hidden="true" style="font-size: 26px;"></i><br>
-                                    Empresas
+                                <span class="sb-item">
+                                    <span class="sb-icon-box"><i class="fa fa-id-card" aria-hidden="true" style="font-size: 20px;" ></i></span>
+                                    Suscripciones
                                 </span>
                             </a>
-                        </li> --}}
+                        </li>
 
                         {{-- ENLACE DE BLOG --}}
                         {{-- <li class="sidebar-list" style="padding: 15px 0px;">

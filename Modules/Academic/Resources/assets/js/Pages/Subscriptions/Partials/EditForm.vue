@@ -31,6 +31,9 @@ const form = useForm({
     details: props.subscription.details,
     prices: props.subscription.prices,
     status: props.subscription.status == 1 ? true : false,
+    show_dollar_price: props.subscription.show_dollar_price === null || props.subscription.show_dollar_price === undefined
+        ? true
+        : !!props.subscription.show_dollar_price,
     period: props.subscription.period,
     order_number: props.subscription.order_number ?? 1,
     allow_all_courses: !!props.subscription.allow_all_courses,
@@ -93,6 +96,12 @@ const removePrice = (indexToRemove) => {
             Editar Suscripción, Los campos con * son obligatorios
         </template>
         <template #form>
+            <div
+                v-if="form.errors.title"
+                class="col-span-6 p-3 rounded-md bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 text-red-700 dark:text-red-400 text-sm"
+            >
+                <i class="fa-solid fa-circle-exclamation mr-1"></i>{{ form.errors.title }}
+            </div>
             <div class="col-span-6 sm:col-span-3">
                 <InputLabel for="title" value="Título *" />
                 <TextInput
@@ -101,6 +110,7 @@ const removePrice = (indexToRemove) => {
                     type="text"
 
                 />
+                <p class="text-xs text-gray-500 mt-1">Debe ser único: no puede repetirse con otro plan.</p>
                 <InputError :message="form.errors.title" class="mt-2" />
             </div>
             <div class="col-span-6 sm:col-span-3">
@@ -154,10 +164,19 @@ const removePrice = (indexToRemove) => {
             </div>
 
             <div class="col-span-6">
-                <label class="inline-flex">
-                    <input v-model="form.status" type="checkbox" class="form-checkbox rounded-full" />
-                    <span>Activo</span>
-                </label>
+                <div class="flex flex-wrap items-center gap-x-8 gap-y-2">
+                    <label class="inline-flex items-center">
+                        <input v-model="form.status" type="checkbox" class="form-checkbox rounded-full" />
+                        <span class="ml-2">Activo</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                        <input v-model="form.show_dollar_price" type="checkbox" class="form-checkbox rounded-full" />
+                        <span class="ml-2">Mostrar precio en dólares</span>
+                    </label>
+                </div>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                    Si lo desactivas, el precio en dólares de este plan no se muestra en la página pública de suscripciones.
+                </p>
             </div>
             <div class="col-span-6">
                 <div class="p-4 border border-[#888ea8] dark:border-[#1b2e4b] rounded">
@@ -249,6 +268,7 @@ const removePrice = (indexToRemove) => {
                     </div>
                 </div>
             </div>
+
         </template>
 
         <template #actions>

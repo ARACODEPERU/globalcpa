@@ -15,6 +15,8 @@ use Modules\CMS\Entities\CmsSection;
 use Modules\Onlineshop\Entities\OnliItem;
 use Modules\Academic\Entities\AcaCourse;
 use Modules\Academic\Entities\AcaCategoryCourse;
+use Modules\Academic\Entities\AcaSubscriptionTracking;
+use Modules\Academic\Entities\AcaSubscriptionType;
 use Modules\Onlineshop\Entities\OnliSale;
 use Modules\Onlineshop\Entities\OnliSaleDetail;
 use Modules\Academic\Entities\AcaTeacher;
@@ -550,9 +552,81 @@ class WebPageController extends Controller
         return view('pages/book-description');
     }
 
+    /**
+     * Pagina publica de suscripciones.
+     *
+     * Muestra los tipos de suscripcion activos con sus detalles y precios; el
+     * precio en dolares solo aparece cuando el plan lo tiene habilitado
+     * (show_dollar_price).
+     */
     public function subscriptions()
     {
-        return view('pages/subscriptions');
+        $subscriptions = AcaSubscriptionType::where('status', true)
+            ->orderBy('order_number')
+            ->orderBy('id')
+            ->get();
+
+        return view('pages/subscriptions', [
+            'subscriptions' => $subscriptions,
+        ]);
+    }
+
+    /**
+     * Registra una vista o un clic en un plan de la pagina publica de
+     * suscripciones, con la atribucion de trafico (UTM, referer, canal).
+     */
+    public function trackSubscription(\Illuminate\Http\Request $request)
+    {
+        $data = $request->validate([
+            'event' => 'required|in:view,click',
+            'subscription_type_id' => 'nullable|integer|exists:aca_subscription_types,id',
+            'utm_source' => 'nullable|string|max:255',
+            'utm_medium' => 'nullable|string|max:255',
+            'utm_campaign' => 'nullable|string|max:255',
+            'utm_term' => 'nullable|string|max:500',
+            'utm_content' => 'nullable|string|max:500',
+            'utm_id' => 'nullable|string|max:255',
+            'fbclid' => 'nullable|string|max:500',
+            'gclid' => 'nullable|string|max:500',
+            'referer' => 'nullable|string|max:500',
+            'landing_url' => 'nullable|string|max:500',
+            'traffic_source' => 'nullable|string|max:50',
+        ]);
+
+        $tracking = [
+            'event' => $data['event'],
+            'subscription_type_id' => $data['subscription_type_id'] ?? null,
+            'utm_source' => $this->limitText($data['utm_source'] ?? null, 255),
+            'utm_medium' => $this->limitText($data['utm_medium'] ?? null, 255),
+            'utm_campaign' => $this->limitText($data['utm_campaign'] ?? null, 255),
+            'utm_term' => $this->limitText($data['utm_term'] ?? null, 500),
+            'utm_content' => $this->limitText($data['utm_content'] ?? null, 500),
+            'utm_id' => $this->limitText($data['utm_id'] ?? null, 255),
+            'fbclid' => $this->limitText($data['fbclid'] ?? null, 500),
+            'gclid' => $this->limitText($data['gclid'] ?? null, 500),
+            'referer' => $this->limitText($data['referer'] ?? null, 500),
+            'landing_url' => $this->limitText($data['landing_url'] ?? null, 500),
+            'traffic_source' => $this->limitText($data['traffic_source'] ?? null, 50),
+        ];
+
+        AcaSubscriptionTracking::create($tracking + ['client_ip' => $request->ip()]);
+
+        // La compra en linea hereda la atribucion de la sesion.
+        session([
+            'traffic_tracking' => collect($tracking)
+                ->except(['event', 'subscription_type_id'])
+                ->filter(fn ($value) => filled($value))
+                ->all(),
+        ]);
+
+        return response()->noContent();
+    }
+
+    private function limitText(?string $value, int $length): ?string
+    {
+        $value = $value !== null ? trim($value) : null;
+
+        return $value === null || $value === '' ? null : mb_substr($value, 0, $length);
     }
 
     public function privacypolicies()

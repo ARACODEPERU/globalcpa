@@ -4,11 +4,24 @@
     import iconArrowLeft from '@/Components/vristo/icon/icon-arrow-left.vue';
     import { Link, router } from '@inertiajs/vue3';
     import Swal from 'sweetalert2';
+    import SubscriptionUtmLinks from './Partials/UtmLinks.vue';
 
     defineProps({
         subscriptions: {
             type: Object,
             default: () => ({})
+        },
+        utmConfig: {
+            type: Object,
+            default: () => ({})
+        },
+        utmStats: {
+            type: Object,
+            default: null
+        },
+        subscriptionsUrl: {
+            type: String,
+            required: true
         }
     });
 
@@ -107,6 +120,12 @@
                     </div>
                 </div>
             </div>
+
+            <SubscriptionUtmLinks
+                :utm-config="utmConfig"
+                :utm-stats="utmStats"
+                :subscriptions-url="subscriptionsUrl"
+            />
         </div>
     </AppLayout>
 </template>
