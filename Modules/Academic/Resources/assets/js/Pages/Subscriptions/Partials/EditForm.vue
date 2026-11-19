@@ -28,7 +28,7 @@ const props = defineProps({
 const form = useForm({
     title: props.subscription.title,
     usine: props.subscription.usine || '',
-    description: props.subscription.description,
+    description_html: props.subscription.description_html || props.subscription.description || '',
     details: props.subscription.details,
     prices: props.subscription.prices,
     price_note: props.subscription.price_note || '',
@@ -156,14 +156,19 @@ const removePrice = (indexToRemove) => {
                     </button>
                 </div>
             </div>
-            <div class="col-span-4">
-                <InputLabel for="description" value="Descripción *" />
-                <TextInput
-                    id="description"
-                    v-model="form.description"
-                    type="text"
-                />
-                <InputError :message="form.errors.description" class="mt-2" />
+            <div class="col-span-6">
+                <div class="p-4 border border-[#888ea8] dark:border-[#1b2e4b] rounded">
+                    <h5 class="font-semibold text-lg dark:text-white-light mb-1">Descripción *</h5>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mb-3">
+                        Aparece debajo del título del plan en la página de suscripciones. Escribe lo que quieras,
+                        por ejemplo «1 Usuario (Para contadores independientes y profesionales en empresa).».
+                        Selecciona todo o parte del texto y usa la barra para cambiar el tamaño, el color, la
+                        negrita, la cursiva, el subrayado o el tachado. Usa Enter para separar hasta 3 líneas.
+                    </p>
+                    <PriceNoteEditor v-model="form.description_html" :max-lines="3"
+                        placeholder="1 Usuario (Para contadores independientes y profesionales en empresa)." />
+                    <InputError :message="form.errors.description_html" class="mt-2" />
+                </div>
             </div>
 
             <div class="col-span-6">

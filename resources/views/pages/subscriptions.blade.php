@@ -1041,6 +1041,13 @@
                                             $usd = $prices->firstWhere('currency', 'USD');
                                             $details = collect($subscription->details ?? []);
 
+                                            // La descripcion puede venir con formato; si no lo tiene se
+                                            // muestra el texto plano ya escapado.
+                                            $descriptionHtml = $subscription->description_html ?? null;
+                                            $descriptionMarkup = filled($descriptionHtml) && strip_tags($descriptionHtml) !== $descriptionHtml
+                                                ? $descriptionHtml
+                                                : e($subscription->description ?: $descriptionHtml);
+
                                             $priceNote = $subscription->price_note ?? null;
                                             $priceNoteBelow = $subscription->price_note_below ?? null;
                                             // Sin formato guardado se subraya, como se pidio por defecto.
@@ -1058,7 +1065,7 @@
                                         <article class="subsx-plan" data-subsx-period="{{ $subscription->period }}">
                                             <span class="subsx-flag">{{ $subscription->period }}</span>
                                             <h3>{{ $subscription->title }}</h3>
-                                            <p class="subsx-for">{{ $subscription->description }}</p>
+                                            <p class="subsx-for">{!! $descriptionMarkup !!}</p>
 
                                             <div class="subsx-price">
                                                 @if (filled($priceNote))

@@ -17,6 +17,7 @@ class AcaSubscriptionType extends Model
         'title',
         'usine',
         'description',
+        'description_html',
         'details',
         'prices',
         'price_note',
@@ -51,7 +52,16 @@ class AcaSubscriptionType extends Model
      */
     public function setPriceNoteAttribute($value): void
     {
-        $this->attributes['price_note'] = static::sanitizePriceNote($value);
+        $this->attributes['price_note'] = static::sanitizeRichText($value);
+    }
+
+    /**
+     * La descripcion del plan se guarda como HTML acotado; el texto plano se
+     * deriva en el controlador para el resto de pantallas.
+     */
+    public function setDescriptionHtmlAttribute($value): void
+    {
+        $this->attributes['description_html'] = static::sanitizeRichText($value);
     }
 
     /**
@@ -60,10 +70,10 @@ class AcaSubscriptionType extends Model
      */
     public function setPriceNoteBelowAttribute($value): void
     {
-        $this->attributes['price_note_below'] = static::sanitizePriceNote($value);
+        $this->attributes['price_note_below'] = static::sanitizeRichText($value);
     }
 
-    public static function sanitizePriceNote($value): ?string
+    public static function sanitizeRichText($value): ?string
     {
         if ($value === null) {
             return null;
@@ -74,6 +84,13 @@ class AcaSubscriptionType extends Model
         if ($html === '') {
             return null;
         }
+
+        // El editor marca los saltos de linea con <div> o <p>: se normalizan a
+        // <br> para conservar el texto como un bloque simple en la pagina.
+        $html = preg_replace('#<(?:div|p|h[1-6]|li|blockquote)\b[^>]*>#i', '<br>', $html);
+        $html = preg_replace('#</(?:div|p|h[1-6]|li|blockquote)>#i', '', $html);
+        $html = preg_replace('#^(?:\s*<br\s*/?>)+#i', '', (string) $html);
+        $html = preg_replace('#(?:<br\s*/?>\s*){3,}#i', '<br><br>', (string) $html);
 
         $html = strip_tags(
             $html,

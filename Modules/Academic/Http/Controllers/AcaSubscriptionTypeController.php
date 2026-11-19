@@ -65,7 +65,16 @@ class AcaSubscriptionTypeController extends Controller
             $request,
             [
                 'title' => 'required|unique:aca_subscription_types,title',
-                'description' => 'required',
+                'description_html' => [
+                    'required',
+                    'string',
+                    'max:10000',
+                    function (string $attribute, $value, $fail) {
+                        if ($this->descriptionLineCount($value) > 3) {
+                            $fail('La descripción admite como máximo 3 líneas.');
+                        }
+                    },
+                ],
                 'details.*.label' => 'required',
                 'price_note' => 'nullable|string|max:2000',
                 'price_note_below' => 'nullable|string|max:2000',
@@ -82,7 +91,8 @@ class AcaSubscriptionTypeController extends Controller
         AcaSubscriptionType::create([
             'title' => $request->get('title'),
             'usine' => $request->get('usine'),
-            'description' => $request->get('description'),
+            'description' => $this->plainDescription($request->get('description_html')),
+            'description_html' => $request->get('description_html'),
             'details' => $request->get('details'),
             'prices' => $request->get('prices'),
             'price_note' => $request->get('price_note'),
@@ -132,7 +142,16 @@ class AcaSubscriptionTypeController extends Controller
             $request,
             [
                 'title' => ['required', Rule::unique('aca_subscription_types', 'title')->ignore($id)],
-                'description' => 'required',
+                'description_html' => [
+                    'required',
+                    'string',
+                    'max:10000',
+                    function (string $attribute, $value, $fail) {
+                        if ($this->descriptionLineCount($value) > 3) {
+                            $fail('La descripción admite como máximo 3 líneas.');
+                        }
+                    },
+                ],
                 'details.*.label' => 'required',
                 'price_note' => 'nullable|string|max:2000',
                 'price_note_below' => 'nullable|string|max:2000',
@@ -150,7 +169,8 @@ class AcaSubscriptionTypeController extends Controller
         AcaSubscriptionType::find($id)->update([
             'title' => $request->get('title'),
             'usine' => $request->get('usine'),
-            'description' => $request->get('description'),
+            'description' => $this->plainDescription($request->get('description_html')),
+            'description_html' => $request->get('description_html'),
             'details' => $request->get('details'),
             'prices' => $request->get('prices'),
             'price_note' => $request->get('price_note'),
@@ -366,6 +386,31 @@ class AcaSubscriptionTypeController extends Controller
                 'end' => $end?->toDateString(),
             ],
         ], $this->utmStats->summary($start, $end, $config['campaign']));
+    }
+
+    /**
+     * Cuenta las lineas escritas en la descripcion (saltos <br> y bloques del
+     * editor). La pagina publica admite como maximo 3.
+     */
+    private function descriptionLineCount(?string $html): int
+    {
+        $html = preg_replace('#<(?:div|p|h[1-6]|li|blockquote)\b[^>]*>#i', '<br>', (string) $html);
+        $html = preg_replace('#</(?:div|p|h[1-6]|li|blockquote)>#i', '', (string) $html);
+        $text = rtrim(strip_tags(preg_replace('#<br\s*/?>#i', "\n", (string) $html)));
+
+        return $text === '' ? 1 : count(explode("\n", $text));
+    }
+
+    /**
+     * La descripcion larga vive con formato en description_html; description se
+     * mantiene como texto plano para listados, comprobantes y webhooks.
+     */
+    private function plainDescription(?string $html): ?string
+    {
+        $text = preg_replace('#<br\s*/?>#i', ' ', (string) $html);
+        $text = trim((string) preg_replace('/\s+/u', ' ', strip_tags((string) $text)));
+
+        return $text === '' ? null : Str::limit($text, 300, '');
     }
 
     /**

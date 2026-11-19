@@ -9,6 +9,11 @@ const props = defineProps({
     placeholder: {
         type: String,
         default: 'Antes S/ 1800'
+    },
+    // 0 = sin limite; con un valor, el editor no deja pasar de esas lineas.
+    maxLines: {
+        type: Number,
+        default: 0
     }
 });
 
@@ -32,7 +37,81 @@ const normalize = (html) => {
     return value === '<br>' || value === '<div><br></div>' ? '' : value;
 };
 
-const sync = () => emit('update:modelValue', normalize(editor.value?.innerHTML));
+const lastValid = ref(normalize(props.modelValue));
+
+const currentHtml = () => normalize(editor.value?.innerHTML);
+
+/**
+ * Cuenta las lineas escritas: los <div>/<p> que crea el navegador y los <br>
+ * se toman como saltos, y se ignoran los saltos vacios del final.
+ */
+const linesOf = (html) => {
+    const container = document.createElement('div');
+    container.innerHTML = html || '';
+
+    container.querySelectorAll('br').forEach((br) => br.replaceWith(document.createTextNode('\n')));
+    container.querySelectorAll('div, p').forEach((block) => {
+        const fragment = document.createDocumentFragment();
+
+        // El salto va antes del bloque: si fuera despues, dos bloques seguidos
+        // se leerian como una sola linea.
+        if (block.previousSibling) {
+            fragment.appendChild(document.createTextNode('\n'));
+        }
+
+        while (block.firstChild) {
+            fragment.appendChild(block.firstChild);
+        }
+
+        block.replaceWith(fragment);
+    });
+
+    const text = (container.textContent || '').replace(/\n+$/, '');
+
+    return text === '' ? 1 : text.split('\n').length;
+};
+
+const placeCaretAtEnd = () => {
+    if (!editor.value) {
+        return;
+    }
+
+    const range = document.createRange();
+    range.selectNodeContents(editor.value);
+    range.collapse(false);
+
+    const selection = window.getSelection();
+    selection?.removeAllRanges();
+    selection?.addRange(range);
+};
+
+const sync = () => {
+    const html = currentHtml();
+
+    // Si el contenido paso el maximo (por ejemplo al pegar), se restaura lo
+    // ultimo valido en lugar de guardar algo que el limite no permite.
+    if (props.maxLines > 0 && linesOf(html) > props.maxLines) {
+        if (editor.value) {
+            editor.value.innerHTML = lastValid.value;
+            placeCaretAtEnd();
+        }
+
+        return;
+    }
+
+    lastValid.value = html;
+    emit('update:modelValue', html);
+};
+
+const onKeydown = (event) => {
+    if (props.maxLines <= 0 || event.key !== 'Enter' || event.isComposing) {
+        return;
+    }
+
+    if (linesOf(currentHtml()) >= props.maxLines) {
+        event.preventDefault();
+    }
+};
 
 const refreshActive = () => {
     const selection = window.getSelection();
@@ -65,6 +144,40 @@ const command = (name, value = null) => {
     refreshActive();
 };
 
+const sizes = [12, 14, 16, 18, 20, 24, 28];
+
+const applyFontSize = (event) => {
+    const px = event.target.value;
+
+    if (!px || !editor.value) {
+        return;
+    }
+
+    editor.value.focus();
+    // execCommand solo maneja tamanos 1-7; se aplica el 7 y luego se convierte
+    // en un <span> con el tamano exacto en px, que es lo que acepta el saneado.
+    document.execCommand('styleWithCSS', false, false);
+    document.execCommand('fontSize', false, '7');
+
+    editor.value.querySelectorAll('font[size="7"], span[style]').forEach((node) => {
+        const marker = node.tagName === 'FONT' && node.getAttribute('size') === '7';
+        const keyword = node.tagName === 'SPAN' && /xxx-large/i.test(node.style.fontSize || '');
+
+        if (!marker && !keyword) {
+            return;
+        }
+
+        const span = document.createElement('span');
+        span.style.fontSize = px + 'px';
+        span.innerHTML = node.innerHTML;
+        node.replaceWith(span);
+    });
+
+    sync();
+    refreshActive();
+    event.target.value = '';
+};
+
 const pickColor = (event) => {
     color.value = event.target.value;
     command('foreColor', color.value);
@@ -73,7 +186,10 @@ const pickColor = (event) => {
 const paste = (event) => {
     event.preventDefault();
 
-    const text = (event.clipboardData || window.clipboardData)?.getData('text/plain') ?? '';
+    const pasted = (event.clipboardData || window.clipboardData)?.getData('text/plain') ?? '';
+    // Con limite de lineas se pega en una sola linea y el usuario decide donde
+    // cortar; sin limite se respeta el texto tal cual.
+    const text = props.maxLines > 0 ? pasted.replace(/\r?\n+/g, ' ') : pasted;
     document.execCommand('insertText', false, text);
     sync();
 };
@@ -85,6 +201,7 @@ onMounted(() => {
         editor.value.innerHTML = props.modelValue || '';
     }
 
+    lastValid.value = normalize(props.modelValue);
     document.addEventListener('selectionchange', onSelectionChange);
 });
 
@@ -94,6 +211,8 @@ watch(() => props.modelValue, (value) => {
     if (editor.value && editor.value.innerHTML !== (value || '')) {
         editor.value.innerHTML = value || '';
     }
+
+    lastValid.value = normalize(value);
 });
 </script>
 
@@ -116,6 +235,12 @@ watch(() => props.modelValue, (value) => {
                 @mousedown.prevent="command('strikeThrough')">
                 <s>S</s>
             </button>
+            <select title="Tamaño de letra"
+                class="rounded border border-gray-300 bg-white px-1 py-1 text-sm text-gray-700 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200"
+                @change="applyFontSize">
+                <option value="">Tamaño</option>
+                <option v-for="px in sizes" :key="px" :value="px">{{ px }} px</option>
+            </select>
             <span class="mx-1 h-5 w-px bg-gray-300 dark:bg-gray-600"></span>
             <label class="inline-flex cursor-pointer items-center gap-1 rounded px-1 py-1 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600"
                 title="Color del texto">
@@ -132,7 +257,8 @@ watch(() => props.modelValue, (value) => {
 
         <div ref="editor" contenteditable="true" role="textbox" aria-multiline="true"
             class="price-note-editor min-h-[46px] px-3 py-2 text-sm text-gray-900 outline-none dark:text-white"
-            :data-placeholder="placeholder" @input="sync" @blur="sync" @paste="paste"></div>
+            :data-placeholder="placeholder" @input="sync" @blur="sync" @paste="paste"
+            @keydown="onKeydown"></div>
     </div>
 </template>
 
