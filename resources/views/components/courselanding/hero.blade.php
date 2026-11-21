@@ -99,11 +99,95 @@
 
                     @if(filled($landing->banner_video_link ?? null))
 
-                        <div class="w-100">
+                        <div class="w-100" data-hero-video>
                             <div class="ratio ratio-16x9 rounded overflow-hidden">
-                                {!! \App\Support\LazyContent::process($landing->banner_video_link) !!}
+                                {!! \App\Support\LazyContent::process(\App\Support\VideoEmbed::prepare(
+                                    $landing->banner_video_link,
+                                    $landing->course->description ?? 'Video del curso',
+                                    request()->getSchemeAndHttpHost()
+                                )) !!}
                             </div>
                         </div>
+
+                        <script>
+                            (function () {
+                                var audioDelay = 2000;
+
+                                function startHeroVideo(box) {
+                                    if (box.dataset.heroVideoStarted === '1') {
+                                        return;
+                                    }
+
+                                    box.dataset.heroVideoStarted = '1';
+
+                                    var video = box.querySelector('video');
+                                    var iframe = box.querySelector('iframe');
+                                    var src = iframe ? (iframe.getAttribute('src') || '') : '';
+                                    var isYouTube = /youtube(-nocookie)?\.com\/embed\//i.test(src);
+                                    var isVimeo = /player\.vimeo\.com\/video\//i.test(src);
+
+                                    window.setTimeout(function () {
+                                        if (video) {
+                                            var playback = video.play();
+
+                                            if (playback && playback.catch) {
+                                                playback.catch(function () {});
+                                            }
+
+                                            video.muted = false;
+                                        }
+
+                                        if (!iframe || (!isYouTube && !isVimeo)) {
+                                            return;
+                                        }
+
+                                        var post = function (message) {
+                                            try {
+                                                iframe.contentWindow.postMessage(message, '*');
+                                            } catch (error) {}
+                                        };
+
+                                        if (isYouTube) {
+                                            post(JSON.stringify({ event: 'command', func: 'playVideo', args: [] }));
+                                            post(JSON.stringify({ event: 'command', func: 'unMute', args: [] }));
+                                        } else {
+                                            post({ method: 'play' });
+                                            post({ method: 'setMuted', value: false });
+                                        }
+                                    }, audioDelay);
+                                }
+
+                                function initHeroVideos() {
+                                    document.querySelectorAll('[data-hero-video]').forEach(function (box) {
+                                        var video = box.querySelector('video');
+                                        var iframe = box.querySelector('iframe');
+
+                                        if (video) {
+                                            video.muted = true;
+                                            video.setAttribute('muted', '');
+                                            video.setAttribute('playsinline', '');
+                                        }
+
+                                        if (iframe) {
+                                            iframe.addEventListener('load', function () {
+                                                startHeroVideo(box);
+                                            });
+                                        }
+
+                                        // Respaldo por si el iframe ya habia terminado de cargar.
+                                        window.setTimeout(function () {
+                                            startHeroVideo(box);
+                                        }, 3000);
+                                    });
+                                }
+
+                                if (document.readyState === 'loading') {
+                                    document.addEventListener('DOMContentLoaded', initHeroVideos);
+                                } else {
+                                    initHeroVideos();
+                                }
+                            })();
+                        </script>
 
                     @else
 
