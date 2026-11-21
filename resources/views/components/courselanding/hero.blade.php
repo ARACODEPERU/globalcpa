@@ -95,7 +95,7 @@
 
                 </div>
 
-                <div class="col-lg-4 d-none d-lg-flex align-items-center justify-content-center p-3">
+                <div class="col-12 col-lg-4 d-flex align-items-center justify-content-center p-3 pt-0 pt-lg-3">
 
                     @if(filled($landing->banner_video_link ?? null))
 
@@ -119,6 +119,8 @@
                                 object-fit: contain;
                                 display: block;
                             "
+                            loading="lazy"
+                            decoding="async"
                         >
 
                     @endif
