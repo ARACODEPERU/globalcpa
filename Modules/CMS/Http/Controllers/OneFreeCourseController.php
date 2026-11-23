@@ -268,7 +268,7 @@ class OneFreeCourseController extends Controller
             : [];
 
         $headers = [
-            'Fecha', 'Nombre', 'Correo', 'Teléfono', 'Origen',
+            'Fecha', 'Nombre', 'Correo', 'Teléfono', 'Áreas de interés', 'Origen',
             'utm_source', 'utm_medium', 'utm_campaign', 'Referer', 'URL de la landing',
         ];
 
@@ -287,7 +287,7 @@ class OneFreeCourseController extends Controller
         $sheet = $spreadsheet->getActiveSheet();
         $sheet->setTitle('Registros');
         $sheet->fromArray($headers, null, 'A1');
-        $sheet->getStyle('A1:J1')->getFont()->setBold(true);
+        $sheet->getStyle('A1:K1')->getFont()->setBold(true);
 
         $rowNumber = 2;
         foreach ($rows as $row) {
@@ -299,7 +299,7 @@ class OneFreeCourseController extends Controller
             $rowNumber++;
         }
 
-        foreach (range('A', 'J') as $column) {
+        foreach (range('A', 'K') as $column) {
             $sheet->getColumnDimension($column)->setAutoSize(true);
         }
 
@@ -330,7 +330,7 @@ class OneFreeCourseController extends Controller
     private function freeCourseRegistrationsColumns(): array
     {
         return [
-            'name', 'email', 'phone', 'traffic_source', 'utm_source', 'utm_medium',
+            'name', 'email', 'phone', 'interest_areas', 'traffic_source', 'utm_source', 'utm_medium',
             'utm_campaign', 'referer', 'landing_url', 'created_at',
         ];
     }
@@ -345,6 +345,7 @@ class OneFreeCourseController extends Controller
             'nombre' => $lead->name ?: '',
             'email' => $lead->email ?: '',
             'telefono' => $lead->phone ?: '',
+            'intereses' => implode(', ', (array) ($lead->interest_areas ?? [])),
             'origen' => $lead->traffic_source ?: 'organic',
             'utm_source' => $lead->utm_source ?: '',
             'utm_medium' => $lead->utm_medium ?: '',

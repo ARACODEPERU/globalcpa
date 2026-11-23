@@ -155,9 +155,11 @@
                                                     </div>
                                                 </label>
                                                 <div class="card-body">
-                                                    <img loading="lazy" decoding="async" class="w-100 mb-3" src="{{ asset('storage/' . $item->image) }}"
-                                                        alt="">
-                                                    <h4 style=" height: 30px; color: #000;">
+                                                    @if (!empty($item->image))
+                                                        <img loading="lazy" decoding="async" class="w-100 mb-3"
+                                                            src="{{ asset('storage/' . $item->image) }}" alt="">
+                                                    @endif
+                                                    <h4 style="min-height: 30px; color: #000;">
                                                         {{ $item->description }}
                                                     </h4>
                                                 </div>
@@ -181,12 +183,12 @@
                                 </div>
                                 <br>
                                 <div class="row">
-                                    @foreach ($coursesFree as $item)
+                                    @foreach ($interestAreas as $item)
                                         <div class="col-md-3 box-col-4">
                                             <div class="card weekend-card">
                                                 <label class="c-container">
-                                                    <input value="{{ $item->id }}" type="checkbox"
-                                                        name="courseInterest[]">
+                                                    <input value="{{ $item->description }}" type="checkbox"
+                                                        name="interestAreas[]">
                                                     <div class="c-checkmark">
                                                         <svg viewBox="0 0 50 50" version="1.1"
                                                             xmlns="http://www.w3.org/2000/svg" class="c-icon">
@@ -201,9 +203,11 @@
                                                     </div>
                                                 </label>
                                                 <div class="card-body">
-                                                    <img loading="lazy" decoding="async" class="w-100 mb-3" src="{{ asset('storage/' . $item->image) }}"
-                                                        alt="">
-                                                    <h4 style=" height: 30px; color: #000;">
+                                                    @if (!empty($item->image))
+                                                        <img loading="lazy" decoding="async" class="w-100 mb-3"
+                                                            src="{{ asset('storage/' . $item->image) }}" alt="">
+                                                    @endif
+                                                    <h4 style="min-height: 30px; color: #000;">
                                                         {{ $item->description }}
                                                     </h4>
                                                 </div>

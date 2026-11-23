@@ -6,6 +6,7 @@ use App\Models\Person;
 use App\Models\Sale;
 use App\Models\SaleProduct;
 use App\Models\User;
+use App\Support\CourseInterestAreas;
 use App\Support\PersonRegistrationGuard;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -24,6 +25,7 @@ use MercadoPago\MercadoPagoConfig;
 use MercadoPago\Client\Preference\PreferenceClient;
 use MercadoPago\Client\Payment\PaymentClient;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use App\Mail\StudentRegistrationMailable;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ConfirmPurchaseMail;
@@ -38,7 +40,6 @@ use Modules\Academic\Entities\AcaStudent;
 use Modules\Academic\Entities\AcaCapRegistration;
 use Modules\Academic\Entities\AcaCourseLanding;
 use Illuminate\Support\Facades\DB;
-use Modules\Academic\Entities\AcaStudentCoursesInterest;
 use Modules\CMS\Entities\CmsLanding;
 use Modules\CMS\Entities\CmsLandingLead;
 use Modules\CMS\Entities\CmsTestimony;
@@ -150,9 +151,21 @@ class WebPageController extends Controller
             'ubigeo' => $ubigeo,
             'previewMode' => $previewMode,
             'freeCoursesCount' => $freeCoursesCount,
+            'interestAreas' => $this->freeCourseInterestAreas(),
             'promoEnd' => $promoEnd,
             'promoExpired' => $promoExpired,
         ];
+    }
+
+    /**
+     * Areas de interes del paso 2 de la landing, listas para pintar las tarjetas.
+     * No tienen imagen propia: son un listado fijo de temas, no cursos.
+     */
+    private function freeCourseInterestAreas()
+    {
+        return collect(CourseInterestAreas::all())
+            ->map(fn ($area) => (object) ['image' => null, 'description' => $area])
+            ->values();
     }
 
     /**
@@ -2464,11 +2477,21 @@ class WebPageController extends Controller
 
         $request->merge(['courseFree' => $courseFreeIds]);
 
+        // Areas de interes del paso 2: solo se aceptan las del listado oficial.
+        $interestAreas = collect((array) $request->input('interestAreas', []))
+            ->filter(fn ($area) => is_string($area) && in_array($area, CourseInterestAreas::all(), true))
+            ->unique()
+            ->values()
+            ->all();
+
+        $request->merge(['interestAreas' => $interestAreas]);
+
         // 🔹 VALIDACIÓN
         $validator = Validator::make($request->all(), [
             'courseFree' => 'required|array|min:1|max:' . $freeCoursesCount,
             'courseFree.*' => 'integer|exists:aca_courses,id',
-            'courseInterest' => 'required',
+            'interestAreas' => 'required|array|min:1',
+            'interestAreas.*' => ['string', Rule::in(CourseInterestAreas::all())],
             'nombres' => 'required|string|max:255',
             'apaterno' => 'required|string|max:255',
             'amaterno' => 'required|string|max:255',
@@ -2500,6 +2523,9 @@ class WebPageController extends Controller
             'courseFree.required' => 'Selecciona al menos una formación gratis.',
             'courseFree.min' => 'Selecciona al menos una formación gratis.',
             'courseFree.max' => 'Solo puedes elegir hasta :max cursos gratis.',
+            'interestAreas.required' => 'Selecciona al menos un área de interés.',
+            'interestAreas.min' => 'Selecciona al menos un área de interés.',
+            'interestAreas.*.in' => 'Selecciona áreas de interés válidas de la lista.',
             'required' => 'El campo :attribute es obligatorio.',
             'email.email' => 'Debe ingresar un correo electrónico válido.',
             'email.unique' => 'El correo electrónico ya está registrado.',
@@ -2555,19 +2581,6 @@ class WebPageController extends Controller
                 ]);
             }
 
-            $coursesInterest = $request->courseInterest ?? [];
-
-            if(count($coursesInterest) > 0){
-                foreach($coursesInterest as $course){
-                    AcaStudentCoursesInterest::create([
-                        'student_id' => $student->id,
-                        'course_id' => $course,
-                        'status' => 0
-                    ]);
-                }
-            }
-
-
             // 🔹 REGISTRO EN TABLA users
             $user = User::create([
                 'name' => $request->nombres,
@@ -2603,19 +2616,19 @@ class WebPageController extends Controller
             $person = $registration['person'];
             $user = $registration['user'];
 
-            $courses = [];
-            $item = OnliItem::whereIn('item_id', array_filter((array) $request->courseInterest))->first();
-
-            if ($item) {
-                $courses[0] = [
+            // El correo lista las formaciones gratis elegidas en el paso 1.
+            $courses = OnliItem::whereIn('item_id', $courseFreeIds)
+                ->get()
+                ->map(fn ($item) => [
                     'image'       => $item->image,
                     'name'        => $item->name,
                     'description' => $item->description,
                     'type'        => $item->additional,
                     'modality'    => $item->additional1,
-                    'price'      => "Gratis",
-                ];
-            }
+                    'price'      => 'Gratis',
+                ])
+                ->values()
+                ->all();
 
             //////////codigo enviar correo /////
             Mail::to($request->email)->queue(new StudentRegistrationMailable([
@@ -2657,6 +2670,7 @@ class WebPageController extends Controller
                 'name' => trim(($request->nombres ?? '') . ' ' . ($request->apaterno ?? '') . ' ' . ($request->amaterno ?? '')) ?: null,
                 'email' => $request->email,
                 'phone' => $request->phone,
+                'interest_areas' => array_values((array) $request->input('interestAreas', [])),
                 'utm_source' => $request->get('utm_source'),
                 'utm_medium' => $request->get('utm_medium'),
                 'utm_campaign' => $request->get('utm_campaign'),

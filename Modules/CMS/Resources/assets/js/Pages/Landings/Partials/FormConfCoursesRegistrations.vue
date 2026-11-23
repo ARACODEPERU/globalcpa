@@ -145,6 +145,7 @@
                             <th class="px-2 py-1.5 text-left font-semibold text-gray-500 dark:text-gray-400">Nombre</th>
                             <th class="px-2 py-1.5 text-left font-semibold text-gray-500 dark:text-gray-400">Correo</th>
                             <th class="px-2 py-1.5 text-left font-semibold text-gray-500 dark:text-gray-400">Teléfono</th>
+                            <th class="px-2 py-1.5 text-left font-semibold text-gray-500 dark:text-gray-400">Áreas de interés</th>
                             <th class="px-2 py-1.5 text-left font-semibold text-gray-500 dark:text-gray-400">Origen</th>
                             <th class="px-2 py-1.5 text-left font-semibold text-gray-500 dark:text-gray-400">Campaña</th>
                             <th class="px-2 py-1.5 text-left font-semibold text-gray-500 dark:text-gray-400">Referer</th>
@@ -156,6 +157,7 @@
                             <td class="px-2 py-1.5 text-gray-700 dark:text-gray-200">{{ row.nombre || '—' }}</td>
                             <td class="px-2 py-1.5 text-gray-600 dark:text-gray-300">{{ row.email || '—' }}</td>
                             <td class="px-2 py-1.5 text-gray-600 dark:text-gray-300">{{ row.telefono || '—' }}</td>
+                            <td class="max-w-[280px] px-2 py-1.5 text-gray-600 dark:text-gray-300">{{ row.intereses || '—' }}</td>
                             <td class="px-2 py-1.5 text-gray-600 dark:text-gray-300">
                                 <span class="block">{{ originLabel(row.origen) }}</span>
                                 <span class="block text-[11px] text-gray-400">
@@ -168,7 +170,7 @@
                             </td>
                         </tr>
                         <tr v-if="!rows.length">
-                            <td colspan="7" class="px-2 py-3 text-center text-gray-400">
+                            <td colspan="8" class="px-2 py-3 text-center text-gray-400">
                                 {{ loading ? 'Cargando registros…' : 'Todavía no hay registros desde esta landing.' }}
                             </td>
                         </tr>

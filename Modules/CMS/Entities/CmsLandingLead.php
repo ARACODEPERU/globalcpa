@@ -7,6 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 class CmsLandingLead extends Model
 {
     /**
+     * Atributos que se guardan como array (json).
+     */
+    protected $casts = [
+        'interest_areas' => 'array',
+    ];
+
+    /**
      * The attributes that are mass assignable.
      */
     protected $fillable = [
@@ -16,6 +23,7 @@ class CmsLandingLead extends Model
         'name',
         'email',
         'phone',
+        'interest_areas',
         'utm_source',
         'utm_medium',
         'utm_campaign',
