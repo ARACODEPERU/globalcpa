@@ -141,8 +141,11 @@
         // "El equipo de Global CPA"; cambiar aqui si el nombre de marca cambia.
         $teamName = 'Global CPA';
 
-        $documentType = ($document->invoice_type_doc ?? null) == '01' ? 'FACTURA' : 'BOLETA';
-        $documentNumber = $documentType . ' ' . ($document->invoice_serie ?? '') . '-' . ($document->invoice_correlative ?? '');
+        // El comprobante puede faltar: una negociacion gratuita (precio 0) no emite ninguno.
+        $documentType = $document && ($document->invoice_type_doc ?? null) == '01' ? 'FACTURA' : 'BOLETA';
+        $documentNumber = $document
+            ? $documentType.' '.($document->invoice_serie ?? '').'-'.($document->invoice_correlative ?? '')
+            : null;
 
         $items = $negotiation->items;
         $itemNames = $items->pluck('title')->filter()->values()->all();
@@ -155,9 +158,12 @@
             : null;
 
         $approvalDate = ($negotiation->verified_at ?? now())->format('d/m/Y H:i');
-        $totalPaid = number_format((float) $negotiation->total_price, 2);
+        // Negociacion gratuita: no hubo pago ni comprobante que mostrar en el correo.
+        $isFree = (float) $negotiation->total_price === 0.0;
+        $totalPaid = $isFree
+            ? 'GRATIS'
+            : $negotiation->currency.' '.number_format((float) $negotiation->total_price, 2);
         $hasCredentials = ! empty($credentials) && ($credentials['username'] ?? null);
-        $isFree = $negotiation->isFree();
     @endphp
 
     <br>
@@ -167,18 +173,11 @@
         <p>
             Hola <b>{{ $studentName }}</b>,
             nos alegra darte la bienvenida. Queremos informarte que tu inscripción ha sido procesada y
-            aprobada con éxito. En este correo encontrarás tus credenciales de acceso y el detalle de tu compra.
+            aprobada con éxito. En este correo encontrarás tus credenciales de acceso y el detalle de
+            {{ $isFree ? 'tu inscripción gratuita.' : 'tu compra.' }}
         </p>
 
-        @if ($isFree)
-            <div class="card">
-                <p style="margin: 0; text-align: center;">
-                    🎁 <b>Tu inscripción es GRATUITA.</b> No necesitas realizar ningún pago ni enviar comprobante.
-                </p>
-            </div>
-        @endif
-
-        @if ($document && ! $isFree)
+        @if ($document)
             <p style="text-align: center;">
                 <span class="badge">📄 Comprobante: {{ $documentNumber }}</span>
             </p>
@@ -224,27 +223,29 @@
             </ul>
         @endif
 
-        @unless ($isFree)
-        <p style="margin: 16px 0 0; font-weight: bold;">TOTAL PAGADO:</p>
-        <p class="total">{{ $negotiation->currency }} {{ $totalPaid }}</p>
+        <p style="margin: 16px 0 0; font-weight: bold;">{{ $isFree ? 'COSTO PARA TI:' : 'TOTAL PAGADO:' }}</p>
+        <p class="total">{{ $totalPaid }}</p>
 
-        <h2>Detalles del pago</h2>
+        <h2>{{ $isFree ? 'Detalles de tu inscripción' : 'Detalles del pago' }}</h2>
         <p>
-            <b>Tipo de pago:</b> {{ $isInstallments ? 'Pago en cuotas' : 'Pago único' }}<br>
-            @if ($isInstallments)
-                <b>Cuotas:</b> {{ count($schedule) }}<br>
-                @if ($firstDueDate)
-                    <b>Primera cuota vence:</b> {{ $firstDueDate }}<br>
-                @endif
+            @if ($isFree)
+                <b>Tipo de inscripción:</b> Gratuita (sin costo de pago)<br>
             @else
-                <b>Plazo de pago:</b> {{ $negotiation->single_payment_days ?? '--' }} días<br>
+                <b>Tipo de pago:</b> {{ $isInstallments ? 'Pago en cuotas' : 'Pago único' }}<br>
+                @if ($isInstallments)
+                    <b>Cuotas:</b> {{ count($schedule) }}<br>
+                    @if ($firstDueDate)
+                        <b>Primera cuota vence:</b> {{ $firstDueDate }}<br>
+                    @endif
+                @else
+                    <b>Plazo de pago:</b> {{ $negotiation->single_payment_days ?? '--' }} días<br>
+                @endif
+                <b>Medio de pago:</b> {{ \Modules\Commercial\Entities\CommercialNegotiation::paymentMethodLabel($negotiation->payment_method) }}<br>
             @endif
-            <b>Medio de pago:</b> {{ \Modules\Commercial\Entities\CommercialNegotiation::paymentMethodLabel($negotiation->payment_method) }}<br>
             <b>Fecha de aprobación:</b> {{ $approvalDate }}
         </p>
-        @endunless
 
-        @if (! $isFree && ($negotiation->invoice->invoice_type ?? null) === 'factura')
+        @if (($negotiation->invoice->invoice_type ?? null) === 'factura')
             <h2>Datos de facturación</h2>
             <p>
                 <b>RUC:</b> {{ $negotiation->invoice->ruc ?? 'No registrado' }}<br>

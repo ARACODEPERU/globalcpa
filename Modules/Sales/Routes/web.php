@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Route;
 use Modules\Sales\Http\Controllers\AccountsReceivableController;
 use Modules\Sales\Http\Controllers\AccountsReceivableDashboardController;
 use Modules\Sales\Http\Controllers\Facturador3ImportController;
+use Modules\Sales\Http\Controllers\GuiaRemisionController;
 use Modules\Sales\Http\Controllers\InvoiceReportsController;
 use Modules\Sales\Http\Controllers\PettyCashController;
 use Modules\Sales\Http\Controllers\ProductController;
@@ -36,6 +37,11 @@ use Modules\Sales\Http\Controllers\SalesPrintTemplateController;
 use Modules\Sales\Http\Controllers\SaleSummaryController;
 use Modules\Sales\Http\Controllers\SerieController;
 use Modules\Sales\Http\Controllers\ServicesController;
+use Modules\Sales\Http\Controllers\SireConfiguracionController;
+use Modules\Sales\Http\Controllers\SirePresentacionController;
+use Modules\Sales\Http\Controllers\SirePropuestaController;
+use Modules\Sales\Http\Controllers\SireRceComprasController;
+use Modules\Sales\Http\Controllers\SireRvieVentasController;
 use Modules\Sales\Http\Controllers\QuickSaleController;
 use Modules\Sales\Http\Controllers\QuickSaleStoreController;
 
@@ -186,6 +192,25 @@ Route::middleware(['auth', 'verified', 'user_activity_log'])->prefix('sales')->g
         Route::get('lowcommunication/destroy/{id}', [SaleLowCommunicationController::class, 'destroy'])->name('low_communication_destroy');
         Route::get('lowcommunication/download/{id}/{type}', [SaleLowCommunicationController::class, 'downloadFile'])->name('low_communication_download');
     });
+
+    // //guias de remision electronica (remitente)
+    Route::middleware(['permission:invo_guia_remision_lista'])->group(function () {
+        Route::get('guiaremision/list', [GuiaRemisionController::class, 'index'])->name('guias_remision_list');
+        Route::get('guiaremision/download/{id}/{type}', [GuiaRemisionController::class, 'download'])->name('guias_remision_download');
+        Route::get('guiaremision/check/{id}', [GuiaRemisionController::class, 'check'])->name('guias_remision_check');
+    });
+    Route::middleware(['permission:invo_guia_remision_nuevo'])
+        ->post('guiaremision/store', [GuiaRemisionController::class, 'store'])->name('guias_remision_store');
+    Route::middleware(['permission:invo_guia_remision_envio_sunat'])
+        ->get('guiaremision/send/{id}', [GuiaRemisionController::class, 'send'])->name('guias_remision_send');
+    Route::middleware(['permission:invo_guia_remision_anular'])
+        ->get('guiaremision/destroy/{id}', [GuiaRemisionController::class, 'destroy'])->name('guias_remision_destroy');
+
+    // //consulta asincrona de tickets y descarga centralizada de XML / CDR
+    Route::middleware(['permission:invo_documento_lista'])->group(function () {
+        Route::get('sunat/tickets/{entity}/{id}', [\Modules\Sales\Http\Controllers\SunatTrackingController::class, 'check'])->name('sunat_ticket_check');
+        Route::get('sunat/files/{entity}/{id}/{type}', [\Modules\Sales\Http\Controllers\SunatTrackingController::class, 'download'])->name('sunat_file_download');
+    });
     // //rutas de notas de credito
     Route::get('creditnote/list', [SaleCreditNotesController::class, 'index'])->name('sale_credit_notes_list');
     Route::get('creditnote/table', [SaleCreditNotesController::class, 'tableDocument'])->name('sale_credit_notes_table');
@@ -247,6 +272,41 @@ Route::middleware(['auth', 'verified', 'user_activity_log'])->prefix('sales')->g
     Route::middleware(['middleware' => 'permission:invo_dashboard'])
         ->get('reports/invoice', [InvoiceReportsController::class, 'index'])
         ->name('reports_invoice');
+
+    // SIRE: credenciales de la API (cifradas) y modo de trabajo de la empresa.
+    Route::middleware(['middleware' => 'permission:sire_api'])->group(function () {
+        Route::get('sire/configuracion', [SireConfiguracionController::class, 'index'])->name('sire_configuracion');
+        Route::post('sire/configuracion', [SireConfiguracionController::class, 'update'])->name('sire_configuracion_update');
+        Route::post('sire/configuracion/probar', [SireConfiguracionController::class, 'probar'])->name('sire_configuracion_probar');
+    });
+
+    // SIRE: registro de ventas electrónico (RVIE) del período.
+    Route::middleware(['middleware' => 'permission:sire_rvie_ventas'])->group(function () {
+        Route::get('sire/rvie-ventas', [SireRvieVentasController::class, 'index'])->name('sire_rvie_ventas_index');
+        Route::get('sire/rvie-ventas/txt', [SireRvieVentasController::class, 'txt'])->name('sire_rvie_ventas_txt');
+        Route::get('sire/rvie-ventas/zip', [SireRvieVentasController::class, 'zip'])->name('sire_rvie_ventas_zip');
+        // Solo lectura: descarga la propuesta de SUNAT, no envía reemplazos.
+        Route::post('sire/rvie-ventas/propuesta', [SirePropuestaController::class, 'ventas'])->name('sire_rvie_ventas_propuesta');
+
+        // Comparación, reemplazo y aceptación de la propuesta (escritura en SUNAT).
+        Route::post('sire/rvie-ventas/comparar', [SirePresentacionController::class, 'comparar'])->defaults('tipo', 'ventas')->name('sire_rvie_ventas_comparar');
+        Route::post('sire/rvie-ventas/estado', [SirePresentacionController::class, 'estado'])->defaults('tipo', 'ventas')->name('sire_rvie_ventas_estado');
+        Route::post('sire/rvie-ventas/reemplazar', [SirePresentacionController::class, 'reemplazar'])->defaults('tipo', 'ventas')->middleware('permission:sire_api')->name('sire_rvie_ventas_reemplazar');
+        Route::post('sire/rvie-ventas/aceptar', [SirePresentacionController::class, 'aceptar'])->defaults('tipo', 'ventas')->middleware('permission:sire_api')->name('sire_rvie_ventas_aceptar');
+    });
+
+    // SIRE: registro de compras electrónico (RCE) del período.
+    Route::middleware(['middleware' => 'permission:sire_rce_compras'])->group(function () {
+        Route::get('sire/rce-compras', [SireRceComprasController::class, 'index'])->name('sire_rce_compras_index');
+        Route::get('sire/rce-compras/txt', [SireRceComprasController::class, 'txt'])->name('sire_rce_compras_txt');
+        Route::get('sire/rce-compras/zip', [SireRceComprasController::class, 'zip'])->name('sire_rce_compras_zip');
+        Route::post('sire/rce-compras/propuesta', [SirePropuestaController::class, 'compras'])->name('sire_rce_compras_propuesta');
+
+        Route::post('sire/rce-compras/comparar', [SirePresentacionController::class, 'comparar'])->defaults('tipo', 'compras')->name('sire_rce_compras_comparar');
+        Route::post('sire/rce-compras/estado', [SirePresentacionController::class, 'estado'])->defaults('tipo', 'compras')->name('sire_rce_compras_estado');
+        Route::post('sire/rce-compras/reemplazar', [SirePresentacionController::class, 'reemplazar'])->defaults('tipo', 'compras')->middleware('permission:sire_api')->name('sire_rce_compras_reemplazar');
+        Route::post('sire/rce-compras/aceptar', [SirePresentacionController::class, 'aceptar'])->defaults('tipo', 'compras')->middleware('permission:sire_api')->name('sire_rce_compras_aceptar');
+    });
 
     Route::middleware(['middleware' => 'permission:acco_dashboard'])
         ->get('accountsreceivable/dashboard', [AccountsReceivableDashboardController::class, 'index'])

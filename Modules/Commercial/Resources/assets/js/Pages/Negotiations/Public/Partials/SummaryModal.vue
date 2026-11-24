@@ -1,6 +1,7 @@
 <script setup>
 import { computed } from "vue";
 import Swal2 from "sweetalert2";
+import { isFreeNegotiation } from "../../Support/freeNegotiation.js";
 
 /**
  * Resumen previo al envio del formulario publico de negociacion.
@@ -40,8 +41,8 @@ const isRuc = computed(() => String(props.form.document_type_id) === "6");
 const isBoleta = computed(() => props.form.invoice_type === "boleta");
 const isFactura = computed(() => props.form.invoice_type === "factura");
 const isMercadoPago = computed(() => props.negotiation.payment_method === "mercadopago");
-// Negociacion gratuita (total 0): no hay pago ni voucher que resumir.
-const isFree = computed(() => Number(props.negotiation.total_price || 0) <= 0);
+// Negociacion gratuita: el resumen no muestra comprobante ni datos de pago.
+const isFree = computed(() => isFreeNegotiation(props.negotiation?.total_price));
 
 const documentTypeLabel = computed(() =>
     props.documentTypeOptions.find((option) => String(option.value) === String(props.form.document_type_id))?.label
@@ -75,6 +76,18 @@ const locationLabel = computed(() => {
 const genderLabel = computed(() => (props.form.gender === "F" ? "Femenino" : (props.form.gender === "M" ? "Masculino" : null)));
 
 const scheduleRows = computed(() => props.negotiation.schedule || []);
+
+// Documentos legales que el cliente acepto en el formulario: se listan para que los vea
+// otra vez antes de confirmar.
+const legalAccepted = computed(() => {
+    const documentos = [];
+
+    if (props.form.accepted_terminos) documentos.push("Terminos y condiciones");
+    if (props.form.accepted_devoluciones) documentos.push("Politica de devoluciones y Reembolsos - CPA Academy");
+    if (props.form.accepted_privacidad) documentos.push("Politica de Privacidad");
+
+    return documentos;
+});
 
 // Los datos del cliente son texto libre: se escapan antes de inyectarlos en el HTML.
 const escapeHtml = (value) => String(value ?? "")
@@ -116,7 +129,7 @@ const summaryHtml = () => {
     rows.push(summaryRow("Empresa", form.company));
     rows.push(summaryRow("Industria", industryLabel.value));
 
-    // Gratis: no hay comprobante que resumir.
+    // En una negociacion gratuita no hay comprobante que emitir: se omite la seccion.
     if (!isFree.value) {
         rows.push(summarySection("Comprobante"));
         rows.push(summaryRow("Tipo de comprobante", isFactura.value ? "Factura electronica" : "Boleta electronica"));
@@ -134,8 +147,10 @@ const summaryHtml = () => {
         }
     }
 
-    rows.push(summarySection("Acuerdo y pago"));
-    rows.push(summaryRow("Modalidad", props.negotiation.payment_type === "installments" ? `${scheduleRows.value.length} cuotas` : "Pago unico"));
+    rows.push(summarySection(isFree.value ? "Acuerdo" : "Acuerdo y pago"));
+    if (!isFree.value) {
+        rows.push(summaryRow("Modalidad", props.negotiation.payment_type === "installments" ? `${scheduleRows.value.length} cuotas` : "Pago unico"));
+    }
     rows.push(summaryRow("Monto total", props.totalLabel));
     if (props.totalSolesLabel) {
         rows.push(summaryRow("Equivale a soles", props.totalSolesLabel));
@@ -147,13 +162,16 @@ const summaryHtml = () => {
         rows.push(summaryRow("Vencimiento 1ra cuota", scheduleRows.value[0]?.due_date ?? null));
     }
 
-    if (isFree.value) {
-        rows.push(summaryRow("Negociacion", "GRATUITA (sin pago)"));
-    } else if (isMercadoPago.value) {
+    if (isMercadoPago.value) {
         rows.push(summaryRow("Forma de pago", props.paymentEvidence ? "Declaro que ya pague (adjunto voucher)" : "Pago ahora con tarjeta"));
     }
 
-    if (!isFree.value && form.voucher?.name) {
+    if (legalAccepted.value.length) {
+        rows.push(summarySection("Documentos aceptados"));
+        rows.push(summaryRow("Aceptados", legalAccepted.value.join(" / ")));
+    }
+
+    if (form.voucher?.name) {
         rows.push(summaryRow("Voucher adjunto", form.voucher.name));
     }
 
@@ -163,15 +181,17 @@ const summaryHtml = () => {
 /** Muestra el resumen y avisa si el cliente acepta o vuelve al formulario. */
 const show = () => {
     Swal2.fire({
+        // Ultima pregunta antes de guardar: el cliente confirma que esta seguro y de
+        // acuerdo con los datos que reviso, incluidos los documentos legales aceptados.
         title: "¿Estas seguro y de acuerdo?",
-        html: summaryHtml(),
+        html: `<p style="text-align:left;margin-bottom:10px;">Revisa tus datos. Al confirmar declaras que estas seguro y de acuerdo, y que aceptas los documentos legales marcados.</p>${summaryHtml()}`,
         icon: "question",
         width: 640,
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
         confirmButtonText: "Si, estoy seguro y de acuerdo",
-        cancelButtonText: "No, corregir datos",
+        cancelButtonText: "No, revisar mis datos",
         reverseButtons: true,
         padding: "2em",
         customClass: "sweet-alerts",

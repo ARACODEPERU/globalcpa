@@ -31,6 +31,8 @@ class CommercialNegotiation extends Model
         'email',
         'payment_method',
         'payment_link',
+        'recommended_bank_account_id',
+        'transfer_origin_bank',
         'mercado_payment_id',
         'mercado_payment_status',
         'mercado_payment_data',
@@ -48,8 +50,7 @@ class CommercialNegotiation extends Model
         'created_by',
         'verified_by',
         'verified_at',
-        'client_confirmed_at',
-        'invoice_issue_date',
+        'document_emission_date',
     ];
 
     protected $casts = [
@@ -57,23 +58,13 @@ class CommercialNegotiation extends Model
         'client_data' => 'array',
         'mercado_payment_data' => 'array',
         'verified_at' => 'datetime',
-        'client_confirmed_at' => 'datetime',
-        'invoice_issue_date' => 'date',
+        'document_emission_date' => 'date',
         'email_sent_at' => 'datetime',
         'process_progress' => 'array',
         'link_expires_at' => 'datetime',
     ];
 
     protected $appends = ['contact_channel_label'];
-
-    /**
-     * Negociacion gratuita: el precio total es 0 (por ejemplo, cursos regalados).
-     * No genera comprobante ni venta; solo se registra al alumno y se le avisa.
-     */
-    public function isFree(): bool
-    {
-        return (float) $this->total_price <= 0;
-    }
 
     /**
      * Opciones del campo "Fuente de Contacto" (antes "Canal de contacto").
@@ -131,6 +122,8 @@ class CommercialNegotiation extends Model
             'mercadopago' => 'Mercado Pago',
             'transferencia' => 'Transferencia bancaria',
             'enlace' => 'Enlace de pago',
+            // Negociacion gratuita: el precio acordado es 0 y el cliente no paga nada.
+            'gratis' => 'Gratis',
         ];
     }
 

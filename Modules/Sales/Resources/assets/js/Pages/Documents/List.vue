@@ -14,7 +14,7 @@
     import DangerButton from '@/Components/DangerButton.vue';
     import DialogModal from '@/Components/DialogModal.vue';
     import Swal from "sweetalert2";
-    import { Link, router } from '@inertiajs/vue3';
+    import { Link, router, usePage } from '@inertiajs/vue3';
 
     import Navigation from '@/Components/vristo/layout/Navigation.vue';
     import DataTable from 'datatables.net-vue3';
@@ -86,6 +86,15 @@
             showLoaderOnConfirm: true,
             preConfirm: () => {
                 return axios.get(route('saledocuments_send', [document.document_id,document.invoice_type_doc]), { timeout: 120000 }).then((res) => {
+                    // 1033: no es un fallo de envío; se muestra como advertencia.
+                    if (res.data.duplicate) {
+                        return res;
+                    }
+                    // Fallo de SUNAT: queda pendiente para reenvío manual y se
+                    // muestra el error original en el aviso de resultado.
+                    if (res.data.manual) {
+                        return res;
+                    }
                     if (!res.data.success) {
                         var cadena = `Error código: ${res.data.code}<br>Descripción:${res.data.message}`;
                         let notes = res.data.notes;
@@ -102,8 +111,26 @@
                     Swal.showValidationMessage(msg);
                 });
             },
-            allowOutsideClick: () => !Swal.isLoading()
-        }).then((result) => {
+            allowOutsideClick: () => !Swal.isLoading(),
+            backdrop: true
+        }).then(async (result) => {
+            const data = result.value && result.value.data;
+
+            // Fallo de SUNAT o posible duplicado (1033): el comprobante queda
+            // pendiente y se muestra el error original una sola vez.
+            if (result.isConfirmed && data && (data.manual || data.duplicate)) {
+                await window.alertaSistema(
+                    data.duplicate ? 'Comprobante posiblemente registrado' : 'No se pudo enviar a SUNAT',
+                    data.message,
+                    data.duplicate ? 'warning' : 'error',
+                    { duration: 0 }
+                );
+
+                refreshTable();
+
+                return;
+            }
+
             if (result.isConfirmed && result.value && result.value.data && result.value.data.success) {
                 var cadena = "";
                 let array = JSON.parse(result.value.data.notes || '[]');
@@ -212,8 +239,24 @@
         invoice_broadcast_date: null,
         invoice_due_date: null,
         invoice_status: null,
-        type_operation: null
+        type_operation: null,
+        is_factura: false,
+        total: 0,
+        detraccion: false,
+        detraccion_auto: false,
+        detraccion_percent: 12,
+        detraccion_amount: 0
     });
+
+    // La detracción es 12 % del total por defecto; puede ser 10 % o 4 %
+    // según el servicio. La auto-detracción cobra todo y luego se traslada.
+    const recalcDetraccion = () => {
+        const total = Number(formHead.total || 0);
+        const percent = Number(formHead.detraccion_percent || 12);
+        formHead.detraccion_amount = formHead.detraccion
+            ? Math.round(total * percent) / 100
+            : 0;
+    };
     const closeModalEditDocument = () => {
         displayEditDocument.value = false ;
     }
@@ -232,6 +275,12 @@
         formHead.invoice_due_date = document.invoice_due_date;
         formHead.invoice_status = document.invoice_status;
         formHead.type_operation = document.invoice_type_operation;
+        formHead.is_factura = String(document.invoice_type_doc) === '01';
+        formHead.total = Number(document.overall_total || 0);
+        formHead.detraccion = Boolean(document.detraccion);
+        formHead.detraccion_auto = Boolean(document.detraccion_auto);
+        formHead.detraccion_percent = Number(document.detraccion_percent || 12);
+        formHead.detraccion_amount = Number(document.detraccion_amount || 0);
         displayEditDocument.value = true ;
     }
 
@@ -249,6 +298,17 @@
             formHead.reset();
             displayEditDocument.value = false ;
             refreshTable();
+        }).catch((error) => {
+            // Sin este catch el modal se quedaba cargando ante un 500.
+            formHead.processing = false;
+
+            const errores = error.response?.data?.errors;
+            const primerError = errores ? Object.values(errores)[0] : null;
+            const mensaje = Array.isArray(primerError)
+                ? primerError[0]
+                : (primerError || error.response?.data?.message || 'No se pudo guardar el documento. Revisa los datos e inténtalo de nuevo.');
+
+            window.alertaSistema('No se pudo guardar', mensaje, 'error');
         });
     }
 
@@ -375,6 +435,9 @@
         { data: 'invoice_due_date', title: 'Fecha de vencimiento' },
         { data: 'full_name', title: 'Cliente' },
         { data: 'overall_total', title: 'Total' },
+        // Moneda del comprobante: solo se muestra con el modo multi-moneda
+        // activo (PTM0004); si no, todo es soles y no hace falta especificar.
+        { data: null, render: '#currency', title: 'Moneda', visible: usePage().props.multiCurrencyEnabled === true, orderable: false, searchable: false },
         { data: null, render: '#status', title: 'Estado' },
         {
             data: null,
@@ -515,6 +578,10 @@
                     <template #created_date="props">
                         {{ formatDate(props.rowData.created_date) }}
                     </template>
+                    <template #currency="props">
+                        <span v-if="props.rowData.invoice_type_currency === 'USD'" class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300">$ USD</span>
+                        <span v-else class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300">S/ PEN</span>
+                    </template>
                     <template #status="props">
                         <div>
                             <span v-if="props.rowData.status == 1" class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-yellow-300 border border-yellow-300">Activa</span>
@@ -522,7 +589,13 @@
                         </div>
                         <span v-if="props.rowData.invoice_status">
                             <small>Estado Sunat:</small>
-                            {{ props.rowData.invoice_status }}
+                            <span
+                                v-if="props.rowData.invoice_status === 'Posiblemente registrado'"
+                                class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-300 border border-yellow-300"
+                            >
+                                {{ props.rowData.invoice_status }}
+                            </span>
+                            <template v-else>{{ props.rowData.invoice_status }}</template>
                         </span>
                     </template>
                 </DataTable>
@@ -718,6 +791,47 @@
                             </template>
                         </select>
                         <InputError :message="formHead.errors.type_operation" class="mt-2" />
+                    </div>
+
+                    <!-- Detracción: solo facturas desde S/ 700, al cobrar -->
+                    <div v-if="formHead.is_factura" class="col-span-6">
+                        <div class="rounded-lg border border-warning/40 bg-warning/5 p-3">
+                            <label class="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-200">
+                                <input type="checkbox" class="form-checkbox rounded"
+                                    :disabled="formHead.total < 700"
+                                    v-model="formHead.detraccion"
+                                    @change="formHead.detraccion ? recalcDetraccion() : null" />
+                                Factura sujeta a detracción
+                                <span class="text-xs font-normal text-gray-500">
+                                    ({{ formHead.detraccion_percent || 12 }} % de {{ Number(formHead.total || 0).toFixed(2) }})
+                                </span>
+                            </label>
+                            <p v-if="formHead.total < 700" class="mt-1 text-xs text-gray-500">
+                                Solo aplica desde S/ 700. Las boletas no llevan detracción.
+                            </p>
+                            <template v-else>
+                                <label class="mt-2 flex items-center gap-2 text-sm text-gray-700 dark:text-gray-200">
+                                    <input type="checkbox" class="form-checkbox rounded"
+                                        v-model="formHead.detraccion_auto" />
+                                    Hacer auto-detracción
+                                    <span class="text-xs text-gray-500">
+                                        Cobramos todo y la empresa traslada el importe a Detracción
+                                    </span>
+                                </label>
+                                <div v-if="formHead.detraccion" class="mt-2 flex flex-wrap items-center gap-2 text-sm">
+                                    <span class="text-gray-600 dark:text-gray-300">Porcentaje</span>
+                                    <select v-model.number="formHead.detraccion_percent" class="form-select w-44" @change="recalcDetraccion">
+                                        <option :value="12">12 % — servicios generales</option>
+                                        <option :value="10">10 % — intermediación / construcción</option>
+                                        <option :value="4">4 % — transporte de bienes</option>
+                                    </select>
+                                    <span class="text-gray-500">
+                                        Detracción: <strong>S/ {{ Number(formHead.detraccion_amount || 0).toFixed(2) }}</strong>
+                                        · se registra al cobrar
+                                    </span>
+                                </div>
+                            </template>
+                        </div>
                     </div>
                 </div>
             </template>

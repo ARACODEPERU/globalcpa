@@ -218,18 +218,24 @@ class SaleController extends Controller
                     ->values();
 
                 if ($healthChargeIds->isNotEmpty()) {
-                    HealPatientCharge::whereIn('id', $healthChargeIds)->update([
-                        'sale_id' => $sale->id,
-                        'sale_document_id' => $document->id,
-                        'status' => 'paid',
-                    ]);
+                    // Solo cobros sin documento: evita pisar un comprobante ya
+                    // emitido si el mismo cobro de Salud volviera en la venta.
+                    HealPatientCharge::whereIn('id', $healthChargeIds)
+                        ->whereNull('sale_document_id')
+                        ->update([
+                            'sale_id' => $sale->id,
+                            'sale_document_id' => $document->id,
+                            'status' => 'paid',
+                            'billed_at' => null,
+                        ]);
                 }
+
+                // Tesorería: ingresos dentro de la misma transacción de la venta
+                // (un movimiento por cada pago realmente recibido).
+                $this->recordTreasuryIncomes($sale);
 
                 return $sale;
             });
-
-            // Tesorería: registrar los ingresos de la venta según método de pago
-            $this->recordTreasuryIncomes($res);
 
             return response()->json($res);
         } catch (\Exception $e) {
@@ -273,11 +279,12 @@ class SaleController extends Controller
                         );
                     }
                 }
+
+                // Tesorería: anular los ingresos en la misma transacción
+                TreasuryHooks::voidSaleIncomes($sale);
+
                 return $sale;
             });
-
-            // Tesorería: anular los ingresos generados por la venta anulada
-            TreasuryHooks::voidSaleIncomes($res);
 
             return response()->json([
                 'message' => 'Venta Anulado con éxito.'

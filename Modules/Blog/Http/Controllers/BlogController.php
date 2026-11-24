@@ -46,7 +46,12 @@ class BlogController extends Controller
             ->orderBy('cms_section_items.position')
             ->first();
 
-        return view('pages.blog', [
+        // Las vistas publicas viven bajo el prefijo "aracode." en este proyecto y
+        // bajo "pages." en la instalacion matriz: se resuelve el que exista para
+        // que este archivo sea identico en ambos sin duplicar los blades.
+        $vistaBlog = view()->exists('aracode.pages.blog') ? 'aracode.pages.blog' : 'pages.blog';
+
+        return view($vistaBlog, [
             'categories'        => $categories,
             'articles'          => $articles,
             'latest_articles'   => $latest_articles,
@@ -109,7 +114,9 @@ class BlogController extends Controller
                 ->get();
         }
 
-        return view('pages.blog-articulo', [
+        $vistaArticulo = view()->exists('aracode.pages.blog-articulo') ? 'aracode.pages.blog-articulo' : 'pages.blog-articulo';
+
+        return view($vistaArticulo, [
             'categories'        => $categories,
             'article'           => $article,
             'latest_articles'   => $latest_articles,

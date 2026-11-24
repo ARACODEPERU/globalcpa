@@ -2,6 +2,8 @@
 import AppLayout from "@/Layouts/Vristo/AppLayout.vue";
 import Navigation from "@/Components/vristo/layout/Navigation.vue";
 import IconLoader from "@/Components/vristo/icon/icon-loader.vue";
+import InputLabel from "@/Components/InputLabel.vue";
+import TextInput from "@/Components/TextInput.vue";
 import { Link, router } from "@inertiajs/vue3";
 import { computed, ref } from "vue";
 import Swal2 from "sweetalert2";
@@ -15,6 +17,7 @@ import {
     faRotate,
     faXmarkCircle,
 } from "@fortawesome/free-solid-svg-icons";
+import { isFreeNegotiation, totalPriceLabel } from "./Support/freeNegotiation.js";
 
 const props = defineProps({
     negotiation: { type: Object, default: () => ({}) },
@@ -22,10 +25,6 @@ const props = defineProps({
     paymentMethods: { type: Array, default: () => [] },
     stepsStatus: { type: Object, default: () => ({}) },
     existingAccount: { type: Object, default: () => ({}) },
-    // Fecha de emision del comprobante (elegida por el administrador o, por defecto,
-    // la fecha en que el cliente registro sus datos).
-    issueDate: { type: String, default: null },
-    clientConfirmedAt: { type: String, default: null },
     // TC vigente para el equivalente en soles cuando la negociacion es USD.
     multiCurrencyEnabled: { type: Boolean, default: false },
     exchangeRate: { type: Number, default: null },
@@ -35,6 +34,14 @@ const hasCourses = computed(() => props.negotiation.items?.some((item) => item.i
 const hasSubscriptions = computed(() => props.negotiation.items?.some((item) => item.item_type === "subscription") ?? false);
 const isSinglePayment = computed(() => props.negotiation.payment_type === "single");
 const isInstallments = computed(() => props.negotiation.payment_type === "installments");
+// Negociacion gratuita (precio total 0): no hay venta que registrar ni comprobante que
+// emitir, asi que el paso del comprobante no aplica.
+const isFree = computed(() => isFreeNegotiation(props.negotiation.total_price));
+
+// Total de la cabecera: "Gratis" en lugar del monto en cero.
+const totalPriceText = computed(() =>
+    totalPriceLabel(props.negotiation.currency, props.negotiation.total_price)
+);
 
 // El cliente ya tiene cuenta de usuario y/o registro de estudiante: los pasos
 // correspondientes se muestran como actualizacion con color distintivo (ambar).
@@ -120,7 +127,7 @@ const steps = ref([
         label: "Comprobante de venta",
         description: "Generar la boleta o factura",
         status: initialStatus("document"),
-        skipped: false,
+        skipped: isFree.value,
     },
     {
         key: "email",
@@ -146,20 +153,62 @@ const steps = ref([
 ]);
 
 const processing = ref(false);
-
-// Fecha de emision del comprobante: se guarda en la negociacion antes de iniciar
-// el proceso para que la venta y el comprobante se emitan con esa fecha.
-const issueDateInput = ref(
-    props.issueDate
-        ? String(props.issueDate).slice(0, 10)
-        : (props.clientConfirmedAt ? String(props.clientConfirmedAt).slice(0, 10) : "")
-);
-const savingIssueDate = ref(false);
-
 const allStepsDone = computed(() =>
     steps.value.filter((s) => !s.skipped).every((s) => s.status === "done" || s.status === "omitted"),
 );
 const finished = ref(allStepsDone.value);
+
+// Fecha de emision del comprobante: por defecto la fecha en que el cliente registro sus
+// datos; el administrador puede ajustarla antes de iniciar el proceso (por ejemplo si el
+// pago fue el dia anterior). Se usa para la venta y el comprobante.
+const emissionDate = ref(
+    props.negotiation.document_emission_date
+        ? String(props.negotiation.document_emission_date).slice(0, 10)
+        : ""
+);
+const emissionSaving = ref(false);
+const emissionLocked = computed(() => Boolean(props.negotiation.sale_document_id) || finished.value);
+
+// Persiste la fecha elegida. `notify` permite guardarla en silencio cuando el guardado
+// es parte del arranque del proceso y no una accion explicita del administrador.
+const saveEmissionDate = async (notify = true) => {
+    if (emissionLocked.value || !emissionDate.value) return;
+
+    emissionSaving.value = true;
+
+    try {
+        const res = await axios.post(
+            route("comm_negotiations_process_emission_date", props.negotiation.id),
+            { emission_date: emissionDate.value },
+            { timeout: 30000 },
+        );
+
+        if (!res.data?.success) {
+            Swal2.fire({
+                title: "No se pudo guardar",
+                text: res.data?.message || "Error al guardar la fecha de emision.",
+                icon: "error",
+                padding: "2em",
+                customClass: "sweet-alerts",
+            });
+            return;
+        }
+
+        if (notify) {
+            toast(res.data.message || "Fecha de emision actualizada");
+        }
+    } catch (error) {
+        Swal2.fire({
+            title: "No se pudo guardar",
+            text: error.response?.data?.message || "Error de conexion",
+            icon: "error",
+            padding: "2em",
+            customClass: "sweet-alerts",
+        });
+    } finally {
+        emissionSaving.value = false;
+    }
+};
 
 const visibleSteps = computed(() => steps.value.filter((step) => !step.skipped));
 
@@ -316,35 +365,14 @@ const skipStep = async (step) => {
     }
 };
 
-// Guarda la fecha de emision en la negociacion. Devuelve false si no se pudo guardar
-// para que el proceso no arranque con una fecha sin persistir.
-const saveIssueDate = () => {
-    if (savingIssueDate.value) return Promise.resolve(true);
-
-    savingIssueDate.value = true;
-
-    return axios.post(route("comm_negotiations_issue_date", props.negotiation.id), {
-        invoice_issue_date: issueDateInput.value || null,
-    }).then((res) => {
-        if (!res.data?.success) {
-            toast(res.data?.message || "No se pudo guardar la fecha de emision.", "error");
-            return false;
-        }
-
-        return true;
-    }).catch((error) => {
-        toast(error.response?.data?.message || "No se pudo guardar la fecha de emision.", "error");
-        return false;
-    }).finally(() => {
-        savingIssueDate.value = false;
-    });
-};
-
 const run = async () => {
     if (processing.value || finished.value) return;
 
-    // La fecha de emision se persiste antes de ejecutar los pasos.
-    if (!(await saveIssueDate())) return;
+    // La fecha de emision debe quedar guardada antes de procesar: es la que usaran la
+    // venta y el comprobante. En una negociacion gratuita no hay comprobante que emitir.
+    if (! isFree.value) {
+        await saveEmissionDate(false);
+    }
 
     processing.value = true;
     runRemaining();
@@ -367,9 +395,9 @@ const run = async () => {
                     <span class="badge" :class="`bg-${statusByValue(negotiation.status)?.color || 'secondary'}`">
                         {{ statusByValue(negotiation.status)?.label || negotiation.status }}
                     </span>
-                    <span class="text-sm text-gray-500">{{ negotiation.currency }} {{ negotiation.total_price }}</span>
+                    <span class="text-sm text-gray-500">{{ totalPriceText }}</span>
                     <span
-                        v-if="String(negotiation.currency || '').toUpperCase() === 'USD' && Number(exchangeRate) > 0"
+                        v-if="!isFree && String(negotiation.currency || '').toUpperCase() === 'USD' && Number(exchangeRate) > 0"
                         class="text-sm text-blue-600 dark:text-blue-400"
                     >
                         ≈ S/ {{ (Number(negotiation.total_price || 0) * Number(exchangeRate)).toFixed(2) }} (TC: {{ Number(exchangeRate).toFixed(4) }})
@@ -385,19 +413,26 @@ const run = async () => {
             </div>
         </div>
 
-        <div class="mt-5 panel">
-            <h3 class="font-semibold dark:text-white">Fecha de emision del comprobante</h3>
-            <p class="text-sm text-gray-500">
-                Por defecto, la fecha en que el cliente registro sus datos. Se usara al generar la venta y el comprobante.
-            </p>
-            <input
-                id="issue_date"
-                v-model="issueDateInput"
-                type="date"
-                class="form-input mt-2 block max-w-[200px]"
-                :disabled="processing || savingIssueDate"
-                @change="saveIssueDate"
-            />
+        <div v-if="!isFree" class="mt-5 panel">
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                    <h3 class="font-semibold dark:text-white">Fecha de emision del comprobante</h3>
+                    <p class="text-sm text-gray-500">
+                        Por defecto, la fecha en que el cliente registro sus datos. Ajustala antes de procesar si el pago fue otro dia.
+                    </p>
+                </div>
+                <div class="flex flex-wrap items-end gap-2">
+                    <div>
+                        <InputLabel for="emission_date" value="Fecha de emision" />
+                        <TextInput id="emission_date" v-model="emissionDate" type="date" class="w-auto" :disabled="emissionLocked || emissionSaving" />
+                    </div>
+                    <button v-if="!emissionLocked" type="button" class="btn btn-outline-primary" :disabled="emissionSaving" @click="saveEmissionDate()">
+                        <IconLoader v-if="emissionSaving" class="mr-2 h-4 w-4 animate-spin" />
+                        Guardar fecha
+                    </button>
+                </div>
+            </div>
+            <p v-if="emissionLocked" class="mt-2 text-xs text-gray-500">El comprobante ya fue generado: la fecha de emision no puede cambiarse.</p>
         </div>
 
         <div class="mt-5 panel">

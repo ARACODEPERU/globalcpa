@@ -84,7 +84,7 @@ class CommercialNegotiationController extends Controller
             ]));
 
             $this->syncItems($negotiation, $data['items']);
-            $this->syncCompanyBilleteras($negotiation, (float) $data['total_price'] > 0 ? ($data['company_billetera_ids'] ?? []) : []);
+            $this->syncCompanyBilleteras($negotiation, $data['company_billetera_ids'] ?? []);
 
             DB::commit();
         } catch (\Exception $e) {
@@ -137,7 +137,7 @@ class CommercialNegotiationController extends Controller
             }
 
             $this->syncItems($negotiation, $data['items']);
-            $this->syncCompanyBilleteras($negotiation, (float) $data['total_price'] > 0 ? ($data['company_billetera_ids'] ?? []) : []);
+            $this->syncCompanyBilleteras($negotiation, $data['company_billetera_ids'] ?? []);
 
             DB::commit();
         } catch (\Exception $e) {
@@ -379,33 +379,6 @@ class CommercialNegotiationController extends Controller
         ]);
     }
 
-    /**
-     * Fecha de emision del comprobante elegida por el administrador.
-     *
-     * Se guarda en la negociacion (invoice_issue_date) para que el detalle y la
-     * pantalla de proceso compartan el mismo valor, y para que el paso que genera
-     * la venta y el comprobante la use aunque la aprobacion sea dias despues del
-     * registro del cliente. Sin valor explicito se toma la fecha de registro.
-     */
-    public function updateIssueDate(Request $request, $id)
-    {
-        $negotiation = CommercialNegotiation::findOrFail($id);
-
-        $request->validate([
-            'invoice_issue_date' => ['nullable', 'date'],
-        ]);
-
-        $negotiation->update([
-            'invoice_issue_date' => $request->input('invoice_issue_date') ?: null,
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'invoice_issue_date' => $negotiation->invoice_issue_date?->format('Y-m-d'),
-            'message' => 'Fecha de emision del comprobante actualizada.',
-        ]);
-    }
-
     public function approve($id)
     {
         $negotiation = CommercialNegotiation::findOrFail($id);
@@ -573,9 +546,9 @@ class CommercialNegotiationController extends Controller
             })(),
             'paymentMethods' => $this->paymentMethods(),
             'contactChannels' => $this->contactChannels(),
+            // Todas las billeteras activas: el QR y el enlace de pago son opcionales.
             'companyBilleteras' => \App\Models\CompanyBilletera::with('billetera')
                 ->where('status', true)
-                ->whereNotNull('qr_image')
                 ->get()
                 ->map(fn ($cb) => [
                     'id' => $cb->id,
@@ -584,6 +557,20 @@ class CommercialNegotiationController extends Controller
                     'titular' => $cb->account_name,
                     'numero' => $cb->account_number,
                     'qr_url' => $cb->qr_image ? asset('storage/' . $cb->qr_image) : null,
+                    // Si la billetera permite pago mediante enlace; el enlace se guarda en cada negociacion.
+                    'tiene_enlace_pago' => (bool) $cb->has_payment_link,
+                ])
+                ->values(),
+            // Cuentas bancarias activas para elegir la recomendada en la transferencia.
+            'bankAccounts' => \App\Models\BankAccount::with('bank')
+                ->where('status', 1)
+                ->get()
+                ->map(fn ($ba) => [
+                    'id' => $ba->id,
+                    'banco' => $ba->bank?->short_name ?? $ba->bank?->full_name,
+                    'descripcion' => $ba->description,
+                    'numero' => $ba->number,
+                    'cci' => $ba->cci,
                 ])
                 ->values(),
         ];
@@ -608,11 +595,19 @@ class CommercialNegotiationController extends Controller
             // lo que llegue en la peticion se ignora.
             'contact_detail' => ['nullable', 'string', 'max:255'],
             'email' => ['nullable', 'email', 'max:255'],
-            // Sin medio de pago cuando el total es 0 (negociacion gratuita).
-            'payment_method' => ['nullable', Rule::requiredIf(fn () => (float) $request->input('total_price', 0) > 0), Rule::in(['billetera_digital', 'mercadopago', 'transferencia', 'enlace'])],
+            // Negociacion gratuita (total 0): no hay cobro que registrar, asi que el medio
+            // de pago no se exige y queda como 'gratis' al guardar.
+            'payment_method' => [
+                Rule::requiredIf(fn () => (float) ($request->input('total_price') ?? 0) !== 0.0),
+                'nullable',
+                // 'enlace' se mantiene para negociaciones anteriores que aun lo usan.
+                Rule::in(['billetera_digital', 'mercadopago', 'transferencia', 'efectivo', 'enlace', 'gratis']),
+            ],
             'company_billetera_ids' => ['nullable', 'array'],
             'company_billetera_ids.*' => ['nullable', 'integer', 'exists:company_billeteras,id'],
             'payment_link' => ['nullable', 'url', 'max:500'],
+            // Cuenta bancaria recomendada para la transferencia (opcional, solo si el medio es transferencia).
+            'recommended_bank_account_id' => ['nullable', 'integer', 'exists:bank_accounts,id'],
             'items' => ['required', 'array', 'min:1'],
             'items.*.item_type' => ['required', Rule::in(['course', 'subscription'])],
             'items.*.item_id' => ['nullable', 'integer'],
@@ -621,19 +616,30 @@ class CommercialNegotiationController extends Controller
         ])->after(function ($validator) {
             $data = $validator->getData();
 
-            // Negociacion gratuita (total 0): no hay pago, asi que no aplican cuotas ni medio de pago.
-            $isFree = (float) ($data['total_price'] ?? 0) <= 0;
-            if ($isFree && ($data['payment_type'] ?? null) === 'installments') {
-                $validator->errors()->add('payment_type', 'Una negociacion gratuita no puede tener cuotas.');
+            // Negociacion gratuita: el cliente no paga nada, por eso no se exige billetera
+            // ni cronograma (esos datos se descartan al guardar).
+            if ((float) ($data['total_price'] ?? 0) === 0.0) {
+                return;
+            }
+
+            // 'gratis' solo identifica a una negociacion sin cobro: no es un medio de pago
+            // elegible cuando la negociacion tiene precio.
+            if (($data['payment_method'] ?? null) === 'gratis') {
+                $validator->errors()->add('payment_method', 'Elige un medio de pago valido para una negociacion con cobro.');
             }
 
             // Si el medio de pago es billetera digital, debe elegirse al menos una.
-            if (! $isFree && ($data['payment_method'] ?? null) === 'billetera_digital') {
+            if (($data['payment_method'] ?? null) === 'billetera_digital') {
                 $billeteraIds = array_values(array_filter((array) ($data['company_billetera_ids'] ?? [])));
 
                 if (count($billeteraIds) === 0) {
-                    $validator->errors()->add('company_billetera_ids', 'Debe seleccionar al menos una billetera digital que tenga QR.');
+                    $validator->errors()->add('company_billetera_ids', 'Debe seleccionar al menos una billetera digital.');
                 }
+            }
+
+            // La cuenta recomendada solo aplica a transferencia.
+            if (($data['payment_method'] ?? null) === 'transferencia' && empty($data['recommended_bank_account_id'])) {
+                $validator->errors()->add('recommended_bank_account_id', 'Elige la cuenta bancaria recomendada.');
             }
 
             if (($data['payment_type'] ?? null) !== 'installments') {
@@ -672,8 +678,10 @@ class CommercialNegotiationController extends Controller
 
     private function payload(array $data): array
     {
-        // Negociacion gratuita: no hay pago, asi que no se guardan cuotas, medio ni enlace de pago.
-        $isFree = (float) $data['total_price'] <= 0;
+        // Negociacion gratuita: se guarda con el medio de pago 'gratis' y sin ningun dato
+        // de cobro, aunque algo de eso llegue del navegador (pagina en cache, envio
+        // manipulado). El cliente no vera cuotas, billeteras ni enlace de pago.
+        $isFree = (float) ($data['total_price'] ?? 0) === 0.0;
 
         return [
             'title' => $data['title'],
@@ -683,14 +691,20 @@ class CommercialNegotiationController extends Controller
             'payment_type' => $isFree ? 'single' : $data['payment_type'],
             'initial_amount' => $isFree ? null : ($data['initial_amount'] ?? null),
             'schedule' => $isFree ? null : ($data['schedule'] ?? null),
-            'single_payment_days' => $data['single_payment_days'] ?? null,
+            'single_payment_days' => $isFree ? null : ($data['single_payment_days'] ?? null),
             'link_days' => $data['link_days'] ?? null,
             'contact_channel' => $data['contact_channel'] ?? null,
             // contact_detail no viaja aqui: se fija al crear (advisorName) y al
             // editar se conserva el asesor guardado, sin poder cambiarlo.
             'email' => $data['email'] ?? null,
-            'payment_method' => $isFree ? null : $data['payment_method'],
-            'payment_link' => $isFree ? null : ($data['payment_link'] ?? null),
+            'payment_method' => $isFree ? 'gratis' : ($data['payment_method'] ?? null),
+            // El enlace solo se guarda para pagos por enlace o por billetera (que lo permita); en otros medios queda vacio.
+            'payment_link' => $isFree || ! in_array(($data['payment_method'] ?? null), ['enlace', 'billetera_digital'], true)
+                ? null
+                : ($data['payment_link'] ?? null),
+            'recommended_bank_account_id' => $isFree || ($data['payment_method'] ?? null) !== 'transferencia'
+                ? null
+                : ($data['recommended_bank_account_id'] ?? null),
         ];
     }
 
@@ -726,7 +740,10 @@ class CommercialNegotiationController extends Controller
      */
     private function syncCompanyBilleteras(CommercialNegotiation $negotiation, array $billeteraIds): void
     {
-        $ids = array_values(array_filter(array_map('intval', $billeteraIds)));
+        // Una negociacion gratuita no muestra billeteras al cliente: no se guardan.
+        $ids = (float) $negotiation->total_price === 0.0
+            ? []
+            : array_values(array_filter(array_map('intval', $billeteraIds)));
 
         $negotiation->companyBilleteras()->sync($ids);
     }
@@ -746,11 +763,15 @@ class CommercialNegotiationController extends Controller
 
     private function paymentMethods(): array
     {
+        // Solo bancos, billeteras, Mercado Pago y efectivo. Los valores 'enlace' y 'yape'
+        // de negociaciones anteriores siguen en la base de datos para no afectar reportes.
         return [
+            ['value' => 'transferencia', 'label' => 'Transferencia bancaria'],
             ['value' => 'billetera_digital', 'label' => 'Billetera digital'],
             ['value' => 'mercadopago', 'label' => 'Mercado Pago'],
-            ['value' => 'transferencia', 'label' => 'Transferencia bancaria'],
-            ['value' => 'enlace', 'label' => 'Enlace de pago'],
+            ['value' => 'efectivo', 'label' => 'Efectivo'],
+            // Negociacion gratuita: total 0, el cliente no paga nada.
+            ['value' => 'gratis', 'label' => 'Gratis'],
         ];
     }
 
@@ -829,8 +850,6 @@ class CommercialNegotiationController extends Controller
                 'client_id' => null,
                 'client_data' => null,
                 'voucher_path' => null,
-                'client_confirmed_at' => null,
-                'invoice_issue_date' => null,
                 'rejected_reason' => null,
                 'verified_by' => null,
                 'verified_at' => null,

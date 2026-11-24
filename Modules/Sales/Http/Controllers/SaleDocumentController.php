@@ -86,6 +86,7 @@ class SaleDocumentController extends Controller
         return Inertia::render('Sales::Documents/List', [
             'affectations' => $affectations,
             'unitTypes' => $unitTypes,
+            'multiCurrencyEnabled' => app(\Modules\Sales\Services\ExchangeRateService::class)->isMultiCurrencyEnabled(),
             'taxes' => [
                 'igv' => $this->igv,
                 'icbper' => $this->icbper,
@@ -129,6 +130,11 @@ class SaleDocumentController extends Controller
                 'sale_documents.invoice_response_code',
                 'sale_documents.invoice_notes',
                 'sale_documents.invoice_type_operation',
+                'sale_documents.invoice_type_currency',
+                'sale_documents.detraccion',
+                'sale_documents.detraccion_auto',
+                'sale_documents.detraccion_percent',
+                'sale_documents.detraccion_amount',
                 'sale_documents.created_at AS created_date'
             )
             ->whereIn('series.document_type_id', [1, 2])
@@ -148,7 +154,7 @@ class SaleDocumentController extends Controller
      */
     public function create()
     {
-        $payments = PaymentMethod::all();
+        $payments = $this->paymentMethodsForDocument();
         $company = Company::first();
 
         $healthBillingDraft = session()->pull('health_billing_draft');
@@ -209,13 +215,25 @@ class SaleDocumentController extends Controller
             'date_end' => 'required',
             'sale_documenttype_id' => 'required',
             'total' => 'required|numeric|min:0|not_in:0',
-            'payments.*.type' => 'required',
+            // Venta al contado: todo cobro debe declarar un medio de pago real.
+            // Al crédito no se exige porque puede no haber dinero recibido aún.
+            'payments' => 'array',
+            'payments.*.type' => 'nullable|required_if:forma_pago,Contado|exists:payment_methods,id',
             'payments.*.amount' => 'required|numeric|min:0|not_in:0|regex:/^[\d]{0,11}(\.[\d]{1,2})?$/',
             'items.*.quantity' => 'required|numeric|min:0|not_in:0|regex:/^[\d]{0,11}(\.[\d]{1,2})?$/',
             'items.*.unit_price' => 'required|numeric|min:0|not_in:0|regex:/^[\d]{0,11}(\.[\d]{1,2})?$/',
             'items.*.total' => 'required|numeric|min:0|not_in:0|regex:/^[\d]{0,11}(\.[\d]{1,2})?$/',
             'client_id' => 'required',
+            // Cuota inicial opcional de una venta al crédito: solo dinero recibido
+            'initial_payment' => 'nullable|array',
+            'initial_payment.*.type' => 'required_with:initial_payment|exists:payment_methods,id',
+            'initial_payment.*.amount' => 'required_with:initial_payment|numeric|min:0.01',
+            'initial_payment.*.reference' => 'nullable|string|max:255',
         ];
+
+        if ($request->get('forma_pago') === 'Contado') {
+            $rules['payments'] = ['required', 'array', 'min:1'];
+        }
 
         if ($request->get('forma_pago') == 'Credito') {
             $rules['quotas.amounts'] = [
@@ -232,6 +250,10 @@ class SaleDocumentController extends Controller
             'items.*.unit_price.numeric' => 'Solo Numeros',
             'items.*.quantity.numeric' => 'Solo Numeros',
             'items.*.total.required' => 'Ingrese total',
+            'payments.required_if' => 'Seleccione el medio de pago del cobro antes de generar el comprobante.',
+            'payments.min' => 'Seleccione el medio de pago del cobro antes de generar el comprobante.',
+            'payments.*.type.required_if' => 'Seleccione el medio de pago de cada cobro.',
+            'payments.*.type.exists' => 'El medio de pago seleccionado no existe.',
             // --- MENSAJES PERSONALIZADOS PARA LA NUEVA REGLA ---
             'quotas.amounts.required_if' => 'Debe configurar al menos una cuota de pago para la forma de pago "Crédito".',
             'quotas.amounts.min' => 'Debe configurar al menos una cuota de pago para la forma de pago "Crédito".',
@@ -251,7 +273,10 @@ class SaleDocumentController extends Controller
                 // /si no existe una caja abierta para el usuario logueado en la tienda donde inicio session
                 // /se crea una caja para poder hacer la venta
 
-                $local_id = Auth::user()->local_id;
+                // El controlador que invoca puede enviar el local explicito
+                // (por ejemplo un usuario sin local que emite desde Comercial
+                // usando el local de la serie).
+                $local_id = $request->get('local_id') ?: Auth::user()->local_id;
                 $petty_cash = PettyCash::firstOrCreate([
                     'user_id' => Auth::id(),
                     'state' => 1,
@@ -300,6 +325,10 @@ class SaleDocumentController extends Controller
                     $typeOperation = '1001';
                 }
 
+                // Contrato y cuota de Comercial que originan el comprobante, si
+                // el comprobante se emitio desde el cronograma de un contrato.
+                [$commercialContractId, $commercialPaymentId] = $this->commercialOrigin($request);
+
                 $document = SaleDocument::create([
                     'sale_id' => $sale->id,
                     'serie_id' => $request->get('serie'),
@@ -329,8 +358,21 @@ class SaleDocumentController extends Controller
                     'user_id' => Auth::id(),
                     'additional_description' => $request->get('additional_description'),
                     'overall_total' => $request->get('total'),
+                    // Referencia (solo para mostrar) al contrato/cuota de Comercial.
+                    'commercial_contract_id' => $commercialContractId,
+                    'commercial_contract_payment_id' => $commercialPaymentId,
 
                 ]);
+
+                // Marca la factura con su estado de detracción (12 % desde S/ 700).
+                app(\Modules\Treasury\Services\TreasuryDetractionService::class)->syncDocument($document);
+
+                // Decisión tomada al emitir: el cliente deposita la detracción
+                // o la empresa la transferirá después (auto-detracción).
+                if ($request->has('detraccion_auto')) {
+                    $document->detraccion_auto = $request->boolean('detraccion_auto');
+                    $document->save();
+                }
 
                 // /obtenemos los productos o servicios para insertar en los
                 // /detalles de la venta y el documento
@@ -480,12 +522,27 @@ class SaleDocumentController extends Controller
                 $difference = abs($ttotal - $subtotal);
                 $rounding = number_format($difference, 2);
 
-                // Obtener la forma de pago del request ---
+                // Obtener la forma de pago del request
                 $status_pay = true;
+                $initialPayments = [];
+
                 if ($forma_pago && $forma_pago === 'Credito') {
                     $quotasData = $request->input('quotas.amounts');
+                    $initialPayments = $this->normalizeInitialPayment($request->input('initial_payment', []));
+                    $initialTotal = round(collect($initialPayments)->sum('amount'), 2);
                     $due_date = null;
+
                     if (! empty($quotasData)) {
+                        // Cuota inicial + cuotas deben cubrir el total: no se
+                        // registra como cobrado un importe que no cuadra.
+                        $quotasTotal = round(collect($quotasData)->sum(fn ($quota) => (float) ($quota['amount'] ?? 0)), 2);
+
+                        if ($initialTotal > 0 && abs($quotasTotal + $initialTotal - (float) $request->get('total')) > 0.01) {
+                            throw \Illuminate\Validation\ValidationException::withMessages([
+                                'initial_payment' => 'La suma de la cuota inicial y las cuotas debe ser igual al total del comprobante.',
+                            ]);
+                        }
+
                         foreach ($quotasData as $index => $quota) {
                             $saleDocumentQuota = new SaleDocumentQuota;
                             $saleDocumentQuota->sale_document_id = $document->id; // Vincular con el documento recién creado
@@ -501,7 +558,7 @@ class SaleDocumentController extends Controller
                         $document->invoice_due_date = $due_date;
                     }
 
-                    $sale->advancement = 0;
+                    $sale->advancement = $initialTotal;
                     $sale->save();
                     $status_pay = false;
                 }
@@ -524,11 +581,17 @@ class SaleDocumentController extends Controller
 
                 $serie->increment('number', 1);
 
+                // Cuota inicial: solo el importe realmente recibido.
+                foreach ($initialPayments as $index => $initialPayment) {
+                    TreasuryHooks::recordDownPayment($document, $initialPayment, $index);
+                }
+
+                // Tesorería: ingresos del cobro al contado (en crédito el JSON
+                // de pagos no representa dinero recibido).
+                $this->recordTreasuryIncomes($sale);
+
                 return $document;
             });
-
-            // Tesorería: registrar los ingresos de la venta según método de pago
-            $this->recordTreasuryIncomes($res->sale);
 
             $healthChargeIds = collect($request->get('items', []))
                 ->pluck('health_charge_id')
@@ -537,11 +600,17 @@ class SaleDocumentController extends Controller
                 ->values();
 
             if ($healthChargeIds->isNotEmpty()) {
-                HealPatientCharge::whereIn('id', $healthChargeIds)->update([
-                    'sale_id' => $res->sale_id,
-                    'sale_document_id' => $res->id,
-                    'status' => 'paid',
-                ]);
+                // Solo cobros que todavia no tienen documento: si el mismo
+                // health_charge_id llegara repetido, no se pisa el comprobante
+                // ya emitido ni se duplica la facturacion de un cobro de Salud.
+                HealPatientCharge::whereIn('id', $healthChargeIds)
+                    ->whereNull('sale_document_id')
+                    ->update([
+                        'sale_id' => $res->sale_id,
+                        'sale_document_id' => $res->id,
+                        'status' => 'paid',
+                        'billed_at' => null,
+                    ]);
             }
 
             return response()->json($res);
@@ -594,12 +663,11 @@ class SaleDocumentController extends Controller
 
         switch ($type) {
             case '01':
-                $factura = new Factura;
+                $factura = app(Factura::class);
                 $result = $factura->create($id);
                 break;
             case '03':
-                $boleta = new Boleta;
-                // dd($boleta);
+                $boleta = app(Boleta::class);
                 $result = $boleta->create($id);
                 break;
             case '07':
@@ -619,6 +687,10 @@ class SaleDocumentController extends Controller
 
         return response()->json([
             'success' => $result['success'],
+            // 1033: el comprobante posiblemente ya está registrado.
+            'duplicate' => $result['duplicate'] ?? false,
+            // Fallo de SUNAT: queda pendiente y se reenvía manualmente.
+            'manual' => $result['manual'] ?? false,
             'code' => $result['code'],
             'message' => $result['message'],
             'notes' => $result['notes'],
@@ -861,9 +933,48 @@ class SaleDocumentController extends Controller
         return response()->download($res['filePath'], $res['fileName'], ['content-type' => $content_type]);
     }
 
+    /**
+     * Medios de pago que se ofrecen en factura/boleta: MercadoPago, efectivo,
+     * billeteras digitales existentes y cuentas bancarias existentes.
+     * Cualquier otro medio (p. ej. Tarjeta, Transferencia genérica) se oculta.
+     * Los datos históricos no se borran; solo se filtra el selector.
+     */
+    private function paymentMethodsForDocument()
+    {
+        // Nombres de billeteras registradas (Yape, Plin, MercadoPago...) en minúsculas
+        $nombresBilleteras = \App\Models\CompanyBilletera::query()
+            ->with('billetera')
+            ->get()
+            ->flatMap(fn ($cb) => [
+                mb_strtolower(trim((string) $cb->billetera?->short_name)),
+                mb_strtolower(trim((string) $cb->billetera?->full_name)),
+            ])
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
+
+        return PaymentMethod::all()->filter(function (PaymentMethod $method) use ($nombresBilleteras) {
+            $descripcion = mb_strtolower(trim((string) $method->description));
+
+            // Efectivo y MercadoPago siempre se ofrecen
+            if ($descripcion === 'efectivo' || $descripcion === 'mercadopago') {
+                return true;
+            }
+
+            // Cuenta bancaria existente vinculada al método
+            if (filled($method->bank_account_id)) {
+                return true;
+            }
+
+            // Billetera digital existente (coincidencia por nombre)
+            return in_array($descripcion, $nombresBilleteras, true);
+        })->values();
+    }
+
     public function createFromFicket($id)
     {
-        $payments = PaymentMethod::all();
+        $payments = $this->paymentMethodsForDocument();
         $company = Company::first();
         $sale = Sale::with('saleProduct')
             ->where('id', $id)->first();
@@ -924,8 +1035,9 @@ class SaleDocumentController extends Controller
             'type_operation' => 'required',
         ]);
         // dd($request->get('invoice_status'));
-        SaleDocument::find($request->get('id'))
-            ->update([
+        $document = SaleDocument::findOrFail($request->get('id'));
+
+        $document->update([
                 'invoice_type_operation' => $request->get('type_operation'),
                 'client_number' => $request->get('client_number'),
                 'client_rzn_social' => $request->get('client_rzn_social'),
@@ -938,6 +1050,27 @@ class SaleDocumentController extends Controller
                 'invoice_due_date' => $request->get('invoice_due_date'),
                 'invoice_status' => $request->get('invoice_status'),
             ]);
+
+        // Detracción: el usuario puede aceptarla, cambiar el % o activar la
+        // auto-detracción (cobrar todo y trasladar el importe).
+        if (\Illuminate\Support\Facades\Schema::hasColumn('sale_documents', 'detraccion')) {
+            if ($request->boolean('detraccion')) {
+                $document->detraccion_auto = $request->boolean('detraccion_auto');
+                if ($request->filled('detraccion_percent')) {
+                    $document->detraccion_percent = (float) $request->get('detraccion_percent');
+                }
+                $document->save();
+                app(\Modules\Treasury\Services\TreasuryDetractionService::class)->syncDocument($document, true);
+            } else {
+                $document->forceFill([
+                    'detraccion' => false,
+                    'detraccion_auto' => false,
+                    'detraccion_percent' => null,
+                    // La columna es NOT NULL con default 0; null provoca un 500.
+                    'detraccion_amount' => 0,
+                ])->save();
+            }
+        }
 
         // Person::find($request->get('client_id'))
         //     ->update([
@@ -985,7 +1118,10 @@ class SaleDocumentController extends Controller
                 // /si no existe una caja abierta para el usuario logueado en la tienda donde inicio session
                 // /se crea una caja para poder hacer la venta
 
-                $local_id = Auth::user()->local_id;
+                // El controlador que invoca puede enviar el local explicito
+                // (por ejemplo un usuario sin local que emite desde Comercial
+                // usando el local de la serie).
+                $local_id = $request->get('local_id') ?: Auth::user()->local_id;
                 $petty_cash = PettyCash::firstOrCreate([
                     'user_id' => Auth::id(),
                     'state' => 1,
@@ -1181,6 +1317,13 @@ class SaleDocumentController extends Controller
                 $document->invoice_status = 'Anulada';
                 $document->save();
 
+                // Tesorería: la boleta anulada deja de ser un ingreso.
+                TreasuryHooks::voidDocumentIncomes(
+                    $document,
+                    $request->get('reason'),
+                    'Anulación local (boleta no informada a SUNAT)'
+                );
+
                 $boleta = new Boleta;
                 $boleta->updateStockSale($document->id);
 
@@ -1192,6 +1335,13 @@ class SaleDocumentController extends Controller
 
             $document->invoice_status = 'Enviada Por Anular';
             $document->save();
+
+            // Tesorería: el comprobante marcado para anulación deja de sumar.
+            TreasuryHooks::voidDocumentIncomes(
+                $document,
+                $request->get('reason'),
+                'Anulación por resumen diario'
+            );
 
             $res = $this->createSumamry($document);
             $boleta = new Boleta;
@@ -1253,5 +1403,56 @@ class SaleDocumentController extends Controller
     private function recordTreasuryIncomes(Sale $sale): void
     {
         TreasuryHooks::recordSaleIncomes($sale);
+    }
+
+    /**
+     * Contrato y cuota de Comercial que originan el comprobante.
+     *
+     * El cronograma de un contrato envia la cuota (commercial_payment_id) al
+     * emitir su factura o boleta; el comprobante que agrupa cuotas de un solo
+     * contrato envia su id. Son solo referencias para mostrar el origen del
+     * cobro en Tesorería.
+     *
+     * @return array{0: ?int, 1: ?int}
+     */
+    private function commercialOrigin(Request $request): array
+    {
+        $paymentClass = \Modules\Commercial\Entities\CommercialContractPayment::class;
+        $contractId = $request->get('commercial_contract_id');
+        $paymentId = $request->get('commercial_payment_id');
+
+        if (! class_exists($paymentClass)) {
+            return [null, null];
+        }
+
+        $payment = $paymentId ? $paymentClass::find((int) $paymentId) : null;
+
+        return [
+            $contractId ? (int) $contractId : ($payment?->contract_id ? (int) $payment->contract_id : null),
+            $payment?->id ? (int) $payment->id : null,
+        ];
+    }
+
+    /**
+     * Normaliza la cuota inicial recibida ({type, amount, reference}).
+     *
+     * @return array<int, array{type: int, amount: float, reference: ?string}>
+     */
+    private function normalizeInitialPayment(mixed $input): array
+    {
+        if (! is_array($input)) {
+            return [];
+        }
+
+        return collect($input)
+            ->filter(fn ($payment) => is_array($payment) && isset($payment['amount'], $payment['type']))
+            ->map(fn ($payment) => [
+                'type' => (int) $payment['type'],
+                'amount' => round((float) $payment['amount'], 2),
+                'reference' => $payment['reference'] ?? null,
+            ])
+            ->filter(fn ($payment) => $payment['amount'] > 0)
+            ->values()
+            ->all();
     }
 }

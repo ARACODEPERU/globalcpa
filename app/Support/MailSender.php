@@ -49,6 +49,36 @@ class MailSender
     }
 
     /**
+     * Encabezado Reply-To de un correo, listo para el constructor de Envelope.
+     *
+     * Varios mailables dejan que quien origina el mensaje reciba las respuestas;
+     * esa direccion sale de datos de negocio (cliente, contacto, formulario) y
+     * puede faltar o venir mal escrita.
+     *
+     * Se devuelve una lista porque Envelope recibe replyTo como arreglo de
+     * direcciones (igual que to/cc/bcc), no como una direccion suelta: pasarle un
+     * Address unico hace que Collection lo castee a arreglo y lo interprete como
+     * dos destinatarios con claves "address" y "name". Si el correo no es valido
+     * se devuelve una lista vacia, de modo que el mensaje sale sin encabezado
+     * Reply-To y las respuestas caen al remitente configurado en lugar de tumbar
+     * el envio.
+     *
+     * @return array<int, Address>
+     */
+    public static function replyTo(?string $address, ?string $name = null): array
+    {
+        $address = trim((string) $address);
+
+        if (! filter_var($address, FILTER_VALIDATE_EMAIL)) {
+            return [];
+        }
+
+        $name = trim((string) $name);
+
+        return [new Address($address, $name !== '' ? $name : null)];
+    }
+
+    /**
      * Correo de administracion (MAIL_ADMIN) listo para usarse como destinatario.
      *
      * Se lee de config() y no de env() por el mismo motivo que address(): con la
@@ -63,21 +93,5 @@ class MailSender
         return filter_var($address, FILTER_VALIDATE_EMAIL)
             ? $address
             : self::FALLBACK_ADMIN_ADDRESS;
-    }
-
-    /**
-     * Returns a safe Reply-To address without allowing external data to control From.
-     *
-     * @return array<int, Address>
-     */
-    public static function replyTo(?string $address, ?string $name = null): array
-    {
-        $address = trim((string) $address);
-
-        if (! filter_var($address, FILTER_VALIDATE_EMAIL)) {
-            return [];
-        }
-
-        return [new Address($address, trim((string) $name))];
     }
 }
