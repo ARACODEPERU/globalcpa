@@ -22,12 +22,14 @@ use Modules\CMS\Http\Controllers\CmsSectionItemController;
 use Modules\CMS\Http\Controllers\CmsSubscriberController;
 use Modules\CMS\Http\Controllers\CmsTestimonyController;
 use Modules\CMS\Http\Controllers\OneFreeCourseController;
+use Modules\CMS\Http\Controllers\OneFreeCoursePublicController;
 use Modules\CMS\Http\Controllers\CmsContactMessageController;
 use Modules\CMS\Http\Controllers\CmsBlogSubscribersController;
 
 Route::middleware(['auth', 'verified', 'user_activity_log'])->prefix('cms')->group(function () {
     Route::get('dashboard', [CMSController::class, 'dashboard'])->name('cms_dashboard');
     Route::get('pages', [CmsPageController::class, 'index'])->name('cms_pages_list');
+    Route::get('pages/data', [CmsPageController::class, 'getData'])->name('cms_pages_data');
     Route::get('pages/create', [CmsPageController::class, 'create'])->name('cms_pages_create');
     Route::post('pages/store', [CmsPageController::class, 'store'])->name('cms_pages_store');
     Route::get('pages/edit/{id}', [CmsPageController::class, 'edit'])->name('cms_pages_edit');
@@ -42,6 +44,7 @@ Route::middleware(['auth', 'verified', 'user_activity_log'])->prefix('cms')->gro
     Route::post('pages/section_group_create', [CmsPageSectionController::class, 'groupSectionStore'])->name('cms_pages_section_group_save');
 
     Route::get('sections', [CmsSectionController::class, 'index'])->name('cms_section_list');
+    Route::get('sections/data', [CmsSectionController::class, 'getData'])->name('cms_sections_data');
     Route::get('sections/create', [CmsSectionController::class, 'create'])->name('cms_section_create');
     Route::post('sections/store', [CmsSectionController::class, 'store'])->name('cms_section_store');
     Route::get('sections/edit/{id}', [CmsSectionController::class, 'edit'])->name('cms_section_edit');
@@ -101,6 +104,30 @@ Route::middleware(['auth', 'verified', 'user_activity_log'])->prefix('cms')->gro
         ->post('one/free/course/store', [OneFreeCourseController::class, 'store'])
         ->name('cms_landing_course_free_store');
 
+    // Vista previa del landing publico: mismo diseno, sin guardar formularios.
+    Route::middleware(['permission:cms_landing_curso_gratis'])
+        ->get('one/free/course/{menu_id}/preview', [OneFreeCoursePublicController::class, 'preview'])
+        ->name('cms_landing_course_free_preview');
+
+    // Enlaces UTM del landing y atribucion de los leads del formulario.
+    Route::middleware(['permission:cms_landing_curso_gratis'])
+        ->put('one/free/course/{menu_id}/utm-config', [OneFreeCourseController::class, 'updateUtmConfig'])
+        ->name('cms_landing_course_free_update_utm_config');
+    Route::middleware(['permission:cms_landing_curso_gratis'])
+        ->get('one/free/course/{menu_id}/utm-stats', [OneFreeCourseController::class, 'getUtmStats'])
+        ->name('cms_landing_course_free_utm_stats');
+
+    // Registros (leads del formulario) de este landing y sus exportaciones.
+    Route::middleware(['permission:cms_landing_curso_gratis'])
+        ->get('one/free/course/{menu_id}/registros', [OneFreeCourseController::class, 'getRegistros'])
+        ->name('cms_landing_course_free_registros');
+    Route::middleware(['permission:cms_landing_curso_gratis'])
+        ->get('one/free/course/{menu_id}/registros/excel', [OneFreeCourseController::class, 'exportRegistrosExcel'])
+        ->name('cms_landing_course_free_registros_excel');
+    Route::middleware(['permission:cms_landing_curso_gratis'])
+        ->get('one/free/course/{menu_id}/registros/pdf', [OneFreeCourseController::class, 'exportRegistrosPdf'])
+        ->name('cms_landing_course_free_registros_pdf');
+
     // Mensajes de Contacto
     Route::middleware(['permission:cms_mensajes_contacto'])
         ->get('contact-messages', [CmsContactMessageController::class, 'index'])->name('cms_contact_messages_list');
@@ -108,6 +135,13 @@ Route::middleware(['auth', 'verified', 'user_activity_log'])->prefix('cms')->gro
         ->get('contact-messages/{id}', [CmsContactMessageController::class, 'show'])->name('cms_contact_messages_show');
     Route::middleware(['permission:cms_mensajes_contacto_editar'])
         ->put('contact-messages/{id}', [CmsContactMessageController::class, 'update'])->name('cms_contact_messages_update');
+    Route::middleware(['permission:cms_mensajes_contacto_editar'])
+        ->post('contact-messages/{id}/reply', [CmsContactMessageController::class, 'reply'])->name('cms_contact_messages_reply');
+    // Borrado del mensaje. Permiso propio (`cms_mensajes_contacto_eliminar`),
+    // aparte de ver y editar: es el boton con el que se limpia el spam, y el
+    // que decide de verdad quien puede usarlo es este middleware, no el boton.
+    Route::middleware(['permission:cms_mensajes_contacto_eliminar'])
+        ->delete('contact-messages/{id}', [CmsContactMessageController::class, 'destroy'])->name('cms_contact_messages_destroy');
 
     // Blog Subscribers (nueva versión Inertia)
     Route::middleware(['permission:cms_blog_suscriptores'])

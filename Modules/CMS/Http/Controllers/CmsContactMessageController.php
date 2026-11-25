@@ -5,8 +5,12 @@ namespace Modules\CMS\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\ContactMessage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Carbon\Carbon;
+use Modules\CMS\Emails\ContactMessageReplyMail;
 
 class CmsContactMessageController extends Controller
 {
@@ -52,6 +56,13 @@ class CmsContactMessageController extends Controller
             'messages' => $messages,
             'stats' => $stats,
             'filters' => $request->all(['search', 'status', 'dates']),
+            // El boton de borrar se pinta solo si el guard lo permitiria: se
+            // pregunta por el MISMO permiso que exige la ruta, y `can()` lo
+            // resuelve como el middleware —rol, permiso directo de la persona o
+            // Super Editor—, asi que el boton no le aparece a quien recibiria
+            // un 403. Leerlo de `auth.permissions` de Inertia no serviria: ese
+            // arreglo solo lleva los permisos heredados del rol.
+            'canDelete' => (bool) $request->user()?->can('cms_mensajes_contacto_eliminar'),
         ]);
     }
 
@@ -81,5 +92,91 @@ class CmsContactMessageController extends Controller
 
         return redirect()->route('cms_contact_messages_show', $id)
             ->with('success', 'Mensaje actualizado correctamente.');
+    }
+
+    /**
+     * Encola la respuesta escrita desde el panel (listado o detalle) y deja el
+     * mensaje como respondido.
+     *
+     * El correo va a la cola, asi que el encolado ya no demuestra que el SMTP
+     * haya entregado: el estado se marca cuando el job entra en la cola y un
+     * fallo posterior queda registrado por failed() del mailable.
+     */
+    public function reply(Request $request, $id)
+    {
+        $contactMessage = ContactMessage::findOrFail($id);
+
+        $validated = $request->validate([
+            'subject' => 'required|string|max:255',
+            'message' => 'required|string|max:5000',
+        ], [
+            'subject.required' => 'El asunto es obligatorio.',
+            'subject.max' => 'El asunto no puede superar los 255 caracteres.',
+            'message.required' => 'El mensaje de respuesta no puede estar vacio.',
+            'message.max' => 'El mensaje de respuesta no puede superar los 5000 caracteres.',
+        ]);
+
+        try {
+            Mail::to($contactMessage->email)->queue(new ContactMessageReplyMail(
+                $validated['subject'],
+                $validated['message'],
+                [
+                    'name' => $contactMessage->name,
+                    'email' => $contactMessage->email,
+                    'service' => $contactMessage->service,
+                    'message' => $contactMessage->message,
+                    'created_at' => optional($contactMessage->created_at)->format('d/m/Y H:i'),
+                ],
+            ));
+        } catch (\Throwable $e) {
+            Log::error('Contacto: no se pudo encolar la respuesta a ' . $contactMessage->email . ': ' . $e->getMessage(), [
+                'exception' => $e,
+            ]);
+
+            // Con el correo en cola este catch solo se activa si no se pudo ENCOLAR
+            // (conexion de cola caida). Un fallo de SMTP posterior no se ve aqui:
+            // queda en el log por failed() del mailable.
+            throw ValidationException::withMessages([
+                'subject' => 'No se pudo enviar el correo a ' . $contactMessage->email
+                    . '. Intentalo de nuevo o revisa el log del servidor.',
+            ]);
+        }
+
+        if ($contactMessage->status !== 'replied') {
+            $contactMessage->update(['status' => 'replied']);
+        }
+
+        return back()->with('success', 'Respuesta enviada a ' . $contactMessage->email . '.');
+    }
+
+    /**
+     * Elimina el mensaje del buzon (lo que se usa para el spam).
+     *
+     * Quien puede llegar aqui lo decide el middleware de la ruta
+     * (`permission:cms_mensajes_contacto_eliminar`), no el boton: el listado
+     * llama por axios y espera JSON, y un formulario normal vuelve al listado
+     * con el aviso en la sesion.
+     */
+    public function destroy(Request $request, $id)
+    {
+        $contactMessage = ContactMessage::findOrFail($id);
+
+        // Queda registrado quien borro que: un mensaje del buzon puede ser el
+        // reclamo de un cliente y conviene poder reconstruir que se elimino.
+        Log::warning('Contacto: mensaje eliminado desde el CMS', [
+            'id' => $contactMessage->id,
+            'email' => $contactMessage->email,
+            'user_id' => $request->user()?->id,
+        ]);
+
+        $contactMessage->delete();
+
+        $aviso = 'Mensaje eliminado correctamente.';
+
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true, 'message' => $aviso]);
+        }
+
+        return back()->with('success', $aviso);
     }
 }
