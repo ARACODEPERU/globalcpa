@@ -41,6 +41,10 @@
         countries: {
             type: [Array, Object],
             default: () => ([])
+        },
+        peru_country_id: {
+            type: [Number, String],
+            default: 1
         }
     });
 </script>
@@ -125,7 +129,7 @@
                         </TabPanel>
                         <TabPanel>
                             <div>
-                                <UpdatePersonInformationForm :person="person" :document_types="document_types" :ubigeo="ubigeo" :countries="countries" />
+                                <UpdatePersonInformationForm :person="person" :document_types="document_types" :ubigeo="ubigeo" :countries="countries" :peru_country_id="peru_country_id" />
                             </div>
                         </TabPanel>
                         <TabPanel>

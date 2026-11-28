@@ -41,7 +41,8 @@ class ProfileController extends Controller
             'person' => $person,
             'document_types' => $document_types,
             'ubigeo' => $ubigeo,
-            'countries' => $countries
+            'countries' => $countries,
+            'peru_country_id' => Country::peruId(),
         ]);
     }
 

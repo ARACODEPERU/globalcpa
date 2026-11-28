@@ -280,6 +280,7 @@ Route::middleware('auth')->group(function () {
                     'identityDocumentTypes' => $identityDocumentTypes,
                     'ubigeo' => $ubigeo,
                     'countries' => $countries,
+                    'peru_country_id' => \App\Models\Country::peruId(),
                     // Catalogos para que el alumno complete profesion, cargo,
                     // industria y empresa en su perfil forzado.
                     'professions' => DB::table('professions')->select('id', 'description')->orderBy('description')->get(),

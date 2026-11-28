@@ -29,6 +29,10 @@ import Swal2 from 'sweetalert2';
         countries: {
             type: [Array, Object],
             default: () => []
+        },
+        peru_country_id: {
+            type: [Number, String],
+            default: 1
         }
     });
 
@@ -55,14 +59,17 @@ import Swal2 from 'sweetalert2';
         gender: props.person ? props.person.gender : 'M',
         status: props.person ? props.person.status : null,
         social_networks: props.person ? props.person.social_networks : null,
+        country_id: (props.person && props.person.country_id) ? Number(props.person.country_id) : Number(props.peru_country_id ?? 1),
         foreign_country_id: props.person ? props.person.foreign_country_id : null,
         foreign_state: props.person ? props.person.foreign_state : '',
         foreign_city: props.person ? props.person.foreign_city : '',
     });
     const socialData = ref({});
 
-    const isForeignDocument = computed(() => {
-        return String(form.document_type_id) === '0';
+    // La nacionalidad define como se pide la ubicacion: Peru usa ubigeo
+    // y cualquier otro pais pide la ciudad como texto libre.
+    const isPeruvian = computed(() => {
+        return Number(form.country_id) === Number(props.peru_country_id ?? 1);
     });
 
     const countryOptions = computed(() => {
@@ -94,13 +101,12 @@ import Swal2 from 'sweetalert2';
 
 
   const submitForm = async () => {
-    if (!isForeignDocument.value) {
+    if (isPeruvian.value) {
       savePerson();
       return;
     }
 
-    const countryLabel = countryOptions.value.find(c => c.value === form.foreign_country_id)?.label || 'No seleccionado';
-    const stateLabel = form.foreign_state || 'No ingresado';
+    const countryLabel = countryOptions.value.find(c => c.value === form.country_id)?.label || 'No seleccionado';
     const cityLabel = form.foreign_city || 'No ingresado';
 
     const result = await Swal2.fire({
@@ -109,7 +115,6 @@ import Swal2 from 'sweetalert2';
             <p style="text-align:left; margin-bottom: 8px;">¿Los datos de ubicación son correctos?</p>
             <div style="text-align:left; background: #f8f9fa; padding: 12px; border-radius: 8px;">
                 <p style="margin: 4px 0;"><strong>País:</strong> ${countryLabel}</p>
-                <p style="margin: 4px 0;"><strong>Departamento/Estado:</strong> ${stateLabel}</p>
                 <p style="margin: 4px 0;"><strong>Ciudad:</strong> ${cityLabel}</p>
             </div>
         `,
@@ -207,8 +212,17 @@ import Swal2 from 'sweetalert2';
                     <input v-model="form.address" class="form-input" />
                     <InputError class="mt-2" :message="form.errors.address" />
                 </div>
-                <!-- UBIGEO PERUANO -->
-                <template v-if="!isForeignDocument">
+                <!-- NACIONALIDAD -->
+                <div>
+                    <label for="country_id">Nacionalidad</label>
+                    <select id="country_id" v-model="form.country_id" class="form-select text-white-dark" required>
+                        <option v-for="country in countryOptions" :key="country.value" :value="country.value">{{ country.label }}</option>
+                    </select>
+                    <InputError class="mt-2" :message="form.errors.country_id" />
+                </div>
+
+                <!-- UBIGEO PERUANO: solo para nacionalidad peruana -->
+                <template v-if="isPeruvian">
                     <div class="col-span-3 sm:col-span-2 md:col-span-2">
                         <label for="ubigeo">Ciudad</label>
                         <multiselect
@@ -228,24 +242,11 @@ import Swal2 from 'sweetalert2';
                     </div>
                 </template>
 
-                <!-- UBICACIÓN EXTRANJERA -->
+                <!-- CIUDAD PARA OTRAS NACIONALIDADES -->
                 <template v-else>
-                    <div>
-                        <label for="foreign_country_id">País</label>
-                        <select v-model="form.foreign_country_id" class="form-select text-white-dark" required>
-                            <option value="">Seleccionar país</option>
-                            <option v-for="country in countries" :value="country.id">{{ country.description }}</option>
-                        </select>
-                        <InputError class="mt-2" :message="form.errors.foreign_country_id" />
-                    </div>
-                    <div>
-                        <label for="foreign_state">Depto./Estado</label>
-                        <input v-model="form.foreign_state" type="text" class="form-input" placeholder="Ej: California" required />
-                        <InputError class="mt-2" :message="form.errors.foreign_state" />
-                    </div>
-                    <div>
+                    <div class="col-span-3 sm:col-span-2 md:col-span-2">
                         <label for="foreign_city">Ciudad</label>
-                        <input v-model="form.foreign_city" type="text" class="form-input" placeholder="Ej: Los Ángeles" required />
+                        <input id="foreign_city" v-model="form.foreign_city" type="text" class="form-input" placeholder="Ej: Los Ángeles" required />
                         <InputError class="mt-2" :message="form.errors.foreign_city" />
                     </div>
                 </template>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Country;
 use App\Models\IdentityDocumentType;
 use App\Models\Parameter;
 use App\Models\Person;
@@ -203,7 +204,10 @@ class PersonController extends Controller
         $person_id = $person ? $person->id : null;
         $student_id = $request->get('student_id');
 
-        $isForeign = IdentityDocumentType::isForeign($request->get('document_type_id'));
+        // La ubicacion depende de la nacionalidad: solo Peru usa ubigeo.
+        $peruCountryId = Country::peruId();
+        $countryId = $request->filled('country_id') ? (int) $request->input('country_id') : $peruCountryId;
+        $isForeignLocation = $countryId !== $peruCountryId;
 
         $rules = [
             'document_type_id'  => 'required',
@@ -219,12 +223,12 @@ class PersonController extends Controller
             'occupation_id'     => 'nullable',
             'industry_id'       => 'nullable',
             'company'           => 'nullable|string|max:200',
+            'country_id'        => 'nullable|integer|exists:countries,id',
         ];
 
-        if ($isForeign) {
-            $rules['foreign_country_id'] = 'required';
-            $rules['foreign_state'] = 'required|max:255';
+        if ($isForeignLocation) {
             $rules['foreign_city'] = 'required|max:255';
+            $rules['foreign_state'] = 'nullable|max:255';
         } else {
             $rules['ubigeo'] = 'required|max:255';
         }
@@ -313,13 +317,15 @@ class PersonController extends Controller
             $updateData['image'] = $path;
         }
 
-        if ($isForeign) {
-            $country = \App\Models\Country::find($request->get('foreign_country_id'));
+        $updateData['country_id'] = $countryId;
+
+        if ($isForeignLocation) {
+            $country = Country::find($countryId);
             $countryName = $country ? $country->description : '';
             $updateData['ubigeo'] = null;
-            $updateData['ubigeo_description'] = trim($countryName . ' - ' . $request->get('foreign_state') . ' - ' . $request->get('foreign_city'));
-            $updateData['foreign_country_id'] = $request->get('foreign_country_id');
-            $updateData['foreign_state'] = $request->get('foreign_state');
+            $updateData['ubigeo_description'] = trim($countryName . ' - ' . $request->get('foreign_city'));
+            $updateData['foreign_country_id'] = $countryId;
+            $updateData['foreign_state'] = $request->filled('foreign_state') ? $request->get('foreign_state') : null;
             $updateData['foreign_city'] = $request->get('foreign_city');
         } else {
             $updateData['ubigeo'] = $request->get('ubigeo');
@@ -376,7 +382,10 @@ class PersonController extends Controller
     {
         $user = Auth::user();
 
-        $isForeign = IdentityDocumentType::isForeign($request->get('document_type_id'));
+        // La ubicacion depende de la nacionalidad: solo Peru usa ubigeo.
+        $peruCountryId = Country::peruId();
+        $countryId = $request->filled('country_id') ? (int) $request->input('country_id') : $peruCountryId;
+        $isForeignLocation = $countryId !== $peruCountryId;
 
         $rules = [
             'document_type_id'  => 'required',
@@ -388,12 +397,12 @@ class PersonController extends Controller
             'names'             => 'required|max:255',
             'father_lastname'   => 'required|max:255',
             'mother_lastname'   => 'required|max:255',
+            'country_id'        => 'nullable|integer|exists:countries,id',
         ];
 
-        if ($isForeign) {
-            $rules['foreign_country_id'] = 'required';
-            $rules['foreign_state'] = 'required|max:255';
+        if ($isForeignLocation) {
             $rules['foreign_city'] = 'required|max:255';
+            $rules['foreign_state'] = 'nullable|max:255';
         } else {
             $rules['ubigeo'] = 'required';
         }
@@ -404,13 +413,13 @@ class PersonController extends Controller
         $email = $user->email;
 
         // Construir datos de ubicación
-        if ($isForeign) {
-            $country = \App\Models\Country::find($request->input('foreign_country_id'));
+        if ($isForeignLocation) {
+            $country = Country::find($countryId);
             $countryName = $country ? $country->description : '';
             $ubigeoValue = null;
-            $ubigeoDescription = trim($countryName . ' - ' . $request->input('foreign_state') . ' - ' . $request->input('foreign_city'));
-            $foreignCountryId = $request->input('foreign_country_id');
-            $foreignState = $request->input('foreign_state');
+            $ubigeoDescription = trim($countryName . ' - ' . $request->input('foreign_city'));
+            $foreignCountryId = $countryId;
+            $foreignState = $request->filled('foreign_state') ? $request->input('foreign_state') : null;
             $foreignCity = $request->input('foreign_city');
         } else {
             $ubigeoData = $request->input('ubigeo');
@@ -445,7 +454,8 @@ class PersonController extends Controller
             $personData['social_networks'] = json_encode($request->input('social_networks'));
         }
 
-        if ($isForeign || $request->has('ubigeo')) {
+        if ($isForeignLocation || $request->has('ubigeo') || $request->has('country_id')) {
+            $personData['country_id'] = $countryId;
             $personData['ubigeo'] = $ubigeoValue;
             $personData['ubigeo_description'] = $ubigeoDescription;
             $personData['foreign_country_id'] = $foreignCountryId;

@@ -32,6 +32,10 @@ const props = defineProps({
         type: [Array, Object],
         default: () => [],
     },
+    peru_country_id: {
+        type: [Number, String],
+        default: 1,
+    },
     professions: {
         type: [Array, Object],
         default: () => [],
@@ -95,9 +99,10 @@ const professionOptions = computed(() => catalogOptions(props.professions));
 const occupationOptions = computed(() => catalogOptions(props.occupations));
 const industryOptions = computed(() => catalogOptions(props.industries));
 
-// Detectar si el tipo de documento es extranjero (OTROS = sunat_code '00', id '0')
-const isForeignDocument = computed(() => {
-    return String(form.document_type_id) === '0';
+// La nacionalidad define como se pide la ubicacion: Peru usa ubigeo
+// y cualquier otro pais pide la ciudad como texto libre.
+const isPeruvian = computed(() => {
+    return Number(form.country_id) === Number(props.peru_country_id ?? 1);
 });
 
 // Inicialización
@@ -119,6 +124,7 @@ const form = useForm({
     father_lastname: props.person?.father_lastname ?? '',
     mother_lastname: props.person?.mother_lastname ?? '',
     ubigeo_description: props.person?.city ?? null,
+    country_id: props.person?.country_id ? Number(props.person.country_id) : Number(props.peru_country_id ?? 1),
     foreign_country_id: props.person?.foreign_country_id ?? null,
     foreign_state: props.person?.foreign_state ?? '',
     foreign_city: props.person?.foreign_city ?? '',
@@ -140,15 +146,14 @@ const cropImageAndSave = (res) => {
 
 // Modal de confirmación para extranjeros
 const submitForm = async () => {
-    if (!isForeignDocument.value) {
+    if (isPeruvian.value) {
         updateInfoPerson();
         return;
     }
 
     const { default: Swal2 } = await import('sweetalert2');
 
-    const countryLabel = countryOptions.value.find(c => c.value === form.foreign_country_id)?.label || 'No seleccionado';
-    const stateLabel = form.foreign_state || 'No ingresado';
+    const countryLabel = countryOptions.value.find(c => c.value === form.country_id)?.label || 'No seleccionado';
     const cityLabel = form.foreign_city || 'No ingresado';
 
     const result = await Swal2.fire({
@@ -157,7 +162,6 @@ const submitForm = async () => {
             <p style="text-align:left; margin-bottom: 8px;">¿Los datos de ubicación son correctos?</p>
             <div style="text-align:left; background: #f8f9fa; padding: 12px; border-radius: 8px;">
                 <p style="margin: 4px 0;"><strong>País:</strong> ${countryLabel}</p>
-                <p style="margin: 4px 0;"><strong>Departamento/Estado:</strong> ${stateLabel}</p>
                 <p style="margin: 4px 0;"><strong>Ciudad:</strong> ${cityLabel}</p>
             </div>
         `,
@@ -226,8 +230,22 @@ const updateInfoPerson = () => {
                             <InputError :message="form.errors.birthdate" class="mt-2" />
                         </div>
 
-                        <!-- === UBIGEO PERUANO (cuando NO es extranjero) === -->
-                        <template v-if="!isForeignDocument">
+                        <!-- Nacionalidad -->
+                        <div class="col-span-6 sm:col-span-3">
+                            <InputLabel for="country_id" value="Nacionalidad *" />
+                            <Select
+                                v-model:value="form.country_id"
+                                show-search
+                                placeholder="Seleccione una nacionalidad"
+                                style="width: 100%"
+                                :options="countryOptions"
+                                :filter-option="filterOption"
+                            />
+                            <InputError :message="form.errors.country_id" class="mt-2" />
+                        </div>
+
+                        <!-- === UBIGEO PERUANO (nacionalidad peruana) === -->
+                        <template v-if="isPeruvian">
                             <div class="col-span-6 sm:col-span-3">
                                 <InputLabel for="ubigeo" value="Ciudad *" />
                                 <Select
@@ -242,37 +260,9 @@ const updateInfoPerson = () => {
                             </div>
                         </template>
 
-                        <!-- === UBICACIÓN EXTRANJERA (cuando ES extranjero) === -->
+                        <!-- === CIUDAD (otras nacionalidades) === -->
                         <template v-else>
-                            <!-- País -->
-                            <div class="col-span-6 sm:col-span-1">
-                                <InputLabel for="foreign_country_id" value="País *" />
-                                <Select
-                                    v-model:value="form.foreign_country_id"
-                                    show-search
-                                    placeholder="Seleccione un país"
-                                    style="width: 100%"
-                                    :options="countryOptions"
-                                    :filter-option="filterOption"
-                                />
-                                <InputError :message="form.errors.foreign_country_id" class="mt-2" />
-                            </div>
-
-                            <!-- Departamento / Estado -->
-                            <div class="col-span-6 sm:col-span-1">
-                                <InputLabel for="foreign_state" value="Depto./Estado *" />
-                                <Input
-                                    id="foreign_state"
-                                    v-model:value="form.foreign_state"
-                                    type="text"
-                                    placeholder="Ej: California"
-                                    class="block w-full mt-1"
-                                />
-                                <InputError :message="form.errors.foreign_state" class="mt-2" />
-                            </div>
-
-                            <!-- Ciudad -->
-                            <div class="col-span-6 sm:col-span-1">
+                            <div class="col-span-6 sm:col-span-3">
                                 <InputLabel for="foreign_city" value="Ciudad *" />
                                 <Input
                                     id="foreign_city"
