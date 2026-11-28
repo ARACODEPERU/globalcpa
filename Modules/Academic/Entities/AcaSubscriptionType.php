@@ -11,6 +11,31 @@ class AcaSubscriptionType extends Model
     use HasFactory;
 
     /**
+     * Periodos que admiten cobro automático y su duración en meses.
+     */
+    public const RECURRING_PERIODS = [
+        'Mensual' => 1,
+        'Trimestral' => 3,
+        'Anual' => 12,
+    ];
+
+    /**
+     * Duración en meses del plan cuando su periodo es recurrente.
+     */
+    public function recurringMonths(): ?int
+    {
+        return self::RECURRING_PERIODS[trim((string) $this->period)] ?? null;
+    }
+
+    /**
+     * Indica si el periodo del plan se puede cobrar con MercadoPago.
+     */
+    public function supportsRecurring(): bool
+    {
+        return $this->recurringMonths() !== null;
+    }
+
+    /**
      * The attributes that are mass assignable.
      */
     protected $fillable = [
@@ -22,42 +47,40 @@ class AcaSubscriptionType extends Model
         'prices',
         'price_note',
         'price_note_below',
-        'status',
         'show_dollar_price',
+        'status',
         'period',
         'order_number',
-        'allow_all_courses',
-        'allow_all_specializations',
-        'allow_all_webinars',
-        'allow_zoom_content',
-        'allow_webinar_content'
+        'access_all_courses',
+        'access_specialization_programs',
+        'access_all_webinars',
+        'can_view_specialization_zooms',
+        'can_view_specialization_webinars',
+        'recurring_enabled',
+        'test_mode',
+        'mercadopago_plan_id',
     ];
 
     protected $casts = [
         'details' => 'array',
         'prices' => 'array',
         'show_dollar_price' => 'boolean',
-        'allow_all_courses' => 'boolean',
-        'allow_all_specializations' => 'boolean',
-        'allow_all_webinars' => 'boolean',
-        'allow_zoom_content' => 'boolean',
-        'allow_webinar_content' => 'boolean',
+        'access_all_courses' => 'boolean',
+        'access_specialization_programs' => 'boolean',
+        'access_all_webinars' => 'boolean',
+        'can_view_specialization_zooms' => 'boolean',
+        'can_view_specialization_webinars' => 'boolean',
+        'recurring_enabled' => 'boolean',
+        'test_mode' => 'boolean',
     ];
 
     /**
-     * El texto que va encima del precio se guarda como HTML acotado: solo se
-     * conserva formato basico (negrita, cursiva, subrayado, tachado, color y
-     * tamano) para poder pintarlo en la pagina publica sin permitir scripts ni
-     * estilos arbitrarios.
+     * Etiquetas y estilos que se conservan en los textos con formato.
      */
-    public function setPriceNoteAttribute($value): void
-    {
-        $this->attributes['price_note'] = static::sanitizeRichText($value);
-    }
+    private const RICH_TEXT_TAGS = '<b><strong><i><em><u><s><strike><del><br><span><small><sup><sub>';
 
     /**
-     * La descripcion del plan se guarda como HTML acotado; el texto plano se
-     * deriva en el controlador para el resto de pantallas.
+     * Descripción con formato: se sanea antes de guardar.
      */
     public function setDescriptionHtmlAttribute($value): void
     {
@@ -65,14 +88,25 @@ class AcaSubscriptionType extends Model
     }
 
     /**
-     * Mismo formato acotado que el texto de encima del precio, para el texto
-     * que va debajo.
+     * Texto encima del precio: se sanea antes de guardar.
+     */
+    public function setPriceNoteAttribute($value): void
+    {
+        $this->attributes['price_note'] = static::sanitizeRichText($value);
+    }
+
+    /**
+     * Texto debajo del precio: se sanea antes de guardar.
      */
     public function setPriceNoteBelowAttribute($value): void
     {
         $this->attributes['price_note_below'] = static::sanitizeRichText($value);
     }
 
+    /**
+     * Sanea el HTML del editor: bloques simples, allowlist de etiquetas y
+     * solo los estilos del texto permitidos.
+     */
     public static function sanitizeRichText($value): ?string
     {
         if ($value === null) {
@@ -85,23 +119,21 @@ class AcaSubscriptionType extends Model
             return null;
         }
 
-        // El editor marca los saltos de linea con <div> o <p>: se normalizan a
-        // <br> para conservar el texto como un bloque simple en la pagina.
+        // El contenido de <script> y <style> se descarta completo.
+        $html = preg_replace('#<(script|style)\b[^>]*>.*?</\1>#is', '', $html);
+
+        // Bloques del editor -> saltos simples.
         $html = preg_replace('#<(?:div|p|h[1-6]|li|blockquote)\b[^>]*>#i', '<br>', $html);
-        $html = preg_replace('#</(?:div|p|h[1-6]|li|blockquote)>#i', '', $html);
-        // Los saltos sobrantes del principio y del final no aportan nada al
-        // bloque de texto; los saltos dobles se conservan como separacion.
+        $html = preg_replace('#</(?:div|p|h[1-6]|li|blockquote)>#i', '', (string) $html);
+
+        // Saltos inútiles al inicio y al final; los dobles se conservan.
         $html = preg_replace('#^(?:\s*<br\s*/?>)+#i', '', (string) $html);
         $html = preg_replace('#(?:<br\s*/?>(?:\s|<br\s*/?>)*)+$#i', '', (string) $html);
         $html = preg_replace('#(?:<br\s*/?>\s*){3,}#i', '<br><br>', (string) $html);
 
-        $html = strip_tags(
-            $html,
-            '<b><strong><i><em><u><s><strike><del><br><span><small><sup><sub>'
-        );
+        $html = strip_tags((string) $html, self::RICH_TEXT_TAGS);
 
-        // Se descartan todos los atributos menos el estilo de <span>, que se
-        // filtra propiedad por propiedad.
+        // Se descartan todos los atributos menos el style de <span>.
         $html = preg_replace_callback('#<(/?)([a-z]+)\b([^>]*)>#i', function ($matches) {
             $closing = $matches[1] === '/';
             $tag = strtolower($matches[2]);
@@ -118,13 +150,16 @@ class AcaSubscriptionType extends Model
             }
 
             return '<' . $tag . ($style !== '' ? ' style="' . e($style) . '"' : '') . '>';
-        }, $html);
+        }, (string) $html);
 
         $html = trim((string) $html);
 
         return $html === '' ? null : $html;
     }
 
+    /**
+     * Filtra las declaraciones de estilo permitidas en un <span>.
+     */
     private static function sanitizePriceNoteStyle(string $style): string
     {
         $allowed = [];

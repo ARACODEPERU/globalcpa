@@ -74,16 +74,13 @@ Route::middleware(['auth', 'verified', 'user_activity_log'])->prefix('crm')->gro
         ->post('conversations/messages/list', [CrmMessagesController::class, 'getMessages'])
         ->name('crm_list_message');
 
+    Route::middleware(['middleware' => 'permission:crm_chat_messages|crm_chat_asistente|crm_clientes_preguntas_ia'])
+        ->put('conversations/messages/update', [CrmMessagesController::class, 'updateMessage'])
+        ->name('crm_chat_message_update');
+
     Route::middleware(['middleware' => 'permission:crm_chat_messages|crm_chat_asistente'])
         ->delete('conversations/messages/destroy', [CrmMessagesController::class, 'destroyMessage'])
         ->name('crm_chat_message_destroy');
-
-    // Editar el propio mensaje mientras no pasen los primeros 90 segundos.
-    // crm_clientes_preguntas_ia: asi tambien puede editarlos el alumno en el
-    // chat de asesorias (studentDashboard), que opera con ese permiso.
-    Route::middleware(['middleware' => 'permission:crm_chat_messages|crm_chat_asistente|crm_clientes_preguntas_ia'])
-        ->post('conversations/messages/update', [CrmMessagesController::class, 'updateMessage'])
-        ->name('crm_chat_message_update');
 
     Route::middleware(['middleware' => 'permission:crm_chat_dashboard|crm_chat_asistente'])
         ->post('conversations/messages/upload/audio', [CrmMessagesController::class, 'uploadMessagesAudio'])
@@ -153,17 +150,22 @@ Route::middleware(['auth', 'verified', 'user_activity_log'])->prefix('crm')->gro
         ->get('application-ai-prompt', [CrmIaController::class, 'clientDashboard'])
         ->name('crm_application_ai_prompt');
 
+    /*
+     * Gemini se llama ahora desde PHP (antes iba al servidor Node) para poder
+     * registrar tokens y costo. El guardado en Banco de Consultas se hace en
+     * el mismo endpoint de censura.
+     */
     Route::middleware(['middleware' => 'permission:crm_clientes_preguntas_ia'])
-        ->post('application-ai-prompt/send/messages/geminiai', [CrmIaController::class, 'sendMessage'])
+        ->post('application-ai-prompt/send/messages/geminiai', [CrmIaController::class, 'geminiQuestionService'])
         ->name('crm_application_ai_prompt_send_message');
+
+    Route::middleware(['middleware' => 'permission:crm_clientes_preguntas_ia'])
+        ->post('application-ai-prompt/respond/messages/geminiai', [CrmIaController::class, 'geminiCensorAndStoreService'])
+        ->name('crm_gemini_censor_and_store');
 
     Route::middleware(['middleware' => 'permission:crm_clientes_preguntas_ia|crm_chat_asistente'])
         ->post('application-ai-prompt/send/messages/openai', [CrmIaController::class, 'basicQuestionService'])
         ->name('crm_application_ai_prompt_send_message_openai');
-
-    Route::middleware(['middleware' => 'permission:crm_clientes_preguntas_ia|crm_chat_asistente'])
-        ->post('application-ai-prompt/send/messages/gemini', [CrmIaController::class, 'basicQuestionGeminiService'])
-        ->name('crm_application_ai_prompt_send_message_gemini');
 
     Route::post('persons/search/company', [CrmPersonController::class, 'searchPerson'])
         ->name('crm_persons_search_company');

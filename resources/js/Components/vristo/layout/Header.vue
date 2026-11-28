@@ -18,19 +18,46 @@
     import IconSettings from '@/Components/vristo/icon/icon-settings.vue';
 
     import IconCaretDown from '@/Components/vristo/icon/icon-caret-down.vue';
+    import IconDollarSignCircle from '@/Components/vristo/icon/icon-dollar-sign-circle.vue';
+    import ExchangeRateButton from '@/Components/vristo/layout/ExchangeRateButton.vue';
 
-    import { faCartPlus, faUserGroup, faChartPie } from  '@fortawesome/free-solid-svg-icons';
+    import { faCartPlus, faUserGroup, faChartPie, faRobot } from  '@fortawesome/free-solid-svg-icons';
+    import SuperEditorToggle from 'Modules/Security/Resources/assets/js/Components/SuperEditor/Toggle.vue';
     import ChatNotifications from 'Modules/CRM/Resources/assets/js/Components/ChatNotifications.vue';
     import ShoppingCartMenu from 'Modules/Onlineshop/Resources/assets/js/Components/ShoppingCartMenu.vue';
     import menuData from './MenuData.js'
+    // Misma regla que el layout: el panel gana cuando la cuenta tiene un rol de
+    // trabajo además de 'Alumno'.
+    import { esModoAlumno } from '@/utils/modoAlumno'
 
 
     const userData = usePage().props.auth.user;
+    const pageProps = usePage().props;
     const store = useAppStore();
 
-    const hasAnyRole = (rolesToCheck) => {
-        return userData.roles.some(role => rolesToCheck.includes(role.name))
-    }
+    // Interruptor multi-moneda (PTM0004): sin dólares no se muestra el botón
+    // "Cambio de moneda" en el header.
+    const multiCurrencyEnabled = computed(() => pageProps.multiCurrencyEnabled === true);
+
+
+    // La campana de chat de CRM consulta /crm/chat/notifications al montarse.
+    // La directiva v-can (vue-gates) solo quita el nodo del DOM DESPUÉS de
+    // montarlo, así que el componente se montaba igual y su petición terminaba
+    // en el 403 del middleware permission cuando al usuario no le corresponde
+    // ese módulo (por ejemplo en la instalación de torneos, donde el módulo CRM
+    // no está activo). Con v-if la campana solo se monta si el usuario tiene
+    // alguno de los dos permisos que acepta esa ruta; el v-can se conserva para
+    // no cambiar qué usuarios ven la campana.
+    const canUseCrmChat = computed(() => {
+        const permissions = pageProps.auth?.permissions ?? [];
+
+        return permissions.includes('crm_chat_notifications')
+            || permissions.includes('crm_chat_asistente');
+    });
+
+    // Campus del alumno: solo si 'Alumno' es su único rol de peso.
+    const modoAlumno = computed(() => esModoAlumno(userData.roles));
+
 
     const logout = () => {
         router.post(route('logout'));
@@ -48,6 +75,12 @@
 
     const search = ref(false);
 
+    // Modal de tipo de cambio (Cambio de moneda)
+    const showExchangeRateModal = ref(false);
+    const closeExchangeRateModal = () => {
+        showExchangeRateModal.value = false;
+    };
+
     // multi language
     const i18n = reactive(useI18n());
 
@@ -56,7 +89,7 @@
 
     onMounted(() => {
         setActiveDropdown();
-        if(hasAnyRole(['Alumno'])){
+        if(modoAlumno.value){
             loadTeachers();
         }
     });
@@ -168,6 +201,21 @@
                                 <span>Calendario</span>
                             </Link>
                         </li>
+
+                       <!-- Modo Super Editor (solo rol admin; el servidor decide) -->
+                        <li>
+                            <SuperEditorToggle />
+                        </li>
+
+                        <li v-can="'invo_tipo_cambio'" v-show="multiCurrencyEnabled">
+                            <button type="button"
+                                class="flex items-center px-4 py-1.5 text-sm font-medium text-slate-600 bg-slate-100 border border-slate-200 rounded-full hover:bg-white hover:text-blue-600 hover:shadow-sm dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700 dark:hover:bg-slate-700 transition-all"
+                                @click="showExchangeRateModal = true">
+                                <icon-dollar-sign-circle class="w-4 h-4 mr-2" />
+                                <span>Cambio de moneda</span>
+                            </button>
+
+                        </li>
                         <!-- <li v-can="'empresa'">
                             <Link :href="route('company_show')"
                                 class="flex items-center px-4 py-1.5 text-sm font-medium text-slate-600 bg-slate-100 border border-slate-200 rounded-full hover:bg-white hover:text-blue-600 hover:shadow-sm dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700 dark:hover:bg-slate-700 transition-all">
@@ -217,7 +265,7 @@
                         </a> -->
                     </div>
 
-                    <div v-can="'crm_chat_notifications'" class="dropdown shrink-0">
+                    <div v-if="canUseCrmChat" v-can="'crm_chat_notifications'" class="dropdown shrink-0">
                         <ChatNotifications />
                     </div>
                     <ShoppingCartMenu />
@@ -266,6 +314,12 @@
                                             <icon-settings class="w-4.5 h-4.5 ltr:mr-2 rtl:ml-2 shrink-0" />
                                             Apariencia
                                         </button>
+                                    </li>
+                                    <li v-can="'conf_asistente'">
+                                        <Link :href="route('profile.aracodito')" class="dark:hover:text-white" @click="close()">
+                                            <font-awesome-icon :icon="faRobot" class="w-4.5 h-4.5 ltr:mr-2 rtl:ml-2 shrink-0" />
+                                            Asistente
+                                        </Link>
                                     </li>
 
                                     <li class="border-t border-white-light dark:border-white-light/10">
@@ -361,7 +415,7 @@
                         </li>
                     </template>
                 </template>
-                <template v-if="hasAnyRole(['Alumno'])">
+                <template v-if="modoAlumno">
                     <li v-can="menuChatAI.permissions" class="menu nav-item relative">
                         <a href="javascript:;" class="nav-link">
                             <div class="flex items-center">
@@ -385,5 +439,6 @@
                 </template>
             </ul>
         </div>
+        <ExchangeRateButton :show="showExchangeRateModal" :on-close="closeExchangeRateModal" />
     </header>
 </template>

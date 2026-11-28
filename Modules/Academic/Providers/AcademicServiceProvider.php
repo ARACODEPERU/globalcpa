@@ -29,6 +29,11 @@ class AcademicServiceProvider extends ServiceProvider
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->moduleName, 'Database/Migrations'));
 
+        // Consentimiento del OAuth del servidor MCP: va en el grupo web porque
+        // necesita sesión y CSRF (el resto del flujo está en routes/ai.php).
+        \Illuminate\Support\Facades\Route::middleware('web')
+            ->group(module_path($this->moduleName, '/Routes/mcp_oauth.php'));
+
         // Comandos de consola (patron de Sales/Security: registro explicito via
         // ServiceProvider). En Laravel 12 Kernel::load() solo resuelve clases
         // bajo app/, de modo que los $this->load('Modules/*/Console') del Kernel
@@ -37,6 +42,9 @@ class AcademicServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 \Modules\Academic\Console\CheckExpiredSubscriptions::class,
+                \Modules\Academic\Console\CheckMercadoPagoSubscriptions::class,
+                \Modules\Academic\Console\CreateMcpToken::class,
+                \Modules\Academic\Console\PruneMcpData::class,
             ]);
         }
     }
@@ -49,6 +57,18 @@ class AcademicServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->register(RouteServiceProvider::class);
+
+        // Alta de suscripciones recurrentes: la lógica usa la interfaz y el SDK
+        // queda detrás, para poder probarla sin llamar a MercadoPago.
+        $this->app->bind(
+            \Modules\Academic\Services\MercadoPago\SubscriptionPreapprovalGateway::class,
+            \Modules\Academic\Services\MercadoPago\MercadoPagoPreapprovalGateway::class
+        );
+
+        $this->app->bind(
+            \Modules\Academic\Services\MercadoPago\SubscriptionPaymentGateway::class,
+            \Modules\Academic\Services\MercadoPago\MercadoPagoSubscriptionPaymentGateway::class
+        );
 
         $this->registerTelegramRegistrantResolver();
         $this->registerTelegramAccountResolver();

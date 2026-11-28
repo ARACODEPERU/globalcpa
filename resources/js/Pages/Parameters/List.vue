@@ -5,7 +5,11 @@
     import Keypad from '@/Components/Keypad.vue';
     import { Link, router, useForm } from '@inertiajs/vue3';
     import { Dropdown, Menu, MenuItem, Input, Select, Textarea, message } from 'ant-design-vue';
+    import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
     import Navigation from '@/Components/vristo/layout/Navigation.vue';
+    // Ayuda de las credenciales de Google Calendar (boton "?" + guia).
+    import GoogleCalendarCredentialHelp from 'Modules/Health/Resources/assets/js/Components/GoogleCalendarCredentialHelp.vue';
+    import { agruparPorPrefijo, filtrarPorPrefijo, ordenarPorCodigo } from '@/utils/agruparParametros';
 
     const props = defineProps({
         parameters: {
@@ -21,13 +25,111 @@
         search: props.filters.search,
     });
 
+    // Valor con el que llego cada parametro (ultimo guardado confirmado).
+    // Sirve para no re-guardar ni avisar cuando el valor no cambio realmente.
+    const lastSavedValues = Object.fromEntries(props.parameters.map((p) => [p.id, p.value_default]));
+
     const updateDefaultValue = (id, value) => {
+        if (String(value) === String(lastSavedValues[id] ?? '')) {
+            return; // sin cambio real: no golpear el endpoint ni mostrar el aviso
+        }
         axios.post(route('parameters_update_default_value',[id]),{
             value_default: value
         }).then(()=>{
+            lastSavedValues[id] = value;
             message.success('Se actualizó correctamente');
         });
     }
+
+    // Parámetros confidenciales (pwd): el valor guardado nunca llega al
+    // navegador. Solo se envía un valor nuevo, y de forma explícita, para que
+    // un clic o un blur accidental no borre una credencial ya registrada.
+    const saveSecret = (parameter) => {
+        const value = String(parameter.value_default ?? '').trim();
+
+        if (value === '') {
+            message.warning('Escribe el valor nuevo para reemplazar el que ya está guardado');
+            return;
+        }
+
+        axios.post(route('parameters_update_default_value', [parameter.id]), {
+            value_default: value,
+        }).then(({ data }) => {
+            parameter.value_default = '';
+            parameter.has_value = Boolean(data?.has_value ?? true);
+            lastSavedValues[parameter.id] = null;
+            message.success('Credencial guardada. No se volverá a mostrar.');
+        }).catch(() => {
+            message.error('No se pudo guardar la credencial');
+        });
+    }
+
+    /*
+     * Orden y pestañas de la lista.
+     *
+     * El listado ya llega ordenado por prefijo desde el servidor (P, PC, PN, PW,
+     * SC…): primero las letras del código y, dentro de cada prefijo, el número.
+     * El botón «Ordenar» de la barra inferior alterna ese orden con el orden
+     * alfabético por el código completo, y el botón de al lado muestra los
+     * parámetros en pestañas, una por prefijo.
+     */
+    const criterio = ref('prefijo'); // prefijo | codigo
+    const vista = ref('lista'); // lista | pestanas
+    const prefijoActivo = ref(null);
+
+    // Una pestaña por prefijo, en el orden en que llegan (alfabético por
+    // prefijo), con cuántos parámetros tiene cada uno.
+    const prefijos = computed(() => agruparPorPrefijo(props.parameters));
+
+    const parametrosVisibles = computed(() => {
+        const filas = criterio.value === 'codigo'
+            ? ordenarPorCodigo(props.parameters)
+            : [...props.parameters];
+
+        return vista.value === 'pestanas' && prefijoActivo.value !== null
+            ? filtrarPorPrefijo(filas, prefijoActivo.value)
+            : filas;
+    });
+
+    const alternarOrden = () => {
+        criterio.value = criterio.value === 'prefijo' ? 'codigo' : 'prefijo';
+    };
+
+    const alternarVista = () => {
+        vista.value = vista.value === 'lista' ? 'pestanas' : 'lista';
+
+        // Al abrir las pestañas se muestra la primera para que nunca queden
+        // vacías; al volver a la lista se conserva cuál estaba abierta.
+        if (vista.value === 'pestanas' && prefijoActivo.value === null) {
+            prefijoActivo.value = prefijos.value[0]?.prefijo ?? '';
+        }
+    };
+
+    /*
+     * Barra inferior: aparece solo cuando el mouse se acerca al borde de abajo y
+     * se va al alejarlo. Se escucha el movimiento en toda la ventana (y no en un
+     * recuadro invisible) para no bloquear ningún clic de la tabla.
+     */
+    const DISTANCIA_AL_BORDE = 140; // píxeles desde el fondo
+    const barraVisible = ref(false);
+
+    const alMoverRaton = (evento) => {
+        barraVisible.value = evento.clientY >= window.innerHeight - DISTANCIA_AL_BORDE;
+    };
+
+    onMounted(() => {
+        // Sin mouse (tabletas y teléfonos) no hay hover posible: la barra se
+        // muestra siempre en vez de quedar inalcanzable.
+        if (window.matchMedia?.('(hover: none)')?.matches) {
+            barraVisible.value = true;
+
+            return;
+        }
+
+        window.addEventListener('mousemove', alMoverRaton);
+    });
+
+    onBeforeUnmount(() => window.removeEventListener('mousemove', alMoverRaton));
 </script>
 
 <template>
@@ -67,6 +169,20 @@
                             </div>
                         </div>
                     </div>
+                    <!-- Pestañas por prefijo: una por cómo empiezan los códigos -->
+                    <div v-if="vista === 'pestanas'" class="flex flex-wrap gap-2 px-4 pb-4">
+                        <button
+                            v-for="grupo in prefijos"
+                            :key="grupo.prefijo"
+                            type="button"
+                            class="btn"
+                            :class="prefijoActivo === grupo.prefijo ? 'btn-primary' : 'btn-outline-primary'"
+                            @click="prefijoActivo = grupo.prefijo"
+                        >
+                            {{ grupo.prefijo || 'Sin prefijo' }}
+                            <span class="opacity-70">({{ grupo.total }})</span>
+                        </button>
+                    </div>
                     <div class="table-responsive">
                         <table>
                             <thead>
@@ -89,7 +205,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="(parameter, index) in parameters" :key="parameter.id" >
+                                <tr v-for="(parameter, index) in parametrosVisibles" :key="parameter.id" >
                                     <td>
                                         <Dropdown :placement="'bottomLeft'" arrow>
                                             <button class="border py-1.5 px-2 dropdown-button inline-block text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm" type="button">
@@ -137,18 +253,47 @@
                                                 @change="updateDefaultValue(parameter.id, parameter.value_default)"
                                             />
                                         </template>
+                                        <template v-else-if="parameter.control_type == 'pwd'">
+                                            <div class="flex items-start gap-2">
+                                                <Input
+                                                    v-model:value="parameter.value_default"
+                                                    type="password"
+                                                    autocomplete="new-password"
+                                                    :placeholder="parameter.has_value ? 'Guardado •••••• — escribe uno nuevo para reemplazarlo' : 'Sin registrar'"
+                                                    @pressEnter="saveSecret(parameter)"
+                                                />
+                                                <!-- ¿De dónde sale este valor? Solo aparece en los parámetros que tienen guía. -->
+                                                <GoogleCalendarCredentialHelp :parameter-code="parameter.parameter_code" />
+                                                <button
+                                                    type="button"
+                                                    class="whitespace-nowrap rounded bg-blue-900 px-3 py-1.5 text-xs font-medium uppercase text-white hover:bg-blue-700"
+                                                    @click="saveSecret(parameter)"
+                                                >
+                                                    Reemplazar
+                                                </button>
+                                            </div>
+                                            <small class="text-gray-500">
+                                                {{ parameter.has_value
+                                                    ? 'Valor confidencial guardado. No se muestra por seguridad.'
+                                                    : 'Valor confidencial: aún sin registrar.' }}
+                                            </small>
+                                        </template>
                                         <template v-else-if="parameter.control_type == 'tx'">
                                             <Textarea
                                                 v-model:value="parameter.value_default"
                                                 style="width: 100%"
                                                 show-count
-                                                :maxlength="['P000022', 'P000026', 'P000027'].includes(parameter.parameter_code) ? 100000 : 5000"
+                                                :maxlength="parameter.parameter_code === 'P000026' || parameter.parameter_code === 'P000027' || parameter.parameter_code === 'P000022' ? 100000 : 5000"
                                                 :autoSize="{ minRows: 3, maxRows: 20 }"
                                                 @blur="updateDefaultValue(parameter.id, parameter.value_default)"
                                                 >
                                             </Textarea>
                                             <small v-if="parameter.parameter_code === 'P000026' || parameter.parameter_code === 'P000027'">El contenido se sincroniza al perder el foco</small>
-                                            <small v-if="parameter.parameter_code === 'P000022'" class="block text-blue-700">Pega aquí el código completo de GTM, GA4 o píxeles, o solo el ID GTM-XXXXXXX. No pegues el mismo contenedor dos veces ni dejes el ID GA4 fijo en el layout. Se guarda al salir del campo. Ver detalles en Editar.</small>
+                                            <small v-if="parameter.parameter_code === 'P000022'" class="block text-blue-700 dark:text-blue-300">
+                                                Pega aquí el código completo de GTM, GA4 o píxeles, o solo el ID GTM-XXXXXXX.
+                                                No pegues el mismo contenedor dos veces ni dejes el ID GA4 fijo en el layout.
+                                                Se guarda al salir del campo. Ver detalles en Editar.
+                                            </small>
                                         </template>
                                         <template v-else-if="parameter.control_type == 'rdj'">
                                             <div>
@@ -192,7 +337,8 @@
                                                     type="checkbox"
                                                     class="custom_switch absolute w-full h-full opacity-0 z-10 cursor-pointer peer"
                                                     :id="`custom_switch_checkbox-${index}`"
-                                                    :value="1"
+                                                    true-value="1"
+                                                    false-value="0"
                                                     @change="updateDefaultValue(parameter.id, parameter.value_default)"
                                                 />
                                                 <span :for="`custom_switch_checkbox-${index}`" class="bg-[#ebedf2] dark:bg-dark block h-full before:absolute before:left-1 before:bg-white dark:before:bg-white-dark dark:peer-checked:before:bg-white before:bottom-1 before:w-4 before:h-4 peer-checked:before:left-7 peer-checked:bg-primary before:transition-all before:duration-300 "></span>
@@ -222,6 +368,29 @@
                         </table>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- Barra inferior: se muestra al acercar el mouse al borde de abajo y desaparece al alejarlo -->
+        <div
+            class="pointer-events-none fixed inset-x-0 bottom-0 z-50 flex justify-center pb-5 transition-all duration-300"
+            :class="barraVisible ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'"
+        >
+            <!--
+                Solo la pastilla recibe clics (la franja queda transparente al
+                mouse) y solo cuando está a la vista: oculta no debe atrapar un
+                clic, aunque su opacidad sea cero.
+            -->
+            <div
+                class="flex items-center gap-2 rounded-full border border-gray-200 bg-white/95 px-3 py-2 shadow-lg backdrop-blur dark:border-gray-700 dark:bg-gray-800/95"
+                :class="barraVisible ? 'pointer-events-auto' : 'pointer-events-none'"
+            >
+                <button type="button" class="btn btn-primary" @click="alternarOrden">
+                    Ordenar: {{ criterio === 'prefijo' ? 'por prefijo' : 'por código' }}
+                </button>
+                <button type="button" class="btn btn-outline-primary" @click="alternarVista">
+                    {{ vista === 'lista' ? 'Pestañas' : 'Lista' }}
+                </button>
             </div>
         </div>
 

@@ -401,9 +401,11 @@
             showCancelButton: true,
             confirmButtonText: 'Enviar',
             showLoaderOnConfirm: true,
-            clickOutside: false,
             preConfirm: () => {
                 return axios.get(route('saledocuments_send', [document.id,document.invoice_type_doc]), { timeout: 120000 }).then((res) => {
+                    if (res.data.manual) {
+                        return res;
+                    }
                     if (!res.data.success) {
                         var cadena = `Error código: ${res.data.code}<br>Descripción:${res.data.message}`;
                         let notes = res.data.notes;
@@ -424,8 +426,23 @@
                 });
             },
             allowOutsideClick: () => !Swal2.isLoading()
-        }).then((result) => {
-            if (result.isConfirmed && result.value && result.value.data && result.value.data.success) {
+        }).then(async (result) => {
+            const data = result.value && result.value.data;
+
+            if (result.isConfirmed && data && data.manual) {
+                await window.alertaSistema(
+                    'No se pudo enviar a SUNAT',
+                    data.message,
+                    'error',
+                    { duration: 0 }
+                );
+
+                router.get(route('sales.index'));
+
+                return;
+            }
+
+            if (result.isConfirmed && data && data.success) {
                 var cadena = "";
                 let array = JSON.parse(result.value.data.notes || '[]');
                 for (var i = 0; i < array.length; i++) {
@@ -481,7 +498,7 @@
                             <div class="text-3xl font-bold mb-1">
                                 <img style="width: 242px;height: 53.2333px;" class="inline-block h-auto ltr:mr-2 rtl:ml-2" :src="asetUrl+'storage/'+company.logo">
                             </div>
-                            <p class="text-sm">Ancash, Chimbote<br>{{ company.fiscal_address }}</p>
+                            <p class="text-sm"><template v-if="company.city">{{ company.city }}<br></template>{{ company.fiscal_address }}</p>
                         </div>
                         <div style="width: 180px;" class="text-4xl uppercase font-bold">
                             <select @change="getSeriesByDocumentType" v-model="formDocument.sale_documenttype_id" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">

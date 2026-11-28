@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "academic-aracode": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote",
+        "http://base_aracode.test/mcp/academic",
+        "--allow-http",
+        "--header",
+        "Authorization:${ACADEMIC_MCP_AUTH}"
+      ],
+      "env": {
+        "ACADEMIC_MCP_AUTH": "Bearer 13|XeORuF1MUqKfeVnNxKNuTrNS02fvRNMHEt8DxCNld1bc4f8c"
+      }
+    }
+  }
+}

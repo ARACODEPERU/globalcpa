@@ -1,5 +1,107 @@
 <?php
 
 return [
-    'name' => 'Security'
+    'name' => 'Security',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Modo Super Editor
+    |--------------------------------------------------------------------------
+    |
+    | Editor visual de permisos por roles. Con el modo activo cada elemento de
+    | la interfaz (menú, botones, enlaces con v-can) muestra un engrane desde
+    | el que se elige qué rol puede verlo / crearlo / editarlo. Los cambios se
+    | dejan en borrador y se aplican (y auditan) al salir confirmando la
+    | contraseña.
+    |
+    | 'role'                 rol autorizado a entrar al modo.
+    | 'ttl_minutes'          vigencia de una sesión de edición; al expirar el
+    |                        borrador se descarta y queda auditado.
+    | 'protected_permissions' permisos que NUNCA se le pueden quitar al rol
+    |                        autorizado (evita el auto-bloqueo). Los que
+    |                        empiezan con "super_editor" siempre son protegidos.
+    | 'max_group_size'       máximo de permisos hermanos que muestra el panel de
+    |                        un elemento (mismo prefijo del permiso clicado).
+    |
+    */
+
+    'super_editor' => [
+        'enabled' => env('SUPER_EDITOR_ENABLED', true),
+        'role' => env('SUPER_EDITOR_ROLE', 'admin'),
+        'ttl_minutes' => env('SUPER_EDITOR_TTL_MINUTES', 30),
+        'max_group_size' => 20,
+        'protected_permissions' => [
+            'dashboard',
+            'configuracion',
+            'empresa',
+            'modulos',
+            'roles',
+            'permisos',
+            'usuarios',
+            'parametros',
+            'conf_historial_actividades',
+            'super_editor',
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Alertas de error por Telegram
+    |--------------------------------------------------------------------------
+    |
+    | Cuando un error se registra en los logs (nivel mínimo configurable en la
+    | pestaña Alertas), se envía un aviso por la integración Telegram_bot a los
+    | chat_id activos. Aquí viven los valores de fábrica que la pantalla no
+    | expone.
+    |
+    | 'template'       plantilla del mensaje; las líneas cuya variable llegue
+    |                  vacía no se envían. {enlace} apunta al contexto completo
+    |                  guardado en la pantalla Errores (Seguridad → Errores).
+    | 'trace_lines'    líneas de la traza que se incluyen en el mensaje.
+    | 'message_limit'  recorte del mensaje/traza (límite de Telegram: 4096).
+    | 'context_limit'  recorte de la traza y el contexto que se GUARDAN para
+    |                  verlos por enlace (no van en el mensaje de Telegram).
+    | 'retention_days' días de retención por defecto del contexto de errores
+    |                  (0 = no borrar nunca). La pantalla puede cambiarlo.
+    | 'merge_minutes'  minutos durante los que un error repetido se suma a la
+    |                  MISMA fila guardada (no se duplica el contexto en el disco).
+    | 'scheduled_silence_minutes' minutos de silencio de la línea genérica del
+    |                  planificador ("Scheduled command ... failed with exit code")
+    |                  cuando el propio comando ya avisó del motivo real.
+    | 'cache_minutes'  minutos que se cachean ajustes y destinatarios para no
+    |                  consultar la base en cada línea de log.
+    |
+    */
+
+    'alerts' => [
+        'template' => env('SECURITY_ALERT_TEMPLATE', <<<'TXT'
+        🚨 <b>Alerta de error</b>
+
+        <b>Nivel:</b> {nivel}
+        <b>Mensaje:</b> {mensaje}
+
+        <b>Excepción:</b> {clase}
+        <b>Archivo:</b> {archivo}:{linea}
+
+        <b>Entorno:</b> {entorno}
+        <b>Ruta:</b> {metodo} {ruta}
+        <b>Usuario:</b> {usuario}
+        <b>IP:</b> {ip}
+        <b>Navegador:</b> {agente}
+        <b>Repeticiones:</b> {repeticiones}
+        <b>Fecha:</b> {fecha}
+
+        <b>Traza:</b>
+        {traza}
+
+        🔍 <a href="{enlace}">Ver el contexto completo del error</a>
+        TXT),
+        'trace_lines' => (int) env('SECURITY_ALERT_TRACE_LINES', 10),
+        'message_limit' => (int) env('SECURITY_ALERT_MESSAGE_LIMIT', 3000),
+        'context_limit' => (int) env('SECURITY_ALERT_CONTEXT_LIMIT', 20000),
+        'retention_days' => (int) env('SECURITY_ALERT_RETENTION_DAYS', 30),
+        'merge_minutes' => (int) env('SECURITY_ALERT_MERGE_MINUTES', 1440),
+        'scheduled_silence_minutes' => (int) env('SECURITY_ALERT_SCHEDULED_SILENCE_MINUTES', 10),
+        'cache_minutes' => (int) env('SECURITY_ALERT_CACHE_MINUTES', 5),
+    ],
 ];

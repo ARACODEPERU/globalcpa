@@ -12,7 +12,6 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Illuminate\Validation\ValidationException;
 use Modules\Blog\Entities\BlogCategory;
 use Modules\Blog\Entities\BlogComment;
 
@@ -68,7 +67,9 @@ class BlogArticlesController extends Controller
         $categories = BlogCategory::all();
         return Inertia::render('Blog::articles/Create', [
             'tiny_api_key' => $this->P000010,
-            'categories' => $categories
+            'categories' => $categories,
+            // Solo los roles administradores pueden adjuntar el PDF opcional.
+            'can_upload_pdf' => $this->puedeAdjuntarPdf(request()),
         ]);
     }
 
@@ -90,13 +91,12 @@ class BlogArticlesController extends Controller
 
     public function store(Request $request)
     {
-        $this->validate($request, [
+        $this->validate($request, array_merge([
             'title' => 'required|max:255|unique:blog_articles,title',
             'content_text' => 'required',
             'description' => 'required|max:255',
-            'category_id' => 'required',
-            'pdf' => 'nullable|file|mimes:pdf|max:10240'
-        ]);
+            'category_id' => 'required'
+        ], $this->reglasPdf($request)), $this->mensajesPdf());
 
         $path = 'img/imagen-no-disponible.jpeg';
         $destination = 'uploads/blog/articles';
@@ -112,8 +112,6 @@ class BlogArticlesController extends Controller
             );
         }
 
-        $pdfPath = $this->storePdfFile($request);
-
         $baseUrl = env('APP_URL'); // Ruta base de tu aplicación
         $content = $request->get('content_text');
         // Reemplazar las rutas de imágenes en el contenido
@@ -121,6 +119,8 @@ class BlogArticlesController extends Controller
         $contentWithAbsoluteImagePaths = preg_replace('/src="..\/..\/storage\/articles\/([^"]+)"/', 'src="' . $baseUrl . '/storage/articles/$1"', $contentWithAbsoluteImagePaths);
         $contentWithAbsoluteImagePaths = preg_replace('/src="..\/..\/..\/storage\/articles\/([^"]+)"/', 'src="' . $baseUrl . '/storage/articles/$1"', $contentWithAbsoluteImagePaths);
 
+
+        $pdfPath = $this->guardarPdf($request);
 
         BlogArticle::create([
             'title'         => $request->get('title'),
@@ -150,7 +150,10 @@ class BlogArticlesController extends Controller
         return Inertia::render('Blog::articles/Edit', [
             'tiny_api_key' => $this->P000010,
             'categories' => $categories,
-            'article' => $blogArticle
+            'article' => $blogArticle,
+            // El formulario solo muestra el campo PDF a los administradores.
+            'can_upload_pdf' => $this->puedeAdjuntarPdf(request()),
+            'pdf_url' => $blogArticle->pdf_url,
         ]);
     }
 
@@ -162,13 +165,12 @@ class BlogArticlesController extends Controller
      */
     public function update(Request $request, BlogArticle $blogArticle)
     {
-        $this->validate($request, [
+        $this->validate($request, array_merge([
             'title' => 'required|max:255|unique:blog_articles,title,' . $blogArticle->id,
             'content_text' => 'required',
             'description' => 'required|max:255',
-            'category_id' => 'required',
-            'pdf' => 'nullable|file|mimes:pdf|max:10240'
-        ]);
+            'category_id' => 'required'
+        ], $this->reglasPdf($request)), $this->mensajesPdf());
 
         $path = 'img/imagen-no-disponible.jpeg';
         $destination = 'uploads/blog/articles';
@@ -184,13 +186,13 @@ class BlogArticlesController extends Controller
             );
         }
 
-        $pdfPath = $this->storePdfFile($request);
-
         $baseUrl = env('APP_URL');
         $content = $request->get('content_text');
         $contentWithAbsoluteImagePaths = preg_replace('/src="\/storage\/articles\/([^"]+)"/', 'src="' . $baseUrl . '/storage/articles/$1"', $content);
         $contentWithAbsoluteImagePaths = preg_replace('/src="..\/..\/storage\/articles\/([^"]+)"/', 'src="' . $baseUrl . '/storage/articles/$1"', $contentWithAbsoluteImagePaths);
         $contentWithAbsoluteImagePaths = preg_replace('/src="..\/..\/..\/storage\/articles\/([^"]+)"/', 'src="' . $baseUrl . '/storage/articles/$1"', $contentWithAbsoluteImagePaths);
+
+        $pdfPath = $this->guardarPdf($request, $blogArticle->pdf_path);
 
         $blogArticle->update([
             'title'         => $request->get('title'),
@@ -200,7 +202,7 @@ class BlogArticlesController extends Controller
             'status'        => $request->get('status'),
             'category_id'   => $request->get('category_id'),
             'imagen'        => $path,
-            'pdf_path'      => $pdfPath ?: $blogArticle->pdf_path,
+            'pdf_path'      => $pdfPath,
             'user_id'       => Auth::id(),
             'keywords'      => $request->get('keywords') ? json_encode($request->get('keywords')) : null
         ]);
@@ -216,7 +218,8 @@ class BlogArticlesController extends Controller
      */
     public function destroy(BlogArticle $blogArticle)
     {
-        $this->deletePdfFile($blogArticle);
+        // El PDF vive fuera de la fila: se borra junto con el articulo.
+        $this->eliminarPdf($blogArticle->pdf_path);
 
         $blogArticle->delete();
 
@@ -227,13 +230,10 @@ class BlogArticlesController extends Controller
     {
         $blogArticle = BlogArticle::find($request->get('id'));
 
-        $this->validate($request, [
+        $this->validate($request, array_merge([
             'title' => 'required|max:255|unique:blog_articles,title,' . $blogArticle->id,
             'content_text' => 'required',
-            'pdf' => 'nullable|file|mimes:pdf|max:10240'
-        ]);
-
-        $pdfPath = $this->storePdfFile($request);
+        ], $this->reglasPdf($request)), $this->mensajesPdf());
 
         $baseUrl = env('APP_URL'); // Ruta base de tu aplicación
         $content = $request->get('content_text');
@@ -250,7 +250,6 @@ class BlogArticlesController extends Controller
         $blogArticle->status = $request->get('status');
         $blogArticle->category_id = $request->get('category_id');
         $blogArticle->keywords = $request->get('keywords') ? json_encode($request->get('keywords')) : null;
-        $blogArticle->pdf_path = $pdfPath ?: $blogArticle->pdf_path;
 
         $path = 'img/imagen-no-disponible.jpeg';
         $destination = 'uploads/blog/articles';
@@ -268,7 +267,8 @@ class BlogArticlesController extends Controller
             $blogArticle->imagen = $path;
         }
 
-
+        // null conserva el PDF actual; un archivo nuevo reemplaza al anterior.
+        $blogArticle->pdf_path = $this->guardarPdf($request, $blogArticle->pdf_path);
 
         $blogArticle->save();
 
@@ -320,63 +320,6 @@ class BlogArticlesController extends Controller
         return response()->json(['imagen' => asset('storage/' . $path)]);
     }
 
-    /**
-     * Descarga (o abre en el navegador) el PDF adjunto al artículo.
-     *
-     * Solo está disponible para usuarios autenticados: la ruta vive dentro
-     * del grupo `auth` del módulo Blog.
-     */
-    public function downloadPdf($url)
-    {
-        $article = BlogArticle::where('url', $url)->firstOrFail();
-
-        if (! $article->pdf_path || ! Storage::disk('public')->exists($article->pdf_path)) {
-            abort(404);
-        }
-
-        return Storage::disk('public')->download(
-            $article->pdf_path,
-            Str::slug($article->title) . '.pdf'
-        );
-    }
-
-    /**
-     * Guarda el PDF opcional del artículo en el disco público.
-     *
-     * Solo los roles Administrador/admin pueden adjuntar el archivo; para el
-     * resto de roles con permiso de artículos el campo simplemente se ignora.
-     */
-    private function storePdfFile(Request $request): ?string
-    {
-        $file = $request->file('pdf');
-
-        if (! $file) {
-            return null;
-        }
-
-        $user = $request->user();
-
-        if (! $user || ! $user->hasAnyRole(['admin', 'Administrador'])) {
-            throw ValidationException::withMessages([
-                'pdf' => 'Solo los usuarios con rol Administrador pueden adjuntar un PDF.',
-            ]);
-        }
-
-        $file_name = strtolower(Str::random(12) . '-' . date('dmY') . '.pdf');
-
-        return $file->storeAs('uploads/blog/pdfs', $file_name, 'public');
-    }
-
-    /**
-     * Elimina el PDF del artículo cuando se borra la entrada.
-     */
-    private function deletePdfFile(BlogArticle $blogArticle): void
-    {
-        if ($blogArticle->pdf_path && Storage::disk('public')->exists($blogArticle->pdf_path)) {
-            Storage::disk('public')->delete($blogArticle->pdf_path);
-        }
-    }
-
     public function show($url)
     {
         $article = BlogArticle::with('category')
@@ -402,9 +345,7 @@ class BlogArticlesController extends Controller
             ->whereNull('comment_id')
             ->get();
 
-        // El conteo de vistas ya NO ocurre al renderizar: lo registra el endpoint
-        // POST /blog/{url}/vista (WebPageController::blog_article_view),
-        // una vez cada 24h por navegador.
+        $article->increment('views');
 
         return Inertia::render('Blog::articles/Show', [
             'article' => $article,
@@ -450,5 +391,77 @@ class BlogArticlesController extends Controller
             'articles' => $articles,
             'archives' => $archives
         ]);
+    }
+
+    /**
+     * Solo los roles "Administrador" y "admin" pueden adjuntar el PDF
+     * opcional de una entrada. Los demas usuarios del panel conservan el CRUD
+     * sin ese campo.
+     */
+    private function puedeAdjuntarPdf(Request $request): bool
+    {
+        $user = $request->user();
+
+        return $user !== null && $user->hasAnyRole(['Administrador', 'admin']);
+    }
+
+    /**
+     * Reglas del archivo adjunto. Para quien no es administrador el campo se
+     * rechaza si llega, aunque el formulario no lo muestre.
+     *
+     * @return array<string, array<int, string>>
+     */
+    private function reglasPdf(Request $request): array
+    {
+        if (! $this->puedeAdjuntarPdf($request)) {
+            return ['pdf' => ['prohibited']];
+        }
+
+        return [
+            'pdf' => ['nullable', 'file', 'mimes:pdf', 'max:10240'],
+        ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private function mensajesPdf(): array
+    {
+        return [
+            'pdf.mimes' => 'El archivo adjunto debe ser un PDF.',
+            'pdf.max' => 'El PDF no puede superar los 10 MB.',
+            'pdf.prohibited' => 'Solo los administradores pueden adjuntar un PDF.',
+        ];
+    }
+
+    /**
+     * Guarda el PDF nuevo (si viene) y borra el anterior. Devuelve la ruta que
+     * debe quedar en la columna; sin archivo nuevo se conserva la actual.
+     */
+    private function guardarPdf(Request $request, ?string $pdfActual = null): ?string
+    {
+        if (! $this->puedeAdjuntarPdf($request) || ! $request->hasFile('pdf')) {
+            return $pdfActual;
+        }
+
+        $archivo = $request->file('pdf');
+        $base = Str::slug(pathinfo($archivo->getClientOriginalName(), PATHINFO_FILENAME));
+        $base = substr($base !== '' ? $base : 'documento', 0, 60);
+        $nombre = $base . '-' . Str::random(8) . '.pdf';
+
+        $ruta = $archivo->storeAs('uploads/blog/pdfs', $nombre, 'public');
+
+        if ($pdfActual && $pdfActual !== $ruta) {
+            Storage::disk('public')->delete($pdfActual);
+        }
+
+        return $ruta;
+    }
+
+    private function eliminarPdf(?string $ruta): void
+    {
+        if ($ruta) {
+            Storage::disk('public')->delete($ruta);
+        }
     }
 }

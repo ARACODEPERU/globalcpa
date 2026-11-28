@@ -3,43 +3,402 @@
 namespace Modules\Academic\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Company;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
-use Illuminate\Validation\Rule;
-use Carbon\Carbon;
-use Barryvdh\DomPDF\Facade\Pdf;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Modules\Academic\Entities\AcaSubscriptionType;
-use Modules\Academic\Services\SubscriptionUtmStatsService;
+use Modules\Academic\Entities\AcaSubscriptionUtmSetting;
+use Modules\Onlineshop\Entities\OnliSale;
 
 class AcaSubscriptionTypeController extends Controller
 {
     use ValidatesRequests;
-
-    public function __construct(private SubscriptionUtmStatsService $utmStats)
-    {
-    }
-
     /**
-     * Listado de tipos de suscripcion. La atribucion UTM es compartida por
-     * todos los planes, por eso el panel vive aqui.
+     * Display a listing of the resource.
      */
     public function index()
     {
         $subscriptions = AcaSubscriptionType::orderBy('order_number')->get();
+        $utmConfig = AcaSubscriptionUtmSetting::config();
 
         return Inertia::render('Academic::Subscriptions/List', [
             'subscriptions' => $subscriptions,
-            'subscriptionsUrl' => route('web_subscriptions'),
-            'utmConfig' => $this->utmStats->configuration(),
-            'utmStats' => $this->utmStatsPayload(null, null),
+            // Aviso del webhook necesario para los planes con cobro automático.
+            'mercadopagoWebhook' => app(\Modules\Academic\Services\MercadoPagoWebhookStatus::class)->state(),
+            // Generador de enlaces UTM y atribución de las suscripciones vendidas.
+            'utmConfig' => $utmConfig,
+            'utmStats' => $this->subscriptionUtmStats(),
+            'utmLandingUrl' => route('aca_subscriptions_landing'),
+            'utmDefaultCampaign' => $this->defaultSubscriptionCampaign($utmConfig),
         ]);
+    }
+
+    /**
+     * Landing pública de suscripciones con el diseño de LandingSuscripcion.
+     *
+     * Muestra todo el contenido de la plantilla y, en la sección de planes,
+     * solo los tipos de suscripción activos. Los enlaces UTM llegan a esta URL
+     * y el script de atribución guarda el origen para el checkout.
+     */
+    public function landing()
+    {
+        $plans = AcaSubscriptionType::where('status', '1')
+            ->orderBy('order_number')
+            ->orderBy('id')
+            ->get()
+            ->map(fn (AcaSubscriptionType $plan) => $this->presentPlan($plan));
+
+        $featured = $plans->first(fn (array $plan) => $plan['pen'] !== null) ?? $plans->first();
+
+        return view('academic::subscriptions.landing', [
+            'plans' => $plans,
+            'featured' => $featured,
+            'included' => $this->commonBenefits($plans),
+        ]);
+    }
+
+    /**
+     * Nombre de campaña por defecto de la landing de suscripciones.
+     */
+    private function defaultSubscriptionCampaign(array $config): string
+    {
+        return trim((string) ($config['campaign'] ?? '')) ?: 'suscripcion_academy';
+    }
+
+    /**
+     * Guarda la campaña y los canales de los enlaces UTM.
+     */
+    public function updateUtmConfig(Request $request)
+    {
+        $this->validate(
+            $request,
+            [
+                'campaign' => 'nullable|string|max:255',
+                'channels' => 'nullable|array',
+                'channels.*.id' => 'required|string|max:100',
+                'channels.*.utm_source' => 'required|string|max:100',
+                'channels.*.utm_medium' => 'required|string|max:100',
+                'channels.*.term' => 'nullable|string|max:500',
+                'channels.*.content' => 'nullable|string|max:500',
+                'channels.*.active' => 'nullable|boolean',
+            ]
+        );
+
+        $config = AcaSubscriptionUtmSetting::store([
+            'campaign' => trim((string) $request->get('campaign')) ?: 'suscripcion_academy',
+            'channels' => $request->get('channels') ?? [],
+        ]);
+
+        return response()->json(['success' => true, 'config' => $config]);
+    }
+
+    /**
+     * Estadísticas de atribución de las suscripciones vendidas: personas, su
+     * origen de tráfico y el plan que eligieron.
+     */
+    public function getUtmStats(Request $request)
+    {
+        $dates = $request->get('dates');
+        $start = null;
+        $end = null;
+
+        if ($dates) {
+            if (str_contains($dates, ' to ') || str_contains($dates, ' a ')) {
+                $separator = str_contains($dates, ' to ') ? ' to ' : ' a ';
+                [$start, $end] = explode($separator, $dates);
+            } else {
+                $start = $end = $dates;
+            }
+        }
+
+        return response()->json($this->subscriptionUtmStats($start, $end));
+    }
+
+    /**
+     * Ventas de suscripción (onli_sales con detalle de AcaSubscriptionType)
+     * agrupadas por origen, canal y plan, con el detalle de cada persona.
+     */
+    private function subscriptionUtmStats($start = null, $end = null): array
+    {
+        $planTitles = AcaSubscriptionType::pluck('title', 'id');
+
+        $query = OnliSale::query()
+            ->whereHas('details', function ($q) {
+                $q->where('entitie', AcaSubscriptionType::class);
+            })
+            ->with(['details' => function ($q) {
+                $q->where('entitie', AcaSubscriptionType::class);
+            }])
+            ->orderByDesc('created_at');
+
+        if ($start && $end) {
+            $query->whereDate('created_at', '>=', $start)
+                ->whereDate('created_at', '<=', $end);
+        }
+
+        $sales = $query->get();
+
+        $sources = [];
+        $channels = [];
+        $plans = [];
+        $rows = [];
+
+        foreach ($sales as $sale) {
+            $detail = $sale->details->first();
+            $planTitle = $planTitles[$detail->item_id ?? null] ?? 'Suscripción eliminada';
+            $source = $sale->traffic_source ?: 'organic';
+            $channelKey = trim(($sale->utm_source ?: 'sin_utm') . '|' . ($sale->utm_medium ?: ''), '|');
+            $amount = (float) ($sale->total ?? 0);
+
+            $sources[$source] = [
+                'key' => $source,
+                'total' => ($sources[$source]['total'] ?? 0) + 1,
+                'amount' => ($sources[$source]['amount'] ?? 0) + $amount,
+            ];
+
+            $channels[$channelKey] = [
+                'key' => $channelKey,
+                'utm_source' => $sale->utm_source ?: '',
+                'utm_medium' => $sale->utm_medium ?: '',
+                'total' => ($channels[$channelKey]['total'] ?? 0) + 1,
+                'amount' => ($channels[$channelKey]['amount'] ?? 0) + $amount,
+            ];
+
+            $plans[$planTitle] = [
+                'key' => $planTitle,
+                'plan_id' => $detail->item_id ?? null,
+                'total' => ($plans[$planTitle]['total'] ?? 0) + 1,
+                'amount' => ($plans[$planTitle]['amount'] ?? 0) + $amount,
+            ];
+
+            $rows[] = [
+                'id' => $sale->id,
+                'date' => optional($sale->created_at)->format('d/m/Y H:i'),
+                'name' => $sale->clie_full_name ?: 'Sin nombre',
+                'email' => $sale->email ?: '',
+                'plan' => $planTitle,
+                'amount' => $amount,
+                'status' => $sale->response_status,
+                'traffic_source' => $source,
+                'utm_source' => $sale->utm_source ?: '',
+                'utm_medium' => $sale->utm_medium ?: '',
+                'utm_campaign' => $sale->utm_campaign ?: '',
+                'utm_content' => $sale->utm_content ?: '',
+                'landing_url' => $sale->landing_url ?: '',
+            ];
+        }
+
+        $sortDesc = fn (array $a, array $b) => $b['total'] <=> $a['total'];
+        usort($sources, $sortDesc);
+        usort($channels, $sortDesc);
+        usort($plans, $sortDesc);
+
+        return [
+            'totals' => [
+                'count' => count($rows),
+                'amount' => array_sum(array_column($rows, 'amount')),
+                'plans' => count($plans),
+                'people' => collect($rows)->filter(fn ($row) => $row['email'] !== '')->unique('email')->count(),
+            ],
+            'sources' => array_values($sources),
+            'channels' => array_values($channels),
+            'plans' => array_values($plans),
+            // El detalle de cada venta se envía acotado; las sumas usan todas.
+            'sales' => array_slice($rows, 0, 200),
+        ];
+    }
+
+    /**
+     * Vista de los planes activos con el diseño de la landing de suscripciones.
+     *
+     * Es una página completa (Blade) dentro del panel: el enlace del sidebar la
+     * abre con navegación normal, no con Inertia. Muestra los detalles de cada
+     * plan y el precio en soles; el precio en dólares solo aparece cuando el
+     * plan lo tiene habilitado.
+     */
+    public function showcase()
+    {
+        $plans = AcaSubscriptionType::where('status', '1')
+            ->orderBy('order_number')
+            ->orderBy('id')
+            ->get()
+            ->map(fn (AcaSubscriptionType $plan) => $this->presentPlan($plan));
+
+        // El plan destacado de la portada es el primero con precio en soles.
+        $featured = $plans->first(fn (array $plan) => $plan['pen'] !== null) ?? $plans->first();
+
+        $company = Company::first();
+
+        // El logo negativo vive en storage; si falta el archivo, se usa el isotipo
+        // del sistema para no dejar una imagen rota en la cabecera.
+        $logo = $company?->logo_negative
+            && file_exists(public_path('storage/' . $company->logo_negative));
+
+        return view('academic::subscriptions.showcase', [
+            'plans' => $plans,
+            'featured' => $featured,
+            'included' => $this->commonBenefits($plans),
+            'company' => $company,
+            'logo' => $logo
+                ? asset('storage/' . $company->logo_negative)
+                : asset('img/logo176x32_negativo.png'),
+        ]);
+    }
+
+    /**
+     * Normaliza un plan para la vista: textos, detalles y precios válidos.
+     */
+    private function presentPlan(AcaSubscriptionType $plan): array
+    {
+        $prices = collect($plan->prices ?? []);
+
+        // El detalle del precio se oculta cuando solo repite el periodo del plan
+        // (por ejemplo, precio "Mensual" en un plan mensual).
+        $pen = $this->withoutDuplicatePeriod($this->price($prices, 'PEN'), $plan->period);
+        $usd = $plan->show_dollar_price
+            ? $this->withoutDuplicatePeriod($this->price($prices, 'USD'), $plan->period)
+            : null;
+
+        return [
+            'id' => $plan->id,
+            'title' => $plan->title,
+            'description' => $plan->description,
+            // La vista pinta el HTML ya saneado por el modelo; el texto plano
+            // se mantiene para listados, comprobantes y webhooks.
+            'description_markup' => $this->descriptionMarkup($plan->description_html, $plan->description),
+            'price_note' => $plan->price_note,
+            // Sin formato guardado el texto se subraya por defecto.
+            'price_note_is_plain' => $this->priceNoteIsPlain($plan->price_note),
+            'price_note_below' => $plan->price_note_below,
+            'period' => $plan->period,
+            'recurring' => (bool) $plan->recurring_enabled,
+            'details' => collect($plan->details ?? [])
+                ->pluck('label')
+                ->map(fn ($label) => trim((string) $label))
+                ->filter()
+                ->values()
+                ->all(),
+            'pen' => $pen,
+            'usd' => $usd,
+            'flags' => [
+                'access_all_courses' => (bool) $plan->access_all_courses,
+                'access_specialization_programs' => (bool) $plan->access_specialization_programs,
+                'access_all_webinars' => (bool) $plan->access_all_webinars,
+                'can_view_specialization_zooms' => (bool) $plan->can_view_specialization_zooms,
+                'can_view_specialization_webinars' => (bool) $plan->can_view_specialization_webinars,
+            ],
+        ];
+    }
+
+    /**
+     * HTML seguro de la descripción: se usa el HTML saneado cuando tiene
+     * etiquetas y, si no, el texto plano escapado.
+     */
+    private function descriptionMarkup(?string $html, ?string $plain): ?string
+    {
+        $html = trim((string) $html);
+
+        if ($html === '') {
+            return filled($plain) ? e($plain) : null;
+        }
+
+        return strip_tags($html) !== $html ? $html : e($html);
+    }
+
+    /**
+     * Un texto de precio sin etiquetas se pinta subrayado por defecto.
+     */
+    private function priceNoteIsPlain(?string $html): bool
+    {
+        return filled($html) && strip_tags((string) $html) === (string) $html;
+    }
+
+    /**
+     * Primer precio válido de la moneda pedida, ya formateado para mostrar.
+     */
+    private function price(Collection $prices, string $currency): ?array
+    {
+        $price = $prices->first(function ($price) use ($currency) {
+            return strtoupper((string) ($price['currency'] ?? '')) === $currency
+                && $this->amount($price['amount'] ?? null) !== null;
+        });
+
+        if (! $price) {
+            return null;
+        }
+
+        $amount = $this->amount($price['amount'] ?? null);
+
+        return [
+            'amount' => $amount,
+            'formatted' => number_format($amount, $amount == floor($amount) ? 0 : 2, '.', ','),
+            'detail' => trim((string) ($price['detail'] ?? '')),
+        ];
+    }
+
+    /**
+     * Quita el detalle del precio cuando solo repite el periodo del plan.
+     */
+    private function withoutDuplicatePeriod(?array $price, ?string $period): ?array
+    {
+        if ($price
+            && trim($price['detail']) !== ''
+            && trim($period ?? '') !== ''
+            && mb_strtolower(trim($price['detail'])) === mb_strtolower(trim($period))) {
+            $price['detail'] = '';
+        }
+
+        return $price;
+    }
+
+    /**
+     * Convierte el monto guardado (texto o número) a un monto positivo.
+     */
+    private function amount($value): ?float
+    {
+        $clean = str_replace([',', ' '], '', (string) $value);
+
+        if ($clean === '' || ! is_numeric($clean)) {
+            return null;
+        }
+
+        $amount = (float) $clean;
+
+        return $amount > 0 ? $amount : null;
+    }
+
+    /**
+     * Beneficios que comparten todos los planes activos.
+     */
+    private function commonBenefits(Collection $plans): array
+    {
+        $labels = [
+            'access_all_courses' => 'Acceso a todos los cursos y talleres',
+            'access_specialization_programs' => 'Acceso a los programas de especialización',
+            'access_all_webinars' => 'Acceso a todos los webinars',
+            'can_view_specialization_zooms' => 'Sesiones en vivo de especialización (Zoom/Meet)',
+            'can_view_specialization_webinars' => 'Webinars dentro de los programas de especialización',
+        ];
+
+        if ($plans->isEmpty()) {
+            return [];
+        }
+
+        $included = [];
+
+        foreach ($labels as $flag => $label) {
+            if ($plans->every(fn (array $plan) => $plan['flags'][$flag] === true)) {
+                $included[] = $label;
+            }
+        }
+
+        return $included;
     }
 
     /**
@@ -58,52 +417,11 @@ class AcaSubscriptionTypeController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        //dd($request->all());
         $request->merge(['title' => trim((string) $request->get('title'))]);
 
-        $this->validate(
-            $request,
-            [
-                'title' => 'required|unique:aca_subscription_types,title',
-                'description_html' => [
-                    'required',
-                    'string',
-                    'max:10000',
-                    function (string $attribute, $value, $fail) {
-                        if ($this->descriptionLineCount($value) > 3) {
-                            $fail('La descripción admite como máximo 3 líneas.');
-                        }
-                    },
-                ],
-                'details.*.label' => 'required',
-                'price_note' => 'nullable|string|max:2000',
-                'price_note_below' => 'nullable|string|max:2000',
-                'prices.0.currency' => 'required',
-                'prices.0.amount' => 'required',
-                'period' => 'required'
-            ],
-            [
-                'title.required' => 'El título del plan es obligatorio.',
-                'title.unique' => 'Ya existe un plan con ese título. Los planes no pueden llamarse igual: usa un nombre diferente.',
-            ]
-        );
+        $this->validateSubscription($request);
 
-        AcaSubscriptionType::create([
-            'title' => $request->get('title'),
-            'usine' => $request->get('usine'),
-            'description' => $this->plainDescription($request->get('description_html')),
-            'description_html' => $request->get('description_html'),
-            'details' => $request->get('details'),
-            'prices' => $request->get('prices'),
-            'price_note' => $request->get('price_note'),
-            'price_note_below' => $request->get('price_note_below'),
-            'status' => $request->get('status') ?? false,
-            'show_dollar_price' => $request->has('show_dollar_price')
-                ? $request->boolean('show_dollar_price')
-                : true,
-            'period' => $request->get('period'),
-            'order_number' => $request->get('order_number'),
-        ] + $this->accessFlagsFromRequest($request));
+        AcaSubscriptionType::create($this->subscriptionPayload($request));
 
         return redirect()->route('aca_subscriptions_list')
             ->with('message', __('Creado con éxito'));
@@ -127,7 +445,12 @@ class AcaSubscriptionTypeController extends Controller
 
         return Inertia::render('Academic::Subscriptions/Edit', [
             'subscription' => $subscription,
-            'periods' => $periods
+            'periods' => $periods,
+            // Aviso y acceso directo a IntegrationHub para configurar el webhook.
+            'mercadopagoWebhook' => app(\Modules\Academic\Services\MercadoPagoWebhookStatus::class)->state(),
+            // Estado del modo prueba: credenciales, suscripciones y bitácora.
+            'subscriptionTest' => app(\Modules\Academic\Services\SubscriptionTestModeService::class)
+                ->state($subscription, auth()->user()?->email),
         ]);
     }
 
@@ -138,10 +461,32 @@ class AcaSubscriptionTypeController extends Controller
     {
         $request->merge(['title' => trim((string) $request->get('title'))]);
 
+        $this->validateSubscription($request, (int) $id);
+
+        $period = $request->get('period');
+        // El cobro automático existe para planes mensuales, trimestrales y anuales.
+        $recurrente = in_array($period, array_keys(AcaSubscriptionType::RECURRING_PERIODS), true);
+
+        AcaSubscriptionType::findOrFail($id)->update($this->subscriptionPayload($request) + [
+            'period' => $period,
+            'recurring_enabled' => $request->boolean('recurring_enabled') && $recurrente,
+            // El modo prueba usa la misma recurrencia.
+            'test_mode' => $request->boolean('test_mode') && $recurrente,
+        ]);
+
+        return redirect()->route('aca_subscriptions_list')
+            ->with('message', __('Actualizado con éxito'));
+    }
+
+    /**
+     * Reglas de los datos del plan, con el HTML de la descripción ya acotado.
+     */
+    private function validateSubscription(Request $request, ?int $id = null): void
+    {
         $this->validate(
             $request,
             [
-                'title' => ['required', Rule::unique('aca_subscription_types', 'title')->ignore($id)],
+                'title' => ['required', 'string', 'max:100', $this->uniqueTitleRule($id)],
                 'description_html' => [
                     'required',
                     'string',
@@ -157,17 +502,57 @@ class AcaSubscriptionTypeController extends Controller
                 'price_note_below' => 'nullable|string|max:2000',
                 'prices.0.currency' => 'required',
                 'prices.0.amount' => 'required',
-                'prices.0.detail' => 'required',
-                'period' => 'required'
+                'prices.0.detail' => $id === null ? 'nullable' : 'required',
+                'period' => 'required',
+                'recurring_enabled' => 'nullable|boolean',
+                'test_mode' => 'nullable|boolean',
             ],
             [
                 'title.required' => 'El título del plan es obligatorio.',
-                'title.unique' => 'Ya existe un plan con ese título. Los planes no pueden llamarse igual: usa un nombre diferente.',
+                'description_html.required' => 'La descripción del plan es obligatoria.',
             ]
         );
+    }
 
-        AcaSubscriptionType::find($id)->update([
-            'title' => $request->get('title'),
+    /**
+     * No permite crear un plan con un título que ya exista. Los planes
+     * históricos que ya compartían título se pueden guardar sin renombrarlos.
+     */
+    private function uniqueTitleRule(?int $id): \Closure
+    {
+        return function (string $attribute, $value, $fail) use ($id) {
+            $title = trim((string) $value);
+
+            if ($title === '') {
+                return;
+            }
+
+            $existing = AcaSubscriptionType::where('title', $title)->first();
+
+            if (! $existing) {
+                return;
+            }
+
+            if ($id !== null && (int) $existing->id === $id) {
+                return;
+            }
+
+            if ($id !== null && trim((string) AcaSubscriptionType::find($id)?->title) === $title) {
+                return;
+            }
+
+            $fail('Ya existe un plan con ese título. Los planes no pueden llamarse igual: usa un nombre diferente.');
+        };
+    }
+
+    /**
+     * Datos que se guardan en el plan; el texto plano de la descripción se
+     * deriva del HTML para no romper listados, comprobantes ni webhooks.
+     */
+    private function subscriptionPayload(Request $request): array
+    {
+        return [
+            'title' => (string) $request->get('title'),
             'usine' => $request->get('usine'),
             'description' => $this->plainDescription($request->get('description_html')),
             'description_html' => $request->get('description_html'),
@@ -176,221 +561,31 @@ class AcaSubscriptionTypeController extends Controller
             'price_note' => $request->get('price_note'),
             'price_note_below' => $request->get('price_note_below'),
             'status' => $request->get('status') ?? false,
+            // Si el formulario no envía la casilla, el precio en dólares se muestra.
             'show_dollar_price' => $request->has('show_dollar_price')
                 ? $request->boolean('show_dollar_price')
                 : true,
             'period' => $request->get('period'),
             'order_number' => $request->get('order_number'),
-        ] + $this->accessFlagsFromRequest($request));
-
-        return redirect()->route('aca_subscriptions_list')
-            ->with('message', __('Actualizado con éxito'));
+        ] + $this->accessFlagsFromRequest($request);
     }
 
     /**
-     * Guarda la configuracion UTM compartida (campana y canales).
+     * El acceso depende solo de estos checks, no del nombre del plan.
      */
-    public function updateUtmConfig(Request $request)
+    private function accessFlagsFromRequest(Request $request): array
     {
-        $this->validate(
-            $request,
-            [
-                'campaign' => 'nullable|string|max:255',
-                'channels' => 'nullable|array',
-                'channels.*.id' => 'required|string|max:100',
-                'channels.*.term' => 'nullable|string|max:500',
-                'channels.*.content' => 'nullable|string|max:500',
-                'channels.*.active' => 'nullable|boolean',
-            ]
-        );
-
-        $channels = collect($request->input('channels', []))
-            ->filter(fn ($channel) => is_array($channel) && ! empty($channel['id']))
-            ->map(fn ($channel) => [
-                'id' => (string) $channel['id'],
-                'term' => mb_substr(trim((string) ($channel['term'] ?? '')), 0, 500),
-                'content' => mb_substr(trim((string) ($channel['content'] ?? '')), 0, 500),
-                'active' => filter_var($channel['active'] ?? true, FILTER_VALIDATE_BOOLEAN),
-            ])
-            ->values()
-            ->all();
-
-        $campaign = trim((string) $request->input('campaign'));
-
-        return response()->json([
-            'success' => true,
-            'config' => $this->utmStats->saveConfiguration(
-                $campaign !== '' ? $campaign : SubscriptionUtmStatsService::DEFAULT_CAMPAIGN,
-                $channels
-            ),
-        ]);
+        return [
+            'access_all_courses' => $request->boolean('access_all_courses'),
+            'access_specialization_programs' => $request->boolean('access_specialization_programs'),
+            'access_all_webinars' => $request->boolean('access_all_webinars'),
+            'can_view_specialization_zooms' => $request->boolean('can_view_specialization_zooms'),
+            'can_view_specialization_webinars' => $request->boolean('can_view_specialization_webinars'),
+        ];
     }
 
     /**
-     * Estadisticas de atribucion compartidas (JSON para el panel).
-     */
-    public function getUtmStats(Request $request)
-    {
-        return response()->json($this->utmStatsPayload(
-            $request->input('dates'),
-            $request->input('month')
-        ));
-    }
-
-    /**
-     * Reporte Excel de vistas, clics y suscripciones atribuidas.
-     */
-    public function exportUtmStatsExcel(Request $request)
-    {
-        [$start, $end] = $this->utmStats->range($request->input('dates'), $request->input('month'));
-        $payload = $this->utmStatsPayload($request->input('dates'), $request->input('month'));
-
-        $spreadsheet = new Spreadsheet();
-        $sheet = $spreadsheet->getActiveSheet();
-        $sheet->setTitle('Resumen');
-
-        $sheet->fromArray([
-            ['Planes de suscripción'],
-            ['Campaña', $payload['campaign']],
-            ['Rango', $payload['range']['label']],
-            ['Generado', now()->format('d/m/Y H:i')],
-            [],
-            ['Vistas', 'Clics en planes', 'Suscripciones'],
-            [$payload['totals']['views'], $payload['totals']['clicks'], $payload['totals']['subscriptions']],
-            [],
-            ['Origen', 'Vistas', 'Clics', 'Suscripciones'],
-        ], null, 'A1');
-
-        $row = 10;
-        foreach ($payload['origins'] as $origin) {
-            $sheet->fromArray([
-                $origin['label'],
-                $origin['views'],
-                $origin['clicks'],
-                $origin['subscriptions'],
-            ], null, 'A' . $row);
-            $row++;
-        }
-
-        $row += 1;
-        $sheet->fromArray(['Planes elegidos', 'Suscripciones'], null, 'A' . $row);
-        $row++;
-        foreach ($payload['plans'] as $chosen) {
-            $sheet->fromArray([$chosen['title'], $chosen['total']], null, 'A' . $row);
-            $row++;
-        }
-
-        $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(13);
-        $sheet->getStyle('A6:C6')->getFont()->setBold(true);
-        $sheet->getStyle('A9:D9')->getFont()->setBold(true);
-        $sheet->getColumnDimension('A')->setWidth(42);
-        $sheet->getColumnDimension('B')->setWidth(28);
-
-        $eventsSheet = $spreadsheet->createSheet();
-        $eventsSheet->setTitle('Eventos');
-        $eventsSheet->fromArray([
-            'Fecha', 'Evento', 'Plan', 'Origen', 'utm_source', 'utm_medium',
-            'utm_campaign', 'utm_term', 'utm_content', 'landing_url', 'referer',
-        ], null, 'A1');
-
-        $row = 2;
-        foreach ($this->utmStats->eventRows($start, $end, $payload['campaign']) as $event) {
-            $eventsSheet->fromArray([
-                $event->created_at ? Carbon::parse($event->created_at)->format('d/m/Y H:i') : '',
-                $event->event === 'click' ? 'Clic en plan' : 'Visita',
-                $event->plan_title,
-                $this->utmStats->label($event->traffic_source),
-                $event->utm_source,
-                $event->utm_medium,
-                $event->utm_campaign,
-                $event->utm_term,
-                $event->utm_content,
-                $event->landing_url,
-                $event->referer,
-            ], null, 'A' . $row);
-            $row++;
-        }
-        $eventsSheet->getStyle('A1:K1')->getFont()->setBold(true);
-
-        $subsSheet = $spreadsheet->createSheet();
-        $subsSheet->setTitle('Suscripciones');
-        $subsSheet->fromArray([
-            'Fecha', 'Alumno', 'Plan', 'Origen', 'utm_source', 'utm_medium',
-            'utm_campaign', 'utm_content', 'landing_url',
-        ], null, 'A1');
-
-        $row = 2;
-        foreach ($this->utmStats->subscriptionRows($start, $end) as $sub) {
-            $subsSheet->fromArray([
-                $sub->created_at ? Carbon::parse($sub->created_at)->format('d/m/Y H:i') : '',
-                $sub->student_name,
-                $sub->plan_title,
-                $this->utmStats->label($sub->traffic_source),
-                $sub->utm_source,
-                $sub->utm_medium,
-                $sub->utm_campaign,
-                $sub->utm_content,
-                $sub->landing_url,
-            ], null, 'A' . $row);
-            $row++;
-        }
-        $subsSheet->getStyle('A1:I1')->getFont()->setBold(true);
-
-        $temp = tempnam(sys_get_temp_dir(), 'utm_excel_');
-        (new Xlsx($spreadsheet))->save($temp);
-
-        $fileName = 'UTM_SUSCRIPCIONES_' . now()->format('Ymd_His') . '.xlsx';
-
-        return response()->download($temp, $fileName)->deleteFileAfterSend(true);
-    }
-
-    /**
-     * Reporte PDF (resumen, origenes, planes elegidos y afiliaciones).
-     */
-    public function exportUtmStatsPdf(Request $request)
-    {
-        [$start, $end, $label] = $this->utmStats->range($request->input('dates'), $request->input('month'));
-        $payload = $this->utmStatsPayload($request->input('dates'), $request->input('month'));
-        $subscriptions = $this->utmStats->subscriptionRows($start, $end);
-
-        $pdf = Pdf::loadView('academic::subscriptions.utm_stats_pdf', [
-            'campaign' => $payload['campaign'],
-            'rangeLabel' => $label,
-            'totals' => $payload['totals'],
-            'origins' => $payload['origins'],
-            'plans' => $payload['plans'],
-            'subscriptions' => $subscriptions->take(200),
-            'truncated' => $subscriptions->count() > 200,
-            'sourceLabels' => SubscriptionUtmStatsService::SOURCE_LABELS,
-            'generatedAt' => now()->format('d/m/Y H:i'),
-        ]);
-
-        $fileName = 'UTM_SUSCRIPCIONES_' . now()->format('Ymd_His') . '.pdf';
-
-        return $pdf->setPaper('a4', 'landscape')->download($fileName);
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    private function utmStatsPayload(?string $dates, ?string $month): array
-    {
-        [$start, $end, $label] = $this->utmStats->range($dates, $month);
-        $config = $this->utmStats->configuration();
-
-        return array_merge([
-            'campaign' => $config['campaign'],
-            'range' => [
-                'label' => $label,
-                'start' => $start?->toDateString(),
-                'end' => $end?->toDateString(),
-            ],
-        ], $this->utmStats->summary($start, $end, $config['campaign']));
-    }
-
-    /**
-     * Cuenta las lineas escritas en la descripcion (saltos <br> y bloques del
-     * editor). La pagina publica admite como maximo 3.
+     * Líneas escritas del HTML (los bloques y los <br> cuentan como saltos).
      */
     private function descriptionLineCount(?string $html): int
     {
@@ -402,8 +597,7 @@ class AcaSubscriptionTypeController extends Controller
     }
 
     /**
-     * La descripcion larga vive con formato en description_html; description se
-     * mantiene como texto plano para listados, comprobantes y webhooks.
+     * Texto plano de la descripción para la columna de compatibilidad.
      */
     private function plainDescription(?string $html): ?string
     {
@@ -411,24 +605,6 @@ class AcaSubscriptionTypeController extends Controller
         $text = trim((string) preg_replace('/\s+/u', ' ', strip_tags((string) $text)));
 
         return $text === '' ? null : Str::limit($text, 300, '');
-    }
-
-    /**
-     * Permisos editables de acceso de una suscripcion. Se guardan siempre como
-     * booleanos: marcar o no cada check es lo unico que decide el acceso, de modo
-     * que renombrar un plan no cambia su comportamiento.
-     *
-     * @return array<string, bool>
-     */
-    private function accessFlagsFromRequest(Request $request): array
-    {
-        return [
-            'allow_all_courses' => $request->boolean('allow_all_courses'),
-            'allow_all_specializations' => $request->boolean('allow_all_specializations'),
-            'allow_all_webinars' => $request->boolean('allow_all_webinars'),
-            'allow_zoom_content' => $request->boolean('allow_zoom_content'),
-            'allow_webinar_content' => $request->boolean('allow_webinar_content'),
-        ];
     }
 
     /**

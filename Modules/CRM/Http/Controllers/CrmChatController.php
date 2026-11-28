@@ -24,21 +24,26 @@ class CrmChatController extends Controller
     /**
      * Display a listing of the resource.
      */
+    protected $aiProvider;
     protected $P000010;
 
     public function __construct()
     {
-        $this->P000010 = Parameter::where('parameter_code', 'P000010')->value('value_default');
+        // Proveedor de IA del parametro IA-00002 (1 OpenAI, 2 Gemini).
+        $this->aiProvider = app(OpenAiAssistantService::class)->provider();
+        $this->P000010  = Parameter::where('parameter_code', 'P000010')->value('value_default');
     }
 
     public function index(Request $request)
     {
+        $openAi = app(OpenAiAssistantService::class);
+
         return Inertia::render('CRM::Chat/Dashboard', [
-            'P000015' => Parameter::where('parameter_code', config('academic.openai.provider_parameter', 'IA-00001'))
-                ->value('value_default') ?? Parameter::where('parameter_code', 'P000015')->value('value_default'),
+            'aiProvider' => $this->aiProvider,
             'P000010' => $this->P000010,
-            // Limite de espera del agente (parametro IA-00005) para el loader.
-            'agentTimeoutSeconds' => app(OpenAiAssistantService::class)->agentTimeoutSeconds(),
+            // El aviso de espera del loader solo aplica cuando hay agente.
+            'agentEnabled' => $openAi->agentEnabled(),
+            'agentMaxWaitMinutes' => $openAi->agentTimeoutMinutes(),
         ]);
     }
 

@@ -18,7 +18,7 @@ use Carbon\Carbon;
 use Spatie\Permission\Models\Role;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Cache;
-use Modules\Integrationhub\Support\IntegrationAlert;
+use Modules\Integrationhub\Entities\IntegrationError;
 use Modules\Integrationhub\Jobs\ProcessWhatsappFlow;
 use Modules\Integrationhub\Support\TrafficSourceResolver;
 
@@ -146,12 +146,10 @@ class CmsSubscriberController extends Controller
                     );
                 }
             } catch (\Throwable $th) {
-                // La alerta registra el fallo del flujo y la suscripcion sigue
-                // su curso: el visitante igual queda registrado.
-                IntegrationAlert::notify(
-                    (string) $th,
-                    'CmsSubscriberController::apiStore - WhatsApp flow -> curso'. $request->get('subject')
-                );
+                IntegrationError::create([
+                    'message' => (string) $th,
+                    'source' => 'CmsSubscriberController::apiStore - WhatsApp flow -> curso'. $request->get('subject'),
+                ]);
             }
         }
 
@@ -187,6 +185,9 @@ class CmsSubscriberController extends Controller
                 'email' => 'required|max:255',
                 'phone' => 'required|max:255',
                 'message' => 'required',
+                // Consentimiento del titular: sin aceptar la politica de privacidad
+                // el mensaje no se guarda.
+                'acepto' => ['required', 'accepted'],
             ],
             [
                 'full_name.required' => 'El nombre completo es requerido',
@@ -196,6 +197,8 @@ class CmsSubscriberController extends Controller
                 'full_name.max' => 'La cantidad maxima es de 255 caracteres',
                 'email.max' => 'La cantidad maxima es de 255 caracteres',
                 'phone.max' => 'La cantidad maxima es de 255 caracteres',
+                'acepto.required' => 'Debe aceptar la Política de Privacidad para enviar sus datos.',
+                'acepto.accepted' => 'Debe aceptar la Política de Privacidad para enviar sus datos.',
             ]
         );
 
@@ -207,6 +210,19 @@ class CmsSubscriberController extends Controller
             'read'          => 0,
             'subject'       => $request->get('subject') ?? null,
             'message'       => $request->get('message') ?? null,
+            // Atribucion del lead: sin esto no se puede saber de que canal
+            // llego quien lleno el formulario.
+            'utm_source'     => $request->get('utm_source'),
+            'utm_medium'     => $request->get('utm_medium'),
+            'utm_campaign'   => $request->get('utm_campaign'),
+            'utm_term'       => $request->get('utm_term'),
+            'utm_content'    => $request->get('utm_content'),
+            'utm_id'         => $request->get('utm_id'),
+            'fbclid'         => $request->get('fbclid'),
+            'gclid'          => $request->get('gclid'),
+            'referer'        => $request->get('referer'),
+            'landing_url'    => $request->get('landing_url'),
+            'traffic_source' => $request->get('traffic_source'),
         ]);
 
         return to_route('index_main');

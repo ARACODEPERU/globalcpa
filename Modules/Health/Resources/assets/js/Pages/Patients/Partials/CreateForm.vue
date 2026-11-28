@@ -6,6 +6,8 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import Keypad from '@/Components/Keypad.vue';
+import CropperImage from '@/Components/CropperImage.vue';
+import SelectCities from '@/Components/SelectCities.vue';
 import Swal2 from 'sweetalert2';
 import { ref, watch } from 'vue';
 
@@ -54,24 +56,6 @@ const createPatient = () => {
     });
 }
 
-const searchUbigeos = ref([]);
-
-const filterCities = () => {
-    if (form.ubigeo_description.trim() === '') {
-        searchUbigeos.value = [];
-        return;
-    }
-
-    searchUbigeos.value = props.ubigeo.filter(row =>
-        row.district_name.toLowerCase().includes(form.ubigeo_description.toLowerCase())
-    );
-}
-const selectCity = (item) => {
-    form.ubigeo_description = item.department_name+'-'+item.province_name+'-'+item.district_name;
-    form.ubigeo = item.district_id;
-    searchUbigeos.value = []; // Limpiar la lista de búsqueda después de seleccionar una ciudad
-}
-
 const loadFile = (event) => {
     const input = event.target;
     const file = input.files[0];
@@ -89,6 +73,11 @@ const loadFile = (event) => {
     imagePreview.onload = function() {
         URL.revokeObjectURL(imageFile); // libera memoria
     }
+};
+
+const cropImageAndSave = (res) => {
+    form.image = res;
+    form.image_preview = res;
 };
 </script>
 
@@ -134,20 +123,11 @@ const loadFile = (event) => {
                 <InputError :message="form.errors.birthdate" class="mt-2" />
             </div>
             <div class="col-span-6 sm:col-span-6 ">
-                <div class="flex items-center space-x-6">
+                <div class="grid grid-cols-1 gap-4 md:grid-cols-[auto,1fr]">
                     <div v-show="form.image_preview" class="shrink-0">
                         <img id='preview_img' class="h-16 w-16 object-cover rounded-full" :src="form.image_preview" alt="Current profile photo" />
                     </div>
-                    <label class="block ml-1">
-                        <span class="sr-only">Elige foto</span>
-                        <input  type="file" @change="loadFile" class="block w-full text-sm text-slate-500
-                            mr-4 py-2 px-4
-                            rounded-full border-0
-                            text-sm font-semibold
-                            bg-violet-50 text-violet-700
-                            hover:bg-violet-100
-                        " />
-                    </label>
+                    <CropperImage ref="cropper" :aspect-ratio="1" @onCrop="cropImageAndSave" />
                 </div>
             </div>
             <div class="col-span-6 sm:col-span-3 ">
@@ -195,21 +175,14 @@ const loadFile = (event) => {
                 <InputError :message="form.errors.address" class="mt-2" />
             </div>
             <div class="col-span-6 sm:col-span-6 ">
-                <InputLabel for="ubigeo" value="Ciudad *" />
-                <div class="relative">
-                    <TextInput 
-                    v-model="form.ubigeo_description" 
-                    @input="filterCities"
-                    placeholder="Buscar Distrito"
-                    type="text" 
-                    class="block w-full mt-1" />
-                    <ul v-if="searchUbigeos && searchUbigeos.length > 0" style="max-height: 200px; overflow-y: auto;" class="list-disc list-inside absolute z-50 w-full bg-white border border-gray-300 rounded-md mt-1">
-                        <li v-for="item in searchUbigeos" :key="item.id" class="px-4 cursor-pointer hover:bg-gray-100" @click="selectCity(item)">
-                            {{ item.department_name+'-'+item.province_name+'-'+item.district_name }}
-                        </li>
-                    </ul>
-                </div>
-                <InputError :message="form.errors.ubigeo" class="mt-2" />
+                <SelectCities
+                    v-model="form.ubigeo"
+                    v-model:description="form.ubigeo_description"
+                    :options="ubigeo"
+                    label="Ciudad"
+                    required
+                    :error="form.errors.ubigeo"
+                />
             </div>
             <div class="col-span-6 sm:col-span-3 ">
                 <InputLabel for="telephone" value="Teléfono *" />
@@ -217,9 +190,12 @@ const loadFile = (event) => {
                     id="telephone"
                     v-model="form.telephone"
                     type="text"
+                    inputmode="numeric"
+                    maxlength="12"
+                    placeholder="Ej: 987987987"
                     class="block w-full mt-1"
-                    
                 />
+                <p class="mt-1 text-xs text-gray-500">Celular del Perú: 9 dígitos que empiezan con 9 (sin el +51).</p>
                 <InputError :message="form.errors.telephone" class="mt-2" />
             </div>
             <div class="col-span-6 sm:col-span-3">

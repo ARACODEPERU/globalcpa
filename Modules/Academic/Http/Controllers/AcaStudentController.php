@@ -10,7 +10,8 @@ use App\Models\PaymentMethod;
 use App\Models\Person;
 use App\Models\Product;
 use App\Models\User;
-use App\Support\PersonRegistrationGuard;
+use App\Support\PersonProfileData;
+use App\Support\PersonUserPersistenceVerifier;
 use Carbon\Carbon;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
@@ -29,19 +30,21 @@ use Modules\Academic\Entities\AcaCourse;
 use Modules\Academic\Entities\AcaModule;
 use Illuminate\Http\RedirectResponse;
 use Modules\Academic\Entities\AcaStudentSubscription;
+use Modules\Academic\Services\SubscriptionContentPermissions;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Modules\Academic\Entities\AcaCertificate;
+use Modules\Academic\Entities\AcaContent;
 use Modules\Academic\Entities\AcaStudentExam;
 use Modules\Academic\Entities\AcaStudentHistory;
 use Modules\Academic\Entities\AcaSubscriptionPayment;
 use Modules\Academic\Entities\AcaStudentAttendance;
+use Modules\Academic\Jobs\SendProfileWebhook;
 use Modules\Academic\Entities\AcaStudentParticipation;
 use Modules\Academic\Entities\AcaStudentGrade;
 use Modules\Onlineshop\Entities\OnliItem;
-use Modules\Academic\Services\CourseAccessService;
 
 class AcaStudentController extends Controller
 {
@@ -52,16 +55,14 @@ class AcaStudentController extends Controller
     private $top;
     private $icbper;
     private $displayVideo = false;
-    private $courseAccess;
 
     /**
      * Display a listing of the resource.
      * @return Renderable
      */
 
-    public function __construct(CourseAccessService $courseAccess)
+    public function __construct()
     {
-        $this->courseAccess = $courseAccess;
         $this->ubl = Parameter::where('parameter_code', 'P000003')->value('value_default');
         $this->igv = Parameter::where('parameter_code', 'P000001')->value('value_default');
         $this->top = Parameter::where('parameter_code', 'P000002')->value('value_default');
@@ -204,114 +205,98 @@ class AcaStudentController extends Controller
             );
         }
 
-        $path = null;
-        $destination = 'uploads/students';
-        $file = $request->file('image');
-        //dd($request->get('industry_id'));
-        $countryProvided = $request->filled('country_id');
+        $newImage = PersonProfileData::storeNewImage(
+            $request,
+            'image',
+            'uploads/students',
+            (string) $request->get('number')
+        );
 
+        // Solo se escriben las claves que el formulario trae con valor: sin foto
+        // nueva se conserva people.image, y description/catalogos/pais/genero no
+        // se borran por no venir. is_provider/is_client no se tocan.
         $personData = [
+            'document_type_id'      => $request->get('document_type_id'),
             'short_name'            => $request->get('names'),
             'full_name'             => trim($request->get('father_lastname') . ' ' .  $request->get('mother_lastname') . ' ' . $request->get('names')),
+            'number'                => $request->get('number'),
             'telephone'             => $request->get('telephone'),
             'email'                 => $request->get('email'),
             'address'               => $request->get('address'),
+            'ubigeo'                => $request->get('ubigeo'),
+            'ubigeo_description'    => $request->get('ubigeo_description'),
+            'birthdate'             => $request->get('birthdate'),
             'names'                 => trim($request->get('names')),
             'father_lastname'       => trim($request->get('father_lastname')),
             'mother_lastname'       => trim($request->get('mother_lastname')),
         ];
 
-        // Los campos opcionales solo se escriben cuando llegan con valor: un
-        // re-guardado del alumno no debe borrar lo que ya tenia su ficha.
-        foreach (['description', 'ubigeo', 'ubigeo_description', 'birthdate'] as $field) {
-            if ($request->filled($field)) {
-                $personData[$field] = $request->get($field);
+        if ($newImage) {
+            $personData['image'] = $newImage;
+        }
+
+        $personData = array_merge($personData, PersonProfileData::onlyFilled($request, [
+            'description' => 'description',
+            'gender'      => 'gender',
+            'country_id'  => 'country_id',
+        ]));
+
+        foreach ([
+            ['input' => 'industry_id', 'idField' => 'industry_id', 'textField' => 'industry'],
+            ['input' => 'profession_id', 'idField' => 'profession_id', 'textField' => 'profession'],
+            ['input' => 'occupation_id', 'idField' => 'occupation_id', 'textField' => 'ocupacion'],
+        ] as $catalogo) {
+            if (! $request->exists($catalogo['input'])) {
+                continue;
             }
+
+            $value = $request->input($catalogo['input']);
+            $personData[$catalogo['idField']] = is_array($value) ? ($value['id'] ?? null) : $value;
+            $personData[$catalogo['textField']] = is_array($value) ? ($value['description'] ?? null) : null;
         }
 
-        if ($request->filled('gender')) {
-            $personData['gender'] = $request->get('gender');
-        }
-
-        if ($countryProvided) {
-            $personData['country_id'] = $request->get('country_id');
-        }
-
-        $catalogs = [
-            'industry_id'   => 'industry',
-            'profession_id' => 'profession',
-            'occupation_id' => 'ocupacion',
-        ];
-
-        foreach ($catalogs as $field => $descriptionField) {
-            $value = $request->get($field);
-
-            if (is_array($value) && ! empty($value['id'])) {
-                $personData[$field] = $value['id'];
-                $personData[$descriptionField] = $value['description'] ?? null;
-            }
-        }
-
-        $per = Person::updateOrCreate(
-            [
-                'document_type_id'      => $request->get('document_type_id'),
-                'number'                => $request->get('number'),
-            ],
-            $personData
-        );
-
-        if ($per->wasRecentlyCreated) {
-            // Solo al crear se aplican los valores por defecto; un alumno
-            // existente conserva su pais, genero y marcas de cliente/proveedor.
-            $per->forceFill([
-                'is_provider' => false,
-                'is_client'   => true,
-                'country_id'  => $countryProvided ? $request->get('country_id') : 1,
-                'gender'      => $request->filled('gender') ? $request->get('gender') : 'M',
-            ])->save();
-        }
-
-        if ($file) {
-            $original_name = strtolower(trim($file->getClientOriginalName()));
-            $original_name = str_replace(" ", "_", $original_name);
-            $extension = $file->getClientOriginalExtension();
-            $file_name = trim($request->get('number')) . '.' . $extension;
-            $path = $request->file('image')->storeAs(
-                $destination,
-                $file_name,
-                'public'
-            );
-
-            $per->image = $path;
-            $per->save();
-        }
-
-
-        $user = User::firstOrNew([
-            'email'         => trim($request->get('email')),
-            'person_id'     => $per->id
+        $per = Person::firstOrNew([
+            'document_type_id'      => $request->get('document_type_id'),
+            'number'                => $request->get('number'),
         ]);
 
-        $user->name = trim($request->get('names'));
-        $user->person_id = $per->id;
-        $user->local_id = 1;
+        $isNewPerson = ! $per->exists;
+        $per->fill($personData);
 
-        if ($request->filled('description')) {
-            $user->information = $request->get('description');
+        // Solo al crear la ficha se marca como cliente/alumno; una ficha existente
+        // conserva sus marcas de proveedor/cliente.
+        if ($isNewPerson) {
+            $per->is_client = true;
+            $per->is_provider = false;
         }
 
-        if ($path) {
-            $user->avatar = $path;
+        $per->save();
+
+        // A un alumno existente no se le resetea la contrasena ni se le borra el
+        // avatar: la contrasena inicial solo se asigna al crear el usuario.
+        $user = User::firstOrNew(['email' => trim($request->get('email'))]);
+
+        $userData = [
+            'name'      => trim($request->get('names')),
+            'email'     => trim($request->get('email')),
+            'person_id' => $per->id,
+        ];
+
+        if ($request->exists('description') && PersonProfileData::hasValue($request->input('description'))) {
+            $userData['information'] = $request->get('description');
+        }
+
+        if ($newImage) {
+            $userData['avatar'] = $newImage;
         }
 
         if (! $user->exists) {
-            // La contrasena solo se define al crear la cuenta; re-guardar al
-            // alumno no debe resetearla.
-            $user->password = Hash::make(trim($request->get('number')));
-            $user->tour_completed = false;
+            $userData['password'] = Hash::make(trim($request->get('number')));
+            $userData['local_id'] = 1;
+            $userData['tour_completed'] = false;
         }
 
-        $user->save();
+        $user->fill($userData)->save();
 
         $user->assignRole('Alumno');
 
@@ -324,24 +309,21 @@ class AcaStudentController extends Controller
             ]
         );
 
-        // Verificacion final: la persona y su usuario deben quedar registrados en
-        // people y users con los datos recientes enviados en el formulario.
-        app(PersonRegistrationGuard::class)->ensure($per, [
-            'short_name'            => trim($request->get('names')),
-            'full_name'             => trim($request->get('father_lastname') . ' ' . $request->get('mother_lastname') . ' ' . $request->get('names')),
-            'document_type_id'      => $request->get('document_type_id'),
-            'number'                => $request->get('number'),
-            'names'                 => trim($request->get('names')),
-            'father_lastname'       => trim($request->get('father_lastname')),
-            'mother_lastname'       => trim($request->get('mother_lastname')),
-            'telephone'             => $request->get('telephone'),
-            'email'                 => $request->get('email'),
-            'birthdate'             => $request->get('birthdate'),
-            'status'                => true,
-        ], [
-            'name'          => trim($request->get('names')),
-            'email'         => trim($request->get('email')),
-        ], $user);
+        // El verificador compara contra la fila persistida: se le pasan solo los
+        // campos estables (tour_completed booleano no compara con el 0 de MySQL).
+        $expectedUserData = [
+            'name' => $userData['name'],
+            'email' => $userData['email'],
+            'person_id' => $per->id,
+        ];
+
+        foreach (['information', 'avatar'] as $field) {
+            if (array_key_exists($field, $userData)) {
+                $expectedUserData[$field] = $userData[$field];
+            }
+        }
+
+        PersonUserPersistenceVerifier::verify($per, $user, $personData, $expectedUserData);
 
         return redirect()->route('aca_students_list')
             ->with('message', __('Estudiante creado con éxito'));
@@ -464,9 +446,19 @@ class AcaStudentController extends Controller
 
         if (! $person) {
             return redirect()->route('aca_students_list')
-                ->with('error', __('El estudiante no tiene una persona asociada.'));
+                ->with('errorMessage', __('El estudiante no tiene una ficha de persona vinculada.'));
         }
 
+        $newImage = PersonProfileData::storeNewImage(
+            $request,
+            'image',
+            'uploads/students',
+            (string) $request->get('number')
+        );
+
+        // Actualizacion selectiva: sin foto nueva se conserva people.image y los
+        // campos opcionales ausentes no se sobrescriben. is_provider/is_client no
+        // se tocan.
         $personData = [
             'document_type_id'      => $request->get('document_type_id'),
             'short_name'            => trim($request->get('names')),
@@ -474,78 +466,58 @@ class AcaStudentController extends Controller
             'number'                => trim($request->get('number')),
             'telephone'             => $request->get('telephone'),
             'email'                 => trim($request->get('email')),
+            'address'               => $request->get('address'),
+            'ubigeo'                => $request->get('ubigeo'),
+            'ubigeo_description'    => $request->get('ubigeo_description'),
+            'birthdate'             => $request->get('birthdate'),
             'names'                 => trim($request->get('names')),
             'father_lastname'       => trim($request->get('father_lastname')),
             'mother_lastname'       => trim($request->get('mother_lastname')),
         ];
 
-        // Los campos opcionales solo se escriben cuando llegan con valor: un
-        // re-guardado del alumno no debe borrar lo que ya tenia su ficha.
-        foreach (['description', 'address', 'ubigeo', 'ubigeo_description', 'birthdate'] as $field) {
-            if ($request->filled($field)) {
-                $personData[$field] = $request->get($field);
+        if ($newImage) {
+            $personData['image'] = $newImage;
+        }
+
+        $personData = array_merge($personData, PersonProfileData::onlyFilled($request, [
+            'description' => 'description',
+            'gender'      => 'gender',
+            'country_id'  => 'country_id',
+        ]));
+
+        foreach ([
+            ['input' => 'industry_id', 'idField' => 'industry_id', 'textField' => 'industry'],
+            ['input' => 'profession_id', 'idField' => 'profession_id', 'textField' => 'profession'],
+            ['input' => 'occupation_id', 'idField' => 'occupation_id', 'textField' => 'ocupacion'],
+        ] as $catalogo) {
+            if (! $request->exists($catalogo['input'])) {
+                continue;
             }
-        }
 
-        if ($request->filled('gender')) {
-            $personData['gender'] = $request->get('gender');
-        }
-
-        if ($request->filled('country_id')) {
-            $personData['country_id'] = $request->get('country_id');
-        }
-
-        $catalogs = [
-            'industry_id'   => 'industry',
-            'profession_id' => 'profession',
-            'occupation_id' => 'ocupacion',
-        ];
-
-        foreach ($catalogs as $field => $descriptionField) {
-            $value = $request->get($field);
-
-            if (is_array($value) && ! empty($value['id'])) {
-                $personData[$field] = $value['id'];
-                $personData[$descriptionField] = $value['description'] ?? null;
-            }
+            $value = $request->input($catalogo['input']);
+            $personData[$catalogo['idField']] = is_array($value) ? ($value['id'] ?? null) : $value;
+            $personData[$catalogo['textField']] = is_array($value) ? ($value['description'] ?? null) : null;
         }
 
         $person->update($personData);
 
-        if($user){
+        if ($user) {
             $userData = [
-                'name'          => $request->get('names'),
-                'email'         => $request->get('email'),
+                'name'  => $request->get('names'),
+                'email' => $request->get('email'),
             ];
 
-            if ($request->filled('description')) {
+            if ($request->exists('description') && PersonProfileData::hasValue($request->input('description'))) {
                 $userData['information'] = $request->get('description');
             }
 
-            $user->update($userData);
-        }
-
-        $path = null;
-        $destination = 'uploads/students';
-        $file = $request->file('image');
-        if ($file) {
-
-            $original_name = strtolower(trim($file->getClientOriginalName()));
-            $original_name = str_replace(" ", "_", $original_name);
-            $extension = $file->getClientOriginalExtension();
-            $file_name = trim($request->get('number')) . '.' . $extension;
-            $path = $request->file('image')->storeAs(
-                $destination,
-                $file_name,
-                'public'
-            );
-            $person->image = $path;
-            $person->save();
-
-            if($user){
-                $user->avatar = $path;
-                $user->save();
+            if ($newImage) {
+                $userData['avatar'] = $newImage;
             }
+
+            $user->update($userData);
+
+            PersonUserPersistenceVerifier::verify($person, $user, $personData, $userData);
         }
 
         AcaStudent::where('person_id', $person_id)->update([
@@ -569,7 +541,7 @@ class AcaStudentController extends Controller
         $mycourses = [];
 
         $studentSubscribed = AcaStudentSubscription::where('student_id', $student_id)
-            ->where('status', true)
+            ->activeNow()
             ->first();
 
         // roles superiores que no sea alumno pueden ver todos los curso
@@ -740,19 +712,7 @@ class AcaStudentController extends Controller
                 return $course;
             });
 
-        // El listado no debe exponer contenido que el alumno no puede ver: los
-        // cursos sin acceso sueltan su arbol de contenido y en los accesibles se
-        // quitan los tipos que el plan no permite (Meet/Zoom y webinar). El
-        // personal ve todo. Se hace despues de calcular contents_total y los
-        // certificados, que si necesitan los contenidos completos.
-        if ($student_id && ! $user->hasAnyRole(['admin', 'Docente', 'Administrador'])) {
-            $this->courseAccess->hideContentsNotAllowed(
-                $mycourses->merge($coursesRegistered->pluck('course')->filter()),
-                $this->courseAccess->accessFlags($student_id),
-                $student_id
-            );
-        }
-
+        ///dd($coursesRegistered);
         return Inertia::render('Academic::Students/Courses', [
             'mycourses' => $mycourses,
             'courses' => $courses,
@@ -771,9 +731,9 @@ class AcaStudentController extends Controller
 
         $today = Carbon::today();
 
-        // 1. Permisos efectivos del alumno: union de los flags de sus planes
-        // activos. El acceso ya no depende del nombre del plan.
-        $accessFlags = $this->courseAccess->accessFlags($studentId);
+        // 1. Permisos que otorgan las suscripciones activas del alumno: qué
+        // categorías de cursos incluye cada plan.
+        $subscriptionAccess = SubscriptionContentPermissions::forStudent($studentId);
 
         // 2. Obtener los IDs de los cursos en los que el estudiante está matriculado
         $registeredCourseIds = AcaCapRegistration::where('student_id', $studentId)
@@ -807,20 +767,26 @@ class AcaStudentController extends Controller
                 ->get();
 
         // 5. Procesar cada curso para determinar 'can_view'
-        $coursesWithAccess = $allCourses->map(function ($course) use ($accessFlags, $registeredCourseIds, $webProductCourseIds) {
+        $coursesWithAccess = $allCourses->map(function ($course) use ($subscriptionAccess, $registeredCourseIds, $webProductCourseIds) {
             $canView = false; // Valor por defecto
 
-            if (in_array($course->id, $registeredCourseIds)) {
-                // Matriculado en el curso
+            // Condición 3: La suscripción incluye la categoría del curso
+            // (cursos/talleres, Programas de Especialización o webinars)
+            if (SubscriptionContentPermissions::canAccessCourse($subscriptionAccess, $course->type_description)) {
                 $canView = true;
-            } else {
-                // Suscripción activa según la categoría del curso: cursos/talleres
-                // (los gratis quedan abiertos), especialización o webinars.
-                $canView = $this->courseAccess->canAccessCategory(
-                    $accessFlags,
-                    $course->type_description,
-                    $course->price == 0 || is_null($course->price)
-                );
+            }
+            // Condición 4: Los Programas de Especialización que no entran por
+            // la suscripción solo se ven con matrícula
+            elseif (SubscriptionContentPermissions::isSpecializationCourse($course->type_description)) {
+                $canView = in_array($course->id, $registeredCourseIds);
+            }
+            // Condición 2: El estudiante está matriculado en el curso
+            elseif (in_array($course->id, $registeredCourseIds)) {
+                $canView = true;
+            }
+            // Condición 1: El curso es gratis
+            elseif ($course->price == 0 || is_null($course->price)) {
+                $canView = true;
             }
 
             // Un curso sin producto web activo no forma parte del catalogo que
@@ -854,45 +820,83 @@ class AcaStudentController extends Controller
             return false;
         }
 
-        // La decisión completa vive en CourseAccessService para que el dashboard
-        // y las pantallas de cursos no divergan.
-        return $this->courseAccess->canAccess($studentId, $course);
+        $subscriptionAccess = SubscriptionContentPermissions::forStudent($studentId);
+
+        // Condición 3: La suscripción incluye la categoría del curso
+        if (SubscriptionContentPermissions::canAccessCourse($subscriptionAccess, $course->type_description)) {
+            return true;
+        }
+
+        // Condición 4: Los Programas de Especialización que no entran por la
+        // suscripción requieren matrícula en el programa
+        if (SubscriptionContentPermissions::isSpecializationCourse($course->type_description)) {
+            return AcaCapRegistration::where('student_id', $studentId)
+                ->where('course_id', $courseId)
+                ->exists();
+        }
+
+        $today = Carbon::today();
+
+        // Condición 2: Si el estudiante está matriculado en este curso, pasa
+        $isRegistered = AcaCapRegistration::where('student_id', $studentId)
+                                            ->where('course_id', $courseId)
+                                            ->where(function ($query) use ($today) {
+                                                $query->where('unlimited', true) // cursos ilimitados siempre cuentan
+                                                    ->orWhere(function ($q) use ($today) {
+                                                        $q->where('unlimited', false) // explícito: solo cursos no ilimitados
+                                                            ->whereDate('date_end', '>=', $today); // aún vigentes
+                                                    });
+                                            })
+                                            ->exists();
+        if ($isRegistered) {
+            return true;
+        }
+
+        // Condición 1: Si el curso es gratis, pasa
+        if ($course->price == 0 || is_null($course->price)) {
+            return true;
+        }
+
+        // Si ninguna de las condiciones anteriores se cumple, el estudiante no tiene acceso
+        return false;
     }
 
     public function courseLessons($id)
     {
-        //dd($id);
-        // Obtener el curso con relaciones
-        $course = AcaCourse::with(['modules.themes.contents'])->where('id', $id)->first();
+        return Inertia::render('Academic::Students/Lessons', $this->courseLessonsData((int) $id));
+    }
 
-        // Verificar si existe el curso
-        if (!$course) {
+    /**
+     * Arma el listado de módulos con el mismo formato que usa el alumno.
+     * La vista previa omite la validación de matrícula.
+     *
+     * @return array<string, mixed>
+     */
+    public function courseLessonsData(int $id, bool $skipAccessCheck = false): array
+    {
+        $course = AcaCourse::with(['modules.themes.contents'])->find($id);
+
+        if (! $course) {
             abort(404, 'Curso no encontrado.');
         }
 
-        // Verificar si el estudiante está matriculado
-        $studentId = AcaStudent::where('person_id', Auth::user()->person_id)->value('id');
+        if (! $skipAccessCheck) {
+            $studentId = AcaStudent::where('person_id', Auth::user()->person_id)->value('id');
+            $user = Auth::user();
+            $isEnrolled = $user->hasAnyRole(['admin', 'Docente', 'Administrador']);
 
-        $isEnrolled = false;
+            if ($studentId) {
+                $isEnrolled = $this->checkCourseAccess($studentId, $id);
+            }
 
-        $user = Auth::user();
-        if ($user->hasAnyRole(['admin', 'Docente', 'Administrador'])) {
-            $isEnrolled = true;
-        }
-
-        if($studentId){
-            $isEnrolled = $this->checkCourseAccess($studentId, $id);
-        }
-
-        // Denegar acceso si no está matriculado y el curso no es gratis
-        if (!$isEnrolled) {
-
-            abort(403, 'No tienes acceso a este curso.');
+            if (! $isEnrolled) {
+                abort(403, 'No tienes acceso a este curso.');
+            }
         }
 
         $courseSummary = [
-            'course' => $course->only(['id', 'description']), // o los campos que desees
-            'modules' => []
+            'course' => $course->only(['id', 'description']),
+            'modules' => [],
         ];
 
         foreach ($course->modules as $module) {
@@ -904,7 +908,8 @@ class AcaStudentController extends Controller
                 foreach ($theme->contents as $content) {
                     if ($content->is_file == 1 || $content->is_file == 2) {
                         $totalFiles++;
-                    } elseif ($content->type == 0) {
+                    } elseif ($content->is_file == 3 || $content->is_file == 5
+                        || ($content->is_file == 0 && str_contains((string) $content->content, '<iframe'))) {
                         $totalVideos++;
                     }
                 }
@@ -920,52 +925,87 @@ class AcaStudentController extends Controller
             ];
         }
 
-        return Inertia::render('Academic::Students/Lessons', [
-            'course' => $courseSummary
-        ]);
+        return ['course' => $courseSummary];
     }
 
     public function courseLessonThemes($id)
     {
-        // Verificar si el estudiante está matriculado
-        $studentId = AcaStudent::where('person_id', Auth::user()->person_id)->value('id');
-        $personId = Auth::user()->person_id;
+        return Inertia::render('Academic::Students/Themes', $this->courseLessonThemesData((int) $id));
+    }
+
+    /**
+     * Datos de un módulo con los mismos filtros que ve el alumno.
+     *
+     * Cuando $preview llega informado no consulta matrículas reales ni
+     * historial: usa la simulación elegida y deja los intentos de examen vacíos.
+     *
+     * @param  array<string, mixed>|null  $preview
+     * @return array<string, mixed>
+     */
+    public function courseLessonThemesData(int $id, ?array $preview = null): array
+    {
+        $isPreview = $preview !== null;
+        $user = Auth::user();
+        $studentId = $isPreview
+            ? null
+            : AcaStudent::where('person_id', $user->person_id)->value('id');
+        // En la vista previa se usa un person_id que no existe para no arrastrar
+        // el historial real del administrador.
+        $personId = $isPreview ? 0 : $user->person_id;
 
         $module = AcaModule::with([
             'teacher.person',
-            'exam.student_exams' => function ($query) use ($studentId) {
-                // Filtramos para que dentro del examen solo cargue los del alumno logueado
-                $query->where('student_id', $studentId);
-            },
-            'mockExam.questions',
-            'mockExam.student_exams' => function ($query) use ($studentId) {
-                // Cargar también los simulacros del alumno logueado
-                $query->where('student_id', $studentId);
-            },
-            'themes' => function ($query) use ($personId) {
-                $query->orderBy('position')
-                    ->with(['contents', 'comments.user'])
-                    // Cargar historial del estudiante filtrado por person_id
-                    ->with(['student_history' => function ($q) use ($personId) {
-                        $q->where('person_id', $personId);
+            'exam' => function ($query) use ($studentId, $isPreview) {
+                if ($isPreview) {
+                    $query->with('questions.answers');
+                } else {
+                    $query->with(['student_exams' => function ($query) use ($studentId) {
+                        $query->where('student_id', $studentId);
                     }]);
-            }
-        ])
-        ->findOrFail($id);
+                }
+            },
+            'mockExam.questions' => function ($query) use ($isPreview) {
+                if ($isPreview) {
+                    $query->with('answers');
+                }
+            },
+            'mockExam.student_exams' => function ($query) use ($studentId) {
+                $query->where('student_id', $studentId);
+            },
+            'themes' => function ($query) use ($personId, $isPreview) {
+                $query->orderBy('position')
+                    ->with([
+                        'comments.user',
+                        'contents' => function ($query) use ($isPreview) {
+                            if ($isPreview) {
+                                $query->with('exam.questions.answers');
+                            }
+                        },
+                        'student_history' => function ($query) use ($personId) {
+                            $query->where('person_id', $personId);
+                        },
+                    ]);
+            },
+        ])->findOrFail($id);
+
+        if ($isPreview) {
+            $module->exam?->setRelation('student_exams', collect());
+            $module->mock_exam?->setRelation('student_exams', collect());
+        }
 
         // Serializar fechas en ISO 8601 con zona horaria (-05:00) para que `new Date()`
         // en el frontend calcule instantes correctos sin importar la zona del navegador.
         if ($module->exam) {
-            $module->exam->date_start_iso = Carbon::parse($module->exam->date_start)->toIso8601String();
-            $module->exam->date_end_iso = Carbon::parse($module->exam->date_end)->toIso8601String();
+            $module->exam->date_start_iso = $module->exam->date_start ? Carbon::parse($module->exam->date_start)->toIso8601String() : null;
+            $module->exam->date_end_iso = $module->exam->date_end ? Carbon::parse($module->exam->date_end)->toIso8601String() : null;
             $module->exam->student_exams->each(function ($se) {
                 $se->started_at = $se->started_at ? Carbon::parse($se->started_at)->toIso8601String() : null;
                 $se->finished_at = $se->finished_at ? Carbon::parse($se->finished_at)->toIso8601String() : null;
             });
         }
         if ($module->mock_exam) {
-            $module->mock_exam->date_start_iso = Carbon::parse($module->mock_exam->date_start)->toIso8601String();
-            $module->mock_exam->date_end_iso = Carbon::parse($module->mock_exam->date_end)->toIso8601String();
+            $module->mock_exam->date_start_iso = $module->mock_exam->date_start ? Carbon::parse($module->mock_exam->date_start)->toIso8601String() : null;
+            $module->mock_exam->date_end_iso = $module->mock_exam->date_end ? Carbon::parse($module->mock_exam->date_end)->toIso8601String() : null;
             $module->mock_exam->student_exams->each(function ($se) {
                 $se->started_at = $se->started_at ? Carbon::parse($se->started_at)->toIso8601String() : null;
                 $se->finished_at = $se->finished_at ? Carbon::parse($se->finished_at)->toIso8601String() : null;
@@ -989,62 +1029,111 @@ class AcaStudentController extends Controller
         $nextModule = $currentModuleIndex !== false ? $courseModules->get($currentModuleIndex + 1) : null;
 
         $isEnrolled = false;
+        $contentPermissions = SubscriptionContentPermissions::forStudent(null);
         $isMatriculated = false;
         $isSpecializationCourse = strcasecmp($course->type_description, 'Programas de Especialización') === 0;
-        $isFreeCourse = ($course->price == 0 || is_null($course->price));
-        // Permisos de contenido del plan del alumno (Meet/Zoom y webinar).
-        $accessFlags = CourseAccessService::emptyFlags();
 
-        $user = Auth::user();
-        if ($user->hasAnyRole(['admin', 'Docente', 'Administrador'])) {
+        if ($isPreview) {
             $isEnrolled = true;
+            $contentPermissions = $preview['permissions'] ?? $contentPermissions;
+            $isMatriculated = (bool) ($preview['is_matriculated'] ?? false);
+        } else {
+            $user = Auth::user();
+            if ($user->hasAnyRole(['admin', 'Docente', 'Administrador'])) {
+                $isEnrolled = true;
+            }
+
+            if ($studentId) {
+                $isEnrolled = $this->checkCourseAccess($studentId, $course->id);
+                $contentPermissions = SubscriptionContentPermissions::forStudent($studentId);
+                $isMatriculated = AcaCapRegistration::where('student_id', $studentId)
+                    ->where('course_id', $course->id)
+                    ->exists();
+            }
+
+            // Denegar acceso si no está matriculado y el curso no es gratis
+            if (! $isEnrolled) {
+                abort(403, 'No tienes acceso a este curso.');
+            }
         }
 
-        if($studentId){
-            $isEnrolled = $this->checkCourseAccess($studentId, $course->id);
-            $isMatriculated = AcaCapRegistration::where('student_id', $studentId)
-                ->where('course_id', $course->id)
-                ->exists();
-            // Acceso a los tipos de contenido (Meet/Zoom y webinar), editable por
-            // cada tipo de suscripción.
-            $accessFlags = $this->courseAccess->accessFlags($studentId);
-        }
+        $canSeeAllContents = $isPreview
+            ? (bool) ($preview['show_all'] ?? false)
+            : $user->hasAnyRole(['admin', 'Docente', 'Administrador']);
 
-        // Denegar acceso si no está matriculado y el curso no es gratis
-        if (!$isEnrolled) {
-            abort(403, 'No tienes acceso a este curso.');
-        }
-
-        // Filtrar contenido según reglas de acceso
-        $module->themes->each(function ($theme) use ($accessFlags, $isMatriculated, $isFreeCourse, $user) {
-            $theme->contents = $theme->contents->filter(function ($content) use ($accessFlags, $isMatriculated, $isFreeCourse, $user) {
-                // Admin/Docentes ven todo
-                if ($user->hasAnyRole(['admin', 'Docente', 'Administrador'])) {
-                    return true;
-                }
-
-                // Meet/Zoom (is_file = 3) y webinar (is_file = 5) dependen del
-                // permiso de contenido del plan; la matrícula y los cursos gratis
-                // muestran el contenido completo.
-                return $this->courseAccess->canSeeContent($accessFlags, $content->is_file, $isMatriculated, $isFreeCourse);
+        // Filtrar contenido según reglas de acceso. Se usa setRelation para que
+        // Eloquent serialice la colección filtrada y no la relación original.
+        $module->themes->each(function ($theme) use ($contentPermissions, $isMatriculated, $isSpecializationCourse, $canSeeAllContents) {
+            $contents = $theme->contents->filter(function ($content) use ($contentPermissions, $isMatriculated, $isSpecializationCourse, $canSeeAllContents) {
+                return $this->canViewStudentContent($content, $contentPermissions, $isMatriculated, $isSpecializationCourse, $canSeeAllContents);
             })->values();
+
+            $theme->setRelation('contents', $contents);
         });
 
-        // Recalcular progreso después del filtrado
-        $module->themes->each(function ($theme) {
-            $totalContents = $theme->contents->reject(fn($c) => $c->is_file == 4)->count();
-            $viewedContents = $theme->student_history->unique('content_id')->count();
+        // Recalcular progreso después del filtrado. En la vista previa el
+        // progreso se calcula en el navegador para no tocar el historial real.
+        $module->themes->each(function ($theme) use ($isPreview) {
+            $totalContents = $theme->contents->reject(fn ($c) => $c->is_file == 4)->count();
+            $viewedContents = $isPreview ? 0 : $theme->student_history->unique('content_id')->count();
             $theme->progress = $totalContents > 0 ? round(($viewedContents / $totalContents) * 100) : 0;
         });
 
-        return Inertia::render('Academic::Students/Themes', [
+        return [
             'course' => $course,
             'module' => $module,
             'previousModule' => $previousModule,
             'nextModule' => $nextModule,
-            'hasSpecializationAccess' => $accessFlags['specializations'],
+            'canViewSpecializationZooms' => $contentPermissions[SubscriptionContentPermissions::CAN_VIEW_SPECIALIZATION_ZOOMS],
+            'canViewSpecializationWebinars' => $contentPermissions[SubscriptionContentPermissions::CAN_VIEW_SPECIALIZATION_WEBINARS],
             'isSpecializationCourse' => $isSpecializationCourse,
-        ]);
+        ];
+    }
+
+    /**
+     * Mismas reglas de visibilidad que aplica el alumno a cada contenido.
+     *
+     * @param  array<string, bool>  $contentPermissions
+     */
+    private function canViewStudentContent(
+        AcaContent $content,
+        array $contentPermissions,
+        bool $isMatriculated,
+        bool $isSpecializationCourse,
+        bool $canSeeAllContents
+    ): bool {
+        if ($canSeeAllContents) {
+            return true;
+        }
+
+        // Zoom/Meet (is_file = 3)
+        if ($content->is_file == 3) {
+            // En Programas de Especialización solo lo ven los matriculados
+            // o las suscripciones con el permiso habilitado.
+            if ($isSpecializationCourse && ! $isMatriculated && ! $contentPermissions[SubscriptionContentPermissions::CAN_VIEW_SPECIALIZATION_ZOOMS]) {
+                return false;
+            }
+
+            return true;
+        }
+
+        // Webinars (is_file = 5)
+        if ($content->is_file == 5) {
+            // Matriculados NO ven webinars (ellos tienen Zoom/Meet en vivo)
+            if ($isMatriculated) {
+                return false;
+            }
+
+            // En Programas de Especialización solo con el permiso habilitado
+            if ($isSpecializationCourse) {
+                return $contentPermissions[SubscriptionContentPermissions::CAN_VIEW_SPECIALIZATION_WEBINARS];
+            }
+
+            return true;
+        }
+
+        // Todo lo demás (videos, PDFs, links, exámenes) siempre visible
+        return true;
     }
 
     public function invoice($id, $installments = 'not')
@@ -1201,6 +1290,16 @@ class AcaStudentController extends Controller
                     'new_student' => false
                 ]
             );
+
+            // Suscripcion gratis: cuenta como compra terminada y se envia a n8n el mismo
+            // payload con los cursos en 'cursos'. Solo sale si la persona ya tenia su
+            // cuenta con el perfil completado; si es la primera vez, el aviso sale al
+            // terminar su perfil obligatorio.
+            SendProfileWebhook::dispatchCompraOnce(
+                'compra:suscripcion:'.$per->id.':'.($type ?? ''),
+                (int) $per->id
+            );
+
             return to_route('dashboard');
         } else {
             return to_route('profile.edit');
@@ -1313,33 +1412,42 @@ class AcaStudentController extends Controller
                     'is_client' => true
                 ]);
 
-                User::updateOrCreate(
-                    [
-                        'email' => trim($row[4])
-                    ],
-                    [
-                        'name' => trim($row[0]),
-                        'password' => Hash::make(trim($row[1])),
-                        'local_id' => 1,
-                        'person_id' => $person->id,
-                        'status' => true
-                    ]
-                );
+                $userData = [
+                    'name' => trim($row[0]),
+                    'local_id' => 1,
+                    'person_id' => $person->id,
+                    'status' => true,
+                ];
 
-                // Verificacion final de cada fila importada: persona + usuario con los datos del archivo.
-                app(PersonRegistrationGuard::class)->ensure($person, [
+                // Solo se asigna la contrasena inicial si el usuario es nuevo.
+                $user = User::firstOrNew(['email' => trim($row[4])]);
+                if (! $user->exists) {
+                    $userData['password'] = Hash::make(trim($row[1]));
+                }
+                $user->fill($userData)->save();
+
+                $expectedPersonData = [
                     'document_type_id' => 1,
                     'number' => trim($row[1]),
                     'full_name' => trim($row[0]),
-                    'email' => trim($row[4]),
-                    'telephone' => $row[3],
                     'birthdate' => $fechaMysql,
+                    'telephone' => $row[3],
+                    'email' => trim($row[4]),
+                    'company' => $row[5],
+                    'industry' => $row[6],
+                    'ocupacion' => $row[7],
+                    'profession' => $row[8],
                     'gender' => $row[9],
-                    'status' => true,
-                ], [
+                    'is_provider' => false,
+                    'is_client' => true,
+                ];
+                $expectedUserData = [
                     'name' => trim($row[0]),
                     'email' => trim($row[4]),
-                ]);
+                    'local_id' => 1,
+                    'status' => true,
+                    'person_id' => $person->id,
+                ];
 
                 $student = AcaStudent::firstOrCreate(
                     [
@@ -1350,6 +1458,8 @@ class AcaStudentController extends Controller
                         'new_student' => true
                     ]
                 );
+
+                PersonUserPersistenceVerifier::verify($person, $user, $expectedPersonData, $expectedUserData);
 
                 // Actualizar el progreso en la caché
                 $currentProgress = (($index + 1) / $totalRows) * 100;
@@ -1452,51 +1562,47 @@ class AcaStudentController extends Controller
 
 
             // Crear registro en la base de datos
-            $person = Person::firstOrCreate(
-                [
-                    'number' => trim($student[1]),
-                ],
-                [
+            $personData = [
                     'document_type_id' => 1,
+                    'number' => trim($student[1]),
                     'full_name' => trim($student[0]),
                     'birthdate' => $fechaMysql,
                     'telephone' => $student[3],
                     'email' => trim($student[4]),
-                    'company' => $student[5] == "-" ? null : $student[5],
-                    'industry' => $student[6] == "-" ? null : $student[6],
-                    'ocupacion' => $student[7] == "-" ? null : $student[7],
-                    'profession' => $student[8] == "-" ? null : $student[8],
-                    'gender' => $student[9] == "-" ? null : $student[9],
-                    'is_provider' => false,
-                    'is_client' => true
-                ]
-            );
+                ];
 
-            User::firstOrCreate(
+            // Las columnas opcionales vacias ('-') no se escriben: una reimportacion
+            // no borra empresa, industria, ocupacion, profesion ni genero ya guardados.
+            foreach (['company' => 5, 'industry' => 6, 'ocupacion' => 7, 'profession' => 8, 'gender' => 9] as $column => $index) {
+                $value = $student[$index] ?? null;
+                if ($value !== null && trim($value) !== '' && trim($value) !== '-') {
+                    $personData[$column] = trim($value);
+                }
+            }
+
+            $person = Person::updateOrCreate(
                 [
-                    'email' => trim($student[4])
+                    'document_type_id' => 1,
+                    'number' => trim($student[1]),
                 ],
-                [
-                    'name' => trim($student[0]),
-                    'password' => Hash::make(trim($student[1])),
-                    'local_id' => 1,
-                    'person_id' => $person->id,
-                    'status' => true
-                ]
+                $personData
             );
 
-            // Verificacion final: la persona y su usuario quedan registrados con los datos de la fila.
-            app(PersonRegistrationGuard::class)->ensure($person, [
-                'document_type_id' => 1,
-                'number' => trim($student[1]),
-                'full_name' => trim($student[0]),
-                'email' => trim($student[4]),
-                'telephone' => $student[3],
-                'status' => true,
-            ], [
+            $userData = [
                 'name' => trim($student[0]),
                 'email' => trim($student[4]),
-            ]);
+                'local_id' => 1,
+                'person_id' => $person->id,
+                'status' => true,
+            ];
+
+            // La contrasena inicial solo se asigna al crear el usuario; una
+            // reimportacion no debe resetearla.
+            $user = User::firstOrNew(['email' => trim($student[4])]);
+            if (! $user->exists) {
+                $userData['password'] = Hash::make(trim($student[1]));
+            }
+            $user->fill($userData)->save();
 
             $student = AcaStudent::firstOrCreate(
                 [
@@ -1515,6 +1621,19 @@ class AcaStudentController extends Controller
                 'status' => true,
                 'modality_id' => $modality_id
             ]);
+
+            PersonUserPersistenceVerifier::verify(
+                $person,
+                $user,
+                $personData,
+                [
+                    'name' => $userData['name'],
+                    'email' => $userData['email'],
+                    'local_id' => 1,
+                    'person_id' => $person->id,
+                    'status' => true,
+                ]
+            );
 
             return response()->json([
                 'success' => true,

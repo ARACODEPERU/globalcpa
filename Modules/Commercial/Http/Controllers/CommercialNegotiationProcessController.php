@@ -3,6 +3,7 @@
 namespace Modules\Commercial\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\CompanyBilletera;
 use App\Models\IdentityDocumentType;
 use App\Models\Person;
 use App\Models\Sale;
@@ -10,7 +11,7 @@ use App\Models\SaleDocument;
 use App\Models\SaleDocumentItem;
 use App\Models\SaleProduct;
 use App\Models\User;
-use App\Support\PersonRegistrationGuard;
+use App\Support\PersonUserPersistenceVerifier;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,18 +19,23 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Schema;
 use Inertia\Inertia;
 use Modules\Academic\Entities\AcaCapRegistration;
 use Modules\Academic\Entities\AcaCourse;
 use Modules\Academic\Entities\AcaStudent;
+use Modules\Academic\Entities\AcaStudentSubscription;
 use Modules\Academic\Entities\AcaSubscriptionType;
 use Modules\Academic\Http\Controllers\AcaSaleDocumentController;
 use Modules\Commercial\Emails\CommercialNegotiationDocumentMail;
 use Modules\Commercial\Entities\CommercialNegotiation;
 use Modules\Commercial\Support\NegotiationWebhookPayload;
-use Modules\Integrationhub\Support\IntegrationAlert;
+use Modules\Integrationhub\Entities\IntegrationError;
 use Modules\Integrationhub\Http\Controllers\IntegrationhubController;
 use Modules\Sales\Entities\SalePaymentSchedule;
+use Modules\Treasury\Entities\TreasuryAccount;
+use Modules\Treasury\Services\TreasuryAccountSyncService;
+use Modules\Treasury\Services\TreasuryHooks;
 
 class CommercialNegotiationProcessController extends Controller
 {
@@ -49,10 +55,6 @@ class CommercialNegotiationProcessController extends Controller
             'paymentMethods' => $this->paymentMethods(),
             'stepsStatus' => $this->stepStatuses($negotiation),
             'existingAccount' => $this->existingAccountInfo($negotiation),
-            // Fecha de emision del comprobante: la elegida por el administrador o,
-            // por defecto, la fecha en que el cliente registro sus datos.
-            'issueDate' => $this->issueDate($negotiation),
-            'clientConfirmedAt' => $negotiation->client_confirmed_at?->toISOString(),
             // Equivalente en soles cuando la negociacion esta en USD (PTM0004).
             'multiCurrencyEnabled' => app(\Modules\Sales\Services\ExchangeRateService::class)->isMultiCurrencyEnabled(),
             'exchangeRate' => (function () {
@@ -110,6 +112,7 @@ class CommercialNegotiationProcessController extends Controller
     {
         $progress = $negotiation->process_progress ?? [];
         $isInstallments = $negotiation->payment_type === 'installments';
+        $isFree = (float) $negotiation->total_price === 0.0;
 
         $hasCourses = $negotiation->items->contains(fn ($item) => $item->item_type === 'course');
         $hasSubscriptions = $negotiation->items->contains(fn ($item) => $item->item_type === 'subscription');
@@ -133,9 +136,9 @@ class CommercialNegotiationProcessController extends Controller
             'student' => $statusOf('student'),
             'registrations' => $hasCourses ? $statusOf('registrations') : 'skipped',
             'subscriptions' => $hasSubscriptions ? $statusOf('subscriptions') : 'skipped',
-            // Negociacion gratuita: no hay venta en cuotas ni comprobante.
-            'installments' => ($isInstallments && ! $negotiation->isFree()) ? $statusOf('installments') : 'skipped',
-            'document' => $negotiation->isFree() ? 'skipped' : $statusOf('document'),
+            'installments' => $isInstallments ? $statusOf('installments') : 'skipped',
+            // Negociacion gratuita: no se registra venta ni se emite comprobante por 0.
+            'document' => $isFree ? 'skipped' : $statusOf('document'),
             'email' => $statusOf('email'),
             'webhook' => $statusOf('webhook'),
             'complete' => $statusOf('complete'),
@@ -190,6 +193,54 @@ class CommercialNegotiationProcessController extends Controller
     }
 
     /**
+     * Guarda la fecha de emision del comprobante elegida por el administrador antes de
+     * aprobar. Por defecto viene con la fecha en que el cliente registro sus datos; el
+     * administrador puede ajustarla, por ejemplo si el pago fue el dia anterior.
+     */
+    public function saveEmissionDate(Request $request, $id)
+    {
+        $negotiation = CommercialNegotiation::findOrFail($id);
+
+        if (! in_array($negotiation->status, ['confirmada', 'aprobada'], true)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Solo se puede ajustar la fecha de emision de una negociacion confirmada.',
+            ], 422);
+        }
+
+        if ($negotiation->sale_document_id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'El comprobante ya fue generado: la fecha de emision ya no puede cambiarse.',
+            ], 422);
+        }
+
+        $data = $request->validate([
+            'emission_date' => ['required', 'date'],
+        ]);
+
+        $negotiation->update([
+            'document_emission_date' => $data['emission_date'],
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Fecha de emision del comprobante actualizada.',
+            'document_emission_date' => $negotiation->document_emission_date?->format('Y-m-d'),
+        ]);
+    }
+
+    /**
+     * Fecha de emision del comprobante (y de la venta) para esta negociacion: la que el
+     * administrador dejo antes de aprobar o, si no se ajusto, la fecha en que el cliente
+     * registro sus datos. Como ultimo respaldo usa la fecha actual.
+     */
+    private function emissionDate(CommercialNegotiation $negotiation): string
+    {
+        return $negotiation->document_emission_date?->format('Y-m-d') ?? Carbon::now()->format('Y-m-d');
+    }
+
+    /**
      * Marca un paso del proceso como ejecutado en process_progress.
      */
     private function markStepDone(CommercialNegotiation $negotiation, string $key): void
@@ -230,8 +281,10 @@ class CommercialNegotiationProcessController extends Controller
             'telephone' => $data['telephone'] ?? $person->telephone,
             'ocupacion' => $data['ocupacion'] ?? $person->ocupacion,
             'occupation_id' => $data['occupation_id'] ?? $person->occupation_id,
+            // people.profession es la columna real del texto ('profesion' solo vive
+            // en client_data, que es un json).
+            'profession' => $data['profesion'] ?? $person->profession,
             'profession_id' => $data['profession_id'] ?? $person->profession_id,
-            'profession' => $data['profession'] ?? $person->profession,
             'company' => $data['company'] ?? $person->company,
             'industry_id' => $data['industry_id'] ?? $person->industry_id,
             'industry' => $data['industry'] ?? $person->industry,
@@ -265,6 +318,37 @@ class CommercialNegotiationProcessController extends Controller
         // Se aplica completa (incluye nulls) para poder pasar de extranjero a Peru y viceversa.
         $person->update($locationPayload);
 
+        $person = Person::query()->findOrFail($person->id);
+        $user = User::where('person_id', $person->id)->first();
+
+        if (! $user && $person->email) {
+            $user = User::query()
+                ->whereRaw('LOWER(email) = ?', [strtolower(trim($person->email))])
+                ->first();
+            if ($user) {
+                $user->update(['person_id' => $person->id]);
+            }
+        }
+
+        if ($user) {
+            $userData = [
+                'name' => $person->full_name ?: $person->short_name,
+                'email' => $person->email ?: $user->email,
+                'person_id' => $person->id,
+            ];
+            $user->update($userData);
+
+            PersonUserPersistenceVerifier::verify(
+                $person,
+                $user,
+                array_merge(
+                    array_filter($personPayload, fn ($value) => $value !== null && $value !== ''),
+                    $locationPayload
+                ),
+                $userData
+            );
+        }
+
         $this->markStepDone($negotiation, 'person');
 
         return response()->json([
@@ -272,10 +356,12 @@ class CommercialNegotiationProcessController extends Controller
             'message' => 'Actualizar los datos del cliente en la tabla people: cliente ya existente.',
             'person_id' => $person->id,
         ]);
-    }    public function processUser(Request $request, $id)
-    {        $negotiation = $this->negotiation($id);
+    }
+
+    public function processUser(Request $request, $id)
+    {
+        $negotiation = $this->negotiation($id);
         $person = $this->person($negotiation);
-        $clientData = $negotiation->client_data ?? [];
 
         $user = User::where('person_id', $person->id)->first();
 
@@ -304,27 +390,28 @@ class CommercialNegotiationProcessController extends Controller
             ]);
         }
 
+        $personData = [
+            'document_type_id' => $person->document_type_id,
+            'number' => $person->number,
+            'full_name' => $person->full_name,
+            'email' => $person->email,
+        ];
+        $userData = [
+            'person_id' => $person->id,
+            'name' => $person->full_name ?: $person->short_name,
+            'email' => $person->email ?: $user->email,
+            'status' => true,
+        ];
+        $user->update($userData);
         $user->assignRole('Alumno');
 
-        // Verificacion final: la persona y su usuario deben existir en people y users
-        // con los datos recientes de la negociacion.
-        $registration = app(PersonRegistrationGuard::class)->ensure($person, [
-            'short_name' => $clientData['short_name'] ?? $clientData['names'] ?? ($person->short_name ?: $person->names),
-            'full_name' => $clientData['full_name'] ?? $person->full_name,
-            'document_type_id' => $clientData['document_type_id'] ?? $person->document_type_id,
-            'number' => $clientData['number'] ?? $person->number,
-            'names' => $clientData['names'] ?? $person->names,
-            'father_lastname' => $clientData['father_lastname'] ?? $person->father_lastname,
-            'mother_lastname' => $clientData['mother_lastname'] ?? $person->mother_lastname,
-            'email' => $clientData['email'] ?? $person->email,
-            'telephone' => $clientData['telephone'] ?? $person->telephone,
-            'status' => true,
-        ], [
-            'name' => $clientData['full_name'] ?? ($person->full_name ?: $person->short_name),
-            'email' => $clientData['email'] ?? ($user->email ?: $person->email),
-        ], $user);
-
-        $user = $registration['user'];
+        $person->refresh();
+        PersonUserPersistenceVerifier::verify(
+            $person,
+            $user,
+            $personData,
+            $userData
+        );
 
         $this->markStepDone($negotiation, 'user');
 
@@ -383,6 +470,10 @@ class CommercialNegotiationProcessController extends Controller
         $nextPaymentDate = $this->nextPaymentDate($negotiation);
         $courseItems = $negotiation->items->where('item_type', 'course');
 
+        // Negociacion gratuita: el item conserva su costo de catalogo (es lo que el alumno
+        // recibe), pero no pago nada, asi que la matricula queda en 0 y no genera deuda.
+        $isFree = (float) $negotiation->total_price === 0.0;
+
         if ($courseItems->isEmpty()) {
             return response()->json([
                 'success' => true,
@@ -392,8 +483,10 @@ class CommercialNegotiationProcessController extends Controller
         }
 
         foreach ($courseItems as $item) {
-            $amountPaid = (float) ($item->price ?? 0);
-            $advancement = $isInstallments ? (float) ($negotiation->initial_amount ?? 0) : $amountPaid;
+            $amountPaid = $isFree ? 0.0 : (float) ($item->price ?? 0);
+            $advancement = $isFree
+                ? 0.0
+                : ($isInstallments ? (float) ($negotiation->initial_amount ?? 0) : $amountPaid);
 
             AcaCapRegistration::updateOrCreate(
                 [
@@ -436,6 +529,9 @@ class CommercialNegotiationProcessController extends Controller
         $nextPaymentDate = $this->nextPaymentDate($negotiation);
         $subscriptionItems = $negotiation->items->where('item_type', 'subscription');
 
+        // Negociacion gratuita: la suscripcion se entrega sin cobro.
+        $isFree = (float) $negotiation->total_price === 0.0;
+
         if ($subscriptionItems->isEmpty()) {
             return response()->json([
                 'success' => true,
@@ -444,65 +540,65 @@ class CommercialNegotiationProcessController extends Controller
             ]);
         }
 
-        DB::transaction(function () use ($subscriptionItems, $student, $isInstallments, $nextPaymentDate) {
-            foreach ($subscriptionItems as $item) {
-                $subscription = AcaSubscriptionType::find($item->item_id);
+        foreach ($subscriptionItems as $item) {
+            $subscription = AcaSubscriptionType::find($item->item_id);
 
-                if (! $subscription) {
-                    continue;
-                }
+            if (! $subscription) {
+                continue;
+            }
 
-                $dateStart = Carbon::today();
+            $dateStart = Carbon::today();
 
-                if ($isInstallments) {
-                    $dateEnd = $nextPaymentDate ? Carbon::parse($nextPaymentDate) : null;
-                } else {
-                    $dateEnd = $this->calculateDateEnd($subscription->period, $dateStart);
-                }
+            if ($isInstallments) {
+                $dateEnd = $nextPaymentDate ? Carbon::parse($nextPaymentDate) : null;
+            } else {
+                $dateEnd = $this->calculateDateEnd($subscription->period, $dateStart);
+            }
 
-                $amount = (float) ($item->price ?? 0);
+            $amount = $isFree ? 0.0 : (float) ($item->price ?? 0);
 
-                if (! $amount && $subscription->prices) {
-                    // prices ya se castea a array en AcaSubscriptionType; aceptar
-                    // tambien JSON antiguo sin pasar el array a json_decode.
-                    $prices = $subscription->prices;
-                    $prices = is_string($prices) ? (json_decode($prices, true) ?: []) : $prices;
-
-                    foreach (is_array($prices) ? $prices : [] as $price) {
-                        if (is_array($price) && ($price['currency'] ?? null) === 'PEN') {
-                            $amount = (float) ($price['amount'] ?? 0);
-                        }
+            // `prices` ya viene decodificado por el cast 'array' del modelo: pasarlo por
+            // json_decode() lanzaba un TypeError cuando el item no traia precio propio.
+            if (! $amount && ! $isFree && is_array($subscription->prices) && $subscription->prices) {
+                foreach ($subscription->prices as $price) {
+                    if (is_array($price) && ($price['currency'] ?? null) === 'PEN') {
+                        $amount = (float) ($price['amount'] ?? 0);
                     }
                 }
-
-                $subscriptionRecord = DB::table('aca_student_subscriptions')
-                    ->where('student_id', $student->id)
-                    ->where('subscription_id', $item->item_id);
-                $values = [
-                    'date_start' => $dateStart->format('Y-m-d'),
-                    'date_end' => $dateEnd ? $dateEnd->format('Y-m-d') : null,
-                    'status' => true,
-                    'notes' => null,
-                    'renewals' => false,
-                    'registration_user_id' => Auth::id(),
-                    'amount_paid' => $amount,
-                    'updated_at' => now(),
-                ];
-
-                // aca_student_subscriptions usa clave primaria compuesta. El modelo
-                // Eloquent no puede guardar esa clave como atributo escalar, por lo
-                // que se consulta/actualiza directamente por sus dos columnas.
-                if ($subscriptionRecord->exists()) {
-                    $subscriptionRecord->update($values);
-                } else {
-                    DB::table('aca_student_subscriptions')->insert(array_merge($values, [
-                        'student_id' => $student->id,
-                        'subscription_id' => $item->item_id,
-                        'created_at' => now(),
-                    ]));
-                }
             }
-        });
+
+            $datosSuscripcion = [
+                'date_start' => $dateStart->format('Y-m-d'),
+                'date_end' => $dateEnd ? $dateEnd->format('Y-m-d') : null,
+                'status' => true,
+                'notes' => null,
+                'renewals' => false,
+                'registration_user_id' => Auth::id(),
+                'amount_paid' => $amount,
+            ];
+
+            // AcaStudentSubscription usa clave primaria compuesta (student_id +
+            // subscription_id), que Eloquent no soporta: updateOrCreate() al guardar el
+            // modelo ejecuta $this->original[$this->getKeyName()] con un array y PHP lanza
+            // "Cannot access offset of type array on array". Solo pasaba cuando la
+            // suscripcion ya existia (cliente que ya tenia el plan), es decir en la rama de
+            // actualizacion. Se actualiza o crea desde el query builder, como en el resto
+            // del modulo (AcaCapRegistrationController / StudentSubscription).
+            $suscripcionExistente = AcaStudentSubscription::where('student_id', $student->id)
+                ->where('subscription_id', $item->item_id)
+                ->exists();
+
+            if ($suscripcionExistente) {
+                AcaStudentSubscription::where('student_id', $student->id)
+                    ->where('subscription_id', $item->item_id)
+                    ->update($datosSuscripcion);
+            } else {
+                AcaStudentSubscription::create(array_merge([
+                    'student_id' => $student->id,
+                    'subscription_id' => $item->item_id,
+                ], $datosSuscripcion));
+            }
+        }
 
         $this->markStepDone($negotiation, 'subscriptions');
 
@@ -521,14 +617,6 @@ class CommercialNegotiationProcessController extends Controller
     public function processInstallments(Request $request, $id)
     {
         $negotiation = $this->negotiation($id);
-
-        if ($negotiation->isFree()) {
-            return response()->json([
-                'success' => true,
-                'skipped' => true,
-                'message' => 'Negociacion gratuita: no genera venta en cuotas.',
-            ]);
-        }
 
         if ($negotiation->payment_type !== 'installments') {
             return response()->json([
@@ -563,7 +651,9 @@ class CommercialNegotiationProcessController extends Controller
                 }
 
                 $sale = Sale::create([
-                    'sale_date' => $this->issueDate($negotiation),
+                    // La venta se registra con la fecha de emision del comprobante (fecha en
+                    // que el cliente registro sus datos, ajustable por el administrador).
+                    'sale_date' => $this->emissionDate($negotiation),
                     'user_id' => Auth::id(),
                     'client_id' => $person->id,
                     'local_id' => $localId,
@@ -607,16 +697,17 @@ class CommercialNegotiationProcessController extends Controller
     {
         $negotiation = $this->negotiation($id);
 
-        // Negociacion gratuita: no se genera venta ni comprobante.
-        if ($negotiation->isFree()) {
+        $isInstallments = $negotiation->payment_type === 'installments';
+
+        // Negociacion gratuita: el precio acordado es 0, asi que no hay venta que registrar
+        // ni comprobante que emitir (un documento con importe 0 no corresponde).
+        if ((float) $negotiation->total_price === 0.0) {
             return response()->json([
                 'success' => true,
                 'skipped' => true,
-                'message' => 'Negociacion gratuita: no genera comprobante.',
+                'message' => 'Negociacion gratuita: no se emite comprobante.',
             ]);
         }
-
-        $isInstallments = $negotiation->payment_type === 'installments';
 
         if ($negotiation->sale_document_id) {
             return response()->json([
@@ -675,7 +766,9 @@ class CommercialNegotiationProcessController extends Controller
 
                 if (! $isInstallments) {
                     $sale = Sale::create([
-                        'sale_date' => $this->issueDate($negotiation),
+                        // La venta se registra con la fecha de emision del comprobante (fecha en
+                    // que el cliente registro sus datos, ajustable por el administrador).
+                    'sale_date' => $this->emissionDate($negotiation),
                         'user_id' => Auth::id(),
                         'client_id' => $person->id,
                         'local_id' => $localId,
@@ -783,12 +876,12 @@ class CommercialNegotiationProcessController extends Controller
                     'documenttypeId' => $isFactura ? 1 : 2,
                     'userId' => Auth::id(),
                     'enline' => true,
-                    // Fecha de emision: la fecha en que el cliente registro sus datos
-                    // (ajustable por el administrador) y no la fecha de aprobacion.
-                    'issue_date' => $this->issueDate($negotiation),
                     // Moneda del comprobante: la elegida en la negociacion (PTM0004
                     // y el TC se validan dentro de generateBoleta).
                     'currency' => strtoupper((string) ($negotiation->currency ?? 'PEN')),
+                    // Fecha de emision del comprobante: la de registro del cliente o la que
+                    // el administrador ajusto antes de aprobar.
+                    'emission_date' => $this->emissionDate($negotiation),
                 ];
 
                 // La boleta se emite con los datos del tercero indicado por el cliente.
@@ -813,6 +906,11 @@ class CommercialNegotiationProcessController extends Controller
                     'sale_id' => $sale->id,
                     'sale_document_id' => $data['document']['id'],
                 ]);
+
+                // Tesoreria: el dinero ya entro por el medio acordado, asi que se registra
+                // el ingreso en la cuenta que corresponde junto con el comprobante. En cuotas
+                // el ingreso es la primera cuota (pago inicial); en pago unico, el total.
+                $this->registerTreasuryIncome($negotiation, $sale, (int) $data['document']['id'], (float) $documentTotal);
 
                 // En cuotas vinculamos el comprobante a la primera cuota (ya pagada).
                 if ($isInstallments) {
@@ -885,8 +983,12 @@ class CommercialNegotiationProcessController extends Controller
     {
         $negotiation = $this->negotiation($id);
 
-        // Gratis: no hay comprobante, el correo solo confirma la inscripcion.
-        if (! $negotiation->isFree() && ! $negotiation->sale_document_id) {
+        // Negociacion gratuita: no se emite comprobante (importe 0), pero el correo con las
+        // credenciales de acceso y el detalle del acuerdo debe salir igual; sin esto el paso
+        // devolvia 422 y el proceso quedaba atascado antes de llegar al cliente.
+        $isFree = (float) $negotiation->total_price === 0.0;
+
+        if (! $negotiation->sale_document_id && ! $isFree) {
             return response()->json([
                 'success' => false,
                 'message' => 'Primero debe generarse el comprobante de venta.',
@@ -917,7 +1019,7 @@ class CommercialNegotiationProcessController extends Controller
             ]);
         }
 
-        $document = $negotiation->isFree() ? null : SaleDocument::find($negotiation->sale_document_id);
+        $document = $negotiation->sale_document_id ? SaleDocument::find($negotiation->sale_document_id) : null;
 
         $user = User::where('person_id', $person->id)->first();
 
@@ -927,7 +1029,7 @@ class CommercialNegotiationProcessController extends Controller
         ] : null;
 
         try {
-            $dataFile = $document ? app(AcaSaleDocumentController::class)->generateBoletaPDF($document->id) : null;
+            $dataFile = $document ? app(AcaSaleDocumentController::class)->generateBoletaPDF($document->id) : [];
 
             Mail::to($recipient)->queue(
                 new CommercialNegotiationDocumentMail($negotiation, $document, $dataFile, $credentials)
@@ -941,9 +1043,9 @@ class CommercialNegotiationProcessController extends Controller
             return response()->json([
                 'success' => true,
                 'queued' => true,
-                'message' => $document
-                    ? 'Correo con los detalles del acuerdo, su comprobante y credenciales de acceso puesto en cola correctamente.'
-                    : 'Correo de inscripcion gratuita con sus credenciales de acceso puesto en cola correctamente.',
+                'message' => $isFree
+                    ? 'Correo con el detalle de la inscripcion gratuita y las credenciales de acceso puesto en cola correctamente.'
+                    : 'Correo con los detalles del acuerdo, su comprobante y credenciales de acceso puesto en cola correctamente.',
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -998,12 +1100,10 @@ class CommercialNegotiationProcessController extends Controller
                 'message' => 'Datos de la negociacion enviados a n8n correctamente.',
             ]);
         } catch (\Throwable $e) {
-            // El paso no se marca como completado, pero la alerta no puede
-            // romper la respuesta al aprobador: IntegrationAlert la protege.
-            IntegrationAlert::notify(
-                'CommercialNegotiation::processWebhook (negociacion '.$id.'): '.$e->getMessage(),
-                'CommercialNegotiation::processWebhook'
-            );
+            IntegrationError::create([
+                'message' => 'CommercialNegotiation::processWebhook (negociacion '.$id.'): '.$e->getMessage(),
+                'source' => 'CommercialNegotiation::processWebhook',
+            ]);
 
             return response()->json([
                 'success' => false,
@@ -1027,8 +1127,8 @@ class CommercialNegotiationProcessController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => $negotiation->isFree()
-                ? 'Proceso completado: la inscripcion gratuita quedo registrada.'
+            'message' => (float) $negotiation->total_price === 0.0
+                ? 'Proceso completado: la inscripcion gratuita quedo registrada sin comprobante.'
                 : 'Proceso completado: la negociacion y su comprobante quedaron registrados.',
         ]);
     }
@@ -1102,19 +1202,6 @@ class CommercialNegotiationProcessController extends Controller
         return $person;
     }
 
-    /**
-     * Fecha de emision del comprobante (y de la venta): la elegida por el
-     * administrador y, si no la definio, la fecha en que el cliente registro sus
-     * datos. Las negociaciones antiguas sin fecha de registro caen en hoy.
-     */
-    private function issueDate(CommercialNegotiation $negotiation): string
-    {
-        return ($negotiation->invoice_issue_date
-            ?? $negotiation->client_confirmed_at
-            ?? Carbon::now())
-            ->format('Y-m-d');
-    }
-
     private function nextPaymentDate(CommercialNegotiation $negotiation): ?string
     {
         $schedule = $negotiation->schedule ?? [];
@@ -1138,6 +1225,220 @@ class CommercialNegotiationProcessController extends Controller
         }
 
         return null;
+    }
+
+    /**
+     * Registra en tesoreria el dinero recibido de la negociacion. Es best-effort: si no
+     * hay una cuenta configurada, el proceso sigue y queda el aviso en el log.
+     */
+    private function registerTreasuryIncome(
+        CommercialNegotiation $negotiation,
+        Sale $sale,
+        int $documentId,
+        float $amount,
+    ): void {
+        try {
+            if (! $this->treasuryAvailable()) {
+                return;
+            }
+
+            $account = $this->treasuryAccountFor($negotiation);
+
+            if (! $account) {
+                Log::warning('[Commercial] Sin cuenta de tesoreria para el ingreso de la negociacion '.$negotiation->id, [
+                    'payment_method' => $negotiation->payment_method,
+                ]);
+
+                return;
+            }
+
+            TreasuryHooks::recordSaleIncomeInAccount(
+                $sale,
+                $amount,
+                $account,
+                $negotiation->payment_link,
+                $documentId,
+            );
+        } catch (\Throwable $e) {
+            Log::warning('[Commercial] No se registro el ingreso de la negociacion '.$negotiation->id.' en tesoreria: '.$e->getMessage());
+        }
+    }
+
+    /**
+     * Tesoreria es opcional: sin el modulo, sin sus tablas o con el registro automatico
+     * apagado, la aprobacion sigue su curso y no se intenta escribir en el libro.
+     */
+    private function treasuryAvailable(): bool
+    {
+        if (! class_exists(TreasuryHooks::class) || ! class_exists(TreasuryAccount::class)) {
+            return false;
+        }
+
+        // Respeta el interruptor del modulo (TREASURY_AUTO_INCOME / config treasury).
+        if (! TreasuryHooks::enabled()) {
+            return false;
+        }
+
+        foreach (['treasury_accounts', 'treasury_source_movements', 'treasury_transactions'] as $table) {
+            if (! Schema::hasTable($table)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Cuenta de tesoreria donde entro el dinero segun el medio acordado. La negociacion
+     * no guarda un metodo de pago de ventas, asi que se deduce de la configuracion de la
+     * empresa; cuando la eleccion no es inequivoca no se registra y se avisa en el log.
+     */
+    private function treasuryAccountFor(CommercialNegotiation $negotiation): ?TreasuryAccount
+    {
+        return match ($negotiation->payment_method) {
+            'billetera_digital' => $this->negotiationWalletAccount($negotiation),
+            'enlace' => $this->walletAccountForLink($negotiation),
+            'mercadopago' => $this->mercadoPagoAccount(),
+            'transferencia' => $this->bankAccountForNegotiation($negotiation),
+            'efectivo' => TreasuryAccount::query()->active()->cash()->first(),
+            default => null,
+        };
+    }
+
+    /**
+     * Cuenta de la billetera elegida en la negociacion. Si se marcaron varias, se
+     * usa la que ofrece enlace de pago (por ahi entro el dinero); si no hay una
+     * sola clara, no se registra para no atribuirlo a la cuenta equivocada.
+     */
+    private function negotiationWalletAccount(CommercialNegotiation $negotiation): ?TreasuryAccount
+    {
+        $billeteras = $negotiation->companyBilleteras;
+
+        if ($billeteras->isEmpty()) {
+            return $this->walletAccountForLink($negotiation);
+        }
+
+        $conEnlace = $billeteras->filter(fn (CompanyBilletera $billetera) => (bool) $billetera->has_payment_link);
+
+        $elegida = match (true) {
+            $conEnlace->count() === 1 => $conEnlace->first(),
+            $billeteras->count() === 1 => $billeteras->first(),
+            default => null,
+        };
+
+        if (! $elegida) {
+            return null;
+        }
+
+        $account = TreasuryAccount::query()
+            ->active()
+            ->wallets()
+            ->where('company_billetera_id', $elegida->id)
+            ->first();
+
+        if ($account) {
+            return $account;
+        }
+
+        try {
+            return app(TreasuryAccountSyncService::class)->ensureForWallet($elegida);
+        } catch (\Throwable $e) {
+            Log::warning('[Commercial] No se pudo crear la cuenta de tesoreria de la billetera '.$elegida->id.': '.$e->getMessage());
+
+            return null;
+        }
+    }
+
+    /**
+     * Cuenta de un enlace de pago: si la URL delata la pasarela (MercadoPago,
+     * Culqi, Yape, Plin) se usa esa billetera; si no, la unica con enlace.
+     */
+    private function walletAccountForLink(CommercialNegotiation $negotiation): ?TreasuryAccount
+    {
+        $link = mb_strtolower(trim((string) $negotiation->payment_link));
+
+        $pasarela = match (true) {
+            str_contains($link, 'mercadopago'),
+            str_contains($link, 'mpago') => 'MERCADOPAGO',
+            str_contains($link, 'culqi') => 'CULQI',
+            str_contains($link, 'yape') => 'YAPE',
+            str_contains($link, 'plin') => 'PLIN',
+            default => null,
+        };
+
+        if (! $pasarela) {
+            return $this->walletAccountWithPaymentLink();
+        }
+
+        return $this->walletAccountByName($pasarela) ?? $this->walletAccountWithPaymentLink();
+    }
+
+    /** Cuenta de la unica billetera que ofrece enlace de pago: por ahi se cobro. */
+    private function walletAccountWithPaymentLink(): ?TreasuryAccount
+    {
+        $billeteras = CompanyBilletera::query()
+            ->where('status', true)
+            ->where('has_payment_link', true)
+            ->get();
+
+        if ($billeteras->count() !== 1) {
+            return null;
+        }
+
+        return TreasuryAccount::query()
+            ->active()
+            ->wallets()
+            ->where('company_billetera_id', $billeteras->first()->id)
+            ->first();
+    }
+
+    /**
+     * Cuenta de MercadoPago. Si el libro aún no la tiene, se crea a partir del
+     * catálogo de billeteras: es la pasarela con la que trabaja el sistema.
+     */
+    private function mercadoPagoAccount(): ?TreasuryAccount
+    {
+        $account = $this->walletAccountByName('MERCADOPAGO');
+
+        if ($account) {
+            return $account;
+        }
+
+        try {
+            return app(TreasuryAccountSyncService::class)->ensureMercadoPago();
+        } catch (\Throwable $e) {
+            Log::warning('[Commercial] No se pudo crear la cuenta de MercadoPago: '.$e->getMessage());
+
+            return null;
+        }
+    }
+
+    /** Cuenta de una billetera por su nombre corto (por ejemplo MERCADOPAGO). */
+    private function walletAccountByName(string $shortName): ?TreasuryAccount
+    {
+        return TreasuryAccount::query()
+            ->active()
+            ->wallets()
+            ->whereHas('companyBilletera.billetera', function ($query) use ($shortName) {
+                $query->where('short_name', $shortName);
+            })
+            ->first();
+    }
+
+    /** Cuenta bancaria de la transferencia: la recomendada o la unica de la empresa. */
+    private function bankAccountForNegotiation(CommercialNegotiation $negotiation): ?TreasuryAccount
+    {
+        if ($negotiation->recommended_bank_account_id) {
+            return TreasuryAccount::query()
+                ->active()
+                ->banks()
+                ->where('bank_account_id', (int) $negotiation->recommended_bank_account_id)
+                ->first();
+        }
+
+        $accounts = TreasuryAccount::query()->active()->banks()->get();
+
+        return $accounts->count() === 1 ? $accounts->first() : null;
     }
 
     /**
@@ -1203,6 +1504,8 @@ class CommercialNegotiationProcessController extends Controller
             ['value' => 'mercadopago', 'label' => 'Mercado Pago'],
             ['value' => 'transferencia', 'label' => 'Transferencia bancaria'],
             ['value' => 'enlace', 'label' => 'Enlace de pago'],
+            // Negociacion gratuita: total 0, el cliente no paga nada.
+            ['value' => 'gratis', 'label' => 'Gratis'],
         ];
     }
 }

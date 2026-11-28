@@ -1,0 +1,9 @@
+{
+    "_aviso": "Archivo LOCAL con tokens reales. No se versiona (ver .gitignore).",
+    "endpoint": "http://base_aracode.test/mcp/academic",
+    "tokens": {
+        "claude-desktop": "13|XeORuF1MUqKfeVnNxKNuTrNS02fvRNMHEt8DxCNld1bc4f8c",
+        "claude-code": "14|vtdfek5W7DXXuyz6BScU6CvwSFfSCXdMlRpV8Sjdbb790d35",
+        "freebuff": "16|wzNnk2A69nwj4gu9i025XFyQLAPoHb1FfutkxS9q86eba9ae"
+    }
+}

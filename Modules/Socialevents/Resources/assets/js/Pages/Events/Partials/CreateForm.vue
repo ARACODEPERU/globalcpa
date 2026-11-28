@@ -7,16 +7,18 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import Keypad from '@/Components/Keypad.vue';
 import Swal2 from 'sweetalert2';
-import { ref, watch, onMounted } from 'vue';
-import Editor from '@tinymce/tinymce-vue'
-import { 
+import { computed, ref, watch } from 'vue';
+import EditorAracode from '@/Components/EditorAracode.vue'
+
+const editorImageUploadUrl = route('even_editor_upload_image')
+import {
     ConfigProvider,
-    Select, 
+    Select,
     InputNumber,
     Textarea,
     RangePicker,
-    Switch, 
-    Input, 
+    Switch,
+    TreeSelect,
     Upload,
     Flex
 } from 'ant-design-vue';
@@ -39,11 +41,32 @@ const props = defineProps({
         type: Object,
         default: () => ({}),
     },
-    tiny_api_key: {
-        type: String,
-        default: null,
-    }
+    organizers: {
+        type: Object,
+        default: () => ({}),
+    },
+    sportsMode: {
+        type: Boolean,
+        default: false,
+    },
 });
+
+// El organizador no elige responsables: su cuenta queda fija al crear el
+// torneo. El superadministrador conserva la búsqueda entre todas las personas.
+const organizerConfig = computed(() => props.organizers ?? {});
+const organizersLocked = computed(() => Boolean(props.sportsMode && organizerConfig.value.locked));
+const organizerName = computed(() => organizerConfig.value.label ?? '');
+const organizerDefault = computed(() => (
+    Array.isArray(organizerConfig.value.default) ? organizerConfig.value.default : []
+));
+const organizerInitials = computed(() => String(organizerName.value)
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part.charAt(0))
+    .join('')
+    .toUpperCase());
+const organizerOptions = computed(() => (Array.isArray(props.instructors) ? props.instructors : []));
 
 const form = useForm({
     category_id: null,
@@ -59,11 +82,13 @@ const form = useForm({
     tickets_quantity: null,
     broadcast: false,
     locales: [],
-    exhibitors: [],
+    exhibitors: [...organizerDefault.value],
     just_transmit: 0
+
 });
 
 const createNow = () => {
+    if (props.sportsMode) form.just_transmit = 0;
     form.post(route('even_events_store'), {
         forceFormData: true,
         errorBag: 'createNow',
@@ -90,21 +115,32 @@ watch(() => form.just_transmit, (data) => {
         form.broadcast = true
     }
 });
+
+const treeLine = ref(true);
+const showLeafIcon = ref(false);
+
 </script>
 
 <template>
     <FormSection @submitted="createNow" class="">
         <template #title>
-            Eventos Detalles
+            <span
+                v-if="sportsMode"
+                class="mb-2 flex items-center gap-2 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-lime-300"
+            >
+                <span class="inline-block h-1.5 w-1.5 rounded-full bg-lime-300"></span>
+                Nuevo torneo
+            </span>
+            {{ sportsMode ? 'Detalles del torneo' : 'Eventos Detalles' }}
         </template>
 
         <template #description>
-            Crear nuevo Eventos, Los campos con * son obligatorios
+            {{ sportsMode ? 'Registra un nuevo torneo deportivo. Los campos con * son obligatorios.' : 'Crear nuevo Eventos, Los campos con * son obligatorios' }}
         </template>
 
         <template #form>
             <ConfigProvider :locale="esES">
-                <div class="col-span-6">
+                <div v-if="!sportsMode" class="col-span-6">
                     <Flex :vertical="false">
                         <div style="width: 50%;" class="mr-1 flex items-center p-2 border border-gray-200 rounded dark:border-gray-700">
                             <Radio v-model="form.just_transmit" label="Evento Social" name="radio-bordered" value="0" />
@@ -114,40 +150,66 @@ watch(() => form.just_transmit, (data) => {
                         </div>
                     </Flex>
                 </div>
-                <div v-if="form.just_transmit == 0" class="col-span-6 sm:col-span-2">
+                <div v-if="!sportsMode && form.just_transmit == 0" class="col-span-6 sm:col-span-3">
                     <InputLabel for="category_id" value="Categoría *" class="mb-1" />
-                    <Select 
-                        style="width: 100%;"
-                        v-model:value="form.category_id" 
+                    <TreeSelect
+                        v-model:value="form.category_id"
+                        style="width: 100%"
+                        placeholder="Por favor seleccione"
+                        :tree-line="treeLine && { showLeafIcon }"
+                        :tree-data="categories.map((obj) => (
+                            {
+                                value: obj.id,
+                                title: obj.description,
+                                informations: obj.informations,
+                                children: obj.subcategories?.map((subObj) => (
+                                    {
+                                        value: subObj.id,
+                                        title: subObj.description,
+                                        informations: subObj.informations,
+                                        children: subObj.subcategories?.map((xSubObj) => (
+                                            {
+                                                value: xSubObj.id,
+                                                title: xSubObj.description,
+                                                informations: xSubObj.informations
+                                            })
+                                        )
+                                    })
+                                )
+                            })
+                        )"
+                        tree-node-filter-prop="title"
                         id="category_id"
-                        :options="categories.map((obj) => ({value:obj.id,label:obj.description}))"
-                    />
+                    >
+                        <template #title="{ value: val, title, informations }">
+                            <span>{{ title }}</span><br />
+                            <small v-if="informations" class="text-info">{{ informations }}</small>
+                        </template>
+                    </TreeSelect>
                     <InputError :message="form.errors.category_id" class="mt-2" />
                 </div>
-                <div v-if="form.just_transmit == 0" class="col-span-6 sm:col-span-4">
+                <div v-if="form.just_transmit == 0" class="col-span-6 sm:col-span-3">
                     <InputLabel for="dates" value="Fechas desde Hasta *" class="mb-1" />
                     <RangePicker id="dates" v-model:value="form.date" style="width: 100%;" :locale="esES" />
                     <InputError :message="form.errors.date" class="mt-2" />
                 </div>
                 <div class="col-span-6">
-                    <InputLabel for="title" value="Nombre *" class="mb-1" />
+                    <InputLabel for="title" :value="sportsMode ? 'Nombre del torneo *' : 'Nombre *'" class="mb-1" />
                     <Textarea v-model:value="form.title" id="title" />
                     <InputError :message="form.errors.title" class="mt-2" />
                 </div>
                 <div v-if="form.just_transmit == 0" class="col-span-6">
-                    <InputLabel for="description" value="Descripción *" class="mb-1" />
-                    <Editor
-                        :api-key="tiny_api_key"
+                    <InputLabel for="description" :value="sportsMode ? 'Descripción del torneo *' : 'Descripción *'" class="mb-1" />
+                    <EditorAracode
                         v-model="form.description"
-                        :init="{
-                            plugins: 'anchor autolink charmap codesample emoticons link lists media searchreplace table visualblocks wordcount',
-                            language: 'es',
-                        }"
+                        minHeight="320px"
+                        :placeholder="sportsMode ? 'Describe el torneo deportivo...' : 'Descripción del evento...'"
+                        :imageUploadUrl="editorImageUploadUrl"
                     />
                     <InputError :message="form.errors.description" class="mt-2" />
                 </div>
                 <div v-if="form.just_transmit == 0" class="col-span-6">
-                    <InputLabel for="advertising_video" value="Spot publicitario*" class="mb-1" />
+                    <InputLabel for="advertising_video" :value="sportsMode ? 'Información / enlace del torneo (opcional)' : 'Spot publicitario*'" class="mb-1" />
                     <Textarea
                         id="advertising_video"
                         v-model:value="form.advertising_video"
@@ -155,20 +217,20 @@ watch(() => form.just_transmit, (data) => {
                     <InputError :message="form.errors.advertising_video" class="mt-2" />
                 </div>
                 <div class="col-span-6">
-                    <InputLabel for="advertising_video" value="¿Se transmitirá en vivo por la página web?*" class="mb-1" />
+                    <InputLabel for="advertising_video" :value="sportsMode ? '¿Se transmitirán partidos en vivo por la web?' : '¿Se transmitirá en vivo por la página web?*'" class="mb-1" />
                     <Switch v-model:checked="form.broadcast" class="bg-gray-200" />
                 </div>
                 <div v-if="form.broadcast" class="col-span-6">
-                    <InputLabel for="iframe_transmission" value="Codigo de la Transmisión *" class="mb-1" />
+                    <InputLabel for="iframe_transmission" :value="sportsMode ? 'Código o enlace de transmisión' : 'Codigo de la Transmisión *'" class="mb-1" />
                     <Textarea v-model:value="form.iframe_transmission" id="iframe_transmission" :rows="6" />
                     <InputError :message="form.errors.iframe_transmission" class="mt-2" />
                 </div>
 
-                
+
                 <div v-if="form.just_transmit == 0" class="col-span-6">
-                    <InputLabel for="file_input" value="Imagen *" />
+                    <InputLabel for="file_input" :value="sportsMode ? 'Imagen del torneo' : 'Imagen *'" />
                     <CropperImage
-                        :aspectRatio="1920 / 500"
+                        :aspectRatio="1920 / 809"
                         :viewMode="1"
                         ref="cropper"
                         @onCrop="cropImageAndSave"
@@ -176,18 +238,47 @@ watch(() => form.just_transmit, (data) => {
                     <InputError :message="form.errors.image1" class="mt-2" />
                 </div>
                 <div v-if="form.just_transmit == 0" class="col-span-6 sm:col-span-3">
-                    <InputLabel for="exhibitors" value="Expositores *" class="mb-1" />
+                    <InputLabel for="exhibitors" :value="sportsMode ? 'Organizadores / responsables' : 'Expositores *'" class="mb-1" />
+
+                    <div
+                        v-if="organizersLocked"
+                        class="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 dark:border-slate-700 dark:bg-slate-800/60"
+                    >
+                        <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-200/80 text-sm font-bold text-slate-700 dark:bg-slate-700 dark:text-slate-100">
+                            {{ organizerInitials }}
+                        </span>
+                        <div class="min-w-0">
+                            <p class="truncate text-sm font-semibold text-slate-700 dark:text-slate-200">
+                                {{ organizerName }}
+                            </p>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">
+                                Se asigna automáticamente a la cuenta que creó la organización.
+                            </p>
+                        </div>
+                        <svg class="ml-auto h-4 w-4 shrink-0 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                            <rect x="5" y="11" width="14" height="9" rx="2" />
+                            <path d="M8 11V8a4 4 0 0 1 8 0v3" />
+                        </svg>
+                    </div>
+
                     <Select
+                        v-else
                         id="exhibitors"
                         v-model:value="form.exhibitors"
-                        :options="instructors.map((obj) => ({value: obj.person.id,label:obj.person.full_name}))"
+                        :options="organizerOptions"
                         style="width: 100%;"
                         mode="multiple"
+                        show-search
+                        option-filter-prop="label"
+                        :placeholder="sportsMode ? 'Busca a un responsable de tu organización' : 'Busca una persona'"
                     />
-                    <InputError :message="form.errors.tickets_quantity" class="mt-2" />
+                    <p v-if="!organizersLocked && sportsMode && organizerName" class="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                        Solo puedes asignar a usuarios de tu organización.
+                    </p>
+                    <InputError :message="form.errors.exhibitors" class="mt-2" />
                 </div>
                 <div v-if="form.just_transmit == 0" class="col-span-6 sm:col-span-3">
-                    <InputLabel for="locales" value="Local *" class="mb-1" />
+                    <InputLabel for="locales" :value="sportsMode ? 'Sedes deportivas' : 'Local *'" class="mb-1" />
                     <Select
                         id="locales"
                         v-model:value="form.locales"
@@ -198,7 +289,7 @@ watch(() => form.just_transmit, (data) => {
                     <InputError :message="form.errors.tickets_quantity" class="mt-2" />
                 </div>
                 <div v-if="form.just_transmit == 0" class="col-span-6 sm:col-span-2">
-                    <InputLabel for="tickets_quantity" value="Cantidad de Entradas *" class="mb-1" />
+                    <InputLabel for="tickets_quantity" :value="sportsMode ? 'Cupo estimado de equipos/personas' : 'Cantidad de Entradas *'" class="mb-1" />
                     <InputNumber
                         id="tickets_quantity"
                         v-model:value="form.tickets_quantity"
@@ -220,9 +311,9 @@ watch(() => form.just_transmit, (data) => {
                             <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
                             <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="#1C64F2"/>
                         </svg>
-                        Guardar
+                        {{ sportsMode ? 'Crear torneo' : 'Guardar' }}
                     </PrimaryButton>
-                    <Link :href="route('even_eventos_list')"  class="ml-2 inline-block px-6 py-2.5 bg-green-500 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-green-600 hover:shadow-lg focus:bg-green-600 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-700 active:shadow-lg transition duration-150 ease-in-out">Ir al Listado</Link>
+                    <Link :href="route('even_eventos_list')"  class="ml-2 inline-block px-6 py-2.5 bg-green-500 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-green-600 hover:shadow-lg focus:bg-green-600 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-700 active:shadow-lg transition duration-150 ease-in-out">{{ sportsMode ? 'Volver a torneos' : 'Ir al Listado' }}</Link>
                 </template>
             </Keypad>
         </template>

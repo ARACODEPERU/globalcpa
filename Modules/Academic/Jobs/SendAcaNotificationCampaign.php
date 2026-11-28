@@ -10,8 +10,11 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use Modules\Academic\Entities\AcaNotificationCampaign;
 use Modules\Academic\Entities\AcaNotificationCampaignRecipient;
+use Modules\Integrationhub\Services\SmsgateService;
+use Modules\Academic\Services\TelegramCourseNotifier;
 use Modules\Academic\Services\VonageSmsService;
 use Modules\Academic\Services\WhatsappCourseNotifier;
+use Modules\Academic\Support\NotificationMessageText;
 
 /**
  * Envia una campana de notificaciones completa dentro de la cola.
@@ -46,7 +49,12 @@ class SendAcaNotificationCampaign implements ShouldQueue
     {
     }
 
-    public function handle(VonageSmsService $vonage, WhatsappCourseNotifier $whatsapp): void
+    public function handle(
+        VonageSmsService $vonage,
+        SmsgateService $smsgate,
+        WhatsappCourseNotifier $whatsapp,
+        TelegramCourseNotifier $telegram
+    ): void
     {
         $campaign = AcaNotificationCampaign::with('course')->find($this->campaignId);
 
@@ -75,7 +83,8 @@ class SendAcaNotificationCampaign implements ShouldQueue
                 ->get();
 
             foreach ($recipients as $recipient) {
-                $campaign->update(['current_phone' => $recipient->phone]);
+                // En Telegram no hay telefono: el avance muestra el chat_id.
+                $campaign->update(['current_phone' => $recipient->phone ?: $recipient->chat_id]);
 
                 try {
                     if ($campaign->channel === 'whatsapp') {
@@ -88,8 +97,29 @@ class SendAcaNotificationCampaign implements ShouldQueue
                             $time,
                             $recipient->student_id ? $recipient->name : 'Prueba'
                         );
+                    } elseif ($campaign->channel === 'telegram') {
+                        // El aviso de Telegram se arma con la plantilla
+                        // configurable: el curso y el tiempo son variables que
+                        // salen de este mismo formulario.
+                        $telegram->send(
+                            (string) $recipient->chat_id,
+                            $telegram->renderCampaignText(
+                                (string) $campaign->message,
+                                $courseName,
+                                $time,
+                                (string) $recipient->name
+                            ),
+                            $telegram->campaignIsHtml()
+                        );
+                    } elseif ($campaign->channel === 'smsgate') {
+                        // SMSGate usa el mismo texto que el SMS (mensaje + curso +
+                        // tiempo) y envia por el API externo del servidor.
+                        $smsgate->send(
+                            $recipient->phone,
+                            $this->messageText($campaign->message, $courseName, $time)
+                        );
                     } else {
-                        $vonage->send($recipient->phone, $this->smsText($campaign->message, $courseName, $time));
+                        $vonage->send($recipient->phone, $this->messageText($campaign->message, $courseName, $time));
                     }
 
                     $recipient->update([
@@ -144,20 +174,23 @@ class SendAcaNotificationCampaign implements ShouldQueue
     }
 
     /**
-     * Texto del SMS: mensaje del administrador mas el curso y el tiempo.
+     * Texto que sale por SMS: mensaje del administrador mas el curso y el
+     * tiempo.
+     *
+     * El SMS conserva esta composicion a proposito (es un canal pagado por
+     * segmentos y su formato no depende de la plantilla de Telegram).
+     */
+    public function messageText(?string $message, string $courseName, ?string $time): string
+    {
+        return NotificationMessageText::compose($message, $courseName, $time);
+    }
+
+    /**
+     * Alias del texto del SMS (nombre con el que se publico originalmente).
      */
     public function smsText(?string $message, string $courseName, ?string $time): string
     {
-        $courseName = trim($courseName);
-        $time = trim((string) $time);
-
-        $parts = array_filter([
-            trim((string) $message),
-            $courseName !== '' ? 'Curso: ' . $courseName : null,
-            $time !== '' ? 'Tiempo: ' . $time : null,
-        ], fn (?string $part) => $part !== null && $part !== '');
-
-        return implode("\n", $parts);
+        return $this->messageText($message, $courseName, $time);
     }
 
     /**

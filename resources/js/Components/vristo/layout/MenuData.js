@@ -1,7 +1,8 @@
 import {
     faPoll,
     faGraduationCap,
-    faMagnifyingGlassChart
+    faMagnifyingGlassChart,
+    faCreditCard
 } from "@fortawesome/free-solid-svg-icons";
 import { ref, reactive } from 'vue';
 import menuAcademic from 'Modules/Academic/Resources/assets/js/Menu.js';
@@ -15,10 +16,13 @@ import menuHelpdesk from 'Modules/Helpdesk/Resources/assets/js/Menu.js';
 import menuHealth from 'Modules/Health/Resources/assets/js/Menu.js';
 import menuCRM from 'Modules/CRM/Resources/assets/js/Menu.js';
 import menuOnlineshop from 'Modules/Onlineshop/Resources/assets/js/Menu.js';
+//import menuCiglesia from 'Modules/Churchcommunity/Resources/assets/js/Menu.js'
 import menuBibliodata from 'Modules/Bibliodata/Resources/assets/js/Menu.js';
-import menuCommercial from 'Modules/Commercial/Resources/assets/js/Menu.js';
 import menuIntegrationhub from 'Modules/Integrationhub/Resources/assets/js/Menu.js';
+import menuCommercial from 'Modules/Commercial/Resources/assets/js/Menu.js';
+import menuTreasury from 'Modules/Treasury/Resources/assets/js/Menu.js';
 import menuPerformance from 'Modules/Performance/Resources/assets/js/Menu.js';
+import menuAi from 'Modules/Ai/Resources/assets/js/Menu.js';
 
 const MenuData = ref([
     {
@@ -44,9 +48,17 @@ const MenuData = ref([
         //     },
         // ]
     },
+    {
+        status: false,
+        text: 'Suscripciones',
+        icom: faCreditCard,
+        route: route('aca_subscriptions_showcase'),
+        permissions: 'aca_suscripciones',
+        // Es una vista Blade completa: se abre con navegación normal, no con Inertia.
+        fullPage: true,
+    },
     menuConfig,
-    menuPerformance,
-    //menuPurchases,
+    menuPurchases,
     menuSales[0],
     menuSales[1],
     menuSales[2],
@@ -58,9 +70,12 @@ const MenuData = ref([
     menuRestaurant,
     menuSocialevents,
     menuCRM,
+    // menuCiglesia,
     menuBibliodata,
+    menuIntegrationhub,
     menuCommercial,
-    menuIntegrationhub
-
+    menuTreasury,
+    menuPerformance,
+    menuAi
 ]);
 export default MenuData;

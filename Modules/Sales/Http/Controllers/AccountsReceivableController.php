@@ -18,7 +18,8 @@ use App\Models\SaleDocumentType;
 use App\Models\SaleProduct;
 use App\Models\Serie;
 use App\Models\User;
-use App\Support\PersonRegistrationGuard;
+use App\Support\PersonProfileData;
+use App\Support\PersonUserPersistenceVerifier;
 use Carbon\Carbon;
 use DataTables;
 use Illuminate\Database\Eloquent\Builder;
@@ -40,6 +41,7 @@ use Modules\Sales\Emails\CuotasMail;
 use Modules\Sales\Entities\SalePaymentSchedule;
 use Modules\Sales\Entities\SalePaymentScheduleDestination;
 use Modules\Sales\Jobs\PaymentDestinations;
+use Modules\Treasury\Services\TreasuryHooks;
 use Modules\Sales\Rules\ValidationRuleCourseSubscriptions;
 
 class AccountsReceivableController extends Controller
@@ -270,29 +272,34 @@ class AccountsReceivableController extends Controller
                 if ($person_id) {
                     $person = Person::find($person_id);
 
+                    if (! $person) {
+                        throw new \Exception('La persona indicada no existe.');
+                    }
+
                     $personData = [
-                        // 'document_type_id' => $request->get('alu_document_type'),
                         'short_name' => $request->get('names'),
                         'full_name' => $request->get('afather').' '.$request->get('amother').' '.$request->get('names'),
-                        // 'number' => $request->get('alu_number'),
+                        'telephone' => $request->get('telephone'),
                         'email' => $request->get('email'),
                         'names' => $request->get('names'),
                         'father_lastname' => $request->get('afather'),
                         'mother_lastname' => $request->get('amother'),
                     ];
 
-                    // Solo se actualizan los datos que el formulario envia con valor:
-                    // un campo ausente no debe borrar el dato que ya tiene la persona.
-                    foreach (['telephone', 'address', 'birthdate', 'gender', 'ubigeo', 'ubigeo_description', 'country_id'] as $field) {
-                        if ($request->filled($field)) {
-                            $personData[$field] = $request->get($field);
-                        }
-                    }
+                    // address/ubigeo/country/gender/birthdate son opcionales en
+                    // este formulario: si no llegan, se conserva el valor actual.
+                    $personData = array_merge($personData, PersonProfileData::onlyFilled($request, [
+                        'address' => 'address',
+                        'birthdate' => 'birthdate',
+                        'gender' => 'gender',
+                        'ubigeo' => 'ubigeo',
+                        'ubigeo_description' => 'ubigeo_description',
+                        'country_id' => 'country_id',
+                    ]));
 
                     $person->update($personData);
-
                 } else {
-                    $person = Person::create([
+                    $personData = [
                         'document_type_id' => $request->get('alu_document_type'),
                         'short_name' => $request->get('names'),
                         'full_name' => $request->get('afather').' '.$request->get('amother').' '.$request->get('names'),
@@ -311,7 +318,8 @@ class AccountsReceivableController extends Controller
                         'ubigeo' => $request->get('ubigeo'),
                         'ubigeo_description' => $request->get('ubigeo_description'),
                         'country_id' => $request->get('country_id'),
-                    ]);
+                    ];
+                    $person = Person::create($personData);
                 }
 
                 $student = AcaStudent::firstOrCreate(
@@ -319,36 +327,26 @@ class AccountsReceivableController extends Controller
                     ['student_code' => $request->get('alu_number')]
                 );
 
-                $user = User::firstOrCreate(
-                    [
-                        'email' => $request->get('email'),
-                    ],
-                    [
+                $user = User::where('person_id', $person->id)->first()
+                    ?: User::where('email', $request->get('email'))->first();
+
+                if ($user) {
+                    // Un alumno existente conserva su contrasena y su avatar.
+                    $user->update([
                         'name' => $request->get('names'),
+                        'email' => $request->get('email'),
+                        'person_id' => $person->id,
+                    ]);
+                } else {
+                    $user = User::create([
+                        'name' => $request->get('names'),
+                        'email' => $request->get('email'),
                         'password' => Hash::make($request->get('alu_number')),
                         'local_id' => 1,
                         'person_id' => $person->id,
-                    ]
-                );
+                    ]);
+                }
 
-                // Verificacion final: persona y usuario registrados con los datos recientes.
-                $registration = app(PersonRegistrationGuard::class)->ensure($person, [
-                    'document_type_id' => $request->get('alu_document_type'),
-                    'number' => $request->get('alu_number'),
-                    'names' => $request->get('names'),
-                    'father_lastname' => $request->get('afather'),
-                    'mother_lastname' => $request->get('amother'),
-                    'full_name' => trim($request->get('afather') . ' ' . $request->get('amother') . ' ' . $request->get('names')),
-                    'email' => $request->get('email'),
-                    'telephone' => $request->get('telephone'),
-                    'address' => $request->get('address'),
-                    'status' => true,
-                ], [
-                    'name' => $request->get('names'),
-                    'email' => $request->get('email'),
-                ], $user);
-
-                $user = $registration['user'];
                 $user->assignRole('Alumno');
 
                 $payments = json_encode($request->get('payments'));
@@ -541,6 +539,19 @@ class AccountsReceivableController extends Controller
                 $name = Person::where('id', $sale_note->client_id)->first()->short_name;
                 $cronograma = SalePaymentSchedule::where('sale_id', $sale_note->id)->get();
 
+                PersonUserPersistenceVerifier::verify(
+                    $person,
+                    $user,
+                    array_merge(
+                        $personData,
+                        $person_id ? [] : [
+                            'document_type_id' => $request->get('alu_document_type'),
+                            'number' => $request->get('alu_number'),
+                        ]
+                    ),
+                    array_merge($userData, ['person_id' => $person->id])
+                );
+
                 // Mail::to($request->get('email'))->send(new CuotasMail($sale_note, $name, $cronograma));
 
             });
@@ -726,44 +737,6 @@ class AccountsReceivableController extends Controller
         return $currentInstallmentNumber == $maxNumber;
     }
 
-    /**
-     * Verifica si el pago actual liquida todas las cuotas de la venta.
-     * Se calcula en el servidor para no depender del flag del formulario y
-     * para cubrir cuotas desiguales o con redondeo en la ultima cuota.
-     */
-    private function saleWillBeFullyPaid($saleId, $items)
-    {
-        $schedules = SalePaymentSchedule::where('sale_id', $saleId)->get();
-
-        if ($schedules->isEmpty()) {
-            return false;
-        }
-
-        $appliedBySchedule = [];
-
-        foreach ((array) $items as $item) {
-            $scheduleId = $item['id'] ?? null;
-
-            if (! $scheduleId) {
-                continue;
-            }
-
-            $appliedBySchedule[$scheduleId] = ($appliedBySchedule[$scheduleId] ?? 0)
-                + (float) ($item['amount'] ?? 0);
-        }
-
-        foreach ($schedules as $schedule) {
-            $remaining = (float) $schedule->remaining_amount
-                - ($appliedBySchedule[$schedule->id] ?? 0);
-
-            if ($remaining > 0.01) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
     private function buildInstallmentDescription($installmentNumber, $sale)
     {
         $names = [];
@@ -796,6 +769,52 @@ class AccountsReceivableController extends Controller
         }
 
         return "{$label} - {$list}.";
+    }
+
+    /**
+     * Determina si el pago en curso liquida todas las cuotas de la venta.
+     *
+     * Se agrupan los montos enviados por id de cuota y se comparan contra el
+     * saldo pendiente (remaining_amount) de cada cuota de la venta, de modo
+     * que no se depende del flag is_last_installment que envía el navegador.
+     */
+    private function saleWillBeFullyPaid($saleId, $items)
+    {
+        if (! is_array($items) || count($items) === 0) {
+            return false;
+        }
+
+        // Monto que se aplicará a cada cuota en este comprobante
+        $appliedBySchedule = [];
+
+        foreach ($items as $item) {
+            $scheduleId = $item['id'] ?? null;
+
+            if ($scheduleId === null) {
+                continue;
+            }
+
+            $applied = (float) ($item['amount'] ?? 0);
+            $appliedBySchedule[$scheduleId] = ($appliedBySchedule[$scheduleId] ?? 0) + $applied;
+        }
+
+        $schedules = SalePaymentSchedule::where('sale_id', $saleId)->get();
+
+        if ($schedules->isEmpty()) {
+            return false;
+        }
+
+        foreach ($schedules as $schedule) {
+            $applied = $appliedBySchedule[$schedule->id] ?? 0;
+            $remaining = round((float) ($schedule->remaining_amount ?? 0) - $applied, 2);
+
+            // Si alguna cuota queda con saldo, no es la última cuota
+            if ($remaining > 0.01) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public function storeSpacePayments(Request $request, $id)
@@ -928,10 +947,9 @@ class AccountsReceivableController extends Controller
                 $forceUnlimited = $request->get('force_unlimited') ?? false;
                 $nextPaymentDate = $request->get('next_payment_date');
 
-                // Se calcula en el servidor: cuando la cuota que se paga liquida
-                // toda la venta, los cursos ya son del alumno y deben quedar
-                // con acceso ilimitado.
-                $isLastInstallment = $this->saleWillBeFullyPaid($sale->id, $request->get('items', []));
+                // Se calcula en el servidor si este pago liquida la venta completa,
+                // sin confiar en el flag is_last_installment del navegador.
+                $isLastInstallment = $this->saleWillBeFullyPaid($sale->id, $request->get('items'));
 
                 $registrationResult = $this->updateRegistrosEstudiante($sale, $student_id, $request->get('total'), $document, $forceUnlimited, $nextPaymentDate, $isLastInstallment);
 
@@ -1127,7 +1145,13 @@ class AccountsReceivableController extends Controller
                 $sale->petty_cash_id = $petty_cash->id;
                 $sale->save();
 
-                $this->paymentDestinationsStore($request->get('payments'), $scheduleId, $document->id, $sale->id);
+                $destinations = $this->paymentDestinationsStore($request->get('payments'), $scheduleId, $document->id, $sale->id);
+
+                // Tesorería: cada cobro del cronograma genera su movimiento,
+                // registrado dentro de la transacción del comprobante.
+                foreach ($destinations as $destination) {
+                    TreasuryHooks::recordScheduleDestination($destination);
+                }
 
                 return $document;
             });
@@ -1180,7 +1204,7 @@ class AccountsReceivableController extends Controller
         ]);
     }
 
-    public function updateRegistrosEstudiante($sale, $student_id, $price_sale, $document, $forceUnlimited = false, $nextPaymentDate = null, $isLastInstallment = false)
+    public function updateRegistrosEstudiante($sale, $student_id, $price_sale, $document, $forceUnlimited = false, $nextPaymentDate = null, bool $isLastInstallment = false)
     {
         $products = $sale->saleProduct;
         $total = $price_sale;
@@ -1209,9 +1233,6 @@ class AccountsReceivableController extends Controller
 
                 $toPay = $registration->amount_paid - ($registration->advancement ?? 0);
 
-                // Si esta es la ultima cuota de la venta el curso ya esta pagado
-                // en su totalidad: acceso ilimitado aunque el monto de la cuota
-                // no cubra exactamente el saldo (cuotas desiguales o redondeo).
                 if ($forceUnlimited || $isLastInstallment || $total >= $toPay) {
                     $registration->advancement = $registration->amount_paid;
                     $total -= $toPay;
@@ -1279,13 +1300,21 @@ class AccountsReceivableController extends Controller
         return ['needs_registration' => false];
     }
 
+    /**
+     * Registra los cobros del cronograma y devuelve los modelos creados, para
+     * que la capa de tesorería registre cada uno con su propio origen.
+     *
+     * @return array<int, SalePaymentScheduleDestination>
+     */
     public function paymentDestinationsStore($payments, $schedule_id, $document_id, $sale_id)
     {
+        $created = [];
+
         foreach ($payments as $payment) {
-            SalePaymentScheduleDestination::create([
+            $created[] = SalePaymentScheduleDestination::create([
                 'method_id' => $payment['type'],
-                'date_payment' => $payment['date_payment'],
-                'reference' => $payment['reference'],
+                'date_payment' => $payment['date_payment'] ?? null,
+                'reference' => $payment['reference'] ?? null,
                 'amount' => $payment['amount'],
                 'schedule_id' => $schedule_id,
                 'document_id' => $document_id,
@@ -1294,6 +1323,8 @@ class AccountsReceivableController extends Controller
                 'user_id' => Auth::id(),
             ]);
         }
+
+        return $created;
     }
 
     public function paymentDestinationsExportExcel(Request $request)

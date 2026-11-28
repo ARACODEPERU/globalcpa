@@ -1,88 +1,170 @@
 <?php
 
 return [
-    'name' => 'Performance',
 
     /*
     |--------------------------------------------------------------------------
-    | Carpetas auditadas
+    | Permisos
     |--------------------------------------------------------------------------
-    | Cada pestaña agrupa carpetas de imagenes. Las rutas que empiezan con
-    | "@public/" se resuelven contra public_path(); el resto contra
-    | storage_path('app/public') (lo que se sirve en /storage/...).
+    |
+    | Coinciden con los que exige Routes/web.php y con los que declara el menú
+    | lateral. Se crean y se conceden a los roles de administración en la
+    | migración y en el seeder del módulo.
+    |
     */
+
+    'permissions' => [
+        'performance_images',
+        'performance_weight',
+        'performance_queue',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Inventario
+    |--------------------------------------------------------------------------
+    |
+    | Segundos que se conserva el inventario en caché. El botón «Actualizar
+    | inventario» de la pantalla fuerza un escaneo nuevo.
+    |
+    */
+
+    'cache_seconds' => 600,
+
+    'page_size' => 20,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Carpetas de imágenes
+    |--------------------------------------------------------------------------
+    |
+    | Solo se revisan los archivos que suben los usuarios: el disco público de
+    | storage (storage/app/public, expuesto en /storage). Los archivos que
+    | forman parte del proyecto (public/img, public/themes, public/images) no
+    | entran en el inventario porque no son contenido editable del cliente.
+    |
+    | `tab` es la pestaña por defecto cuando la imagen no se detecta en uso
+    | dentro de un curso, el blog o la tienda. Las imágenes referenciadas se
+    | colocan en su pestaña real independientemente de la carpeta.
+    |
+    */
+
+    'directories' => [
+        ['path' => storage_path('app/public'), 'url' => '/storage', 'tab' => 'otros'],
+    ],
+
+    'extensions' => ['jpg', 'jpeg', 'png', 'webp', 'gif'],
+
+    // Carpetas que nunca se recorren aunque estén dentro de una carpeta escaneada.
+    'ignore_directories' => ['node_modules', 'vendor', '.git', 'cache', 'tmp'],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Pestañas
+    |--------------------------------------------------------------------------
+    */
+
     'tabs' => [
-        'pages' => [
-            'label' => 'Paginas',
-            'description' => 'Imagenes de las paginas del sitio: CMS, landings, testimonios, instituciones y estaticas.',
-            'roots' => [
-                'uploads/cmsLanding',
-                'uploads/cms',
-                'uploads/landing',
-                'uploads/testimonies',
-                'uploads/institutions',
-                '@public/img',
-                '@public/bancos_logos',
-            ],
-        ],
-        'courses' => [
-            'label' => 'Cursos',
-            'description' => 'Portadas de cursos y certificados.',
-            'roots' => [
-                'uploads/courses',
-                'academic/certificates',
-            ],
-        ],
-        'blog' => [
-            'label' => 'Blog',
-            'description' => 'Imagenes de articulos del blog.',
-            'roots' => [
-                'uploads/blog',
-            ],
-        ],
-        'others' => [
-            'label' => 'Otros',
-            'description' => 'Avatares de usuarios, fotos de alumnos y archivos sueltos de uploads.',
-            'roots' => [
-                'uploads/students',
-                'uploads/teachers',
-                'users',
-            ],
-        ],
+        'cursos'     => 'Cursos',
+        'blog'       => 'Blog',
+        'productos'  => 'Productos',
+        'otros'      => 'Otros',
+        'orfanas'    => 'Huérfanas',
+        'duplicadas' => 'Repetidas',
+        'gif'        => 'GIF animados',
+        'cuarentena' => 'Cuarentena',
     ],
 
-    // Extensiones consideradas imagenes
-    'image_extensions' => ['jpg', 'jpeg', 'png', 'webp', 'gif', 'bmp'],
+    /*
+    |--------------------------------------------------------------------------
+    | Umbral de «pesada»
+    |--------------------------------------------------------------------------
+    |
+    | Tamaño en KB a partir del cual una imagen se marca como candidata a
+    | revisión en el resumen.
+    |
+    */
 
-    // Extensiones que el optimizador puede reescribir
-    'resizable_extensions' => ['jpg', 'jpeg', 'png', 'webp'],
+    'oversized_kb' => 300,
 
-    // Umbrales para marcar un archivo como mejorable
-    'thresholds' => [
-        'bytes' => 300 * 1024,
-        'width' => 1920,
+    /*
+    |--------------------------------------------------------------------------
+    | Nuevas imágenes y avisos
+    |--------------------------------------------------------------------------
+    |
+    | Las imágenes modificadas en los últimos `new_days` días que superen
+    | `oversized_kb` se marcan como nuevas y el comando `performance:audit`
+    | crea una alerta para el administrador.
+    |
+    */
+
+    'new_days' => 7,
+
+    // Días que se conservan las copias de seguridad antes de borrarlas. El
+    // administrador puede adelantar ese borrado desde la pantalla.
+    'backup_days' => 30,
+
+    // Días mínimos que un archivo debe llevar en cuarentena antes de que se
+    // permita eliminarlo definitivamente.
+    'quarantine_days' => 7,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Variantes WebP
+    |--------------------------------------------------------------------------
+    */
+
+    'webp_widths' => [0, 1280, 800],
+
+    'webp_quality' => 82,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Peso por página
+    |--------------------------------------------------------------------------
+    |
+    | Presupuesto de peso por página y recursos que se cargan en todas las
+    | páginas públicas. Se suman al peso de las imágenes de cada página.
+    |
+    */
+
+    'page_budget_kb' => 1500,
+
+    'global_assets' => [
+        'css/website-public.css',
     ],
 
-    // Copia de seguridad antes de sobrescribir (mismo nombre, otra carpeta)
-    'backup_path' => 'performance-backups',
+    /*
+    |--------------------------------------------------------------------------
+    | Vistas y su URL pública
+    |--------------------------------------------------------------------------
+    |
+    | Cuando una imagen solo aparece en una vista Blade, se muestra el archivo
+    | y, si está en este mapa, la ruta real de la página. Las claves son rutas
+    | relativas a resources/views sin la extensión .blade.php.
+    |
+    */
 
-    'quality' => [
-        'min' => 55,
-        'max' => 95,
-        'default' => 82,
+    'view_urls' => [
+        'aracode/pages/home'           => '/',
+        'aracode/pages/soluciones'     => '/soluciones',
+        'aracode/pages/precios'        => '/precios',
+        'aracode/pages/portafolio'     => '/portafolio',
+        'aracode/pages/empresa'        => '/empresa',
+        'aracode/pages/contacto'       => '/contacto',
+        'aracode/pages/faq'            => '/faq',
+        'aracode/pages/blog'           => '/blog',
+        'aracode/pages/casos-exito'    => '/casos-exito',
+        'aracode/pages/equipo'         => '/equipo',
+        'aracode/pages/kirafact'       => '/kirafact',
+        'aracode/pages/kapta'          => '/kapta',
+        'aracode/pages/clinica'        => '/clinica',
+        'aracode/pages/gracias'        => '/gracias',
+        'aracode/pages/blog-articulo'  => '/blog',
     ],
 
-    'max_targets_per_request' => 200,
-
-    // Limpieza de carpetas temporales
-    'cleanup' => [
-        'days' => env('PERFORMANCE_CLEANUP_DAYS', 7),
-        'targets' => [
-            ['label' => 'Certificados temporales', 'path' => storage_path('app/public/tmp_html_cert')],
-            ['label' => 'QR temporales', 'path' => storage_path('app/public/tmp_qr')],
-            ['label' => 'Vouchers de negociaciones', 'path' => storage_path('app/public/negotiations/vouchers')],
-            ['label' => 'Backups de imagenes', 'path' => storage_path('app/performance-backups')],
-            ['label' => 'Vistas compiladas', 'path' => storage_path('framework/views')],
-        ],
+    'view_directories' => [
+        resource_path('views/aracode'),
+        resource_path('views'),
     ],
 ];

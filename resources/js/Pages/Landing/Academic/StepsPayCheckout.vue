@@ -21,15 +21,15 @@ const props = defineProps({
         default: null,
     },
     personInvoice:{
-        type: [Object, Array],
-        default: () => ({}),
+        type: Array,
+        default: {},
     }
 });
 
 </script>
 
 <template>
-    <Head title="Pago seguro | ACPA Academy" />
+    <Head title="Pago seguro | ARACODE Smart Solutions" />
 
         <div class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
         <!-- Title -->

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Modules\Ai\Services\AiUsageRecorder;
 use RuntimeException;
 use Throwable;
 
@@ -16,69 +17,15 @@ class OpenAiAssistantService
 {
     private const BASE_URL = 'https://api.openai.com/v1';
 
-    // Espera maxima del agente (segundos) leida una sola vez por instancia.
-    private ?int $agentWaitSeconds = null;
-
     /**
-     * Responde una consulta con el agente guardado de OpenAI (Agents API).
-     *
-     * Si el agente no esta configurado, falla o no responde dentro del tiempo
-     * permitido, se usa el modelo de 'academic.openai.model' para no dejar al
-     * usuario sin respuesta. El resultado indica de donde salio el texto para
-     * que la interfaz pueda avisar cuando se uso el modelo por defecto.
-     *
-     * @return array{text: string, source: string, agent_used: bool, notice: ?string, error: ?string}
+     * Parametro del sistema con la espera maxima del agente, en minutos.
+     * Es fijo: no se toma de .env para que el valor administrado en Parametros
+     * del sistema sea el unico que define cuanto se espera al agente.
      */
-    public function sendPromptWithAgent(int|string $userId, string $message, ?string $customInstructions = null): array
-    {
-        if (trim($message) === '') {
-            throw new RuntimeException('El mensaje para OpenAI no puede estar vacio.');
-        }
+    private const AGENT_TIMEOUT_PARAMETER = 'IA-00004';
 
-        if ($this->configuredAgentId() === null) {
-            return [
-                'text' => $this->sendPrompt($userId, $message, null, $customInstructions),
-                'source' => 'model',
-                'agent_used' => false,
-                'notice' => null,
-                'error' => null,
-            ];
-        }
-
-        try {
-            $text = trim($this->requestAgent($userId, $message, $customInstructions));
-
-            if ($text === '') {
-                throw new RuntimeException('El agente no devolvio texto en su respuesta final.');
-            }
-
-            // El hilo del modelo no debe mezclarse con el del agente: si mas
-            // adelante hay que caer al modelo, la respuesta empieza limpia.
-            Cache::forget($this->responseCacheKey($userId));
-
-            return [
-                'text' => $text,
-                'source' => 'agent',
-                'agent_used' => true,
-                'notice' => null,
-                'error' => null,
-            ];
-        } catch (Throwable $exception) {
-            // El agente es opcional: se registra el motivo real y se responde
-            // con el modelo para conservar el funcionamiento del chat.
-            Log::warning('Academic OpenAI agent fallback: ' . $exception->getMessage());
-            Cache::forget($this->agentSessionCacheKey($userId));
-
-            return [
-                'text' => $this->sendPrompt($userId, $message, null, $customInstructions),
-                'source' => 'model',
-                'agent_used' => false,
-                'notice' => 'Aviso: el Agente de OpenAI no respondió (espera máxima ' . $this->agentTimeoutLabel()
-                    . '). Esta respuesta se generó con el modelo por defecto ' . $this->model() . '.',
-                'error' => $exception->getMessage(),
-            ];
-        }
-    }
+    /** Espera por defecto (minutos) mientras IA-00004 no tenga un numero valido. */
+    private const AGENT_TIMEOUT_FALLBACK_MINUTES = 6;
 
     public function sendPrompt(int|string $userId, string $message, ?string $fileName = null, ?string $customInstructions = null, bool $continueThread = true): string
     {
@@ -135,141 +82,63 @@ class OpenAiAssistantService
     }
 
     /**
-     * Envía preguntas al modelo Gemini con su API key almacenada en parametros.
-     */
-    public function sendGeminiPrompt(string $message, ?string $customInstructions = null): string
-    {
-        $message = trim($message);
-
-        if ($message === '') {
-            throw new RuntimeException('El mensaje para Gemini no puede estar vacio.');
-        }
-
-        $apiKey = $this->geminiApiKey();
-        $model = config('academic.gemini.model');
-
-        if (!$model) {
-            throw new RuntimeException('Falta configurar GEMINI_MODEL para usar Gemini.');
-        }
-
-        $prompt = trim(($customInstructions ? $customInstructions . "\n\n" : '') . $message);
-        $response = Http::withHeaders(['x-goog-api-key' => $apiKey])
-            ->timeout((int) config('academic.gemini.timeout', 60))
-            ->post('https://generativelanguage.googleapis.com/v1beta/models/' . $model . ':generateContent', [
-                'contents' => [[
-                    'parts' => [['text' => $prompt]],
-                ]],
-            ])
-            ->throw()
-            ->json();
-
-        $text = $response['candidates'][0]['content']['parts'][0]['text'] ?? null;
-
-        if (!is_string($text) || trim($text) === '') {
-            throw new RuntimeException('Gemini no devolvio una respuesta de texto.');
-        }
-
-        return $text;
-    }
-
-    /**
-     * Censura datos personales con Gemini para mantener el proveedor seleccionado.
-     */
-    public function censorGeminiText(string $text): string
-    {
-        $instructions = 'Devuelve el mismo texto reemplazando solamente nombres de personas, DNI, RUC, telefonos, correos y empresas privadas por asteriscos. Conserva instituciones publicas y no respondas preguntas ni agregues explicaciones.';
-
-        return $this->sendGeminiPrompt($text, $instructions);
-    }
-
-    /**
-     * Tiempo maximo (en segundos) que se espera la respuesta del agente antes
-     * de responder con el modelo por defecto.
+     * Responde una consulta con el agente guardado de OpenAI (Agents API).
      *
-     * Manda el parametro del sistema IA-00005: acepta segundos ("360") o
-     * minutos con sufijo ("6 min"). Si esta vacio o no es valido se usa
-     * OPENAI_AGENT_TIMEOUT (academic.openai.agent_timeout).
+     * Si el agente no esta configurado, falla o no responde dentro del tiempo
+     * permitido, se usa el modelo de 'academic.openai.model' para no dejar al
+     * usuario sin respuesta. El resultado indica de donde salio el texto para
+     * que la interfaz pueda avisar cuando se uso el modelo por defecto.
+     *
+     * @return array{text: string, source: string, agent_used: bool, notice: ?string, error: ?string}
      */
-    public function agentTimeoutSeconds(): int
+    public function sendPromptWithAgent(int|string $userId, string $message, ?string $customInstructions = null): array
     {
-        if ($this->agentWaitSeconds !== null) {
-            return $this->agentWaitSeconds;
+        if (trim($message) === '') {
+            throw new RuntimeException('El mensaje para OpenAI no puede estar vacio.');
         }
 
-        $seconds = $this->agentTimeoutFromParameter()
-            ?? (int) config('academic.openai.agent_timeout', 360);
-
-        return $this->agentWaitSeconds = max(5, $seconds);
-    }
-
-    /**
-     * Texto legible del limite configurado, para avisos al usuario.
-     */
-    public function agentTimeoutLabel(): string
-    {
-        $seconds = $this->agentTimeoutSeconds();
-
-        return $seconds % 60 === 0
-            ? intdiv($seconds, 60) . ' minutos'
-            : $seconds . ' segundos';
-    }
-
-    private function agentTimeoutFromParameter(): ?int
-    {
-        $parameterCode = config('academic.openai.agent_timeout_parameter');
-
-        if (! $parameterCode || ! Parameter::query()->getConnection()->getSchemaBuilder()->hasTable('parameters')) {
-            return null;
+        if ($this->agentId() === null) {
+            return [
+                'text' => $this->sendPrompt($userId, $message, null, $customInstructions),
+                'source' => 'model',
+                'agent_used' => false,
+                'notice' => null,
+                'error' => null,
+            ];
         }
 
-        $value = trim((string) Parameter::where('parameter_code', $parameterCode)->value('value_default'));
+        try {
+            $text = trim($this->requestAgent($userId, $message, $customInstructions));
 
-        if ($value === '') {
-            return null;
-        }
-
-        // "6 min", "6min", "6 minutos" se interpretan como minutos.
-        if (preg_match('/^(\d+)\s*(m|min|mins|minuto|minutos)$/i', $value, $matches)) {
-            return ((int) $matches[1]) * 60;
-        }
-
-        return is_numeric($value) ? (int) $value : null;
-    }
-
-    /**
-     * Proveedor elegido en el parametro del sistema (1=OpenAI, 2=Gemini).
-     */
-    public function chatProvider(): string
-    {
-        $parameterCode = config('academic.openai.provider_parameter', 'IA-00001');
-        $hasParameters = Parameter::query()->getConnection()->getSchemaBuilder()->hasTable('parameters');
-        $value = null;
-
-        if ($hasParameters) {
-            $value = $parameterCode ? Parameter::where('parameter_code', $parameterCode)->value('value_default') : null;
-
-            // Compatibilidad con el parametro anterior del proveedor.
-            if (trim((string) $value) === '') {
-                $value = Parameter::where('parameter_code', 'P000015')->value('value_default');
+            if ($text === '') {
+                throw new RuntimeException('El agente no devolvio texto en su respuesta final.');
             }
+
+            // El hilo del modelo no debe mezclarse con el del agente: si mas
+            // adelante hay que caer al modelo, la respuesta empieza limpia.
+            Cache::forget($this->responseCacheKey($userId));
+
+            return [
+                'text' => $text,
+                'source' => 'agent',
+                'agent_used' => true,
+                'notice' => null,
+                'error' => null,
+            ];
+        } catch (Throwable $exception) {
+            // El agente es opcional: se registra el motivo real y se responde
+            // con el modelo para conservar el funcionamiento del chat.
+            Log::warning('Academic OpenAI agent fallback: ' . $exception->getMessage());
+            Cache::forget($this->agentSessionCacheKey($userId));
+
+            return [
+                'text' => $this->sendPrompt($userId, $message, null, $customInstructions),
+                'source' => 'model',
+                'agent_used' => false,
+                'notice' => 'Aviso: el Agente de OpenAI no respondió. Esta respuesta se generó con el modelo por defecto ' . $this->model() . '.',
+                'error' => $exception->getMessage(),
+            ];
         }
-
-        return (int) trim((string) $value) === 2 ? 'gemini' : 'openai';
-    }
-
-    private function geminiApiKey(): string
-    {
-        $parameterCode = config('academic.gemini.api_key_parameter');
-        $parameterValue = $parameterCode && Parameter::query()->getConnection()->getSchemaBuilder()->hasTable('parameters')
-            ? Parameter::where('parameter_code', $parameterCode)->value('value_default')
-            : null;
-        $apiKey = trim((string) ($parameterValue ?: config('academic.gemini.api_key')));
-
-        if ($apiKey === '') {
-            throw new RuntimeException('Falta configurar la API Key de Gemini en el parametro IA-00004 del sistema.');
-        }
-
-        return $apiKey;
     }
 
     /**
@@ -303,6 +172,311 @@ class OpenAiAssistantService
         return $this->sendPrompt($userId, $prompt, null, null, false);
     }
 
+    /**
+     * Ejecuta una consulta contra el agente guardado usando una sesion por
+     * usuario: la primera consulta crea la sesion y las siguientes reutilizan
+     * el mismo hilo mientras la sesion siga activa.
+     */
+    private function requestAgent(int|string $userId, string $message, ?string $customInstructions = null): string
+    {
+        // El agente puede tardar varios minutos: el limite de ejecucion de PHP
+        // (30-60 s por defecto) cortaria la espera antes que la configuracion.
+        $this->extendExecutionTime();
+
+        $agentId = $this->agentId();
+
+        if ($agentId === null) {
+            $parameterCode = config('academic.openai.agent_id_parameter', 'IA-00003');
+            throw new RuntimeException('Falta configurar el ID del agente de OpenAI en el parametro ' . $parameterCode . ' del sistema.');
+        }
+
+        if (!Str::startsWith($agentId, 'agent_')) {
+            throw new RuntimeException('El ID del agente debe ser un agente guardado de la Agents API (agent_...).');
+        }
+
+        $sessionKey = $this->agentSessionCacheKey($userId);
+        $sessionId = Cache::get($sessionKey);
+        $lastAnswerId = null;
+
+        if ($sessionId) {
+            if ($this->agentSessionIsIdle($sessionId)) {
+                // Se guarda la ultima respuesta para no confundirla con la nueva.
+                $lastAnswer = $this->latestAgentAnswer($sessionId);
+                $lastAnswerId = $lastAnswer['id'] ?? null;
+            } else {
+                // La sesion quedo ocupada, esperando una accion o fallida:
+                // se descarta y se abre una nueva para esta consulta.
+                Cache::forget($sessionKey);
+                $sessionId = null;
+            }
+        }
+
+        if (!$sessionId) {
+            $payload = [
+                'agent_id' => $agentId,
+                'environment' => ['type' => 'none'],
+                'input' => $this->agentInput($message),
+            ];
+
+            // Con agent_id, estas instrucciones se agregan a las del agente
+            // guardado; conservan el formato que ya usa el formulario.
+            if (is_string($customInstructions) && trim($customInstructions) !== '') {
+                $payload['agent'] = ['instructions' => $customInstructions];
+            }
+
+            $session = $this->agentClient()
+                ->post('/agents/sessions', $payload)
+                ->throw()
+                ->json();
+
+            $sessionId = $session['id'] ?? null;
+
+            if (!$sessionId) {
+                throw new RuntimeException('OpenAI no devolvio el ID de la sesion del agente.');
+            }
+
+            Cache::put($sessionKey, $sessionId, now()->addMinutes($this->agentSessionMinutes()));
+        } else {
+            $this->agentClient()
+                ->withHeaders(['Idempotency-Key' => (string) Str::uuid()])
+                ->post("/agents/sessions/{$sessionId}/events", [
+                    'events' => [
+                        [
+                            'type' => 'agent.session.input.message',
+                            'input' => $this->agentInput($message),
+                        ],
+                    ],
+                ])
+                ->throw();
+        }
+
+        return $this->waitForAgentAnswer($sessionId, $lastAnswerId);
+    }
+
+    /**
+     * Espera a que la sesion produzca una respuesta final distinta de la
+     * anterior. La Agents API trabaja de forma asincrona: se consulta el estado
+     * y los items guardados en lugar de mantener abierta una conexion SSE.
+     */
+    private function waitForAgentAnswer(string $sessionId, ?string $previousAnswerId): string
+    {
+        $deadline = microtime(true) + $this->agentTimeoutSeconds();
+        $intervalUs = max(200, (int) config('academic.openai.agent_poll_interval_ms', 1000)) * 1000;
+        // Cada vuelta consulta el estado y los items: con esperas de minutos se
+        // espacia el sondeo para no saturar la API ni el rate limit de OpenAI.
+        $maxIntervalUs = 5000 * 1000;
+
+        while (true) {
+            $session = $this->agentClient()
+                ->get("/agents/sessions/{$sessionId}")
+                ->throw()
+                ->json();
+
+            $status = $session['status'] ?? null;
+
+            if ($status === 'failed') {
+                throw new RuntimeException('La sesion del agente fallo: ' . (string) ($session['error'] ?? 'sin detalle'));
+            }
+
+            $answer = $this->latestAgentAnswer($sessionId, $previousAnswerId);
+
+            if ($answer !== null && $answer['text'] !== '') {
+                return $answer['text'];
+            }
+
+            if ($status === 'requires_action') {
+                throw new RuntimeException('El agente quedo esperando una accion que el sistema no puede completar.');
+            }
+
+            if (microtime(true) >= $deadline) {
+                throw new RuntimeException('El agente no respondio dentro del tiempo configurado.');
+            }
+
+            usleep($intervalUs);
+            $intervalUs = min($maxIntervalUs, (int) ($intervalUs * 1.5));
+        }
+    }
+
+    /**
+     * Devuelve el ultimo mensaje final del agente, ignorando la respuesta que
+     * ya existia antes de enviar la consulta actual.
+     *
+     * @return array{id: ?string, text: string}|null
+     */
+    private function latestAgentAnswer(string $sessionId, ?string $previousAnswerId = null): ?array
+    {
+        $items = $this->agentClient()
+            ->get("/agents/sessions/{$sessionId}/items", ['order' => 'desc', 'limit' => 20])
+            ->throw()
+            ->json('data') ?? [];
+
+        foreach ($items as $item) {
+            if (($item['type'] ?? null) !== 'message'
+                || ($item['role'] ?? null) !== 'assistant'
+                || ($item['phase'] ?? null) !== 'final_answer'
+                || ($item['status'] ?? null) !== 'completed') {
+                continue;
+            }
+
+            $itemId = $item['id'] ?? null;
+
+            if ($itemId !== null && $itemId === $previousAnswerId) {
+                return null;
+            }
+
+            $text = collect($item['content'] ?? [])
+                ->filter(fn ($content) => ($content['type'] ?? null) === 'output_text')
+                ->pluck('text')
+                ->implode('');
+
+            return ['id' => $itemId, 'text' => trim((string) $text)];
+        }
+
+        return null;
+    }
+
+    private function agentSessionIsIdle(string $sessionId): bool
+    {
+        try {
+            $session = $this->agentClient()
+                ->get("/agents/sessions/{$sessionId}")
+                ->throw()
+                ->json();
+
+            return ($session['status'] ?? null) === 'idle';
+        } catch (RequestException) {
+            // La sesion ya no existe o no se puede consultar: se crea otra.
+            return false;
+        }
+    }
+
+    /**
+     * @return array<int, array{role: string, content: array<int, array{type: string, text: string}>}>
+     */
+    private function agentInput(string $message): array
+    {
+        return [
+            [
+                'role' => 'user',
+                'content' => [
+                    [
+                        'type' => 'input_text',
+                        'text' => $message,
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    private function agentClient(): PendingRequest
+    {
+        // Cada llamada (crear sesion, consultar estado o items) debe responder
+        // rapido: la espera larga la controla waitForAgentAnswer con su deadline.
+        return Http::withToken($this->apiKey())
+            ->baseUrl(self::BASE_URL)
+            ->withHeaders(['OpenAI-Beta' => 'agents=v1'])
+            ->timeout(60)
+            ->connectTimeout(10);
+    }
+
+    /**
+     * true cuando hay un agente guardado configurado (IA-00003): el chat de
+     * consultas usara la Agents API y la interfaz puede avisar de la espera.
+     */
+    public function agentEnabled(): bool
+    {
+        return $this->agentId() !== null;
+    }
+
+    /**
+     * Espera maxima del agente en minutos. Se lee solo del parametro del
+     * sistema IA-00004; el .env no participa. Sin un numero valido se usa el
+     * valor por defecto de 6 minutos.
+     */
+    public function agentTimeoutMinutes(): int
+    {
+        $value = trim((string) $this->parameterValue(self::AGENT_TIMEOUT_PARAMETER));
+
+        if ($value !== '' && is_numeric($value)) {
+            return max(1, (int) $value);
+        }
+
+        return self::AGENT_TIMEOUT_FALLBACK_MINUTES;
+    }
+
+    /**
+     * Espera maxima en segundos para el polling del agente. Sale del mismo
+     * parametro IA-00004 y se limita a 30 minutos para no dejar un pedido
+     * abierto indefinidamente si alguien escribe un numero enorme.
+     */
+    private function agentTimeoutSeconds(): int
+    {
+        return min(1800, $this->agentTimeoutMinutes() * 60);
+    }
+
+    /**
+     * Permite que el proceso PHP viva lo que dure la espera del agente.
+     * Algunos hospedajes deshabilitan set_time_limit: en ese caso se ignora.
+     */
+    private function extendExecutionTime(): void
+    {
+        if (function_exists('set_time_limit')) {
+            @set_time_limit(0);
+        }
+    }
+
+    /**
+     * Proveedor de IA configurado en el parametro del sistema (1 OpenAI,
+     * 2 Gemini). Se usa para decidir que endpoint llama el chat.
+     */
+    public function provider(): string
+    {
+        $parameterCode = config('academic.openai.provider_parameter');
+        $value = $parameterCode ? trim((string) $this->parameterValue($parameterCode)) : '';
+
+        return in_array($value, ['1', '2'], true) ? $value : '2';
+    }
+
+    /**
+     * El parametro IA-00003 es la fuente principal: vaciarlo desactiva el
+     * agente sin tocar el .env. 'agent_id' del .env solo se usa cuando la
+     * aplicacion no tiene configurado ningun codigo de parametro (pruebas o
+     * instalaciones que gestionan la IA fuera de la tabla parameters).
+     */
+    private function agentId(): ?string
+    {
+        if (config('academic.openai.agent_id_parameter')) {
+            return $this->agentIdFromParameter();
+        }
+
+        $agentId = trim((string) config('academic.openai.agent_id'));
+
+        return $agentId !== '' ? $agentId : null;
+    }
+
+    protected function agentIdFromParameter(): ?string
+    {
+        $parameterCode = config('academic.openai.agent_id_parameter');
+
+        if (!$parameterCode) {
+            return null;
+        }
+
+        $value = trim((string) $this->parameterValue($parameterCode));
+
+        return $value !== '' ? $value : null;
+    }
+
+    private function agentSessionMinutes(): int
+    {
+        return max(1, (int) config('academic.openai.agent_session_minutes', 720));
+    }
+
+    private function agentSessionCacheKey(int|string $userId): string
+    {
+        return 'academic:openai-agent-session:' . $userId;
+    }
+
     private function requestResponses(int|string $userId, array $input, ?string $instructions = null, bool $continueThread = true): array
     {
         $payload = [
@@ -320,10 +494,42 @@ class OpenAiAssistantService
             $payload['previous_response_id'] = $previousResponseId;
         }
 
-        return $this->client()
+        $response = $this->client()
             ->post('/responses', $payload)
             ->throw()
             ->json();
+
+        $this->recordUsage($userId, $response);
+
+        return $response;
+    }
+
+    /**
+     * Registra el consumo de la consulta para las estadisticas de IA.
+     *
+     * El registro nunca debe romper la respuesta: si la tabla no existe o
+     * falla la escritura se deja el aviso en el log y se continua.
+     */
+    private function recordUsage(int|string $userId, array $response): void
+    {
+        $usage = $response['usage'] ?? null;
+
+        if (!is_array($usage)) {
+            return;
+        }
+
+        try {
+            app(AiUsageRecorder::class)->recordTokens(
+                $userId,
+                'openai',
+                (string) ($response['model'] ?? config('academic.openai.model', 'gpt-4.1-mini')),
+                (int) ($usage['input_tokens'] ?? 0),
+                (int) ($usage['output_tokens'] ?? 0),
+                'academico:consulta'
+            );
+        } catch (Throwable $exception) {
+            Log::warning('Academic OpenAI usage record: ' . $exception->getMessage());
+        }
     }
 
     private function isPreviousResponseError(array $errorPayload): bool
@@ -342,7 +548,9 @@ class OpenAiAssistantService
             return 'OpenAI respondio un error (' . $exception->response->status() . '): ' . $apiMessage;
         }
 
-        return 'Error al comunicarse con OpenAI (' . $exception->response->status() . '). Verifica la API Key del parametro IA-00003.';
+        $parameterCode = config('academic.openai.api_key_parameter', 'IA-00001');
+
+        return 'Error al comunicarse con OpenAI (' . $exception->response->status() . '). Verifica la API Key del parametro ' . $parameterCode . '.';
     }
 
     private function uploadFile(string $filePath, string $purpose): string
@@ -403,7 +611,8 @@ class OpenAiAssistantService
         }
 
         if (!$apiKey) {
-            throw new RuntimeException('Falta configurar la API Key de OpenAI en el parametro IA-00003 del sistema.');
+            $parameterCode = config('academic.openai.api_key_parameter', 'IA-00001');
+            throw new RuntimeException('Falta configurar la API Key de OpenAI en el parametro ' . $parameterCode . ' del sistema.');
         }
 
         return $this->sanitizeApiKey($apiKey);
@@ -424,334 +633,34 @@ class OpenAiAssistantService
     {
         $parameterCode = config('academic.openai.api_key_parameter');
 
-        if ($parameterCode && Parameter::query()->getConnection()->getSchemaBuilder()->hasTable('parameters')) {
-            $value = Cache::remember(
-                'academic:openai-api-key:' . $parameterCode,
-                now()->addMinutes(60),
-                function () use ($parameterCode) {
-                    return Parameter::where('parameter_code', $parameterCode)->value('value_default');
-                }
-            );
-
-            $value = trim((string) $value);
-
-            if ($value !== '') {
-                return $value;
-            }
+        if (!$parameterCode) {
+            return null;
         }
 
-        // Compatibilidad: P000025 fue usado anteriormente para la API Key, pero
-        // tambien es un parametro de descuentos. Solo aceptar valores con forma
-        // de clave OpenAI para nunca enviar por accidente el valor 1 o 2.
-        $legacyCode = config('academic.openai.legacy_api_key_parameter');
+        $value = trim((string) $this->parameterValue($parameterCode));
 
-        if ($legacyCode && $legacyCode !== $parameterCode && Parameter::query()->getConnection()->getSchemaBuilder()->hasTable('parameters')) {
-            $legacyValue = trim((string) Parameter::where('parameter_code', $legacyCode)->value('value_default'));
-
-            if (preg_match('/^sk-(?:proj-)?[A-Za-z0-9_-]+$/', $legacyValue)) {
-                return $legacyValue;
-            }
-        }
-
-        return null;
+        return $value !== '' ? $value : null;
     }
 
     /**
-     * ID del agente creado en la cuenta de OpenAI (formato agent_...).
-     *
-     * El parametro del sistema es la fuente principal: vaciarlo desactiva el
-     * agente sin tocar el .env. 'agent_id' del .env solo se usa cuando la
-     * aplicacion no tiene ningun codigo de parametro configurado (pruebas o
-     * instalaciones que administran la IA fuera de la tabla parameters).
+     * Lee un parametro del sistema con una cache corta. El controlador de
+     * Parametros invalida esta clave al guardar para que el cambio sea inmediato.
      */
-    private function configuredAgentId(): ?string
+    protected function parameterValue(?string $parameterCode): ?string
     {
-        $parameterCode = config('academic.openai.agent_id_parameter');
-        $hasParameters = Parameter::query()->getConnection()->getSchemaBuilder()->hasTable('parameters');
-        $agentId = null;
-
-        if ($parameterCode && $hasParameters) {
-            $agentId = trim((string) Parameter::where('parameter_code', $parameterCode)->value('value_default'));
+        if (!$parameterCode) {
+            return null;
         }
 
-        if ($agentId === null || $agentId === '') {
-            $agentId = (string) config('academic.openai.agent_id');
-        }
-
-        $agentId = $this->normalizeAgentId($agentId);
-
-        return $agentId !== '' ? $agentId : null;
-    }
-
-    /**
-     * @throws RuntimeException cuando el agente no esta configurado o su ID
-     *                          no tiene el formato de la Agents API.
-     */
-    private function agentId(): string
-    {
-        $agentId = $this->configuredAgentId();
-
-        if ($agentId === null) {
-            $parameterCode = config('academic.openai.agent_id_parameter', 'IA-00002');
-            throw new RuntimeException('Falta configurar el ID del agente de OpenAI en el parametro ' . $parameterCode . ' del sistema.');
-        }
-
-        if (!preg_match('/^agent_[A-Za-z0-9_-]+$/', $agentId)) {
-            throw new RuntimeException('El ID del agente debe ser un agente guardado de la Agents API (empieza con agent_).');
-        }
-
-        return $agentId;
-    }
-
-    /**
-     * Recorta espacios y comillas y, si se pego la URL del panel de OpenAI,
-     * conserva solo el ID del agente.
-     */
-    private function normalizeAgentId(string $value): string
-    {
-        $value = trim($value);
-        $value = trim(str_replace(['"', "'"], '', $value));
-
-        if (preg_match('/^agent_[A-Za-z0-9_-]+$/', $value)) {
-            return $value;
-        }
-
-        // URL del panel de OpenAI: .../agents/agent_XXXX
-        if (preg_match('#/agents/(agent_[A-Za-z0-9_-]+)#', $value, $matches)) {
-            return $matches[1];
-        }
-
-        return $value;
-    }
-
-    /**
-     * Ejecuta una consulta contra el agente guardado usando una sesion por
-     * usuario: la primera consulta crea la sesion y las siguientes reutilizan
-     * el mismo hilo mientras la sesion siga activa.
-     */
-    private function requestAgent(int|string $userId, string $message, ?string $customInstructions = null): string
-    {
-        // La espera puede durar varios minutos: sin ampliar el limite, PHP
-        // (php.ini suele traer 30-60 s) corta la peticion antes del tiempo
-        // configurado y el usuario nunca recibe la respuesta del agente.
-        $this->extendExecutionTime($this->agentTimeoutSeconds() + 120);
-
-        $agentId = $this->agentId();
-        $sessionKey = $this->agentSessionCacheKey($userId);
-        $sessionId = Cache::get($sessionKey);
-        $lastAnswerId = null;
-
-        if ($sessionId) {
-            if (!$this->agentSessionIsReusable($sessionId)) {
-                // La sesion fallo o espera una accion que no podemos completar:
-                // se descarta y se abre una nueva para esta consulta.
-                Cache::forget($sessionKey);
-                $sessionId = null;
-            } else {
-                // Se guarda la ultima respuesta para no confundirla con la nueva.
-                $lastAnswer = $this->latestAgentAnswer($sessionId);
-                $lastAnswerId = $lastAnswer['id'] ?? null;
-
-                try {
-                    $this->agentClient()
-                        ->withHeaders(['Idempotency-Key' => (string) Str::uuid()])
-                        ->post("/agents/sessions/{$sessionId}/events", [
-                            'events' => [
-                                [
-                                    'type' => 'agent.session.input.message',
-                                    'input' => $this->agentInput($message),
-                                ],
-                            ],
-                        ])
-                        ->throw();
-                } catch (RequestException) {
-                    // La sesion ya no acepta mensajes (cerrada o de otro usuario):
-                    // se abre una nueva y el usuario no ve el error.
-                    Cache::forget($sessionKey);
-                    $sessionId = null;
-                }
+        $value = Cache::remember(
+            'academic:parameter:' . $parameterCode,
+            now()->addMinutes(60),
+            function () use ($parameterCode) {
+                return Parameter::where('parameter_code', $parameterCode)->value('value_default');
             }
-        }
+        );
 
-        if (!$sessionId) {
-            $payload = [
-                'agent_id' => $agentId,
-                'environment' => ['type' => 'none'],
-                'input' => $this->agentInput($message),
-            ];
-
-            // Con agent_id, estas instrucciones se agregan a las del agente
-            // guardado; conservan el formato que ya usa el formulario.
-            if (is_string($customInstructions) && trim($customInstructions) !== '') {
-                $payload['agent'] = ['instructions' => $customInstructions];
-            }
-
-            $session = $this->agentClient()
-                ->post('/agents/sessions', $payload)
-                ->throw()
-                ->json();
-
-            $sessionId = $session['id'] ?? null;
-
-            if (!$sessionId) {
-                throw new RuntimeException('OpenAI no devolvio el ID de la sesion del agente.');
-            }
-
-            Cache::put($sessionKey, $sessionId, now()->addMinutes($this->agentSessionMinutes()));
-        }
-
-        return $this->waitForAgentAnswer($sessionId, $lastAnswerId);
-    }
-
-    /**
-     * Espera a que la sesion produzca una respuesta final distinta de la
-     * anterior. La Agents API trabaja de forma asincrona: se consulta el estado
-     * y los items guardados en lugar de mantener abierta una conexion SSE.
-     */
-    private function waitForAgentAnswer(string $sessionId, ?string $previousAnswerId): string
-    {
-        $timeout = $this->agentTimeoutSeconds();
-        $deadline = microtime(true) + $timeout;
-        $intervalUs = max(200, (int) config('academic.openai.agent_poll_interval_ms', 1000)) * 1000;
-
-        while (true) {
-            $session = $this->agentClient()
-                ->get("/agents/sessions/{$sessionId}")
-                ->throw()
-                ->json();
-
-            $status = $session['status'] ?? null;
-
-            if ($status === 'failed') {
-                throw new RuntimeException('La sesion del agente fallo: ' . (string) ($session['error'] ?? 'sin detalle'));
-            }
-
-            $answer = $this->latestAgentAnswer($sessionId, $previousAnswerId);
-
-            if ($answer !== null && $answer['text'] !== '') {
-                return $answer['text'];
-            }
-
-            if ($status === 'requires_action') {
-                throw new RuntimeException('El agente quedo esperando una accion que el sistema no puede completar.');
-            }
-
-            if (microtime(true) >= $deadline) {
-                throw new RuntimeException('El agente no respondio dentro del tiempo configurado (' . $timeout . ' s).');
-            }
-
-            usleep($intervalUs);
-        }
-    }
-
-    /**
-     * Devuelve el ultimo mensaje final del agente, ignorando la respuesta que
-     * ya existia antes de enviar la consulta actual.
-     *
-     * @return array{id: ?string, text: string}|null
-     */
-    private function latestAgentAnswer(string $sessionId, ?string $previousAnswerId = null): ?array
-    {
-        $items = $this->agentClient()
-            ->get("/agents/sessions/{$sessionId}/items", ['order' => 'desc', 'limit' => 20])
-            ->throw()
-            ->json('data') ?? [];
-
-        foreach ($items as $item) {
-            if (($item['type'] ?? null) !== 'message'
-                || ($item['role'] ?? null) !== 'assistant'
-                || ($item['phase'] ?? null) !== 'final_answer'
-                || ($item['status'] ?? null) !== 'completed') {
-                continue;
-            }
-
-            $itemId = $item['id'] ?? null;
-
-            if ($itemId !== null && $itemId === $previousAnswerId) {
-                return null;
-            }
-
-            $text = collect($item['content'] ?? [])
-                ->filter(fn ($content) => ($content['type'] ?? null) === 'output_text')
-                ->pluck('text')
-                ->implode('');
-
-            return ['id' => $itemId, 'text' => trim((string) $text)];
-        }
-
-        return null;
-    }
-
-    /**
-     * Una sesion terminada queda en 'in_progress' aunque su respuesta ya este
-     * completa, asi que se reutiliza salvo que haya fallado o espere una accion
-     * que el sistema no puede resolver.
-     */
-    private function agentSessionIsReusable(string $sessionId): bool
-    {
-        try {
-            $session = $this->agentClient()
-                ->get("/agents/sessions/{$sessionId}")
-                ->throw()
-                ->json();
-
-            $status = $session['status'] ?? null;
-
-            return !in_array($status, ['failed', 'requires_action'], true);
-        } catch (RequestException) {
-            // La sesion ya no existe o no se puede consultar: se crea otra.
-            return false;
-        }
-    }
-
-    /**
-     * @return array<int, array{role: string, content: array<int, array{type: string, text: string}>}>
-     */
-    private function agentInput(string $message): array
-    {
-        return [
-            [
-                'role' => 'user',
-                'content' => [
-                    [
-                        'type' => 'input_text',
-                        'text' => $message,
-                    ],
-                ],
-            ],
-        ];
-    }
-
-    private function agentClient(): PendingRequest
-    {
-        // Cada peticion individual (crear sesion, consultar estado o items) es
-        // corta; la espera total la controla el bucle de waitForAgentAnswer.
-        return Http::withToken($this->apiKey())
-            ->baseUrl(self::BASE_URL)
-            ->withHeaders(['OpenAI-Beta' => 'agents=v1'])
-            ->timeout(60)
-            ->connectTimeout(10);
-    }
-
-    /**
-     * Sube el limite de ejecucion de PHP para que la espera del agente quepa
-     * dentro de la peticion HTTP (php.ini suele traer 30-60 s).
-     */
-    private function extendExecutionTime(int $seconds): void
-    {
-        if (function_exists('set_time_limit')) {
-            @set_time_limit($seconds);
-        }
-    }
-
-    private function agentSessionMinutes(): int
-    {
-        return max(1, (int) config('academic.openai.agent_session_minutes', 720));
-    }
-
-    private function agentSessionCacheKey(int|string $userId): string
-    {
-        return 'academic:openai-agent-session:' . $userId;
+        return $value !== null ? (string) $value : null;
     }
 
     private function responseText(array $response): string

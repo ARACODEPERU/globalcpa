@@ -91,8 +91,75 @@ class PermissionTableSeeder extends Seeder
         array_push($permissions, Permission::firstOrCreate(['name' => 'aca_cursos_examen_final_crear']));
         array_push($permissions, Permission::firstOrCreate(['name' => 'aca_category_sector_type_modality']));
         array_push($permissions, Permission::firstOrCreate(['name' => 'aca_send_notifications']));
+        array_push($permissions, Permission::firstOrCreate(['name' => 'aca_smsgate_configuracion']));
+        array_push($permissions, Permission::firstOrCreate(['name' => 'aca_smsgate_guia']));
+
+        /*
+         * Permisos del modulo escolar (colegios): mantenedor de colegios,
+         * anios escolares, estructura nivel/grado/seccion, alumnos escolares
+         * y matriculas. firstOrCreate = idempotente.
+         */
+        array_push($permissions, Permission::firstOrCreate(['name' => 'aca_school_listado']));
+        array_push($permissions, Permission::firstOrCreate(['name' => 'aca_school_nuevo']));
+        array_push($permissions, Permission::firstOrCreate(['name' => 'aca_school_editar']));
+        array_push($permissions, Permission::firstOrCreate(['name' => 'aca_school_eliminar']));
+        array_push($permissions, Permission::firstOrCreate(['name' => 'aca_school_year_listado']));
+        array_push($permissions, Permission::firstOrCreate(['name' => 'aca_school_year_nuevo']));
+        array_push($permissions, Permission::firstOrCreate(['name' => 'aca_school_year_editar']));
+        array_push($permissions, Permission::firstOrCreate(['name' => 'aca_school_period_listado']));
+        array_push($permissions, Permission::firstOrCreate(['name' => 'aca_school_period_nuevo']));
+        array_push($permissions, Permission::firstOrCreate(['name' => 'aca_school_period_editar']));
+        array_push($permissions, Permission::firstOrCreate(['name' => 'aca_school_period_eliminar']));
+        array_push($permissions, Permission::firstOrCreate(['name' => 'aca_school_estructura']));
+        array_push($permissions, Permission::firstOrCreate(['name' => 'aca_school_alumno_listado']));
+        array_push($permissions, Permission::firstOrCreate(['name' => 'aca_school_alumno_nuevo']));
+        array_push($permissions, Permission::firstOrCreate(['name' => 'aca_school_alumno_editar']));
+        array_push($permissions, Permission::firstOrCreate(['name' => 'aca_school_alumno_eliminar']));
+        array_push($permissions, Permission::firstOrCreate(['name' => 'aca_school_alumno_apoderados']));
+        array_push($permissions, Permission::firstOrCreate(['name' => 'aca_school_matricula_listado']));
+        array_push($permissions, Permission::firstOrCreate(['name' => 'aca_school_matricula_nueva']));
+        array_push($permissions, Permission::firstOrCreate(['name' => 'aca_school_matricula_editar']));
+        array_push($permissions, Permission::firstOrCreate(['name' => 'aca_school_docente_listado']));
+        array_push($permissions, Permission::firstOrCreate(['name' => 'aca_school_docente_nuevo']));
+        array_push($permissions, Permission::firstOrCreate(['name' => 'aca_school_docente_editar']));
+        array_push($permissions, Permission::firstOrCreate(['name' => 'aca_school_docente_eliminar']));
+        array_push($permissions, Permission::firstOrCreate(['name' => 'aca_school_tarifa_listado']));
+        array_push($permissions, Permission::firstOrCreate(['name' => 'aca_school_tarifa_editar']));
+        array_push($permissions, Permission::firstOrCreate(['name' => 'aca_school_tarifa_eliminar']));
+        array_push($permissions, Permission::firstOrCreate(['name' => 'aca_school_cobro_listado']));
+        array_push($permissions, Permission::firstOrCreate(['name' => 'aca_school_cobro_registrar']));
+        array_push($permissions, Permission::firstOrCreate(['name' => 'aca_school_docente_notas']));
+        array_push($permissions, Permission::firstOrCreate(['name' => 'aca_school_area_listado']));
+        array_push($permissions, Permission::firstOrCreate(['name' => 'aca_school_area_nuevo']));
+        array_push($permissions, Permission::firstOrCreate(['name' => 'aca_school_area_editar']));
+        array_push($permissions, Permission::firstOrCreate(['name' => 'aca_school_area_eliminar']));
+        array_push($permissions, Permission::firstOrCreate(['name' => 'aca_school_horario_listado']));
+        array_push($permissions, Permission::firstOrCreate(['name' => 'aca_school_horario_editar']));
+        array_push($permissions, Permission::firstOrCreate(['name' => 'aca_school_horario_docente']));
+        // Porteria: asistencia institucional escaneando el QR del carné.
+        array_push($permissions, Permission::firstOrCreate(['name' => 'aca_school_porteria_escaner']));
+        array_push($permissions, Permission::firstOrCreate(['name' => 'aca_school_porteria_reporte']));
+        // Parametros / SMS: canal propio de los avisos de asistencia al apoderado.
+        array_push($permissions, Permission::firstOrCreate(['name' => 'aca_school_sms_configuracion']));
+        // Parametros / Telegram: canal de avisos de asistencia escolar por Telegram (exclusivo del rol admin).
+        array_push($permissions, Permission::firstOrCreate(['name' => 'aca_school_telegram_configuracion']));
+        // Modos de prueba: llenar el colegio con datos de prueba, borrarlos con
+        // lo generado y dejar el sistema en modo produccion. El bucle de abajo
+        // lo concede unicamente al rol admin (y a ningun otro rol): crea y
+        // elimina informacion escolar masiva.
+        array_push($permissions, Permission::firstOrCreate(['name' => 'aca_school_modo_prueba']));
+
+        // Aula Virtual (gestión de contenidos por año escolar)
+        array_push($permissions, Permission::firstOrCreate(['name' => 'aca_virtual_listado']));
+        array_push($permissions, Permission::firstOrCreate(['name' => 'aca_virtual_curso_ver']));
+        array_push($permissions, Permission::firstOrCreate(['name' => 'aca_virtual_unidad_gestionar']));
+        array_push($permissions, Permission::firstOrCreate(['name' => 'aca_virtual_sesion_gestionar']));
+        array_push($permissions, Permission::firstOrCreate(['name' => 'aca_virtual_recurso_gestionar']));
+        array_push($permissions, Permission::firstOrCreate(['name' => 'aca_virtual_actividad_gestionar']));
+        array_push($permissions, Permission::firstOrCreate(['name' => 'aca_virtual_configurar']));
 
         foreach ($permissions as $permission) {
+
 
             $role->givePermissionTo($permission->name);
 
@@ -118,5 +185,40 @@ class PermissionTableSeeder extends Seeder
         $docente = Role::firstOrCreate(['name' => 'Docente']);
         $docente->givePermissionTo('aca_dashboard');
         $docente->givePermissionTo('aca_cursos_listado');
+        // Registro de notas del colegio (solo sus secciones asignadas).
+        $docente->givePermissionTo('aca_school_docente_notas');
+        // Consulta de su propio horario y, mas adelante, registro de la
+        // asistencia de su hora de clase.
+        $docente->givePermissionTo('aca_school_horario_docente');
+
+        // El canal SMSGate lo configuran y usan admin y Administrador; la guia
+        // paso a paso queda solo para admin (aca_smsgate_guia ya se concedio
+        // arriba, dentro del bloque de $permissions).
+        $administrador = Role::firstOrCreate(['name' => 'Administrador']);
+        $administrador->givePermissionTo('aca_smsgate_configuracion');
+        $administrador->givePermissionTo('aca_school_porteria_escaner');
+        $administrador->givePermissionTo('aca_school_porteria_reporte');
+        $administrador->givePermissionTo('aca_school_sms_configuracion');
+
+        // Rol dedicado del equipo de la puerta: solo escanea, no ve notas,
+        // cobros ni matriculas. Es con el que entra la tablet de la porteria.
+        $portero = Role::firstOrCreate(['name' => 'Portero']);
+        $portero->givePermissionTo('aca_school_porteria_escaner');
+
+        // Aula Virtual: docente ve sus cursos, administrador gestiona todo.
+        $docente->givePermissionTo('aca_virtual_listado');
+        $docente->givePermissionTo('aca_virtual_curso_ver');
+        $docente->givePermissionTo('aca_virtual_unidad_gestionar');
+        $docente->givePermissionTo('aca_virtual_sesion_gestionar');
+        $docente->givePermissionTo('aca_virtual_recurso_gestionar');
+        $docente->givePermissionTo('aca_virtual_actividad_gestionar');
+
+        $administrador->givePermissionTo('aca_virtual_listado');
+        $administrador->givePermissionTo('aca_virtual_curso_ver');
+        $administrador->givePermissionTo('aca_virtual_unidad_gestionar');
+        $administrador->givePermissionTo('aca_virtual_sesion_gestionar');
+        $administrador->givePermissionTo('aca_virtual_recurso_gestionar');
+        $administrador->givePermissionTo('aca_virtual_actividad_gestionar');
+        $administrador->givePermissionTo('aca_virtual_configurar');
     }
 }

@@ -1,2 +1,0 @@
-<?php echo $__env->make('sales::sales.partials.note_document_a4_variant_v34', ['variant' => '3'], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
-<?php /**PATH C:\laragon\www\globalcpa\Modules\Sales\Resources\views\sales\notas_a4_v3.blade.php ENDPATH**/ ?>

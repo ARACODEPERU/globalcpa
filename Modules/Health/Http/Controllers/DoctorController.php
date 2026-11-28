@@ -5,17 +5,29 @@ namespace Modules\Health\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\District;
 use App\Models\Person;
+use App\Models\User;
+use App\Support\PersonUserPersistenceVerifier;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
+use Modules\Health\Entities\HealAttention;
 use Modules\Health\Entities\HealDoctor;
+use Modules\Health\Rules\PeruMobile;
+use Modules\Health\Support\HealthPhoneNumber;
 use Illuminate\Foundation\Validation\ValidatesRequests;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class DoctorController extends Controller
 {
     use ValidatesRequests;
+
     /**
      * Display a listing of the resource.
      */
@@ -27,6 +39,10 @@ class DoctorController extends Controller
                 'heal_doctors.id',
                 'heal_doctors.person_id',
                 'heal_doctors.doctor_code',
+                'heal_doctors.colegiatura',
+                'heal_doctors.profession',
+                'heal_doctors.specialty',
+                'heal_doctors.attention_service_type',
                 'people.document_type_id',
                 'people.full_name',
                 'people.number',
@@ -51,7 +67,8 @@ class DoctorController extends Controller
             }
             $doctors->orderBy($attribute, $sort_order);
         } else {
-            $doctors->latest();
+            // Calificado: con el join, latest() sería ambiguo entre tablas.
+            $doctors->latest('heal_doctors.created_at');
         }
 
         $doctors = $doctors->paginate(10)->onEachSide(2);
@@ -97,62 +114,101 @@ class DoctorController extends Controller
             $request,
             [
                 'document_type_id'  => 'required',
-                'number'            => 'required|max:12',
-                'number'            => 'unique:people,number,' . $update_id . ',id,document_type_id,' . $request->get('document_type_id'),
-                'telephone'         => 'required|max:12',
+                // Clave unica: antes el segundo 'number' anulaba el unique.
+                'number'            => [
+                    'required',
+                    'max:12',
+                    Rule::unique('people', 'number')
+                        ->where(fn ($query) => $query->where('document_type_id', $request->get('document_type_id'))),
+                ],
+                'telephone'         => ['required', new PeruMobile()],
                 'email'             => 'required|max:255|unique:people,email',
-                'email'             => 'required|max:255|unique:users,email',
                 'address'           => 'required|max:255',
                 'ubigeo'            => 'required|max:255',
                 'birthdate'         => 'required|',
                 'names'             => 'required|max:255',
                 'father_lastname'   => 'required|max:255',
                 'mother_lastname'   => 'required|max:255',
+                'colegiatura'        => 'nullable|string|max:80',
+                'profession'         => 'required|max:120',
+                'specialty'          => 'nullable|max:120',
+                'attention_service_type' => 'required|in:' . implode(',', config('health.attention_service_types')),
+                'generate_user'      => 'nullable|boolean',
+                'user_email'         => $request->boolean('generate_user') ? 'required|email|max:255|unique:users,email' : 'nullable|email|max:255',
+                'user_password'      => $request->boolean('generate_user') ? 'required|string|min:4' : 'nullable|string|min:4',
             ]
         );
 
+        // El telefono se guarda siempre en la forma de Salud (9 digitos, sin +51).
+        HealthPhoneNumber::normalizeRequest($request);
+
         // $path = 'img' . DIRECTORY_SEPARATOR . 'imagen-no-disponible.jpeg';
         // $destination = 'uploads' . DIRECTORY_SEPARATOR . 'products';
-        $path = null;
-        $destination = 'uploads/doctores';
-        $file = $request->file('image');
-        if ($file) {
-            $original_name = strtolower(trim($file->getClientOriginalName()));
-            $original_name = str_replace(" ", "_", $original_name);
-            $extension = $file->getClientOriginalExtension();
-            $file_name = date('YmdHis') . '.' . $extension;
-            //dd($destination);
-            $path = $request->file('image')->storeAs(
-                $destination,
-                $file_name,
-                'public'
-            );
-        }
+        $path = $this->storeProfileImage($request, 'uploads/doctores');
 
-        $per = Person::create([
-            'document_type_id'      => $request->get('document_type_id'),
-            'short_name'            => $request->get('names'),
-            'full_name'             => $request->get('father_lastname') . ' ' .  $request->get('mother_lastname') . ' ' . $request->get('names'),
-            'description'           => 'Doctor',
-            'number'                => $request->get('number'),
-            'telephone'             => $request->get('telephone'),
-            'email'                 => $request->get('email'),
-            'image'                 => $path,
-            'address'               => $request->get('address'),
-            'is_provider'           => false,
-            'is_client'             => false,
-            'ubigeo'                => $request->get('ubigeo'),
-            'birthdate'             => $request->get('birthdate'),
-            'names'                 => $request->get('names'),
-            'father_lastname'       => $request->get('father_lastname'),
-            'mother_lastname'       => $request->get('mother_lastname'),
-            'gender'                => $request->get('gender')
-        ]);
+        DB::transaction(function () use ($request, $path) {
+            $per = Person::create([
+                'document_type_id'      => $request->get('document_type_id'),
+                'short_name'            => $request->get('names'),
+                'full_name'             => $request->get('father_lastname') . ' ' .  $request->get('mother_lastname') . ' ' . $request->get('names'),
+                'description'           => 'Doctor',
+                'number'                => $request->get('number'),
+                'telephone'             => $request->get('telephone'),
+                'email'                 => $request->get('email'),
+                'image'                 => $path,
+                'address'               => $request->get('address'),
+                'is_provider'           => false,
+                'is_client'             => false,
+                'ubigeo'                => $request->get('ubigeo'),
+                'birthdate'             => $request->get('birthdate'),
+                'names'                 => $request->get('names'),
+                'father_lastname'       => $request->get('father_lastname'),
+                'mother_lastname'       => $request->get('mother_lastname'),
+                'gender'                => $request->get('gender')
+            ]);
 
-        HealDoctor::create([
-            'person_id'     => $per->id,
-            'doctor_code'  => $request->get('number')
-        ]);
+            $user = $request->boolean('generate_user') ? $this->createDoctorUser($per, $request) : null;
+
+            HealDoctor::create([
+                'person_id'     => $per->id,
+                'user_id'       => $user?->id,
+                'doctor_code'  => $request->get('number'),
+                'colegiatura' => $request->get('colegiatura'),
+                'profession' => $request->get('profession'),
+                'specialty' => $request->get('specialty'),
+                'attention_service_type' => $this->normalizeServiceType($request->get('attention_service_type', 'general')),
+            ]);
+
+            if ($user) {
+                PersonUserPersistenceVerifier::verify(
+                    $per,
+                    $user,
+                    [
+                        'document_type_id' => $request->get('document_type_id'),
+                        'number' => $request->get('number'),
+                        'short_name' => $request->get('names'),
+                        'full_name' => $request->get('father_lastname').' '.$request->get('mother_lastname').' '.$request->get('names'),
+                        'description' => 'Doctor',
+                        'telephone' => $request->get('telephone'),
+                        'email' => $request->get('email'),
+                        'image' => $path,
+                        'address' => $request->get('address'),
+                        'ubigeo' => $request->get('ubigeo'),
+                        'birthdate' => $request->get('birthdate'),
+                        'names' => $request->get('names'),
+                        'father_lastname' => $request->get('father_lastname'),
+                        'mother_lastname' => $request->get('mother_lastname'),
+                        'gender' => $request->get('gender'),
+                    ],
+                    [
+                        'name' => trim($per->full_name),
+                        'email' => trim($request->get('user_email')),
+                        'person_id' => $per->id,
+                        'status' => true,
+                    ]
+                );
+            }
+        });
 
         return redirect()->route('heal_doctors_create')
             ->with('message', __('Doctor creado con éxito'));
@@ -186,8 +242,14 @@ class DoctorController extends Controller
         $doctor = Person::leftJoin('districts', 'ubigeo', 'districts.id')
             ->leftJoin('provinces', 'districts.province_id', 'provinces.id')
             ->leftJoin('departments', 'provinces.department_id', 'departments.id')
+            ->leftJoin('heal_doctors', 'heal_doctors.person_id', 'people.id')
             ->select(
                 'people.*',
+                'heal_doctors.user_id',
+                'heal_doctors.colegiatura',
+                'heal_doctors.profession',
+                'heal_doctors.specialty',
+                'heal_doctors.attention_service_type',
                 DB::raw('CONCAT(departments.name,"-",provinces.name,"-",districts.name) AS city'),
 
             )
@@ -213,9 +275,14 @@ class DoctorController extends Controller
             $request,
             [
                 'document_type_id'  => 'required',
-                'number'            => 'required|max:12',
-                'number'            => 'unique:people,number,' . $update_id . ',id,document_type_id,' . $request->get('document_type_id'),
-                'telephone'         => 'required|max:12',
+                'number'            => [
+                    'required',
+                    'max:12',
+                    Rule::unique('people', 'number')
+                        ->where(fn ($query) => $query->where('document_type_id', $request->get('document_type_id')))
+                        ->ignore($update_id),
+                ],
+                'telephone'         => ['required', new PeruMobile()],
                 'email'             => 'required|max:255|unique:people,email,' . $update_id . ',id',
                 'address'           => 'required|max:255',
                 'ubigeo'            => 'required|max:255',
@@ -223,8 +290,18 @@ class DoctorController extends Controller
                 'names'             => 'required|max:255',
                 'father_lastname'   => 'required|max:255',
                 'mother_lastname'   => 'required|max:255',
+                'colegiatura'        => 'nullable|string|max:80',
+                'profession'         => 'required|max:120',
+                'specialty'          => 'nullable|max:120',
+                'attention_service_type' => 'required|in:' . implode(',', config('health.attention_service_types')),
+                'generate_user'      => 'nullable|boolean',
+                'user_email'         => $request->boolean('generate_user') ? 'required|email|max:255|unique:users,email' : 'nullable|email|max:255',
+                'user_password'      => $request->boolean('generate_user') ? 'required|string|min:4' : 'nullable|string|min:4',
             ]
         );
+
+        // El telefono se guarda siempre en la forma de Salud (9 digitos, sin +51).
+        HealthPhoneNumber::normalizeRequest($request);
 
         // $path = 'img' . DIRECTORY_SEPARATOR . 'imagen-no-disponible.jpeg';
         // $destination = 'uploads' . DIRECTORY_SEPARATOR . 'products';
@@ -245,27 +322,153 @@ class DoctorController extends Controller
         $person->mother_lastname    = $request->get('mother_lastname');
         $person->gender             = $request->get('gender');
 
-        $path = null;
-        $destination = 'uploads/doctores';
-        $file = $request->file('image');
-        if ($file) {
-            $original_name = strtolower(trim($file->getClientOriginalName()));
-            $original_name = str_replace(" ", "_", $original_name);
-            $extension = $file->getClientOriginalExtension();
-            $file_name = date('YmdHis') . '.' . $extension;
-            $path = $request->file('image')->storeAs(
-                $destination,
-                $file_name,
-                'public'
-            );
+        $path = $this->storeProfileImage($request, 'uploads/doctores');
+        if ($path) {
             $person->image = $path;
         }
 
-        $person->save();
+        $personData = [
+            'document_type_id' => $request->get('document_type_id'),
+            'number' => $request->get('number'),
+            'short_name' => $request->get('names'),
+            'full_name' => $request->get('father_lastname').' '.$request->get('mother_lastname').' '.$request->get('names'),
+            'telephone' => $request->get('telephone'),
+            'email' => $request->get('email'),
+            'address' => $request->get('address'),
+            'image' => $path ?: $person->image,
+            'ubigeo' => $request->get('ubigeo'),
+            'birthdate' => $request->get('birthdate'),
+            'names' => $request->get('names'),
+            'father_lastname' => $request->get('father_lastname'),
+            'mother_lastname' => $request->get('mother_lastname'),
+            'gender' => $request->get('gender'),
+        ];
+        $person->fill($personData);
 
-        HealDoctor::where('person_id', $update_id)->update([
-            'doctor_code'  => $request->get('number')
+        DB::transaction(function () use ($request, $person, $update_id, $personData) {
+            $person->save();
+
+            $doctor = HealDoctor::where('person_id', $update_id)->firstOrFail();
+            $user = $doctor->user_id ? User::find($doctor->user_id) : null;
+            $createdUser = false;
+
+            if (!$user && $request->boolean('generate_user')) {
+                $user = $this->createDoctorUser($person, $request);
+                $createdUser = true;
+            }
+
+            $doctor->update([
+                'user_id' => $user?->id,
+                'doctor_code'  => $request->get('number'),
+                'colegiatura' => $request->get('colegiatura'),
+                'profession' => $request->get('profession'),
+                'specialty' => $request->get('specialty'),
+                'attention_service_type' => $this->normalizeServiceType($request->get('attention_service_type', 'general')),
+            ]);
+
+            if ($user) {
+                $userData = [
+                    'name' => trim($person->full_name),
+                    'email' => $createdUser
+                        ? trim($request->get('user_email'))
+                        : $request->get('email'),
+                    'person_id' => $person->id,
+                    'status' => true,
+                ];
+                $user->update($userData);
+
+                PersonUserPersistenceVerifier::verify(
+                    $person,
+                    $user,
+                    $personData,
+                    $userData
+                );
+            }
+        });
+
+        return redirect()->route('heal_doctors_edit', $update_id)
+            ->with('message', __('Doctor actualizado con éxito'));
+    }
+
+    private function createDoctorUser(Person $person, Request $request): User
+    {
+        $user = User::create([
+            'name' => trim($person->full_name),
+            'email' => trim($request->get('user_email')),
+            'password' => Hash::make($request->get('user_password')),
+            'person_id' => $person->id,
+            'status' => true,
         ]);
+
+        $doctorRole = Role::firstOrCreate(['name' => 'Doctor']);
+        $permissions = [
+            'heal_dashboard',
+            'heal_pacientes_listado',
+            'heal_pacientes_editar',
+            'heal_atenciones_listado',
+            'heal_atenciones_nuevo',
+            'heal_atenciones_editar',
+            'heal_citas_listado',
+            'heal_citas_nuevo',
+            'heal_citas_editar',
+            'heal_odontology',
+        ];
+
+        foreach ($permissions as $permissionName) {
+            $permission = Permission::firstOrCreate(['name' => $permissionName]);
+
+            if (!$doctorRole->hasPermissionTo($permissionName)) {
+                $doctorRole->givePermissionTo($permission);
+            }
+        }
+
+        $user->assignRole($doctorRole);
+
+        return $user;
+    }
+
+    private function storeProfileImage(Request $request, string $destination): ?string
+    {
+        $image = $request->get('image');
+
+        $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+
+        if (is_string($image) && str_starts_with($image, 'data:image')) {
+            [$meta, $content] = explode(',', $image, 2);
+            preg_match('/data:image\/(?<extension>[^;]+);base64/', $meta, $matches);
+            $extension = strtolower($matches['extension'] ?? 'png');
+            $extension = $extension === 'jpeg' ? 'jpg' : $extension;
+
+            if (!in_array($extension, $allowedExtensions, true)) {
+                return null;
+            }
+
+            $fileName = date('YmdHis') . '_' . Str::random(8) . '.' . $extension;
+            $path = $destination . '/' . $fileName;
+
+            Storage::disk('public')->put($path, base64_decode($content));
+
+            return $path;
+        }
+
+        $file = $request->file('image');
+        if (!$file) {
+            return null;
+        }
+
+        $extension = strtolower($file->getClientOriginalExtension());
+        if (!in_array($extension, $allowedExtensions, true)) {
+            return null;
+        }
+
+        $fileName = date('YmdHis') . '_' . Str::random(8) . '.' . $extension;
+
+        return $file->storeAs($destination, $fileName, 'public');
+    }
+
+    private function normalizeServiceType(?string $serviceType): string
+    {
+        return $serviceType === 'dental' ? 'odontologia_general' : ($serviceType ?: 'general');
     }
 
     /**
@@ -273,6 +476,48 @@ class DoctorController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $doctor = HealDoctor::with(['person', 'user'])->findOrFail($id);
+
+        // Un doctor con atenciones firmadas no se elimina: la firma es parte
+        // de la historia clinica y debe seguir siendo verificable.
+        $atencionesFirmadas = HealAttention::where('doctor_id', $doctor->id)
+            ->whereNotNull('signed_at')
+            ->count();
+
+        if ($atencionesFirmadas > 0) {
+            $mensaje = 'No se puede eliminar al doctor: tiene ' . $atencionesFirmadas
+                . ' atención(es) firmada(s). Desactiva su acceso en su lugar.';
+
+            if (request()->expectsJson()) {
+                return response()->json(['success' => false, 'message' => $mensaje], 409);
+            }
+
+            return redirect()->route('heal_doctors_list')->with('error', $mensaje);
+        }
+
+        DB::transaction(function () use ($doctor) {
+            if ($doctor->user) {
+                // Se conserva el usuario para auditoria, pero sin acceso.
+                $doctor->user->update(['status' => false]);
+            }
+
+            $doctor->registrarActividad('deactivated', [
+                'motivo'    => 'Eliminación de doctor: se desactivó su usuario',
+                'user_id'   => $doctor->user_id,
+                'person_id' => $doctor->person_id,
+            ]);
+
+            $doctor->delete();
+        });
+
+        if (request()->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Doctor eliminado y su usuario desactivado.',
+            ]);
+        }
+
+        return redirect()->route('heal_doctors_list')
+            ->with('message', 'Doctor eliminado y su usuario desactivado.');
     }
 }

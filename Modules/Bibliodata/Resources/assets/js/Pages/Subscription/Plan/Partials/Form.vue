@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
 import { useForm, Link } from '@inertiajs/vue3';
 import FormSection from '@/Components/FormSection.vue';
 import InputLabel from '@/Components/InputLabel.vue';
@@ -7,6 +7,7 @@ import InputError from '@/Components/InputError.vue';
 import TextInput from '@/Components/TextInput.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import IconLoader from '@/Components/vristo/icon/icon-loader.vue';
+import { SCOPE_ALL_BOOKS, SCOPE_SINGLE_BOOK } from '../../../../utils/bibPlan.js';
 
 const props = defineProps({
     books: { type: Array, default: () => [] },
@@ -28,14 +29,38 @@ const form = useForm({
     book_ids: props.plan?.books?.map((b) => b.id) || [],
 });
 
+const ALL_BOOKS_OPTION = '__all_books__';
+
 const selectedBookId = computed({
-    get: () => form.book_ids[0] ?? '',
+    get: () => {
+        if (form.scope_type === SCOPE_ALL_BOOKS) {
+            return ALL_BOOKS_OPTION;
+        }
+        return form.book_ids[0] ?? '';
+    },
     set: (val) => {
+        if (val === ALL_BOOKS_OPTION) {
+            form.scope_type = SCOPE_ALL_BOOKS;
+            form.book_ids = [];
+            return;
+        }
+        form.scope_type = SCOPE_SINGLE_BOOK;
         form.book_ids = val ? [Number(val)] : [];
     },
 });
 
+const isAllBooks = computed(() => form.scope_type === SCOPE_ALL_BOOKS);
+
 const showDurationValue = computed(() => form.duration_type !== 'lifetime');
+
+watch(
+    () => form.scope_type,
+    (scope) => {
+        if (scope === 'all_books') {
+            form.book_ids = [];
+        }
+    }
+);
 
 const submit = () => {
     if (form.id) {
@@ -52,7 +77,7 @@ const submit = () => {
             {{ form.id ? 'Editar plan' : 'Nuevo plan de suscripción' }}
         </template>
         <template #description>
-            Define el libro incluido, la duración y las opciones del plan. Los campos marcados son obligatorios.
+            Define el alcance de libros, la duración y las opciones del plan. Los campos marcados son obligatorios.
         </template>
 
         <template #form>
@@ -72,15 +97,21 @@ const submit = () => {
                 <InputError :message="form.errors.description" class="mt-1" />
             </div>
             <div class="col-span-6 sm:col-span-3">
-                <InputLabel value="Libro incluido *" />
-                <select v-model="selectedBookId" class="form-select w-full" required>
+
+                <InputLabel :value="isAllBooks ? 'Acceso a libros' : 'Libro incluido *'" />
+                <select v-model="selectedBookId" class="form-select w-full">
+                    <option :value="ALL_BOOKS_OPTION">Acceso a todos los libros</option>
+
                     <option value="">Seleccionar libro...</option>
                     <option v-for="book in books" :key="book.id" :value="book.id">
                         {{ book.title }}{{ book.code_name ? ` (${book.code_name})` : '' }}
                     </option>
                 </select>
                 <InputError :message="form.errors.book_ids || form.errors.book_id" class="mt-1" />
-                <p class="mt-1 text-xs text-gray-500">Alcance multi-libro y todos los libros: próximamente.</p>
+
+                <p v-if="isAllBooks" class="mt-1 text-xs text-gray-500">
+                    El lector podrá abrir todos los libros activos.
+                </p>
             </div>
             <div class="col-span-6 sm:col-span-3">
                 <InputLabel value="Duración" />

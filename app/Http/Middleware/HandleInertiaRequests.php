@@ -6,7 +6,7 @@ use App\Services\JobOffersAccess;
 use App\Services\StudentTestimonyAccess;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
-use Tightenco\Ziggy\Ziggy;
+use Tighten\Ziggy\Ziggy;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -23,6 +23,32 @@ class HandleInertiaRequests extends Middleware
     public function version(Request $request): string|null
     {
         return parent::version($request);
+    }
+
+    /**
+     * Estado del Modo Super Editor compartido con el frontend.
+     *
+     * Nunca debe tumbar una respuesta: si las tablas del modo todavía no
+     * existen (o el usuario no es admin), se devuelve el modo inactivo.
+     *
+     * @return array<string, mixed>
+     */
+    protected function superEditorState(Request $request): array
+    {
+        try {
+            return app(\Modules\Security\Services\SuperEditorService::class)->shareData($request);
+        } catch (\Throwable $e) {
+            return [
+                'can_use' => false,
+                'active' => false,
+                'expires_at' => null,
+                'ttl_minutes' => 30,
+                'dirty' => 0,
+                'roles' => [],
+                'protected_permissions' => [],
+                'role' => 'admin',
+            ];
+        }
     }
 
     /**
@@ -53,6 +79,10 @@ class HandleInertiaRequests extends Middleware
             'flash' => [
                 'message' => fn () => $request->session()->get('message')
             ],
+            // Estado del Modo Super Editor (activo, borrador pendiente, vencimiento).
+            // El frontend no guarda este estado: lo recibe en cada respuesta, así
+            // que sobrevive a los reloads que vuelven a montar las directivas.
+            'superEditor' => fn () => $this->superEditorState($request),
         ]);
     }
 }

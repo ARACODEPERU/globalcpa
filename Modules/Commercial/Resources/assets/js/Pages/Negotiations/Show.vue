@@ -3,10 +3,11 @@ import AppLayout from "@/Layouts/Vristo/AppLayout.vue";
 import Navigation from "@/Components/vristo/layout/Navigation.vue";
 import IconLoader from "@/Components/vristo/icon/icon-loader.vue";
 import { Link, router, usePage } from "@inertiajs/vue3";
-import { computed, ref, watch } from "vue";
+import { computed, ref } from "vue";
 import Swal2 from "sweetalert2";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { faCheckCircle, faFileArchive, faFileCode, faFilePdf, faLink, faPaperPlane, faTrashAlt, faXmarkCircle } from "@fortawesome/free-solid-svg-icons";
+import { isFreeNegotiation, totalPriceLabel } from "./Support/freeNegotiation.js";
 
 const props = defineProps({
     negotiation: { type: Object, default: () => ({}) },
@@ -46,59 +47,12 @@ const statusByValue = (value) => props.statuses.find((item) => item.value === va
 
 const paymentMethodLabel = (value) => props.paymentMethods.find((item) => item.value === value)?.label || value;
 
-// Fecha de emision del comprobante: la elegida por el administrador o, por defecto,
-// la fecha en que el cliente registro sus datos. Es editable antes de aprobar y se
-// guarda en la negociacion para que el proceso la use al emitir.
-const currentIssueDate = computed(() => {
-    const value = props.negotiation.invoice_issue_date || props.negotiation.client_confirmed_at;
-    return value ? String(value).slice(0, 10) : "";
-});
-
-const issueDateInput = ref(currentIssueDate.value);
-const savingIssueDate = ref(false);
-
-watch(currentIssueDate, (value) => {
-    issueDateInput.value = value;
-});
-
-const saveIssueDate = () => {
-    if (savingIssueDate.value) return;
-
-    savingIssueDate.value = true;
-
-    axios.post(route("comm_negotiations_issue_date", props.negotiation.id), {
-        invoice_issue_date: issueDateInput.value || null,
-    }).then((res) => {
-        if (!res.data?.success) {
-            Swal2.fire({
-                title: "No se pudo guardar",
-                text: res.data?.message || "Error al guardar la fecha de emision.",
-                icon: "error",
-                padding: "2em",
-                customClass: "sweet-alerts",
-            });
-            return;
-        }
-
-        Swal2.fire({
-            title: "Fecha guardada",
-            text: res.data?.message || "Fecha de emision guardada.",
-            icon: "success",
-            padding: "2em",
-            customClass: "sweet-alerts",
-        });
-    }).catch((error) => {
-        Swal2.fire({
-            title: "No se pudo guardar",
-            text: error.response?.data?.message || "Error de conexion",
-            icon: "error",
-            padding: "2em",
-            customClass: "sweet-alerts",
-        });
-    }).finally(() => {
-        savingIssueDate.value = false;
-    });
-};
+// Negociacion gratuita (precio total 0): no hubo pago, asi que no hay voucher que revisar
+// ni comprobante que emitir.
+const isFree = computed(() => isFreeNegotiation(props.negotiation.total_price));
+const totalPriceText = computed(() =>
+    totalPriceLabel(props.negotiation.currency, props.negotiation.total_price)
+);
 
 const clientName = computed(() => props.negotiation.client_data?.full_name || props.negotiation.client?.full_name || "Sin cliente");
 
@@ -153,6 +107,61 @@ const estadoClase = computed(() => {
 });
 
 const canVerify = computed(() => props.negotiation.status === "confirmada");
+
+// Fecha de emision del comprobante: por defecto la fecha en que el cliente registro sus
+// datos; el administrador puede ajustarla antes de aprobar (por ejemplo si el pago fue el
+// dia anterior). Se guarda al cambiarla y el proceso de aprobacion la usa para la venta y
+// el comprobante.
+const emissionDate = ref(
+    props.negotiation.document_emission_date
+        ? String(props.negotiation.document_emission_date).slice(0, 10)
+        : ""
+);
+const emissionSaving = ref(false);
+const emissionLocked = computed(() => Boolean(props.negotiation.sale_document_id));
+
+const saveEmissionDate = () => {
+    if (emissionLocked.value || !emissionDate.value) return;
+
+    emissionSaving.value = true;
+
+    axios.post(route("comm_negotiations_process_emission_date", props.negotiation.id), {
+        emission_date: emissionDate.value,
+    }).then((res) => {
+        if (!res.data?.success) {
+            Swal2.fire({
+                title: "No se pudo guardar",
+                text: res.data?.message || "Error al guardar la fecha de emision.",
+                icon: "error",
+                padding: "2em",
+                customClass: "sweet-alerts",
+            });
+            return;
+        }
+
+        Swal2.fire({
+            toast: true,
+            position: "top-end",
+            title: res.data.message || "Fecha actualizada",
+            icon: "success",
+            timer: 2200,
+            timerProgressBar: true,
+            showConfirmButton: false,
+            padding: "1em",
+            customClass: "sweet-alerts",
+        });
+    }).catch((error) => {
+        Swal2.fire({
+            title: "No se pudo guardar",
+            text: error.response?.data?.message || "Error de conexion",
+            icon: "error",
+            padding: "2em",
+            customClass: "sweet-alerts",
+        });
+    }).finally(() => {
+        emissionSaving.value = false;
+    });
+};
 
 const saleDocument = computed(() => props.negotiation.sale_document || null);
 
@@ -540,7 +549,7 @@ const reactivate = () => {
                         {{ statusByValue(negotiation.status)?.label || negotiation.status }}
                     </span>
                     <span class="text-sm text-gray-500">
-                        {{ negotiation.currency }} {{ negotiation.total_price }}
+                        {{ totalPriceText }}
                     </span>
                     <span class="text-sm text-gray-500">
                         {{ paymentMethodLabel(negotiation.payment_method) }}
@@ -569,22 +578,37 @@ const reactivate = () => {
                     <div>
                         <p class="font-semibold text-amber-800 dark:text-amber-200">Negociacion confirmada por el cliente</p>
                         <p class="text-sm text-amber-700 dark:text-amber-300">
-                            Revisa el voucher y los datos del cliente para aprobar o rechazar.
+                            {{ isFree
+                                ? 'Revisa los datos del cliente para aprobar o rechazar. Es una inscripcion gratuita: no hay voucher ni comprobante.'
+                                : 'Revisa el voucher y los datos del cliente para aprobar o rechazar.' }}
                         </p>
-                        <div class="mt-3">
-                            <label for="invoice_issue_date" class="text-xs font-semibold uppercase text-amber-800 dark:text-amber-200">
+
+                        <div v-if="!isFree" class="mt-3">
+                            <label for="emission_date" class="block text-xs font-semibold uppercase text-amber-800 dark:text-amber-200">
                                 Fecha de emision del comprobante
                             </label>
-                            <input
-                                id="invoice_issue_date"
-                                v-model="issueDateInput"
-                                type="date"
-                                class="form-input mt-1 block max-w-[200px]"
-                                :disabled="savingIssueDate"
-                                @change="saveIssueDate"
-                            />
+                            <div class="mt-1 flex flex-wrap items-center gap-2">
+                                <input
+                                    id="emission_date"
+                                    v-model="emissionDate"
+                                    type="date"
+                                    class="form-input w-auto"
+                                    :disabled="emissionLocked || emissionSaving"
+                                    @change="saveEmissionDate"
+                                />
+                                <button
+                                    v-if="!emissionLocked"
+                                    type="button"
+                                    class="btn btn-outline-primary btn-sm"
+                                    :disabled="emissionSaving"
+                                    @click="saveEmissionDate"
+                                >
+                                    <IconLoader v-if="emissionSaving" class="mr-2 h-4 w-4 animate-spin" />
+                                    Guardar fecha
+                                </button>
+                            </div>
                             <p class="mt-1 text-xs text-amber-700 dark:text-amber-300">
-                                Por defecto, la fecha en que el cliente registro sus datos. Puedes cambiarla antes de aprobar.
+                                Por defecto, la fecha en que el cliente registro sus datos. Ajustala si el pago fue otro dia.
                             </p>
                         </div>
                     </div>
@@ -622,12 +646,7 @@ const reactivate = () => {
                     <span v-if="sunatStatus" class="badge" :class="`bg-${sunatStatus.color}`">{{ sunatStatus.label }}</span>
                 </div>
 
-                <div class="mb-3">
-                    <p class="text-xs font-semibold uppercase text-gray-500 dark:text-gray-400">Monto Total Acordado</p>
-                    <p class="mt-1 text-sm font-semibold dark:text-white">
-                        {{ negotiation.currency }} {{ negotiation.total_price }}
-                    </p>
-                </div>
+                <p class="mb-2 text-sm font-semibold text-gray-600 dark:text-gray-300">Monto Total Acordado</p>
 
                 <div class="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
                     <div class="rounded-md border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-800/40">
@@ -670,7 +689,7 @@ const reactivate = () => {
 
         <div class="mt-5 grid grid-cols-1 gap-4 lg:grid-cols-3">
             <div class="panel lg:col-span-2">
-                <h3 class="mb-4 font-semibold dark:text-white">Precios del sistema</h3>
+                <h3 class="mb-4 font-semibold dark:text-white">Precios del Sistema</h3>
 
                 <div class="mb-4 overflow-hidden rounded-md border border-gray-200 dark:border-gray-700">
                     <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
@@ -689,9 +708,10 @@ const reactivate = () => {
                     </table>
                 </div>
 
-                <div class="mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
-                    Forma de pago acordada
-                </div>
+                <p class="mb-3 text-sm font-semibold text-gray-600 dark:text-gray-300">
+                    forma de pago acordado.
+                </p>
+
                 <div class="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
                     <div class="rounded-md border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-800/40">
                         <p class="text-xs font-semibold uppercase text-gray-500 dark:text-gray-400">Tipo de pago</p>
@@ -760,7 +780,11 @@ const reactivate = () => {
                         </div>
                         <div>
                             <dt class="text-xs font-semibold uppercase text-gray-500 dark:text-gray-400">Comprobante</dt>
-                            <dd class="dark:text-white">{{ negotiation.invoice?.invoice_type === 'factura' ? 'Factura electronica' : 'Boleta electronica' }}</dd>
+                            <dd class="dark:text-white">
+                                {{ isFree
+                                    ? 'Sin comprobante (inscripcion gratuita)'
+                                    : (negotiation.invoice?.invoice_type === 'factura' ? 'Factura electronica' : 'Boleta electronica') }}
+                            </dd>
                         </div>
                         <div v-if="negotiation.invoice?.invoice_type === 'factura'">
                             <dt class="text-xs font-semibold uppercase text-gray-500 dark:text-gray-400">RUC</dt>
@@ -780,7 +804,7 @@ const reactivate = () => {
                         </div>
                         <div>
                             <dt class="text-xs font-semibold uppercase text-gray-500 dark:text-gray-400">Profesion</dt>
-                            <dd class="dark:text-white">{{ negotiation.client_data?.profession || '--' }}</dd>
+                            <dd class="dark:text-white">{{ negotiation.client_data?.profesion || '--' }}</dd>
                         </div>
                         <div>
                             <dt class="text-xs font-semibold uppercase text-gray-500 dark:text-gray-400">Empresa</dt>
@@ -801,7 +825,7 @@ const reactivate = () => {
                     </dl>
                 </div>
 
-                <div class="panel">
+                <div v-if="!isFree" class="panel">
                     <template v-if="isMercadoPago && mercadoPaymentData && !paymentDeclared">
                         <h3 class="mb-4 font-semibold dark:text-white">Pago con tarjeta (Mercado Pago)</h3>
                         <dl class="space-y-2 text-sm">

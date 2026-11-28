@@ -6,6 +6,9 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import Keypad from '@/Components/Keypad.vue';
+import DoctorProfessionalFields from '@/Components/Health/DoctorProfessionalFields.vue';
+import CropperImage from '@/Components/CropperImage.vue';
+import SelectCities from '@/Components/SelectCities.vue';
 import Swal2 from 'sweetalert2';
 import { ref, watch } from 'vue';
 
@@ -27,6 +30,10 @@ const props = defineProps({
 const baseUrl = assetUrl;
 
 const getImage = (image_preview) => {
+    if (!image_preview || String(image_preview).startsWith('data:') || String(image_preview).startsWith('http')) {
+        return image_preview;
+    }
+
     return assetUrl + 'storage/'+ image_preview;
     
 }
@@ -46,8 +53,36 @@ const form = useForm({
     father_lastname: props.doctor.father_lastname,
     mother_lastname: props.doctor.mother_lastname,
     ubigeo_description: props.doctor.city,
-    gender: props.doctor.gender
+    gender: props.doctor.gender,
+    colegiatura: props.doctor.colegiatura,
+    profession: props.doctor.profession || 'Médico cirujano',
+    specialty: props.doctor.specialty,
+    attention_service_type: props.doctor.attention_service_type || 'general',
+    user_id: props.doctor.user_id,
+    generate_user: false,
+    user_email: null,
+    user_password: null,
 });
+
+const showUserAccountModal = ref(false);
+
+const openUserAccountModal = () => {
+    form.user_email = form.user_email || form.email;
+    form.user_password = form.user_password || form.number;
+    showUserAccountModal.value = true;
+};
+
+const confirmUserAccount = () => {
+    form.generate_user = true;
+    showUserAccountModal.value = false;
+};
+
+const cancelUserAccount = () => {
+    form.generate_user = false;
+    form.user_email = null;
+    form.user_password = null;
+    showUserAccountModal.value = false;
+};
 
 const updatePatient = () => {
     form.post(route('heal_doctors_update'), {
@@ -63,24 +98,6 @@ const updatePatient = () => {
             //form.reset()
         },
     });
-}
-
-const searchUbigeos = ref([]);
-
-const filterCities = () => {
-    if (form.ubigeo_description.trim() === '') {
-        searchUbigeos.value = [];
-        return;
-    }
-
-    searchUbigeos.value = props.ubigeo.filter(row =>
-        row.district_name.toLowerCase().includes(form.ubigeo_description.toLowerCase())
-    );
-}
-const selectCity = (item) => {
-    form.ubigeo_description = item.department_name+'-'+item.province_name+'-'+item.district_name;
-    form.ubigeo = item.district_id;
-    searchUbigeos.value = []; // Limpiar la lista de búsqueda después de seleccionar una ciudad
 }
 
 const loadFile = (event) => {
@@ -101,6 +118,12 @@ const loadFile = (event) => {
         URL.revokeObjectURL(imageFile); // libera memoria
     }
 };
+
+const cropImageAndSave = (res) => {
+    form.image = res;
+    form.image_preview = res;
+};
+
 </script>
 
 <template>
@@ -145,20 +168,11 @@ const loadFile = (event) => {
                 <InputError :message="form.errors.birthdate" class="mt-2" />
             </div>
             <div class="col-span-6 sm:col-span-6 ">
-                <div class="flex items-center space-x-6">
+                <div class="grid grid-cols-1 gap-4 md:grid-cols-[auto,1fr]">
                     <div v-show="form.image_preview" class="shrink-0">
                         <img id='preview_img' class="h-16 w-16 object-cover rounded-full" :src="getImage(form.image_preview)" alt="Current profile photo" />
                     </div>
-                    <label class="block ml-1">
-                        <span class="sr-only">Elige foto</span>
-                        <input  type="file" @change="loadFile" class="block w-full text-sm text-slate-500
-                            mr-4 py-2 px-4
-                            rounded-full border-0
-                            text-sm font-semibold
-                            bg-violet-50 text-violet-700
-                            hover:bg-violet-100
-                        " />
-                    </label>
+                    <CropperImage ref="cropper" :aspect-ratio="1" @onCrop="cropImageAndSave" />
                 </div>
             </div>
             <div class="col-span-6 sm:col-span-3 ">
@@ -206,21 +220,14 @@ const loadFile = (event) => {
                 <InputError :message="form.errors.address" class="mt-2" />
             </div>
             <div class="col-span-6 sm:col-span-6 ">
-                <InputLabel for="ubigeo" value="Ciudad *" />
-                <div class="relative">
-                    <TextInput 
-                    v-model="form.ubigeo_description" 
-                    @input="filterCities"
-                    placeholder="Buscar Distrito"
-                    type="text" 
-                    class="block w-full mt-1" />
-                    <ul v-if="searchUbigeos && searchUbigeos.length > 0" style="max-height: 200px; overflow-y: auto;" class="list-disc list-inside absolute z-50 w-full bg-white border border-gray-300 rounded-md mt-1">
-                        <li v-for="item in searchUbigeos" :key="item.id" class="px-4 cursor-pointer hover:bg-gray-100" @click="selectCity(item)">
-                            {{ item.department_name+'-'+item.province_name+'-'+item.district_name }}
-                        </li>
-                    </ul>
-                </div>
-                <InputError :message="form.errors.ubigeo" class="mt-2" />
+                <SelectCities
+                    v-model="form.ubigeo"
+                    v-model:description="form.ubigeo_description"
+                    :options="ubigeo"
+                    label="Ciudad"
+                    required
+                    :error="form.errors.ubigeo"
+                />
             </div>
             <div class="col-span-6 sm:col-span-3 ">
                 <InputLabel for="telephone" value="Teléfono *" />
@@ -228,9 +235,12 @@ const loadFile = (event) => {
                     id="telephone"
                     v-model="form.telephone"
                     type="text"
+                    inputmode="numeric"
+                    maxlength="12"
+                    placeholder="Ej: 987987987"
                     class="block w-full mt-1"
-                    
                 />
+                <p class="mt-1 text-xs text-gray-500">Celular del Perú: 9 dígitos que empiezan con 9 (sin el +51).</p>
                 <InputError :message="form.errors.telephone" class="mt-2" />
             </div>
             <div class="col-span-6 sm:col-span-3">
@@ -244,6 +254,23 @@ const loadFile = (event) => {
                 />
                 <InputError :message="form.errors.email" class="mt-2" />
             </div>
+            <div v-if="!form.user_id" class="col-span-6">
+                <div class="flex flex-wrap items-center gap-3 rounded border border-slate-200 p-3 dark:border-slate-700">
+                    <button type="button" class="btn btn-outline-primary" @click="openUserAccountModal">
+                        Generar cuenta
+                    </button>
+                    <div v-if="form.generate_user" class="text-sm text-success">
+                        Se creará una cuenta para {{ form.user_email }} al guardar el doctor.
+                    </div>
+                    <InputError :message="form.errors.user_email || form.errors.user_password" class="mt-1" />
+                </div>
+            </div>
+            <div v-else class="col-span-6">
+                <div class="rounded border border-success/30 bg-success/10 p-3 text-sm text-success">
+                    Este doctor ya tiene una cuenta vinculada.
+                </div>
+            </div>
+            <DoctorProfessionalFields :form="form" />
             <div class="col-span-6 sm:col-span-6 space-x-2">
                 <label class="inline-flex">
                     <input type="radio" v-model="form.gender" value="M" name="square_radio" class="form-radio text-success rounded-none" />
@@ -274,4 +301,24 @@ const loadFile = (event) => {
             </Keypad>
         </template>
     </FormSection>
+
+    <div v-if="showUserAccountModal" class="fixed inset-0 z-[999] flex items-center justify-center bg-black/60 px-4">
+        <div class="w-full max-w-md rounded bg-white p-5 shadow-lg dark:bg-slate-900">
+            <h3 class="text-lg font-semibold">Generar cuenta</h3>
+            <div class="mt-4 space-y-4">
+                <div>
+                    <InputLabel value="Email" />
+                    <TextInput v-model="form.user_email" type="email" class="mt-1 block w-full" />
+                </div>
+                <div>
+                    <InputLabel value="Contraseña" />
+                    <TextInput v-model="form.user_password" type="text" class="mt-1 block w-full" />
+                </div>
+            </div>
+            <div class="mt-5 flex justify-end gap-2">
+                <button type="button" class="btn btn-outline-secondary" @click="cancelUserAccount">Cancelar</button>
+                <button type="button" class="btn btn-primary" @click="confirmUserAccount">Aceptar</button>
+            </div>
+        </div>
+    </div>
 </template>

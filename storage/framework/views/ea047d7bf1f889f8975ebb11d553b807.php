@@ -31,7 +31,7 @@
     
     <script src="<?php echo e(asset('js/traffic-tracking.js')); ?>"></script>
     <!-- Scripts -->
-    <?php echo app('Tightenco\Ziggy\BladeRouteGenerator')->generate(); ?>
+    <?php echo app('Tighten\Ziggy\BladeRouteGenerator')->generate(); ?>
     <?php
         $parts = explode('::', $page['component']);
     ?>
@@ -52,7 +52,7 @@
     
     <?php echo $gtm['body']; ?>
 
-    <?php if (!isset($__inertiaSsrDispatched)) { $__inertiaSsrDispatched = true; $__inertiaSsrResponse = app(\Inertia\Ssr\Gateway::class)->dispatch($page); }  if ($__inertiaSsrResponse) { echo $__inertiaSsrResponse->body; } elseif (config('inertia.use_script_element_for_initial_page')) { ?><script data-page="app" type="application/json"><?php echo json_encode($page); ?></script><div id="app"></div><?php } else { ?><div id="app" data-page="<?php echo e(json_encode($page)); ?>"></div><?php } ?>
+    <?php if (!isset($__inertiaSsrDispatched)) { $__inertiaSsrDispatched = true; $__inertiaSsrResponse = app(\Inertia\Ssr\Gateway::class)->dispatch($page); }  if ($__inertiaSsrResponse) { echo $__inertiaSsrResponse->body; } elseif (config('inertia.use_script_element_for_initial_page')) { ?><script data-page="app" type="application/json"><?php echo json_encode($page, JSON_HEX_TAG); ?></script><div id="app"></div><?php } else { ?><div id="app" data-page="<?php echo e(json_encode($page)); ?>"></div><?php } ?>
     <script>
         window.assetUrl = <?php echo json_encode(asset(''), 15, 512) ?>;
     </script>

@@ -1,5 +1,5 @@
 <script setup>
-    import { ref, onMounted, onUnmounted, watch, nextTick } from 'vue';
+    import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue';
 
     import { useAppStore } from '@/stores/index';
     import IconCaretsDown from '@/Components/vristo/icon/icon-carets-down.vue';
@@ -11,6 +11,8 @@
     import { Popover } from 'ant-design-vue';
     import { Link, usePage } from '@inertiajs/vue3';
     import menuData from './MenuData.js'
+    // El campus del alumno solo aplica si 'Alumno' es el único rol de peso.
+    import { esModoAlumno } from '@/utils/modoAlumno'
 
     const store = useAppStore();
     const activeDropdown = ref('');
@@ -18,9 +20,8 @@
 
     const userData = usePage().props.auth.user;
 
-    const hasAnyRole = (rolesToCheck) => {
-        return userData.roles.some(role => rolesToCheck.includes(role.name))
-    }
+    // Misma regla que AppLayout: con un rol de panel la sesión no es de alumno.
+    const modoAlumno = computed(() => esModoAlumno(userData.roles));
 
     // Cleanup function para Popovers de Ant Design
     const cleanupPopovers = () => {
@@ -55,7 +56,7 @@
 
         getStudentCertificates();
 
-        if(hasAnyRole(['Alumno'])){
+        if(modoAlumno.value){
             loadTeachers();
         }
 
@@ -72,8 +73,8 @@
     const getStudentCertificates = () =>{
         const roles = usePage().props.auth.roles;
 
-        // Verifica si el usuario tiene el rol "Alumno"
-        if (roles.includes('Alumno')) {
+        // Verifica si la sesión está en modo alumno (sin rol de panel).
+        if (esModoAlumno(roles)) {
             //console.log('aca llega');
             axios({
                 method: 'post',
@@ -354,7 +355,31 @@
                             </template>
                             <template v-else>
                                 <li v-can="item.permissions" class="menu nav-item">
+                                    {{-- Las vistas Blade completas no pasan por Inertia: se abren como enlace normal. --}}
+                                    <a
+                                        v-if="item.fullPage"
+                                        :href="item.route"
+                                        class="nav-link group"
+                                        @click="toggleMobileMenu"
+                                    >
+                                        <div class="flex items-center">
+                                            <font-awesome-icon :icon="item.icom" class="group-hover:!text-primary shrink-0" />
+                                            <div class="flex flex-1 items-center justify-between gap-2">
+                                                <span class="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">
+                                                    {{ item.text }}
+                                                </span>
+                                                <span
+                                                    v-if="item.badge"
+                                                    class="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold"
+                                                    :class="badgeClasses(item.badge)"
+                                                >
+                                                    {{ item.badge }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </a>
                                     <Link
+                                        v-else
                                         :href="item.route"
                                         class="nav-link group"
                                         @click="toggleMobileMenu"
@@ -419,7 +444,7 @@
                             </li>
                         </template>
                         <template v-if="menuChatAI">
-                            <template v-if="hasAnyRole(['Alumno'])">
+                            <template v-if="modoAlumno">
                                 <li v-if="menuChatAI.permissions" class="menu nav-item">
                                     <button
                                         type="button"

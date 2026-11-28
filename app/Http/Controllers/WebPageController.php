@@ -91,9 +91,9 @@ class WebPageController extends Controller
      * Modules/CMS/Routes/web.php). Usa la misma vista publica para que el
      * administrador vea exactamente como quedara con los cursos elegidos.
      */
-    public function freeCourseLandingPreview()
+    public function freeCourseLandingPreview($menuId = '01')
     {
-        $landingPage = CmsLanding::where('menu_id', '01')->firstOrFail();
+        $landingPage = CmsLanding::where('menu_id', $menuId)->firstOrFail();
 
         return view('pages.landing', $this->freeCourseLandingData($landingPage, true));
     }
@@ -1568,6 +1568,34 @@ class WebPageController extends Controller
         $payer['email'] = $email;
 
         return $payer;
+    }
+
+    /**
+     * Descarga el PDF adjunto de una entrada del blog.
+     *
+     * La ruta exige sesion (middleware auth). El archivo se sirve desde el
+     * disco publico con el nombre del articulo, sin exponer la ruta interna.
+     */
+    public function blog_article_pdf($url)
+    {
+        $article = \Modules\Blog\Entities\BlogArticle::where('url', $url)
+            ->where('status', true)
+            ->first();
+
+        if (! $article || ! $article->pdf_path) {
+            abort(404);
+        }
+
+        $disk = \Illuminate\Support\Facades\Storage::disk('public');
+
+        if (! $disk->exists($article->pdf_path)) {
+            abort(404);
+        }
+
+        return $disk->download(
+            $article->pdf_path,
+            \Illuminate\Support\Str::slug($article->title) . '.pdf'
+        );
     }
 
     public function blog_article_view($url)

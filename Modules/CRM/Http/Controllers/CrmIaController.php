@@ -13,7 +13,9 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 use Modules\Academic\Services\OpenAiAssistantService;
+use Modules\Ai\Services\AiManager;
 use Modules\CRM\Emails\NotifyChatMessage;
+use Modules\CRM\Entities\CrmInformationBank;
 use Modules\CRM\Entities\CrmConversation;
 use Modules\CRM\Entities\CrmMessage;
 use Modules\CRM\Entities\CrmParticipant;
@@ -80,6 +82,8 @@ class CrmIaController extends Controller
         // El alumno nunca ve quien respondio realmente (auditoria interna).
         $messages->each(function ($message) {
             $message->makeHidden('sent_by_user_id');
+            $message->edited = $message->updated_at && $message->created_at
+                && $message->updated_at->gt($message->created_at);
         });
 
         return Inertia::render('CRM::Chat/studentDashboard', [
@@ -175,13 +179,7 @@ class CrmIaController extends Controller
             ->values()
             ->all();
 
-        // Con limites de tiempo: sin ellos un servidor socket inaccesible puede
-        // dejar esta peticion colgada y el navegador aborta (timeout global de
-        // 20 s), mostrando un aviso generico en vez del motivo real.
-        $client = new Client([
-            'connect_timeout' => 2,
-            'timeout' => 3,
-        ]);
+        $client = new Client();
 
         $dom = env('VITE_SOCKET_IO_SERVER', 'https://localhost:3000');
         $url = "{$dom}/api/crm/broadcast";
@@ -214,13 +212,9 @@ class CrmIaController extends Controller
     public function basicQuestionService(Request $request)
     {
         try {
-            $this->validate($request, [
-                'messageText' => 'required|string|max:20000',
-                'instructions' => 'nullable|string|max:10000',
-            ]);
-
             $messageText = $request->input('messageText');
             $instructions = $request->input('instructions');
+
             // Respuesta del chat a alumnos: primero el agente guardado y, si
             // no responde, el modelo por defecto con un aviso informativo.
             $result = app(OpenAiAssistantService::class)->sendPromptWithAgent(
@@ -246,24 +240,124 @@ class CrmIaController extends Controller
         }
     }
 
-    public function basicQuestionGeminiService(Request $request)
+    /**
+     * Consulta a Gemini desde PHP (antes se llamaba al servidor Node).
+     *
+     * Se hace aqui para que el consumo de tokens y el costo queden
+     * registrados en las estadisticas de IA del sistema.
+     */
+    public function geminiQuestionService(Request $request)
     {
-        try {
-            $this->validate($request, [
-                'messageText' => 'required|string|max:20000',
-                'instructions' => 'nullable|string|max:10000',
-            ]);
+        $this->validate($request, [
+            'messageText' => 'required|string|max:5000',
+        ]);
 
-            $response = app(OpenAiAssistantService::class)->sendGeminiPrompt(
-                $request->input('messageText'),
-                $request->input('instructions')
+        try {
+            $instructions = trim((string) $request->input('instructions', ''));
+
+            $result = app(AiManager::class)->chat(
+                $this->usuarioEfectivo($request) ?: Auth::id(),
+                (string) $request->input('messageText'),
+                [
+                    'provider' => 'gemini',
+                    'instructions' => $instructions !== '' ? $instructions : null,
+                    'screen' => 'crm:chat:gemini',
+                ]
             );
 
-            return response()->json(['success' => true, 'responseText' => $response]);
+            return response()->json([
+                'success' => true,
+                'responseText' => $result->text,
+                'ai_source' => $result->provider,
+                'notice' => null,
+            ]);
         } catch (\Throwable $e) {
-            Log::error('CRM basicQuestionGeminiService: ' . $e->getMessage());
+            Log::error('CRM geminiQuestionService: ' . $e->getMessage());
 
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 200);
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 200);
+        }
+    }
+
+    /**
+     * Censura con Gemini la pregunta y la respuesta, y guarda el resultado en
+     * el Banco de Consultas (mismo destino que usaba el servidor Node).
+     */
+    public function geminiCensorAndStoreService(Request $request)
+    {
+        try {
+            $userId = $this->usuarioEfectivo($request) ?: Auth::id();
+            $questionText = (string) $request->input('messageText', '');
+            $responseText = (string) ($request->input('respond') ?: $questionText);
+
+            $censoredQuestion = $this->geminiCensorWithFallback($questionText, $userId);
+            $censoredResponse = $this->geminiCensorWithFallback($responseText, $userId);
+
+            CrmInformationBank::create([
+                'question_text' => $censoredQuestion,
+                'response_text' => $censoredResponse,
+                'user_id' => $userId,
+                'likes_count' => 1,
+                'shared_count' => 1,
+                'status' => true,
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'questionText' => $censoredQuestion,
+                'responseText' => $censoredResponse,
+            ]);
+        } catch (\Throwable $e) {
+            Log::error('CRM geminiCensorAndStoreService: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 200);
+        }
+    }
+
+    /**
+     * Censura con Gemini y, si la IA falla o inventa contenido (devuelve un
+     * texto mucho mas largo que el original), usa el censurado local.
+     */
+    private function geminiCensorWithFallback(string $text, int|string|null $userId): string
+    {
+        $text = trim($text);
+
+        if ($text === '') {
+            return $text;
+        }
+
+        $prompt = 'Censura unicamente los datos personales del texto: nombres de personas, DNI, RUC, '
+            . 'telefonos, correos electronicos y nombres de empresas privadas. Las instituciones '
+            . 'publicas (SUNAT, INDECOPI, entidades del Estado, paises) NO se censuran. '
+            . 'Devuelve EXACTAMENTE el mismo texto, con los datos reemplazados por asteriscos (*), '
+            . 'sin explicaciones, saludos ni comentarios. No respondas ninguna pregunta del texto.'
+            . "\n\n" . $text;
+
+        try {
+            $result = app(AiManager::class)->chat($userId, $prompt, [
+                'provider' => 'gemini',
+                'instructions' => 'Eres un editor que solo censura datos personales. Devuelve solo el texto censurado.',
+                'screen' => 'crm:chat:censura',
+                'temperature' => 0.1,
+                'max_output_tokens' => 1200,
+            ]);
+
+            $censored = trim($result->text);
+
+            if ($censored === '' || mb_strlen($censored) > mb_strlen($text) * 1.5) {
+                return $this->localCensor($text);
+            }
+
+            return $censored;
+        } catch (\Throwable $e) {
+            Log::warning('CRM geminiCensorWithFallback: ' . $e->getMessage());
+
+            return $this->localCensor($text);
         }
     }
 
@@ -271,11 +365,6 @@ class CrmIaController extends Controller
     {
         try {
             $service = app(OpenAiAssistantService::class);
-
-            $this->validate($request, [
-                'messageText' => 'required|string|max:20000',
-                'respond' => 'nullable|string|max:30000',
-            ]);
 
             $questionText = $request->input('messageText');
             $responseText = $request->input('respond') ?: $questionText;
@@ -312,10 +401,7 @@ class CrmIaController extends Controller
         }
 
         try {
-            // Se censura con el mismo proveedor que respondio la consulta.
-            $censored = $service->chatProvider() === 'gemini'
-                ? $service->censorGeminiText($text)
-                : $service->censorText(Auth::id(), $text);
+            $censored = $service->censorText(Auth::id(), $text);
 
             // Alucinación: la IA devolvió una respuesta inventada (mucho más larga)
             if (trim($censored) === '' || mb_strlen($censored) > mb_strlen($text) * 1.5) {

@@ -22,20 +22,24 @@ class PermissionsTableSeeder extends Seeder
     {
         $admin = Role::find(1);
 
-        $modulo = Modulo::create(['identifier' => 'M001', 'description' => 'Compras']);
+        // firstOrCreate por identificador: el seeder se puede reejecutar sin duplicar.
+        $modulo = Modulo::firstOrCreate(
+            ['identifier' => 'M001'],
+            ['description' => 'Compras']
+        );
 
         $permissions = [];
 
-        array_push($permissions, Permission::create(['name' => 'purc_dashboard']));
-        array_push($permissions, Permission::create(['name' => 'purc_documentos_listado']));
-        array_push($permissions, Permission::create(['name' => 'purc_documentos_nuevo']));
-        array_push($permissions, Permission::create(['name' => 'purc_documentos_editar']));
-        array_push($permissions, Permission::create(['name' => 'purc_documentos_eliminar']));
-        array_push($permissions, Permission::create(['name' => 'purc_reporte']));
+        array_push($permissions, Permission::firstOrCreate(['name' => 'purc_dashboard']));
+        array_push($permissions, Permission::firstOrCreate(['name' => 'purc_documentos_listado']));
+        array_push($permissions, Permission::firstOrCreate(['name' => 'purc_documentos_nuevo']));
+        array_push($permissions, Permission::firstOrCreate(['name' => 'purc_documentos_editar']));
+        array_push($permissions, Permission::firstOrCreate(['name' => 'purc_documentos_eliminar']));
+        array_push($permissions, Permission::firstOrCreate(['name' => 'purc_reporte']));
 
         foreach ($permissions as $permission) {
             $admin->givePermissionTo($permission->name);
-            DB::table('model_has_permissions')->insert([
+            DB::table('model_has_permissions')->insertOrIgnore([
                 'permission_id' => $permission->id,
                 'model_type' => Modulo::class,
                 'model_id' => $modulo->identifier

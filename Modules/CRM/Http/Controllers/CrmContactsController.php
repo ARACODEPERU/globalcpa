@@ -8,6 +8,7 @@ use App\Models\Industry;
 use App\Models\Parameter;
 use App\Models\Person;
 use App\Models\User;
+use App\Support\PersonProfileData;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -25,9 +26,12 @@ use Modules\Academic\Entities\AcaStudentSubscription;
 use Modules\Academic\Entities\AcaTeacher;
 use Modules\CRM\Emails\MailwithUserAccount;
 use Modules\CRM\Emails\PersonalizedEmailStudent;
+use Modules\CRM\Http\Controllers\Concerns\ResuelveIdentidadAsistente;
 
 class CrmContactsController extends Controller
 {
+    use ResuelveIdentidadAsistente;
+
     /**
      * Display a listing of the resource.
      */
@@ -339,49 +343,44 @@ class CrmContactsController extends Controller
             ]
         );
 
-        // $path = 'img' . DIRECTORY_SEPARATOR . 'imagen-no-disponible.jpeg';
-        // $destination = 'uploads' . DIRECTORY_SEPARATOR . 'products';
-        $path = null;
-        $destination = 'uploads/crm/companies';
-        $file = $request->file('image');
-
         $industry = $request->get('industry');
 
-        $person = Person::findOrFail($update_id);
+        $per = Person::findOrFail($update_id);
 
-        $person->update(
-            [
-                'document_type_id'      => $request->get('document_type_id'),
-                'number'                => trim($request->get('number')),
-                'short_name'            => strtoupper(trim($request->get('short_name'))),
-                'full_name'             => strtoupper(trim($request->get('full_name'))),
-                'names'                 => strtoupper(trim($request->get('short_name'))),
-                'telephone'             => trim($request->get('telephone')),
-                'email'                 => trim($request->get('email')),
-                'address'               => $request->get('address'),
-                'ubigeo'                => $request->get('ubigeo'),
-                'industry_id'           => $industry['id'],
-                'industry'              => $industry['description'],
-                'contact_telephone'     => trim($request->get('contact_telephone')),
-                'contact_name'          => trim($request->get('contact_name')),
-                'contact_email'         => trim($request->get('contact_email'))
-            ]
+        // findOrFail devuelve el modelo (antes se usaba el bool de update() como
+        // persona). La imagen solo se escribe cuando llega una nueva.
+        $newImage = PersonProfileData::storeNewImage(
+            $request,
+            'image',
+            'uploads/crm/companies',
+            (string) $request->get('number')
         );
 
-        if ($file) {
-            $original_name = strtolower(trim($file->getClientOriginalName()));
-            $original_name = str_replace(" ", "_", $original_name);
-            $extension = $file->getClientOriginalExtension();
-            $file_name = trim($request->get('number')) . '.' . $extension;
-            $path = $request->file('image')->storeAs(
-                $destination,
-                $file_name,
-                'public'
-            );
+        $data = [
+            'document_type_id'      => $request->get('document_type_id'),
+            'number'                => trim($request->get('number')),
+            'short_name'            => strtoupper(trim($request->get('short_name'))),
+            'full_name'             => strtoupper(trim($request->get('full_name'))),
+            'names'                 => strtoupper(trim($request->get('short_name'))),
+            'telephone'             => trim($request->get('telephone')),
+            'email'                 => trim($request->get('email')),
+            'address'               => $request->get('address'),
+            'ubigeo'                => $request->get('ubigeo'),
+            'contact_telephone'     => trim($request->get('contact_telephone')),
+            'contact_name'          => trim($request->get('contact_name')),
+            'contact_email'         => trim($request->get('contact_email'))
+        ];
 
-            $person->image = $path;
-            $person->save();
+        if (is_array($industry)) {
+            $data['industry_id'] = $industry['id'] ?? null;
+            $data['industry'] = $industry['description'] ?? null;
         }
+
+        if ($newImage) {
+            $data['image'] = $newImage;
+        }
+
+        $per->update($data);
     }
 
     public function companiesDestroy($id)
@@ -444,8 +443,19 @@ class CrmContactsController extends Controller
 
     public function contactsDocentsChat()
     {
-        //dd(Auth::user()->person_id);
         $student = AcaStudent::where('person_id', Auth::user()->person_id)->first();
+
+        // Quien no es alumno (administradores, asistentes, empleados) no tiene
+        // chat de docentes. El header consulta esta ruta en todas las pantallas,
+        // asi que antes de llegar aqui se respondia con la lista vacia y no con
+        // un error 500 a quien no es alumno.
+        if (! $student) {
+            return response()->json([
+                'success' => true,
+                'docents' => []
+            ], 200);
+        }
+
         $docents = [];
 
         $existeActiva = AcaStudentSubscription::where('student_id', $student->id)
@@ -453,8 +463,10 @@ class CrmContactsController extends Controller
             ->exists();
 
         if($existeActiva){
-            $docents = User::with('person')
-                ->role('Asistente') // Método de Spatie
+            // usuariosConRol tolera que el rol Asistente aun no exista en la
+            // instalacion (Spatie lanzaria RoleDoesNotExist).
+            $docents = $this->usuariosConRol('Asistente')
+                ->with('person')
                 ->get();
         }
 

@@ -21,15 +21,11 @@ const props = defineProps({
         type: [Array, Object],
         default: () => ([])
     },
-    peru_country_id: {
-        type: [Number, String],
-        default: 1
-    },
-    professions: {
+    occupations: {
         type: [Array, Object],
         default: () => ([])
     },
-    occupations: {
+    professions: {
         type: [Array, Object],
         default: () => ([])
     },
@@ -74,7 +70,7 @@ const getImage = (path) => {
             </div>
         </div>
         <div class="mt-5">
-            <UpdateInformationForm :person="person" :identityDocumentTypes="identityDocumentTypes" :ubigeo="ubigeo" :countries="countries" :peru_country_id="peru_country_id" :professions="professions" :occupations="occupations" :industries="industries" />
+            <UpdateInformationForm :person="person" :identityDocumentTypes="identityDocumentTypes" :ubigeo="ubigeo" :countries="countries" :occupations="occupations" :professions="professions" :industries="industries" />
         </div>
     </AppLayout>
 </template>

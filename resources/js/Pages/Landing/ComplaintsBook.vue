@@ -2,6 +2,7 @@
     import '@Public/themes/personalLanding/assets/css/style.css';
     import { Head, Link, useForm } from '@inertiajs/vue3';
     import Header from './Components/Header.vue';
+    import Footer from './Components/Footer.vue';
     import Swal from 'sweetalert2';
     import InputError from '@/Components/InputError.vue';
     const xassetUrl = assetUrl;
@@ -50,7 +51,7 @@
 
 <template>
     <Head>
-        <title>Reclamaciones</title>
+        <title>Aracode</title>
         <!-- Meta para Facturación Electrónica -->
         <meta name="description" content="Simplifica tu facturación electrónica con nuestra solución. Envía facturas y boletas electrónicas a SUNAT de forma rápida, segura y eficiente.">
         <meta name="keywords" content="facturación electrónica, enviar facturas SUNAT, boletas electrónicas, software SUNAT, sistema de facturación Perú, boletas Perú, SUNAT online">
@@ -96,14 +97,14 @@
 
                                 <div class="relative z-10">
                                     <p class="text-sm italic text-justify text-gray-800 dark:text-white">
-                                        Al enviar esta reclamación, usted autoriza a {{ $page.props.company.business_name }} a tratar sus datos personales para la gestión de su reclamo y, en general, para los fines relacionados con la provisión de nuestros productos o servicios. Su información será procesada respetando nuestra <Link class="text-primary duration-300 hover:underline dark:text-warning">Política de Privacidad</Link> y la Ley N° 29733. Garantizamos la confidencialidad y seguridad de sus datos. Para mayor información, puede revisar nuestra <Link class="text-primary duration-300 hover:underline dark:text-warning">Política de Privacidad</Link> y nuestros <Link :href="route('terms_main')" class="text-primary duration-300 hover:underline dark:text-warning">Términos y Condiciones</Link>.
+                                        Al enviar esta reclamación, usted autoriza a Aracode Perú a tratar sus datos personales para la gestión de su reclamo y, en general, para los fines relacionados con la provisión de nuestros productos o servicios. Su información será procesada respetando nuestra <Link class="text-primary duration-300 hover:underline dark:text-warning">Política de Privacidad</Link> y la Ley N° 29733. Garantizamos la confidencialidad y seguridad de sus datos. Para mayor información, puede revisar nuestra <Link class="text-primary duration-300 hover:underline dark:text-warning">Política de Privacidad</Link> y nuestros <Link :href="route('terms_main')" class="text-primary duration-300 hover:underline dark:text-warning">Términos y Condiciones</Link>.
                                     </p>
                                 </div>
                                 <div class="relative z-10 mt-16 border-2 p-6 rounded-lg">
                                     <p class="text-sm italic text-justify text-gray-800 dark:text-white">
                                         {{ $page.props.company.name }}<br />
-                                        {{ $page.props.company.fiscal_address }}<br />
-                                        El libro de reclamaciones virtual de {{ $page.props.company.business_name }} es un servicio proporcionado en cumplimiento de la Ley N° 29571, Código de Protección y Defensa del Consumidor.
+                                        Av. A Casuarinas P1 26, Nuevo Chimbote, Áncash, Perú<br />
+                                        El libro de reclamaciones virtual de Aracode Perú es un servicio proporcionado en cumplimiento de la Ley N° 29571, Código de Protección y Defensa del Consumidor.
                                         La formulación del reclamo no impide acudir a otras vías de solución de controversias ni es requisito previo para interponer una denuncia ante el INDECOPI.
                                         El proveedor {{ $page.props.company.name }} dará respuesta al reclamo o queja en un plazo no mayor a quince (15) días hábiles, el cual es improrrogable.
                                         Sus datos personales serán conservados durante el tiempo requerido por la normativa vigente para asegurar la correcta gestión de su reclamación y cumplir con nuestras obligaciones legales. Más información sobre el tratamiento de sus datos, sus derechos y los términos de uso de nuestro servicio, consulte nuestra <Link class="text-primary duration-300 hover:underline dark:text-warning">Política de Privacidad</Link> y nuestros <Link :href="route('terms_main')" class="text-primary duration-300 hover:underline dark:text-warning">Términos y Condiciones</Link>.
@@ -270,46 +271,5 @@
             <!-- End Hero -->
         </div>
     </section>
-
-    <footer class="bg-white border-t border-gray-200 dark:bg-neutral-900 dark:border-neutral-800">
-        <div class="mx-auto w-full max-w-screen-xl px-4 py-8">
-            <div class="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
-                <div>
-                    <p class="text-lg font-semibold text-gray-800 dark:text-white">
-                        {{ $page.props.company.business_name }}
-                    </p>
-                    <p class="mt-1 text-sm text-gray-600 dark:text-neutral-400">
-                        {{ $page.props.company.fiscal_address }}
-                    </p>
-                    <p v-if="$page.props.company.email" class="mt-1 text-sm text-gray-600 dark:text-neutral-400">
-                        {{ $page.props.company.email }}
-                    </p>
-                    <p v-if="$page.props.company.phone" class="mt-1 text-sm text-gray-600 dark:text-neutral-400">
-                        {{ $page.props.company.phone }}
-                    </p>
-                </div>
-                <ul class="flex flex-wrap gap-x-6 gap-y-2 text-sm">
-                    <li>
-                        <Link :href="route('politicas_privacidad')" class="text-gray-600 hover:text-primary hover:underline dark:text-neutral-400">
-                            Política de privacidad
-                        </Link>
-                    </li>
-                    <li>
-                        <Link :href="route('terms_main')" class="text-gray-600 hover:text-primary hover:underline dark:text-neutral-400">
-                            Términos y condiciones
-                        </Link>
-                    </li>
-                    <li>
-                        <Link :href="route('politicas_cookies')" class="text-gray-600 hover:text-primary hover:underline dark:text-neutral-400">
-                            Política de cookies
-                        </Link>
-                    </li>
-                </ul>
-            </div>
-            <hr class="my-6 border-gray-200 dark:border-neutral-800" />
-            <p class="text-xs text-gray-500 dark:text-neutral-500">
-                Copyright © {{ new Date().getFullYear() }} {{ $page.props.company.name }}. Todos los derechos reservados.
-            </p>
-        </div>
-    </footer>
+    <Footer />
 </template>

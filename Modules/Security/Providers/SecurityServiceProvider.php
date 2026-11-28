@@ -2,6 +2,9 @@
 
 namespace Modules\Security\Providers;
 
+use Illuminate\Auth\Events\Logout;
+use Illuminate\Log\Events\MessageLogged;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Factory;
 
@@ -24,6 +27,34 @@ class SecurityServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        // Al cerrar sesión en la aplicación se cierra también la sesión del Modo
+        // Super Editor: el borrador se descarta (nunca se aplica solo) y queda
+        // registrado en la bitácora.
+        // Alertas de error por Telegram: cada mensaje que registra el logger
+        // pasa por aquí y, si el nivel alcanza el umbral configurado en
+        // Seguridad → Alertas, se encola el aviso a los chat_id activos. El
+        // servicio nunca lanza, así que el listener no afecta a la petición.
+        Event::listen(MessageLogged::class, function (MessageLogged $event) {
+            try {
+                app(\Modules\Security\Services\ErrorAlertService::class)->handle($event);
+            } catch (\Throwable) {
+                // Una alerta jamás debe interferir con la aplicación.
+            }
+        });
+
+        Event::listen(Logout::class, function (Logout $event) {
+            if (! $event->user) {
+                return;
+            }
+
+            try {
+                app(\Modules\Security\Services\SuperEditorService::class)
+                    ->closeOpenForUser($event->user, \Modules\Security\Services\SuperEditorService::CLOSE_LOGOUT);
+            } catch (\Throwable $e) {
+                // El cierre del modo editor nunca debe impedir el logout.
+            }
+        });
+
         $this->registerTranslations();
         $this->registerConfig();
         $this->registerViews();
@@ -33,6 +64,7 @@ class SecurityServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 \Modules\Security\Console\MeasureStorageCommand::class,
+                \Modules\Security\Console\PruneErrorLogsCommand::class,
             ]);
         }
     }
@@ -49,6 +81,11 @@ class SecurityServiceProvider extends ServiceProvider
         // Métricas de almacenamiento: singleton para que la caché en memoria
         // sirva la medición durante toda la petición sin re-escanear.
         $this->app->singleton(\Modules\Security\Services\StorageMetricsService::class);
+
+        // Alertas de error: singleton para que ajustes y destinatarios se
+        // resuelvan una sola vez por petición aunque el logger emita muchas
+        // líneas (el listener se dispara con cada una).
+        $this->app->singleton(\Modules\Security\Services\ErrorAlertService::class);
     }
 
     /**

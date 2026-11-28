@@ -9,10 +9,15 @@ use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Modules\Health\Entities\HealPatient;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Modules\Dental\Entities\DentAppointment;
+use Modules\Health\Rules\PeruMobile;
+use Modules\Health\Support\HealthPhoneNumber;
 
 class HealPatientController extends Controller
 {
@@ -53,7 +58,8 @@ class HealPatientController extends Controller
             }
             $patients->orderBy($attribute, $sort_order);
         } else {
-            $patients->latest();
+            // Calificado: con el join, latest() sería ambiguo entre tablas.
+            $patients->latest('heal_patients.created_at');
         }
 
         $patients = $patients->paginate(10)->onEachSide(2);
@@ -102,11 +108,21 @@ class HealPatientController extends Controller
             $request,
             [
                 'document_type_id'  => 'required',
-                'number'            => 'required|max:12',
-                'number'            => 'unique:people,number,' . $update_id . ',id,document_type_id,' . $request->get('document_type_id'),
-                'telephone'         => 'required|max:12',
-                'email'             => 'required|max:255|unique:people,email',
-                'email'             => 'required|max:255|unique:users,email',
+                // El documento es unico por tipo: antes habia dos claves 'number'
+                // y PHP se quedaba solo con la ultima, sin el unique.
+                'number'            => [
+                    'required',
+                    'max:12',
+                    Rule::unique('people', 'number')
+                        ->where(fn ($query) => $query->where('document_type_id', $request->get('document_type_id'))),
+                ],
+                'telephone'         => ['required', new PeruMobile()],
+                'email'             => [
+                    'required',
+                    'max:255',
+                    Rule::unique('people', 'email'),
+                    Rule::unique('users', 'email'),
+                ],
                 'address'           => 'required|max:255',
                 'ubigeo'            => 'required|max:255',
                 'birthdate'         => 'required|',
@@ -116,23 +132,12 @@ class HealPatientController extends Controller
             ]
         );
 
+        // El telefono se guarda siempre en la forma de Salud (9 digitos, sin +51).
+        HealthPhoneNumber::normalizeRequest($request);
+
         // $path = 'img' . DIRECTORY_SEPARATOR . 'imagen-no-disponible.jpeg';
         // $destination = 'uploads' . DIRECTORY_SEPARATOR . 'products';
-        $path = null;
-        $destination = 'uploads/patients';
-        $file = $request->file('image');
-        if ($file) {
-            $original_name = strtolower(trim($file->getClientOriginalName()));
-            $original_name = str_replace(" ", "_", $original_name);
-            $extension = $file->getClientOriginalExtension();
-            $file_name = date('YmdHis') . '.' . $extension;
-            //dd($destination);
-            $path = $request->file('image')->storeAs(
-                $destination,
-                $file_name,
-                'public'
-            );
-        }
+        $path = $this->storeProfileImage($request, 'uploads/patients');
 
         $per = Person::create([
             'document_type_id'      => $request->get('document_type_id'),
@@ -154,10 +159,17 @@ class HealPatientController extends Controller
             'gender'                => $request->get('gender')
         ]);
 
-        HealPatient::create([
+        $patient = HealPatient::create([
             'person_id'     => $per->id,
             'patient_code'  => $request->get('number')
         ]);
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'patient' => $patient->load('person'),
+            ]);
+        }
 
         return redirect()->route('heal_patients_create')
             ->with('message', __('Producto creado con éxito'));
@@ -224,9 +236,14 @@ class HealPatientController extends Controller
             $request,
             [
                 'document_type_id'  => 'required',
-                'number'            => 'required|max:12',
-                'number'            => 'unique:people,number,' . $update_id . ',id,document_type_id,' . $request->get('document_type_id'),
-                'telephone'         => 'required|max:12',
+                'number'            => [
+                    'required',
+                    'max:12',
+                    Rule::unique('people', 'number')
+                        ->where(fn ($query) => $query->where('document_type_id', $request->get('document_type_id')))
+                        ->ignore($update_id),
+                ],
+                'telephone'         => ['required', new PeruMobile()],
                 'email'             => 'required|max:255',
                 'address'           => 'required|max:255',
                 'ubigeo'            => 'required|max:255',
@@ -236,6 +253,9 @@ class HealPatientController extends Controller
                 'mother_lastname'   => 'required|max:255',
             ]
         );
+
+        // El telefono se guarda siempre en la forma de Salud (9 digitos, sin +51).
+        HealthPhoneNumber::normalizeRequest($request);
 
         // $path = 'img' . DIRECTORY_SEPARATOR . 'imagen-no-disponible.jpeg';
         // $destination = 'uploads' . DIRECTORY_SEPARATOR . 'products';
@@ -255,19 +275,8 @@ class HealPatientController extends Controller
         $person->father_lastname    = $request->get('father_lastname');
         $person->mother_lastname    = $request->get('mother_lastname');
 
-        $path = null;
-        $destination = 'uploads/patients';
-        $file = $request->file('image');
-        if ($file) {
-            $original_name = strtolower(trim($file->getClientOriginalName()));
-            $original_name = str_replace(" ", "_", $original_name);
-            $extension = $file->getClientOriginalExtension();
-            $file_name = date('YmdHis') . '.' . $extension;
-            $path = $request->file('image')->storeAs(
-                $destination,
-                $file_name,
-                'public'
-            );
+        $path = $this->storeProfileImage($request, 'uploads/patients');
+        if ($path) {
             $person->image = $path;
         }
 
@@ -276,6 +285,11 @@ class HealPatientController extends Controller
         HealPatient::where('person_id', $update_id)->update([
             'patient_code'  => $request->get('number')
         ]);
+
+        // Sin respuesta, Inertia recibe un cuerpo vacio y el formulario no
+        // sabe si el cambio se guardo.
+        return redirect()->route('heal_patients_edit', $update_id)
+            ->with('message', 'Paciente actualizado con éxito');
     }
 
     /**
@@ -285,7 +299,61 @@ class HealPatientController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $patient = HealPatient::with('person')->findOrFail($id);
+
+        // Baja logica + anonimizacion: la historia clinica y la traza de
+        // auditoria se conservan, pero los datos personales dejan de
+        // identificar al paciente (politica de retencion de 5 años).
+        DB::transaction(function () use ($patient) {
+            $person = $patient->person;
+
+            $datosAnteriores = $person ? [
+                'full_name' => $person->full_name,
+                'number'    => $person->number,
+                'email'     => $person->email,
+                'telephone' => $person->telephone,
+                'address'   => $person->address,
+            ] : [];
+
+            if ($person) {
+                $person->fill([
+                    'short_name'      => 'Paciente',
+                    'names'           => 'Paciente',
+                    'father_lastname' => 'Anonimizado',
+                    'mother_lastname' => '',
+                    'full_name'       => 'Paciente anonimizado ' . $person->id,
+                    'number'          => 'ANON' . $person->id,
+                    'email'           => 'anonimo' . $person->id . '@anonimo.local',
+                    'telephone'       => null,
+                    'address'         => null,
+                    'image'           => null,
+                    'description'     => 'Paciente anonimizado por eliminación',
+                ])->save();
+            }
+
+            $patient->patient_code = 'ANON-' . $patient->id;
+            $patient->save();
+
+            // Queda registrado que hubo anonimizacion y que datos se retiraron,
+            // sin volver a guardar los valores personales.
+            $patient->registrarActividad('anonymized', [
+                'motivo'          => 'Eliminación de paciente: baja lógica con anonimización',
+                'campos_retirados' => array_keys($datosAnteriores),
+            ]);
+
+            // SoftDeletes: se conserva la fila y el evento queda auditado.
+            $patient->delete();
+        });
+
+        if (request()->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Paciente eliminado y sus datos personales anonimizados.',
+            ]);
+        }
+
+        return redirect()->route('heal_patients_list')
+            ->with('message', 'Paciente eliminado y sus datos personales anonimizados.');
     }
 
     public function patientPanel($id)
@@ -318,11 +386,13 @@ class HealPatientController extends Controller
     {
         $search = $request->get('search');
 
+        // Limite defensivo: el buscador no debe devolver la tabla completa.
         $patients = HealPatient::with('person')
             ->whereHas('person', function ($query) use ($search) {
                 $query->where('full_name', 'like', '%' . $search . '%')
                     ->orWhere('number', $search);
             })
+            ->limit(50)
             ->get();
 
         if (count($patients) > 0) {
@@ -335,5 +405,44 @@ class HealPatientController extends Controller
                 'success' => false
             ]);
         }
+    }
+
+    private function storeProfileImage(Request $request, string $destination): ?string
+    {
+        $image = $request->get('image');
+
+        $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+
+        if (is_string($image) && str_starts_with($image, 'data:image')) {
+            [$meta, $content] = explode(',', $image, 2);
+            preg_match('/data:image\/(?<extension>[^;]+);base64/', $meta, $matches);
+            $extension = strtolower($matches['extension'] ?? 'png');
+            $extension = $extension === 'jpeg' ? 'jpg' : $extension;
+
+            if (!in_array($extension, $allowedExtensions, true)) {
+                return null;
+            }
+
+            $fileName = date('YmdHis') . '_' . Str::random(8) . '.' . $extension;
+            $path = $destination . '/' . $fileName;
+
+            Storage::disk('public')->put($path, base64_decode($content));
+
+            return $path;
+        }
+
+        $file = $request->file('image');
+        if (!$file) {
+            return null;
+        }
+
+        $extension = strtolower($file->getClientOriginalExtension());
+        if (!in_array($extension, $allowedExtensions, true)) {
+            return null;
+        }
+
+        $fileName = date('YmdHis') . '_' . Str::random(8) . '.' . $extension;
+
+        return $file->storeAs($destination, $fileName, 'public');
     }
 }

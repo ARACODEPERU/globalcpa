@@ -26,6 +26,25 @@ class BibReaderAccessService
         return $user->hasRole($this->readerRoleName());
     }
 
+    public function isAdmin(User $user): bool
+    {
+        return $user->hasRole($this->adminRoleName());
+    }
+
+    public function adminRoleName(): string
+    {
+        return config('bibliodata.reader.admin_role', 'admin');
+    }
+
+    /**
+     * Un usuario con los roles admin y Lector puede leer todos los libros
+     * sin necesidad de estar suscrito a ningún plan.
+     */
+    public function isAdminLector(User $user): bool
+    {
+        return $this->isAdmin($user) && $this->isLector($user);
+    }
+
     /**
      * @throws ValidationException
      */
@@ -41,6 +60,45 @@ class BibReaderAccessService
     public function getActiveSubscription(User $user, ?int $bookId = null): ?BibSubscription
     {
         return $this->subscriptionService->getActiveSubscriptionForUser($user, $bookId);
+    }
+
+    /**
+     * El usuario puede acceder a todos los libros: es admin+Lector
+     * o tiene un plan activo con acceso a todos los libros.
+     */
+    public function canAccessAllBooks(User $user): bool
+    {
+        if ($this->isAdminLector($user)) {
+            return true;
+        }
+
+        $subscription = $this->getActiveSubscription($user);
+
+        return $subscription?->plan?->scope_type === 'all_books';
+    }
+
+    /**
+     * El usuario puede leer el libro dado (plan all-books o libro asignado).
+     */
+    public function canAccessBook(User $user, BibBook $book): bool
+    {
+        if ($this->canAccessAllBooks($user)) {
+            return $book->status === 'available';
+        }
+
+        $resolved = $this->resolveBookForReader($user);
+
+        return $resolved !== null && (int) $resolved->id === (int) $book->id;
+    }
+
+    /**
+     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     */
+    public function authorizeBookForReader(User $user, BibBook $book): void
+    {
+        if (! $this->canAccessBook($user, $book)) {
+            abort(404);
+        }
     }
 
     public function resolveBookForReader(User $user): ?BibBook
@@ -95,6 +153,15 @@ class BibReaderAccessService
      */
     public function evaluatePageAccess(User $user, BibBook $book, int $pageId): array
     {
+        if ($this->isAdminLector($user)) {
+            return [
+                'allowed' => true,
+                'has_subscription' => true,
+                'reason' => null,
+                'preview_page_id' => null,
+            ];
+        }
+
         $subscription = $this->getActiveSubscription($user, $book->id);
 
         if ($subscription) {
@@ -138,6 +205,13 @@ class BibReaderAccessService
 
     public function buildAccessPayload(User $user, ?BibBook $book): array
     {
+        if ($this->isAdminLector($user)) {
+            return [
+                'hasActiveSubscription' => true,
+                'previewPageId' => null,
+            ];
+        }
+
         if (! $book) {
             return [
                 'hasActiveSubscription' => false,

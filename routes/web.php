@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BrandingController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CompanyController;
@@ -66,6 +67,12 @@ Route::get('/buscar-cursos', [WebPageController::class, 'searchCourses'])->name(
 Route::get('/curso-descripcion/{id}', [WebPageController::class, 'coursedescription'])->name('web_course_description');
 Route::get('/curso/{id}', [WebPageController::class, 'course_url_slug'])->name('course_url_slug'); // ruta de cursos landing
 
+// Landing publica de suscripciones: todo el contenido de la plantilla y solo
+// los planes activos. Es el destino de los enlaces UTM generados en el panel
+// (Academico -> Tipo de suscripcion).
+Route::get('/suscripciones', [\Modules\Academic\Http\Controllers\AcaSubscriptionTypeController::class, 'landing'])
+    ->name('aca_subscriptions_landing');
+
 Route::get('/carrito', [WebPageController::class, 'shopcart'])->name('web_carrito');
 Route::post('/carrito/preference', [WebPageController::class, 'cartPreference'])->name('web_cart_preference');
 Route::put('/carrito/payment', [WebPageController::class, 'cartProcessPayment'])->name('web_cart_process_payment');
@@ -98,6 +105,11 @@ Route::post('/find/invoice', [SalesController::class, 'clientSearchDocument'])->
 
 // Route::get('/blog/home', [BlogController::class, 'index'])->name('blog_principal');
 Route::get('/article/{url}', [BlogController::class, 'article'])->name('blog_article_by_url');
+// Descarga del PDF adjunto del articulo. Solo con sesion: la vista muestra el
+// boton unicamente cuando hay usuario autenticado y el articulo tiene archivo.
+Route::get('/article/{url}/pdf', [WebPageController::class, 'blog_article_pdf'])
+    ->middleware('auth')
+    ->name('blog_article_pdf');
 // Route::get('/category/{id}', [BlogController::class, 'category'])->name('blog_category');
 // Route::get('/policies', [BlogController::class, 'policies'])->name('blog_policies');
 // Route::get('/contact-us', [BlogController::class, 'contactUs'])->name('blog_contact_us');
@@ -199,6 +211,17 @@ Route::middleware('auth')->group(function () {
         'company/show',
         [CompanyController::class, 'show']
     )->name('company_show');
+
+    // Colores de marca de la instalación (Configuraciones → Branding).
+    Route::get(
+        'branding/show',
+        [BrandingController::class, 'show']
+    )->name('branding_show');
+
+    Route::post(
+        'branding/update',
+        [BrandingController::class, 'update']
+    )->name('branding_update');
 
     Route::post(
         'company/update_create',

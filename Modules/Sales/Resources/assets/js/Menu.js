@@ -11,10 +11,12 @@ import {
     faListOl,
     faFileLines,
     faFileArrowDown,
+    faFileExport,
     faFileFragment,
     faFileCircleQuestion,
     faCircleDollarToSlot,
     faHandHoldingDollar,
+    faWarehouse,
 } from "@fortawesome/free-solid-svg-icons";
 
 const menuSales = [
@@ -79,6 +81,15 @@ const menuSales = [
                         badge: "Nuevo",
                     },
                 ]
+            },
+            {
+                // Inventario / kardex: stock por local con detalle por talla.
+                // Solo productos físicos (is_product = true).
+                route: route("kardex_index"),
+                status: false,
+                text: "Inventario",
+                permissions: "productos",
+                icom: faWarehouse,
             },
             {
                 route: route("establishments.index"),
@@ -174,6 +185,35 @@ const menuSales = [
                 text: 'Comunicacion de Baja',
                 permissions: 'invo_comunicacion_baja',
                 icom: faFileArrowDown,
+            },
+            {
+                route: route('guias_remision_list'),
+                status: false,
+                text: 'Guías de Remisión',
+                permissions: 'invo_guia_remision_lista',
+                icom: faFileArrowDown,
+            },
+            {
+                route: route('sire_rvie_ventas_index'),
+                status: false,
+                text: 'SIRE · Registro de Ventas',
+                permissions: 'sire_rvie_ventas',
+                icom: faFileExport,
+            },
+            {
+                route: route('sire_rce_compras_index'),
+                status: false,
+                text: 'SIRE · Registro de Compras',
+                permissions: 'sire_rce_compras',
+                icom: faFileExport,
+            },
+            {
+                // Credenciales de la API del SIRE y modo de trabajo.
+                route: route('sire_configuracion'),
+                status: false,
+                text: 'SIRE · Configuración API',
+                permissions: 'sire_api',
+                icom: faScrewdriverWrench,
             },
             // {
             //     route: route('reports_invoice'),

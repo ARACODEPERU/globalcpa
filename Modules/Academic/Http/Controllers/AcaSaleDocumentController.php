@@ -50,15 +50,12 @@ class AcaSaleDocumentController extends Controller
     }
 
     public function generateBoleta(Request $request)
-    {                $pedido = $request->get('pedido');
+    {
+
+        $pedido = $request->get('pedido');
 
         try {
             $res = DB::transaction(function () use ($pedido) {
-
-                // Fecha de emision del comprobante: por defecto hoy, pero se respeta la
-                // fecha indicada por el flujo de negociaciones (fecha en que el cliente
-                // registro sus datos) para no emitir con la fecha de aprobacion.
-                $issueDate = $this->resolveIssueDate($pedido['issue_date'] ?? null);
 
                 $venta = $pedido['venta'];
                 $localId = $pedido['local'];
@@ -67,6 +64,11 @@ class AcaSaleDocumentController extends Controller
                 $userId = $pedido['userId'];
                 $enline = $pedido['enline'];
                 $onlisale_id = $venta['id'];
+
+                // Fecha de emision del comprobante. Las negociaciones del modulo Commercial
+                // la envian (fecha de registro del cliente, ajustable por el administrador);
+                // el resto de flujos no la manda y se mantiene la fecha del dia.
+                $emissionDate = $pedido['emission_date'] ?? Carbon::now()->format('Y-m-d');
 
                 $saleId = $venta['nota_sale_id'];
 
@@ -196,9 +198,9 @@ class AcaSaleDocumentController extends Controller
                     'invoice_correlative'           => $serie->number,
                     'invoice_type_currency'         => $currency,
                     'exchange_rate'                 => $exchangeRate,
-                    'invoice_broadcast_date'        => $issueDate,
-                    'invoice_due_date'              => $issueDate,
-                    'invoice_send_date'             => Carbon::now()->format('Y-m-d'),
+                    'invoice_broadcast_date'        => $emissionDate,
+                    'invoice_due_date'              => $emissionDate,
+                    'invoice_send_date'             => $emissionDate,
                     'invoice_legend_code'           => '1000',
                     'invoice_legend_description'    => $numberletters->convertToLetter($sale->total, $currency === 'USD' ? 'DÓLARES AMERICANOS' : 'SOLES'),
                     'invoice_status'                => 'registrado',
@@ -565,23 +567,5 @@ class AcaSaleDocumentController extends Controller
             'error' => $error,
             'status' => 'Fin del proceso'
         ]);
-    }
-
-    /**
-     * Normaliza la fecha de emision recibida en el pedido. Acepta una fecha
-     * parseable (normalmente 'Y-m-d') y cae en hoy cuando falta o es invalida,
-     * de modo que los demas flujos que no la envian siguen emitiendo igual.
-     */
-    private function resolveIssueDate($value): string
-    {
-        if (is_string($value) && trim($value) !== '') {
-            try {
-                return Carbon::parse($value)->format('Y-m-d');
-            } catch (\Throwable $e) {
-                // Fecha invalida: se emite con la fecha actual.
-            }
-        }
-
-        return Carbon::now()->format('Y-m-d');
     }
 }

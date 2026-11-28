@@ -1,0 +1,847 @@
+@php
+    $eventTitle = $eventTitle ?? ($edition->evento->title ?? 'Torneo');
+    $teamCount = $teamCount ?? count($edition->equipos);
+    $heroImage = $heroImage ?? \Modules\Socialevents\Support\TournamentLandingPresenter::resolveHeroImage($edition);
+    $seoTitle = $seoTitle ?? ($eventTitle . ' | ' . $edition->name);
+    $seoDescription = $seoDescription ?? ($eventTitle . ' — ' . $edition->name . '. Fixture, posiciones y estadísticas.');
+    $canonicalUrl = $canonicalUrl ?? $edition->landingUrl();
+    $seoImage = $seoImage ?? $heroImage;
+    $prizeSummary = $prizeSummary ?? null;
+    $inscriptionLabel = $inscriptionLabel ?? (filled($edition->inscription_fee) ? 'S/ ' . number_format((float) $edition->inscription_fee, 0) : null);
+    $prizePlaces = $prizePlaces ?? [];
+    $hasPrizeSection = $hasPrizeSection ?? (count($prizePlaces) > 0);
+    // La landing viste la identidad fija de Pichanguero; el color de la
+    // edición se conserva solo como punto del distintivo del torneo.
+    $accentColor = $accentColor ?? $edition->accentColor();
+    $showAppDownload = $showAppDownload ?? ($edition->mobile_enabled && !empty($appDownloadUrl));
+    $appDownloadUrl = $appDownloadUrl ?? null;
+    $appVersion = $appVersion ?? config('socialevents.mobile_app_version', '1.0.0');
+    $heroStatValue = $prizeSummary ?? ($inscriptionLabel ?? '—');
+    $scorersRanking = $scorersRanking ?? collect();
+    $splashDurationMs = $splashDurationMs ?? (int) config('socialevents.landing_splash_ms', 4600);
+    $splashSponsor = $splashSponsor ?? (string) config('socialevents.landing_sponsor_name', 'ARACODE');
+    $splashLogoUrl = $splashLogoUrl ?? \Modules\Socialevents\Support\TournamentLandingPresenter::splashLogoUrl();
+    $playerDetailUrlTemplate = $playerDetailUrlTemplate ?? route('socialevents_torneos_player_detail', [
+        'slug' => $edition->landingSlug(),
+        'playerId' => '__PLAYER__',
+    ]);
+    // Las vistas cacheadas antes de este cambio no traen la clave.
+    $champion = $champion ?? null;
+    // Puntaje sin decimales innecesarios: 12.00 -> 12, 12.50 -> 12.5
+    $fmtPoints = static function ($value): string {
+        return rtrim(rtrim(number_format((float) $value, 2, '.', ''), '0'), '.');
+    };
+@endphp
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{{ $seoDescription }}">
+    <title>{{ $seoTitle }}</title>
+    <link rel="canonical" href="{{ $canonicalUrl }}">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="{{ $seoTitle }}">
+    <meta property="og:description" content="{{ $seoDescription }}">
+    <meta property="og:url" content="{{ $canonicalUrl }}">
+    <meta property="og:image" content="{{ $seoImage }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ $seoTitle }}">
+    <meta name="twitter:description" content="{{ $seoDescription }}">
+    <meta name="twitter:image" content="{{ $seoImage }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    @if (!empty($accentColor))
+        <style>
+            :root { --se-edition-accent: {{ $accentColor }}; }
+        </style>
+    @endif
+    @vite(['Modules/Socialevents/Resources/assets/js/torneos-landing.js'])
+</head>
+<body class="se-landing">
+    {{-- Splash publicitario: cubre la carga de la landing y se oculta solo. --}}
+    <div
+        class="se-splash"
+        data-se-splash
+        role="status"
+        aria-live="polite"
+        style="--se-splash-ms: {{ max(0, (int) $splashDurationMs) }}ms"
+    >
+        <div class="se-splash__inner">
+            <img
+                class="se-splash__logo"
+                src="{{ $splashLogoUrl }}"
+                alt="{{ $splashSponsor }}"
+                width="284"
+                height="63"
+                loading="eager"
+                decoding="async"
+            >
+            <p class="se-splash__message">
+                Sitio web patrocinado y desarrollado por <strong>{{ $splashSponsor }}</strong>
+            </p>
+            <div class="se-splash__bar" aria-hidden="true"><span></span></div>
+            <p class="se-splash__hint">Cargando información del torneo…</p>
+        </div>
+    </div>
+    <noscript>
+        <style>.se-splash { display: none !important; }</style>
+    </noscript>
+
+    <div class="se-ambient" aria-hidden="true">
+        <div class="se-ambient__grid"></div>
+        <div class="se-ambient__orb se-ambient__orb--1"></div>
+        <div class="se-ambient__orb se-ambient__orb--2"></div>
+        <div class="se-ambient__orb se-ambient__orb--3"></div>
+    </div>
+
+    <header class="se-header">
+        <div class="se-container se-header__inner">
+            <a href="#inicio" class="se-brand">
+                <div class="se-brand__icon" aria-hidden="true">
+                    <i class="fas fa-trophy"></i>
+                </div>
+                <span class="se-brand__title">{{ $eventTitle }}<span>.</span></span>
+            </a>
+
+            <nav class="se-nav" aria-label="Secciones">
+                <a href="#inicio">Inicio</a>
+                <a href="#equipos">Equipos</a>
+                @if ($hasPrizeSection)
+                    <a href="#premios">Premios</a>
+                @endif
+        <a href="#fixture">Fixture</a>
+        <a href="#posiciones">Posiciones</a>
+        @if (!empty($champion))
+            <a href="#campeon">Campeón</a>
+        @endif
+        @if (filled($gallery ?? null) && count($gallery) > 0)
+            <a href="#galeria">Galería</a>
+        @endif
+        @if ($showAppDownload)
+                    <a href="#app">App</a>
+                @endif
+                @if ($edition->path_database_file)
+                    <a href="{{ asset('storage/' . $edition->path_database_file) }}" target="_blank">Bases</a>
+                @endif
+                <a href="#contacto">Contacto</a>
+            </nav>
+
+            <div class="se-header__actions">
+                <button type="button" class="se-menu-toggle" data-se-menu-toggle aria-expanded="false" aria-controls="se-mobile-nav" aria-label="Abrir menú">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <nav id="se-mobile-nav" class="se-mobile-nav" data-se-mobile-nav aria-label="Menú móvil">
+        <a href="#inicio">Inicio</a>
+        <a href="#equipos">Equipos</a>
+        @if ($hasPrizeSection)
+            <a href="#premios">Premios</a>
+        @endif
+        <a href="#fixture">Fixture</a>
+        <a href="#posiciones">Posiciones</a>
+        @if (!empty($champion))
+            <a href="#campeon">Campeón</a>
+        @endif
+        @if (filled($gallery ?? null) && count($gallery) > 0)
+            <a href="#galeria">Galería</a>
+        @endif
+        @if ($showAppDownload)
+            <a href="#app">App</a>
+        @endif
+        @if ($edition->path_database_file)
+            <a href="{{ asset('storage/' . $edition->path_database_file) }}" target="_blank">Bases</a>
+        @endif
+        <a href="#contacto">Contacto</a>
+    </nav>
+
+    <main>
+        <section id="inicio" class="se-hero">
+            <div class="se-hero__bg">
+                <img src="{{ $heroImage }}" alt="{{ $eventTitle }}" loading="eager">
+            </div>
+            <div class="se-container se-hero__grid">
+                <div class="se-hero__content">
+                    <span class="se-badge" data-se-hero>{{ $edition->name }}</span>
+                    <h1 class="se-hero__title" data-se-hero>
+                        <span class="se-gradient">{{ $eventTitle }}</span>
+                    </h1>
+                    <div class="se-hero__desc" data-se-hero>
+                        {!! $edition->evento->description ?? '<p>Seguí el torneo en vivo: fixture, tabla y mejores jugadores.</p>' !!}
+                    </div>
+                    <div class="se-hero__cta" data-se-hero>
+                        <a href="#fixture" class="se-btn se-btn--primary se-btn--lg">Ver fixture</a>
+                        <a href="#posiciones" class="se-btn se-btn--ghost se-btn--lg">Tabla de posiciones</a>
+                        @if ($edition->path_database_file)
+                            <a href="{{ asset('storage/' . $edition->path_database_file) }}" target="_blank" class="se-btn se-btn--ghost se-btn--lg">
+                                <i class="fas fa-download" aria-hidden="true" style="margin-right:0.4rem"></i>Descargar Bases
+                            </a>
+                        @endif
+                    </div>
+                </div>
+
+                <div class="se-stat-grid">
+                    <div class="se-stat-card" data-se-hero>
+                        <i class="fas fa-users se-stat-card__icon" aria-hidden="true"></i>
+                        <div class="se-stat-card__value" data-se-count="{{ $teamCount }}">{{ $teamCount }}</div>
+                        <div class="se-stat-card__label">Equipos</div>
+                    </div>
+                    <div class="se-stat-card" data-se-hero>
+                        <i class="fas fa-trophy se-stat-card__icon" aria-hidden="true"></i>
+                        <div class="se-stat-card__value">{{ $heroStatValue }}</div>
+                        <div class="se-stat-card__label">
+                            @if ($prizeSummary && $inscriptionLabel)
+                                Premio 1.º · Inscripción {{ $inscriptionLabel }}
+                            @elseif ($prizeSummary)
+                                Premio 1.er puesto
+                            @elseif ($inscriptionLabel)
+                                Inscripción
+                            @else
+                                Premios e inscripción
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="equipos" class="se-section se-section--alt">
+            <div class="se-container">
+                <header class="se-section__head" data-se-reveal>
+                    <h2 class="se-section__title">Equipos <span>participantes</span></h2>
+                    <p class="se-section__sub">{{ $teamCount }} equipos compitiendo en esta edición</p>
+                </header>
+
+                <div class="se-teams-grid" style="--grid-cols: {{ min($teamCount, 6) }}">
+                    @foreach ($edition->equipos as $equipo)
+                        {{-- Cada equipo abre su ficha pública con su historia en la edición. --}}
+                        <a
+                            class="se-team-card"
+                            href="{{ route('socialevents_torneos_team_profile', ['slug' => $edition->landingSlug(), 'teamId' => $equipo->team_id]) }}"
+                            data-se-reveal
+                        >
+                            <div class="se-team-card__logo">
+                                @if ($equipo->equipo->logo_path)
+                                    <img src="{{ asset('storage/' . $equipo->equipo->logo_path) }}" alt="{{ $equipo->equipo->name }}" loading="lazy">
+                                @else
+                                    <i class="fas fa-shield-alt" aria-hidden="true"></i>
+                                @endif
+                            </div>
+                            <div class="se-team-card__name">{{ $equipo->equipo->name }}</div>
+                        </a>
+                    @endforeach
+                </div>
+            </div>
+        </section>
+
+        @if ($hasPrizeSection)
+            <section id="premios" class="se-section">
+                <div class="se-container">
+                    <header class="se-section__head" data-se-reveal>
+                        <h2 class="se-section__title">Premios <span>del torneo</span></h2>
+                        <p class="se-section__sub">Reconocimientos configurados para esta edición</p>
+                    </header>
+                    <div class="se-prizes-grid" style="--grid-cols: {{ min(count($prizePlaces), 4) }}">
+                        @foreach ($prizePlaces as $place)
+                            <article class="se-prize-card" data-se-reveal>
+                                <div class="se-prize-card__place">{{ $place['title'] }}</div>
+                                <div class="se-prize-card__value">{{ $place['label_text'] }}</div>
+                            </article>
+                        @endforeach
+                    </div>
+                    @if ($inscriptionLabel)
+                        <p class="se-section__sub se-prizes-inscription" data-se-reveal>
+                            Inscripción por equipo: <strong>{{ $inscriptionLabel }}</strong>
+                        </p>
+                    @endif
+                </div>
+            </section>
+        @endif
+
+        <section id="fixture" class="se-section">
+            <div class="se-container se-fixture-wrap">
+                <header class="se-section__head" data-se-reveal>
+                    <h2 class="se-section__title">Calendario <span>de partidos</span></h2>
+                    <p class="se-section__sub">Resultados, horarios y fases del torneo</p>
+                </header>
+
+                @forelse ($matches as $phase => $rounds)
+                    @php
+                        // Cuartos de final a ida y vuelta: una fila por llave con las dos piernas.
+                        // El resto de fases conserva la lista de partidos de siempre.
+                        // (`?? null` cubre vistas cacheadas antes de este cambio).
+                        $tiesInThisPhase = ! empty($quarterfinalTies ?? null)
+                            && \Modules\Socialevents\Support\TournamentPhaseLabels::canonical((string) $phase) === 'quarterfinals';
+                    @endphp
+                    <div class="se-phase" data-se-reveal>
+                        <h3 class="se-phase-title">{{ $phaseLabels[$phase] ?? \Modules\Socialevents\Support\TournamentPhaseLabels::label($phase) }}</h3>
+                        @if ($tiesInThisPhase)
+                            <div class="se-ties">
+                                @foreach ($quarterfinalTies as $tie)
+                                    @include('socialevents::torneos.partials.tie-row', ['tie' => $tie])
+                                @endforeach
+                            </div>
+                        @else
+                        @foreach ($rounds as $round => $roundMatches)
+                            <details class="se-round">
+                                <summary>
+                                    Fecha {{ $round }}
+                                    <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                                </summary>
+                                <div class="se-round__body">
+                                    @foreach ($roundMatches as $match)
+                                        @php
+                                            // Resumen del cruce de ida y vuelta (pierna, global y cómo se definió).
+                                            $tieSummary = ($match->tie_id || (int) $match->leg === 1)
+                                                ? app(\Modules\Socialevents\Services\TournamentTieService::class)->summary($match)
+                                                : null;
+                                            $tieHow = $tieSummary && $tieSummary['is_tie']
+                                                ? (['aggregate' => 'global', 'penalties' => 'penales', 'pending' => 'pendiente'][$tieSummary['decided_by']] ?? '')
+                                                : '';
+                                            // Reglamentario, alargue y penales leídos de los campos reales.
+                                            $matchResult = in_array($match->status, ['finished', 'closed'], true)
+                                                ? \Modules\Socialevents\Support\TournamentMatchResultPresenter::forMatch($match)
+                                                : null;
+                                            $winnerSide = $matchResult['winner_side'] ?? null;
+                                        @endphp
+                                        <article class="se-match {{ $match->status === 'cancelled' ? 'se-match--cancelled' : '' }} {{ !empty($matchResult['has_details']) ? 'se-match--details' : '' }}">
+                                            <div class="se-match__side {{ $winnerSide === 'home' ? 'se-match__side--winner' : '' }}">
+                                                <div class="se-match__crest">
+                                                    @if ($match->equipolocal && $match->equipolocal->logo_path)
+                                                        <img src="{{ asset('storage/' . $match->equipolocal->logo_path) }}" alt="{{ $match->equipolocal->name }}">
+                                                    @elseif ($match->equipolocal)
+                                                        <i class="fas fa-shield-alt" aria-hidden="true"></i>
+                                                    @else
+                                                        <i class="fas fa-question" aria-hidden="true"></i>
+                                                    @endif
+                                                </div>
+                                                <span class="se-match__name">{{ $match->equipolocal?->name ?? 'Por definir' }}</span>
+                                            </div>
+
+                                            <div class="se-match__center">
+                                                @if (in_array($match->status, ['finished', 'closed']))
+                                                    <div class="se-match__score">{{ $matchResult['final_h'] }}<span class="se-match__score-sep">-</span>{{ $matchResult['final_a'] }}</div>
+                                                    @if ($matchResult['shootout'])
+                                                        {{-- Los penales se ven en el marcador principal y en el detalle. --}}
+                                                        <div class="se-match__shootout">({{ $matchResult['shootout']['h'] }} - {{ $matchResult['shootout']['a'] }} PEN.)</div>
+                                                    @endif
+                                                    <div class="se-match__meta se-match__meta--done">Finalizado</div>
+                                                    @if ($tieSummary && $tieSummary['is_tie'] && $tieSummary['complete'])
+                                                        <div class="se-match__note">Global {{ $tieSummary['aggregate_h'] }} - {{ $tieSummary['aggregate_a'] }}{{ $tieHow ? ' (' . $tieHow . ')' : '' }}</div>
+                                                    @endif
+                                                @elseif ($match->status === 'cancelled')
+                                                    {{-- Partido cancelado: no se jugará; se muestra 0-0 y no suma puntos --}}
+                                                    <div class="se-match__score se-match__score--cancelled">0<span class="se-match__score-sep">-</span>0</div>
+                                                    <div class="se-match__meta se-match__meta--cancelled">Cancelado</div>
+                                                    <div class="se-match__note">Ambos equipos no suman puntos</div>
+                                                @elseif ($match->status === 'live')
+                                                    <div class="se-match__score se-match__score--live">En vivo</div>
+                                                    <div class="se-match__meta se-match__meta--live">Jugando</div>
+                                                @else
+                                                    <div class="se-match__score se-match__score--vs">VS</div>
+                                                    <div class="se-match__meta se-match__meta--pending">
+                                                        {{ $match->match_date ? $match->match_date->format('d/m H:i') : 'Por definir' }}
+                                                    </div>
+                                                @endif
+
+                                                {{-- Chip Ida/Vuelta: distingue las dos piernas del cruce --}}
+                                                @if ((int) $match->leg === 1)
+                                                    <div class="se-match__leg">Ida</div>
+                                                @elseif ((int) $match->leg === 2)
+                                                    <div class="se-match__leg">Vuelta</div>
+                                                @endif
+                                            </div>
+
+                                            <div class="se-match__side se-match__side--away {{ $winnerSide === 'away' ? 'se-match__side--winner' : '' }}">
+                                                <span class="se-match__name">{{ $match->equipovisitante?->name ?? 'Por definir' }}</span>
+                                                <div class="se-match__crest">
+                                                    @if ($match->equipovisitante && $match->equipovisitante->logo_path)
+                                                        <img src="{{ asset('storage/' . $match->equipovisitante->logo_path) }}" alt="{{ $match->equipovisitante->name }}">
+                                                    @elseif ($match->equipovisitante)
+                                                        <i class="fas fa-shield-alt" aria-hidden="true"></i>
+                                                    @else
+                                                        <i class="fas fa-question" aria-hidden="true"></i>
+                                                    @endif
+                                                </div>
+                                            </div>
+
+                                            @if (!empty($matchResult['has_details']))
+                                                <div class="se-match__details" role="group" aria-label="Detalle del resultado">
+                                                    <div class="se-match__details-grid">
+                                                        @foreach ($matchResult['details'] as $detail)
+                                                            <div class="se-match__detail se-match__detail--{{ $detail['key'] }}">
+                                                                <span class="se-match__detail-label">{{ $detail['label'] }}</span>
+                                                                <span class="se-match__detail-value">{{ $detail['value'] }}</span>
+                                                            </div>
+                                                        @endforeach
+                                                    </div>
+                                                    @if (!empty($matchResult['shootout']['winner_name']))
+                                                        <p class="se-match__shootout-winner">
+                                                            <i class="fas fa-trophy" aria-hidden="true"></i>
+                                                            {{ $matchResult['shootout']['winner_name'] }} ganó por penales
+                                                        </p>
+                                                    @endif
+                                                </div>
+                                            @endif
+                                        </article>
+                                    @endforeach
+                                </div>
+                            </details>
+                        @endforeach
+                        @endif
+                    </div>
+                @empty
+                    <p class="se-section__sub" data-se-reveal style="text-align:center">Aún no hay partidos programados.</p>
+                @endforelse
+            </div>
+        </section>
+
+        <section id="posiciones" class="se-section se-section--alt">
+            <div class="se-container">
+                <header class="se-section__head" data-se-reveal>
+                    <h2 class="se-section__title">Tabla de <span>posiciones</span></h2>
+                    <p class="se-section__sub">Clasificación actualizada con puntos, goles y diferencia</p>
+                </header>
+                    <div class="se-table-scroll-hint" aria-hidden="true">
+                        <i class="fas fa-arrows-alt-h"></i> Desliza para ver más
+                    </div>
+                    <div class="se-table-wrap" data-se-reveal>
+                        <table class="se-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Equipo</th>
+                                    <th>PTS</th>
+                                    <th>P. Extra</th>
+                                    <th>PJ</th>
+                                    <th>PG</th>
+                                    <th>PE</th>
+                                    <th>PP</th>
+                                    <th>DG</th>
+                                    <th>GF</th>
+                                    <th>GC</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($currentEquipment as $index => $team)
+                                    <tr class="{{ $index === 0 ? 'is-leader' : '' }}" data-se-reveal>
+                                        <td>#{{ $index + 1 }}</td>
+                                        <td>
+                                            <div class="se-table__team">
+                                                @if ($team->equipo->logo_path)
+                                                    <img src="{{ asset('storage/' . $team->equipo->logo_path) }}" alt="">
+                                                @else
+                                                    <i class="fas fa-shield-alt" aria-hidden="true"></i>
+                                                @endif
+                                                <a
+                                                    class="se-table__team-link"
+                                                    href="{{ route('socialevents_torneos_team_profile', ['slug' => $edition->landingSlug(), 'teamId' => $team->team_id]) }}"
+                                                >{{ $team->equipo->name }}</a>
+                                            </div>
+                                        </td>
+                                        <td class="pts">{{ (int) $team->points + (int) $team->bonus_points }}@if (($pointAdjustments[$team->team_id] ?? 0) !== 0) <span class="se-sanction-star" title="Incluye sanción administrativa">*</span>@endif</td>
+                                        <td style="color:var(--se-amber)">{{ (int) $team->bonus_points }}</td>
+                                        <td>{{ $team->matches_played }}</td>
+                                        <td style="color:var(--se-green)">{{ $team->matches_won }}</td>
+                                        <td style="color:var(--se-amber)">{{ $team->matches_drawn }}</td>
+                                        <td style="color:var(--se-red)">{{ $team->matches_lost }}</td>
+                                        <td style="color:{{ $team->goal_difference >= 0 ? 'var(--se-green)' : 'var(--se-red)' }}">{{ $team->goal_difference }}</td>
+                                        <td>{{ $team->goals_for }}</td>
+                                        <td>{{ $team->goals_against }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                        @if (collect($pointAdjustments)->filter(fn ($net) => (int) $net !== 0)->isNotEmpty())
+                            <p class="se-sanction-note" style="font-size:11px;opacity:.75;margin-top:6px;">
+                                * Incluye sanción administrativa; el resultado deportivo de los partidos se mantiene.
+                            </p>
+                        @endif
+                    </div>
+            </div>
+
+            <div class="se-container se-rank-stack">
+                <section class="se-rank-section se-rank-section--player" aria-labelledby="se-rank-title-player">
+                    <h3 class="se-rank-section__title" id="se-rank-title-player" data-se-reveal>Mejor <span>jugador</span></h3>
+                    <p class="se-rank-section__note" data-se-reveal>Puntaje por goles, asistencias y MVP</p>
+                    <div class="se-rank-grid se-rank-grid--player">
+                        @forelse ($playersRanking as $index => $player)
+                            <article class="se-rank-card se-rank-card--lg {{ $index === 0 ? 'is-top' : '' }}" data-se-reveal>
+                                <div class="se-rank-card__avatar">
+                                    @if ($player['player']['person']->image ?? null)
+                                        <img src="{{ asset('storage/' . $player['player']['person']->image) }}" alt="">
+                                    @else
+                                        <img src="https://ui-avatars.com/api/?name={{ urlencode($player['player']['person']->full_name) }}&background=1e293b&color=fff" alt="">
+                                    @endif
+                                    <span class="se-rank-card__pos">{{ $index + 1 }}</span>
+                                </div>
+                                <div class="se-rank-card__body">
+                                    <button
+                                        type="button"
+                                        class="se-rank-card__name se-rank-card__name--action"
+                                        data-se-player-open
+                                        data-player-id="{{ $player['player']->person_id ?? '' }}"
+                                        data-player-category="player"
+                                        data-player-name="{{ $player['player']['person']->full_name ?? 'Jugador' }}"
+                                        aria-haspopup="dialog"
+                                    >
+                                        <span>{{ $player['player']['person']->full_name ?? 'Jugador' }}</span>
+                                        <i class="fas fa-chevron-right se-rank-card__chevron" aria-hidden="true"></i>
+                                    </button>
+                                    <div class="se-rank-card__stats">
+                                        {{ $player['stats']['goals'] }} goles · {{ $player['stats']['assists'] }} asist. · {{ $player['stats']['mvp'] }} MVP
+                                    </div>
+                                    @if (($player['points'] ?? null) !== null)
+                                        <div class="se-rank-card__points">{{ $fmtPoints($player['points']) }} pts</div>
+                                    @endif
+                                </div>
+                            </article>
+                        @empty
+                            <p class="se-section__sub" data-se-reveal>Sin datos de jugadores aún.</p>
+                        @endforelse
+                    </div>
+                </section>
+
+                <section class="se-rank-section se-rank-section--scorer se-col-8" aria-labelledby="se-rank-title-scorer">
+                    <h3 class="se-rank-section__title" id="se-rank-title-scorer" data-se-reveal>Goleador <span>de la temporada</span></h3>
+                    <p class="se-rank-section__note" data-se-reveal>Desempate: menos partidos jugados</p>
+                    <div class="se-rank-grid">
+                        @forelse ($scorersRanking as $index => $scorer)
+                            <article class="se-rank-card {{ $index === 0 ? 'is-top' : '' }}" data-se-reveal>
+                                <div class="se-rank-card__avatar">
+                                    @if ($scorer['player']['person']->image ?? null)
+                                        <img src="{{ asset('storage/' . $scorer['player']['person']->image) }}" alt="">
+                                    @else
+                                        <img src="https://ui-avatars.com/api/?name={{ urlencode($scorer['player']['person']->full_name) }}&background=b45309&color=fff" alt="">
+                                    @endif
+                                    <span class="se-rank-card__pos">{{ $index + 1 }}</span>
+                                </div>
+                                <div class="se-rank-card__body">
+                                    <button
+                                        type="button"
+                                        class="se-rank-card__name se-rank-card__name--action"
+                                        data-se-player-open
+                                        data-player-id="{{ $scorer['player']->person_id ?? '' }}"
+                                        data-player-category="scorer"
+                                        data-player-name="{{ $scorer['player']['person']->full_name ?? 'Jugador' }}"
+                                        aria-haspopup="dialog"
+                                    >
+                                        <span>{{ $scorer['player']['person']->full_name ?? 'Jugador' }}</span>
+                                        <i class="fas fa-chevron-right se-rank-card__chevron" aria-hidden="true"></i>
+                                    </button>
+                                    <div class="se-rank-card__stats">
+                                        {{ $scorer['goals'] ?? 0 }} {{ ($scorer['goals'] ?? 0) == 1 ? 'gol' : 'goles' }} · {{ $scorer['matches_played'] ?? 0 }} {{ ($scorer['matches_played'] ?? 0) == 1 ? 'partido' : 'partidos' }}
+                                    </div>
+                                </div>
+                            </article>
+                        @empty
+                            <p class="se-section__sub" data-se-reveal>Sin datos de goleadores aún.</p>
+                        @endforelse
+                    </div>
+                </section>
+
+                <section class="se-rank-section se-rank-section--gk se-col-8" aria-labelledby="se-rank-title-gk">
+                    <h3 class="se-rank-section__title" id="se-rank-title-gk" data-se-reveal>Mejor <span>arquero</span></h3>
+                    <p class="se-rank-section__note" data-se-reveal>Atajadas, valla invicta y MVP</p>
+                    <div class="se-rank-grid">
+                        @forelse ($goalkeepersRanking as $index => $gk)
+                            <article class="se-rank-card {{ $index === 0 ? 'is-top' : '' }}" data-se-reveal>
+                                <div class="se-rank-card__avatar">
+                                    @if ($gk['player']['person']->image ?? null)
+                                        <img src="{{ asset('storage/' . $gk['player']['person']->image) }}" alt="">
+                                    @else
+                                        <img src="https://ui-avatars.com/api/?name={{ urlencode($gk['player']['person']->full_name) }}&background=14532d&color=fff" alt="">
+                                    @endif
+                                    <span class="se-rank-card__pos">{{ $index + 1 }}</span>
+                                </div>
+                                <div class="se-rank-card__body">
+                                    <button
+                                        type="button"
+                                        class="se-rank-card__name se-rank-card__name--action"
+                                        data-se-player-open
+                                        data-player-id="{{ $gk['player']->person_id ?? '' }}"
+                                        data-player-category="goalkeeper"
+                                        data-player-name="{{ $gk['player']['person']->full_name ?? 'Jugador' }}"
+                                        aria-haspopup="dialog"
+                                    >
+                                        <span>{{ $gk['player']['person']->full_name ?? 'Jugador' }}</span>
+                                        <i class="fas fa-chevron-right se-rank-card__chevron" aria-hidden="true"></i>
+                                    </button>
+                                    <div class="se-rank-card__stats">
+                                        {{ $gk['stats']['saves'] }} atajadas · {{ $gk['stats']['clean_sheet'] }} valla invicta · {{ $gk['stats']['mvp'] }} MVP
+                                    </div>
+                                    @if (($gk['points'] ?? null) !== null)
+                                        <div class="se-rank-card__points">{{ $fmtPoints($gk['points']) }} pts</div>
+                                    @endif
+                                </div>
+                            </article>
+                        @empty
+                            <p class="se-section__sub" data-se-reveal>Sin datos de porteros aún.</p>
+                        @endforelse
+                    </div>
+                </section>
+            </div>
+        </section>
+
+        @if (!empty($champion))
+            {{-- Sección del campeón: solo aparece cuando la final ya se terminó. --}}
+            <section id="campeon" class="se-section se-champion" aria-labelledby="se-champion-title">
+                <div class="se-champion__glow" aria-hidden="true"></div>
+                <div class="se-container">
+                    <div class="se-champion__card" data-se-reveal>
+                        <div class="se-champion__art">
+                            @include('socialevents::torneos.partials.champion-trophy')
+                        </div>
+
+                        <div class="se-champion__content">
+                            <p class="se-champion__eyebrow">
+                                <i class="fas fa-crown" aria-hidden="true"></i>
+                                Campeón del torneo
+                            </p>
+                            <h2 class="se-champion__name" id="se-champion-title">
+                                <span class="se-champion__name-fill">{{ $champion['name'] }}</span>
+                            </h2>
+                            <p class="se-champion__message">¡Felicitaciones, campeón!</p>
+                            <p class="se-champion__text">
+                                {{ $champion['name'] }} levantó la copa de {{ $edition->name }}
+                                @if (!empty($champion['rival_name']))
+                                    después de vencer a {{ $champion['rival_name'] }} en la final.
+                                @else
+                                    tras ganar la final.
+                                @endif
+                            </p>
+
+                            <div class="se-champion__result">
+                                <span class="se-champion__result-score">{{ $champion['final_label'] }}</span>
+                                <span class="se-champion__result-note">{{ $champion['final_note'] }}</span>
+                            </div>
+
+                            <div class="se-champion__actions">
+                                <a href="{{ $champion['profile_url'] }}" class="se-btn se-btn--primary">
+                                    Ver ficha del campeón
+                                    <i class="fas fa-arrow-right" aria-hidden="true"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        @endif
+
+        @if (filled($gallery ?? null) && count($gallery) > 0)
+            <section id="galeria" class="se-section se-section--alt">
+                <div class="se-container">
+                    <header class="se-section__head" data-se-reveal>
+                        <h2 class="se-section__title">Galería <span>del torneo</span></h2>
+                        <p class="se-section__sub">Fotos y videos de cada fecha</p>
+                    </header>
+
+                    <div class="se-gallery">
+                        @foreach ($gallery as $group)
+                            <div class="se-gallery__day" data-se-reveal>
+                                <div class="se-gallery__day-title">
+                                    <i class="fas fa-calendar-day" aria-hidden="true"></i>
+                                    {{ $group['label'] }}
+                                    <span class="se-gallery__day-count">{{ count($group['items']) }} {{ count($group['items']) === 1 ? 'archivo' : 'archivos' }}</span>
+                                </div>
+                                <div class="se-gallery__grid">
+                                    @foreach ($group['items'] as $item)
+                                        <button
+                                            type="button"
+                                            class="se-gallery__item"
+                                            data-se-gallery-open
+                                            data-media-type="{{ $item['type'] }}"
+                                            data-media-url="{{ $item['url'] }}"
+                                            data-media-mime="{{ $item['mime_type'] }}"
+                                            @if ($item['match_label'])
+                                                data-media-label="{{ $item['match_label'] }}"
+                                            @endif
+                                            aria-label="Abrir {{ $item['type'] }}"
+                                        >
+                                            @if ($item['type'] === 'video')
+                                                <video src="{{ $item['url'] }}" preload="metadata" muted playsinline></video>
+                                                <span class="se-gallery__play"><i class="fas fa-play" aria-hidden="true"></i></span>
+                                            @else
+                                                <img src="{{ $item['url'] }}" alt="Foto de la galería" loading="lazy">
+                                            @endif
+                                            @if ($item['match_label'])
+                                                <span class="se-gallery__tag">{{ $item['match_label'] }}</span>
+                                            @endif
+                                        </button>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            </section>
+        @endif
+
+        @if ($showAppDownload)
+            <section id="app" class="se-section se-section--alt">
+                <div class="se-container">
+                    <header class="se-section__head" data-se-reveal>
+                        <h2 class="se-section__title">Descargar <span>aplicación</span></h2>
+                        <p class="se-section__sub">
+                            Sigue el torneo en tu celular: fixture, posiciones, goleadores y resultados en tiempo real.
+                        </p>
+                    </header>
+
+                    <div class="se-app-download" data-se-reveal>
+                        <div class="se-app-download__icon" aria-hidden="true">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <div class="se-app-download__body">
+                            <h3>App móvil del torneo</h3>
+                            <p>
+                                Instala la aplicación Android para consultar esta edición sin entrar a la tienda.
+                                Descarga el instalador (.apk), ábrelo en tu dispositivo y acepta la instalación.
+                            </p>
+                            <ul class="se-app-download__steps">
+                                <li>Descarga el archivo APK</li>
+                                <li>Activa «Instalar apps desconocidas» si Android lo solicita</li>
+                                <li>Abre el instalador y confirma</li>
+                            </ul>
+                            <div class="se-app-download__actions">
+                                <a href="{{ route('socialevents_torneos_download_app', $edition->landingSlug()) }}" class="se-btn se-btn--primary se-btn--lg">
+                                    <i class="fas fa-download" aria-hidden="true"></i>
+                                    Descargar APK v{{ $appVersion }}
+                                </a>
+                            </div>
+                            <p class="se-app-download__note">
+                                Versión {{ $appVersion }} · Solo Android · Publicación en tiendas próximamente
+                            </p>
+                            <p class="se-app-download__count">
+                                <i class="fas fa-arrow-down" aria-hidden="true"></i>
+                                {{ number_format((int) $edition->app_downloads, 0) }} {{ (int) $edition->app_downloads === 1 ? 'descarga' : 'descargas' }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        @endif
+
+        <section id="contacto" class="se-section">
+            <div class="se-container">
+                <header class="se-section__head" data-se-reveal>
+                    <h2 class="se-section__title">Contacto <span>del torneo</span></h2>
+                    <p class="se-section__sub">Información y consultas con el organizador</p>
+                </header>
+
+                <div class="se-contact-grid">
+                    <article class="se-contact-card" data-se-reveal>
+                        <div class="se-contact-card__icon se-contact-card__icon--blue">
+                            <i class="fas fa-user" aria-hidden="true"></i>
+                        </div>
+                        <h3>Organizador</h3>
+                        <p class="se-contact-card__value">{{ $edition->contact_name ?? 'Por confirmar' }}</p>
+                        <p class="se-contact-card__hint">Contacto principal</p>
+                    </article>
+
+                    <article class="se-contact-card" data-se-reveal>
+                        <div class="se-contact-card__icon se-contact-card__icon--green">
+                            <i class="fas fa-phone" aria-hidden="true"></i>
+                        </div>
+                        <h3>Teléfono</h3>
+                        <p class="se-contact-card__value">{{ $edition->contact_phone ?? '—' }}</p>
+                        <p class="se-contact-card__hint">WhatsApp o llamada</p>
+                    </article>
+
+                    <article class="se-contact-card" data-se-reveal>
+                        <div class="se-contact-card__icon se-contact-card__icon--violet">
+                            <i class="fas fa-info-circle" aria-hidden="true"></i>
+                        </div>
+                        <h3>Edición</h3>
+                        <p class="se-contact-card__value">{{ $edition->name }}</p>
+                        <p class="se-contact-card__hint">
+                            {{ $teamCount }} equipos
+                            @if ($inscriptionLabel)
+                                · Inscripción {{ $inscriptionLabel }}
+                            @endif
+                        </p>
+                    </article>
+                </div>
+
+                @if ($edition->contact_phone || $edition->contact_whatsapp)
+                    <div class="se-contact-cta" data-se-reveal>
+                        @if ($edition->contact_phone)
+                            <a href="tel:{{ preg_replace('/\s+/', '', $edition->contact_phone) }}" class="se-btn se-btn--primary se-btn--lg">
+                                <i class="fas fa-phone" aria-hidden="true"></i> Llamar ahora
+                            </a>
+                        @endif
+                        @if ($edition->contact_whatsapp)
+                            <a href="https://wa.me/{{ preg_replace('/\D+/', '', $edition->contact_whatsapp) }}" target="_blank" rel="noopener" class="se-btn se-btn--ghost se-btn--lg" style="margin-left:0.5rem">
+                                <i class="fab fa-whatsapp" aria-hidden="true"></i> WhatsApp
+                            </a>
+                        @endif
+                    </div>
+                @endif
+            </div>
+        </section>
+    </main>
+
+    <footer class="se-footer">
+        <div class="se-container se-footer__inner">
+            <a href="#inicio" class="se-brand">
+                <div class="se-brand__icon" aria-hidden="true">
+                    <i class="fas fa-trophy"></i>
+                </div>
+                <span class="se-brand__title">{{ $eventTitle }}<span>.</span></span>
+            </a>
+            <p class="se-footer__copy">
+                © {{ now()->year }} {{ $eventTitle }} · {{ $edition->name }}
+            </p>
+        </div>
+    </footer>
+
+    {{-- Detalle partido a partido del jugador (mejor jugador, goleador, arquero) --}}
+    <div
+        class="se-modal"
+        data-se-player-modal
+        aria-hidden="true"
+        data-player-url="{{ $playerDetailUrlTemplate }}"
+        data-player-page-url="{{ route('socialevents_torneos_player_profile', ['slug' => $edition->landingSlug(), 'playerId' => '__PLAYER__']) }}"
+    >
+        <div class="se-modal__backdrop" data-se-player-close></div>
+        <div
+            class="se-modal__dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="se-player-modal-title"
+        >
+            <header class="se-modal__head">
+                <div class="se-modal__identity">
+                    <div class="se-modal__avatar" data-se-modal-avatar aria-hidden="true"></div>
+                    <div class="se-modal__identity-text">
+                        <p class="se-modal__eyebrow" data-se-modal-category></p>
+                        <h3 class="se-modal__title" id="se-player-modal-title" data-se-modal-name>Jugador</h3>
+                        <p class="se-modal__meta" data-se-modal-meta></p>
+                    </div>
+                </div>
+                <button type="button" class="se-modal__close" data-se-player-close aria-label="Cerrar detalle">
+                    <i class="fas fa-times" aria-hidden="true"></i>
+                </button>
+            </header>
+
+            <div class="se-modal__body" data-se-modal-body>
+                <p class="se-modal__state" data-se-modal-state>
+                    <i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i>
+                    Cargando detalles…
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="se-lightbox" data-se-lightbox aria-hidden="true">
+        <button type="button" class="se-lightbox__close" data-se-lightbox-close aria-label="Cerrar">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="se-lightbox__stage">
+            <div class="se-lightbox__media"></div>
+            <p class="se-lightbox__label"></p>
+        </div>
+    </div>
+</body>
+</html>

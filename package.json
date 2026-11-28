@@ -3,8 +3,14 @@
     "scripts": {
         "dev": "vite",
         "build": "vite build && vite build --ssr",
+        "build:web": "tailwindcss -c tailwind.public.config.js -i resources/css/app.css -o public/css/website-public.css --minify",
+        "build:pichanguero": "tailwindcss -c resources/css/pichanguero/tailwind.config.js -i resources/css/pichanguero/pichanguero.css -o public/themes/pichanguero/css/pichanguero.css --minify",
+        "build:colegio": "tailwindcss -c resources/css/colegio/tailwind.config.js -i resources/css/colegio/colegio.css -o public/themes/colegio/css/colegio.css --minify",
+        "build:kapta": "tailwindcss -c resources/css/kapta/tailwind.config.js -i resources/css/kapta/kapta.css -o public/themes/kapta/css/kapta.css --minify",
+        "build:kirafact": "tailwindcss -c resources/css/kirafact/tailwind.config.js -i resources/css/kirafact/kirafact.css -o public/themes/kirafact/css/kirafact.css --minify",
+        "build:plantillas": "tailwindcss -i resources/css/plantillas/plantillas.css -o public/themes/plantillas/css/plantillas.css --minify",
+        "test:js": "node --test \"tests/js/**/*.test.mjs\"",
         "editor:build": "npm run build --prefix ../editor-aracode",
-        "audit:dark": "node scripts/audit-dark-mode.mjs",
         "prebuild": "npm run editor:build"
     },
     "name": "aracode",
@@ -59,12 +65,14 @@
         "datatables.net-responsive": "^3.0.2",
         "datatables.net-vue3": "^3.0.1",
         "easymde": "^2.18.0",
+        "exceljs": "^4.4.0",
         "flatpickr": "^4.6.13",
         "flowbite": "^1.8.1",
         "flowbite-vue": "^0.0.17",
         "fullcalendar": "^6.1.14",
         "jspdf": "^2.5.1",
         "jspdf-autotable": "^3.8.1",
+        "jsqr": "^1.4.0",
         "jszip": "^3.10.1",
         "konva": "^10.2.3",
         "laravel-echo": "^1.16.1",
@@ -100,6 +108,7 @@
         "vue3-perfect-scrollbar": "^2.0.0",
         "vue3-popper": "^1.5.0",
         "vue3-quill": "^0.3.1",
-        "xlsx": "^0.18.5"
+        "xlsx": "^0.18.5",
+        "ziggy-js": "^2.6.5"
     }
 }

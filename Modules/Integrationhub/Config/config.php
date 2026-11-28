@@ -4,29 +4,59 @@ return [
     'name' => 'Integrationhub',
 
     /*
-    |--------------------------------------------------------------------------
-    | Endpoint de registro de usuarios
-    |--------------------------------------------------------------------------
-    |
-    | Endpoint de Integrationhub que recibe los datos de cada usuario recién
-    | registrado. Se reutiliza el webhook de compras (n8n_post_compra) con el
-    | mismo payload, pero el producto se envía como `blog-{curso}` para
-    | distinguir el origen. Debe existir en el módulo con este nombre; si no
-    | existe, se usa el endpoint de respaldo.
-    |
-    */
-    'registration_endpoint' => env('INTEGRATIONHUB_REGISTRATION_ENDPOINT', 'n8n_post_compra'),
+     * Bot de Telegram (integracion "Telegram_bot").
+     *
+     * El token del bot vive en el parametro del sistema (tabla parameters) y
+     * los endpoints viajan con el token dentro de la ruta (bot<token>/...). Los
+     * nombres de los endpoints deben coincidir con los que crea la migracion
+     * 2026_09_30_000011_create_telegram_bot_integration.
+     */
+    'telegram' => [
+        // Parametro del sistema que guarda el token que entrega BotFather.
+        'parameter' => env('TELEGRAM_PARAMETER', 'SC-00002'),
 
-    /*
-    |--------------------------------------------------------------------------
-    | Endpoint de respaldo para el registro
-    |--------------------------------------------------------------------------
-    |
-    | Si el endpoint principal no existe en el panel o responde error, el
-    | registro se envía aquí con phone/email/first_name/last_name para no
-    | perder el contacto. Debe existir en Integrationhub (por defecto el de
-    | ChatLevel). Deja la variable vacía para desactivar el respaldo.
-    |
-    */
-    'registration_fallback_endpoint' => env('INTEGRATIONHUB_REGISTRATION_FALLBACK_ENDPOINT', 'create_contact'),
+        // Ruta publica a la que Telegram entrega los mensajes del bot.
+        'webhook_path' => env('TELEGRAM_WEBHOOK_PATH', 'api/integrationhub/telegram/webhook'),
+
+        // Minutos de espera antes de volver a consultar getMe por el usuario del bot.
+        'username_cache_minutes' => (int) env('TELEGRAM_USERNAME_CACHE_MINUTES', 1440),
+
+        // Minutos que el bot espera el documento despues de /start antes de
+        // abandonar la conversacion a medias.
+        'registration_session_minutes' => (int) env('TELEGRAM_REGISTRATION_SESSION_MINUTES', 30),
+
+        // Documentos errados que se toleran antes de cerrar la conversacion.
+        'registration_max_attempts' => (int) env('TELEGRAM_REGISTRATION_MAX_ATTEMPTS', 5),
+
+        // Minutos que el bot espera el correo/documento de una consulta (/cursos,
+        // /certificados) antes de abandonar la conversacion a medias.
+        'query_session_minutes' => (int) env('TELEGRAM_QUERY_SESSION_MINUTES', 30),
+
+        // Verificaciones erradas que se toleran en una consulta antes de cerrarla.
+        'query_max_attempts' => (int) env('TELEGRAM_QUERY_MAX_ATTEMPTS', 5),
+
+        // Cursos que se listan como maximo en un mensaje (Telegram limita el
+        // largo del texto); si hay mas, se indica cuantos quedaron fuera.
+        'courses_max_items' => (int) env('TELEGRAM_COURSES_MAX_ITEMS', 25),
+
+        // Freno anti-abuso del webhook: updates por minuto permitidos a un
+        // mismo chat y al bot completo. El exceso se descarta con HTTP 200
+        // para que Telegram no lo reintente.
+        'webhook_per_chat_per_minute' => (int) env('TELEGRAM_WEBHOOK_PER_CHAT_PER_MINUTE', 20),
+        'webhook_global_per_minute' => (int) env('TELEGRAM_WEBHOOK_GLOBAL_PER_MINUTE', 600),
+
+        // Conexiones simultaneas que Telegram puede abrir contra el webhook
+        // (1-100). Bajarlo evita que una rafaga de mensajes abra decenas de
+        // procesos PHP a la vez.
+        'webhook_max_connections' => (int) env('TELEGRAM_WEBHOOK_MAX_CONNECTIONS', 10),
+
+        'endpoints' => [
+            'get_me' => 'telegram_get_me',
+            'send_message' => 'telegram_send_message',
+            'set_webhook' => 'telegram_set_webhook',
+            'delete_webhook' => 'telegram_delete_webhook',
+            'get_updates' => 'telegram_get_updates',
+            'set_my_commands' => 'telegram_set_my_commands',
+        ],
+    ],
 ];

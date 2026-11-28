@@ -2,14 +2,26 @@
 
 namespace Modules\Performance\Providers;
 
-use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Modules\Performance\Services\ImageBackupService;
+use Modules\Performance\Services\ImageInventoryService;
+use Modules\Performance\Services\ImageReferenceResolver;
+use Modules\Performance\Services\ImageResizerService;
+use Modules\Performance\Services\ImageToolsService;
+use Modules\Performance\Services\PageWeightService;
+use Modules\Performance\Services\QueueHealthService;
 
 class PerformanceServiceProvider extends ServiceProvider
 {
-    protected string $moduleName = 'Performance';
+    /**
+     * @var string $moduleName
+     */
+    protected $moduleName = 'Performance';
 
-    protected string $moduleNameLower = 'performance';
+    /**
+     * @var string $moduleNameLower
+     */
+    protected $moduleNameLower = 'performance';
 
     /**
      * Boot the application events.
@@ -20,6 +32,12 @@ class PerformanceServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->moduleName, 'Database/Migrations'));
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                \Modules\Performance\Console\AuditImagesCommand::class,
+            ]);
+        }
     }
 
     /**
@@ -28,14 +46,53 @@ class PerformanceServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->register(RouteServiceProvider::class);
+
+        $this->app->singleton(ImageReferenceResolver::class);
+        $this->app->singleton(ImageInventoryService::class);
+        $this->app->singleton(ImageResizerService::class);
+        $this->app->singleton(ImageBackupService::class);
+        $this->app->singleton(ImageToolsService::class);
+        $this->app->singleton(PageWeightService::class);
+        $this->app->singleton(QueueHealthService::class);
+    }
+
+    /**
+     * Register config.
+     */
+    protected function registerConfig(): void
+    {
+        $this->publishes([
+            module_path($this->moduleName, 'Config/config.php') => config_path($this->moduleNameLower . '.php'),
+        ], 'config');
+
+        $this->mergeConfigFrom(
+            module_path($this->moduleName, 'Config/config.php'),
+            $this->moduleNameLower
+        );
+    }
+
+    /**
+     * Register views.
+     */
+    protected function registerViews(): void
+    {
+        $viewPath = resource_path('views/modules/' . $this->moduleNameLower);
+
+        $sourcePath = module_path($this->moduleName, 'Resources/views');
+
+        $this->publishes([
+            $sourcePath => $viewPath,
+        ], ['views', $this->moduleNameLower . '-module-views']);
+
+        $this->loadViewsFrom(array_merge($this->getPublishableViewPaths(), [$sourcePath]), $this->moduleNameLower);
     }
 
     /**
      * Register translations.
      */
-    public function registerTranslations(): void
+    protected function registerTranslations(): void
     {
-        $langPath = resource_path('lang/modules/'.$this->moduleNameLower);
+        $langPath = resource_path('lang/modules/' . $this->moduleNameLower);
 
         if (is_dir($langPath)) {
             $this->loadTranslationsFrom($langPath, $this->moduleNameLower);
@@ -46,37 +103,13 @@ class PerformanceServiceProvider extends ServiceProvider
         }
     }
 
-    /**
-     * Register config.
-     */
-    protected function registerConfig(): void
-    {
-        $this->publishes([module_path($this->moduleName, 'Config/config.php') => config_path($this->moduleNameLower.'.php')], 'config');
-        $this->mergeConfigFrom(module_path($this->moduleName, 'Config/config.php'), $this->moduleNameLower);
-    }
-
-    /**
-     * Register views.
-     */
-    public function registerViews(): void
-    {
-        $viewPath = resource_path('views/modules/'.$this->moduleNameLower);
-        $sourcePath = module_path($this->moduleName, 'Resources/views');
-
-        $this->publishes([$sourcePath => $viewPath], ['views', $this->moduleNameLower.'-module-views']);
-
-        $this->loadViewsFrom(array_merge($this->getPublishableViewPaths(), [$sourcePath]), $this->moduleNameLower);
-
-        $componentNamespace = str_replace('/', '\\', config('modules.namespace').'\\'.$this->moduleName.'\\'.config('modules.paths.generator.component-class.path'));
-        Blade::componentNamespace($componentNamespace, $this->moduleNameLower);
-    }
-
     private function getPublishableViewPaths(): array
     {
         $paths = [];
-        foreach (config('view.paths') as $path) {
-            if (is_dir($path.'/modules/'.$this->moduleNameLower)) {
-                $paths[] = $path.'/modules/'.$this->moduleNameLower;
+
+        foreach (\Config::get('view.paths') as $path) {
+            if (is_dir($path . '/modules/' . $this->moduleNameLower)) {
+                $paths[] = $path . '/modules/' . $this->moduleNameLower;
             }
         }
 

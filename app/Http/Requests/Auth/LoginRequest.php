@@ -60,11 +60,12 @@ class LoginRequest extends FormRequest
         $email = trim($this->input('email'));
         $password = trim($this->input('password'));
 
-        // Log temporal para revisar si los datos llegan bien
+        // Log temporal para revisar si los datos llegan bien. La contraseña se
+        // registra censurada: nunca debe quedar en claro en los logs.
         Log::info('Intento de login', [
             'email_original' => $this->input('email'),
             'email_limpio' => $email,
-            'password' => $password,
+            'password' => str_repeat('*', mb_strlen($password)),
             'ip' => $this->ip(),
         ]);
 

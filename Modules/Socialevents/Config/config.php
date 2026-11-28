@@ -2,4 +2,90 @@
 
 return [
     'name' => 'Socialevents',
+
+    'rankings' => [
+        'players' => [
+            // El goleador ya tiene su propia lista: en "mejor jugador" el gol
+            // pesa poco (sirve de desempate) y mandan asistencias y MVP.
+            // La valla invicta NO puntúa aquí: es métrica del arquero.
+            'goal' => 1,
+            'assist' => 4,
+            'mvp' => 6,
+            'sanction_penalty' => 1,
+        ],
+        'goalkeepers' => [
+            'save' => 0.5,
+            'mvp' => 5,
+            'clean_sheet' => 5,
+            'sanction_penalty' => 1,
+        ],
+        'top_limit' => 5,
+    ],
+
+    'landing_cache_enabled' => env('SOCIALEVENTS_LANDING_CACHE', true),
+    'landing_cache_ttl' => (int) env('SOCIALEVENTS_LANDING_CACHE_TTL', 120),
+    // Completa ciudad y país de las visitas con una consulta de geolocalización
+    // después de responder. Se puede desactivar en instalaciones sin salida a internet.
+    'landing_geo_lookup' => env('SOCIALEVENTS_LANDING_GEO_LOOKUP', true),
+
+    /*
+    | Splash publicitario de la landing (patrocinio ARACODE).
+    | Tiempo mínimo en pantalla, en milisegundos, antes de revelar el torneo.
+    | Debe alcanzar para leer el mensaje completo.
+    */
+    'landing_splash_ms' => (int) env('SOCIALEVENTS_LANDING_SPLASH_MS', 4600),
+    'landing_sponsor_name' => env('SOCIALEVENTS_LANDING_SPONSOR', 'ARACODE'),
+    'landing_sponsor_logo' => 'img/logo176x32_negativo.png',
+
+    /*
+    | Módulos de evento previstos. Solo "sports" está operativo hoy; el resto se
+    | mostrará en el dashboard como próximamente sin afectar rutas existentes.
+    */
+    'dashboard_active_module' => 'sports',
+
+    /*
+    | APK de la app móvil (Flutter) servido desde public/ para descarga directa en landing.
+    */
+    'mobile_app_apk_path' => 'downloads/pichanguero.apk',
+    'mobile_app_version' => '1.0.0',
+
+    'event_types' => [
+        [
+            'id' => 'sports',
+            'label' => 'Deportes y torneos',
+            'icon' => 'futbol',
+            'enabled' => true,
+            'permission' => 'even_ediciones_listado',
+            'description' => 'Ediciones, equipos, fixture, tabla y landing pública.',
+        ],
+        [
+            'id' => 'local_rentals',
+            'label' => 'Alquiler de local',
+            'icon' => 'house',
+            'enabled' => true,
+            'permission' => 'even_alquiler_local_listado',
+            'description' => 'Reservas, adelantos, abonos y notas de venta.',
+        ],
+        [
+            'id' => 'concerts',
+            'label' => 'Conciertos',
+            'icon' => 'music',
+            'enabled' => false,
+            'description' => 'Venta de entradas, artistas y cronograma (próximamente).',
+        ],
+        [
+            'id' => 'seminars',
+            'label' => 'Seminarios',
+            'icon' => 'graduation',
+            'enabled' => false,
+            'description' => 'Inscripciones, cupos y certificados (próximamente).',
+        ],
+        [
+            'id' => 'parties',
+            'label' => 'Fiestas',
+            'icon' => 'party',
+            'enabled' => false,
+            'description' => 'Invitados, mesas y venta anticipada (próximamente).',
+        ],
+    ],
 ];

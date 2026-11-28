@@ -6,13 +6,12 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import Keypad from '@/Components/Keypad.vue';
-import Swal2 from 'sweetalert2';
-import { ref, watch } from 'vue';
+import PriceNoteEditor from '../../../Components/PriceNoteEditor.vue';
+import { computed, ref, watch } from 'vue';
 import IconPlus from '@/Components/vristo/icon/icon-plus.vue';
 import IconX from '@/Components/vristo/icon/icon-x.vue';
 import IconMinus from '@/Components/vristo/icon/icon-minus.vue';
 import { NumberSpinner } from 'vue3-number-spinner';
-import PriceNoteEditor from './PriceNoteEditor.vue';
 
 const props = defineProps({
     subscription: {
@@ -28,22 +27,34 @@ const props = defineProps({
 const form = useForm({
     title: props.subscription.title,
     usine: props.subscription.usine || '',
+    // Los planes antiguos solo tienen texto plano: se usa como valor inicial.
     description_html: props.subscription.description_html || props.subscription.description || '',
-    details: props.subscription.details,
-    prices: props.subscription.prices,
     price_note: props.subscription.price_note || '',
     price_note_below: props.subscription.price_note_below || '',
+    details: props.subscription.details,
+    prices: props.subscription.prices,
+    show_dollar_price: props.subscription.show_dollar_price == 1,
     status: props.subscription.status == 1 ? true : false,
-    show_dollar_price: props.subscription.show_dollar_price === null || props.subscription.show_dollar_price === undefined
-        ? true
-        : !!props.subscription.show_dollar_price,
     period: props.subscription.period,
+    recurring_enabled: props.subscription.recurring_enabled == 1,
+    test_mode: props.subscription.test_mode == 1,
     order_number: props.subscription.order_number ?? 1,
-    allow_all_courses: !!props.subscription.allow_all_courses,
-    allow_all_specializations: !!props.subscription.allow_all_specializations,
-    allow_all_webinars: !!props.subscription.allow_all_webinars,
-    allow_zoom_content: !!props.subscription.allow_zoom_content,
-    allow_webinar_content: !!props.subscription.allow_webinar_content
+    access_all_courses: props.subscription.access_all_courses == 1,
+    access_specialization_programs: props.subscription.access_specialization_programs == 1,
+    access_all_webinars: props.subscription.access_all_webinars == 1,
+    can_view_specialization_zooms: props.subscription.can_view_specialization_zooms == 1,
+    can_view_specialization_webinars: props.subscription.can_view_specialization_webinars == 1
+});
+
+// Periodos con cobro automático: 1, 3 o 12 meses entre cobros.
+const PERIODOS_RECURRENTES = ['Mensual', 'Trimestral', 'Anual'];
+const recurrenteDisponible = computed(() => PERIODOS_RECURRENTES.includes(form.period));
+
+watch(() => form.period, (period) => {
+    if (!PERIODOS_RECURRENTES.includes(period)) {
+        form.recurring_enabled = false;
+        form.test_mode = false;
+    }
 });
 
 const updateSubscription = () => {
@@ -51,13 +62,7 @@ const updateSubscription = () => {
         errorBag: 'updateSubscription',
         preserveScroll: true,
         onSuccess: () => {
-            Swal2.fire({
-                title: 'Enhorabuena',
-                text: 'Actualizado correctamente',
-                icon: 'success',
-                padding: '2em',
-                customClass: 'sweet-alerts',
-            });
+            window.alertaSistema('Enhorabuena', 'Actualizado correctamente', 'success');
         },
     });
 }
@@ -99,12 +104,6 @@ const removePrice = (indexToRemove) => {
             Editar Suscripción, Los campos con * son obligatorios
         </template>
         <template #form>
-            <div
-                v-if="form.errors.title"
-                class="col-span-6 p-3 rounded-md bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 text-red-700 dark:text-red-400 text-sm"
-            >
-                <i class="fa-solid fa-circle-exclamation mr-1"></i>{{ form.errors.title }}
-            </div>
             <div class="col-span-6 sm:col-span-3">
                 <InputLabel for="title" value="Título *" />
                 <TextInput
@@ -113,7 +112,6 @@ const removePrice = (indexToRemove) => {
                     type="text"
 
                 />
-                <p class="text-xs text-gray-500 mt-1">Debe ser único: no puede repetirse con otro plan.</p>
                 <InputError :message="form.errors.title" class="mt-2" />
             </div>
             <div class="col-span-6 sm:col-span-3">
@@ -157,70 +155,116 @@ const removePrice = (indexToRemove) => {
                 </div>
             </div>
             <div class="col-span-6">
-                <div class="p-4 border border-[#888ea8] dark:border-[#1b2e4b] rounded">
-                    <h5 class="font-semibold text-lg dark:text-white-light mb-1">Descripción *</h5>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 mb-3">
-                        Aparece debajo del título del plan en la página de suscripciones. Escribe lo que quieras,
-                        por ejemplo «1 Usuario (Para contadores independientes y profesionales en empresa).».
-                        Selecciona todo o parte del texto y usa la barra para cambiar el tamaño, el color, la
-                        negrita, la cursiva, el subrayado o el tachado. Usa Enter para separar hasta 3 líneas.
-                    </p>
-                    <PriceNoteEditor v-model="form.description_html" :max-lines="3"
-                        placeholder="1 Usuario (Para contadores independientes y profesionales en empresa)." />
-                    <InputError :message="form.errors.description_html" class="mt-2" />
-                </div>
-            </div>
-
-            <div class="col-span-6">
-                <div class="flex flex-wrap items-center gap-x-8 gap-y-2">
-                    <label class="inline-flex items-center">
-                        <input v-model="form.status" type="checkbox" class="form-checkbox rounded-full" />
-                        <span class="ml-2">Activo</span>
-                    </label>
-                    <label class="inline-flex items-center">
-                        <input v-model="form.show_dollar_price" type="checkbox" class="form-checkbox rounded-full" />
-                        <span class="ml-2">Mostrar precio en dólares</span>
-                    </label>
-                </div>
-                <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                    Si lo desactivas, el precio en dólares de este plan no se muestra en la página pública de suscripciones.
+                <InputLabel value="Descripción *" />
+                <p class="text-xs text-gray-500 mb-2">
+                    Aparece debajo del título del plan en la página de suscripciones. Escribe lo que quieras, por
+                    ejemplo «1 Usuario (Para contadores independientes y profesionales en empresa).». Selecciona
+                    todo o parte del texto y usa la barra para cambiar el tamaño, el color, la negrita, la cursiva,
+                    el subrayado o el tachado. Usa Enter para separar hasta 3 líneas.
                 </p>
+                <PriceNoteEditor
+                    id="description_html"
+                    v-model="form.description_html"
+                    placeholder="1 Usuario (Para contadores independientes y profesionales en empresa)."
+                    :max-lines="3"
+                />
+                <InputError :message="form.errors.description_html" class="mt-2" />
+            </div>
+
+            <div class="col-span-6">
+                <label class="inline-flex">
+                    <input v-model="form.status" type="checkbox" class="form-checkbox rounded-full" />
+                    <span>Activo</span>
+                </label>
             </div>
             <div class="col-span-6">
                 <div class="p-4 border border-[#888ea8] dark:border-[#1b2e4b] rounded">
-                    <h5 class="font-semibold text-lg dark:text-white-light mb-1">Acceso y permisos</h5>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 mb-4">Marca lo que desbloquea este plan. El acceso depende de estos checks, no del nombre del plan.</p>
+                    <label class="flex items-start gap-3 cursor-pointer" :class="{ 'opacity-60': !recurrenteDisponible }">
+                        <input
+                            v-model="form.recurring_enabled"
+                            type="checkbox"
+                            class="form-checkbox mt-0.5"
+                            :disabled="!recurrenteDisponible"
+                        />
+                        <span>
+                            <span class="block font-medium">Cobro automático con MercadoPago</span>
+                            <span class="block text-xs text-gray-500">
+                                Cobra la tarjeta del alumno cada mes, cada 3 meses o cada año según el periodo del plan,
+                                con la fecha de su alta. Disponible para planes mensuales, trimestrales y anuales;
+                                requiere el webhook de MercadoPago configurado en IntegrationHub.
+                            </span>
+                        </span>
+                    </label>
+                    <InputError :message="form.errors.recurring_enabled" class="mt-2" />
 
-                    <p class="font-semibold text-sm mb-2 text-gray-700 dark:text-gray-300">Contenido incluido</p>
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-5">
-                        <label class="inline-flex items-center">
-                            <input v-model="form.allow_all_courses" type="checkbox" class="form-checkbox rounded-full" />
-                            <span class="ml-2">Acceso a todos los cursos o talleres</span>
+                    <label class="flex items-start gap-3 cursor-pointer mt-4 pt-4 border-t border-dashed border-[#888ea8] dark:border-[#1b2e4b]" :class="{ 'opacity-60': !recurrenteDisponible }">
+                        <input
+                            v-model="form.test_mode"
+                            type="checkbox"
+                            class="form-checkbox mt-0.5"
+                            :disabled="!recurrenteDisponible"
+                        />
+                        <span>
+                            <span class="block font-medium">Modo prueba de cobros recurrentes</span>
+                            <span class="block text-xs text-gray-500">
+                                Habilita en la edición los botones para crear una suscripción con tarjeta de prueba en MercadoPago,
+                                simular la renovación, cancelarla y borrar esos datos. Usa las credenciales de PRUEBA
+                                (test_access_token y test_public_key), nunca las de producción.
+                            </span>
+                        </span>
+                    </label>
+                    <InputError :message="form.errors.test_mode" class="mt-2" />
+                </div>
+            </div>
+            <div class="col-span-6">
+                <div class="p-4 border border-[#888ea8] dark:border-[#1b2e4b] rounded">
+                    <h5 class="font-semibold text-lg dark:text-white-light mb-1">Acceso a cursos</h5>
+                    <p class="text-xs text-gray-500 mb-4">Define qué categorías del catálogo incluye esta suscripción. No depende del nombre del plan.</p>
+                    <div class="space-y-3">
+                        <label class="flex items-start gap-3 cursor-pointer">
+                            <input v-model="form.access_all_courses" type="checkbox" class="form-checkbox mt-0.5" />
+                            <span>
+                                <span class="block font-medium">Acceso a todos los cursos o talleres</span>
+                                <span class="block text-xs text-gray-500">Cursos y talleres de pago, sin contar programas de especialización ni webinars.</span>
+                            </span>
                         </label>
-                        <label class="inline-flex items-center">
-                            <input v-model="form.allow_all_specializations" type="checkbox" class="form-checkbox rounded-full" />
-                            <span class="ml-2">Acceso a todos los programas de especialización</span>
+                        <label class="flex items-start gap-3 cursor-pointer">
+                            <input v-model="form.access_specialization_programs" type="checkbox" class="form-checkbox mt-0.5" />
+                            <span>
+                                <span class="block font-medium">Acceso a todos los programas de especialización</span>
+                                <span class="block text-xs text-gray-500">Habilita todos los Programas de Especialización.</span>
+                            </span>
                         </label>
-                        <label class="inline-flex items-center">
-                            <input v-model="form.allow_all_webinars" type="checkbox" class="form-checkbox rounded-full" />
-                            <span class="ml-2">Acceso a todos los webinars</span>
+                        <label class="flex items-start gap-3 cursor-pointer">
+                            <input v-model="form.access_all_webinars" type="checkbox" class="form-checkbox mt-0.5" />
+                            <span>
+                                <span class="block font-medium">Acceso a todos los webinars</span>
+                                <span class="block text-xs text-gray-500">Habilita los cursos cuyo tipo es Webinar.</span>
+                            </span>
                         </label>
                     </div>
-
-                    <p class="font-semibold text-sm mb-2 text-gray-700 dark:text-gray-300">Tipos de contenido</p>
-                    <div v-if="form.allow_all_specializations" class="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                        <label class="inline-flex items-center">
-                            <input v-model="form.allow_zoom_content" type="checkbox" class="form-checkbox rounded-full" />
-                            <span class="ml-2">Acceso a contenido Meet/Zoom</span>
+                </div>
+            </div>
+            <div class="col-span-6">
+                <div class="p-4 border border-[#888ea8] dark:border-[#1b2e4b] rounded">
+                    <h5 class="font-semibold text-lg dark:text-white-light mb-1">Contenido en Programas de Especialización</h5>
+                    <p class="text-xs text-gray-500 mb-4">Aplica solo dentro de los Programas de Especialización; los cursos normales no cambian.</p>
+                    <div class="space-y-3">
+                        <label class="flex items-start gap-3 cursor-pointer">
+                            <input v-model="form.can_view_specialization_zooms" type="checkbox" class="form-checkbox mt-0.5" />
+                            <span>
+                                <span class="block font-medium">Acceso a contenido Meet/Zoom</span>
+                                <span class="block text-xs text-gray-500">Habilita los enlaces de sesiones en vivo de los programas de especialización.</span>
+                            </span>
                         </label>
-                        <label class="inline-flex items-center">
-                            <input v-model="form.allow_webinar_content" type="checkbox" class="form-checkbox rounded-full" />
-                            <span class="ml-2">Acceso a contenido tipo Webinar</span>
+                        <label class="flex items-start gap-3 cursor-pointer">
+                            <input v-model="form.can_view_specialization_webinars" type="checkbox" class="form-checkbox mt-0.5" />
+                            <span>
+                                <span class="block font-medium">Acceso a contenido Webinar</span>
+                                <span class="block text-xs text-gray-500">Habilita los contenidos tipo Webinar dentro de los programas de especialización.</span>
+                            </span>
                         </label>
                     </div>
-                    <p v-else class="text-xs text-gray-500 dark:text-gray-400">
-                        Los tipos de contenido Meet/Zoom y Webinar solo aplican con "Acceso a todos los programas de especialización": si el plan no incluye esos programas, ese contenido se oculta al alumno.
-                    </p>
                 </div>
             </div>
             <div class="col-span-6 sm:col-span-3">
@@ -245,33 +289,30 @@ const removePrice = (indexToRemove) => {
                 </div>
             </div>
             <div class="col-span-6">
-                <div class="p-4 border border-[#888ea8] dark:border-[#1b2e4b] rounded">
-                    <h5 class="font-semibold text-lg dark:text-white-light mb-1">Texto encima del precio (opcional)</h5>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 mb-3">
-                        Esto irá encima del precio actual en la página de planes. Puedes escribir lo que quieras, por
-                        ejemplo «Antes S/ 1800» o «El precio subirá el 25 de Noviembre S/ 1950». Selecciona todo o
-                        parte del texto y usa la barra para cambiar el color, la letra, el subrayado o el tachado.
-                    </p>
-                    <PriceNoteEditor v-model="form.price_note" placeholder="Antes S/ 1800" />
-                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                        Si lo dejas vacío, el plan no muestra nada encima del precio.
-                    </p>
-                    <InputError :message="form.errors.price_note" class="mt-2" />
-                </div>
-            </div>
-            <div class="col-span-6">
-                <div class="p-4 border border-[#888ea8] dark:border-[#1b2e4b] rounded">
-                    <h5 class="font-semibold text-lg dark:text-white-light mb-1">Texto debajo del precio (opcional)</h5>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 mb-3">
-                        Esto irá debajo del precio actual en la página de planes. Escribe lo que quieras, por ejemplo
-                        «Precio válido hasta el 24 de Noviembre» o «Incluye IGV». Selecciona todo o parte del texto y
-                        usa la barra para cambiar el color, la letra, el subrayado o el tachado.
-                    </p>
-                    <PriceNoteEditor v-model="form.price_note_below" placeholder="Precio válido hasta el 24 de Noviembre" />
-                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                        Si lo dejas vacío, el plan no muestra nada debajo del precio.
-                    </p>
-                    <InputError :message="form.errors.price_note_below" class="mt-2" />
+                <div class="p-4 border border-[#888ea8] dark:border-[#1b2e4b] rounded space-y-5">
+                    <div>
+                        <h5 class="font-semibold text-lg dark:text-white-light mb-1">Texto encima del precio (opcional)</h5>
+                        <p class="text-xs text-gray-500 mb-2">
+                            Esto irá encima del precio actual en la página de planes. Puedes escribir lo que quieras,
+                            por ejemplo «Antes S/ 1800» o «El precio subirá el 25 de Noviembre S/ 1950». Selecciona
+                            todo o parte del texto y usa la barra para cambiar el color, la letra, el subrayado o el
+                            tachado.
+                        </p>
+                        <PriceNoteEditor v-model="form.price_note" placeholder="Antes S/ 1800" />
+                        <p class="text-xs text-gray-500 mt-1">Si lo dejas vacío, el plan no muestra nada encima del precio.</p>
+                        <InputError :message="form.errors.price_note" class="mt-2" />
+                    </div>
+                    <div>
+                        <h5 class="font-semibold text-lg dark:text-white-light mb-1">Texto debajo del precio (opcional)</h5>
+                        <p class="text-xs text-gray-500 mb-2">
+                            Esto irá debajo del precio actual en la página de planes. Escribe lo que quieras, por
+                            ejemplo «Precio válido hasta el 24 de Noviembre» o «Incluye IGV». Selecciona todo o parte
+                            del texto y usa la barra para cambiar el color, la letra, el subrayado o el tachado.
+                        </p>
+                        <PriceNoteEditor v-model="form.price_note_below" placeholder="Precio válido hasta el 24 de Noviembre" />
+                        <p class="text-xs text-gray-500 mt-1">Si lo dejas vacío, el plan no muestra nada debajo del precio.</p>
+                        <InputError :message="form.errors.price_note_below" class="mt-2" />
+                    </div>
                 </div>
             </div>
             <div class="col-span-6 sm:col-span-3">
@@ -304,9 +345,19 @@ const removePrice = (indexToRemove) => {
 
                         </template>
                     </div>
+
+                    <label class="flex items-start gap-3 cursor-pointer mt-4 pt-4 border-t border-dashed border-[#888ea8] dark:border-[#1b2e4b]">
+                        <input v-model="form.show_dollar_price" type="checkbox" class="form-checkbox mt-0.5" />
+                        <span>
+                            <span class="block font-medium">Mostrar precio en dólares</span>
+                            <span class="block text-xs text-gray-500">
+                                Si lo desactivas, la vista de suscripciones muestra solo el precio en soles,
+                                aunque el monto en USD esté registrado en el plan.
+                            </span>
+                        </span>
+                    </label>
                 </div>
             </div>
-
         </template>
 
         <template #actions>

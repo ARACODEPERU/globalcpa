@@ -24,6 +24,15 @@
         tiny_api_key: {
             type: String,
             default: null,
+        },
+        // El campo PDF solo lo ve quien tiene rol Administrador o admin.
+        can_upload_pdf: {
+            type: Boolean,
+            default: false,
+        },
+        pdf_url: {
+            type: String,
+            default: null,
         }
     });
 
@@ -42,6 +51,8 @@
 
     const photoPreview = ref(null);
     const photoInput = ref(null);
+    const pdfInput = ref(null);
+    const pdfName = ref('');
 
     const updateArticle = () => {
 
@@ -61,6 +72,16 @@
 
     const selectNewPhoto = () => {
         photoInput.value.click();
+    };
+
+    const selectPdf = () => {
+        pdfInput.value.click();
+    };
+
+    const updatePdf = () => {
+        const pdf = pdfInput.value.files[0];
+        form.pdf = pdf || null;
+        pdfName.value = pdf ? pdf.name : '';
     };
 
     const updatePhotoPreview = () => {
@@ -230,25 +251,25 @@
                     <InputError :message="form.errors.file" class="mt-2" />
                 </div>
             </div>
-            <div class="col-span-6 sm:col-span-6">
+            <div v-if="can_upload_pdf" class="col-span-6 sm:col-span-6">
                 <InputLabel for="pdf" value="PDF adjunto (opcional)" />
-                <div v-if="article.pdf_path" class="mt-2 mb-2">
-                    <a :href="route('blog_article_pdf', article.url)" target="_blank" rel="noopener"
-                        class="text-primary hover:underline text-sm">
+                <input
+                    ref="pdfInput"
+                    type="file"
+                    accept="application/pdf"
+                    class="hidden"
+                    @change="updatePdf"
+                >
+                <div class="flex flex-wrap items-center gap-2 mt-1">
+                    <SecondaryButton type="button" @click.prevent="selectPdf">
+                        Seleccionar PDF
+                    </SecondaryButton>
+                    <span v-if="pdfName" class="text-sm">{{ pdfName }}</span>
+                    <span v-else class="text-xs text-gray-500">Solo PDF, máximo 10 MB.</span>
+                    <a v-if="pdf_url" :href="pdf_url" target="_blank" rel="noopener" class="text-xs text-primary hover:underline">
                         Ver PDF actual
                     </a>
                 </div>
-                <input
-                    id="pdf"
-                    type="file"
-                    accept="application/pdf"
-                    class="form-input mt-1"
-                    @change="form.pdf = $event.target.files[0]"
-                >
-                <p class="mt-1 text-xs text-gray-500">
-                    Solo usuarios con rol Administrador. Formato PDF, máximo 10 MB.
-                    Si no seleccionas un archivo, se conserva el PDF actual.
-                </p>
                 <InputError :message="form.errors.pdf" class="mt-2" />
             </div>
             <div class="col-span-6 sm:col-span-3">

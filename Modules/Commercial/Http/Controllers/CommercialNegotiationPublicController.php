@@ -12,6 +12,8 @@ use App\Models\Industry;
 use App\Models\Parameter;
 use App\Models\PaymentMethod;
 use App\Models\Person;
+use App\Models\User;
+use App\Support\PersonUserPersistenceVerifier;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Http\Request;
@@ -22,6 +24,7 @@ use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Modules\Commercial\Entities\CommercialNegotiation;
 use Modules\Commercial\Entities\CommercialNegotiationInvoice;
+use Modules\Commercial\Support\CommercialLegalLinks;
 use Modules\Commercial\Support\NegotiationConfirmedRecipients;
 
 class CommercialNegotiationPublicController extends Controller
@@ -44,6 +47,7 @@ class CommercialNegotiationPublicController extends Controller
 
         return Inertia::render('Commercial::Negotiations/Public/Show', [
             'negotiation' => $this->negotiationPayload($negotiation),
+            'recommendedBankAccountId' => $negotiation->recommended_bank_account_id,
             // Equivalente en soles para el cliente cuando la negociacion esta en USD.
             'multiCurrencyEnabled' => app(\Modules\Sales\Services\ExchangeRateService::class)->isMultiCurrencyEnabled(),
             'exchangeRate' => (function () {
@@ -60,17 +64,22 @@ class CommercialNegotiationPublicController extends Controller
                     'id' => $type->id,
                     'description' => $type->description,
                     'sunat_code' => $type->sunat_code,
+                    'number_characters' => $type->number_characters,
                     'requires_foreign_location' => $type->requiresForeignLocation(),
                 ])
                 ->values(),
             'industries' => Industry::select('id', 'description')->orderBy('description')->get(),
             // Cargos en orden alfabetico: el cliente los busca escribiendo.
             'occupations' => DB::table('occupations')->select('id', 'description')->orderBy('description')->get(),
+            // Profesiones en orden alfabetico: el cliente las busca escribiendo.
             'professions' => DB::table('professions')->select('id', 'description')->orderBy('description')->get(),
             'countries' => Country::where('status', true)->orderBy('description')->get(['id', 'description']),
             'ubigeo' => $this->ubigeo(),
             'paymentMethodCatalog' => PaymentMethod::with('bankAccount.bank')->get(),
             'bankAccounts' => BankAccount::with('bank')->where('status', 1)->get(),
+            // Enlaces legales que el cliente debe aceptar: se configuran en
+            // Comercial > Configuracion y aqui llegan ya como URL utilizable.
+            'legalLinks' => CommercialLegalLinks::all(),
         ]);
     }
 
@@ -94,11 +103,16 @@ class CommercialNegotiationPublicController extends Controller
 
         $data = $request->validate([
             'accepted' => ['required', 'accepted'],
+            // Los tres documentos legales que el cliente acepta antes de enviar sus datos.
+            'accepted_terminos' => ['required', 'accepted'],
+            'accepted_devoluciones' => ['required', 'accepted'],
+            'accepted_privacidad' => ['required', 'accepted'],
             // Mercado Pago: 'card' (pago con tarjeta) o 'evidence' (el cliente ya pago
             // por fuera y adjunta la captura). En los otros medios no se envia.
             'payment_option' => ['nullable', Rule::in(['card', 'evidence'])],
-            // En negociaciones gratuitas no se genera comprobante, asi que no se pide tipo.
-            'invoice_type' => ['nullable', Rule::requiredIf(fn () => ! $negotiation->isFree()), Rule::in(['boleta', 'factura'])],
+            // Banco desde el que el cliente hizo la transferencia (debe coincidir con su voucher).
+            'transfer_origin_bank' => [Rule::requiredIf(fn () => $negotiation->payment_method === 'transferencia'), 'nullable', 'string', 'max:100'],
+            'invoice_type' => ['required', Rule::in(['boleta', 'factura'])],
             'document_type_id' => ['required', 'string', 'exists:identity_document_type,id'],
             'number' => ['required', 'string', 'max:20'],
             'full_name' => ['required_if:document_type_id,6', 'nullable', 'string', 'max:255'],
@@ -113,7 +127,8 @@ class CommercialNegotiationPublicController extends Controller
             'ocupacion' => ['nullable'],
             'ocupacion.id' => ['nullable', 'integer', 'exists:occupations,id'],
             'ocupacion.description' => ['nullable', 'string', 'max:255'],
-            // Profesion: mismo contrato que el cargo (multiselect {id, description}).
+            // Profesion: mismo formato que el cargo (objeto {id, description} del
+            // multiselect o texto suelto de una pagina en cache).
             'profesion' => ['nullable'],
             'profesion.id' => ['nullable', 'integer', 'exists:professions,id'],
             'profesion.description' => ['nullable', 'string', 'max:255'],
@@ -144,11 +159,13 @@ class CommercialNegotiationPublicController extends Controller
             'invoice_distrito' => ['nullable', 'string', 'max:255'],
             'invoice_provincia' => ['nullable', 'string', 'max:255'],
             'invoice_departamento' => ['nullable', 'string', 'max:255'],
-            // "nullable" es imprescindible: Inertia envia los campos nulos como cadena
-            // vacia y ConvertEmptyStringsToNull los convierte en null; sin nullable las
-            // reglas file/image/mimes corrian sobre ese null y rechazaban el envio (en
-            // gratis y en Mercado Pago con tarjeta, donde no hay voucher que adjuntar).
-            'voucher' => ['nullable', Rule::requiredIf(fn () => $this->voucherRequired($negotiation, $request->input('payment_option'))), 'file', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
+            // 'nullable' no es decorativo: el navegador envia la clave aunque el bloque del
+            // voucher este oculto (Inertia manda los null del formulario como cadena vacia)
+            // y con la clave presente la regla 'file' se ejecuta igual sobre el valor nulo
+            // y rechaza el envio con un error sobre un campo que el cliente no ve. Con
+            // 'nullable' las reglas de archivo solo corren cuando de verdad hay un archivo
+            // adjunto; que sea obligatorio o no lo sigue decidiendo 'requiredIf'.
+            'voucher' => [Rule::requiredIf(fn () => $this->voucherRequired($negotiation, $request->input('payment_option'))), 'nullable', 'file', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
         ]);
 
         $isRuc = (string) $data['document_type_id'] === '6';
@@ -168,10 +185,10 @@ class CommercialNegotiationPublicController extends Controller
         $industry = ! empty($industryId) ? Industry::find($industryId) : null;
 
         // Cargo u ocupacion: se guarda el texto del catalogo junto a su id.
-        [$occupationId, $occupation] = $this->resolveOccupation($data['ocupacion'] ?? null);
+        [$occupationId, $occupation] = $this->resolveCatalog($data['ocupacion'] ?? null, 'occupations');
 
-        // Profesion: igual que el cargo, el texto sale del catalogo de professions.
-        [$professionId, $profession] = $this->resolveProfession($data['profesion'] ?? null);
+        // Profesion: mismo tratamiento que el cargo (texto oficial del catalogo + id).
+        [$professionId, $profession] = $this->resolveCatalog($data['profesion'] ?? null, 'professions');
 
         // El cliente extranjero guarda su ubicacion como "Pais - Estado - Ciudad".
         $foreignCountry = ($isForeignLocation && ! empty($data['foreign_country_id']))
@@ -213,8 +230,10 @@ class CommercialNegotiationPublicController extends Controller
             'telephone' => $data['telephone'] ?? null,
             'ocupacion' => $occupation,
             'occupation_id' => $occupationId,
-            'profession_id' => $professionId,
+            // people.profession es la columna real del texto (profesion solo vive en
+            // client_data, que es un json y no pasa por mass-assignment).
             'profession' => $profession,
+            'profession_id' => $professionId,
             'company' => $data['company'] ?? null,
             'industry_id' => $industry?->id,
             'industry' => $industry?->description,
@@ -243,9 +262,8 @@ class CommercialNegotiationPublicController extends Controller
                 $clientId = $person->id;
             }
 
-            // En negociaciones gratuitas no se guarda ninguna evidencia de pago.
             $voucherPath = null;
-            if (! $negotiation->isFree() && $request->hasFile('voucher')) {
+            if ($request->hasFile('voucher')) {
                 $voucherPath = $request->file('voucher')->store('negotiations/vouchers', 'public');
 
                 if ($negotiation->voucher_path) {
@@ -255,17 +273,25 @@ class CommercialNegotiationPublicController extends Controller
 
             $negotiation->update([
                 'status' => 'confirmada',
-                // Fecha real en que el cliente registro sus datos y envio la evidencia:
-                // es la fecha por defecto (modificable) del comprobante.
-                'client_confirmed_at' => now(),
+                'transfer_origin_bank' => $negotiation->payment_method === 'transferencia'
+                    ? trim((string) ($data['transfer_origin_bank'] ?? ''))
+                    : $negotiation->transfer_origin_bank,
                 'client_id' => $clientId,
                 'client_data' => array_merge($personPayload, [
                     'full_name' => $fullName ?: ($data['full_name'] ?? null),
+                    // La profesion declarada viaja tambien como 'profesion' en el json del
+                    // cliente: es la clave que lee el payload del webhook a n8n.
+                    'profesion' => $profession,
                     // Mercado Pago liquidado por fuera: el cliente declara el pago y
                     // adjunta su evidencia, no hay transaccion procesada en el sistema.
                     'payment_declared' => $this->paymentDeclared($negotiation, $data['payment_option'] ?? null),
+                    // Constancia de los tres documentos legales aceptados.
+                    'legal_accepted' => $this->legalAcceptance(),
                 ]),
                 'voucher_path' => $voucherPath ?: $negotiation->voucher_path,
+                // La fecha de emision del comprobante por defecto es la fecha en que el
+                // cliente registro sus datos y su evidencia (el admin puede ajustarla luego).
+                'document_emission_date' => now()->toDateString(),
                 'rejected_reason' => null,
                 'verified_by' => null,
                 'verified_at' => null,
@@ -273,13 +299,18 @@ class CommercialNegotiationPublicController extends Controller
 
             // Boleta a nombre de terceros: solo se guarda si el cliente la activo
             // y el DNI fue validado (numero + nombre completados por la consulta).
-            // Negociacion gratuita: no hay comprobante, asi que no se guarda registro de factura/boleta.
-            if (! $negotiation->isFree()) {
-                $boletaTercero = $data['invoice_type'] === 'boleta'
-                    && ! empty($data['boleta_documento_tipo'])
-                    && ! empty($data['boleta_numero'])
-                    && ! empty($data['boleta_nombre']);
+            $boletaTercero = $data['invoice_type'] === 'boleta'
+                && ! empty($data['boleta_documento_tipo'])
+                && ! empty($data['boleta_numero'])
+                && ! empty($data['boleta_nombre']);
 
+            // Negociacion gratuita: no se emite comprobante, asi que no se guarda el pedido
+            // de boleta o factura (el cliente ya no elige el tipo en el formulario).
+            $isFree = (float) $negotiation->total_price === 0.0;
+
+            if ($isFree) {
+                CommercialNegotiationInvoice::where('negotiation_id', $negotiation->id)->delete();
+            } else {
                 CommercialNegotiationInvoice::updateOrCreate(
                     ['negotiation_id' => $negotiation->id],
                     [
@@ -297,6 +328,29 @@ class CommercialNegotiationPublicController extends Controller
                         'provincia' => $data['invoice_provincia'] ?? null,
                         'departamento' => $data['invoice_departamento'] ?? null,
                     ]
+                );
+            }
+
+            $user = User::query()->where('person_id', $person->id)->first();
+            if (! $user && $person->email) {
+                $user = User::query()->whereRaw('LOWER(email) = ?', [strtolower(trim($person->email))])->first();
+            }
+            if ($user) {
+                $userData = [
+                    'name' => $person->names ?: $person->full_name,
+                    'email' => $person->email ?: $user->email,
+                    'person_id' => $person->id,
+                ];
+                $user->update($userData);
+
+                PersonUserPersistenceVerifier::verify(
+                    $person,
+                    $user,
+                    array_merge(
+                        array_filter($personPayload, fn ($value) => $value !== null && $value !== ''),
+                        $locationPayload
+                    ),
+                    $userData
                 );
             }
 
@@ -540,11 +594,13 @@ class CommercialNegotiationPublicController extends Controller
      * Mercado Pago pagando con tarjeta. En Mercado Pago el cliente puede declarar
      * que ya pago por fuera ('evidence'): ahi la imagen vuelve a ser obligatoria,
      * igual que en una transferencia o billetera.
+     *
+     * En una negociacion gratuita (precio total 0) no hay pago que acreditar, asi que
+     * el cliente envia solo sus datos y no se le pide ninguna evidencia.
      */
     private function voucherRequired(CommercialNegotiation $negotiation, ?string $paymentOption): bool
     {
-        // Negociacion gratuita: no hay pago que respaldar, no se pide evidencia.
-        if ($negotiation->isFree()) {
+        if ((float) $negotiation->total_price === 0.0) {
             return false;
         }
 
@@ -561,15 +617,35 @@ class CommercialNegotiationPublicController extends Controller
      */
     private function paymentDeclared(CommercialNegotiation $negotiation, ?string $paymentOption): bool
     {
-        if ($negotiation->isFree()) {
-            return false;
-        }
-
         return $negotiation->payment_method === 'mercadopago' && $paymentOption === 'evidence';
     }
 
     /**
-     * Cargo u ocupacion elegido en el formulario publico.
+     * Constancia de las aceptaciones legales: que documento acepto el cliente, en que
+     * enlace lo leyo y cuando lo hizo. Queda en el client_data de la negociacion como
+     * respaldo; no agrega claves al payload que viaja a n8n.
+     *
+     * @return array<string, mixed>
+     */
+    private function legalAcceptance(): array
+    {
+        $aceptaciones = [];
+
+        foreach (CommercialLegalLinks::all() as $key => $url) {
+            $aceptaciones[$key] = [
+                'aceptado' => true,
+                'url' => $url,
+            ];
+        }
+
+        $aceptaciones['aceptado_en'] = now()->toIso8601String();
+
+        return $aceptaciones;
+    }
+
+    /**
+     * Valor de catalogo elegido en el formulario publico (cargo u ocupacion,
+     * profesion).
      *
      * El multiselect envia {id, description}; el texto guardado sale del
      * catalogo (no de lo que venga en la peticion) para que la tabla people
@@ -578,40 +654,14 @@ class CommercialNegotiationPublicController extends Controller
      *
      * @return array{0: ?int, 1: ?string}
      */
-    private function resolveOccupation($input): array
+    private function resolveCatalog($input, string $table): array
     {
         $id = is_array($input) ? ($input['id'] ?? null) : null;
         $texto = is_array($input) ? ($input['description'] ?? null) : $input;
         $description = is_string($texto) ? trim($texto) : null;
 
         if (! empty($id)) {
-            $oficial = DB::table('occupations')->where('id', $id)->value('description');
-
-            if ($oficial !== null) {
-                return [(int) $id, $oficial];
-            }
-        }
-
-        return [null, $description ?: null];
-    }
-
-    /**
-     * Profesion elegida en el formulario publico.
-     *
-     * Gemelo de resolveOccupation: el multiselect envia {id, description} y el
-     * texto guardado sale del catalogo professions (no de lo que venga en la
-     * peticion). Un texto suelto (pagina en cache) se respeta tal cual, sin id.
-     *
-     * @return array{0: ?int, 1: ?string}
-     */
-    private function resolveProfession($input): array
-    {
-        $id = is_array($input) ? ($input['id'] ?? null) : null;
-        $texto = is_array($input) ? ($input['description'] ?? null) : $input;
-        $description = is_string($texto) ? trim($texto) : null;
-
-        if (! empty($id)) {
-            $oficial = DB::table('professions')->where('id', $id)->value('description');
+            $oficial = DB::table($table)->where('id', $id)->value('description');
 
             if ($oficial !== null) {
                 return [(int) $id, $oficial];
@@ -657,6 +707,7 @@ class CommercialNegotiationPublicController extends Controller
                     'titular' => $cb->account_name,
                     'numero' => $cb->account_number,
                     'qr_url' => $cb->qr_image ? asset('storage/' . $cb->qr_image) : null,
+                    'tiene_enlace_pago' => (bool) $cb->has_payment_link,
                 ])
                 ->values(),
         ];

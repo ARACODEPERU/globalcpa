@@ -1,0 +1,637 @@
+<script setup>
+    import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+    import { useForm, usePage } from '@inertiajs/vue3';
+
+    const props = defineProps({
+        // Usuario a configurar. Por defecto, el usuario autenticado.
+        user: {
+            type: Object,
+            default: () => ({}),
+        },
+    });
+
+    const page = usePage();
+    const authUser = page.props?.auth?.user ?? {};
+    const esAdmin = computed(() => (page.props?.auth?.roles || []).includes('admin'));
+
+    // Los nombres coinciden con las columnas de la tabla users, para que el
+    // backend pueda guardarlos con un update() directo.
+    const settings = useForm({
+        aracodito_enabled: Boolean(props.user?.aracodito_enabled ?? authUser.aracodito_enabled ?? false),
+        aracodito_audio_enabled: Boolean(props.user?.aracodito_audio_enabled ?? authUser.aracodito_audio_enabled ?? false),
+        aracodito_ia_enabled: Boolean(props.user?.aracodito_ia_enabled ?? authUser.aracodito_ia_enabled ?? false),
+        aracodito_style: String(props.user?.aracodito_style ?? authUser.aracodito_style ?? 'classic'),
+        aracodito_tts_voice: String(props.user?.aracodito_tts_voice ?? authUser.aracodito_tts_voice ?? ''),
+        aracodito_tts_rate: Number(props.user?.aracodito_tts_rate ?? authUser.aracodito_tts_rate ?? 1),
+        aracodito_tts_pitch: Number(props.user?.aracodito_tts_pitch ?? authUser.aracodito_tts_pitch ?? 1),
+    });
+
+    // Cada estilo reúne su tarjeta y el aspecto de la burbuja de vista previa,
+    // para no repetir tres bloques de plantilla casi iguales.
+    const STYLE_OPTIONS = [
+        {
+            value: 'classic',
+            title: 'Clásico',
+            description: 'El robot azul de siempre, con terminal en el pecho.',
+            bubble: 'rounded-2xl border border-[#dce9ff] bg-gradient-to-b from-white to-[#f5f9ff] shadow-lg shadow-slate-900/10 dark:border-[#2a3b5f] dark:from-[#1a2742] dark:to-[#101a2e] dark:shadow-black/50',
+            tail: 'border-[#dce9ff] bg-white dark:border-[#2a3b5f] dark:bg-[#1a2742]',
+            text: 'text-[#10203a] dark:text-[#eef4ff]',
+        },
+        {
+            value: 'pixel',
+            title: 'Retro pixel',
+            description: 'Sprite de 16 bits y diálogo pixelado.',
+            bubble: 'rounded-none border-2 border-slate-900 bg-[#f8fbff] font-mono shadow-[4px_4px_0_rgba(15,23,42,0.35)] dark:border-sky-200/70 dark:bg-[#101a2e] dark:shadow-[4px_4px_0_rgba(0,0,0,0.6)]',
+            tail: 'border-slate-900 bg-[#f8fbff] dark:border-sky-200/70 dark:bg-[#101a2e]',
+            text: 'font-mono text-[13px] font-bold text-[#0b1f3a] dark:text-[#eef4ff]',
+        },
+        {
+            value: 'futbol',
+            title: 'Futbolero',
+            description: 'Camiseta verde y balón que se anima en cada aviso.',
+            bubble: 'rounded-2xl border border-emerald-200 bg-gradient-to-b from-white to-emerald-50 shadow-lg shadow-emerald-900/10 dark:border-emerald-500/40 dark:from-[#122a1d] dark:to-[#0b1f14]',
+            tail: 'border-emerald-200 bg-white dark:border-emerald-500/40 dark:bg-[#122a1d]',
+            text: 'text-emerald-950 dark:text-[#eafff3]',
+        },
+    ];
+
+    const STYLE_VALUES = STYLE_OPTIONS.map((option) => option.value);
+
+    const activeStyle = computed(() =>
+        STYLE_VALUES.includes(settings.aracodito_style) ? settings.aracodito_style : 'classic'
+    );
+
+    const previewTheme = computed(
+        () => STYLE_OPTIONS.find((option) => option.value === activeStyle.value) ?? STYLE_OPTIONS[0]
+    );
+
+    // La tarjeta de vista previa usa el mismo sprite que el widget real, así
+    // que nunca se queda mostrando el personaje de otro estilo.
+    const previewSprite = ref('');
+
+    const syncPreviewSprite = () => {
+        if (typeof window === 'undefined') {
+            return;
+        }
+
+        previewSprite.value = window.Aracodito?.getSprite?.(activeStyle.value) || '';
+    };
+
+    watch(activeStyle, syncPreviewSprite, { immediate: true });
+
+    // Voces que ofrece el navegador (las instala el sistema operativo).
+    const voces = ref([]);
+
+    const cargarVoces = () => {
+        if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
+            voces.value = [];
+            return;
+        }
+
+        voces.value = window.speechSynthesis.getVoices() || [];
+    };
+
+    const vocesOrdenadas = computed(() =>
+        [...voces.value].sort((a, b) => {
+            const esA = String(a.lang || '').toLowerCase().startsWith('es') ? 0 : 1;
+            const esB = String(b.lang || '').toLowerCase().startsWith('es') ? 0 : 1;
+
+            return esA - esB || String(a.name).localeCompare(String(b.name));
+        })
+    );
+
+    onMounted(() => {
+        cargarVoces();
+        window.speechSynthesis?.addEventListener?.('voiceschanged', cargarVoces);
+    });
+
+    onBeforeUnmount(() => {
+        window.speechSynthesis?.removeEventListener?.('voiceschanged', cargarVoces);
+    });
+
+    // Presets de carácter: cambian velocidad y tono, no la voz elegida.
+    const VOZ_PRESETS = [
+        { label: 'Natural', rate: 1, pitch: 1 },
+        { label: 'Robot', rate: 0.8, pitch: 0.4 },
+        { label: 'Voz grave', rate: 0.9, pitch: 0.6 },
+        { label: 'Niño', rate: 1.15, pitch: 1.7 },
+    ];
+
+    const aplicarPreset = (preset) => {
+        settings.aracodito_tts_rate = preset.rate;
+        settings.aracodito_tts_pitch = preset.pitch;
+    };
+
+    const probarVoz = () => {
+        window.Aracodito?.speak?.('Hola, soy Aracodito. Así se escucha mi voz cuando te ayudo.');
+    };
+
+    const bubbleText = computed(() => {
+        if (!settings.aracodito_enabled) {
+            return 'Alertas clásicas activas: SweetAlert2 (swal).';
+        }
+        if (settings.aracodito_ia_enabled) {
+            return '¡Hola! Soy Aracodito. Pregúntame cómo usar el sistema.';
+        }
+        if (settings.aracodito_audio_enabled) {
+            return '¡Hola! Soy Aracodito. Te acompaño con voz.';
+        }
+        return '¡Hola! Soy Aracodito. Te muestro los avisos en texto.';
+    });
+
+    // El interruptor manda de inmediato: los avisos de la vista usan el mismo
+    // valor que se ve en pantalla, sin esperar a guardar ni recargar.
+    watch(
+        () => [
+            settings.aracodito_enabled,
+            settings.aracodito_audio_enabled,
+            settings.aracodito_ia_enabled,
+            settings.aracodito_style,
+            settings.aracodito_tts_voice,
+            settings.aracodito_tts_rate,
+            settings.aracodito_tts_pitch,
+        ],
+        ([enabled, audio, ia]) => {
+            window.USER_CONFIG = {
+                ...(window.USER_CONFIG || {}),
+                aracodito_enabled: Boolean(enabled),
+                aracodito_audio_enabled: Boolean(audio),
+                aracodito_ia_enabled: Boolean(ia),
+                aracodito_style: activeStyle.value,
+                aracodito_tts_voice: settings.aracodito_tts_voice || null,
+                aracodito_tts_rate: Number(settings.aracodito_tts_rate),
+                aracodito_tts_pitch: Number(settings.aracodito_tts_pitch),
+            };
+
+            // Si el aviso ya está abierto, cambia el sprite sin recargar la vista.
+            window.Aracodito?.applyStyle?.(activeStyle.value);
+        },
+        { immediate: true }
+    );
+
+    // Vistas previas reales: no guardan nada y no reproducen audio.
+    const previews = [
+        {
+            type: 'success',
+            label: 'Success',
+            message: 'La operación se completó correctamente.',
+            button: 'border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-300 dark:hover:bg-emerald-500/20',
+            dot: 'bg-emerald-500',
+        },
+        {
+            type: 'warning',
+            label: 'Warning',
+            message: 'Revisa los datos: hay algo que necesita tu atención.',
+            button: 'border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-300 dark:hover:bg-amber-500/20',
+            dot: 'bg-amber-500',
+        },
+        {
+            type: 'error',
+            label: 'Error',
+            message: 'No se pudo completar la operación. Revisa los datos e inténtalo de nuevo.',
+            button: 'border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-300 dark:hover:bg-rose-500/20',
+            dot: 'bg-rose-500',
+        },
+        {
+            type: 'confirm',
+            label: 'Confirmación',
+            message: '¿Confirmas que deseas guardar los cambios?',
+            button: 'border-teal-200 bg-teal-50 text-teal-700 hover:bg-teal-100 dark:border-teal-500/30 dark:bg-teal-500/10 dark:text-teal-300 dark:hover:bg-teal-500/20',
+            dot: 'bg-teal-500',
+        },
+        {
+            type: 'help',
+            label: 'Ayuda',
+            message: 'Estoy aquí para ayudarte. ¿Qué necesitas?',
+            button: 'border-indigo-200 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 dark:border-indigo-500/30 dark:bg-indigo-500/10 dark:text-indigo-300 dark:hover:bg-indigo-500/20',
+            dot: 'bg-indigo-500',
+        },
+        {
+            type: 'info',
+            label: 'Informativo',
+            message: 'Este es un aviso informativo. No requiere ninguna acción.',
+            button: 'border-sky-200 bg-sky-50 text-sky-700 hover:bg-sky-100 dark:border-sky-500/30 dark:bg-sky-500/10 dark:text-sky-300 dark:hover:bg-sky-500/20',
+            dot: 'bg-sky-500',
+        },
+        {
+            type: 'question',
+            label: 'Pregunta',
+            message: '¿Qué estás intentando hacer? Cuéntame y te guío.',
+            button: 'border-fuchsia-200 bg-fuchsia-50 text-fuchsia-700 hover:bg-fuchsia-100 dark:border-fuchsia-500/30 dark:bg-fuchsia-500/10 dark:text-fuchsia-300 dark:hover:bg-fuchsia-500/20',
+            dot: 'bg-fuchsia-500',
+        },
+    ];
+
+    const preview = (item) => {
+        if (typeof window !== 'undefined' && window.Aracodito?.showMessage) {
+            const asksForDecision = item.type === 'confirm' || item.type === 'question';
+            const simulateProcess = item.type === 'confirm'
+                ? () => new Promise((resolve) => {
+                    window.setTimeout(() => resolve({
+                        message: 'Cambios guardados correctamente.',
+                        type: 'success',
+                        duration: 4500,
+                    }), 900);
+                })
+                : undefined;
+
+            window.Aracodito.showMessage(item.message, item.type, {
+                duration: 0,
+                audio: false,
+                ia: false,
+                showConfirmButton: true,
+                showCancelButton: asksForDecision,
+                confirmButtonText: item.type === 'confirm' ? 'Sí, guardar' : 'OK',
+                cancelButtonText: 'Cancelar',
+                loadingText: 'Guardando los cambios…',
+                ...(simulateProcess ? { onConfirm: simulateProcess } : {}),
+            });
+        }
+    };
+
+    const save = () => {
+        settings.put(route('profile.aracodito.update'), {
+            preserveScroll: true,
+            onSuccess: () => {
+                if (typeof window.alertaSistema === 'function') {
+                    window.alertaSistema(
+                        'Configuración guardada',
+                        'La configuración de Aracodito se guardó correctamente.',
+                        'success'
+                    );
+                }
+            },
+        });
+    };
+
+    // Expone el formulario por si otra vista necesita reutilizarlo.
+    defineExpose({ settings });
+</script>
+
+<template>
+    <!-- Sección "Asistente": se coloca debajo de la sección de Apariencia. -->
+    <div class="panel mt-5">
+        <div class="flex flex-wrap items-start justify-between gap-3 mb-5">
+            <div>
+                <h5 class="font-semibold text-lg">Configuración de Aracodito (Asistente Virtual)</h5>
+                <p class="text-sm text-white-dark mt-1">
+                    Elige cómo quieres que el sistema te avise y si el asistente debe hablar o responder preguntas.
+                </p>
+            </div>
+            <span
+                class="badge py-1.5 px-3 rounded-full text-xs font-semibold"
+                :class="settings.aracodito_enabled ? 'bg-success-light text-success' : 'bg-danger-light text-danger'"
+            >
+                {{ settings.aracodito_enabled ? 'Aracodito activo' : 'Alertas clásicas' }}
+            </span>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+            <!-- Controles -->
+            <div class="lg:col-span-2 space-y-4">
+                <!-- Método de alerta -->
+                <div class="border border-[#ebedf2] dark:border-[#191e3a] rounded-md p-4">
+                    <div class="flex items-start justify-between gap-4">
+                        <div>
+                            <label for="aracodito_enabled" class="font-semibold cursor-pointer">Método de Alerta</label>
+                            <p class="text-sm text-white-dark mt-1">
+                                <span :class="settings.aracodito_enabled ? 'text-primary font-semibold' : ''">Usar Aracodito</span>
+                                <span class="mx-1">/</span>
+                                <span :class="!settings.aracodito_enabled ? 'text-primary font-semibold' : ''">Usar Alertas Clásicas (SwalAlert)</span>
+                            </p>
+                            <p class="text-xs text-white-dark mt-1">
+                                Al activarlo se habilitan el modo de salida y la asistencia con IA.
+                            </p>
+                        </div>
+                        <!-- Interruptor: usa el mismo patrón custom_switch del tema Vristo -->
+                        <label class="w-12 h-6 relative shrink-0 cursor-pointer">
+                            <input
+                                id="aracodito_enabled"
+                                name="aracodito_enabled"
+                                v-model="settings.aracodito_enabled"
+                                type="checkbox"
+                                class="custom_switch absolute w-full h-full opacity-0 z-10 cursor-pointer peer"
+                            />
+                            <span
+                                class="bg-[#ebedf2] dark:bg-dark block h-full rounded-full before:absolute before:left-1 before:bg-white dark:before:bg-white-dark dark:peer-checked:before:bg-white before:bottom-1 before:w-4 before:h-4 before:rounded-full peer-checked:before:left-7 peer-checked:bg-primary before:transition-all before:duration-300"
+                            ></span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Estilo visual -->
+                <div class="border border-[#ebedf2] dark:border-[#191e3a] rounded-md p-4" :class="{ 'opacity-60': !settings.aracodito_enabled }">
+                    <p class="font-semibold">Estilo visual</p>
+                    <p class="text-sm text-white-dark mt-1">
+                        Elige cómo aparecerá Aracodito. El estilo clásico se conserva, el retro pixel añade una
+                        retícula visible y el futbolero suma camiseta y un balón que acompaña cada aviso.
+                    </p>
+                    <div class="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <label
+                            v-for="option in STYLE_OPTIONS"
+                            :key="option.value"
+                            :for="`aracodito_style_${option.value}`"
+                            class="flex items-start gap-3 border border-[#ebedf2] dark:border-[#191e3a] rounded-md p-3 cursor-pointer"
+                            :class="{ 'border-primary/60 bg-primary/5': settings.aracodito_style === option.value }"
+                        >
+                            <input
+                                :id="`aracodito_style_${option.value}`"
+                                name="aracodito_style"
+                                v-model="settings.aracodito_style"
+                                :value="option.value"
+                                type="radio"
+                                class="form-radio mt-0.5 shrink-0"
+                                :disabled="!settings.aracodito_enabled"
+                            />
+                            <span>
+                                <span class="block font-semibold">{{ option.title }}</span>
+                                <span class="block text-xs text-white-dark">{{ option.description }}</span>
+                            </span>
+                        </label>
+                    </div>
+                    <p class="text-xs text-white-dark mt-2">
+                        La tarjeta de vista previa y los avisos de prueba usan el estilo seleccionado.
+                    </p>
+                </div>
+
+                <!-- Modo de salida -->
+                <div class="border border-[#ebedf2] dark:border-[#191e3a] rounded-md p-4" :class="{ 'opacity-60': !settings.aracodito_enabled }">
+                    <p class="font-semibold">Modo de Salida</p>
+                    <div class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <label
+                            for="aracodito_salida_texto"
+                            class="flex items-start gap-3 border border-[#ebedf2] dark:border-[#191e3a] rounded-md p-3 cursor-pointer"
+                            :class="{ 'border-primary/60 bg-primary/5': !settings.aracodito_audio_enabled }"
+                        >
+                            <input
+                                id="aracodito_salida_texto"
+                                name="aracodito_audio_enabled"
+                                v-model="settings.aracodito_audio_enabled"
+                                :value="false"
+                                type="radio"
+                                class="form-radio mt-0.5 shrink-0"
+                                :disabled="!settings.aracodito_enabled"
+                            />
+                            <span>
+                                <span class="block font-semibold">Solo Texto</span>
+                                <span class="block text-xs text-white-dark">La burbuja muestra el mensaje, sin sonido.</span>
+                            </span>
+                        </label>
+                        <label
+                            for="aracodito_salida_audio"
+                            class="flex items-start gap-3 border border-[#ebedf2] dark:border-[#191e3a] rounded-md p-3 cursor-pointer"
+                            :class="{ 'border-primary/60 bg-primary/5': settings.aracodito_audio_enabled }"
+                        >
+                            <input
+                                id="aracodito_salida_audio"
+                                name="aracodito_audio_enabled"
+                                v-model="settings.aracodito_audio_enabled"
+                                :value="true"
+                                type="radio"
+                                class="form-radio mt-0.5 shrink-0"
+                                :disabled="!settings.aracodito_enabled"
+                            />
+                            <span>
+                                <span class="block font-semibold">Texto y Audio (TTS)</span>
+                                <span class="block text-xs text-white-dark">Aracodito reproduce la voz y mueve la boca.</span>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Voz (TTS) -->
+                <div
+                    class="border border-[#ebedf2] dark:border-[#191e3a] rounded-md p-4"
+                    :class="{ 'opacity-60': !settings.aracodito_enabled || !settings.aracodito_audio_enabled }"
+                >
+                    <div class="flex flex-wrap items-center justify-between gap-3">
+                        <div>
+                            <p class="font-semibold">Voz de Aracodito</p>
+                            <p class="text-sm text-white-dark mt-1">
+                                Las voces disponibles las ofrece tu navegador y el sistema operativo. La velocidad
+                                y el tono permiten efectos de robot, voz grave o niño.
+                            </p>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-outline-primary shrink-0" @click="probarVoz">
+                            Probar voz
+                        </button>
+                    </div>
+
+                    <select
+                        v-model="settings.aracodito_tts_voice"
+                        class="form-select mt-3"
+                        aria-label="Voz de Aracodito"
+                        :disabled="!settings.aracodito_enabled || !settings.aracodito_audio_enabled"
+                    >
+                        <option value="">Automática (primera voz en español)</option>
+                        <option v-for="voz in vocesOrdenadas" :key="`${voz.name}-${voz.lang}`" :value="voz.name">
+                            {{ voz.name }} — {{ voz.lang }}
+                        </option>
+                    </select>
+
+                    <p v-if="!voces.length" class="text-xs text-warning mt-1">
+                        El navegador no expuso voces. Instala una voz en español en el sistema operativo.
+                    </p>
+
+                    <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="mb-1 block text-sm font-medium">
+                                Velocidad: {{ Number(settings.aracodito_tts_rate).toFixed(2) }}×
+                            </label>
+                            <input
+                                v-model.number="settings.aracodito_tts_rate"
+                                type="range"
+                                min="0.5"
+                                max="2"
+                                step="0.05"
+                                class="w-full"
+                                :disabled="!settings.aracodito_enabled || !settings.aracodito_audio_enabled"
+                            />
+                        </div>
+                        <div>
+                            <label class="mb-1 block text-sm font-medium">
+                                Tono: {{ Number(settings.aracodito_tts_pitch).toFixed(2) }}
+                            </label>
+                            <input
+                                v-model.number="settings.aracodito_tts_pitch"
+                                type="range"
+                                min="0"
+                                max="2"
+                                step="0.05"
+                                class="w-full"
+                                :disabled="!settings.aracodito_enabled || !settings.aracodito_audio_enabled"
+                            />
+                        </div>
+                    </div>
+
+                    <div class="mt-3 flex flex-wrap gap-2">
+                        <button
+                            v-for="preset in VOZ_PRESETS"
+                            :key="preset.label"
+                            type="button"
+                            class="btn btn-sm btn-outline-dark"
+                            :disabled="!settings.aracodito_enabled || !settings.aracodito_audio_enabled"
+                            @click="aplicarPreset(preset)"
+                        >
+                            {{ preset.label }}
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Interactividad: solo el rol admin decide el acceso a la IA -->
+                <div
+                    v-if="esAdmin"
+                    class="border border-[#ebedf2] dark:border-[#191e3a] rounded-md p-4"
+                    :class="{ 'opacity-60': !settings.aracodito_enabled }"
+                >
+                    <div class="flex items-start justify-between gap-4">
+                        <div>
+                            <label for="aracodito_ia_enabled" class="font-semibold cursor-pointer">Interactividad</label>
+                            <p class="text-sm text-white-dark mt-1">
+                                Activa la <span class="text-primary font-semibold">Asistencia con IA</span> para que Aracodito
+                                responda preguntas sobre el uso del sistema.
+                            </p>
+                        </div>
+                        <label class="w-12 h-6 relative shrink-0 cursor-pointer" :class="{ 'cursor-not-allowed': !settings.aracodito_enabled }">
+                            <input
+                                id="aracodito_ia_enabled"
+                                name="aracodito_ia_enabled"
+                                v-model="settings.aracodito_ia_enabled"
+                                type="checkbox"
+                                class="custom_switch absolute w-full h-full opacity-0 z-10 peer"
+                                :class="settings.aracodito_enabled ? 'cursor-pointer' : 'cursor-not-allowed'"
+                                :disabled="!settings.aracodito_enabled"
+                            />
+                            <span
+                                class="bg-[#ebedf2] dark:bg-dark block h-full rounded-full before:absolute before:left-1 before:bg-white dark:before:bg-white-dark dark:peer-checked:before:bg-white before:bottom-1 before:w-4 before:h-4 before:rounded-full peer-checked:before:left-7 peer-checked:bg-primary before:transition-all before:duration-300"
+                            ></span>
+                        </label>
+                    </div>
+                </div>
+
+                <p v-else class="rounded-md border border-[#ebedf2] px-3 py-2 text-xs text-white-dark dark:border-[#191e3a]">
+                    La IA de Aracodito la habilita un administrador para tu rol.
+                </p>
+
+                <p v-if="!settings.aracodito_enabled" class="text-xs text-white-dark">
+                    Los modos de salida y la IA se habilitan al activar «Usar Aracodito».
+                </p>
+            </div>
+
+            <!-- Vista previa estática del personaje -->
+            <div class="rounded-md p-4 bg-gradient-to-b from-[#eaf1ff] to-white dark:from-[#0e1726] dark:to-[#060818] border border-[#ebedf2] dark:border-[#191e3a]">
+                <p class="text-xs font-semibold uppercase tracking-wide text-white-dark mb-3">Vista previa</p>
+
+                <div class="flex justify-center mb-4" :class="{ 'aracodito-talking': settings.aracodito_enabled && settings.aracodito_audio_enabled }">
+                    <!-- Sprite real del estilo elegido: window.Aracodito.getSprite(). -->
+                    <div
+                        class="w-32 h-32 aracodito-preview-sprite"
+                        :class="{ 'aracodito-preview-sprite--pixel': activeStyle === 'pixel' }"
+                        role="img"
+                        aria-label="Aracodito, asistente virtual"
+                        v-html="previewSprite"
+                    ></div>
+                </div>
+
+                <!-- Burbuja de conversación -->
+                <div class="relative px-4 py-3 transition-colors" :class="previewTheme.bubble">
+                    <span
+                        class="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 rotate-45 border-l border-t"
+                        :class="previewTheme.tail"
+                    ></span>
+                    <div class="flex items-start gap-2.5">
+                        <span class="inline-flex items-center justify-center w-7 h-7 shrink-0 rounded-full bg-primary/10 text-primary border border-primary/20">
+                            <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clip-rule="evenodd"/>
+                            </svg>
+                        </span>
+                        <p class="text-sm leading-relaxed" :class="previewTheme.text">
+                            {{ bubbleText }}
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap gap-2 mt-4">
+                    <span class="badge text-[11px] px-2 py-1 rounded" :class="settings.aracodito_enabled ? 'bg-primary/10 text-primary' : 'bg-[#ebedf2] dark:bg-dark text-white-dark'">Texto</span>
+                    <span class="badge text-[11px] px-2 py-1 rounded" :class="settings.aracodito_enabled && settings.aracodito_audio_enabled ? 'bg-primary/10 text-primary' : 'bg-[#ebedf2] dark:bg-dark text-white-dark'">TTS</span>
+                    <span class="badge text-[11px] px-2 py-1 rounded" :class="settings.aracodito_enabled && settings.aracodito_ia_enabled ? 'bg-primary/10 text-primary' : 'bg-[#ebedf2] dark:bg-dark text-white-dark'">IA</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vistas previas de los tipos de mensaje de Aracodito -->
+        <div class="mt-5 pt-5 border-t border-[#ebedf2] dark:border-[#191e3a]">
+            <div class="flex flex-wrap items-start justify-between gap-3 mb-3">
+                <div>
+                    <h6 class="font-semibold">Vistas previas de Aracodito</h6>
+                    <p class="text-sm text-white-dark mt-1">
+                        Haz clic en un tipo para ver el aviso real con sus botones. La confirmación simula
+                        un proceso para mostrar la mini consola del pecho; no guarda cambios ni reproduce audio.
+                    </p>
+                </div>
+                <span class="badge bg-primary/10 text-primary text-xs px-2.5 py-1 rounded-full">7 estilos</span>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5">
+                <button
+                    v-for="item in previews"
+                    :key="item.type"
+                    type="button"
+                    class="flex items-center justify-center gap-2 rounded-lg border px-3 py-2.5 text-sm font-semibold transition hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+                    :class="item.button"
+                    :aria-label="`Vista previa de Aracodito tipo ${item.label}`"
+                    @click="preview(item)"
+                >
+                    <span class="h-2.5 w-2.5 rounded-full" :class="item.dot"></span>
+                    <span>{{ item.label }}</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-end gap-3 mt-5 pt-4 border-t border-[#ebedf2] dark:border-[#191e3a]">
+            <button
+                id="aracodito-save"
+                type="button"
+                class="btn btn-primary"
+                :disabled="settings.processing"
+                @click="save"
+            >
+                {{ settings.processing ? 'Guardando...' : 'Guardar configuración' }}
+            </button>
+        </div>
+    </div>
+</template>
+
+<style scoped>
+    /* El sprite llega por v-html, así que necesita :deep() para heredar el
+       tamaño y la animación de voz de la tarjeta. */
+    .aracodito-preview-sprite :deep(svg) {
+        display: block;
+        width: 100%;
+        height: 100%;
+        transform-origin: center;
+    }
+
+    .aracodito-preview-sprite--pixel :deep(svg) {
+        image-rendering: pixelated;
+    }
+
+    .aracodito-preview-sprite :deep(.aracodito__mouth) {
+        transform-box: fill-box;
+        transform-origin: center;
+    }
+
+    .aracodito-talking :deep(.aracodito__mouth) {
+        animation: aracodito-talk 0.45s ease-in-out infinite;
+    }
+
+    @keyframes aracodito-talk {
+        0%,
+        100% {
+            transform: scaleY(0.5);
+        }
+        50% {
+            transform: scaleY(1.8);
+        }
+    }
+</style>

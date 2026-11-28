@@ -4,10 +4,10 @@ namespace Modules\CRM\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Parameter;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Modules\Academic\Services\OpenAiAssistantService;
+use Modules\CRM\Http\Controllers\Concerns\ResuelveIdentidadAsistente;
 
 /**
  * Vista de chat para admin/Administrador: se elige un asistente y desde ahi se
@@ -15,11 +15,15 @@ use Modules\Academic\Services\OpenAiAssistantService;
  */
 class CrmChatAsistenteController extends Controller
 {
+    use ResuelveIdentidadAsistente;
+
     public function index(Request $request)
     {
-        $asistentes = User::query()
+        // El rol Asistente puede no existir todavia en la instalacion: se consulta
+        // con el trait, que tolera su ausencia y deja que la vista avise en lugar
+        // de responder con un error 500.
+        $asistentes = $this->usuariosConRol('Asistente')
             ->with('person')
-            ->role('Asistente')
             ->get()
             ->filter(fn ($user) => $user->person)
             ->map(fn ($user) => [
@@ -36,16 +40,19 @@ class CrmChatAsistenteController extends Controller
             $seleccionado = $asistentes->firstWhere('person_id', (int) $request->get('asistente'));
         }
 
+        $openAi = app(OpenAiAssistantService::class);
+
         return Inertia::render('CRM::Chat/Dashboard', [
-            'P000015' => Parameter::where('parameter_code', config('academic.openai.provider_parameter', 'IA-00001'))
-                ->value('value_default') ?? Parameter::where('parameter_code', 'P000015')->value('value_default'),
+            // Proveedor de IA del parametro IA-00002 (1 OpenAI, 2 Gemini).
+            'aiProvider' => $openAi->provider(),
+            // El aviso de espera del loader solo aplica cuando hay agente.
+            'agentEnabled' => $openAi->agentEnabled(),
+            'agentMaxWaitMinutes' => $openAi->agentTimeoutMinutes(),
             'P000010' => Parameter::where('parameter_code', 'P000010')->value('value_default'),
             'modoAsistentes' => true,
             'asistentes' => $asistentes,
             'asistenteSeleccionado' => $seleccionado,
             'avisoAsistentes' => $this->avisoAsistentes($asistentes, $request, $seleccionado),
-            // Limite de espera del agente (parametro IA-00005) para el loader.
-            'agentTimeoutSeconds' => app(OpenAiAssistantService::class)->agentTimeoutSeconds(),
         ]);
     }
 

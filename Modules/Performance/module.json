@@ -1,7 +1,7 @@
 {
     "name": "Performance",
     "alias": "performance",
-    "description": "Auditoria y optimizacion de imagenes del sitio",
+    "description": "Rendimiento: inventario de imágenes del sistema y redimensionado masivo sin cambiar los nombres.",
     "keywords": [],
     "priority": 0,
     "providers": [

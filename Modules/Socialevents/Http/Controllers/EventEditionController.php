@@ -1,0 +1,472 @@
+<?php
+
+namespace Modules\Socialevents\Http\Controllers;
+
+use App\Http\Controllers\Controller;
+use App\Models\Parameter;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
+use Inertia\Inertia;
+use Modules\Socialevents\Entities\EvenEvent;
+use Modules\Socialevents\Entities\EventEdition;
+use Modules\Socialevents\Entities\EventEditionTeam;
+use Modules\Socialevents\Services\PositionTableService;
+use Modules\Socialevents\Support\EditionSlugService;
+use Modules\Socialevents\Support\TournamentLandingCache;
+use Modules\Socialevents\Services\SportsOrganizationService;
+
+class EventEditionController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    protected $P000010;
+
+    protected $RPTABLE;
+
+    protected $positionService;
+
+    public function __construct()
+    {
+        $this->RPTABLE = env('RECORDS_PAGE_TABLE') ?? 10;
+        $this->P000010  = Parameter::where('parameter_code', 'P000010')->value('value_default');
+        $this->positionService = new PositionTableService();
+    }
+
+    public function index(Request $request)
+    {
+        $sports = app(SportsOrganizationService::class);
+        $sports->assertCanRead($request->user());
+
+        $search = trim((string) $request->query('search', ''));
+
+        $editions = EventEdition::with([
+            'evento',
+            'equipos'
+        ])
+            ->when($sports->sportsMode() && ! $sports->isSuperAdmin($request->user()), fn ($query) => $query->whereHas('evento', fn ($eventQuery) => $eventQuery->where('organization_id', $sports->organizationId($request->user()))))
+            ->when($search !== '', function ($query) use ($search) {
+                $query->where(function ($subQuery) use ($search) {
+                    $subQuery->where('name', 'like', "%{$search}%")
+                        ->orWhere('year', 'like', "%{$search}%")
+                        ->orWhereHas('evento', fn ($eventQuery) => $eventQuery->where('title', 'like', "%{$search}%"));
+                });
+            })
+            ->orderBy('start_date', 'DESC')
+            ->paginate(20)
+            ->withQueryString();
+
+        return Inertia::render('Socialevents::Editions/List',[
+            'sportsMode' => $sports->sportsMode(),
+            'editions' => $editions,
+            'filters' => ['search' => $search],
+        ]);
+    }
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        $sports = app(SportsOrganizationService::class);
+        $sports->assertCanWrite(request()->user());
+        $events = EvenEvent::query()
+            ->when($sports->sportsMode() && ! $sports->isSuperAdmin(request()->user()), fn ($query) => $query->where('organization_id', $sports->organizationId(request()->user())))
+            ->get();
+        $formats = getEnumValues('event_editions','competition_format');
+        return Inertia::render('Socialevents::Editions/Create',[
+            'sportsMode' => $sports->sportsMode(),
+            'canManageRates' => $sports->isSuperAdmin(request()->user()),
+            'eventos' => $events,
+            'formats' => $formats,
+        ]);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request): RedirectResponse
+    {
+        $sports = app(SportsOrganizationService::class);
+        $sports->assertCanWrite($request->user());
+        $this->validate($request, ['event_id' => 'required|integer|exists:even_events,id']);
+        $sports->assertOwnedEvent($request->user(), (int) $request->input('event_id'));
+        if ($sports->sportsMode() && ! $sports->isSuperAdmin($request->user())) {
+            abort_unless(DB::table('even_events')->where('id', $request->input('event_id'))->where('organization_id', $sports->organizationId($request->user()))->exists(), 404);
+        }
+        //dd($request->all());
+        $this->validate(
+            $request,
+            [
+                'event_id' => 'required',
+                'year' => 'required',
+                'name'   => 'required|max:255|string',
+                'start_date' => 'required',
+                'score_points_win'   => 'required',
+                'score_points_draw'   => 'required',
+                'score_points_loss'   => 'required',
+                'inscription_fee'   => 'required',
+                'min_players_per_team'   => 'required',
+                'max_players_per_team'   => 'required',
+                'match_rate' => $sports->sportsMode()
+                    ? ($sports->isSuperAdmin($request->user()) ? 'nullable|numeric|min:0|max:999999.99' : 'prohibited')
+                    : 'nullable|numeric|min:0|max:999999.99',
+                // Tiempos del torneo (configurables, no hay minutos fijos)
+                'regular_half_minutes'   => 'nullable|integer|min:1|max:200',
+                'regular_halves'   => 'nullable|integer|min:1|max:4',
+                'extra_half_minutes'   => 'nullable|integer|min:1|max:60',
+                'extra_halves'   => 'nullable|integer|min:1|max:4',
+                'extra_time_enabled'   => 'nullable|boolean',
+                'max_substitutions'   => 'nullable|integer|min:0|max:20',
+                'extra_substitution_enabled'   => 'nullable|boolean',
+                'yellow_price'   => 'required',
+                'direct_red_price'   => 'required',
+                'double_yellow_price'   => 'required',
+                ...$this->publicationValidationRules(),
+            ]
+        );
+
+        $prize_details = $request->get('prize_details');
+        $details = $request->get('details');
+
+        $edition = EventEdition::create([
+            'event_id' => $request->get('event_id'),
+            'match_rate' => ! $sports->sportsMode() || $sports->isSuperAdmin($request->user())
+                ? ($request->filled('match_rate') ? $request->input('match_rate') : null)
+                : null,
+            'year' => $request->get('year'),
+            'name' => $request->get('name'),
+            'start_date' => $request->get('start_date'),
+            'end_date' => $request->get('end_date'),
+            'competition_format' => $request->get('competition_format'),
+            'score_points_win' => $request->get('score_points_win'),
+            'score_points_draw' => $request->get('score_points_draw'),
+            'score_points_loss' => $request->get('score_points_loss'),
+            'inscription_fee' => $request->get('inscription_fee'),
+            'min_players_per_team' => $request->get('min_players_per_team'),
+            'max_players_per_team' => $request->get('max_players_per_team'),
+            // Tiempos del torneo: los valores por defecto son solo un respaldo
+            'regular_half_minutes' => $request->get('regular_half_minutes') ?: 20,
+            'regular_halves' => $request->get('regular_halves') ?: 2,
+            'extra_half_minutes' => $request->get('extra_half_minutes') ?: 10,
+            'extra_halves' => $request->get('extra_halves') ?: 2,
+            'extra_time_enabled' => $request->boolean('extra_time_enabled'),
+            'max_substitutions' => $request->get('max_substitutions'),
+            'extra_substitution_enabled' => $request->boolean('extra_substitution_enabled', true),
+            'prize_details' => $prize_details,
+            'details' => $details,
+            'status' => 'pending',
+            'yellow_price' => $request->get('yellow_price'),
+            'direct_red_price' => $request->get('direct_red_price'),
+            'double_yellow_price' => $request->get('double_yellow_price'),
+            ...$this->publicationAttributesFromRequest($request),
+        ]);
+
+        $path = null;
+        $destination = 'uploads/eventos/ediciones';
+        $file = $request->file('file');
+
+        if ($file) {
+            $original_name = strtolower(trim($file->getClientOriginalName()));
+            $extension = $file->getClientOriginalExtension();
+            $file_name = date('YmdHis') . '.' . $extension;
+            $path = $request->file('file')->storeAs(
+                $destination,
+                $file_name,
+                'public'
+            );
+
+            $edition->name_database_file = $original_name;
+            $edition->path_database_file = $path;
+            $edition->save();
+        }
+
+        $this->storeEditionFiles($request, $edition);
+        TournamentLandingCache::forget((int) $edition->id);
+
+        return to_route('even_ediciones_listado');
+    }
+
+    /**
+     * Show the specified resource.
+     */
+    public function show($id)
+    {
+        return view('socialevents::show');
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit($id)
+    {
+        $sports = app(SportsOrganizationService::class);
+        $sports->assertCanWrite(request()->user());
+        $sports->assertOwnedEdition(request()->user(), (int) $id);
+        $edition = EventEdition::with('evento')->findOrFail($id);
+        $events = EvenEvent::query()
+            ->when($sports->sportsMode() && ! $sports->isSuperAdmin(request()->user()), fn ($query) => $query->where('organization_id', $sports->organizationId(request()->user())))
+            ->get();
+        $formats = getEnumValues('event_editions','competition_format');
+        $edicion = $edition;
+
+        return Inertia::render('Socialevents::Editions/Edit',[
+            'sportsMode' => $sports->sportsMode(),
+            'canManageRates' => $sports->isSuperAdmin(request()->user()),
+            'eventos' => $events,
+            'formats' => $formats,
+            'edicion' => $edicion
+        ]);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request)
+    {
+        $sports = app(SportsOrganizationService::class);
+        $sports->assertCanWrite($request->user());
+        $id = $request->get('id');
+
+        $this->validate(
+            $request,
+            [
+                'event_id' => 'required',
+                'year' => 'required',
+                'name'   => 'required|max:255|string',
+                'start_date' => 'required',
+                'score_points_win'   => 'required',
+                'score_points_draw'   => 'required',
+                'score_points_loss'   => 'required',
+                'inscription_fee'   => 'required',
+                'min_players_per_team'   => 'required',
+                'max_players_per_team'   => 'required',
+                'match_rate' => $sports->sportsMode()
+                    ? ($sports->isSuperAdmin($request->user()) ? 'nullable|numeric|min:0|max:999999.99' : 'prohibited')
+                    : 'nullable|numeric|min:0|max:999999.99',
+                // Tiempos del torneo (configurables, no hay minutos fijos)
+                'regular_half_minutes'   => 'nullable|integer|min:1|max:200',
+                'regular_halves'   => 'nullable|integer|min:1|max:4',
+                'extra_half_minutes'   => 'nullable|integer|min:1|max:60',
+                'extra_halves'   => 'nullable|integer|min:1|max:4',
+                'extra_time_enabled'   => 'nullable|boolean',
+                'max_substitutions'   => 'nullable|integer|min:0|max:20',
+                'extra_substitution_enabled'   => 'nullable|boolean',
+                'yellow_price'   => 'required',
+                'direct_red_price'   => 'required',
+                'double_yellow_price'   => 'required',
+                ...$this->publicationValidationRules($id),
+            ]
+        );
+
+        $prize_details = $request->get('prize_details');
+        $details = $request->get('details');
+
+        $sports->assertOwnedEdition($request->user(), (int) $id);
+        $this->validate($request, ['event_id' => 'required|integer|exists:even_events,id']);
+        $sports->assertOwnedEvent($request->user(), (int) $request->input('event_id'));
+        if ($sports->sportsMode() && ! $sports->isSuperAdmin($request->user())) {
+            abort_unless(DB::table('even_events')->where('id', $request->input('event_id'))->where('organization_id', $sports->organizationId($request->user()))->exists(), 404);
+        }
+        abort_unless((int) EventEdition::findOrFail($id)->event_id === (int) $request->input('event_id'), 422, 'Una edición existente no se puede mover a otro evento.');
+        $edition = EventEdition::findOrFail($id);
+        $edition->update([
+            'event_id' => $request->get('event_id'),
+            'match_rate' => ! $sports->sportsMode() || $sports->isSuperAdmin($request->user())
+                ? ($request->filled('match_rate') ? $request->input('match_rate') : null)
+                : null,
+            'year' => $request->get('year'),
+            'name' => $request->get('name'),
+            'start_date' => $request->get('start_date'),
+            'end_date' => $request->get('end_date'),
+            'competition_format' => $request->get('competition_format'),
+            'score_points_win' => $request->get('score_points_win'),
+            'score_points_draw' => $request->get('score_points_draw'),
+            'score_points_loss' => $request->get('score_points_loss'),
+            'inscription_fee' => $request->get('inscription_fee'),
+            'min_players_per_team' => $request->get('min_players_per_team'),
+            'max_players_per_team' => $request->get('max_players_per_team'),
+            // Tiempos del torneo: los valores por defecto son solo un respaldo
+            'regular_half_minutes' => $request->get('regular_half_minutes') ?: 20,
+            'regular_halves' => $request->get('regular_halves') ?: 2,
+            'extra_half_minutes' => $request->get('extra_half_minutes') ?: 10,
+            'extra_halves' => $request->get('extra_halves') ?: 2,
+            'extra_time_enabled' => $request->boolean('extra_time_enabled'),
+            'max_substitutions' => $request->get('max_substitutions'),
+            'extra_substitution_enabled' => $request->boolean('extra_substitution_enabled', true),
+            'prize_details' => $prize_details,
+            'details' => $details,
+            'status' => $request->get('status') ?? 'pending',
+            'yellow_price' => $request->get('yellow_price'),
+            'direct_red_price' => $request->get('direct_red_price'),
+            'double_yellow_price' => $request->get('double_yellow_price'),
+            ...$this->publicationAttributesFromRequest($request, $id),
+        ]);
+
+        $this->storeEditionFiles($request, $edition);
+        TournamentLandingCache::forget((int) $edition->id);
+
+        return to_route('even_ediciones_listado');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy($id)
+    {
+        $sports = app(SportsOrganizationService::class);
+        $sports->assertCanWrite(request()->user());
+        $sports->assertOwnedEdition(request()->user(), (int) $id);
+        $edition = EventEdition::findOrFail($id);
+        $message = null;
+        $success = false;
+        try {
+            // Usamos una transacción para asegurarnos de que la operación se realice de manera segura.
+            DB::beginTransaction();
+
+            // Verificamos si existe.
+            $item = EventEdition::findOrFail($id);
+            $sports->assertOwnedEdition(request()->user(), (int) $item->id);
+
+            // Si no hay detalles asociados, eliminamos.
+            $item->delete();
+
+            // Si todo ha sido exitoso, confirmamos la transacción.
+            DB::commit();
+
+            $message =  'Eliminado correctamente';
+            $success = true;
+        } catch (\Exception $e) {
+            // Si ocurre alguna excepción durante la transacción, hacemos rollback para deshacer cualquier cambio.
+            DB::rollback();
+            $success = false;
+            $message = $e->getMessage();
+        }
+
+        return response()->json([
+            'success' => $success,
+            'message' => $message
+        ]);
+    }
+
+    public function updateStatus(Request $request, $id)
+    {
+        $sports = app(SportsOrganizationService::class);
+        $sports->assertCanWrite($request->user());
+        $request->validate([
+            'status' => 'required|in:finished',
+        ]);
+
+        $sports->assertOwnedEdition($request->user(), (int) $id);
+        $edition = EventEdition::findOrFail($id);
+
+        if ($edition->status !== 'in_progress') {
+            return response()->json([
+                'success' => false,
+                'message' => 'La edición no está en progreso.'
+            ], 400);
+        }
+
+        // Get standings to find the champion
+        $standings = $this->positionService->getStandings($id);
+        $champion = collect($standings)->firstWhere('position', 1);
+
+        if ($champion) {
+            EventEditionTeam::where('edition_id', $id)
+                ->where('team_id', $champion['team_id'])
+                ->update(['is_champion' => true]);
+        }
+
+        $edition->update(['status' => $request->status]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Estado actualizado correctamente.'
+        ]);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function publicationValidationRules(?int $editionId = null): array
+    {
+        return [
+            'contact_name' => 'nullable|string|max:255',
+            'contact_phone' => 'nullable|string|max:50',
+            'contact_whatsapp' => 'nullable|string|max:50',
+            'landing_published' => 'nullable|boolean',
+            'mobile_enabled' => 'nullable|boolean',
+            'public_slug' => [
+                'nullable',
+                'string',
+                'max:120',
+                'regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/',
+                Rule::unique('event_editions', 'public_slug')->ignore($editionId),
+            ],
+            'branding_accent_color' => 'nullable|string|max:20',
+            'landing_hero_file' => 'nullable|image|max:5120',
+        ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function publicationAttributesFromRequest(Request $request, ?int $editionId = null): array
+    {
+        $slugService = app(EditionSlugService::class);
+        $slug = $slugService->normalizeSlug($request->input('public_slug'));
+
+        if ($slug === null) {
+            $slug = $slugService->generateUniqueSlug(
+                (string) $request->input('name', ''),
+                $request->input('year'),
+                $editionId
+            );
+        }
+
+        $accent = $request->input('branding_accent_color');
+        $branding = null;
+        if (is_string($accent) && $accent !== '') {
+            $branding = ['accent_color' => $accent];
+        }
+
+        return [
+            'contact_name' => $request->input('contact_name'),
+            'contact_phone' => $request->input('contact_phone'),
+            'contact_whatsapp' => $request->input('contact_whatsapp'),
+            'landing_published' => $request->boolean('landing_published'),
+            'mobile_enabled' => $request->boolean('mobile_enabled', true),
+            'public_slug' => $slug,
+            'branding' => $branding,
+        ];
+    }
+
+    private function storeEditionFiles(Request $request, EventEdition $edition): void
+    {
+        $destination = 'uploads/eventos/ediciones';
+        $file = $request->file('file');
+
+        if ($file) {
+            $original_name = strtolower(trim($file->getClientOriginalName()));
+            $extension = $file->getClientOriginalExtension();
+            $file_name = date('YmdHis') . '_bases.' . $extension;
+            $path = $file->storeAs($destination, $file_name, 'public');
+
+            $edition->name_database_file = $original_name;
+            $edition->path_database_file = $path;
+            $edition->save();
+        }
+
+        $heroFile = $request->file('landing_hero_file');
+        if ($heroFile) {
+            $extension = $heroFile->getClientOriginalExtension();
+            $file_name = date('YmdHis') . '_hero.' . $extension;
+            $path = $heroFile->storeAs($destination . '/landing', $file_name, 'public');
+            $edition->landing_hero_image = $path;
+            $edition->save();
+        }
+    }
+}

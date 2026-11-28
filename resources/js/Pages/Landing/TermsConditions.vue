@@ -9,7 +9,7 @@ const xassetUrl = assetUrl;
 const store = useAppStore();
 </script>
 <template>
-    <Head title="Términos y condiciones | CPA ACademy" />
+    <Head title="Términos y condiciones | ARACODE Smart Solutions" />
     <!-- Content -->
     <div class="relative h-screen">
         <div class="py-10 lg:py-14">
@@ -39,7 +39,7 @@ const store = useAppStore();
                 <div class="panel">
                     <div class="mt-16 mx-16">
                         <p class="mb-8 dark:text-white text-lg">
-                            Bienvenido a CPA Academy. ("nosotros", "nuestro" o "la empresa"). Nuestro sitio web (academy.globalcpaperu.com) ofrece servicios digitales como Capacitaciones y cursos virtuales, Al acceder o usar nuestro sitio, aceptas estar sujeto a estos términos y condiciones.
+                            Bienvenido a ARACODE S.A.C. ("nosotros", "nuestro" o "la empresa"). Nuestro sitio web (aracodeperu.com) ofrece servicios digitales, incluyendo alquiler de sistemas, facturación electrónica, desarrollo a medida, soporte y mantenimiento de software, marketing digital, diseño gráfico, venta de repuestos de cómputo y desarrollo de aplicaciones móviles. Al acceder o usar nuestro sitio, aceptas estar sujeto a estos términos y condiciones.
                         </p>
                         <p class="mb-8 dark:text-white text-lg">
                             El propósito principal de este sitio es proporcionar información sobre nuestros servicios y productos. También incluye un formulario de contacto donde los usuarios pueden realizar consultas relacionadas con nuestros servicios.
@@ -235,7 +235,7 @@ const store = useAppStore();
                     </ul>
 
                     <div class="mt-6 sm:mt-16 items-center flex justify-center">
-                        <a :href="route('index_main')" class="py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">Regresar</a>
+                        <Link :href="route('index_main')" class="py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">Regresar</Link>
                     </div>
                 </div>
             </div>

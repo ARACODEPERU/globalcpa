@@ -5,7 +5,7 @@
     import SearchClients from './Partials/SearchClients.vue';
     import SearchProducts from './Partials/SearchProducts.vue';
     import { faPlus, faXmark, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
-    import { useForm } from '@inertiajs/vue3';
+    import { Head, useForm } from '@inertiajs/vue3';
     import InputError from '@/Components/InputError.vue';
     import { ref, onMounted, watch, computed } from 'vue';
     import Swal2 from 'sweetalert2';
@@ -88,13 +88,16 @@
         percentage_igv: 0,
         total: 0,
         total_taxed: 0, //operaciones gravadas
+        // Sin medio de pago preseleccionado: el cobro debe declararlo siempre.
         payments: [{
-            type:1,
+            type:null,
             reference: null,
             amount:0
         }],
         additional_description: null,
         forma_pago: 'Contado',
+        // Decisión de detracción: null = todavía no se eligió.
+        detraccion_auto: null,
         quotas: {
             number: 1,
             days: 15,
@@ -379,7 +382,7 @@
         formDocument.total_igv = (parseFloat(formDocument.total_igv) - parseFloat(formDocument.items[key].m_igv)).toFixed(2);
 
         formDocument.payments.push({
-            type:1,
+            type:null,
             reference: null,
             amount: formDocument.total
         });
@@ -407,9 +410,47 @@
         window.open(url, "_blank");
     }
 
+    // Factura desde S/ 700: hay que preguntar quién hará la detracción.
+    const detractionThreshold = 700;
+    const detractionPercent = 12;
+    const requiresDetraction = computed(() =>
+        Number(formDocument.sale_documenttype_id) === 1
+        && Number(formDocument.total) >= detractionThreshold
+    );
+    const detractionAmount = computed(() =>
+        Math.round(Number(formDocument.total || 0) * detractionPercent) / 100
+    );
+
     const saveDocument = () => {
 
         formDocument.processing = true
+
+        // El comprobante al contado no puede emitirse sin decir por dónde entró
+        // el dinero: si falta el medio de pago, no llega al libro de tesorería.
+        if (formDocument.forma_pago !== 'Credito' && formDocument.payments.some((pago) => !pago.type)) {
+            window.alertaSistema(
+                'Falta el medio de pago',
+                'Selecciona el medio de pago de cada cobro antes de generar el comprobante.',
+                'warning'
+            );
+            formDocument.processing = false;
+            return;
+        }
+
+        // La factura sujeta a detracción no se emite sin decidir quién la hará.
+        if (requiresDetraction.value && formDocument.detraccion_auto === null) {
+            window.alertaSistema(
+                'Falta decidir la detracción',
+                `La factura supera S/ ${detractionThreshold} y está sujeta al ${detractionPercent} % (${currencySymbol.value} ${detractionAmount.value.toFixed(2)}). Indica si el cliente depositará la detracción o si la empresa hará la auto-detracción después.`,
+                'warning'
+            );
+            formDocument.processing = false;
+            return;
+        }
+
+        formDocument.detraccion_auto = requiresDetraction.value
+            ? Boolean(formDocument.detraccion_auto)
+            : false;
 
         if(formDocument.serie){
             if(formDocument.client_dti != 6 && formDocument.sale_documenttype_id == 1){
@@ -462,7 +503,7 @@
                 formDocument.total = 0;
                 formDocument.total_taxed = 0;
                 formDocument.payments = [{
-                    type:1,
+                    type:null,
                     reference: null,
                     amount:0
                 }];
@@ -594,7 +635,7 @@
 
     const addPayment = () => {
         let ar = {
-            type:1,
+            type:null,
             reference: null,
             amount:0
         };
@@ -670,11 +711,13 @@
             showCancelButton: true,
             confirmButtonText: 'Enviar',
             showLoaderOnConfirm: true,
-            clickOutside: false,
             padding: '2em',
             customClass: 'sweet-alerts',
             preConfirm: () => {
                 return axios.get(route('saledocuments_send', [document.id,document.invoice_type_doc]), { timeout: 120000 }).then((res) => {
+                    if (res.data.manual) {
+                        return res;
+                    }
                     if (!res.data.success) {
                         var cadena = `Error código: ${res.data.code}<br>Descripción:${res.data.message}`;
                         let notes = res.data.notes;
@@ -692,9 +735,25 @@
                     Swal2.showValidationMessage(msg);
                 });
             },
-            allowOutsideClick: () => !Swal2.isLoading()
-        }).then((result) => {
-            if (result.isConfirmed && result.value && result.value.data && result.value.data.success) {
+            allowOutsideClick: () => !Swal2.isLoading(),
+            backdrop: true
+        }).then(async (result) => {
+            const data = result.value && result.value.data;
+
+            if (result.isConfirmed && data && data.manual) {
+                await window.alertaSistema(
+                    'No se pudo enviar a SUNAT',
+                    data.message,
+                    'error',
+                    { duration: 0 }
+                );
+
+                router.visit(route('saledocuments_list'), { replace: true });
+
+                return;
+            }
+
+            if (result.isConfirmed && data && data.success) {
                 var cadena = "";
                 let array = JSON.parse(result.value.data.notes || '[]');
                 for (var i = 0; i < array.length; i++) {
@@ -815,6 +874,10 @@
 </script>
 <template>
     <AppLayout title="Punto de Ventas">
+        <Head>
+            <meta name="aracodito-view" content="new" />
+        </Head>
+
         <Navigation :routeModule="route('sales_dashboard')" :titleModule="'Facturación Electrónica'"
             :data="[
                 {title: 'Crear Documentos'}
@@ -829,12 +892,7 @@
                                 <img v-if="company.logo == '/img/logo176x32.png'" style="width: 242px;height: 53.2333px;" class="inline-block h-auto ltr:mr-2 rtl:ml-2" :src="company.logo">
                                 <img v-else style="width: 242px;height: 53.2333px;" class="inline-block h-auto ltr:mr-2 rtl:ml-2" :src="asetUrl+'storage/'+company.logo">
                             </div>
-                            <p class="text-sm">
-                                <span class="font-semibold">{{ company.business_name }}</span><br>
-                                <span v-if="company.ruc">RUC: {{ company.ruc }}<br></span>
-                                {{ company.city }}<br>
-                                {{ company.fiscal_address }}
-                            </p>
+                            <p class="text-sm"><template v-if="company.city">{{ company.city }}<br></template>{{ company.fiscal_address }}</p>
                         </div>
                         <div class="text-4xl uppercase font-bold">
                             <select @change="getSeriesByDocumentType" v-model="formDocument.sale_documenttype_id" class="w-full appearance-none text-3xl rounded-xl text-center font-extrabold text-blue-800 border-4  py-6 px-4 bg-green-100">
@@ -1041,6 +1099,31 @@
                             </tfoot>
                         </table>
                     </div>
+                    <div v-if="requiresDetraction" class="my-3 rounded-lg border border-warning/40 bg-warning/5 p-4">
+                        <p class="text-sm font-semibold text-warning">Factura sujeta a detracción</p>
+                        <p class="mt-1 text-xs text-gray-600 dark:text-gray-300">
+                            El total supera S/ {{ detractionThreshold }}. Se detraerá el {{ detractionPercent }} %:
+                            <b>{{ currencySymbol }} {{ detractionAmount.toFixed(2) }}</b>. ¿Quién hará la detracción?
+                        </p>
+                        <div class="mt-3 flex flex-col gap-2 sm:flex-row">
+                            <label class="flex flex-1 cursor-pointer items-start gap-2 rounded-lg border p-2.5 text-sm"
+                                :class="formDocument.detraccion_auto === false ? 'border-primary bg-primary/5' : 'border-gray-200 dark:border-gray-700'">
+                                <input v-model="formDocument.detraccion_auto" type="radio" :value="false" class="form-radio mt-0.5" />
+                                <span>
+                                    <b>El cliente deposita</b><br />
+                                    <span class="text-xs text-gray-500 dark:text-gray-400">Paga la detracción directo a la cuenta del Banco de la Nación.</span>
+                                </span>
+                            </label>
+                            <label class="flex flex-1 cursor-pointer items-start gap-2 rounded-lg border p-2.5 text-sm"
+                                :class="formDocument.detraccion_auto === true ? 'border-primary bg-primary/5' : 'border-gray-200 dark:border-gray-700'">
+                                <input v-model="formDocument.detraccion_auto" type="radio" :value="true" class="form-radio mt-0.5" />
+                                <span>
+                                    <b>Haremos auto-detracción</b><br />
+                                    <span class="text-xs text-gray-500 dark:text-gray-400">Cobramos el total y luego lo transferimos a Detracción desde Movimientos.</span>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
                     <div class="max-w-full py-2">
                         <div class="grid sm:grid-cols-2 items-center gap-6">
                             <p style="font-size: 14px;" class="italic font-bold uppercase mb-4">Medio de Pago <button @click="addPayment()" type="button" class="inline-block px-0 py-2 bg-transparent text-blue-600 font-medium text-xs leading-tight uppercase rounded transition duration-150 ease-in-out">Agregar (+)</button></p>
@@ -1079,6 +1162,7 @@
                                     </td>
                                     <td >
                                         <select v-model="row.type" class="form-select text-white-dark py-1.5 text-xs">
+                                            <option :value="null" disabled>Seleccione medio de pago</option>
                                             <template v-for="(payment) in payments">
                                                 <option :value="payment.id">{{ payment.description }}</option>
                                             </template>

@@ -1,0 +1,731 @@
+/**
+ * Aracodito — estilos del asistente virtual.
+ *
+ * El widget lo construye resources/js/aracodito.js dentro de <body>:
+ *
+ *   #aracodito-widget (> .aracodito__bubble + > .aracodito__avatar)
+ *
+ * El color de acento sale del tipo de mensaje (aracodito--success, --error,
+ * --warning, --confirm, --help, --info, --question) y la forma del tema elegido
+ * (aracodito--classic, --pixel, --futbol).
+ */
+
+#aracodito-widget {
+    --ac-radius: 18px;
+    --ac-accent: #2563eb;
+    --ac-accent-soft: #dbeafe;
+    --ac-accent-ink: #1e3a8a;
+    --ac-surface: #ffffff;
+    --ac-surface-alt: #f8fafc;
+    --ac-text: #0f172a;
+    --ac-muted: #64748b;
+    --ac-border: rgba(15, 23, 42, 0.1);
+    --ac-shadow: 0 18px 40px -18px rgba(15, 23, 42, 0.45);
+
+    position: fixed;
+    right: 22px;
+    bottom: 22px;
+    z-index: 9998;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+    pointer-events: none;
+    font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+    line-height: 1.45;
+}
+
+#aracodito-widget > * {
+    pointer-events: auto;
+}
+
+/* ---------------------------------------------------------------- tipos --- */
+
+#aracodito-widget.aracodito--success {
+    --ac-accent: #16a34a;
+    --ac-accent-soft: #dcfce7;
+    --ac-accent-ink: #14532d;
+}
+
+#aracodito-widget.aracodito--error {
+    --ac-accent: #dc2626;
+    --ac-accent-soft: #fee2e2;
+    --ac-accent-ink: #7f1d1d;
+}
+
+#aracodito-widget.aracodito--warning {
+    --ac-accent: #d97706;
+    --ac-accent-soft: #fef3c7;
+    --ac-accent-ink: #78350f;
+}
+
+#aracodito-widget.aracodito--confirm {
+    --ac-accent: #4f46e5;
+    --ac-accent-soft: #e0e7ff;
+    --ac-accent-ink: #312e81;
+}
+
+#aracodito-widget.aracodito--help,
+#aracodito-widget.aracodito--question {
+    --ac-accent: #7c3aed;
+    --ac-accent-soft: #ede9fe;
+    --ac-accent-ink: #4c1d95;
+}
+
+#aracodito-widget.aracodito--info {
+    --ac-accent: #2563eb;
+    --ac-accent-soft: #dbeafe;
+    --ac-accent-ink: #1e3a8a;
+}
+
+/* --------------------------------------------------------------- burbuja --- */
+
+.aracodito__bubble {
+    position: relative;
+    max-width: 330px;
+    min-width: 210px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 14px 16px 14px 14px;
+    border: 1px solid var(--ac-border);
+    border-radius: var(--ac-radius);
+    background: var(--ac-surface);
+    color: var(--ac-text);
+    box-shadow: var(--ac-shadow);
+    font-size: 0.875rem;
+    text-align: left;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px) scale(0.96);
+    transform-origin: bottom right;
+    transition: opacity 180ms ease, transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
+        visibility 180ms linear;
+}
+
+.aracodito__bubble.is-visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+}
+
+/* Cola de la burbuja: apunta al robot. */
+.aracodito__tail {
+    position: absolute;
+    right: 30px;
+    bottom: -15px;
+    width: 20px;
+    height: 17px;
+    display: block;
+    filter: drop-shadow(0 6px 6px rgba(15, 23, 42, 0.08));
+}
+
+.aracodito__tail svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+.aracodito__tail-outline {
+    fill: var(--ac-border);
+}
+
+.aracodito__tail-fill {
+    fill: var(--ac-surface);
+}
+
+.aracodito__close {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 24px;
+    height: 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--ac-muted);
+    cursor: pointer;
+    transition: background-color 140ms ease, color 140ms ease;
+}
+
+.aracodito__close svg {
+    width: 11px;
+    height: 11px;
+}
+
+.aracodito__close:hover {
+    background: var(--ac-surface-alt);
+    color: var(--ac-text);
+}
+
+.aracodito__close:focus-visible {
+    outline: 2px solid var(--ac-accent);
+    outline-offset: 2px;
+}
+
+.aracodito__icon {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    margin-top: 1px;
+    border-radius: 50%;
+    background: var(--ac-accent-soft);
+    color: var(--ac-accent);
+}
+
+.aracodito__icon svg {
+    width: 17px;
+    height: 17px;
+}
+
+.aracodito__content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+    padding-right: 16px;
+}
+
+.aracodito__text {
+    margin: 0;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--ac-text);
+    overflow-wrap: anywhere;
+}
+
+.aracodito__badge {
+    align-self: flex-start;
+    padding: 1px 7px;
+    border-radius: 999px;
+    background: var(--ac-accent);
+    color: #fff;
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.aracodito__badge[hidden] {
+    display: none;
+}
+
+/* -------------------------------------------------------------- acciones --- */
+
+.aracodito__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-top: 2px;
+}
+
+.aracodito__actions[hidden] {
+    display: none;
+}
+
+.aracodito__action {
+    padding: 6px 14px;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    font-family: inherit;
+    font-size: 0.78rem;
+    font-weight: 600;
+    line-height: 1.2;
+    cursor: pointer;
+    transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease,
+        transform 120ms ease;
+}
+
+.aracodito__action:active {
+    transform: translateY(1px);
+}
+
+.aracodito__action:focus-visible {
+    outline: 2px solid var(--ac-accent);
+    outline-offset: 2px;
+}
+
+.aracodito__action--primary {
+    background: var(--ac-accent);
+    color: #fff;
+    border-color: var(--ac-accent);
+}
+
+.aracodito__action--primary:hover {
+    filter: brightness(1.06);
+}
+
+.aracodito__action--secondary {
+    background: var(--ac-surface-alt);
+    color: var(--ac-accent-ink);
+    border-color: var(--ac-border);
+}
+
+.aracodito__action--secondary:hover {
+    background: var(--ac-accent-soft);
+}
+
+.aracodito__action--danger {
+    background: #dc2626;
+    border-color: #dc2626;
+    color: #fff;
+}
+
+/* ---------------------------------------------------------------- avatar --- */
+
+.aracodito__avatar {
+    position: relative;
+    width: 96px;
+    height: 114px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    filter: drop-shadow(0 12px 16px rgba(15, 23, 42, 0.28));
+    animation: aracodito-float 4.2s ease-in-out infinite;
+}
+
+.aracodito__avatar:focus-visible {
+    outline: 2px solid var(--ac-accent);
+    outline-offset: 4px;
+    border-radius: 14px;
+}
+
+.aracodito__avatar svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+.aracodito__sprite {
+    image-rendering: pixelated;
+}
+
+.aracodito__emote {
+    position: absolute;
+    top: 2px;
+    right: -2px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    height: 24px;
+    padding: 0 5px;
+    border-radius: 999px;
+    background: var(--ac-accent);
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    line-height: 1;
+    box-shadow: 0 4px 10px -4px rgba(15, 23, 42, 0.5);
+}
+
+/* ------------------------------------------------------ piezas del robot --- */
+
+.aracodito__eyes,
+.aracodito__eyes-happy,
+.aracodito__mouth-smile {
+    transform-box: fill-box;
+    transform-origin: center;
+}
+
+.aracodito__eyes-happy {
+    opacity: 0;
+    transition: opacity 140ms ease;
+}
+
+.aracodito__mouth-smile {
+    opacity: 0;
+}
+
+/* Cabeza: leve inclinación al aparecer un mensaje y en la espera. */
+#aracodito-widget .aracodito__head {
+    transform-box: fill-box;
+    transform-origin: 50% 80%;
+    transition: transform 220ms ease;
+}
+
+#aracodito-widget.is-loading .aracodito__head {
+    transform: translateY(-2px) rotate(-2deg);
+}
+
+/* Celebración: ojos felices en éxito y confirmación. */
+#aracodito-widget.aracodito--success .aracodito__eyes,
+#aracodito-widget.aracodito--confirm .aracodito__eyes {
+    opacity: 0;
+}
+
+#aracodito-widget.aracodito--success .aracodito__eyes-happy,
+#aracodito-widget.aracodito--confirm .aracodito__eyes-happy,
+#aracodito-widget.is-loading .aracodito__eyes-happy {
+    opacity: 1;
+}
+
+#aracodito-widget.aracodito--success .aracodito__mouth,
+#aracodito-widget.aracodito--confirm .aracodito__mouth,
+#aracodito-widget.is-loading .aracodito__mouth {
+    opacity: 0;
+}
+
+#aracodito-widget.aracodito--success .aracodito__mouth-smile,
+#aracodito-widget.aracodito--confirm .aracodito__mouth-smile,
+#aracodito-widget.is-loading .aracodito__mouth-smile {
+    opacity: 1;
+}
+
+/* Habla: la boca se abre y se cierra. */
+#aracodito-widget.is-talking .aracodito__mouth {
+    animation: aracodito-talk 320ms steps(2, end) infinite;
+}
+
+.aracodito__plume,
+.aracodito__plume-core {
+    transform-box: fill-box;
+    transform-origin: 50% 0%;
+    animation: aracodito-plume 1.4s ease-in-out infinite;
+}
+
+.aracodito__plume-core {
+    animation-duration: 0.9s;
+}
+
+.aracodito__arm--left {
+    transform-box: fill-box;
+    transform-origin: 90% 10%;
+    animation: aracodito-arm-left 5.5s ease-in-out infinite;
+}
+
+.aracodito__arm--right {
+    transform-box: fill-box;
+    transform-origin: 10% 10%;
+    animation: aracodito-arm-right 5.5s ease-in-out infinite;
+}
+
+/* ------------------------------------------------- terminal del pecho --- */
+
+.aracodito__chest-screen {
+    display: none;
+}
+
+.aracodito__chest-core {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: aracodito-core 2.6s ease-in-out infinite;
+}
+
+#aracodito-widget.is-loading .aracodito__chest-core {
+    display: none;
+}
+
+#aracodito-widget.is-loading .aracodito__chest-screen {
+    display: block;
+}
+
+#aracodito-widget.is-loading .aracodito__terminal-cursor {
+    animation: aracodito-blink 700ms steps(1, end) infinite;
+}
+
+#aracodito-widget.is-loading .aracodito__terminal-line {
+    transform-box: fill-box;
+    transform-origin: left center;
+    animation: aracodito-terminal-line 900ms ease-in-out infinite;
+}
+
+#aracodito-widget.is-loading .aracodito__terminal-line--2 {
+    animation-delay: 140ms;
+}
+
+#aracodito-widget.is-loading .aracodito__terminal-line--3 {
+    animation-delay: 280ms;
+}
+
+#aracodito-widget.is-loading .aracodito__terminal-progress {
+    transform-box: fill-box;
+    transform-origin: left center;
+    animation: aracodito-progress 1.5s ease-in-out infinite;
+}
+
+/* Balón del tema futbolero. */
+.aracodito__ball {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: aracodito-ball 2.4s ease-in-out infinite;
+}
+
+.aracodito__ball-shadow {
+    animation: aracodito-ball-shadow 2.4s ease-in-out infinite;
+}
+
+/* ------------------------------------------------------------ tema pixel --- */
+
+#aracodito-widget.aracodito--pixel {
+    --ac-radius: 2px;
+    --ac-border: rgba(7, 20, 38, 0.55);
+    --ac-shadow: 0 0 0 3px rgba(7, 20, 38, 0.9), 0 10px 0 -2px rgba(7, 20, 38, 0.35);
+    font-family: "Courier New", ui-monospace, SFMono-Regular, monospace;
+}
+
+#aracodito-widget.aracodito--pixel .aracodito__bubble {
+    border-width: 2px;
+    background: #050d18;
+    color: #e0f2fe;
+    padding: 12px 14px;
+}
+
+#aracodito-widget.aracodito--pixel .aracodito__text {
+    color: #e0f2fe;
+    font-size: 0.8rem;
+    letter-spacing: 0.02em;
+    text-transform: none;
+}
+
+#aracodito-widget.aracodito--pixel .aracodito__tail-outline {
+    fill: #7dd3fc;
+}
+
+#aracodito-widget.aracodito--pixel .aracodito__tail-fill {
+    fill: #050d18;
+}
+
+#aracodito-widget.aracodito--pixel .aracodito__icon {
+    border-radius: 0;
+    background: #0d2138;
+    color: #7dd3fc;
+    box-shadow: inset 0 0 0 2px #38bdf8;
+}
+
+#aracodito-widget.aracodito--pixel .aracodito__close {
+    border-radius: 0;
+    color: #7dd3fc;
+}
+
+#aracodito-widget.aracodito--pixel .aracodito__close:hover {
+    background: #0d2138;
+    color: #e0f2fe;
+}
+
+#aracodito-widget.aracodito--pixel .aracodito__badge {
+    border-radius: 0;
+    background: #38bdf8;
+    color: #04121f;
+}
+
+#aracodito-widget.aracodito--pixel .aracodito__action {
+    border-radius: 0;
+    font-family: inherit;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+#aracodito-widget.aracodito--pixel .aracodito__action--secondary {
+    background: #0d2138;
+    color: #7dd3fc;
+    border-color: #38bdf8;
+}
+
+#aracodito-widget.aracodito--pixel .aracodito__action--secondary:hover {
+    background: #123a6b;
+}
+
+#aracodito-widget.aracodito--pixel .aracodito__avatar {
+    animation: aracodito-float-pixel 1.6s steps(3, end) infinite;
+    filter: drop-shadow(0 0 0 rgba(0, 0, 0, 0));
+}
+
+#aracodito-widget.aracodito--pixel .aracodito__avatar svg {
+    image-rendering: pixelated;
+}
+
+#aracodito-widget.aracodito--pixel .aracodito__emote {
+    border-radius: 0;
+    background: #38bdf8;
+    color: #04121f;
+    box-shadow: 0 0 0 2px #050d18;
+}
+
+#aracodito-widget.aracodito--pixel .aracodito__arm--left,
+#aracodito-widget.aracodito--pixel .aracodito__arm--right {
+    animation: none;
+}
+
+/* -------------------------------------------------------- tema futbolero --- */
+
+#aracodito-widget.aracodito--futbol {
+    --ac-accent: #16a34a;
+    --ac-accent-soft: #dcfce7;
+    --ac-accent-ink: #14532d;
+}
+
+/* ---------------------------------------------------------- adaptaciones --- */
+
+@media (max-width: 480px) {
+    #aracodito-widget {
+        right: 12px;
+        bottom: 12px;
+        gap: 6px;
+    }
+
+    .aracodito__bubble {
+        max-width: calc(100vw - 48px);
+        min-width: 180px;
+        font-size: 0.82rem;
+    }
+
+    .aracodito__avatar {
+        width: 72px;
+        height: 86px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #aracodito-widget *,
+    #aracodito-widget *::before,
+    #aracodito-widget *::after {
+        animation: none !important;
+        transition-duration: 1ms !important;
+    }
+}
+
+/* ---------------------------------------------------------- animaciones --- */
+
+@keyframes aracodito-float {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-6px);
+    }
+}
+
+@keyframes aracodito-float-pixel {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-4px);
+    }
+}
+
+@keyframes aracodito-plume {
+    0%,
+    100% {
+        transform: scaleY(0.82);
+        opacity: 0.75;
+    }
+    50% {
+        transform: scaleY(1.12);
+        opacity: 1;
+    }
+}
+
+@keyframes aracodito-arm-left {
+    0%,
+    100% {
+        transform: rotate(0deg);
+    }
+    30% {
+        transform: rotate(-4deg);
+    }
+    60% {
+        transform: rotate(3deg);
+    }
+}
+
+@keyframes aracodito-arm-right {
+    0%,
+    100% {
+        transform: rotate(0deg);
+    }
+    30% {
+        transform: rotate(4deg);
+    }
+    60% {
+        transform: rotate(-3deg);
+    }
+}
+
+@keyframes aracodito-core {
+    0%,
+    100% {
+        opacity: 0.85;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+@keyframes aracodito-talk {
+    0%,
+    100% {
+        transform: scaleY(1);
+    }
+    50% {
+        transform: scaleY(2.2);
+    }
+}
+
+@keyframes aracodito-blink {
+    0%,
+    49% {
+        opacity: 1;
+    }
+    50%,
+    100% {
+        opacity: 0;
+    }
+}
+
+@keyframes aracodito-terminal-line {
+    0%,
+    100% {
+        transform: scaleX(0.35);
+        opacity: 0.55;
+    }
+    50% {
+        transform: scaleX(1);
+        opacity: 1;
+    }
+}
+
+@keyframes aracodito-progress {
+    0% {
+        transform: scaleX(0.08);
+    }
+    100% {
+        transform: scaleX(1);
+    }
+}
+
+@keyframes aracodito-ball {
+    0%,
+    100% {
+        transform: translateY(0) rotate(0deg);
+    }
+    50% {
+        transform: translateY(-5px) rotate(14deg);
+    }
+}
+
+@keyframes aracodito-ball-shadow {
+    0%,
+    100% {
+        transform: scaleX(1);
+        opacity: 0.32;
+    }
+    50% {
+        transform: scaleX(0.82);
+        opacity: 0.22;
+    }
+}

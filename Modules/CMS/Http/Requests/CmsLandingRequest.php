@@ -22,20 +22,23 @@ class CmsLandingRequest extends FormRequest
         return [
             'title'              => ['required', 'max:300'],
             'slug'               => ['required', 'max:500'],
+            // Maximo de cursos gratis que puede elegir cada persona (1 a 3).
+            'free_courses_count' => ['nullable', 'integer', 'between:1,3'],
             'description_short'  => ['required', 'max:255'],
             'description_long'   => ['nullable'],
             //'main_image'         => ['nullable', 'max:255'],
             'image'              => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'data_related'          => 'nullable|array',
             'data_related.table'    => 'required_with:data_related|string',
-            'data_related.items'    => 'required_with:data_related|array|min:1',
+            // Se muestran todos los cursos elegidos; el cupo de
+            // free_courses_count limita lo que elige el visitante, no la lista.
+            'data_related.items'    => 'required_with:data_related|array|min:1|max:60',
             'data_related2'      => ['nullable'],
             'additional_field1'  => ['nullable'],
             'additional_field2'  => ['nullable'],
             'additional_field3'  => ['nullable'],
             'date_start'         => ['nullable', 'date'],
             'date_end'           => ['nullable', 'date'],
-            'free_courses_count' => ['nullable', 'integer', 'min:1', 'max:3'],
         ];
     }
 
@@ -67,6 +70,10 @@ class CmsLandingRequest extends FormRequest
             'data_related.items.required_with' => 'Debe seleccionar al menos un ítem en data_related.',
             'data_related.items.array'   => 'El campo items debe ser una lista válida.',
             'data_related.items.min'     => 'Debe incluir al menos un ítem en la lista.',
+            'data_related.items.max'     => 'No puedes seleccionar mas de 60 cursos para mostrar en el landing.',
+
+            'free_courses_count.integer' => 'La cantidad de cursos gratis a elegir debe ser un número.',
+            'free_courses_count.between' => 'La cantidad de cursos gratis a elegir debe estar entre 1 y 3.',
             'data_related2.json'         => 'Los datos relacionados 2 deben estar en formato JSON.',
 
             'additional_field1.string'   => 'El campo título del formulario debe ser un texto.',
@@ -75,10 +82,6 @@ class CmsLandingRequest extends FormRequest
 
             'date_start.date'            => 'La fecha de inicio no tiene un formato válido.',
             'date_end.date'              => 'La fecha de fin no tiene un formato válido.',
-
-            'free_courses_count.integer' => 'La cantidad de cursos gratis debe ser un número.',
-            'free_courses_count.min'     => 'La cantidad de cursos gratis debe ser al menos 1.',
-            'free_courses_count.max'     => 'La cantidad de cursos gratis no puede ser mayor a 3.',
 
             'image.image'           => 'El archivo debe ser una imagen.',
             'image.mimes'           => 'La imagen debe ser en formato JPG o PNG.',

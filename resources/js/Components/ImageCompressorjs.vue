@@ -87,13 +87,7 @@ import Compressor from 'compressorjs';
 
 export default {
     props: {
-        onImageCompressed: Function,
-        // Ancho maximo en px (el alto se ajusta en proporcion). Sin valor se
-        // conserva el tamaño original, como hasta ahora.
-        maxWidth: {
-            type: Number,
-            default: null
-        }
+        onImageCompressed: Function
     },
     data() {
         return {
@@ -128,7 +122,7 @@ export default {
         },
         async compressAndConvertToBase64(file) {
             return new Promise((resolve, reject) => {
-                const options = {
+                new Compressor(file, {
                     quality: 0.2,
                     success: (result) => {
                         const imageUrl = URL.createObjectURL(result);
@@ -137,13 +131,7 @@ export default {
                     error: (error) => {
                         reject(error);
                     },
-                };
-
-                if (this.maxWidth) {
-                    options.maxWidth = this.maxWidth;
-                }
-
-                new Compressor(file, options);
+                });
             });
         },
         async convertUrlToBase64(url) {

@@ -228,6 +228,7 @@ html.bib-reader-smooth-theme .bib-reader-header__logout {
     flex: 1;
     min-width: 0;
     overflow-y: auto;
+    overflow-x: auto;
     background: linear-gradient(165deg, #e8edf3 0%, #dde4ec 50%, #e9eef4 100%);
 }
 
@@ -356,8 +357,15 @@ html.bib-reader-smooth-theme .bib-reader-header__logout {
     width: fit-content;
     max-width: 100%;
     margin: 0 auto;
-    transition: transform 0.25s ease;
+    transition: transform 0.25s ease, zoom 0.25s ease;
 }
+
+/* Al hacer zoom, el contenido crece y puede desplazarse (scroll) para leerlo;
+   en movil se habilita el arrastre. */
+.bib-reader-page-sheet-scaler.is-zoomed {
+    max-width: none;
+}
+
 
 /* Hoja A4: ancho 210 mm; alto crece con el contenido (sin máximo) */
 .bib-reader-page-sheet {
@@ -396,13 +404,23 @@ html.bib-reader-smooth-theme .bib-reader-header__logout {
 }
 
 .dark .bib-reader-page-sheet {
-    background: #fafaf8;
-    border-color: #94a3b8;
-    color: #1e293b;
+    background: #1e293b;
+    border-color: #475569;
+    color: #e2e8f0;
     box-shadow:
         0 2px 4px rgba(0, 0, 0, 0.25),
         0 12px 32px rgba(0, 0, 0, 0.35),
         0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+}
+
+.dark .bib-reader-page-sheet::before {
+    background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.04) 0%,
+        rgba(255, 255, 255, 0) 12%,
+        rgba(255, 255, 255, 0) 88%,
+        rgba(0, 0, 0, 0.12) 100%
+    );
 }
 
 .bib-reader-page-sheet__header {
@@ -459,8 +477,13 @@ html.bib-reader-smooth-theme .bib-reader-header__logout {
         padding: 12mm 10mm 16mm;
     }
 
-    .bib-reader-page-stage {
-        overflow-x: hidden;
+    .bib-reader-case-content [style] {
+        text-align: left !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        float: none !important;
     }
 }
 
@@ -470,6 +493,181 @@ html.bib-reader-smooth-theme .bib-reader-header__logout {
     padding: 3rem 2rem;
     text-align: center;
 }
+
+.bib-reader-shelf {
+    padding: 2.5rem clamp(1.25rem, 4vw, 4rem) 4rem;
+}
+
+.bib-reader-shelf__header {
+    margin-bottom: 2.25rem;
+}
+
+.bib-reader-shelf__badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    background: rgb(207 250 254);
+    color: rgb(14 116 144);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+}
+
+.dark .bib-reader-shelf__badge {
+    background: rgb(8 51 68);
+    color: rgb(103 232 249);
+}
+
+.bib-reader-shelf__title {
+    margin-top: 0.75rem;
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    font-weight: 800;
+    color: rgb(15 23 42);
+}
+
+.dark .bib-reader-shelf__title {
+    color: rgb(241 245 249);
+}
+
+.bib-reader-shelf__subtitle {
+    margin-top: 0.5rem;
+    color: rgb(100 116 139);
+    font-size: 0.95rem;
+}
+
+.dark .bib-reader-shelf__subtitle {
+    color: rgb(148 163 184);
+}
+
+.bib-reader-shelf__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(12.5rem, 1fr));
+    gap: 1.5rem;
+}
+
+.bib-reader-shelf__card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    padding: 1rem;
+    border: 1px solid rgb(226 232 240);
+    border-radius: 1.1rem;
+    background: rgba(255, 255, 255, 0.82);
+    text-align: left;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
+    opacity: 0;
+    transform: translateY(18px) scale(0.97);
+    animation: bib-reader-shelf-in 0.5s ease forwards;
+    transition:
+        transform 0.22s ease,
+        box-shadow 0.22s ease,
+        border-color 0.22s ease;
+}
+
+.dark .bib-reader-shelf__card {
+    border-color: rgb(51 65 85);
+    background: rgba(30, 41, 59, 0.7);
+}
+
+.bib-reader-shelf__card:hover {
+    transform: translateY(-4px) scale(1.015);
+    border-color: rgba(8, 145, 178, 0.55);
+    box-shadow: 0 16px 34px rgba(8, 145, 178, 0.18);
+}
+
+.bib-reader-shelf__card:focus-visible {
+    outline: 3px solid rgba(34, 211, 238, 0.5);
+    outline-offset: 2px;
+}
+
+@keyframes bib-reader-shelf-in {
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.bib-reader-shelf__cover {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 3 / 4;
+    width: 100%;
+    overflow: hidden;
+    border-radius: 0.8rem;
+    background: linear-gradient(160deg, #0e7490, #155e75);
+}
+
+.bib-reader-shelf__cover-fallback {
+    font-size: 2.6rem;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.92);
+}
+
+.bib-reader-shelf__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    min-width: 0;
+}
+
+.bib-reader-shelf__book-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    font-size: 0.95rem;
+    font-weight: 700;
+    line-height: 1.3;
+    color: rgb(15 23 42);
+}
+
+.dark .bib-reader-shelf__book-title {
+    color: rgb(241 245 249);
+}
+
+.bib-reader-shelf__book-desc {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    font-size: 0.8rem;
+    line-height: 1.45;
+    color: rgb(100 116 139);
+}
+
+.dark .bib-reader-shelf__book-desc {
+    color: rgb(148 163 184);
+}
+
+.bib-reader-shelf__cta {
+    align-self: flex-start;
+    margin-top: 0.35rem;
+    padding: 0.3rem 0.85rem;
+    border-radius: 9999px;
+    background: linear-gradient(135deg, #0891b2, #06b6d4);
+    color: #fff;
+    font-size: 0.78rem;
+    font-weight: 700;
+    box-shadow: 0 6px 16px rgba(8, 145, 178, 0.35);
+}
+
+@media (max-width: 767px) {
+    .bib-reader-shelf {
+        padding: 1.5rem 1rem 3rem;
+    }
+
+    .bib-reader-shelf__grid {
+        grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+        gap: 1rem;
+    }
+}
+
 
 .bib-reader-page-content {
     line-height: 1.8;
@@ -521,6 +719,35 @@ html.bib-reader-smooth-theme .bib-reader-header__logout {
     white-space: pre-wrap;
     word-break: break-word;
     max-width: 100%;
+}
+
+/* Tema oscuro: forzar texto claro en el contenido de la hoja.
+   Los textos pegados desde Google Docs/Word traen estilos inline
+   (color oscuro y fondo blanco) que pisan el tema; aquí se neutralizan. */
+.dark .bib-reader-page-content,
+.dark .bib-reader-page-content * {
+    color: #e2e8f0 !important;
+}
+
+.dark .bib-reader-page-content a {
+    color: #67e8f9 !important;
+}
+
+.dark .bib-reader-page-content [style*="background-color"],
+.dark .bib-reader-page-content *[style*="background-color"] {
+    background-color: transparent !important;
+}
+
+.dark .bib-reader-page-sheet__header {
+    border-bottom-color: #334155;
+}
+
+.dark .bib-reader-page-sheet__title {
+    color: #f1f5f9;
+}
+
+.dark .bib-reader-page-sheet__section {
+    color: #67e8f9;
 }
 
 .bib-reader-index-sections {
@@ -872,6 +1099,10 @@ html.bib-reader-smooth-theme .bib-reader-header__logout {
     color: rgb(100 116 139);
 }
 
+.dark .bib-reader-cases-panel__document-meta {
+    color: rgb(148 163 184);
+}
+
 .bib-reader-cases-panel__document-link {
     display: inline-flex;
     align-items: center;
@@ -1085,6 +1316,20 @@ html.bib-reader-smooth-theme .bib-reader-header__logout {
 
 .dark .bib-reader-case-content {
     color: rgb(203 213 225);
+}
+
+.dark .bib-reader-case-content,
+.dark .bib-reader-case-content * {
+    color: #e2e8f0 !important;
+}
+
+.dark .bib-reader-case-content a {
+    color: #67e8f9 !important;
+}
+
+.dark .bib-reader-case-content [style*="background-color"],
+.dark .bib-reader-case-content *[style*="background-color"] {
+    background-color: transparent !important;
 }
 
 .bib-reader-case-content h1,

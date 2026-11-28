@@ -1,48 +1,111 @@
-<script setup>
-    import { ref, onMounted } from 'vue';
+<script setup lang="ts">
+
+    import { ref, computed, onMounted, onBeforeUnmount, watch, onUnmounted, watchEffect } from 'vue';
+
     //import Sidebar from '@/Components/vristo/layout/Sidebar.vue';
     import Header from '@/Components/vristo/layout/Header.vue';
     import Footer from '@/Components/vristo/layout/Footer.vue';
     import Setting from '@/Components/vristo/ThemeCustomizer.vue';
     import appSetting from '@/app-setting';
-    import { Head, usePage, router } from '@inertiajs/vue3';
+    import { Head, usePage } from '@inertiajs/vue3';
     import { useAppStore } from '@/stores/index';
     import SidebarAdmin from '@/Components/vristo/layout/Sidebar-Admin.vue';
     //import Sidebar from '@/Components/vristo/layout/Sidebar-Old.vue';
     import SidebarStudent from '@/Components/vristo/layout/Sidebar-Student.vue';
     import ChatBox from 'Modules/CRM/Resources/assets/js/Components/ChatBox.vue';
+    import ForcePinChange from 'Modules/Health/Resources/assets/js/Components/ForcePinChange.vue';
+    // Organizador con el acceso vencido: aviso único en cualquier pantalla con
+    // el botón que lleva a "Mis pagos". Solo se dispara en modo deportivo.
+    import OrganizationAccessAlert from 'Modules/Socialevents/Resources/assets/js/Components/OrganizationAccessAlert.vue';
+    import OrganizationBillingNotice from 'Modules/Socialevents/Resources/assets/js/Components/OrganizationBillingNotice.vue';
+    // Modo Super Editor: el engrane y el panel son únicos para toda la app; el
+    // modal de contraseña se monta aquí para que exista en cualquier pantalla.
+    import SuperEditorGear from 'Modules/Security/Resources/assets/js/Components/SuperEditor/Gear.vue';
+    import SuperEditorPanel from 'Modules/Security/Resources/assets/js/Components/SuperEditor/Panel.vue';
+    import SuperEditorPasswordModal from 'Modules/Security/Resources/assets/js/Components/SuperEditor/PasswordModal.vue';
+    import { variablesDeMarca } from '@/utils/colorMarca';
+    import { reservarTemaDeportivo } from '@/utils/temaDeportivo';
+    // Una cuenta con rol de panel entra al panel aunque también tenga el rol
+    // 'Alumno'; el campus del alumno se muestra solo cuando es su único rol.
+    import { esModoAlumno } from '@/utils/modoAlumno';
+    // Guía de Aracodito por pestaña de Tesorería (solo actúa en /treasury).
+    import TreasuryGuide from 'Modules/Treasury/Resources/assets/js/Components/TreasuryGuide.vue';
+    // Aracodito: ayuda global, visible en todas las pantallas del sistema.
+    import AracoditoAyuda from '@/Components/aracodito/AracoditoAyuda.vue';
 
     const store = useAppStore();
-    const userData = usePage().props.auth.user;
+    const page = usePage();
+    const userData = page.props.auth.user;
     const showTopButton = ref(false);
+    const sportsTheme = computed(() => page.props.sportsOrganization?.mode === true);
 
-    // Función para limpiar componentes de Ant Design antes de navegar
-    const cleanupAntDesignComponents = () => {
-        // Remover clases 'open' de Ant Design
-        document.querySelectorAll('.ant-tooltip-open').forEach(el => {
-            el.classList.remove('ant-tooltip-open');
-        });
-        document.querySelectorAll('.ant-popover-open').forEach(el => {
-            el.classList.remove('ant-popover-open');
-        });
-        document.querySelectorAll('.ant-dropdown-open').forEach(el => {
-            el.classList.remove('ant-dropdown-open');
-        });
+    // Reserva del tema en <html>: el desmontaje del layout anterior ya no
+    // borra la clase si la página nueva sigue en pantalla.
+    const liberarTemaDeportivo = reservarTemaDeportivo();
 
-        // Remover elementos de tooltip del DOM
-        setTimeout(() => {
-            document.querySelectorAll('.ant-tooltip').forEach(el => el.remove());
-            document.querySelectorAll('.ant-popover').forEach(el => el.remove());
-            document.querySelectorAll('.ant-dropdown').forEach(el => el.remove());
-            document.querySelectorAll('.ant-select-dropdown').forEach(el => el.remove());
-            document.querySelectorAll('.ant-dropdown-menu').forEach(el => el.remove());
-        }, 50);
-    };
+    // Cuando PW00001 selecciona Torneos, usa la paleta del login futbolero y
+    // deja intactos los colores corporativos del modo principal.
+    const companyData = page.props.company;
+    const marcaEstilo = computed(() =>
+        variablesDeMarca(sportsTheme.value
+            ? { primary: '#a3e635', secondary: '#10b981' }
+            : {
+                primary: companyData?.brand_primary,
+                secondary: companyData?.brand_secondary,
+            })
+    );
+// 1. Control de la clase para el tema de torneos
+    watch(sportsTheme, (enabled) => {
+        if (typeof document !== 'undefined') {
+            document.documentElement.classList.toggle('theme-torneos', enabled);
+        }
+    }, { immediate: true });
 
-    // Hook antes de cada navegación de Inertia
-    router.on('before', () => {
-        cleanupAntDesignComponents();
+    // 2. Variables de marca que publica el layout
+    const VARIABLES_DE_MARCA = [
+        '--brand-primary',
+        '--brand-primary-light',
+        '--brand-secondary',
+        '--brand-secondary-light',
+    ];
+
+    watchEffect(() => {
+        if (typeof document === 'undefined') {
+            return;
+        }
+
+        const variables = marcaEstilo.value;
+        const raiz = document.documentElement;
+
+        for (const nombre of VARIABLES_DE_MARCA) {
+            if (variables && variables[nombre]) {
+                raiz.style.setProperty(nombre, variables[nombre]);
+            } else {
+                raiz.style.removeProperty(nombre);
+            }
+        }
     });
+
+    // 3. Limpieza de ambas configuraciones al desmontar el componente/layout.
+    // Solo limpia cuando ya no queda ningún layout con tema montado: Inertia
+    // monta la página nueva antes de desmontar la anterior y, si no, se
+    // llevaría por delante lo que la nueva ya había publicado.
+    onUnmounted(() => {
+        if (! liberarTemaDeportivo()) {
+            return;
+        }
+
+        if (typeof document !== 'undefined') {
+            // Limpiar la clase del tema
+            document.documentElement.classList.remove('theme-torneos');
+
+            // Limpiar las variables de marca
+            for (const nombre of VARIABLES_DE_MARCA) {
+                document.documentElement.style.removeProperty(nombre);
+            }
+        }
+    });
+
 
     onMounted(() => {
         window.onscroll = () => {
@@ -53,12 +116,10 @@
             }
         };
 
-        const eleanimation = document.querySelector('.animation');
-        if (eleanimation) {
-            eleanimation.addEventListener('animationend', function () {
-                appSetting.changeAnimation('remove');
-            });
-        }
+        const eleanimation: any = document.querySelector('.animation');
+        eleanimation.addEventListener('animationend', function () {
+            appSetting.changeAnimation('remove');
+        });
 
         store.toggleMainLoader();
     });
@@ -74,18 +135,15 @@
 
     const baseURL = assetUrl;
 
-    const hasAnyRole = (rolesToCheck) => {
-        return userData.roles.some(role => rolesToCheck.includes(role.name))
-    }
+    const modoAlumno = computed(() => esModoAlumno(userData.roles));
 </script>
-<script>
-!function(w,d,s,u){if(w.oaiq)return;var q=function(){q.q.push(arguments)};q.q=[];w.oaiq=q;var j=d.createElement(s);j.async=1;j.src=u;var f=d.getElementsByTagName(s)[0];f.parentNode.insertBefore(j,f)}(window,document,"script","https://bzrcdn.openai.com/sdk/oaiq.min.js");oaiq("init",{pixelId:"5QtnU8S3JTK5hx2Ch3sqkR",debug:true});
-</script>
+
 <template>
     <Head :title="title" />
     <div
         class="main-section antialiased relative font-nunito text-sm font-normal"
-        :class="[store.sidebar ? 'toggle-sidebar' : '', store.menu, store.layout, store.rtlClass]"
+        :class="[store.sidebar ? 'toggle-sidebar' : '', store.menu, store.layout, store.rtlClass, sportsTheme ? 'theme-torneos' : '']"
+        :style="marcaEstilo"
     >
         <!--  BEGIN MAIN CONTAINER  -->
         <div class="relative">
@@ -142,7 +200,7 @@
 
             <div class="main-container text-black dark:text-white-dark min-h-screen" :class="[store.navbar]">
                 <!--  BEGIN SIDEBAR  -->
-                <template v-if="hasAnyRole(['Alumno'])">
+                <template v-if="modoAlumno">
                     <SidebarStudent />
                 </template>
                 <template v-else>
@@ -168,6 +226,17 @@
                 </div>
             </div>
         </div>
+        <TreasuryGuide />
+        <AracoditoAyuda :elevado="showTopButton" />
         <ChatBox />
+        <ForcePinChange />
+        <OrganizationAccessAlert />
+            <OrganizationBillingNotice />
+
+        <!-- Modo Super Editor -->
+        <SuperEditorGear />
+        <SuperEditorPanel />
+        <SuperEditorPasswordModal />
     </div>
 </template>
+

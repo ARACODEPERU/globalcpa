@@ -32,15 +32,11 @@ const props = defineProps({
         type: [Array, Object],
         default: () => [],
     },
-    peru_country_id: {
-        type: [Number, String],
-        default: 1,
-    },
-    professions: {
+    occupations: {
         type: [Array, Object],
         default: () => [],
     },
-    occupations: {
+    professions: {
         type: [Array, Object],
         default: () => [],
     },
@@ -49,6 +45,18 @@ const props = defineProps({
         default: () => [],
     },
 });
+
+// Catalogos del perfil obligatorio: cargo u ocupacion, profesion e industria.
+// Se envian por id y el backend guarda el texto oficial del catalogo, igual que el
+// formulario publico de una negociacion en Commercial.
+const catalogOptions = (list) => {
+    const rows = Array.isArray(list) ? list : Object.values(list || {});
+
+    return rows.map((row) => ({
+        value: row?.id,
+        label: row?.description ?? '',
+    }));
+};
 
 // Computed seguras
 const documentTypeOptions = computed(() => {
@@ -85,24 +93,13 @@ const countryOptions = computed(() => {
     }));
 });
 
-// Catalogos de profesion, cargo e industria para el perfil forzado.
-const catalogOptions = (list) => {
-    const items = Array.isArray(list) ? list : Object.values(list || {});
-
-    return items.map((row) => ({
-        value: row?.id,
-        label: row?.description ?? '',
-    }));
-};
-
-const professionOptions = computed(() => catalogOptions(props.professions));
 const occupationOptions = computed(() => catalogOptions(props.occupations));
+const professionOptions = computed(() => catalogOptions(props.professions));
 const industryOptions = computed(() => catalogOptions(props.industries));
 
-// La nacionalidad define como se pide la ubicacion: Peru usa ubigeo
-// y cualquier otro pais pide la ciudad como texto libre.
-const isPeruvian = computed(() => {
-    return Number(form.country_id) === Number(props.peru_country_id ?? 1);
+// Detectar si el tipo de documento es extranjero (OTROS = sunat_code '00', id '0')
+const isForeignDocument = computed(() => {
+    return String(form.document_type_id) === '0';
 });
 
 // Inicialización
@@ -113,10 +110,8 @@ const form = useForm({
     number: props.person?.number ?? '',
     telephone: props.person?.telephone ?? '',
     email: props.person?.email ?? '',
-    // Solo se envia una imagen cuando el usuario elige o recorta una nueva;
-    // la ruta ya guardada se muestra aparte y no debe reenviarse como base64.
-    image: null,
-    image_preview: props.person?.image ?? null,
+    image: props.person?.image ?? null,
+    image_preview: props.person?.image_preview ?? null,
     address: props.person?.address ?? '',
     ubigeo: props.person?.ubigeo ?? null,
     birthdate: props.person?.birthdate ?? '',
@@ -124,14 +119,15 @@ const form = useForm({
     father_lastname: props.person?.father_lastname ?? '',
     mother_lastname: props.person?.mother_lastname ?? '',
     ubigeo_description: props.person?.city ?? null,
-    country_id: props.person?.country_id ? Number(props.person.country_id) : Number(props.peru_country_id ?? 1),
     foreign_country_id: props.person?.foreign_country_id ?? null,
     foreign_state: props.person?.foreign_state ?? '',
     foreign_city: props.person?.foreign_city ?? '',
-    profession_id: props.person?.profession_id ?? null,
+    // Campos que el payload a n8n envia en el bloque 'persona'.
+    gender: props.person?.gender ?? 'M',
     occupation_id: props.person?.occupation_id ?? null,
-    industry_id: props.person?.industry_id ?? null,
+    profession_id: props.person?.profession_id ?? null,
     company: props.person?.company ?? '',
+    industry_id: props.person?.industry_id ?? null,
 });
 
 const filterOption = (input, option) => {
@@ -146,14 +142,15 @@ const cropImageAndSave = (res) => {
 
 // Modal de confirmación para extranjeros
 const submitForm = async () => {
-    if (isPeruvian.value) {
+    if (!isForeignDocument.value) {
         updateInfoPerson();
         return;
     }
 
     const { default: Swal2 } = await import('sweetalert2');
 
-    const countryLabel = countryOptions.value.find(c => c.value === form.country_id)?.label || 'No seleccionado';
+    const countryLabel = countryOptions.value.find(c => c.value === form.foreign_country_id)?.label || 'No seleccionado';
+    const stateLabel = form.foreign_state || 'No ingresado';
     const cityLabel = form.foreign_city || 'No ingresado';
 
     const result = await Swal2.fire({
@@ -162,6 +159,7 @@ const submitForm = async () => {
             <p style="text-align:left; margin-bottom: 8px;">¿Los datos de ubicación son correctos?</p>
             <div style="text-align:left; background: #f8f9fa; padding: 12px; border-radius: 8px;">
                 <p style="margin: 4px 0;"><strong>País:</strong> ${countryLabel}</p>
+                <p style="margin: 4px 0;"><strong>Departamento/Estado:</strong> ${stateLabel}</p>
                 <p style="margin: 4px 0;"><strong>Ciudad:</strong> ${cityLabel}</p>
             </div>
         `,
@@ -230,22 +228,8 @@ const updateInfoPerson = () => {
                             <InputError :message="form.errors.birthdate" class="mt-2" />
                         </div>
 
-                        <!-- Nacionalidad -->
-                        <div class="col-span-6 sm:col-span-3">
-                            <InputLabel for="country_id" value="Nacionalidad *" />
-                            <Select
-                                v-model:value="form.country_id"
-                                show-search
-                                placeholder="Seleccione una nacionalidad"
-                                style="width: 100%"
-                                :options="countryOptions"
-                                :filter-option="filterOption"
-                            />
-                            <InputError :message="form.errors.country_id" class="mt-2" />
-                        </div>
-
-                        <!-- === UBIGEO PERUANO (nacionalidad peruana) === -->
-                        <template v-if="isPeruvian">
+                        <!-- === UBIGEO PERUANO (cuando NO es extranjero) === -->
+                        <template v-if="!isForeignDocument">
                             <div class="col-span-6 sm:col-span-3">
                                 <InputLabel for="ubigeo" value="Ciudad *" />
                                 <Select
@@ -260,9 +244,37 @@ const updateInfoPerson = () => {
                             </div>
                         </template>
 
-                        <!-- === CIUDAD (otras nacionalidades) === -->
+                        <!-- === UBICACIÓN EXTRANJERA (cuando ES extranjero) === -->
                         <template v-else>
-                            <div class="col-span-6 sm:col-span-3">
+                            <!-- País -->
+                            <div class="col-span-6 sm:col-span-1">
+                                <InputLabel for="foreign_country_id" value="País *" />
+                                <Select
+                                    v-model:value="form.foreign_country_id"
+                                    show-search
+                                    placeholder="Seleccione un país"
+                                    style="width: 100%"
+                                    :options="countryOptions"
+                                    :filter-option="filterOption"
+                                />
+                                <InputError :message="form.errors.foreign_country_id" class="mt-2" />
+                            </div>
+
+                            <!-- Departamento / Estado -->
+                            <div class="col-span-6 sm:col-span-1">
+                                <InputLabel for="foreign_state" value="Depto./Estado *" />
+                                <Input
+                                    id="foreign_state"
+                                    v-model:value="form.foreign_state"
+                                    type="text"
+                                    placeholder="Ej: California"
+                                    class="block w-full mt-1"
+                                />
+                                <InputError :message="form.errors.foreign_state" class="mt-2" />
+                            </div>
+
+                            <!-- Ciudad -->
+                            <div class="col-span-6 sm:col-span-1">
                                 <InputLabel for="foreign_city" value="Ciudad *" />
                                 <Input
                                     id="foreign_city"
@@ -347,27 +359,15 @@ const updateInfoPerson = () => {
                             <InputError :message="form.errors.email" class="mt-2" />
                         </div>
 
-                        <!-- Profesion -->
-                        <div class="col-span-6 sm:col-span-2">
-                            <InputLabel for="profession_id" value="Profesión" />
+                        <!-- Cargo u Ocupacion -->
+                        <div class="col-span-6 sm:col-span-3">
+                            <InputLabel for="occupation_id" value="Cargo u Ocupación" />
                             <Select
-                                v-model:value="form.profession_id"
-                                show-search
-                                placeholder="Seleccione una profesión"
-                                style="width: 100%"
-                                :options="professionOptions"
-                                :filter-option="filterOption"
-                            />
-                            <InputError :message="form.errors.profession_id" class="mt-2" />
-                        </div>
-
-                        <!-- Cargo -->
-                        <div class="col-span-6 sm:col-span-2">
-                            <InputLabel for="occupation_id" value="Cargo" />
-                            <Select
+                                id="occupation_id"
                                 v-model:value="form.occupation_id"
                                 show-search
-                                placeholder="Seleccione un cargo"
+                                allow-clear
+                                placeholder="Buscar cargo u ocupación"
                                 style="width: 100%"
                                 :options="occupationOptions"
                                 :filter-option="filterOption"
@@ -375,23 +375,25 @@ const updateInfoPerson = () => {
                             <InputError :message="form.errors.occupation_id" class="mt-2" />
                         </div>
 
-                        <!-- Industria -->
-                        <div class="col-span-6 sm:col-span-2">
-                            <InputLabel for="industry_id" value="Industria" />
+                        <!-- Profesion -->
+                        <div class="col-span-6 sm:col-span-3">
+                            <InputLabel for="profession_id" value="Profesión" />
                             <Select
-                                v-model:value="form.industry_id"
+                                id="profession_id"
+                                v-model:value="form.profession_id"
                                 show-search
-                                placeholder="Seleccione una industria"
+                                allow-clear
+                                placeholder="Buscar profesión"
                                 style="width: 100%"
-                                :options="industryOptions"
+                                :options="professionOptions"
                                 :filter-option="filterOption"
                             />
-                            <InputError :message="form.errors.industry_id" class="mt-2" />
+                            <InputError :message="form.errors.profession_id" class="mt-2" />
                         </div>
 
                         <!-- Empresa -->
                         <div class="col-span-6 sm:col-span-3">
-                            <InputLabel for="company" value="Empresa" />
+                            <InputLabel for="company" value="Empresa donde labora" />
                             <Input
                                 id="company"
                                 v-model:value="form.company"
@@ -399,6 +401,39 @@ const updateInfoPerson = () => {
                                 class="block w-full mt-1"
                             />
                             <InputError :message="form.errors.company" class="mt-2" />
+                        </div>
+
+                        <!-- Industria -->
+                        <div class="col-span-6 sm:col-span-3">
+                            <InputLabel for="industry_id" value="Industria" />
+                            <Select
+                                id="industry_id"
+                                v-model:value="form.industry_id"
+                                show-search
+                                allow-clear
+                                placeholder="Buscar sector"
+                                style="width: 100%"
+                                :options="industryOptions"
+                                :filter-option="filterOption"
+                            />
+                            <p class="mt-1 text-xs text-gray-500">Sector al que se dedica la empresa donde labora.</p>
+                            <InputError :message="form.errors.industry_id" class="mt-2" />
+                        </div>
+
+                        <!-- Genero -->
+                        <div class="col-span-6 sm:col-span-3">
+                            <InputLabel for="gender" value="Género" />
+                            <div class="flex items-center gap-5 mt-2">
+                                <label class="inline-flex items-center">
+                                    <input v-model="form.gender" type="radio" value="M" class="form-radio text-success" />
+                                    <span class="ml-2">Masculino</span>
+                                </label>
+                                <label class="inline-flex items-center">
+                                    <input v-model="form.gender" type="radio" value="F" class="form-radio text-success" />
+                                    <span class="ml-2">Femenino</span>
+                                </label>
+                            </div>
+                            <InputError :message="form.errors.gender" class="mt-2" />
                         </div>
                     </div>
                 </div>

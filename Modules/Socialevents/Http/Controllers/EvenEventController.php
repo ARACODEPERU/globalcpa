@@ -4,6 +4,9 @@ namespace Modules\Socialevents\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Parameter;
+use App\Models\Person;
+use App\Models\User;
+use App\Support\PersonUserPersistenceVerifier;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -17,9 +20,11 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 use Modules\Socialevents\Entities\EvenEventExhibitor;
 use Modules\Socialevents\Entities\EvenEventLocal;
 use Modules\Socialevents\Entities\EvenTicketType;
+use Modules\Socialevents\Services\SportsOrganizationService;
 
 class EvenEventController extends Controller
 {
@@ -33,7 +38,13 @@ class EvenEventController extends Controller
     }
     public function index()
     {
-        $events = (new EvenEvent())->newQuery();
+        $sports = app(SportsOrganizationService::class);
+        $sports->assertCanRead(request()->user());
+        $events = (new EvenEvent())->newQuery()
+            ->when(
+                $sports->sportsMode() && ! $sports->isSuperAdmin(request()->user()),
+                fn ($query) => $query->where('organization_id', $sports->organizationId(request()->user()))
+            );
 
         if (request()->has('search')) {
             $events->where('title', 'Like', '%' . request()->input('search') . '%');
@@ -47,6 +58,7 @@ class EvenEventController extends Controller
         $types = EvenTicketType::all();
 
         return Inertia::render('Socialevents::Events/List', [
+            'sportsMode' => $sports->sportsMode(),
             'socialevents' => $events,
             'filters' => request()->all('search'),
             'types' => $types
@@ -58,14 +70,24 @@ class EvenEventController extends Controller
      */
     public function create()
     {
-        $categories = EvenCategory::where('status', true)->get();
-        $instructors = AcaTeacher::with('person')->get();
+        $sports = app(SportsOrganizationService::class);
+        $sports->assertCanWrite(request()->user());
+        $categories = $sports->sportsMode()
+            ? collect()
+            : EvenCategory::with('subcategories.subcategories')->where('status', true)->whereNull('main_category_id')->get();
+        $organizers = $this->organizerContext($sports, request()->user());
+
         $locales = EvenLocal::where('status', true)->get();
 
         return Inertia::render('Socialevents::Events/Create', [
+            'sportsMode' => $sports->sportsMode(),
             'categories' => $categories,
-            'instructors'   => $instructors,
-            'tiny_api_key' => $this->P000010,
+            'instructors'   => $organizers['options'],
+            'organizers' => [
+                'locked' => $organizers['locked'],
+                'label' => $organizers['label'],
+                'default' => $organizers['default'],
+            ],
             'locales' => $locales
         ]);
     }
@@ -75,13 +97,17 @@ class EvenEventController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        $sports = app(SportsOrganizationService::class);
+        $sports->assertCanWrite($request->user());
         $this->validate(
             $request,
             [
-                'category_id' => 'required',
+                'category_id' => $sports->sportsMode() ? 'nullable' : 'required',
                 'title' => 'required',
                 'description' => 'required',
-                'advertising_video' => 'required',
+                // El enlace al sitio del torneo solo aplica si la organización
+                // tiene página web propia: nunca es obligatorio.
+                'advertising_video' => $sports->sportsMode() ? 'nullable' : 'required',
                 'tickets_quantity' => 'required',
                 'date' => 'required'
             ]
@@ -90,9 +116,14 @@ class EvenEventController extends Controller
         $ds = $request->get('date')[0]['$d'];
         $de = $request->get('date')[1]['$d'];
         $days = Carbon::parse($ds)->diffInDays(Carbon::parse($de));
+        $exhibitors = $this->organizerExhibitorsForSave($sports, $request);
+
+        // Se guarda la imagen antes de crear el torneo: si falla, no queda un torneo sin imagen.
+        $imagePath = $request->get('image1') ? $this->storeEventImage($request->get('image1')) : null;
 
         $event = EvenEvent::create([
-            'category_id' => $request->get('category_id'),
+            'organization_id' => $sports->sportsMode() ? ($sports->isSuperAdmin($request->user()) ? $sports->legacyOrganizationId() : $sports->organizationId($request->user())) : null,
+            'category_id' => $sports->sportsMode() ? $sports->sportsCategoryId() : $request->get('category_id'),
             'title' => $request->get('title'),
             'description' => $request->get('description'),
             'iframe_transmission' => $request->get('iframe_transmission'),
@@ -103,12 +134,12 @@ class EvenEventController extends Controller
             'tickets_quantity' => $request->get('tickets_quantity'),
             'status' => 'PE',
             'broadcast' => $request->get('broadcast') ? true : false,
-            'tickets_available' => $request->get('tickets_quantity')
+            'tickets_available' => $request->get('tickets_quantity'),
+            'image1' => $imagePath,
         ]);
 
 
-        $locales = $request->get('locales');
-        $exhibitors = $request->get('exhibitors');
+        $locales = $request->get('locales') ?? [];
 
         if (count($locales) > 0) {
             foreach ($locales as $local) {
@@ -119,49 +150,13 @@ class EvenEventController extends Controller
             }
         }
 
-        if (count($exhibitors) > 0) {
+        if ($exhibitors && count($exhibitors) > 0) {
             foreach ($exhibitors as $exhibitor) {
                 EvenEventExhibitor::create([
                     'event_id' => $event->id,
                     'exhibitor_id' => $exhibitor
                 ]);
             }
-        }
-
-        $path = null;
-        $destination = 'uploads/eventos/events';
-        $base64Image = $request->get('image1');
-        if ($base64Image) {
-            if (!Storage::exists($destination)) {
-                Storage::makeDirectory($destination, 0755, true);
-            }
-            try {
-                $fileData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $base64Image));
-                if (PHP_OS == 'WINNT') {
-                    $tempFile = tempnam(sys_get_temp_dir(), 'img');
-                } else {
-                    $tempFile = tempnam('/var/www/html/img_temp', 'img');
-                }
-                //dd($tempFile);
-                file_put_contents($tempFile, $fileData);
-                $mime = mime_content_type($tempFile);
-
-                $name = uniqid('', true) . '.' . str_replace('image/', '', $mime);
-                $file = new UploadedFile(realpath($tempFile), $name, $mime, null, true);
-
-                if ($file) {
-                    $original_name = strtolower(trim($file->getClientOriginalName()));
-                    $original_name = str_replace(" ", "_", $original_name);
-                    $extension = $file->getClientOriginalExtension();
-                    $file_name = $event->id . '.' . $extension;
-                    $path = Storage::disk('public')->putFileAs($destination, $file, $file_name);
-                }
-            } catch (\Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException $e) {
-                dd($e->getMessage());
-            }
-
-            $event->image1 = $path;
-            $event->save();
         }
 
         return to_route('even_eventos_list');
@@ -180,18 +175,31 @@ class EvenEventController extends Controller
      */
     public function edit($id)
     {
-        $categories = EvenCategory::where('status', true)->get();
-        $instructors = AcaTeacher::with('person')->get();
+        $sports = app(SportsOrganizationService::class);
+        $sports->assertCanWrite(request()->user());
+        $sports->assertOwnedEvent(request()->user(), (int) $id);
+        $event = EvenEvent::query()->findOrFail($id);
+        $categories = $sports->sportsMode() ? collect() : EvenCategory::where('status', true)->get();
+        $organizers = $this->organizerContext($sports, request()->user());
         $locales = EvenLocal::where('status', true)->get();
-        $event = EvenEvent::find($id);
-
         $eventLocales = EvenEventLocal::where('event_id', $id)->pluck('local_id');
         $eventExhibitors = EvenEventExhibitor::where('event_id', $id)->pluck('exhibitor_id');
 
+        if ($sports->sportsMode() && ! $sports->isSuperAdmin(request()->user())) {
+            // El formulario del organizador trabaja con usuarios de su
+            // organización, no con personas sueltas del sistema.
+            $eventExhibitors = $this->organizerValuesForPersons($sports, request()->user(), $eventExhibitors->all());
+        }
+
         return Inertia::render('Socialevents::Events/Edit', [
+            'sportsMode' => $sports->sportsMode(),
             'categories' => $categories,
-            'instructors'   => $instructors,
-            'tiny_api_key' => $this->P000010,
+            'instructors'   => $organizers['options'],
+            'organizers' => [
+                'locked' => $organizers['locked'],
+                'label' => $organizers['label'],
+                'default' => $organizers['default'],
+            ],
             'locales' => $locales,
             'socialevent' => $event,
             'eventLocales' => $eventLocales,
@@ -202,27 +210,33 @@ class EvenEventController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request)
+    public function update(Request $request): RedirectResponse
     {
+        $sports = app(SportsOrganizationService::class);
+        $sports->assertCanWrite($request->user());
         $this->validate(
             $request,
             [
-                'category_id' => 'required',
+                'category_id' => $sports->sportsMode() ? 'nullable' : 'required',
                 'title' => 'required',
                 'description' => 'required',
-                'advertising_video' => 'required',
+                'advertising_video' => $sports->sportsMode() ? 'nullable' : 'required',
                 'tickets_quantity' => 'required',
                 'date' => 'required'
             ]
         );
 
-        $event = EvenEvent::find($request->get('id'));
-        $ds = $request->get('date')[0]['$d'];
-        $de = $request->get('date')[1]['$d'];
+        $sports->assertOwnedEvent($request->user(), (int) $request->get('id'));
+        $event = EvenEvent::query()->findOrFail($request->get('id'));
+        [$ds, $de] = $this->parseEventDateRange($request);
         $days = Carbon::parse($ds)->diffInDays(Carbon::parse($de));
+        $exhibitors = $this->organizerExhibitorsForSave($sports, $request);
+
+        // Si llega una imagen nueva se guarda antes de actualizar: si falla, no se cambia nada del torneo.
+        $imagePath = $request->get('image1') ? $this->storeEventImage($request->get('image1')) : null;
 
         $event->update([
-            'category_id' => $request->get('category_id'),
+            'category_id' => $sports->sportsMode() ? $sports->sportsCategoryId() : $request->get('category_id'),
             'title' => $request->get('title'),
             'description' => $request->get('description'),
             'iframe_transmission' => $request->get('iframe_transmission'),
@@ -232,14 +246,13 @@ class EvenEventController extends Controller
             'number_days'   => $days + 1,
             'tickets_quantity' => $request->get('tickets_quantity'),
             'broadcast' => $request->get('broadcast') ? true : false,
-            'tickets_available' => $request->get('tickets_quantity')
-        ]);
+            'tickets_available' => $request->get('tickets_quantity'),
+        ] + ($imagePath ? ['image1' => $imagePath] : []));
 
         EvenEventLocal::where('event_id', $event->id)->delete();
         EvenEventExhibitor::where('event_id', $event->id)->delete();
 
-        $locales = $request->get('locales');
-        $exhibitors = $request->get('exhibitors');
+        $locales = $request->get('locales') ?? [];
 
         if (count($locales) > 0) {
             foreach ($locales as $local) {
@@ -259,40 +272,314 @@ class EvenEventController extends Controller
             }
         }
 
-        $path = $request->get('image1_preview');
-        $destination = 'uploads/eventos/events';
-        $base64Image = $request->get('image1');
-        if ($base64Image) {
-            if (!Storage::exists($destination)) {
-                Storage::makeDirectory($destination, 0755, true);
+        return to_route('even_eventos_list');
+    }
+
+    /**
+     * Guarda la imagen del torneo recibida en base64 y devuelve su ruta relativa al disco public.
+     *
+     * Usa el directorio temporal del sistema (sys_get_temp_dir), y lanza una
+     * ValidationException en 'image1' si la imagen no es válida o no se puede guardar.
+     */
+    private function storeEventImage(string $base64Image): string
+    {
+        $fileData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $base64Image), true);
+        if ($fileData === false || $fileData === '') {
+            throw ValidationException::withMessages(['image1' => 'La imagen del torneo no es válida. Vuelve a seleccionarla.']);
+        }
+
+        $tempFile = tempnam(sys_get_temp_dir(), 'img');
+        if ($tempFile === false || file_put_contents($tempFile, $fileData) === false) {
+            throw ValidationException::withMessages(['image1' => 'No se pudo preparar la imagen del torneo en el servidor. Inténtalo de nuevo.']);
+        }
+
+        try {
+            $mime = mime_content_type($tempFile);
+            if (!in_array($mime, ['image/png', 'image/jpeg', 'image/webp', 'image/gif'], true)) {
+                throw ValidationException::withMessages(['image1' => 'El archivo del torneo debe ser una imagen PNG, JPG, WEBP o GIF.']);
             }
-            try {
-                $fileData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $base64Image));
-                if (PHP_OS == 'WINNT') {
-                    $tempFile = tempnam(sys_get_temp_dir(), 'img');
-                } else {
-                    $tempFile = tempnam('/var/www/html/img_temp', 'img');
-                }
 
-                file_put_contents($tempFile, $fileData);
-                $mime = mime_content_type($tempFile);
+            $destination = 'uploads/eventos/events';
+            $extension = $mime === 'image/jpeg' ? 'jpg' : substr($mime, strlen('image/'));
+            $fileName = date('YmdHis') . '-' . uniqid() . '.' . $extension;
 
-                $name = uniqid('', true) . '.' . str_replace('image/', '', $mime);
-                $file = new UploadedFile(realpath($tempFile), $name, $mime, null, true);
+            $path = Storage::disk('public')->putFileAs($destination, new UploadedFile($tempFile, $fileName, $mime, null, true), $fileName);
+            if ($path === false) {
+                throw ValidationException::withMessages(['image1' => 'No se pudo guardar la imagen del torneo en el almacenamiento. Inténtalo de nuevo.']);
+            }
 
-                if ($file) {
-                    $original_name = strtolower(trim($file->getClientOriginalName()));
-                    $original_name = str_replace(" ", "_", $original_name);
-                    $extension = $file->getClientOriginalExtension();
-                    $file_name = $event->id . '.' . $extension;
-                    $path = Storage::disk('public')->putFileAs($destination, $file, $file_name);
-                }
-                $event->image1 = $path;
-                $event->save();
-            } catch (\Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException $e) {
-                dd($e->getMessage());
+            return $path;
+        } finally {
+            @unlink($tempFile);
+        }
+    }
+
+    /**
+     * Organizadores disponibles en el formulario del torneo.
+     *
+     * El superadministrador elige entre todas las personas registradas. Un
+     * organizador solo ve a los usuarios de su propia organización: mientras
+     * sea el único, el campo queda fijo a su nombre; cuando la organización
+     * suma usuarios (plan con usuarios adicionales), esos usuarios pasan a ser
+     * las únicas opciones seleccionables.
+     *
+     * @return array{locked: bool, label: ?string, default: array<int, string>, options: array<int, array{value: int|string, label: string}>}
+     */
+    private function organizerContext(SportsOrganizationService $sports, ?User $user): array
+    {
+        if (! $user || ! $sports->sportsMode() || $sports->isSuperAdmin($user)) {
+            return [
+                'locked' => false,
+                'label' => null,
+                'default' => [],
+                'options' => Person::query()
+                    ->orderBy('full_name')
+                    ->get(['id', 'full_name', 'short_name'])
+                    ->map(fn (Person $person) => [
+                        'value' => (int) $person->id,
+                        'label' => $person->full_name ?: ($person->short_name ?: 'Persona #' . $person->id),
+                    ])
+                    ->values()
+                    ->all(),
+            ];
+        }
+
+        $organizationId = $sports->organizationId($user);
+        $memberIds = $this->allowedOrganizerUserIds($sports, $user);
+        $users = User::query()
+            ->whereIn('id', $memberIds)
+            ->get(['id', 'name', 'apellido_paterno', 'apellido_materno', 'email', 'person_id', 'socialevent_organization_role']);
+        $usersById = $users->keyBy('id');
+        $orderedUsers = collect($memberIds)
+            ->map(fn ($id) => $usersById->get($id))
+            ->filter()
+            ->values();
+
+        $creatorId = $organizationId
+            ? (int) DB::table('socialevent_organizations')->where('id', $organizationId)->value('created_by')
+            : 0;
+        $creator = $orderedUsers->firstWhere('id', $creatorId) ?? $orderedUsers->first() ?? $user;
+
+        return [
+            'locked' => $orderedUsers->count() <= 1,
+            'label' => $this->userDisplayName($creator),
+            'default' => ['u:' . $creator->id],
+            'options' => $orderedUsers->map(fn (User $member) => [
+                'value' => 'u:' . $member->id,
+                'label' => $this->userDisplayName($member),
+            ])->values()->all(),
+        ];
+    }
+
+    /**
+     * Usuarios que pertenecen a la organización y pueden figurar como responsables.
+     *
+     * @return array<int, int>
+     */
+    private function allowedOrganizerUserIds(SportsOrganizationService $sports, User $user): array
+    {
+        $organizationId = $sports->organizationId($user);
+        $ids = $organizationId
+            ? DB::table('socialevent_organization_users')
+                ->where('organization_id', $organizationId)
+                ->orderByRaw("CASE WHEN role = 'owner' THEN 0 ELSE 1 END")
+                ->orderBy('id')
+                ->pluck('user_id')
+                ->all()
+            : [];
+
+        $ids[] = (int) $user->id;
+
+        return array_values(array_unique(array_map('intval', $ids)));
+    }
+
+    /**
+     * Convierte lo enviado por el formulario en ids de personas para el evento.
+     *
+     * El organizador nunca puede asignar personas ajenas: si su campo está
+     * fijo se usa el responsable por defecto y, si tiene varias cuentas, solo
+     * se aceptan las que pertenecen a su organización.
+     *
+     * @return array<int, int>
+     */
+    private function organizerExhibitorsForSave(SportsOrganizationService $sports, Request $request): array
+    {
+        $submitted = $request->input('exhibitors', []);
+        $submitted = is_array($submitted)
+            ? array_values(array_filter($submitted, fn ($value) => is_string($value) || is_numeric($value)))
+            : [];
+        $user = $request->user();
+
+        if (! $sports->sportsMode() || $sports->isSuperAdmin($user)) {
+            return Person::query()
+                ->whereIn('id', array_map('intval', $submitted))
+                ->pluck('id')
+                ->map(fn ($id) => (int) $id)
+                ->all();
+        }
+
+        $context = $this->organizerContext($sports, $user);
+        $selected = $context['locked']
+            ? $context['default']
+            : array_values(array_intersect($submitted, array_column($context['options'], 'value')));
+
+        if ($selected === []) {
+            $selected = $context['default'];
+        }
+
+        $memberIds = $this->allowedOrganizerUserIds($sports, $user);
+        $persons = [];
+
+        foreach ($selected as $value) {
+            if (! is_string($value) || ! str_starts_with($value, 'u:')) {
+                continue;
+            }
+
+            $memberId = (int) substr($value, 2);
+            if (! in_array($memberId, $memberIds, true)) {
+                continue;
+            }
+
+            $member = User::query()->find($memberId);
+            if ($member) {
+                $persons[] = $this->personForUser($member);
             }
         }
+
+        return array_values(array_unique(array_filter($persons)));
+    }
+
+    /**
+     * Traduce las personas guardadas en el evento a los usuarios de la
+     * organización para que el formulario pueda mostrar la selección actual.
+     *
+     * @param array<int, int|string> $personIds
+     * @return array<int, string>
+     */
+    private function organizerValuesForPersons(SportsOrganizationService $sports, User $user, array $personIds): array
+    {
+        if ($personIds === []) {
+            return [];
+        }
+
+        $usersByPerson = User::query()
+            ->whereIn('id', $this->allowedOrganizerUserIds($sports, $user))
+            ->whereIn('person_id', array_map('intval', $personIds))
+            ->pluck('id', 'person_id');
+
+        return collect($personIds)
+            ->map(function ($personId) use ($usersByPerson) {
+                $userId = $usersByPerson->get((int) $personId);
+
+                return $userId ? 'u:' . $userId : null;
+            })
+            ->filter()
+            ->values()
+            ->all();
+    }
+
+    /**
+     * Persona asociada a la cuenta. Los organizadores registrados desde la web
+     * no siempre tienen una persona creada; al asignarlos como responsables se
+     * reutiliza la existente o se crea con sus datos de registro.
+     */
+    private function personForUser(User $user): ?int
+    {
+        $person = $user->person_id
+            ? Person::query()->find($user->person_id)
+            : null;
+        $identity = trim((string) $user->numero_identidad);
+        $email = strtolower(trim((string) $user->email));
+
+        if (! $person && $identity !== '') {
+            $person = Person::query()->where('number', $identity)->first();
+        }
+        if (! $person && $email !== '') {
+            $person = Person::query()->whereRaw('LOWER(email) = ?', [$email])->first();
+        }
+        if (! $person) {
+            $name = $this->userDisplayName($user);
+            $person = Person::create([
+                'document_type_id' => $this->documentTypeId($user->tipo_identidad),
+                'number' => $identity !== '' ? $identity : null,
+                'full_name' => $name,
+                'short_name' => $name,
+                'email' => $user->email ?: null,
+                'telephone' => $user->telefono ?: null,
+                'is_client' => false,
+            ]);
+        }
+
+        $personData = [
+            'document_type_id' => $user->tipo_identidad
+                ? $this->documentTypeId($user->tipo_identidad)
+                : $person->document_type_id,
+            'number' => $identity !== '' ? $identity : $person->number,
+            'full_name' => $this->userDisplayName($user),
+            'short_name' => $this->userDisplayName($user),
+            'email' => $email !== '' ? $email : $person->email,
+            'telephone' => $user->telefono ?: $person->telephone,
+        ];
+        $person->forceFill($personData)->save();
+        $user->forceFill(['person_id' => $person->id])->save();
+
+        PersonUserPersistenceVerifier::verify(
+            $person,
+            $user,
+            $personData,
+            ['person_id' => $person->id]
+        );
+
+        return (int) $person->id;
+    }
+
+    /**
+     * El registro web guarda el tipo de identidad como texto (DNI, CE,
+     * PASAPORTE); las personas usan el id de identity_document_type.
+     */
+    private function documentTypeId(?string $tipoIdentidad): string
+    {
+        return match (strtoupper(trim((string) $tipoIdentidad))) {
+            'DNI', '1' => '1',
+            'RUC', '6' => '6',
+            default => '0',
+        };
+    }
+
+    private function userDisplayName(User $user): string
+    {
+        $name = trim(implode(' ', array_filter([
+            $user->name,
+            $user->apellido_paterno,
+            $user->apellido_materno,
+        ])));
+
+        return $name !== '' ? $name : (string) ($user->email ?: 'Organizador');
+    }
+
+    /**
+     * @return array{0: string, 1: string}
+     */
+    private function parseEventDateRange(Request $request): array
+    {
+        $date = $request->get('date');
+
+        if (is_array($date) && isset($date[0]['$d'], $date[1]['$d'])) {
+            return [$date[0]['$d'], $date[1]['$d']];
+        }
+
+        if (is_array($date) && count($date) >= 2) {
+            $start = $date[0];
+            $end = $date[1];
+            $ds = is_array($start) ? ($start['$d'] ?? $start[0] ?? null) : $start;
+            $de = is_array($end) ? ($end['$d'] ?? $end[0] ?? null) : $end;
+
+            if ($ds && $de) {
+                return [(string) $ds, (string) $de];
+            }
+        }
+
+        abort(422, 'Formato de fechas inválido.');
     }
 
     /**
@@ -308,6 +595,9 @@ class EvenEventController extends Controller
 
             // Verificamos si existe.
             $item = EvenEvent::findOrFail($id);
+            $sports = app(SportsOrganizationService::class);
+            $sports->assertCanWrite(request()->user());
+            $sports->assertOwnedEvent(request()->user(), (int) $item->id);
 
             // Si no hay detalles asociados, eliminamos.
             $item->delete();

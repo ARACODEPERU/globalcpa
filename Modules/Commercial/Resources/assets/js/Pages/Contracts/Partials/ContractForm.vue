@@ -9,7 +9,6 @@ import IconLoader from "@/Components/vristo/icon/icon-loader.vue";
 import { Link, useForm } from "@inertiajs/vue3";
 import { computed, onMounted, ref } from "vue";
 import { Select } from "ant-design-vue";
-import Swal2 from "sweetalert2";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { faFilePdf, faMagnifyingGlass, faPen, faUpload, faXmark } from "@fortawesome/free-solid-svg-icons";
 import SearchService from "./SearchService.vue";
@@ -170,13 +169,11 @@ const searchResponsible = () => {
         responsible_number: form.responsible_number,
     }).then((res) => {
         if (!res.data.success) {
-            Swal2.fire({
-                title: "Sin resultados",
-                text: res.data.message || res.data.error || "No se encontro el responsable.",
-                icon: "warning",
-                padding: "2em",
-                customClass: "sweet-alerts",
-            });
+            window.alertaSistema(
+                "Sin resultados",
+                res.data.message || res.data.error || "No se encontro el responsable.",
+                "warning"
+            );
             return;
         }
 
@@ -193,26 +190,22 @@ const searchResponsible = () => {
             });
         }
 
-        Swal2.fire({
-            title: "Responsable encontrado",
-            text: res.data.source === "database" ? "Se cargaron los datos desde la base de datos." : "Se consulto RENIEC correctamente.",
-            icon: "success",
-            padding: "2em",
-            customClass: "sweet-alerts",
-        });
+        window.alertaSistema(
+            "Responsable encontrado",
+            res.data.source === "database" ? "Se cargaron los datos desde la base de datos." : "Se consulto RENIEC correctamente.",
+            "success"
+        );
     }).catch((error) => {
         if (error.response?.data?.errors) {
             Object.entries(error.response.data.errors).forEach(([field, messages]) => form.setError(field, messages[0]));
             return;
         }
 
-        Swal2.fire({
-            title: "Error",
-            text: error.response?.data?.message || "No se pudo realizar la busqueda.",
-            icon: "error",
-            padding: "2em",
-            customClass: "sweet-alerts",
-        });
+        window.alertaSistema(
+            "Error",
+            error.response?.data?.message || "No se pudo realizar la busqueda.",
+            "error"
+        );
     }).finally(() => {
         responsibleSearchLoading.value = false;
     });
@@ -243,13 +236,15 @@ const submit = () => {
         preserveScroll: true,
         forceFormData: true,
         onSuccess: () => {
-            Swal2.fire({
-                title: "Enhorabuena",
-                text: isEdit.value ? "Se actualizo correctamente" : "Se guardo correctamente",
-                icon: "success",
-                padding: "2em",
-                customClass: "sweet-alerts",
-            });
+            // Mensaje de exito del guardado. window.alertaSistema respeta la
+            // configuracion de Aracodito del usuario: con el asistente activo el
+            // aviso sale con Aracodito y, si no, con SweetAlert2 como antes.
+            const title = isEdit.value ? "Contrato actualizado" : "Contrato guardado";
+            const text = isEdit.value
+                ? "Los cambios del contrato se guardaron correctamente."
+                : "El contrato se registró correctamente.";
+
+            window.alertaSistema(title, text, "success");
 
             if (!isEdit.value) {
                 form.reset();

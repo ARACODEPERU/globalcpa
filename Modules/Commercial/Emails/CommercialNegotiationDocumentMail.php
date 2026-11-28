@@ -21,20 +21,23 @@ class CommercialNegotiationDocumentMail extends Mailable implements ShouldQueue
     use Queueable, SerializesModels;
 
     public CommercialNegotiation $negotiation;
-    /** Null en negociaciones gratuitas: no hay comprobante que adjuntar. */
+    /** Una negociacion gratuita no emite comprobante: en ese caso llega null. */
     public ?SaleDocument $document;
-    /** @var array<string, mixed>|null */
-    public ?array $dataFile;
+    /** @var array<string, mixed> */
+    public array $dataFile;
     /** @var array<string, string>|null */
     public ?array $credentials;
     public int $tries = 3;
     public array $backoff = [60, 300];
 
     /**
-     * @param array<string, mixed>|null $dataFile
+     * El comprobante es opcional porque una negociacion gratuita (precio 0) no genera uno:
+     * el correo sale igual, con el detalle del acuerdo y las credenciales de acceso.
+     *
+     * @param array<string, mixed> $dataFile
      * @param array<string, string>|null $credentials
      */
-    public function __construct(CommercialNegotiation $negotiation, ?SaleDocument $document, ?array $dataFile, ?array $credentials = null)
+    public function __construct(CommercialNegotiation $negotiation, ?SaleDocument $document = null, array $dataFile = [], ?array $credentials = null)
     {
         $this->negotiation = $negotiation;
         $this->document = $document;
@@ -70,8 +73,8 @@ class CommercialNegotiationDocumentMail extends Mailable implements ShouldQueue
     {
         $attachments = [];
 
-        // Negociacion gratuita: el correo va sin comprobante adjunto.
-        if (! $this->document || ! $this->dataFile) {
+        // Sin comprobante no hay adjuntos que mandar (negociacion gratuita).
+        if (! $this->document) {
             return $attachments;
         }
 

@@ -35,6 +35,9 @@ Route::middleware('guest')->prefix('biblioteca')->group(function () {
 
 Route::middleware(['auth', 'role:Lector'])->prefix('biblioteca')->group(function () {
     Route::get('/', [BibReaderController::class, 'index'])->name('bib_reader_home');
+    Route::get('libro/{id}', [BibReaderController::class, 'showBook'])
+        ->whereNumber('id')
+        ->name('bib_reader_book_open');
     Route::get('libro/secciones/{sectionId}/paginas', [BibReaderController::class, 'sectionPages'])
         ->name('bib_reader_section_pages');
     Route::get('paginas/{id}', [BibReaderController::class, 'showPage'])
@@ -43,6 +46,15 @@ Route::middleware(['auth', 'role:Lector'])->prefix('biblioteca')->group(function
     Route::get('paginas/{pageId}/casos-practicos/{caseId}', [BibReaderController::class, 'showPracticalCase'])
         ->whereNumber(['pageId', 'caseId'])
         ->name('bib_reader_practical_case_show');
+    Route::get('libros/abiertos', [BibReaderController::class, 'openedBooksIndex'])
+        ->name('bib_reader_opened_books');
+    Route::post('progreso', [BibReaderController::class, 'storeProgress'])
+        ->name('bib_reader_progress');
+    Route::post('progreso/sync', [BibReaderController::class, 'syncProgress'])
+        ->name('bib_reader_progress_sync');
+    Route::post('libro/{id}/abrir', [BibReaderController::class, 'markBookOpened'])
+        ->whereNumber('id')
+        ->name('bib_reader_book_opened');
     Route::post('logout', [BibAuthController::class, 'destroy'])->name('bib_logout');
 });
 
@@ -97,6 +109,9 @@ Route::middleware(['auth', 'verified'])->prefix('bibliodata')->group(function ()
     Route::middleware(['middleware' => 'permission:bib_autores_eliminar'])
         ->delete('authors/destroy/{id}', [BibAuthorController::class, 'destroy'])
         ->name('bib_authors_destroy');
+
+    Route::post('search/person', [\Modules\Bibliodata\Http\Controllers\BibPersonController::class, 'searchByNumberType'])
+        ->name('bib_search_person');
 
     Route::middleware(['middleware' => 'permission:bib_libros_listado'])
         ->get('books', [BibBookController::class, 'index'])

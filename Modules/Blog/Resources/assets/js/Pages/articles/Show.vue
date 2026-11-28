@@ -9,11 +9,10 @@
     import Carousel from '../../components/Carousel.vue';
     import IconCalendar from '@/Components/vristo/icon/icon-calendar.vue';
     import IconMessage from '@/Components/vristo/icon/icon-message.vue';
-    import { registerBlogArticleView } from '@/utils/blogViewCounter';
 
-    import { onMounted, ref } from 'vue';
+    import { ref } from 'vue';
 
-    const props = defineProps({
+    defineProps({
         article: {
             type: Object,
             default: () => ({})
@@ -53,12 +52,6 @@
         const options = { month: 'short', day: 'numeric', year: 'numeric', locale: 'es-ES' };
         return dateObj.toLocaleDateString('es-ES', options);
     }
-
-    // El conteo de vistas ya no ocurre al renderizar: se registra una sola vez
-    // cada 24h por navegador contra el endpoint POST /blog/{url}/vista.
-    onMounted(() => {
-        registerBlogArticleView({ slug: props.article?.url });
-    });
 </script>
 
 <template>

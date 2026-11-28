@@ -10,10 +10,22 @@ use Modules\Commercial\Http\Controllers\CommercialNegotiationController;
 use Modules\Commercial\Http\Controllers\CommercialNegotiationProcessController;
 use Modules\Commercial\Http\Controllers\CommercialNegotiationPublicController;
 use Modules\Commercial\Http\Controllers\CommercialNegotiationPaymentController;
+use Modules\Commercial\Http\Controllers\CommercialSaleDocumentController;
+use Modules\Commercial\Http\Controllers\CommercialSettingController;
 
 Route::middleware(['auth', 'verified'])->prefix('commercial')->group(function () {
     Route::get('dashboard', [CommercialController::class, 'index'])
         ->name('comm_dashboard');
+
+    // Configuracion del modulo. La pestana de enlaces legales alimenta los checks
+    // obligatorios del formulario publico de una negociacion.
+    Route::middleware(['middleware' => 'permission:comm_configuracion_ver'])
+        ->get('settings', [CommercialSettingController::class, 'index'])
+        ->name('comm_settings');
+
+    Route::middleware(['middleware' => 'permission:comm_configuracion_editar'])
+        ->post('settings/legal', [CommercialSettingController::class, 'updateLegal'])
+        ->name('comm_settings_legal_update');
 
     Route::middleware(['middleware' => 'permission:comm_clientes_listado'])
         ->get('clients', [CommercialClientController::class, 'index'])
@@ -98,6 +110,16 @@ Route::middleware(['auth', 'verified'])->prefix('commercial')->group(function ()
         ->post('contracts/payments/document/store', [CommercialContractPaymentController::class, 'storeDocument'])
         ->name('comm_contract_payment_document_store');
 
+    // Vinculacion de una cuota del cronograma con una factura o boleta ya
+    // emitida en el modulo de facturacion electronica.
+    Route::middleware(['middleware' => 'permission:comm_contratos_cronograma'])
+        ->get('contracts/payments/{payment}/documents/search', [CommercialContractPaymentController::class, 'searchDocuments'])
+        ->name('comm_contract_payment_documents_search');
+
+    Route::middleware(['middleware' => 'permission:comm_contratos_cronograma'])
+        ->post('contracts/payments/{payment}/link-document', [CommercialContractPaymentController::class, 'linkDocument'])
+        ->name('comm_contract_payment_link_document');
+
     Route::middleware(['middleware' => 'permission:comm_contratos_cronograma'])
         ->get('contracts/{id}/payments', [CommercialContractPaymentController::class, 'index'])
         ->name('comm_contracts_payments');
@@ -105,6 +127,25 @@ Route::middleware(['auth', 'verified'])->prefix('commercial')->group(function ()
     Route::middleware(['middleware' => 'permission:comm_contratos_cronograma'])
         ->post('contracts/{id}/payments/store', [CommercialContractPaymentController::class, 'store'])
         ->name('comm_contracts_payments_store');
+
+    // Emision de facturas o boletas agrupando cuotas pendientes de uno o varios
+    // contratos del cliente. Usa el mismo registro de facturacion electronica.
+    Route::middleware(['middleware' => 'permission:comm_contratos_cronograma'])
+        ->get('documents/create', [CommercialSaleDocumentController::class, 'create'])
+        ->name('comm_sales_documents_create');
+
+    Route::middleware(['middleware' => 'permission:comm_contratos_cronograma'])
+        ->post('documents/clients/search', [CommercialSaleDocumentController::class, 'searchClients'])
+        ->name('comm_sales_documents_clients_search');
+
+    Route::middleware(['middleware' => 'permission:comm_contratos_cronograma'])
+        ->get('documents/clients/{id}/contracts', [CommercialSaleDocumentController::class, 'clientContracts'])
+        ->whereNumber('id')
+        ->name('comm_sales_documents_client_contracts');
+
+    Route::middleware(['middleware' => 'permission:comm_contratos_cronograma'])
+        ->post('documents/store', [CommercialSaleDocumentController::class, 'store'])
+        ->name('comm_sales_documents_store');
 });
 
 Route::middleware(['auth', 'verified'])->prefix('commercial')->group(function () {
@@ -185,6 +226,10 @@ Route::middleware(['auth', 'verified'])->prefix('commercial')->group(function ()
         ->name('comm_negotiations_process_complete');
 
     Route::middleware(['middleware' => 'permission:comm_negociaciones_verificar'])
+        ->post('negotiations/process/{id}/emission-date', [CommercialNegotiationProcessController::class, 'saveEmissionDate'])
+        ->name('comm_negotiations_process_emission_date');
+
+    Route::middleware(['middleware' => 'permission:comm_negociaciones_verificar'])
         ->post('negotiations/process/{id}/skip/{key}', [CommercialNegotiationProcessController::class, 'skipStep'])
         ->name('comm_negotiations_process_skip');
 
@@ -199,10 +244,6 @@ Route::middleware(['auth', 'verified'])->prefix('commercial')->group(function ()
     Route::middleware(['middleware' => 'permission:comm_negociaciones_verificar'])
         ->post('negotiations/reactivate/{id}', [CommercialNegotiationController::class, 'reactivate'])
         ->name('comm_negotiations_reactivate');
-
-    Route::middleware(['middleware' => 'permission:comm_negociaciones_verificar'])
-        ->post('negotiations/{id}/issue-date', [CommercialNegotiationController::class, 'updateIssueDate'])
-        ->name('comm_negotiations_issue_date');
 
     Route::middleware(['middleware' => 'permission:comm_negociaciones_editar'])
         ->post('negotiations/cancel/{id}', [CommercialNegotiationController::class, 'cancel'])

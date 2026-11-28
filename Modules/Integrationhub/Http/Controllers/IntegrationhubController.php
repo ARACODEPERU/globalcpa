@@ -19,10 +19,11 @@ use Modules\Integrationhub\Entities\IntegrationQuery;
 use Modules\Integrationhub\Entities\IntegrationError;
 use Modules\Integrationhub\Entities\IntegrationExecLog;
 use Modules\Integrationhub\Entities\IntegrationFlowId;
-use Modules\Integrationhub\Support\IntegrationAlert;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\ValidationException;
 use Carbon\Carbon;
 use App\Services\IntegrationhubCronExpression;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 
 class IntegrationhubController extends Controller
@@ -50,7 +51,9 @@ class IntegrationhubController extends Controller
 
         return Inertia::render('Integrationhub::Integration/Index', [
             'integrations' => $integrations,
-            'filters' => request()->all('search')
+            'filters' => request()->all('search'),
+            // Estado del webhook de MercadoPago para avisar en el listado.
+            'mercadopagoWebhook' => app(\Modules\Academic\Services\MercadoPagoWebhookStatus::class)->state(),
         ]);
     }
 
@@ -104,6 +107,8 @@ class IntegrationhubController extends Controller
             'integration' => $integration,
             'apiRoutes' => $this->integrationhubApiRoutes(),
             'scheduler' => $this->schedulerState(),
+            // Estado del webhook de MercadoPago (se muestra solo en esa integración).
+            'mercadopagoWebhook' => app(\Modules\Academic\Services\MercadoPagoWebhookStatus::class)->state(),
         ]);
     }
 
@@ -192,7 +197,58 @@ class IntegrationhubController extends Controller
         ]);
     }
 
+    /**
+     * Ejecuta un endpoint de la integración.
+     *
+     * Es la puerta por la que pasa todo uso de una integración: la pantalla, la
+     * API del módulo y las llamadas internas de otros módulos y jobs. Por eso
+     * aqui se cumple una regla: Integrationhub habla con servicios de terceros y
+     * un fallo suyo NUNCA debe detener a quien lo llamó.
+     *
+     * El armado y la llamada real viven en executeEndpoint(); este envoltorio
+     * convierte un fallo inesperado (un mapeo mal configurado, una consulta de
+     * campo caida, un XML invalido...) en una respuesta de error y un aviso a
+     * Seguridad → Alertas, sin excepcion para el flujo que llamó.
+     */
     public function execute(Request $request, int $id)
+    {
+        try {
+            return $this->executeEndpoint($request, $id);
+        } catch (ValidationException | ModelNotFoundException $exception) {
+            // 422 y 404 son errores de la peticion, no fallos del sistema: se
+            // conserva el contrato de la API del modulo.
+            throw $exception;
+        } catch (\Throwable $exception) {
+            $this->reportEndpointFailure(
+                sprintf(
+                    'fallo inesperado al ejecutar el endpoint #%s de la integración #%d: %s',
+                    $request->input('endpoint_id') ?: 'desconocido',
+                    $id,
+                    $this->sanitizedErrorText($exception->getMessage())
+                ),
+                $exception,
+                [
+                    'integration_id' => $id,
+                    'endpoint_id' => $request->input('endpoint_id'),
+                    'batch_id' => $request->input('batch_id'),
+                ]
+            );
+
+            return response()->json([
+                'message' => 'Error al ejecutar la integración: ' . $exception->getMessage(),
+                'status_code' => 500,
+                'received' => null,
+                'response' => null,
+                'executed_at' => now(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Arma la peticion del endpoint con los mapeos configurados, la envia y
+     * registra el resultado en el Historial.
+     */
+    private function executeEndpoint(Request $request, int $id)
     {
         $integration = Integration::findOrFail($id);
 
@@ -646,12 +702,36 @@ class IntegrationhubController extends Controller
                 $this->pruneIntegrationLogs($integration);
             }
 
+            // El servicio externo rechazo la peticion: la respuesta lo dice y
+            // quien llamó sigue su camino, pero el fallo no puede quedar en
+            // silencio. Seguridad → Alertas recibe el detalle.
+            $this->reportEndpointFailure(
+                sprintf(
+                    'el endpoint "%s" de la integración "%s" respondió HTTP %d',
+                    $endpoint->name,
+                    $integration->name,
+                    $statusCode
+                ),
+                null,
+                [
+                    'integration_id' => $id,
+                    'integration' => $integration->name,
+                    'endpoint_id' => $endpoint->id,
+                    'endpoint' => $endpoint->name,
+                    'http_status' => $statusCode,
+                    'url' => $maskedUrl,
+                    'external_message' => $this->sanitizedErrorText($externalMessage),
+                    'external_response' => $logData['response_body'],
+                    'batch_id' => $logData['batch_id'],
+                ]
+            );
+
             return response()->json([
                 'message' => 'Error en la solicitud externa: ' . $externalMessage,
                 'status_code' => $statusCode,
                 'request' => $requestData ?? [
                     'method' => $endpoint->http_method,
-                    'url' => $url,
+                    'url' => $maskedUrl,
                     'headers' => $headers,
                     'query' => $queryParams,
                     'body_type' => $endpoint->body_type,
@@ -676,12 +756,32 @@ class IntegrationhubController extends Controller
                 $this->pruneIntegrationLogs($integration);
             }
 
+            // Fallo de red, timeout o error del propio armado de la llamada: se
+            // avisa y se responde el error, sin excepcion para quien llamó.
+            $this->reportEndpointFailure(
+                sprintf(
+                    'no se pudo ejecutar el endpoint "%s" de la integración "%s"',
+                    $endpoint->name,
+                    $integration->name
+                ),
+                $e,
+                [
+                    'integration_id' => $id,
+                    'integration' => $integration->name,
+                    'endpoint_id' => $endpoint->id,
+                    'endpoint' => $endpoint->name,
+                    'url' => $maskedUrl,
+                    'error' => $this->sanitizedErrorText($e->getMessage()),
+                    'batch_id' => $logData['batch_id'],
+                ]
+            );
+
             return response()->json([
                 'message' => 'Error al ejecutar la integración: ' . $e->getMessage(),
                 'status_code' => 500,
                 'request' => $requestData ?? [
                     'method' => $endpoint->http_method,
-                    'url' => $url,
+                    'url' => $maskedUrl,
                     'headers' => $headers,
                     'query' => $queryParams,
                     'body_type' => $endpoint->body_type,
@@ -716,6 +816,15 @@ class IntegrationhubController extends Controller
         $decodedEndpoint = urldecode($endpoint);
 
         if ($matchingEndpoints->isEmpty()) {
+            // Un endpoint que ya no existe es un fallo de uso de la integración:
+            // quien llamó recibe el 404 de siempre y el sistema lo avisa, porque
+            // de otro modo el job que lo usaba quedaba mudo.
+            $this->reportEndpointFailure(
+                sprintf('no existe el endpoint "%s" en ninguna integración', $decodedEndpoint),
+                null,
+                ['endpoint' => $decodedEndpoint]
+            );
+
             return response()->json([
                 'success' => false,
                 'message' => "No existe el endpoint '{$decodedEndpoint}' en ninguna integración.",
@@ -723,6 +832,15 @@ class IntegrationhubController extends Controller
         }
 
         if ($matchingEndpoints->count() > 1) {
+            $this->reportEndpointFailure(
+                sprintf('el endpoint "%s" está duplicado en varias integraciones', $decodedEndpoint),
+                null,
+                [
+                    'endpoint' => $decodedEndpoint,
+                    'integration_ids' => $matchingEndpoints->pluck('integration_id')->all(),
+                ]
+            );
+
             return response()->json([
                 'success' => false,
                 'message' => "El endpoint '{$decodedEndpoint}' está duplicado en varias integraciones. Corrige los endpoints antes de ejecutar.",
@@ -741,23 +859,6 @@ class IntegrationhubController extends Controller
     /**
      * Método helper para ejecutar un endpoint por nombre sin necesidad de
      * construir un objeto Request manualmente.
-     *
-     * Pensado para el codigo de la aplicacion (jobs, servicios, controladores),
-     * no para la pantalla del modulo, y por eso cumple dos garantias:
-     *
-     *   1. Nunca lanza excepciones. Si el endpoint no existe, esta duplicado o
-     *      la llamada se rompe antes de salir (validacion, base de datos), se
-     *      devuelve una respuesta JSON de error en vez de interrumpir al que
-     *      llamo: el flujo sigue (la compra se registra, la campana continua, el
-     *      perfil se guarda) aunque la integracion haya fallado.
-     *   2. Todo fallo (HTTP >= 400 o excepcion) queda en las alertas del panel
-     *      via IntegrationAlert, que tampoco puede fallar el flujo.
-     *
-     * La respuesta conserva la forma de siempre (message, status_code, ...),
-     * asi que quien ya revisaba `getStatusCode() >= 400` para abortar su propio
-     * paso lo sigue haciendo; en ese caso es normal que ademas registre su
-     * propia alerta, porque para el son dos hechos distintos: fallo el endpoint
-     * y fallo este paso.
      *
      * @param  string       $endpoint     Nombre exacto del endpoint en Integrationhub
      * @param  array        $fieldValues  Variables obligatorias y opcionales del endpoint (field_values)
@@ -791,35 +892,7 @@ class IntegrationhubController extends Controller
 
         $request = Request::create('/', 'POST', $requestData);
 
-        try {
-            $response = $this->executeByEndpointName($request, $endpoint);
-        } catch (\Throwable $e) {
-            IntegrationAlert::notify(
-                'El endpoint "' . $endpoint . '" no se pudo ejecutar: ' . $e->getMessage(),
-                IntegrationAlert::SOURCE_ENDPOINT
-            );
-
-            return response()->json([
-                'message' => 'Error al ejecutar la integración: ' . $e->getMessage(),
-                'status_code' => 500,
-                'executed_at' => now(),
-            ], 500);
-        }
-
-        $statusCode = (int) $response->getStatusCode();
-
-        if ($statusCode >= 400) {
-            $payload = method_exists($response, 'getData') ? (array) $response->getData(true) : [];
-            $detail = $payload['message'] ?? 'sin detalle';
-
-            IntegrationAlert::notify(
-                'El endpoint "' . $endpoint . '" respondió HTTP ' . $statusCode . ': '
-                    . (is_scalar($detail) ? $detail : json_encode($detail)),
-                IntegrationAlert::SOURCE_ENDPOINT
-            );
-        }
-
-        return $response;
+        return $this->executeByEndpointName($request, $endpoint);
     }
 
     public function logs(Request $request, int $id)
@@ -1665,11 +1738,66 @@ class IntegrationhubController extends Controller
     }
 
     /**
+     * Avisa del fallo de un endpoint sin interrumpir a quien lo llamó.
+     *
+     * Se registra con nivel ERROR a proposito: Seguridad → Alertas escucha los
+     * logs de la aplicacion (ErrorAlertService) y encola el aviso por Telegram a
+     * los chat_id activos. Nunca lanza: si hasta el propio aviso falla, queda en
+     * el log y la ejecucion (y su respuesta) siguen igual.
+     *
+     * El detalle variable (mensaje del servicio externo, error de red, ids de
+     * lote) viaja en el contexto y no en el mensaje: asi el mismo fallo repetido
+     * conserva su huella y las alertas lo agrupan en lugar de llenar el chat.
+     *
+     * @param  array<string, mixed>  $context  Detalle para el aviso y para el contexto guardado.
+     */
+    private function reportEndpointFailure(string $detail, ?\Throwable $exception, array $context = []): void
+    {
+        try {
+            if ($exception !== null) {
+                $context['exception'] = $exception;
+            }
+
+            Log::error('Integrationhub: ' . $detail, array_merge([
+                'source' => 'integrationhub_endpoint',
+            ], $context));
+        } catch (\Throwable) {
+            // El aviso tampoco puede tumbar la ejecucion que ya venia fallando.
+        }
+    }
+
+    /**
+     * Texto de un error con las credenciales conocidas enmascaradas.
+     *
+     * Los mensajes de Guzzle traen la URL completa y el token del bot de
+     * Telegram viaja dentro de ella: ni el aviso ni el contexto guardado pueden
+     * quedarse con la credencial.
+     */
+    private function sanitizedErrorText(string $text): string
+    {
+        $masks = [
+            '#(/bot)\d+:[A-Za-z0-9_\-]+#' => '$1***',
+            '/([?&](?:token|access_token|api_key|apikey|secret|password|authorization)=)[^&\s"\']+/i' => '$1***',
+        ];
+
+        foreach ($masks as $pattern => $replacement) {
+            $text = preg_replace($pattern, $replacement, $text) ?? $text;
+        }
+
+        return $text;
+    }
+
+    /**
      * Enmascara valores sensibles en los parámetros query de una URL.
      * Reemplaza el valor de cada parámetro sensible con 'x' por cada caracter.
      */
     private function maskUrlSensitiveParams(string $url, array $sensitiveKeys = []): string
     {
+        // El token de un bot de Telegram viaja en la ruta (api.telegram.org/bot<id>:<secreto>),
+        // donde parse_url no lo reconoce como parametro: se enmascara siempre
+        // para que el Historial no guarde la credencial del bot.
+        $url = preg_replace('#(/bot)\d+:[A-Za-z0-9_\-]+#', '$1***', $url) ?? $url;
+
         $parts = parse_url($url);
         if (empty($parts['query'])) {
             return $url;

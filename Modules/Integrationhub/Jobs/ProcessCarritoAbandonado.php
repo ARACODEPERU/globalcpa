@@ -8,7 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Modules\Integrationhub\Support\IntegrationAlert;
+use Modules\Integrationhub\Entities\IntegrationError;
 use Modules\Integrationhub\Http\Controllers\IntegrationhubController;
 use Modules\Integrationhub\Support\TrafficSourceResolver;
 use Modules\Onlineshop\Entities\OnliCarritoAbandonado;
@@ -98,7 +98,10 @@ class ProcessCarritoAbandonado implements ShouldQueue
                 ]);
             }
         } catch (\Throwable $th) {
-            IntegrationAlert::notify('ProcessCarritoAbandonado: ' . $th->getMessage(), 'ProcessCarritoAbandonado');
+            IntegrationError::create([
+                'message' => 'ProcessCarritoAbandonado: ' . $th->getMessage(),
+                'source' => 'ProcessCarritoAbandonado',
+            ]);
 
             // También contar el intento fallido para llegar al límite de 5
             $record = OnliCarritoAbandonado::find($this->recordId);

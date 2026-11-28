@@ -5,7 +5,7 @@ namespace Modules\Academic\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Person;
 use App\Models\User;
-use App\Support\PersonRegistrationGuard;
+use App\Support\PersonUserPersistenceVerifier;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
@@ -71,7 +71,26 @@ class AcaAuthController extends Controller
 
             if ($user) {
                 if ($user->email === $email) {
-                    // Caso 1: misma persona y mismo email -> iniciar sesión
+                    // Caso 1: misma persona y mismo email -> refrescar los datos antes de iniciar sesión.
+                    $personData = [
+                        'document_type_id' => $documentType,
+                        'number' => $number,
+                        'short_name' => $request->get('names'),
+                        'full_name' => trim($request->get('apps').' '.$request->get('apms').' '.$request->get('names')),
+                        'father_lastname' => $request->get('apps'),
+                        'mother_lastname' => $request->get('apms'),
+                        'email' => $email,
+                        'gender' => $request->get('sexo'),
+                    ];
+                    $person->forceFill($personData)->save();
+                    $userData = [
+                        'name' => $request->get('names'),
+                        'email' => $email,
+                        'person_id' => $person->id,
+                    ];
+                    $user->update($userData);
+                    PersonUserPersistenceVerifier::verify($person, $user, $personData, $userData);
+
                     Auth::login($user);
                     $request->session()->regenerate();
                     return redirect()->route('academic_step_verification', $id);
@@ -83,6 +102,14 @@ class AcaAuthController extends Controller
                 }
             } else {
                 // Caso raro: persona existe pero sin usuario -> crear usuario
+                $person->update([
+                    'short_name' => $request->get('names'),
+                    'full_name' => trim($request->get('apps') . ' ' . $request->get('apms') . ' ' . $request->get('names')),
+                    'father_lastname' => $request->get('apps'),
+                    'mother_lastname' => $request->get('apms'),
+                    'email' => $email,
+                    'gender' => $request->get('sexo'),
+                ]);
                 $user = User::create([
                     'name' => $request->get('names'),
                     'email' => $email,
@@ -92,21 +119,21 @@ class AcaAuthController extends Controller
                     'tour_completed' => false
                 ]);
 
-                // Verificacion final: persona y usuario deben quedar registrados con los datos recientes.
-                $registration = app(PersonRegistrationGuard::class)->ensure($person, [
-                    'document_type_id' => $documentType,
-                    'number' => $number,
-                    'names' => $request->get('names'),
-                    'father_lastname' => $request->get('apps'),
-                    'mother_lastname' => $request->get('apms'),
-                    'full_name' => trim($request->get('apps') . ' ' . $request->get('apms') . ' ' . $request->get('names')),
-                    'email' => $email,
-                ], [
-                    'name' => $request->get('names'),
-                    'email' => $email,
-                ], $user);
-
-                $user = $registration['user'];
+                PersonUserPersistenceVerifier::verify(
+                    $person,
+                    $user,
+                    [
+                        'document_type_id' => $documentType,
+                        'number' => $number,
+                        'short_name' => $request->get('names'),
+                        'full_name' => trim($request->get('apps') . ' ' . $request->get('apms') . ' ' . $request->get('names')),
+                        'father_lastname' => $request->get('apps'),
+                        'mother_lastname' => $request->get('apms'),
+                        'email' => $email,
+                        'gender' => $request->get('sexo'),
+                    ],
+                    ['name' => $request->get('names'), 'email' => $email, 'person_id' => $person->id]
+                );
 
                 Auth::login($user);
                 $request->session()->regenerate();
@@ -114,16 +141,18 @@ class AcaAuthController extends Controller
             }
         } else {
             // Caso 3: persona nueva -> crear persona y usuario
-            $person = Person::create([
+            $personData = [
                 'document_type_id' => $documentType,
                 'number' => $number,
                 'short_name' => $request->get('names'),
-                'full_name' => $request->get('apps') . ' ' . $request->get('apms') . ' ' . $request->get('names'),
+                'full_name' => trim($request->get('apps') . ' ' . $request->get('apms') . ' ' . $request->get('names')),
                 'father_lastname' => $request->get('apps'),
                 'mother_lastname' => $request->get('apms'),
+                'email' => $email,
                 'gender' => $request->get('sexo'),
                 'status' => true,
-            ]);
+            ];
+            $person = Person::create($personData);
 
             $user = User::create([
                 'name' => $request->get('names'),
@@ -134,21 +163,12 @@ class AcaAuthController extends Controller
                 'tour_completed' => false
             ]);
 
-            // Verificacion final: persona y usuario deben quedar registrados con los datos recientes.
-            $registration = app(PersonRegistrationGuard::class)->ensure($person, [
-                'document_type_id' => $documentType,
-                'number' => $number,
-                'names' => $request->get('names'),
-                'father_lastname' => $request->get('apps'),
-                'mother_lastname' => $request->get('apms'),
-                'full_name' => trim($request->get('apps') . ' ' . $request->get('apms') . ' ' . $request->get('names')),
-                'email' => $email,
-            ], [
-                'name' => $request->get('names'),
-                'email' => $email,
-            ], $user);
-
-            $user = $registration['user'];
+            PersonUserPersistenceVerifier::verify(
+                $person,
+                $user,
+                $personData,
+                ['name' => $request->get('names'), 'email' => $email, 'person_id' => $person->id]
+            );
 
             Auth::login($user);
             $request->session()->regenerate();

@@ -38,7 +38,7 @@
 
         <div class="footer">
             <p>CPA Academy — Formación que impulsa tu futuro</p>
-            <p>Si tienes dudas, escríbenos a capacitacion@globalcpaperu.com</p>
+            <p>Si tienes dudas, escríbenos a informes@globalcpaperu.com</p>
         </div>
     </div>
 </body>
